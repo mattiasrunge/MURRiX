@@ -1,0 +1,7 @@
+<?
+
+/* Include the db module */
+MurrixLoadModule("db",        array("host" => "dbhost", "name" => "dbname", "user" => "dbuser", "password" => "dbpassword"));
+MurrixLoadModule("user",      array("default_username" => "anonymous"));
+
+?>

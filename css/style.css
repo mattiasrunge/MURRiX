@@ -75,6 +75,83 @@ td { vertical-align: top; }
    ========================================================================== */
 
 
+.popup-list-container
+{
+  margin-top: 10px;
+}
+
+.popup-list-item-container
+{
+  position: relative;
+  margin-bottom: 10px;
+  border: 1px solid #999999;
+  background-color: #FFFCCD;
+  cursor: pointer;
+}
+
+.popup-list-item-container:hover
+{
+  background-color: #FFFF99;
+}
+
+.popup-list-item-container .popup-list-item-name
+{
+  padding: 10px;
+}
+
+.popup-list-item-container:hover .popup-list-item-name
+{
+  font-weight: bold;
+}
+
+.popup-list-item-container .popup-list-item-created
+{
+  padding: 15px;
+  float: right;
+  font-size: 10px;
+}
+
+
+
+
+.popup-form-section
+{
+  margin-bottom: 15px;
+}
+
+.popup-form-section-label
+{
+  display: block;
+  margin-bottom: 5px;
+}
+
+.popup-form-input
+{
+  width: 300px;
+  border: 1px solid #999999;
+  background-color: #FFFCCD;
+}
+
+.popup-form-input:focus
+{
+  background-color: #FFFF99;
+}
+
+textarea.popup-form-input
+{
+  height: 300px;
+  width: 770px;
+}
+
+textarea.popup-form-input-medium
+{
+  height: 100px;
+}
+
+textarea.popup-form-input-big
+{
+  height: 400px;
+}
 
 
 
