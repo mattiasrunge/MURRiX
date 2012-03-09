@@ -1,7 +1,5 @@
 <?
 
-//set_include_path(get_include_path() . PATH_SEPARATOR . dirname($_SERVER["SCRIPT_FILENAME"]) . "/php/pear" . PATH_SEPARATOR . dirname($_SERVER["SCRIPT_FILENAME"]) . "/pear");
-
 /* Turn on all errors */
 error_reporting(E_ALL);
 

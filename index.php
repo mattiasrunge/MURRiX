@@ -56,9 +56,7 @@
   <script type="text/javascript" src="murrix/libs/murrix.wizard.js"></script>
   
   <script type="text/javascript">
-    var murrix_modules = {};
-  
-    var murrix_module_options = <?=json_encode($murrix_js_options);?>
+    $.murrix.module_options = <?=json_encode($murrix_js_options);?>
   </script>
   
   <?

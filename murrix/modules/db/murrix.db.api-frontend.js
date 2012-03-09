@@ -1,243 +1,246 @@
 
-function MurrixDb()
-{
-  /* Class variable declaration */
-  var parent_   = this;
-
-
-  /* Public methods */
- 
-  /**
-   * Create a new node.
-   * 
-   * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
-   *   param transaction_id - Transaction ID.
-   *   param result_code    - MURRIX_RESULT_CODE_OK on success.
-   *   param node_data      - Node data JSON object of the created node.
-   *  
-   * 
-   * @param node_data - Node data JSON object, should not have a valid id.
-   * @param callback  - Result callback function.
-   *  
-   * @return          - Transaction ID.
-   * @throws          - MURRIX_RESULT_CODE
-   */
-  this.CreateNode = function(node_data, callback)
-  {
-    if (!node_data || !callback)
-    {
-      throw MURRIX_RESULT_CODE_PARAM;
-    }
-    
-    return MurrixCall("db", "CreateNode", { "Node" : node_data }, function(transaction_id, result_code, response_data)
-    {
-      callback(transaction_id, result_code, response_data["Node"]);
-    });
-  }
-  
-  /**
-   * Update an existing node.
-   * 
-   * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
-   *   param transaction_id - Transaction ID.
-   *   param result_code    - MURRIX_RESULT_CODE_OK on success.
-   *   param node_data      - Node data JSON object of the updated node.
-   *  
-   * 
-   * @param node_data - Node data JSON object, must have a valid id.
-   * @param callback  - Result callback function.
-   *  
-   * @return          - Transaction ID.
-   */
-  this.UpdateNode = function(node_data, callback)
-  {
-    if (!node_data || !callback)
-    {
-      throw MURRIX_RESULT_CODE_PARAM;
-    }
-    
-    return MurrixCall("db", "UpdateNode", { "Node" : node_data }, function(transaction_id, result_code, response_data)
-    {
-      callback(transaction_id, result_code, response_data["Node"]);
-    });
-  }
-  
-  /**
-   * Delete an existing node.
-   * 
-   * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
-   *   param transaction_id - Transaction ID.
-   *   param result_code    - MURRIX_RESULT_CODE_OK on success.
-   *   param node_data      - Node data JSON object the deleted node.
-   *  
-   * 
-   * @param node_id   - Node data JSON object.
-   * @param callback  - Result callback function.
-   *  
-   * @return          - Transaction ID.
-   */
-  this.DeleteNode = function(node_id, callback)
-  {
-    if (!node_id || !callback)
-    {
-      throw MURRIX_RESULT_CODE_PARAM;
-    }
-    
-    return MurrixCall("db", "DeleteNode", { "NodeId" : node_id }, function(transaction_id, result_code, response_data)
-    {
-      callback(transaction_id, result_code, response_data["Node"]);
-    });
-  }
-  
-  /**
-   * Link two nodes together.
-   * 
-   * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data_up, JSON data_down, string role)
-   *   param transaction_id - Transaction ID.
-   *   param result_code    - MURRIX_RESULT_CODE_OK on success.
-   *   param node_data_up   - Node data JSON object for top node.
-   *   param node_data_down - Node data JSON object for bottom node.
-   *   param role           - Role relationship between nodes.
-   *  
-   * 
-   * @param node_id_up    - Node data JSON object for top most node.
-   * @param node_id_down  - Node data JSON object for bottom most node.
-   * @param role          - Role relationship between nodes.
-   * @param callback      - Result callback function.
-   *  
-   * @return           - Transaction ID.
-   */
-  this.LinkNodes = function(node_id_up, node_id_down, role, callback)
-  {
-    if (!node_id_up || !node_id_down || !role || !callback)
-    {
-      throw MURRIX_RESULT_CODE_PARAM;
-    }
-    
-    return MurrixCall("db", "LinkNodes", { "NodeIdUp" : node_id_up, "NodeIdDown" : node_id_down, "Role" : role }, function(transaction_id, result_code, response_data)
-    {
-      callback(transaction_id, result_code, response_data["NodeUp"], response_data["NodeDown"], response_data["Role"]);
-    });
-  }
-  
-  /**
-   * Unlink two nodes from eachother.
-   * 
-   * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data_up, JSON data_down, string role)
-   *   param transaction_id - Transaction ID.
-   *   param result_code    - MURRIX_RESULT_CODE_OK on success.
-   *   param node_data_up   - Node data JSON object for top node.
-   *   param node_data_down - Node data JSON object for bottom node.
-   *   param role           - Role relationship between nodes.
-   *  
-   * 
-   * @param node_id_up    - Node data JSON object for top most node.
-   * @param node_id_down  - Node data JSON object for bottom most node.
-   * @param role          - Role relationship between nodes.
-   * @param callback      - Result callback function.
-   *  
-   * @return           - Transaction ID.
-   */
-  this.UnlinkNodes = function(node_id_up, node_id_down, role, callback)
-  {
-    if (!node_id_up || !node_id_down || !role || !callback)
-    {
-      throw MURRIX_RESULT_CODE_PARAM;
-    }
-    
-    return MurrixCall("db", "UnlinkNodes", { "NodeIdUp" : node_id_up, "NodeIdDown" : node_id_down, "Role" : role }, function(transaction_id, result_code, response_data)
-    {
-      callback(transaction_id, result_code, response_data["NodeUp"], response_data["NodeDown"], response_data["Role"]);
-    });
-  }
-  
-  /**
-   * Search for nodes based on a query object.
-   * 
-   * Callback(int transaction_id, MURRIX_RESULT_CODE result, int[] id_list)
-   *   param transaction_id - Transaction ID.
-   *   param result_code    - MURRIX_RESULT_CODE_OK on success.
-   *   param node_list      - List of nodes matching the query.
-   *  
-   * 
-   * @param query      - Data JSON object with query data.
-   * @param callback   - Result callback function.
-   *  
-   * @return           - Transaction ID.
-   */
-  this.SearchNodes = function(query, callback)
-  {
-    var self = this;
-    
-    this.SearchNodeIds(query, function(transaction_id, result_code, node_id_list)
-    {
-      // TODO: Check result
-      
-      self.FetchNodes(node_id_list, callback);
-    });
-  }
-  
-  /**
-   * Search for node ids based on a query object.
-   * 
-   * Callback(int transaction_id, MURRIX_RESULT_CODE result, int[] id_list)
-   *   param transaction_id - Transaction ID.
-   *   param result_code    - MURRIX_RESULT_CODE_OK on success.
-   *   param node_id_list   - List of node IDs matching the query.
-   *  
-   * 
-   * @param query      - Data JSON object with query data.
-   * @param callback   - Result callback function.
-   *  
-   * @return           - Transaction ID.
-   */
-  this.SearchNodeIds = function(query, callback)
-  {
-    if (!query || !callback)
-    {
-      throw MURRIX_RESULT_CODE_PARAM;
-    }
-    
-    return MurrixCall("db", "SearchNodeIds", { "Query" : query }, function(transaction_id, result_code, response_data)
-    {
-      var node_id_list = response_data["NodeIdList"] ? response_data["NodeIdList"] : [];
-      
-      callback(transaction_id, result_code, node_id_list);
-    });
-  }
-  
-  
-  /**
-   * Get nodes identified by node ID list.
-   * 
-   * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON[] data_list)
-   *   param transaction_id - Transaction ID.
-   *   param result_code    - MURRIX_RESULT_CODE_OK on success.
-   *   param node_data_list - List of JSON node objects.
-   *  
-   * 
-   * @param node_id_list    - List of Node IDs.
-   * @param callback   - Result callback function.
-   *  
-   * @return           - Transaction ID.
-   */
-  this.FetchNodes = function(node_id_list, callback)
-  {
-    if (!node_id_list || !callback)
-    {
-      throw MURRIX_RESULT_CODE_PARAM;
-    }
-    
-    return MurrixCall("db", "FetchNodes", { "NodeIdList" : node_id_list }, function(transaction_id, result_code, response_data)
-    {
-      var node_data_list = response_data["NodeList"] ? response_data["NodeList"] : {};
-      
-      callback(transaction_id, result_code, node_data_list);
-    });
-  }
-}
-
 $(function()
 {
-  murrix_modules["db"] = new MurrixDb(murrix_module_options["db"]);
+  $.murrix.wizard.db = {};
+  
+  $.murrix.module.db = new function()
+  {
+    /* Class variable declaration */
+    var parent_   = this;
+
+
+    /* Public methods */
+  
+    /**
+    * Create a new node.
+    * 
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_data      - Node data JSON object of the created node.
+    *  
+    * 
+    * @param node_data - Node data JSON object, should not have a valid id.
+    * @param callback  - Result callback function.
+    *  
+    * @return          - Transaction ID.
+    * @throws          - MURRIX_RESULT_CODE
+    */
+    this.createNode = function(node_data, callback)
+    {
+      if (!node_data || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      return $.murrix.call("db", "CreateNode", { "Node" : node_data }, function(transaction_id, result_code, response_data)
+      {
+        callback(transaction_id, result_code, response_data["Node"]);
+      });
+    }
+    
+    /**
+    * Update an existing node.
+    * 
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_data      - Node data JSON object of the updated node.
+    *  
+    * 
+    * @param node_data - Node data JSON object, must have a valid id.
+    * @param callback  - Result callback function.
+    *  
+    * @return          - Transaction ID.
+    */
+    this.updateNode = function(node_data, callback)
+    {
+      if (!node_data || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      return $.murrix.call("db", "UpdateNode", { "Node" : node_data }, function(transaction_id, result_code, response_data)
+      {
+        callback(transaction_id, result_code, response_data["Node"]);
+      });
+    }
+    
+    /**
+    * Delete an existing node.
+    * 
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_data      - Node data JSON object the deleted node.
+    *  
+    * 
+    * @param node_id   - Node data JSON object.
+    * @param callback  - Result callback function.
+    *  
+    * @return          - Transaction ID.
+    */
+    this.deleteNode = function(node_id, callback)
+    {
+      if (!node_id || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      return $.murrix.call("db", "DeleteNode", { "NodeId" : node_id }, function(transaction_id, result_code, response_data)
+      {
+        callback(transaction_id, result_code, response_data["Node"]);
+      });
+    }
+    
+    /**
+    * Link two nodes together.
+    * 
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data_up, JSON data_down, string role)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_data_up   - Node data JSON object for top node.
+    *   param node_data_down - Node data JSON object for bottom node.
+    *   param role           - Role relationship between nodes.
+    *  
+    * 
+    * @param node_id_up    - Node data JSON object for top most node.
+    * @param node_id_down  - Node data JSON object for bottom most node.
+    * @param role          - Role relationship between nodes.
+    * @param callback      - Result callback function.
+    *  
+    * @return           - Transaction ID.
+    */
+    this.linkNodes = function(node_id_up, node_id_down, role, callback)
+    {
+      if (!node_id_up || !node_id_down || !role || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      return $.murrix.call("db", "LinkNodes", { "NodeIdUp" : node_id_up, "NodeIdDown" : node_id_down, "Role" : role }, function(transaction_id, result_code, response_data)
+      {
+        callback(transaction_id, result_code, response_data["NodeUp"], response_data["NodeDown"], response_data["Role"]);
+      });
+    }
+    
+    /**
+    * Unlink two nodes from eachother.
+    * 
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data_up, JSON data_down, string role)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_data_up   - Node data JSON object for top node.
+    *   param node_data_down - Node data JSON object for bottom node.
+    *   param role           - Role relationship between nodes.
+    *  
+    * 
+    * @param node_id_up    - Node data JSON object for top most node.
+    * @param node_id_down  - Node data JSON object for bottom most node.
+    * @param role          - Role relationship between nodes.
+    * @param callback      - Result callback function.
+    *  
+    * @return           - Transaction ID.
+    */
+    this.unlinkNodes = function(node_id_up, node_id_down, role, callback)
+    {
+      if (!node_id_up || !node_id_down || !role || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      return $.murrix.call("db", "UnlinkNodes", { "NodeIdUp" : node_id_up, "NodeIdDown" : node_id_down, "Role" : role }, function(transaction_id, result_code, response_data)
+      {
+        callback(transaction_id, result_code, response_data["NodeUp"], response_data["NodeDown"], response_data["Role"]);
+      });
+    }
+    
+    /**
+    * Search for nodes based on a query object.
+    * 
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, int[] id_list)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_list      - List of nodes matching the query.
+    *  
+    * 
+    * @param query      - Data JSON object with query data.
+    * @param callback   - Result callback function.
+    *  
+    * @return           - Transaction ID.
+    */
+    this.searchNodes = function(query, callback)
+    {
+      var self = this;
+      
+      this.searchNodeIds(query, function(transaction_id, result_code, node_id_list)
+      {
+        // TODO: Check result
+        
+        self.fetchNodes(node_id_list, callback);
+      });
+    }
+    
+    /**
+    * Search for node ids based on a query object.
+    * 
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, int[] id_list)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_id_list   - List of node IDs matching the query.
+    *  
+    * 
+    * @param query      - Data JSON object with query data.
+    * @param callback   - Result callback function.
+    *  
+    * @return           - Transaction ID.
+    */
+    this.searchNodeIds = function(query, callback)
+    {
+      if (!query || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      return $.murrix.call("db", "SearchNodeIds", { "Query" : query }, function(transaction_id, result_code, response_data)
+      {
+        var node_id_list = response_data["NodeIdList"] ? response_data["NodeIdList"] : [];
+        
+        callback(transaction_id, result_code, node_id_list);
+      });
+    }
+    
+    
+    /**
+    * Get nodes identified by node ID list.
+    * 
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON[] data_list)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_data_list - List of JSON node objects.
+    *  
+    * 
+    * @param node_id_list    - List of Node IDs.
+    * @param callback   - Result callback function.
+    *  
+    * @return           - Transaction ID.
+    */
+    this.fetchNodes = function(node_id_list, callback)
+    {
+      if (!node_id_list || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      return $.murrix.call("db", "FetchNodes", { "NodeIdList" : node_id_list }, function(transaction_id, result_code, response_data)
+      {
+        var node_data_list = response_data["NodeList"] ? response_data["NodeList"] : {};
+        
+        callback(transaction_id, result_code, node_data_list);
+      });
+    }
+  }
+  
+  $.murrix.module.db.wizard = {};
+
 })
