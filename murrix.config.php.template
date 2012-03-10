@@ -5,6 +5,7 @@ set_include_path(dirname($_SERVER["SCRIPT_FILENAME"]) . "/pear" . PATH_SEPARATOR
 /* Include the db module */
 MurrixLoadModule("db",        array("host" => "dbhost", "name" => "dbname", "user" => "dbuser", "password" => "dbpassword"));
 MurrixLoadModule("user",      array("default_username" => "anonymous"));
-MurrixLoadModule("maillist",  array("type" => "mail", "host" => "", "port" => 25));
+//MurrixLoadModule("maillist",  array("type" => "mail", "host" => "", "port" => 25));
+MurrixLoadModule("menu",      array());
 
 ?>

@@ -4,8 +4,9 @@ $(function()
   $.murrix.module.user = new function()
   {
     /* Class variable declaration */
-    var parent_   = this;
-    this.user_id_ = $.murrix.module_options.user["user_id"];
+    var parent_             = this;
+    this.user_id_           = $.murrix.module_options.user["user_id"];
+    this.default_username_  = $.murrix.module_options.user["default_username"];
     
     
     /* Public methods */
@@ -64,6 +65,25 @@ $(function()
       {
         callback(transaction_id, result_code, response_data["Node"]);
       });
+    }
+    
+    
+    this.getUser = function(callback)
+    {
+      if (!callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      $.murrix.module.db.fetchNodes([ parent_.user_id_ ], function(transaction_id, result_code, node_data_list)
+      {
+        callback(transaction_id, result_code, result_code == MURRIX_RESULT_CODE_OK ? node_data_list[parent_.user_id_] : null);
+      });
+    }
+    
+    this.getDefaultUsername = function()
+    {
+      return parent_.default_username_;
     }
   }
 

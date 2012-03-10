@@ -29,7 +29,7 @@ class MurrixModuleUser extends MurrixModule
 
   public function getFrontendOptions()
   {
-    return array("user_id" => $this->GetUserId());
+    return array("user_id" => $this->GetUserId(), "default_username" => $this->default_username_);
   }
   
   public function GetUserId()

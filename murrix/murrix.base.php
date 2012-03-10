@@ -4,22 +4,13 @@
 error_reporting(E_ALL);
 
 
-/* Start session */
-session_name("murrix_test");
-session_start();
-
-
-/* Set up variables for module registration */
-if (!isset($_SESSION["modules"]))
-{
-  $_SESSION["Modules"] = array();
-}
-
-
 /* Set up variables for use in index.php */
+$murrix_modules = array();
+$murrix_css_files = array();
 $murrix_js_files = array();
 $murrix_js_templates = array();
 $murrix_js_options = array();
+
 
 
 /* Require some base files */
@@ -28,17 +19,31 @@ require_once("libs/murrix.module.php");
 require_once("murrix.config.php");
 
 
+/* Start session */
+session_name("murrix_test13");
+session_start();
+
+
+/* Set up variables for module registration */
+if (!isset($_SESSION["Modules"]))
+{
+  $_SESSION["Modules"] = array();
+}
+
+
+
 /* Function to call when to load a module */
 function MurrixLoadModule($name, $options)
 {
   /* Setup variables */
+  global $murrix_modules;
+  global $murrix_css_files;
   global $murrix_js_files;
   global $murrix_js_templates;
   global $murrix_js_options;
   
   unset($files);
   
-  $class_name = "MurrixModule" . ucfirst($name);
   $module_path = "murrix/modules/" . $name;
   
   
@@ -72,10 +77,31 @@ function MurrixLoadModule($name, $options)
         $murrix_js_templates[$id] = $module_path . "/" . $file;
       }
     }
+    
+    if (isset($files["css"]))
+    {
+      foreach ($files["css"] as $file)
+      {
+        $murrix_css_files[] = $module_path . "/" . $file;
+      }
+    }
   }
   
   
-  /* Instansiate the module class if the is one */
+  /* Save class and options for loading */
+  $murrix_modules[$name] = $options;
+ 
+  
+  /* Cleanup */
+  unset($files);
+}
+
+
+/* Instansiate the module class if the is one */
+foreach ($murrix_modules as $name => $options)
+{
+  $class_name = "MurrixModule" . ucfirst($name);
+
   if (class_exists($class_name))
   {
     if (!isset($_SESSION["Modules"][$name]))
@@ -85,11 +111,7 @@ function MurrixLoadModule($name, $options)
 
     $murrix_js_options[$name] = $_SESSION["Modules"][$name]->getFrontendOptions();
   }
-  
-  
-  /* Cleanup */
-  unset($files);
-}
+}  
 
 
 /* Handle API calls */
@@ -104,7 +126,6 @@ if (isset($_GET["Api"]))
   $response["TransactionId"]  = $request["TransactionId"];
   $response["ResultCode"]     = MURRIX_RESULT_CODE_OK;
   $response["Data"]           = array();
-  
   
   try
   {

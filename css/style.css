@@ -74,6 +74,10 @@ td { vertical-align: top; }
    Author:
    ========================================================================== */
 
+body
+{
+  background-color: #A8C4FF;
+}
 
 .popup-list-container
 {

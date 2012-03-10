@@ -13,11 +13,20 @@
   <meta name="author" content=""/>
   <meta name="viewport" content="width=device-width"/>
 
-  <link type="text/css" rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.18.custom.css"/>
+  <link type="text/css" rel="stylesheet" href="css/Aristo/Aristo.css"/>
   <link type="text/css" rel="stylesheet" href="css/style.css"/>
 
   <script type="text/javascript" src="js/libs/modernizr-2.5.3.min.js"></script>
   <script type="text/javascript" src="js/libs/sha1.min.js"></script>
+  
+  <?
+  foreach ($murrix_css_files as $file)
+  {
+    ?>
+      <link type="text/css" rel="stylesheet" href="<?=$file?>"/>
+    <?
+  }
+  ?>
   
   <?
   foreach ($murrix_js_templates as $template_id => $file)
