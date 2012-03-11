@@ -39,4 +39,16 @@
     return transaction_id;
   }
   
+  $.murrix.makeArray = function(hash)
+  {
+    var array = [];
+    
+    jQuery.each(hash, function(key, value)
+    {
+      array.push(value);
+    });
+    
+    return array;
+  }
+  
 })(jQuery);

@@ -169,7 +169,7 @@ class MurrixModuleDb extends MurrixModule
     }
     
     $query = "SELECT " . implode(", ", $dbQuery_select) . " FROM " . implode(", ", $dbQuery_from) . " WHERE " . implode(" " . $delimiter . " ", $dbQuery_where);
-    
+
     $db_result = $this->Query($db, $query);
     
     while ($row = $db_result->fetch_assoc())
@@ -385,11 +385,11 @@ class MurrixModuleDb extends MurrixModule
     $out_role       = $in_role;
   }
 
-  public function ActionSearchNodeIds($in_quary, &$out_node_id_list)
+  public function ActionSearchNodeIds($in_query, &$out_node_id_list)
   {
     $db = $this->GetDb();
     
-    $out_node_id_list = $this->SearchNodeIds($db, $in_quary, "LIKE", "OR");
+    $out_node_id_list = $this->SearchNodeIds($db, $in_query, "LIKE", "OR");
   }
   
   public function ActionFetchNodes($in_node_id_list, &$out_node_list)

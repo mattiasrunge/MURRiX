@@ -173,11 +173,21 @@ $(function()
     {
       var self = this;
       
+      if (!query || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
       this.searchNodeIds(query, function(transaction_id, result_code, node_id_list)
       {
-        // TODO: Check result
-        
-        self.fetchNodes(node_id_list, callback);
+        if (MURRIX_RESULT_CODE_OK == result_code && node_id_list.length > 0)
+        {
+          self.fetchNodes(node_id_list, callback);
+        }
+        else
+        {
+          callback(transaction_id, result_code, []);
+        }
       });
     }
     
