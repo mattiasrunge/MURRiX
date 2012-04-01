@@ -21,13 +21,15 @@ class MurrixModuleDb extends MurrixModule
     
         
     /* Register actions */
-    $this->registerAction("CreateNode",   array($this, "ActionCreateNode"),   array("Node"),                            array("Node"));
-    $this->registerAction("UpdateNode",   array($this, "ActionUpdateNode"),   array("Node"),                            array("Node"));
-    $this->registerAction("DeleteNode",   array($this, "ActionDeleteNode"),   array("NodeId"),                          array("Node"));
-    $this->registerAction("LinkNodes",    array($this, "ActionLinkNodes"),    array("NodeIdUp", "NodeIdDown", "Role"),  array("NodeUp", "NodeDown", "Role"));
-    $this->registerAction("UnlinkNodes",  array($this, "ActionUnlinkNodes"),  array("NodeIdUp", "NodeIdDown", "Role"),  array("NodeUp", "NodeDown", "Role"));
-    $this->registerAction("SearchNodeIds",array($this, "ActionSearchNodeIds"),array("Query"),                           array("NodeIdList"));
-    $this->registerAction("FetchNodes",   array($this, "ActionFetchNodes"),   array("NodeIdList"),                      array("NodeList"));
+    $this->registerAction("CreateNode",       array($this, "ActionCreateNode"),       array("Node"),                                            array("Node"));
+    $this->registerAction("UpdateNode",       array($this, "ActionUpdateNode"),       array("Node"),                                            array("Node"));
+    $this->registerAction("DeleteNode",       array($this, "ActionDeleteNode"),       array("NodeId"),                                          array("Node"));
+    $this->registerAction("LinkNodes",        array($this, "ActionLinkNodes"),        array("NodeIdUp", "NodeIdDown", "Role"),                  array("NodeUp", "NodeDown", "Role"));
+    $this->registerAction("UnlinkNodes",      array($this, "ActionUnlinkNodes"),      array("NodeIdUp", "NodeIdDown", "Role"),                  array("NodeUp", "NodeDown", "Role"));
+    $this->registerAction("SearchNodeIds",    array($this, "ActionSearchNodeIds"),    array("Query"),                                           array("NodeIdList"));
+    $this->registerAction("FetchNodes",       array($this, "ActionFetchNodes"),       array("NodeIdList"),                                      array("NodeList"));
+    $this->registerAction("UploadFileBase64", array($this, "ActionUploadFileBase64"), array("Id", "Sha1", "Data"),                              array());
+    $this->registerAction("UploadFile",       array($this, "ActionUploadFile"),       array("Id", "Sha1"),                                      array());
   }
 
   
@@ -272,7 +274,7 @@ class MurrixModuleDb extends MurrixModule
     try
     {
       /* Update Nodes */
-      $query = "UPDATE `Nodes` SET `name` = '" . mysql_escape_string($in_node["name"]) . "' WHERE `id` = " . mysql_escape_string($in_node["id"]);
+      $query = "UPDATE `Nodes` SET `name` = '" . mysql_escape_string($in_node["name"]) . "', `type` = '" . mysql_escape_string($in_node["type"]) . "' WHERE `id` = " . mysql_escape_string($in_node["id"]);
       
       $this->Query($db, $query);
       
@@ -397,6 +399,56 @@ class MurrixModuleDb extends MurrixModule
     $db = $this->GetDb();
     
     $out_node_list = $this->FetchNodes($db, $in_node_id_list);
+  }
+  
+  public function ActionUploadFileBase64($in_id, $in_sha1, $in_data)
+  {
+    global $murrix_temporary_upload_prefix;
+  
+    /*if ($in_sha1 != sha1($in_data))
+    {
+      throw new Exception("Checksums do not match:$in_sha1 == " . sha1($in_data), MURRIX_RESULT_CODE_CHECKSUM_MISMATCH);
+    }*/
+    
+    $in_data = base64_decode($in_data);
+    
+    $filename = $murrix_temporary_upload_prefix . $in_id;
+
+    $file = fopen($filename, "a+");
+    
+    if ($file === FALSE)
+    {
+      throw new Exception("Could not open temporary file for writing.", MURRIX_RESULT_CODE_FILE_NOT_WRITABLE);
+    }
+      
+    fwrite($file, $in_data);
+    
+    fclose($file);
+  }
+  
+  public function ActionUploadFile($in_id, $in_sha1)
+  {
+    global $murrix_temporary_upload_prefix;
+  
+    $data = file_get_contents($_FILES["_FILE_"]['tmp_name']);
+    
+    /*if ($in_sha1 != sha1($data))
+    {
+      throw new Exception("Checksums do not match:$in_sha1 == " . sha1($data), MURRIX_RESULT_CODE_CHECKSUM_MISMATCH);
+    }*/
+    
+    $filename = $murrix_temporary_upload_prefix . $in_id;
+
+    $file = fopen($filename, "a+");
+    
+    if ($file === FALSE)
+    {
+      throw new Exception("Could not open temporary file for writing.", MURRIX_RESULT_CODE_FILE_NOT_WRITABLE);
+    }
+      
+    fwrite($file, $data);
+    
+    fclose($file);
   }
 }
 

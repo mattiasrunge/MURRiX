@@ -39,6 +39,96 @@ $(function()
       });
     }
     
+    
+    /**
+     * Upload a file and create a node.
+     * 
+     * CallbackProgress(int transaction_id, file, current_chunk, number_of_chunks)
+     *   param file_name        - Name of file.
+     *   param action           - String: uploading/loading
+     *   param size             - Size of file.
+     *   param bytes_loaded     - Number of bytes loaded.
+     * 
+     * 
+     * CallbackComplete(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
+     *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+     *   param node_data      - Node data JSON object of the created node.
+     *  
+     * 
+     * @param file              - File object.
+     * @param callback_progress - Progress callback function.
+     * @param callback_complete - Result callback function.
+     *  
+     * @return          - Transaction ID.
+     * @throws          - MURRIX_RESULT_CODE
+     */
+    this.uploadFile = function(id, data, callback, progress_callback)
+    {
+      var xhr = null;
+      
+      if (!id || !data || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      if (progress_callback)
+      {
+        xhr = jQuery.ajaxSettings.xhr();
+        
+        if (xhr.upload)
+        {
+          if (xhr.upload.addEventListener)
+          {
+            xhr.upload.addEventListener("progress", progress_callback, false);
+          }
+          else
+          {
+            xhr.upload.progress = progress_callback;
+          }
+        }   
+      }
+      
+      //var base64_data = window.btoa(data);
+
+      return $.murrix.call("db", "UploadFileBase64", { "Id" : id, "Sha1" : 0/*SHA1(base64_data)*/, "Data" : window.btoa(data) }, function(transaction_id, result_code, response_data)
+      {
+        callback(transaction_id, result_code);
+      }, xhr);
+    }
+    
+    this.uploadFileV2 = function(id, data, callback, progress_callback)
+    {
+      var xhr = null;
+      
+      if (!id || !data || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      if (progress_callback)
+      {
+        xhr = jQuery.ajaxSettings.xhr();
+        
+        if (xhr.upload)
+        {
+          if (xhr.upload.addEventListener)
+          {
+            xhr.upload.addEventListener("progress", progress_callback, false);
+          }
+          else
+          {
+            xhr.upload.progress = progress_callback;
+          }
+        }   
+      }
+      
+     
+      return $.murrix.callV2("db", "UploadFile", { "Id" : id, "Sha1" : 0/*SHA1(data)*/, "_FILE_" : data }, function(transaction_id, result_code, response_data)
+      {
+        callback(transaction_id, result_code);
+      }, xhr);
+    }
+    
     /**
     * Update an existing node.
     * 

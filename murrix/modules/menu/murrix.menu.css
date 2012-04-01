@@ -85,12 +85,18 @@
 
 .murrix-menu-container-title
 {
-  font-size: 40px;
+  font-size: 30px;
   font-weight: bold;
   /*color: #CCCDCC;*/
   text-shadow: black 0px 1px 0, black 0 -1px 0;
   text-align: center;
   text-transform: uppercase;
+  
+  -webkit-transform: rotate(270deg); 
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
 }
 
 .murrix-menu-subtitle
@@ -121,7 +127,7 @@
 
 .murrix-menu-form
 {
-  padding-left: 10px;
+  padding-left: 60px;
   /*width: 140px;
   margin-left: auto;
   margin-right: auto;
@@ -137,6 +143,11 @@
   float: left;
   border-right: 1px solid #717271;
   position: relative;
+}
+
+.murrix-menu-column-title
+{
+  width: 60px;
 }
 
 .murrix-menu-column-content

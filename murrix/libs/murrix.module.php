@@ -19,7 +19,7 @@ class MurrixModule
     /* Check if we have the requested action */ 
     if (!array_key_exists($name, $this->actions))
     {
-      throw new Exception("Unknown parameter: \"Action\"", MURRIX_RESULT_CODE_PARAM);
+      throw new Exception("Unknown action: \"" + $name + "\"", MURRIX_RESULT_CODE_PARAM);
     }
     
     

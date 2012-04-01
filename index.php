@@ -15,6 +15,7 @@
 
   <link type="text/css" rel="stylesheet" href="css/Aristo/Aristo.css"/>
   <link type="text/css" rel="stylesheet" href="css/style.css"/>
+  <link type="text/css" rel="stylesheet" href="css/jquery.noty.css"/>
 
   <script type="text/javascript" src="js/libs/modernizr-2.5.3.min.js"></script>
   <script type="text/javascript" src="js/libs/sha1.min.js"></script>
@@ -44,6 +45,9 @@
   </header>
   
   <div role="main">
+  
+    <div class="overlay_div"><?=sha1("TEST")?></div>
+  
   </div>
   
   <footer>
@@ -58,10 +62,12 @@
   <script type="text/javascript" src="js/libs/jsrender.js"></script>
   <script type="text/javascript" src="js/libs/jquery.observable.js"></script>
   <script type="text/javascript" src="js/libs/jquery.views.js"></script>
+  <script type="text/javascript" src="js/libs/jquery.noty.js"></script>
   
   
   <script type="text/javascript" src="murrix/libs/murrix.result-codes.php?js"></script>
   <script type="text/javascript" src="murrix/murrix.base.js"></script>
+  <script type="text/javascript" src="murrix/libs/murrix.file.js"></script>
   <script type="text/javascript" src="murrix/libs/murrix.wizard.js"></script>
   
   <script type="text/javascript">

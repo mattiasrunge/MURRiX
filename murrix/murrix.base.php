@@ -20,7 +20,7 @@ require_once("murrix.config.php");
 
 
 /* Start session */
-session_name("murrix_test13");
+session_name("murrix_test15");
 session_start();
 
 
@@ -118,9 +118,9 @@ foreach ($murrix_modules as $name => $options)
 if (isset($_GET["Api"]))
 {
   /* Set up the parameter object */
-  $request = $_POST;
+  $request      = $_GET;
+  $request_data = $_POST;
 
-  
   /* Initialize reponse */
   $response = array();
   $response["TransactionId"]  = $request["TransactionId"];
@@ -141,15 +141,8 @@ if (isset($_GET["Api"]))
     }
     
     
-    /* Make sure the data object is an array */
-    if (!isset($request["Data"]))
-    {
-      $request["Data"] = array();
-    }
-       
-    
     /* Call module action */
-    $_SESSION["Modules"][$request["Module"]]->callAction($request["Action"], $request["Data"], &$response["Data"]);
+    $_SESSION["Modules"][$request["Module"]]->callAction($request["Action"], $request_data, &$response["Data"]);
   }
   catch (Exception $e)
   {
