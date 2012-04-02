@@ -3,6 +3,8 @@ $(function()
 {
   $.murrix.libs.fileReader = function(file_object)
   {
+    var self = this;
+    
     this.CHUNK_SIZE = Math.ceil(10485760 * 4); // 20 mb chunks
     
     this.file_object_       = file_object;
@@ -16,53 +18,53 @@ $(function()
     
     this._readerStart = function(event)
     {
-      this.bytes_read_ = this.read_chunk_index_ * this.CHUNK_SIZE;
-      this.event_handlers_["progress"](this);
+      self.bytes_read_ = self.read_chunk_index_ * self.CHUNK_SIZE;
+      self.event_handlers_["progress"](self);
     };
     
     this._readerProgress = function(event)
     {
-      this.bytes_read_ = this.read_chunk_index_ * this.CHUNK_SIZE + event.loaded;
-      this.event_handlers_["progress"](this);
+      console.log("progress read");
+      self.bytes_read_ = self.read_chunk_index_ * self.CHUNK_SIZE + event.loaded;
+      self.event_handlers_["progress"](self);
     };
     
     this._readerLoad = function(event)
     {
-      this.bytes_read_ = (this.read_chunk_index_ + 1) * this.CHUNK_SIZE;
+      self.bytes_read_ = (self.read_chunk_index_ + 1) * self.CHUNK_SIZE;
       
-      if (this.bytes_read_ > this.file_object_.size)
+      if (self.bytes_read_ > self.file_object_.size)
       {
-        this.bytes_read_ = this.file_object_.size;
+        self.bytes_read_ = self.file_object_.size;
       }
       
-      this.event_handlers_["progress"](this);
+      self.event_handlers_["progress"](self);
 
-      this.chunk_data_ = event.target.result;
-      this.event_handlers_["chunk_loaded"](this);
+      self.chunk_data_ = event.target.result;
+      self.event_handlers_["chunk_loaded"](self);
     };
     
     this._readerError = function(event)
     {
-      this.read_chunk_index_--;
-      this.bytes_read_ = this.read_chunk_index_ * this.CHUNK_SIZE;
-      this.event_handlers_["error"](this);
+      self.read_chunk_index_--;
+      self.bytes_read_ = self.read_chunk_index_ * self.CHUNK_SIZE;
+      self.event_handlers_["error"](self);
     };
     
     
     this.bind = function(event_name, callback)
     {
-      this.event_handlers_[event_name] = callback;
+      self.event_handlers_[event_name] = callback;
     }
 
     this.loadNextChunk = function()
     {
-      var self = this;
       var reader = new FileReader();
       var chunk = null;
       
-      this.read_chunk_index_++;
-      this.bytes_read_ = 0;
-      this.chunk_data_ = null;
+      self.read_chunk_index_++;
+      self.bytes_read_ = 0;
+      self.chunk_data_ = null;
       
       
       if (reader.addEventListener)
@@ -80,39 +82,39 @@ $(function()
         reader.onerror    = function(event) { self._readerError(event); };
       }
 
-      if (this.number_of_chunks_ == 1)
+      if (self.number_of_chunks_ == 1)
       {
-        chunk = this.file_object_;
+        chunk = self.file_object_;
       }
       else
       {
-        var start_position = this.read_chunk_index_ * this.CHUNK_SIZE;
-        var end_position = start_position + this.CHUNK_SIZE;
+        var start_position = self.read_chunk_index_ * self.CHUNK_SIZE;
+        var end_position = start_position + self.CHUNK_SIZE;
         
-        if (end_position > this.file_object_.size)
+        if (end_position > self.file_object_.size)
         {
-          end_position = this.file_object_.size;
+          end_position = self.file_object_.size;
         }
         
         /*console.log("start:" + start_position);
         console.log("end:" + end_position);
         console.log("size:" + this.file_object_.size);*/
         
-        if (this.file_object_.webkitSlice)
+        if (self.file_object_.webkitSlice)
         {
-          chunk = this.file_object_.webkitSlice(start_position, end_position);
+          chunk = self.file_object_.webkitSlice(start_position, end_position);
         }
-        else if (this.file_object_.mozSlice)
+        else if (self.file_object_.mozSlice)
         {
-          chunk = this.file_object_.mozSlice(start_position, end_position);
+          chunk = self.file_object_.mozSlice(start_position, end_position);
         }
-        else if (this.file_object_.slice)
+        else if (self.file_object_.slice)
         {
-          chunk = this.file_object_.slice(start_position, end_position);
+          chunk = self.file_object_.slice(start_position, end_position);
         }
         else
         {
-          this.read_chunk_index_--;
+          self.read_chunk_index_--;
           self.event_handlers_["error"](self);
         }
       }
@@ -125,44 +127,137 @@ $(function()
     
     this.getReadChunkData = function()
     {
-      return this.chunk_data_;
+      return self.chunk_data_;
     }
     
     this.getReadChunkIndex = function()
     {
-      return this.read_chunk_index_;
+      return self.read_chunk_index_;
     }
     
     this.getReadChunkSize = function()
     {
-      return this.getLoadedSize() - (this.read_chunk_index_ * this.CHUNK_SIZE);
+      return self.getLoadedSize() - (self.read_chunk_index_ * self.CHUNK_SIZE);
     }
     
     this.getName = function()
     {
-      return this.file_object_.name;
+      return self.file_object_.name;
     }
     
     this.getSize = function()
     {
-      return this.file_object_.size;
+      return self.file_object_.size;
     }
     
     this.getNumberOfChunks = function()
     {
-      return this.number_of_chunks_;
+      return self.number_of_chunks_;
     }
     
     this.getLoadedSize = function()
     {
-      return this.bytes_read_;
+      return self.bytes_read_;
     }
     
     this.isLastChunk = function()
     {
-      return (this.read_chunk_index_ + 1) == this.number_of_chunks_;
+      return (self.read_chunk_index_ + 1) == self.number_of_chunks_;
     }
   }
+  
+  
+  
+  $.murrix.libs.fileUploader = function(file_object)
+  {
+    var self = this;
+    
+    this.file_reader_     = new $.murrix.libs.fileReader(file_object);
+    this.event_handlers_  = { "progress" : function() {}, "error" : function() {}, "complete" : function() {} };
+    this.loaded_size_     = 0;
+    this.uploaded_size_   = 0;
+    this.start_time_      = jQuery.now();
+    this.upload_id_       = "file_" + jQuery.now();
+    this.upload_time_     = 0;
+
+    
+    this.file_reader_.bind("progress", function(file)
+    {
+      console.log("progress upload");
+      self.loaded_size_ = file.getLoadedSize();
+
+      self.event_handlers_["progress"](self);
+    });
+    
+    
+    this.file_reader_.bind("error", function(file)
+    {
+      self.event_handlers_["error"](self);
+    });
+    
+    
+    this.file_reader_.bind("chunk_loaded", function(file)
+    {
+      var chunk_time = jQuery.now();
+      
+      $.murrix.module.db.uploadFileV2(self.upload_id_, file.getReadChunkData(), function(transaction_id, result_code)
+      {
+        self.upload_time_ = jQuery.now() - self.start_time_;
+        
+        if (!file.isLastChunk())
+        {
+          file.loadNextChunk();
+        }
+        else
+        {
+          self.event_handlers_["complete"](self);
+        }
+      },
+      function(event)
+      {
+        self.uploaded_size_ = self.loaded_size_ - self.file_reader_.getReadChunkSize() + event.loaded;
+        
+        self.event_handlers_["progress"](self);
+      });
+    });
+
+    
+    this.start = function()
+    {
+      self.file_reader_.loadNextChunk();
+    }
+    
+    this.bind = function(event_name, callback)
+    {
+      self.event_handlers_[event_name] = callback;
+    }
+    
+    this.getFile = function()
+    {
+      return self.file_reader_;
+    }
+    
+    this.getLoadedSize = function()
+    {
+      return self.loaded_size_;
+    }
+    
+    this.getUploadedSize = function()
+    {
+      return self.uploaded_size_;
+    }
+  };
+    
+    
+    
+    
+    
+
+  
+  
+  
+  
+  
   
   
   $(".overlay_div").get(0).addEventListener("dragover", function(event)
@@ -178,54 +273,28 @@ $(function()
     event.stopPropagation(); 
     event.preventDefault();
     
-    var total_time = 0;
+    var uploader = new $.murrix.libs.fileUploader(event.dataTransfer.files[0]);
     
-    var file = new $.murrix.libs.fileReader(event.dataTransfer.files[0]);
-    
-    file.bind("progress", function(file)
+
+    uploader.bind("progress", function(uploader)
     {
-      var loaded_size = file.getLoadedSize() - (file.getReadChunkSize() / 2);
-      
-      $(".overlay_div").html("load progress: " + Math.round(loaded_size / file.getSize() * 100) + "%");
+      $(".overlay_div").empty();
+      $(".overlay_div").append("load progress: " + Math.round(uploader.getLoadedSize() / uploader.getFile().getSize() * 100) + "%<br/>");
+      $(".overlay_div").append("upload progress: " + Math.round(uploader.getUploadedSize() / uploader.getFile().getSize() * 100) + "%<br/>");
+      $(".overlay_div").append("total progress: " + Math.round((uploader.getLoadedSize() + uploader.getUploadedSize()) / (uploader.getFile().getSize() * 2) * 100) + "%<br/>");
     });
     
-    file.bind("error", function(file)
+    uploader.bind("error", function(uploader)
     {
       console.log("error");
     });
     
-    file.bind("chunk_loaded", function(file)
+    uploader.bind("complete", function(file)
     {
-      //console.log("progress: ", Math.round(file.getLoadedSize() / file.getSize() * 100) + "%");
-      
-      var chunk_time = jQuery.now();
-      
-      $.murrix.module.db.uploadFileV2(SHA1(file.getName()), file.getReadChunkData(), function(transaction_id, result_code)
-      {
-        console.log("Chunk upload time was " + (jQuery.now() - chunk_time));
-        if (!file.isLastChunk())
-        {
-          file.loadNextChunk();
-        }
-        else
-        {
-          console.log("Upload of " + file.getName() + ", time " + (jQuery.now() - total_time));
-        }
-      },
-      function(event)
-      {
-        var percent = event.loaded / event.total;
-
-        var loaded_size = file.getLoadedSize() - (file.getReadChunkSize() / 2) + ((file.getReadChunkSize() / 2) * percent);
-        
-        $(".overlay_div").html("send progress: " + Math.round(loaded_size / file.getSize() * 100) + "%");
-      });
-      
+      console.log("complete!");
     });
-    
-    total_time = jQuery.now();
-    
-    file.loadNextChunk();
+        
+    uploader.start();
     
   }, false);
 });

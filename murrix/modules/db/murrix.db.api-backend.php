@@ -430,7 +430,15 @@ class MurrixModuleDb extends MurrixModule
   {
     global $murrix_temporary_upload_prefix;
   
-    $data = file_get_contents($_FILES["_FILE_"]['tmp_name']);
+    if (isset($_FILES["_FILE64_"]))
+    {
+      $data = file_get_contents($_FILES["_FILE64_"]['tmp_name']);
+      $data = base64_decode($data);
+    }
+    else
+    {
+      $data = file_get_contents($_FILES["_FILE_"]['tmp_name']);
+    }
     
     /*if ($in_sha1 != sha1($data))
     {

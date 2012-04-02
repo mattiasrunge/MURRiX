@@ -1,4 +1,4 @@
-
+/*
 if (!window.BlobBuilder && window.WebKitBlobBuilder)
 {
   window.BlobBuilder = window.WebKitBlobBuilder;
@@ -39,7 +39,7 @@ if (!XMLHttpRequest.sendAsBinary)
     
     blob = null;
   }
-}
+}*/
 
 (function($)
 {
@@ -106,6 +106,8 @@ if (!XMLHttpRequest.sendAsBinary)
   /* Create server call function */
   $.murrix.callV2 = function (module, action, data, callback, xhr)
   {
+    var name = "_FILE_";
+    
     if (!data["_FILE_"])
     {
       return $.murrix.call(module, action, data, callback, xhr);
@@ -165,9 +167,15 @@ if (!XMLHttpRequest.sendAsBinary)
         body += unescape(encodeURIComponent(value)) + "\r\n";
       }
     });
-
+    
+    if (!xhr.sendAsBinary)
+    {
+      name = "_FILE64_";
+      data["_FILE_"] = window.btoa(data["_FILE_"]);
+    }
+    
     body += "--" + boundary + "\r\n";
-    body += "Content-Disposition: form-data; name='_FILE_'; filename='_FILE_'\r\n";
+    body += "Content-Disposition: form-data; name='" + name + "'; filename='" + name + "'\r\n";
     body += "Content-Type: application/octet-stream\r\n";
     body += "\r\n";
     body += data["_FILE_"];
@@ -177,63 +185,6 @@ if (!XMLHttpRequest.sendAsBinary)
     
     //console.log(data);    
     
-    
-    /*
-    
-    var time = jQuery.now();
-    
-    var bb = new BlobBuilder();
-    var data = new ArrayBuffer(1);
-    var ui8a = new Uint8Array(data, 0);
-    
-    for (var i in body)
-    {
-      if (body.hasOwnProperty(i))
-      {
-        var chr = body[i];
-        var charcode = chr.charCodeAt(0)
-        var lowbyte = (charcode & 0xff)
-        
-        ui8a[0] = lowbyte;
-        
-        bb.append(data);
-      }
-    }
-    
-    bb.append(data["_FILE_"]);
-    
-    for (var i in body2)
-    {
-      if (body2.hasOwnProperty(i))
-      {
-        var chr = body2[i];
-        var charcode = chr.charCodeAt(0)
-        var lowbyte = (charcode & 0xff)
-        
-        ui8a[0] = lowbyte;
-        
-        bb.append(data);
-      }
-    }
-    
-    datastr = null;
-    data = null;
-    
-    var blob = bb.getBlob();
-    
-    console.log("time:" + (jQuery.now() - time));
-    
-    xhr.send(blob);
-    
-    blob = null:
-    
-    */
-    
-    
-    
-    
-    
-    
     if (xhr.sendAsBinary)
     {
       xhr.sendAsBinary(body);
@@ -241,9 +192,10 @@ if (!XMLHttpRequest.sendAsBinary)
     }
     else
     {
-      callback(transaction_id, MURRIX_RESULT_CODE_MISSING_FUNCTION, null);
+      xhr.send(body);
+      body = null;
     }
-  
+     
     
     /* Return transaction id to caller */
     return transaction_id;
