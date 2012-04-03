@@ -53,6 +53,7 @@ $(function()
      * CallbackComplete(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
      *   param result_code    - MURRIX_RESULT_CODE_OK on success.
      *   param node_data      - Node data JSON object of the created node.
+     *   param metadata       - File metadata
      *  
      * 
      * @param file              - File object.
@@ -62,41 +63,7 @@ $(function()
      * @return          - Transaction ID.
      * @throws          - MURRIX_RESULT_CODE
      */
-    this.uploadFile = function(id, data, callback, progress_callback)
-    {
-      var xhr = null;
-      
-      if (!id || !data || !callback)
-      {
-        throw MURRIX_RESULT_CODE_PARAM;
-      }
-      
-      if (progress_callback)
-      {
-        xhr = jQuery.ajaxSettings.xhr();
-        
-        if (xhr.upload)
-        {
-          if (xhr.upload.addEventListener)
-          {
-            xhr.upload.addEventListener("progress", progress_callback, false);
-          }
-          else
-          {
-            xhr.upload.progress = progress_callback;
-          }
-        }   
-      }
-      
-      //var base64_data = window.btoa(data);
-
-      return $.murrix.call("db", "UploadFileBase64", { "Id" : id, "Sha1" : 0/*SHA1(base64_data)*/, "Data" : window.btoa(data) }, function(transaction_id, result_code, response_data)
-      {
-        callback(transaction_id, result_code);
-      }, xhr);
-    }
-    
-    this.uploadFileV2 = function(id, data, callback, progress_callback)
+    this.uploadFile = function(id, last_chunk, data, callback, progress_callback)
     {
       var xhr = null;
       
@@ -123,9 +90,17 @@ $(function()
       }
       
      
-      return $.murrix.callV2("db", "UploadFile", { "Id" : id, "Sha1" : 0/*SHA1(data)*/, "_FILE_" : data }, function(transaction_id, result_code, response_data)
+     return $.murrix.callV2("db", "UploadFile", { "Id" : id, "LastChunk" : last_chunk, "Sha1" : 0/*SHA1(data)*/, "_FILE_" : data }, function(transaction_id, result_code, response_data)
       {
-        callback(transaction_id, result_code);
+        if (MURRIX_RESULT_CODE_OK == result_code)
+        {
+          callback(transaction_id, result_code, response_data["metadata"]);
+        }
+        else
+        {
+          callback(transaction_id, result_code, {});
+        }
+          
       }, xhr);
     }
     

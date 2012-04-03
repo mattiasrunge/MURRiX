@@ -200,7 +200,7 @@ $(function()
     {
       var chunk_time = jQuery.now();
       
-      $.murrix.module.db.uploadFileV2(self.upload_id_, file.getReadChunkData(), function(transaction_id, result_code)
+      $.murrix.module.db.uploadFile(self.upload_id_, file.isLastChunk(), file.getReadChunkData(), function(transaction_id, result_code, metadata)
       {
         self.upload_time_ = jQuery.now() - self.start_time_;
         
@@ -210,7 +210,10 @@ $(function()
         }
         else
         {
-          self.event_handlers_["complete"](self);
+          self.uploaded_size_ = file.getSize();
+          self.event_handlers_["progress"](self);
+          
+          self.event_handlers_["complete"](self, metadata);
         }
       },
       function(event)

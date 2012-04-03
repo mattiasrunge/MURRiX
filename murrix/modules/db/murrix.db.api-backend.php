@@ -10,6 +10,7 @@ class MurrixModuleDb extends MurrixModule
   protected $db_username_ = null;
   protected $db_password_ = null;
   
+  protected $uploaded_files = array();
   
   function __construct($options)
   {
@@ -28,8 +29,7 @@ class MurrixModuleDb extends MurrixModule
     $this->registerAction("UnlinkNodes",      array($this, "ActionUnlinkNodes"),      array("NodeIdUp", "NodeIdDown", "Role"),                  array("NodeUp", "NodeDown", "Role"));
     $this->registerAction("SearchNodeIds",    array($this, "ActionSearchNodeIds"),    array("Query"),                                           array("NodeIdList"));
     $this->registerAction("FetchNodes",       array($this, "ActionFetchNodes"),       array("NodeIdList"),                                      array("NodeList"));
-    $this->registerAction("UploadFileBase64", array($this, "ActionUploadFileBase64"), array("Id", "Sha1", "Data"),                              array());
-    $this->registerAction("UploadFile",       array($this, "ActionUploadFile"),       array("Id", "Sha1"),                                      array());
+    $this->registerAction("UploadFile",       array($this, "ActionUploadFile"),       array("Id", "LastChunk", "Sha1"),                         array("Metadata"));
   }
 
   
@@ -401,34 +401,12 @@ class MurrixModuleDb extends MurrixModule
     $out_node_list = $this->FetchNodes($db, $in_node_id_list);
   }
   
-  public function ActionUploadFileBase64($in_id, $in_sha1, $in_data)
+   
+  public function ActionUploadFile($in_id, $in_last_chunk, $in_sha1, &$out_metadata)
   {
     global $murrix_temporary_upload_prefix;
   
-    /*if ($in_sha1 != sha1($in_data))
-    {
-      throw new Exception("Checksums do not match:$in_sha1 == " . sha1($in_data), MURRIX_RESULT_CODE_CHECKSUM_MISMATCH);
-    }*/
-    
-    $in_data = base64_decode($in_data);
-    
-    $filename = $murrix_temporary_upload_prefix . $in_id;
-
-    $file = fopen($filename, "a+");
-    
-    if ($file === FALSE)
-    {
-      throw new Exception("Could not open temporary file for writing.", MURRIX_RESULT_CODE_FILE_NOT_WRITABLE);
-    }
-      
-    fwrite($file, $in_data);
-    
-    fclose($file);
-  }
-  
-  public function ActionUploadFile($in_id, $in_sha1)
-  {
-    global $murrix_temporary_upload_prefix;
+    $out_metadata = array();
   
     if (isset($_FILES["_FILE64_"]))
     {
@@ -457,6 +435,13 @@ class MurrixModuleDb extends MurrixModule
     fwrite($file, $data);
     
     fclose($file);
+
+    if (filter_var($in_last_chunk, FILTER_VALIDATE_BOOLEAN))
+    {
+      $out_metadata = Murrix_GetExifData($filename);
+      
+      $uploaded_files[$in_id] = $filename;
+    }
   }
 }
 
