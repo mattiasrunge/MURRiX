@@ -234,6 +234,11 @@ $(function()
     {
       self.event_handlers_[event_name] = callback;
     }
+
+    this.getUploadId = function()
+    {
+      return self.upload_id_;
+    }
     
     this.getFile = function()
     {
@@ -292,9 +297,23 @@ $(function()
       console.log("error");
     });
     
-    uploader.bind("complete", function(file)
+    uploader.bind("complete", function(file, metadata)
     {
-      console.log("complete!");
+      console.log("upload complete!");
+      
+      $.murrix.module.db.createNodeFromFile(file.getUploadId(), file.getFile().getName(), file.getFile().getSize(), metadata, function(transaction_id, result_code, node_data)
+      {
+        if (MURRIX_RESULT_CODE_OK == result_code)
+        {
+          console.log(node_data);
+        }
+        else
+        {
+          console.log("failed:" + result_code);
+        }
+      });
+      
+      
     });
         
     uploader.start();

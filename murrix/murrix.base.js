@@ -52,7 +52,7 @@ if (!XMLHttpRequest.sendAsBinary)
     
   
   /* Create server call function */
-  $.murrix.call = function (module, action, data, callback, xhr)
+  $.murrix.callSimple = function (module, action, data, callback, xhr)
   {
     var transaction_id  = jQuery.now();
     var url             = "?Api=1&TransactionId=" + transaction_id + "&Module=" + module + "&Action=" + action;
@@ -104,13 +104,13 @@ if (!XMLHttpRequest.sendAsBinary)
   
   
   /* Create server call function */
-  $.murrix.callV2 = function (module, action, data, callback, xhr)
+  $.murrix.call = function (module, action, data, callback, xhr)
   {
     var name = "_FILE_";
     
     if (!data["_FILE_"])
     {
-      return $.murrix.call(module, action, data, callback, xhr);
+      return $.murrix.callSimple(module, action, data, callback, xhr);
     }
     
     var transaction_id  = jQuery.now();

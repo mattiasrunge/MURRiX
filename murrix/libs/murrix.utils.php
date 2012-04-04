@@ -57,6 +57,11 @@ function Murrix_GetExifData($filename)
     
     $name = str_replace(array(" ", "/"), array("", ""), $name);
     
+    if ($name == "Error")
+    {
+      return array();
+    }
+    
     $exif_data[$name] = $value;
   }
   

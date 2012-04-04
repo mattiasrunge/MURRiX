@@ -207,6 +207,14 @@ class MurrixModuleDb extends MurrixModule
   {
     // TODO: Check if allowed to create type
     
+    
+    /* Check if this is a file and if it exists in the upload list */
+    if ($in_node["type"] == "file" && (!isset($this->uploaded_files[$in_node["uploadid"]]) || !file_exists($this->uploaded_files[$in_node["uploadid"]])))
+    {
+      throw new Exception("Could not find the upload file.", MURRIX_RESULT_CODE_FILE_NOT_FOUND);
+    }
+    
+    
     /* Get the database */    
     $db = $this->GetDb();
     
@@ -223,6 +231,20 @@ class MurrixModuleDb extends MurrixModule
       $this->Query($db, $query);
       
       $in_node["id"] = $db->insert_id;
+      
+      
+      /* If node is a file, move file object */
+      if ($in_node["type"] == "file")
+      {
+        if (!rename($this->uploaded_files[$in_node["uploadid"]], "files/" . $in_node["id"] . "." . pathinfo($in_node["filename"], PATHINFO_EXTENSION)))
+        {
+          throw new Exception("Could not move the uploaded file.", MURRIX_RESULT_CODE_FAILED_TO_MOVE_FILE);
+        }
+        
+        unset($this->uploaded_files[$in_node["uploadid"]]);
+        unset($in_node["uploadid"]);
+        unset($in_node["filename"]);
+      }
       
       
       /* Insert into Attributes */
@@ -400,7 +422,6 @@ class MurrixModuleDb extends MurrixModule
     
     $out_node_list = $this->FetchNodes($db, $in_node_id_list);
   }
-  
    
   public function ActionUploadFile($in_id, $in_last_chunk, $in_sha1, &$out_metadata)
   {
@@ -440,7 +461,7 @@ class MurrixModuleDb extends MurrixModule
     {
       $out_metadata = Murrix_GetExifData($filename);
       
-      $uploaded_files[$in_id] = $filename;
+      $this->uploaded_files[$in_id] = $filename;
     }
   }
 }

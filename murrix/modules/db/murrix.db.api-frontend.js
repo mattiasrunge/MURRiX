@@ -41,6 +41,57 @@ $(function()
     
     
     /**
+     * Create a new node from a uploaded file.
+     * 
+     * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
+     *   param transaction_id - Transaction ID.
+     *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+     *   param node_data      - Node data JSON object of the created node.
+     *  
+     * 
+     * @param upload_id - Id used when uploading a file.
+     * @param filename  - File name of the file.
+     * @param filesize  - Size of the file.
+     * @param metadata  - Metadata received in the upload call.
+     * @param callback  - Result callback function.
+     *  
+     * @return          - Transaction ID.
+     * @throws          - MURRIX_RESULT_CODE
+     */
+    this.createNodeFromFile = function(upload_id, filename, filesize, metadata, callback)
+    {
+      if (!upload_id || !filename || !filesize || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+      
+      var node_data = {};
+      
+      node_data["type"]     = "file";
+      node_data["name"]     = filename;
+      node_data["uploadid"] = upload_id;
+      node_data["filename"] = filename;
+      
+      node_data["attributes"] = {};
+      
+      node_data["attributes"]["FileSize"] = filesize;
+      node_data["attributes"]["FileName"] = filename;
+      
+      if (metadata)
+      {
+        console.log(metadata);
+        jQuery.each(metadata, function(name, value)
+        {
+          console.log(name + ":" + value);
+          node_data["attributes"]["Meta" + name] = value;
+        });
+      }
+      
+      return this.createNode(node_data, callback);
+    }
+    
+    
+    /**
      * Upload a file and create a node.
      * 
      * CallbackProgress(int transaction_id, file, current_chunk, number_of_chunks)
@@ -63,11 +114,11 @@ $(function()
      * @return          - Transaction ID.
      * @throws          - MURRIX_RESULT_CODE
      */
-    this.uploadFile = function(id, last_chunk, data, callback, progress_callback)
+    this.uploadFile = function(upload_id, last_chunk, data, callback, progress_callback)
     {
       var xhr = null;
       
-      if (!id || !data || !callback)
+      if (!upload_id || !data || !callback)
       {
         throw MURRIX_RESULT_CODE_PARAM;
       }
@@ -90,11 +141,11 @@ $(function()
       }
       
      
-     return $.murrix.callV2("db", "UploadFile", { "Id" : id, "LastChunk" : last_chunk, "Sha1" : 0/*SHA1(data)*/, "_FILE_" : data }, function(transaction_id, result_code, response_data)
+     return $.murrix.call("db", "UploadFile", { "Id" : upload_id, "LastChunk" : last_chunk, "Sha1" : 0/*SHA1(data)*/, "_FILE_" : data }, function(transaction_id, result_code, response_data)
       {
         if (MURRIX_RESULT_CODE_OK == result_code)
         {
-          callback(transaction_id, result_code, response_data["metadata"]);
+          callback(transaction_id, result_code, response_data["Metadata"]);
         }
         else
         {
