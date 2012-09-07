@@ -1,0 +1,82 @@
+<div class="sidebar-nav" data-bind="fadeVisible: nodeModel.show">
+  <div class="sidebar-nav-content">
+    <ul class="nav nav-list">
+      <li>
+        <div class="page-header">
+          <h5 data-bind="text: nodeModel.node() ? nodeModel.node().name : 'Unknown'"></h5>
+        </div>
+      </li>
+      <li>
+        <!-- ko if: nodeModel.profilePictureNode() -->
+          <img class="thumbnail" src="" alt="" data-bind="<?/*event: { drop: sidebar.dragDrop, dragover: sidebar.dragOver }, */?>attr: { src: 'preview.php?nodeId=' + nodeModel.profilePictureNode().id() + '&amp;width=225&amp;height=171' }">
+        <!-- /ko -->
+
+        <!-- ko if: !nodeModel.profilePictureNode() -->
+          <h5 data-bind="text: nodeModel.profilePictureNode() ? nodeModel.profilePictureNode().id : 'Unknown id'"></h5>
+        <!-- /ko -->
+      </li>
+      
+      <li class="nav-header">Actions</li>
+      
+      <li data-bind="fadeVisible: nodeModel.summaryModel.enabled, css: { 'active': nodeModel.summaryModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() + '/summary' }">
+          <i class="icon-list-alt"></i> Summary
+        </a>
+      </li>
+
+      <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() + '/timeline' }">
+          <i class="icon-time"></i> Timeline
+        </a>
+      </li>
+
+      <li data-bind="fadeVisible: nodeModel.picturesModel.enabled, css: { 'active': nodeModel.picturesModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() + '/pictures' }">
+          <i class="icon-th"></i> Pictures <span data-bind="fadeVisible: nodeModel.picturesModel.pictures().length > 0, text: nodeModel.picturesModel.pictures().length" class="badge pull-right"></span>
+        </a>
+      </li>
+
+     <li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() + '/relations' }">
+          <i class="icon-retweet"></i> Relations
+        </a>
+      </li>
+
+      <li data-bind="fadeVisible: nodeModel.logbookModel.enabled, css: { 'active': nodeModel.logbookModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() + '/logbook' }">
+          <i class="icon-book"></i> Logbook <span data-bind="fadeVisible: nodeModel.logbookModel.entries().length > 0, text: nodeModel.logbookModel.entries().length" class="badge pull-right"></span>
+        </a>
+      </li>
+
+      <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() + '/comments' }">
+          <i class="icon-comment"></i> Comments <span data-bind="fadeVisible: nodeModel.commentsModel.entries().length > 0, text: nodeModel.commentsModel.entries().length" class="badge pull-right"></span>
+        </a>
+      </li>
+      
+
+      <li class="nav-header">Administration</li>
+
+      <li data-bind="fadeVisible: nodeModel.connectionsModel.enabled, css: { 'active': nodeModel.connectionsModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() + '/connections' }">
+          <i class="icon-retweet"></i> Connections <span data-bind="fadeVisible: nodeModel.connectionsModel.connections().length > 0, text: nodeModel.connectionsModel.connections().length" class="badge pull-right"></span>
+        </a>
+      </li>
+
+      <li data-bind="fadeVisible: nodeModel.rightsModel.enabled, css: { 'active': nodeModel.rightsModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() + '/rights' }">
+          <i class="icon-lock"></i> Rights <span data-bind="fadeVisible: nodeModel.rightsModel.rights().length > 0, text: nodeModel.rightsModel.rights().length" class="badge pull-right"></span>
+        </a>
+      </li>
+
+
+      <li class="nav-header">Tags</li>
+
+      <li data-bind="foreach: nodeModel.tagNodeList">
+        <span data-bind="text: name" class="label label-inverse"></span>
+      </li>
+    </ul>
+  </div>
+  
+  <div class="well sidebar-nav-background"></div>
+</div>

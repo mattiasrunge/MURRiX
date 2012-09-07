@@ -1,0 +1,20 @@
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.commentsModel.show, if: nodeModel.node">
+  <div class="main-overlay-content">
+    <div class="page-header">
+      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() }">Close</a>
+
+      <h1>Comments</h1>
+    </div>
+
+    <div class="logentries" data-bind="foreach: nodeModel.commentsModel.entries">
+      <div class="well">
+        <h4>
+          <span data-bind="htmlDate: $data.created || '<i>No date and time information found</i>'"></span>
+        </h4>
+        <p></p>
+        <span data-bind="html: $data.text"></span>
+      </div>
+    </div>
+  </div>
+  <div class="well sidebar-nav-background"></div>
+</div>

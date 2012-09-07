@@ -1,0 +1,15 @@
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.timelineModel.show, if: nodeModel.node">
+  <div class="main-overlay-content">
+    <div class="page-header">
+      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() }">Close</a>
+
+      <h1>Timeline</h1>
+    </div>
+
+    <div id="timeline">
+      <!-- Timeline.js will genereate the markup here -->
+    </div>
+
+  </div>
+  <div class="well sidebar-nav-background"></div>
+</div>

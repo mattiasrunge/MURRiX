@@ -1,0 +1,35 @@
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.picturesModel.show, if: nodeModel.node">
+  <div class="main-overlay-content" id="pictures-droptarget">
+    <div class="page-header">
+      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() }">Close</a>
+
+
+      <span class="pull-right btn-spacer-big">&nbsp;</span>
+      <div class="btn-group pull-right">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+          Cameras
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+        </ul>
+      </div>
+
+      <h1>Pictures</h1>
+    </div>
+
+    <ul class="thumbnails" data-bind="foreach:  nodeModel.picturesModel.pictures">
+      <li class="">
+        <div draggable="true" class="thumbnail" <?/*data-bind="event: { dragstart: $parent.dragStart }"*/?>>
+          <img data-bind="attr: { src: 'preview.php?nodeId=' + $data.id() + '&amp;width=120&amp;height=120', title: $data.name }" src="http://placekitten.com/g/120/120" alt="">
+        </div>
+      </li>
+    </ul>
+
+  </div>
+  <div class="well sidebar-nav-background"></div>
+</div>

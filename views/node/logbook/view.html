@@ -1,0 +1,51 @@
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.logbookModel.show, if: nodeModel.node">
+  <div class="main-overlay-content">
+    <div class="page-header">
+      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() }">Close</a>
+
+      <h1>Logbook</h1>
+    </div>
+
+    <div class="logentries" data-bind="foreach: nodeModel.logbookModel.entries">
+      <div class="well">
+        <h4>
+          <span data-bind="htmlDate: $data.datetime || '<i>No date and time information found</i>'"></span>
+          <span class="btn-group pull-right" data-bind="">
+            <button class="btn btn-mini" data-bind="click: $parent.editClicked"><i class="icon-pencil"></i></button>
+            <button class="btn btn-mini" data-bind="click: $parent.editClicked"><i class="icon-trash"></i></button>
+          </span>
+        </h4>
+        <p></p>
+        <span data-bind="html: $data.text"></span>
+      </div>
+    </div>
+
+    <h2>Add Entry</h2>
+    <p>
+      <form class="form-horizontal main-overlay-centered-form" data-bind="submit: nodeModel.logbookModel.formSubmit">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label">Date and Time</label>
+            <div class="controls">
+              <div class="input-append date" id="logbookFormDate" data-date="2012-12-12" data-date-format="yyyy-mm-dd">
+                <input class="span2" size="10" type="text" data-bind="disable: nodeModel.logbookModel.saving, value: nodeModel.logbookModel.formDate" placeholder="YYYY-MM-DD"><span class="add-on"><i class="icon-th"></i></span>
+              </div>
+              <input size="8" type="text" data-bind="disable: nodeModel.logbookModel.saving, value: nodeModel.logbookModel.formTime" id="logbookFormTime" placeholder="HH:MM:SS">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="logbookFormText">Text</label>
+            <div class="controls">
+              <textarea data-bind="disable: nodeModel.logbookModel.saving, value: nodeModel.logbookModel.formText" class="input-xxlarge" id="logbookFormText" rows="20"></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" data-bind="text: nodeModel.logbookModel.saving() ? 'Saving...' : 'Save'"></button>
+            <div class="help-inline" data-bind="text: nodeModel.logbookModel.statusText"></div>
+          </div>
+        </fieldset>
+      </form>
+    </p>
+  </div>
+  <div class="well sidebar-nav-background"></div>
+</div>

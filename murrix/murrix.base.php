@@ -20,7 +20,7 @@ require_once("murrix.config.php");
 
 
 /* Start session */
-session_name("murrix_test16");
+session_name("murrix_test18");
 session_start();
 
 
@@ -30,6 +30,52 @@ if (!isset($_SESSION["Modules"]))
   $_SESSION["Modules"] = array();
 }
 
+
+/* Handle API calls */
+if (isset($_GET["Api"]))
+{
+  /* Set up the parameter object */
+  $request      = $_GET;
+  $request_data = $_POST;
+
+  /* Initialize reponse */
+  $response = array();
+  $response["TransactionId"]  = $request["TransactionId"];
+  $response["ResultCode"]     = MURRIX_RESULT_CODE_OK;
+  $response["Data"]           = array();
+
+  try
+  {
+    /* Validate in parameters */
+    if (!isset($request["Module"]) || !isset($request["Action"]))
+    {
+      throw new Exception("Missing parameters in API call", MURRIX_RESULT_CODE_PARAM);
+    }
+
+    if (!isset($_SESSION["Modules"][$request["Module"]]))
+    {
+      throw new Exception("Unknown module", MURRIX_RESULT_CODE_PARAM);
+    }
+
+
+    /* Call module action */
+    $_SESSION["Modules"][$request["Module"]]->callAction($request["Action"], $request_data, &$response["Data"]);
+  }
+  catch (Exception $e)
+  {
+    $response["ResultCode"] = $e->getCode();
+    $response["Message"]    = $e->getMessage();
+  }
+
+
+  /* Print the response */
+  header("Content-Type: application/json");
+  echo json_encode($response);
+
+
+  /* Terminate execution */
+  exit(0);
+}
 
 
 /* Function to call when to load a module */
@@ -41,16 +87,16 @@ function MurrixLoadModule($name, $options)
   global $murrix_js_files;
   global $murrix_js_templates;
   global $murrix_js_options;
-  
+
   unset($files);
-  
+
   $module_path = "murrix/modules/" . $name;
-  
-  
+
+
   /* Load module definition file */
   require_once($module_path . "/murrix." . $name . ".php");
 
-  
+
   /* Load files in module */
   if (isset($files))
   {
@@ -61,15 +107,22 @@ function MurrixLoadModule($name, $options)
         require_once($module_path . "/" . $file);
       }
     }
-    
+
     if (isset($files["js"]))
     {
       foreach ($files["js"] as $file)
       {
-        $murrix_js_files[] = $module_path . "/" . $file;
+        if (strpos($file, "http") === 0)
+        {
+          $murrix_js_files[] = $file;
+        }
+        else
+        {
+          $murrix_js_files[] = $module_path . "/" . $file;
+        }
       }
     }
-    
+
     if (isset($files["tmpl"]))
     {
       foreach ($files["tmpl"] as $id => $file)
@@ -77,21 +130,28 @@ function MurrixLoadModule($name, $options)
         $murrix_js_templates[$id] = $module_path . "/" . $file;
       }
     }
-    
+
     if (isset($files["css"]))
     {
       foreach ($files["css"] as $file)
       {
-        $murrix_css_files[] = $module_path . "/" . $file;
+        if (strpos($file, "http") === 0)
+        {
+          $murrix_css_files[] = $file;
+        }
+        else
+        {
+          $murrix_css_files[] = $module_path . "/" . $file;
+        }
       }
     }
   }
-  
-  
+
+
   /* Save class and options for loading */
   $murrix_modules[$name] = $options;
- 
-  
+
+
   /* Cleanup */
   unset($files);
 }
@@ -111,52 +171,32 @@ foreach ($murrix_modules as $name => $options)
 
     $murrix_js_options[$name] = $_SESSION["Modules"][$name]->getFrontendOptions();
   }
-}  
-
-
-/* Handle API calls */
-if (isset($_GET["Api"]))
-{
-  /* Set up the parameter object */
-  $request      = $_GET;
-  $request_data = $_POST;
-
-  /* Initialize reponse */
-  $response = array();
-  $response["TransactionId"]  = $request["TransactionId"];
-  $response["ResultCode"]     = MURRIX_RESULT_CODE_OK;
-  $response["Data"]           = array();
-  
-  try
-  {
-    /* Validate in parameters */
-    if (!isset($request["Module"]) || !isset($request["Action"]))
-    {
-      throw new Exception("Missing parameters in API call", MURRIX_RESULT_CODE_PARAM);
-    }
-
-    if (!isset($_SESSION["Modules"][$request["Module"]]))
-    {
-      throw new Exception("Unknown module", MURRIX_RESULT_CODE_PARAM);
-    }
-    
-    
-    /* Call module action */
-    $_SESSION["Modules"][$request["Module"]]->callAction($request["Action"], $request_data, &$response["Data"]);
-  }
-  catch (Exception $e)
-  {
-    $response["ResultCode"] = $e->getCode();
-    $response["Message"]    = $e->getMessage();
-  }
-
-
-  /* Print the response */
-  header("Content-Type: application/json");
-  echo json_encode($response);
-
-  
-  /* Terminate execution */
-  exit(0);
 }
+
+
+$widgets = Murrix_GetSubfolders("murrix/widgets");
+
+foreach ($widgets as $widget)
+{
+  $widget_path = "murrix/widgets/" . $widget;
+
+  if (file_exists($widget_path . "/murrix.widget.css"))
+  {
+    $murrix_css_files[] = $widget_path . "/murrix.widget.css";
+  }
+
+  if (file_exists($widget_path . "/murrix.widget.js"))
+  {
+    $murrix_js_files[] = $widget_path . "/murrix.widget.js";
+  }
+
+  $templates = Murrix_GetSubfiles($widget_path . "/templates");
+
+  foreach ($templates as $template)
+  {
+    $murrix_js_templates[str_replace(".", "-", basename($template, ".html"))] = $widget_path . "/templates/" . $template;
+  }
+}
+
+
 ?>

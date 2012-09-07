@@ -1,7 +1,7 @@
 
 $(function()
 {
-  $.murrix.libs.fileReader = function(file_object)
+  $.murrix.lib.fileReader = function(file_object)
   {
     var self = this;
     
@@ -19,14 +19,14 @@ $(function()
     this._readerStart = function(event)
     {
       self.bytes_read_ = self.read_chunk_index_ * self.CHUNK_SIZE;
-      self.event_handlers_["progress"](self);
+      self.event_handlers_.progress(self);
     };
     
     this._readerProgress = function(event)
     {
       console.log("progress read");
       self.bytes_read_ = self.read_chunk_index_ * self.CHUNK_SIZE + event.loaded;
-      self.event_handlers_["progress"](self);
+      self.event_handlers_.progress(self);
     };
     
     this._readerLoad = function(event)
@@ -38,24 +38,24 @@ $(function()
         self.bytes_read_ = self.file_object_.size;
       }
       
-      self.event_handlers_["progress"](self);
+      self.event_handlers_.progress(self);
 
       self.chunk_data_ = event.target.result;
-      self.event_handlers_["chunk_loaded"](self);
+      self.event_handlers_.chunk_loaded(self);
     };
     
     this._readerError = function(event)
     {
       self.read_chunk_index_--;
       self.bytes_read_ = self.read_chunk_index_ * self.CHUNK_SIZE;
-      self.event_handlers_["error"](self);
+      self.event_handlers_.error(self);
     };
     
     
     this.bind = function(event_name, callback)
     {
       self.event_handlers_[event_name] = callback;
-    }
+    };
 
     this.loadNextChunk = function()
     {
@@ -82,7 +82,7 @@ $(function()
         reader.onerror    = function(event) { self._readerError(event); };
       }
 
-      if (self.number_of_chunks_ == 1)
+      if (self.number_of_chunks_ === 1)
       {
         chunk = self.file_object_;
       }
@@ -115,7 +115,7 @@ $(function()
         else
         {
           self.read_chunk_index_--;
-          self.event_handlers_["error"](self);
+          self.event_handlers_.error(self);
         }
       }
       
@@ -123,56 +123,56 @@ $(function()
       {
         reader.readAsBinaryString(chunk);
       }
-    }
+    };
     
     this.getReadChunkData = function()
     {
       return self.chunk_data_;
-    }
+    };
     
     this.getReadChunkIndex = function()
     {
       return self.read_chunk_index_;
-    }
+    };
     
     this.getReadChunkSize = function()
     {
       return self.getLoadedSize() - (self.read_chunk_index_ * self.CHUNK_SIZE);
-    }
+    };
     
     this.getName = function()
     {
       return self.file_object_.name;
-    }
+    };
     
     this.getSize = function()
     {
       return self.file_object_.size;
-    }
+    };
     
     this.getNumberOfChunks = function()
     {
       return self.number_of_chunks_;
-    }
+    };
     
     this.getLoadedSize = function()
     {
       return self.bytes_read_;
-    }
+    };
     
     this.isLastChunk = function()
     {
       return (self.read_chunk_index_ + 1) == self.number_of_chunks_;
-    }
-  }
+    };
+  };
   
   
   
-  $.murrix.libs.fileUploader = function(file_object)
+  $.murrix.lib.fileUploader = function(file_object)
   {
     var self = this;
     
-    this.file_reader_     = new $.murrix.libs.fileReader(file_object);
+    this.file_reader_     = new $.murrix.lib.fileReader(file_object);
     this.event_handlers_  = { "progress" : function() {}, "error" : function() {}, "complete" : function() {} };
     this.loaded_size_     = 0;
     this.uploaded_size_   = 0;
@@ -186,13 +186,13 @@ $(function()
       console.log("progress upload");
       self.loaded_size_ = file.getLoadedSize();
 
-      self.event_handlers_["progress"](self);
+      self.event_handlers_.progress(self);
     });
     
     
     this.file_reader_.bind("error", function(file)
     {
-      self.event_handlers_["error"](self);
+      self.event_handlers_.error(self);
     });
     
     
@@ -203,24 +203,33 @@ $(function()
       $.murrix.module.db.uploadFile(self.upload_id_, file.isLastChunk(), file.getReadChunkData(), function(transaction_id, result_code, metadata)
       {
         self.upload_time_ = jQuery.now() - self.start_time_;
-        
-        if (!file.isLastChunk())
+
+        if (result_code != MURRIX_RESULT_CODE_OK)
         {
-          file.loadNextChunk();
+          self.event_handlers_.complete(self, [], result_code);
         }
         else
         {
-          self.uploaded_size_ = file.getSize();
-          self.event_handlers_["progress"](self);
-          
-          self.event_handlers_["complete"](self, metadata);
+          self.event_handlers_.complete(self, metadata, result_code);
+
+          if (!file.isLastChunk())
+          {
+            file.loadNextChunk();
+          }
+          else
+          {
+            self.uploaded_size_ = file.getSize();
+            self.event_handlers_.progress(self);
+
+            self.event_handlers_.complete(self, metadata, result_code);
+          }
         }
       },
       function(event)
       {
         self.uploaded_size_ = self.loaded_size_ - self.file_reader_.getReadChunkSize() + event.loaded;
         
-        self.event_handlers_["progress"](self);
+        self.event_handlers_.progress(self);
       });
     });
 
@@ -228,32 +237,32 @@ $(function()
     this.start = function()
     {
       self.file_reader_.loadNextChunk();
-    }
+    };
     
     this.bind = function(event_name, callback)
     {
       self.event_handlers_[event_name] = callback;
-    }
+    };
 
     this.getUploadId = function()
     {
       return self.upload_id_;
-    }
+    };
     
     this.getFile = function()
     {
       return self.file_reader_;
-    }
+    };
     
     this.getLoadedSize = function()
     {
       return self.loaded_size_;
-    }
+    };
     
     this.getUploadedSize = function()
     {
       return self.uploaded_size_;
-    }
+    };
   };
     
     
@@ -266,7 +275,7 @@ $(function()
   
   
   
-  
+  /*
   
   $(".overlay_div").get(0).addEventListener("dragover", function(event)
   {
@@ -281,7 +290,7 @@ $(function()
     event.stopPropagation(); 
     event.preventDefault();
     
-    var uploader = new $.murrix.libs.fileUploader(event.dataTransfer.files[0]);
+    var uploader = new $.murrix.lib.fileUploader(event.dataTransfer.files[0]);
     
 
     uploader.bind("progress", function(uploader)
@@ -318,5 +327,5 @@ $(function()
         
     uploader.start();
     
-  }, false);
+  }, false);*/
 });

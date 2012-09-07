@@ -1,0 +1,40 @@
+<div class="main-overlay-big" data-bind="fadeVisible: profile.show">
+  <div class="main-overlay-content">
+    <div class="page-header">
+      <button class="btn btn-primary pull-right" data-bind="click: profile.hideClicked">Close</button>
+
+      <h1 data-bind="ifnot: profile.isAnonymous">Profile</h1>
+      <h1 data-bind="if: profile.isAnonymous">Sign In</h1>
+    </div>
+
+    <div class="row" data-bind="if: profile.isAnonymous">
+      <div class="">
+        <form class="form-horizontal main-overlay-centered-form" data-bind="submit: profile.loginSubmit">
+          <fieldset>
+            <div class="control-group">
+              <label class="control-label" for="inputUsername">Username</label>
+              <div class="controls">
+                <input type="text" id="inputUsername" data-bind="hasfocus: profile.usernameFocused, disable: profile.loading, value: profile.inputUsername">
+                <div class="help-inline"></div>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="inputPassword">Password</label>
+              <div class="controls">
+                <input type="password" id="inputPassword" data-bind="disable: profile.loading, value: profile.inputPassword">
+                <div class="help-inline"></div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" data-bind="text: profile.loading() ? 'Signing in...' : 'Sign in'"></button>
+              <div class="help-inline" data-bind="text: profile.statusText"></div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <div class="well sidebar-nav-background"></div>
+</div>
+

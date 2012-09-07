@@ -1,0 +1,57 @@
+
+Overview
+========
+There should be 3 main visual components; a main view, a sidebar to the right and a filter bottom bar.
+All these should be persistant and only change contents. They should have their own APIs for easy manipulation.
+
+Component: Sidebar
+==================
+The sidebar should display related data e.g. people in a picture, foto exif data, comments. It could possibly hold
+controls for changing that data. Best would be to have tabs, one for related items, one for comments and one for
+details.
+
+Component: Filterbar
+====================
+The filterbar should have two views, one is for filtering control on tags, name etc, the other should display a
+timeline where a range should be marked. This range should cover the times for the objects currently in view.
+It could also be manipulated to only display a certain range of objects. The timeline should be "zoom":able
+so it can cover second intervals to years.
+
+Component: Main viewer
+======================
+This should also have tabs, one for a map view to display a location or a path if there are object like images
+connected to a point then a marker should be placed there which should be clickable. Another view should be the
+actual object, which could be an image or information about a person, this view should also hold a family tree
+if such information is available. If a group of objects are selected, for instance when viewing an album, there 
+should be a tab with all thumbnails.
+
+
+
+
+This written on the whiteboard
+==============================
+Person viewerFörsta sida, nyheter, skapa album mm.
+Registrera användare sida
+Sätta taggar
+Ändra rättigheter
+Fullscreen bild viewer
+"Event tidigare än 1970"-bugg
+Goto random funktion
+Ändra attribute på objekt
+Ladda ner filer
+Ladda ner album
+Markera personer
+Koppla album till loggböcker
+Album & bild info
+Album sorting, fallback on name
+Album thumb set
+Profil bild set
+Libface
+Kommentarer
+Sökfilter type, timerange
+Icon based on filetype
+Tydssynka bilder frånm olika kameror
+TODO-funktion
+Checksum uppladdning
+Rotate image
+Rotate movies
