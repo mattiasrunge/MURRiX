@@ -346,7 +346,7 @@ $(function()
     {
       jQuery.each(self.nodes, function(n, node)
       {
-        $.murrix.module.db.fetchPositions({ node_id_list: [ node.id() ], /*start_datetime: "2012-07-26", */start_created: self.lastCreatedPosition.created }, function(transactionId, resultCode, positionResponse)
+        mainModel.db.fetchPositions({ node_id_list: [ node.id() ], /*start_datetime: "2012-07-26", */start_created: self.lastCreatedPosition.created }, function(transactionId, resultCode, positionResponse)
         {
           // TODO Check resultCode
 

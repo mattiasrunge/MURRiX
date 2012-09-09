@@ -4,67 +4,15 @@ var NodeModel = function(parentModel)
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { updatePath(value, self.path); });
+  parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
   
   self.show = ko.computed(function() { return parentModel.path().primary().action === "node"; });
 
 
 
-  self.primaryNodeId = ko.observable(false);
-  self.profilePictureNodeId = ko.observable(false);
-  self.tagNodeIdList = ko.observableArray([]);
-  
-  /* This function is called when the primary node id changes
-   * or the node list has been updated.
-   */
-  self.node = ko.computed(function()
-  {
-    console.log("NodeModel: Primary id is now " + self.primaryNodeId());
-
-    if (!parentModel.dbModel.nodes[self.primaryNodeId()])
-    {
-      console.log("NodeModel: Index was -1, returning false as node!");
-      return false;
-    }
-    
-    console.log("NodeModel: Node is cached, returning!");
-    return parentModel.dbModel.nodes[self.primaryNodeId()];
-  });
-  
-
-  /* This function is called when the profile id changes or the
-   * node list has been updated.
-   */
-  self.profilePictureNode = ko.computed(function()
-  {
-    if (!parentModel.dbModel.nodes[self.profilePictureNodeId()])
-    {
-      console.log("NodeModel: Index was -1, returning false profile picture node!");
-      return false;
-    }
-
-    console.log("NodeModel: Profile picture node is cached, returning!");
-    return parentModel.dbModel.nodes[self.profilePictureNodeId()];
-  });
-
-
-  self.tagNodeList = ko.computed(function()
-  {
-    var tagList = [];
-
-    for (var n = 0; n < self.tagNodeIdList().length; n++)
-    {
-      if (parentModel.dbModel.nodes[self.tagNodeIdList()[n]])
-      {
-        console.log("NodeModel: Tag node is cached, adding to list, id = " + self.tagNodeIdList()[n] + "!");
-
-        tagList.push(parentModel.dbModel.nodes[self.tagNodeIdList()[n]]);
-      }
-    }
-
-    return tagList;
-  });
-
+  self.node = ko.observable(false);
+  self.profilePictureNode = ko.observable(false);
+  self.tagNodeList = ko.observableArray([]);
 
   /* This function is called every time the node changes and tries to
    * set up variables for required sub nodes and also try to fetch
@@ -74,9 +22,9 @@ var NodeModel = function(parentModel)
   {
     var requiredNodeIdList = [];
 
-    console.log("NodeModel: Clearing profile picture id and map");
-    self.profilePictureNodeId(false);
-    self.tagNodeIdList.removeAll();
+    console.log("NodeModel: Clearing profile picture, tags and map");
+    self.profilePictureNode(false);
+    self.tagNodeList.removeAll();
     $.murrix.module.map.clearMap();
 
     if (!node)
@@ -86,38 +34,37 @@ var NodeModel = function(parentModel)
     }
 
 
-    console.log("NodeModel: Looking at the links for required nodes");
-
-    for (var n = 0; n < node.links().length; n++)
+    node.getLinkedNodes("profilePicture", function(resultCode, nodeIdList, nodeList)
     {
-      var link = node.links()[n];
-
-      if (link.role() === "profilePicture")
+      if (resultCode != MURRIX_RESULT_CODE_OK)
       {
-        console.log("NodeModel: Setting profile picture id to " + link.node_id());
-        requiredNodeIdList.push(link.node_id());
-        self.profilePictureNodeId(link.node_id());
+        console.log("NodeModel: Got error while trying to fetch required nodes, resultCode = " + resultCode);
       }
-      else if (link.role() === "tag")
+      else if (nodeList.length > 0)
       {
-        console.log("NodeModel: Found tag with id " + link.node_id());
-        requiredNodeIdList.push(link.node_id());
-        self.tagNodeIdList.push(link.node_id());
+        self.profilePictureNode(nodeList[0]);
       }
-    }
+      else
+      {
+        console.log("NodeModel: No profile picture set.");
+      }
+    });
 
-
-    console.log("NodeModel: Fetching required subnodes if there are any");
-    if (requiredNodeIdList.length > 0)
+    node.getLinkedNodes("tag", function(resultCode, nodeIdList, nodeList)
     {
-      parentModel.dbModel.fetchNodesBuffered(requiredNodeIdList, function(transactionId, resultCode)
+      if (resultCode != MURRIX_RESULT_CODE_OK)
       {
-        if (resultCode != MURRIX_RESULT_CODE_OK)
-        {
-          console.log("NodeModel: Got error while trying to fetch required nodes, resultCode = " + resultCode);
-        }
-      });
-    }
+        console.log("NodeModel: Got error while trying to fetch required nodes, resultCode = " + resultCode);
+      }
+      else if (nodeList.length > 0)
+      {
+        self.tagNodeList(nodeList);
+      }
+      else
+      {
+        console.log("NodeModel: No tags found.");
+      }
+    });
 
     console.log("NodeModel: Setting node to map");
     $.murrix.module.map.setNodes([ node ]);
@@ -130,10 +77,10 @@ var NodeModel = function(parentModel)
    */
   parentModel.path().primary.subscribe(function(primary)
   {
-    console.log(primary);
     if (primary.args.length == 0)
     {
-      console.log("NodeModel: No node id specified!");
+      console.log("NodeModel: No node id specified setting node to false!");
+      self.node(false);
       return;
     }
 
@@ -156,23 +103,27 @@ var NodeModel = function(parentModel)
     /* Zero is not a valid id */
     if (nodeId == 0)
     {
-      console.log("NodeModel: Setting primary node id to false");
-      self.primaryNodeId(false);
+      console.log("NodeModel: Node id is invalid, setting node to false");
+      self.node(false);
       return;
     }
 
 
     /* Make sure the node is cached before setting the primary id */
-    parentModel.dbModel.fetchNodesBuffered([ nodeId ], function(transactionId, resultCode)
+    $.murrix.module.db.fetchNodesBufferedIndexed([ nodeId ], function(transactionId, resultCode, nodeList)
     {
       if (resultCode != MURRIX_RESULT_CODE_OK)
       {
         console.log("NodeModel: Got error while trying to fetch node, resultCode = " + resultCode)
       }
+      else if (typeof nodeList[nodeId] != 'undefined')
+      {
+        console.log("NodeModel: Node found, setting node with id " + nodeId);
+        self.node(nodeList[nodeId]);
+      }
       else
       {
-        console.log("NodeModel: Setting primary id to " + nodeId);
-        self.primaryNodeId(nodeId);
+        console.log("NodeModel: No nodes found with that node id, maybe you do not have rights to it!");
       }
     });
   });

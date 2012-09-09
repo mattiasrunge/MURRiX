@@ -4,7 +4,7 @@ var RightsModel = function(parentModel)
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { updatePath(value, self.path); });
+  parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
   self.show = ko.computed(function() { return parentModel.path().primary().action === "rights"; });
   self.enabled = ko.observable(true);

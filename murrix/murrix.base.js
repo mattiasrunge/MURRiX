@@ -3,11 +3,9 @@ $(function()
 {
   /* Create MURRiX context */
   $.murrix = {};
-  $.murrix.module_options = {};
   $.murrix.lib = {};
   $.murrix.module = {};
-  $.murrix.wizard = {};
-  $.murrix.widget = {};
+
 
   /* Create server call function */
   $.murrix.callSimple = function (module, action, data, callback, xhr)
@@ -171,4 +169,39 @@ $(function()
     return array;
   };
 
+  $.murrix.updatePath = function(pathString, pathObserveble)
+  {
+    var position = pathString.indexOf("/");
+    var result = { primary: { action: "", args: [] }, secondary: "" };
+
+    var primaryString = "";
+
+    if (position === -1)
+    {
+      primaryString = pathString;
+      result.secondary = "";
+    }
+    else
+    {
+      primaryString = pathString.substr(0, position);
+      result.secondary = pathString.substr(position + 1);
+    }
+
+    var primarySplit = primaryString.split(":");
+
+    result.primary.action = primarySplit.shift();
+    result.primary.args = primarySplit;
+
+    if (JSON.stringify(result.primary) !== JSON.stringify(pathObserveble().primary()))
+    {
+      pathObserveble().primary(result.primary);
+    }
+
+    if (result.secondary !== pathObserveble().secondary())
+    {
+      pathObserveble().secondary(result.secondary);
+    }
+
+    return result;
+  };
 });

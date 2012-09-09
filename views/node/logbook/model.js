@@ -4,7 +4,7 @@ var LogbookModel = function(parentModel)
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { updatePath(value, self.path); });
+  parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
   self.show = ko.computed(function() { return parentModel.path().primary().action === "logbook"; });
   self.enabled = ko.observable(true);
@@ -133,7 +133,7 @@ var LogbookModel = function(parentModel)
       }
       else
       {
-        mainModel.dbModel.fetchPositions({ node_id_list : logentryIdList }, function(transactionId, resultCode, positionList)
+        $.murrix.module.db.fetchPositions({ node_id_list : logentryIdList }, function(transactionId, resultCode, positionList)
         {
           if (resultCode != MURRIX_RESULT_CODE_OK)
           {

@@ -27,44 +27,6 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
-
-    <script>
-      function updatePath(pathString, pathObserveble)
-      {
-        var position = pathString.indexOf("/");
-        var result = { primary: { action: "", args: [] }, secondary: "" };
-
-        var primaryString = "";
-
-        if (position === -1)
-        {
-          primaryString = pathString;
-          result.secondary = "";
-        }
-        else
-        {
-          primaryString = pathString.substr(0, position);
-          result.secondary = pathString.substr(position + 1);
-        }
-
-        var primarySplit = primaryString.split(":");
-
-        result.primary.action = primarySplit.shift();
-        result.primary.args = primarySplit;
-
-        if (JSON.stringify(result.primary) !== JSON.stringify(pathObserveble().primary()))
-        {
-          pathObserveble().primary(result.primary);
-        }
-
-        if (result.secondary !== pathObserveble().secondary())
-        {
-          pathObserveble().secondary(result.secondary);
-        }
-
-        return result;
-      }
-    </script>
   </head>
 
   <body>
@@ -77,50 +39,50 @@
 
           <a class="brand" href="#">www.runge.se</a>
 
-   <div class="pull-right">
-   <div class="pull-right" <?/*data-bind="if: profile.isAnonymous"*/?>>
-   <a class="btn" href="#" <?/*data-bind="click: profile.profileClicked"*/?>
-   <i class="icon-user"></i> Sign In
-   </a>
-   </div>
-   
-   <div class="pull-right" <?/*data-bind="ifnot: profile.isAnonymous"*/?>>
-   <div class="btn-group">
-   <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" data-bind="click: false">
-   <i class="icon-user"></i> <span <?/*data-bind="text: profile.name"*/?>></span>
-   <span class="caret"></span>
-   </a>
-   <ul class="dropdown-menu">
-   <li><a href="#" <?/*data-bind="click: profile.profileClicked"*/?>>Profile</a></li>
-   <li><a href="#">Administration</a></li>
-   <li class="divider"></li>
-   <li><a href="#" <?/*data-bind="click: profile.signOutClicked"*/?>>Sign Out</a></li>
-   </ul>
-   </div>
-   </div>
-   </div>
+            <div class="pull-right">
+              <div class="pull-right" <?/*data-bind="if: profile.isAnonymous"*/?>>
+                <a class="btn" href="#" <?/*data-bind="click: profile.profileClicked"*/?>
+                  <i class="icon-user"></i> Sign In
+                </a>
+              </div>
 
-   <div class="divider-vertical pull-right"></div>
+              <div class="pull-right" <?/*data-bind="ifnot: profile.isAnonymous"*/?>>
+                <div class="btn-group">
+                  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" data-bind="click: false">
+                    <i class="icon-user"></i> <span <?/*data-bind="text: profile.name"*/?>></span>
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#" <?/*data-bind="click: profile.profileClicked"*/?>>Profile</a></li>
+                    <li><a href="#">Administration</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#" <?/*data-bind="click: profile.signOutClicked"*/?>>Sign Out</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
-   <div class="btn-group pull-right">
-   <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-   Create new
-   <span class="caret"></span>
-   </a>
-   <ul class="dropdown-menu">
-   <li><a href="#">Create album</a></li>
-   <li><a href="#">Create person</a></li>
-   <li><a href="#">Create location</a></li>
-   </ul>
-   </div> 
+            <div class="divider-vertical pull-right"></div>
 
-   <div class="divider-vertical pull-right"></div>
-   
-   <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
-   <input type="text" class="search-query" placeholder="Search" data-bind="value: searchModel.queryInput"/>
-   </form>
-   
-   </div>
+            <div class="btn-group pull-right">
+              <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                Create new
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Create album</a></li>
+                <li><a href="#">Create person</a></li>
+                <li><a href="#">Create location</a></li>
+              </ul>
+            </div>
+
+          <div class="divider-vertical pull-right"></div>
+
+          <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
+            <input type="text" class="search-query" placeholder="Search" data-bind="value: searchModel.queryInput"/>
+          </form>
+
+        </div>
       </div>
     </div>
 
@@ -128,6 +90,7 @@
     <div class="background-map"></div>
 
 
+    <!-- MURRiX view HTML files -->
     <? require("views/node/view.html"); ?>
     <? require("views/node/summary/view.html"); ?>
     <? require("views/node/timeline/view.html"); ?>
@@ -138,9 +101,11 @@
     <? require("views/node/connections/view.html"); ?>
     <? require("views/node/rights/view.html"); ?>
     <? require("views/search/view.html"); ?>
-    
 
-    <!-- Placed at the end of the document so the pages load faster -->
+
+
+
+    <!-- Third-party script files -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/jquery-1.8.1.min.js"><\/script>')</script>
 
@@ -156,21 +121,20 @@
     <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/moment.min.js"></script>
 
+
+
+
+    <!-- MURRiX base library script files -->
     <script src="murrix/libs/murrix.result-codes.php?js"></script>
     <script src="murrix/murrix.base.js"></script>
-
-    <script>                                                                                                   
-      $(function()
-      {
-        $.murrix.module_options = <?=json_encode($murrix_js_options);?>
-      });
-    </script> 
-
     <script src="murrix/libs/murrix.file.js"></script>
-    <script src="murrix/modules/db/murrix.db.api-frontend.js"></script>
     <script src="murrix/modules/map/murrix.map.js"></script>
+    <script src="murrix/modules/db/murrix.db.api-frontend.js"></script>
 
-    <script src="views/db/model.js"></script>
+
+
+
+    <!-- MURRiX view script files -->
     <script src="views/node/summary/model.js"></script>
     <script src="views/node/timeline/model.js"></script>
     <script src="views/node/pictures/model.js"></script>
@@ -181,35 +145,14 @@
     <script src="views/node/rights/model.js"></script>
     <script src="views/node/model.js"></script>
     <script src="views/search/model.js"></script>
-
     <script src="views/user/model.js"></script>
 
+
+
+    <!-- Initialization scripts and definitions -->
     <script>
 
-      var startupConfig = <?=json_encode($murrix_js_options);?>
-
-      var mainModel = null;
-
-      $(function()
-      {
-      mainModel = new function()
-      {
-        var self = this;
-        
-        self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
-
-        self.setPath = function(value)
-        {
-          updatePath(value, self.path);
-        };
-
-        self.dbModel = new DbModel(self);
-        self.userModel = new UserModel(self, startupConfig.user.user_id);
-        self.nodeModel = new NodeModel(self);
-        self.searchModel = new SearchModel(self);
-      };
-      });
-
+      /* Knockout visibility changer (fading) handler  */
       ko.bindingHandlers.fadeVisible = {
         init: function(element, valueAccessor)
         {
@@ -223,6 +166,9 @@
         }
       };
 
+
+
+      /* Knockout HTML data formater */
       ko.bindingHandlers.htmlDate = {
         init: function(element, valueAccessor)
         {
@@ -254,21 +200,57 @@
         }
       };
 
+
+
+      /* Startup configuration options */
+      var startupConfig = <?=json_encode($murrix_js_options);?>
+
+
+
+      /* Declaration of main model */
+      var mainModel = null;
+
       $(function()
       {
+        /* Definitiation of main model */
+        mainModel = new function()
+        {
+          var self = this;
+
+          self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
+
+          self.setPath = function(value)
+          {
+            $.murrix.updatePath(value, self.path);
+          };
+
+          self.userModel = new UserModel(self, startupConfig.user.user_id);
+          self.nodeModel = new NodeModel(self);
+          self.searchModel = new SearchModel(self);
+        };
+
+
+
+        /* Apply bindings on available views */
         ko.applyBindings(mainModel);
 
 
+
+        /* Bind function to change content based on path */
         jQuery.History.bind(function(state)
         {
           mainModel.setPath(state);
         });
 
+
+        /* Trigger loading if no path is set */
         if (document.location.hash.length == 0)
         {
           jQuery.History.trigger("");
         }
-      
+
+
+        /* Initialize background map */
         var options = {
           zoom: 13,
           center: new google.maps.LatLng(57.6706907666667, 11.9375348333333),
@@ -290,6 +272,8 @@
 
         $.murrix.module.map.show(".background-map", options);
 
+
+        /* Clear loading overlay */
         $(".loading-overlay").fadeOut();
       });
 

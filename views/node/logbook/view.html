@@ -1,7 +1,7 @@
 <div class="main-overlay" data-bind="fadeVisible: nodeModel.logbookModel.show, if: nodeModel.node">
   <div class="main-overlay-content">
     <div class="page-header">
-      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.primaryNodeId() }">Close</a>
+      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.node().id() }">Close</a>
 
       <h1>Logbook</h1>
     </div>

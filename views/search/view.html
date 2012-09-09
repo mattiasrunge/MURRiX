@@ -17,13 +17,13 @@
     <div class="pagination" data-bind="visible: searchModel.pages().length > 1">
       <ul>
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked"><i class="icon-step-backward"></i></a></li>
+        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
         <!-- ko foreach: searchModel.pages -->
           <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
         <!-- /ko -->
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked"><i class="icon-step-forward"></i></a></li>
+        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
 
       </ul>
     </div>
@@ -39,13 +39,13 @@
     <div class="pagination" data-bind="visible: searchModel.pages().length > 1">
       <ul>
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked"><i class="icon-step-backward"></i></a></li>
+        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
         <!-- ko foreach: searchModel.pages -->
           <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
         <!-- /ko -->
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked"><i class="icon-step-forward"></i></a></li>
+        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
 
       </ul>
     </div>

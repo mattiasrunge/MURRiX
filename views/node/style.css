@@ -29,3 +29,10 @@
   overflow: auto;
 }
  
+.sidebar-nav-profilepicture {
+  float: left;
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+}

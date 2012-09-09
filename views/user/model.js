@@ -4,7 +4,7 @@ var UserModel = function(parentModel, defaultNodeId)
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { updatePath(value, self.path); });
+  parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
   self.show = ko.computed(function() { return parentModel.path().primary().action === "profile"; });
 
@@ -84,14 +84,14 @@ var UserModel = function(parentModel, defaultNodeId)
   {
     console.log("UserModel: Current user id is now " + self.currentUserNodeId());
 
-    if (!parentModel.dbModel.nodes[self.currentUserNodeId()])
+    if (!$.murrix.module.db.nodes[self.currentUserNodeId()])
     {
       console.log("UserModel: Index was -1, returning false as user node!");
       return false;
     }
 
     console.log("UserModel: User node is cached, returning!");
-    return parentModel.dbModel.nodes[self.currentUserNodeId()];
+    return $.murrix.module.db.nodes[self.currentUserNodeId()];
   });
 
   self.currentUserEmail = ko.computed(function()
@@ -135,7 +135,7 @@ var UserModel = function(parentModel, defaultNodeId)
 
 
   /* Get initial user information */
-  parentModel.dbModel.fetchNodesBuffered([ self.currentUserNodeId() ], function(transactionId, resultCode)
+  $.murrix.module.db.fetchNodesBuffered([ self.currentUserNodeId() ], function(transactionId, resultCode)
   {
     if (resultCode != MURRIX_RESULT_CODE_OK)
     {
