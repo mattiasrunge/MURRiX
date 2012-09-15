@@ -141,7 +141,7 @@
     <script src="murrix/murrix.base.js"></script>
     <script src="murrix/libs/murrix.file.js"></script>
     <script src="murrix/modules/map/murrix.map.js"></script>
-    <script src="murrix/modules/db/murrix.db.api-frontend.js"></script>
+    <script src="murrix/modules/db/murrix.db.js"></script>
 
 
 

@@ -4,12 +4,9 @@ $files = array
 (
   "php" => array
   (
-    "murrix.user.api-backend.php"
+    "murrix.user.backend.php"
   ),
   "js" => array
-  (
-  ),
-  "tmpl" => array
   (
   )
 );
