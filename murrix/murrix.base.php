@@ -20,7 +20,7 @@ require_once("murrix.config.php");
 
 
 /* Start session */
-session_name("murrix_test19");
+session_name("murrix_test20");
 session_start();
 
 
@@ -31,51 +31,7 @@ if (!isset($_SESSION["Modules"]))
 }
 
 
-/* Handle API calls */
-if (isset($_GET["Api"]))
-{
-  /* Set up the parameter object */
-  $request      = $_GET;
-  $request_data = $_POST;
 
-  /* Initialize reponse */
-  $response = array();
-  $response["TransactionId"]  = $request["TransactionId"];
-  $response["ResultCode"]     = MURRIX_RESULT_CODE_OK;
-  $response["Data"]           = array();
-
-  try
-  {
-    /* Validate in parameters */
-    if (!isset($request["Module"]) || !isset($request["Action"]))
-    {
-      throw new Exception("Missing parameters in API call", MURRIX_RESULT_CODE_PARAM);
-    }
-
-    if (!isset($_SESSION["Modules"][$request["Module"]]))
-    {
-      throw new Exception("Unknown module", MURRIX_RESULT_CODE_PARAM);
-    }
-
-
-    /* Call module action */
-    $_SESSION["Modules"][$request["Module"]]->callAction($request["Action"], $request_data, &$response["Data"]);
-  }
-  catch (Exception $e)
-  {
-    $response["ResultCode"] = $e->getCode();
-    $response["Message"]    = $e->getMessage();
-  }
-
-
-  /* Print the response */
-  header("Content-Type: application/json");
-  echo json_encode($response);
-
-
-  /* Terminate execution */
-  exit(0);
-}
 
 
 /* Function to call when to load a module */
@@ -173,5 +129,51 @@ foreach ($murrix_modules as $name => $options)
   }
 }
 
+
+/* Handle API calls */
+if (isset($_GET["Api"]))
+{
+  /* Set up the parameter object */
+  $request      = $_GET;
+  $request_data = $_POST;
+
+  /* Initialize reponse */
+  $response = array();
+  $response["TransactionId"]  = $request["TransactionId"];
+  $response["ResultCode"]     = MURRIX_RESULT_CODE_OK;
+  $response["Data"]           = array();
+
+  try
+  {
+    /* Validate in parameters */
+    if (!isset($request["Module"]) || !isset($request["Action"]))
+    {
+      throw new Exception("Missing parameters in API call", MURRIX_RESULT_CODE_PARAM);
+    }
+
+    if (!isset($_SESSION["Modules"][$request["Module"]]))
+    {
+      throw new Exception("Unknown module", MURRIX_RESULT_CODE_PARAM);
+    }
+
+
+    /* Call module action */
+    $_SESSION["Modules"][$request["Module"]]->callAction($request["Action"], $request_data, &$response["Data"]);
+  }
+  catch (Exception $e)
+  {
+    $response["ResultCode"] = $e->getCode();
+    $response["Message"]    = $e->getMessage();
+  }
+
+
+  /* Print the response */
+  header("Content-Type: application/json");
+  echo json_encode($response);
+
+
+  /* Terminate execution */
+  exit(0);
+}
 
 ?>

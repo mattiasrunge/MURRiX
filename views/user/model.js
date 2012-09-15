@@ -12,10 +12,16 @@ var UserModel = function(parentModel, initialUserNodeId)
   self.currentUserNode = ko.observable(false);
   self.inputUsername = ko.observable("");
   self.inputPassword = ko.observable("");
+  self.inputRemember = ko.observable(false);
   self.usernameFocused = ko.observable(true);
   self.errorText = ko.observable("");
   self.loading = ko.observable(true);
 
+  self.profileClicked = function()
+  {
+
+  };
+  
   self.signOutClicked = function()
   {
     self.loading(true);
@@ -32,6 +38,8 @@ var UserModel = function(parentModel, initialUserNodeId)
       }
       else
       {
+        $.cookie("userinfo", null, { path : "/" });
+        
         self.currentUserNode(false);
       }
     });
@@ -39,7 +47,7 @@ var UserModel = function(parentModel, initialUserNodeId)
     return false;
   };
 
-  self.loginSubmit = function(form)
+  self.loginSubmit = function()
   {
     self.loading(true);
     self.errorText("");
@@ -56,32 +64,59 @@ var UserModel = function(parentModel, initialUserNodeId)
       }
       else
       {
+        if (self.inputRemember() === true)
+        {
+          $.cookie("userinfo", JSON.stringify({ username: self.inputUsername(), password : self.inputPassword() }), { expires: 365, path: '/' });
+        }
+        else
+        {
+          $.cookie("userinfo", null, { path : "/" });
+        }
+        
         self.inputUsername("");
         self.inputPassword("");
+        self.inputRemember(false);
+        
         self.currentUserNode(response.Node);
       }
     });
   };
 
-  /* Get initial user information */
-  $.murrix.module.db.fetchNodesBufferedIndexed([ initialUserNodeId ], function(transactionId, resultCode, nodeList)
+  if ($.cookie("userinfo") !== null)
   {
-    self.loading(false);
-    self.errorText("");
+    console.log("UserModel: Signing in with cookie information");
+    var data = JSON.parse($.cookie("userinfo"));
 
-    if (resultCode != MURRIX_RESULT_CODE_OK)
+    self.inputUsername(data.username);
+    self.inputPassword(data.password);
+    self.inputRemember(true);
+
+    self.loginSubmit();
+  }
+  else
+  {
+    console.log("UserModel: Fetching initial user data");
+  
+    /* Get initial user information */
+    $.murrix.module.db.fetchNodesBufferedIndexed([ initialUserNodeId ], function(transactionId, resultCode, nodeList)
     {
-      console.log("UserModel: Got error while trying to fetch node, resultCode = " + resultCode);
-      self.errorText("Error while fetching user information, resultCode " + resultCode);
-    }
-    else if (nodeList.length === 0 || nodeList[initialUserNodeId].attr("Username") === "anonymous")
-    {
-      console.log("UserModel: You are now anonymous!");
-      self.currentUserNode(false);
-    }
-    else
-    {
-      self.currentUserNode(nodeList[initialUserNodeId]);
-    }
-  });
+      self.loading(false);
+      self.errorText("");
+
+      if (resultCode != MURRIX_RESULT_CODE_OK)
+      {
+        console.log("UserModel: Got error while trying to fetch node, resultCode = " + resultCode);
+        self.errorText("Error while fetching user information, resultCode " + resultCode);
+      }
+      else if (nodeList.length === 0 || nodeList[initialUserNodeId].attr("Username") === "anonymous")
+      {
+        console.log("UserModel: You are now anonymous!");
+        self.currentUserNode(false);
+      }
+      else
+      {
+        self.currentUserNode(nodeList[initialUserNodeId]);
+      }
+    });
+  }
 };

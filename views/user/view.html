@@ -1,37 +1,12 @@
-<div class="main-overlay-big" data-bind="fadeVisible: userModel.show">
+<div class="main-overlay-big" data-bind="fadeVisible: userModel.show, if: userModel.currentUserNode">
   <div class="main-overlay-content">
     <div class="page-header">
       <a class="btn btn-primary pull-right" href="#">Close</a>
 
-      <h1 data-bind="if: userModel.currentUserNode">Profile</h1>
-      <h1 data-bind="ifnot: userModel.currentUserNode">Sign In</h1>
+      <h1>Profile</h1>
     </div>
 
-    <div class="row" data-bind="ifnot: userModel.currentUserNode">
-      <div class="">
-        <form class="form-horizontal main-overlay-centered-form" data-bind="submit: userModel.loginSubmit">
-          <fieldset>
-            <div class="control-group">
-              <label class="control-label" for="inputUsername">Username</label>
-              <div class="controls">
-                <input type="text" id="inputUsername" data-bind="hasfocus: userModel.usernameFocused, disable: userModel.loading, value: userModel.inputUsername">
-                <div class="help-inline"></div>
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="inputPassword">Password</label>
-              <div class="controls">
-                <input type="password" id="inputPassword" data-bind="disable: userModel.loading, value: userModel.inputPassword">
-                <div class="help-inline"></div>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary" data-bind="text: userModel.loading() ? 'Signing in...' : 'Sign in'"></button>
-              <div class="help-inline" data-bind="text: userModel.errorText"></div>
-            </div>
-          </fieldset>
-        </form>
-      </div>
+    <div class="row">
     </div>
 
   </div>

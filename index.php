@@ -39,49 +39,60 @@
 
           <a class="brand" href="#">www.runge.se</a>
 
-            <div class="pull-right">
-              <div class="pull-right" data-bind="ifnot: userModel.currentUserNode">
-                <a class="btn" href="#user">
-                  <i class="icon-user"></i> Sign In
-                </a>
-              </div>
+          <div class="pull-right"><!-- Other nav bar content -->
 
-              <div class="pull-right" data-bind="if: userModel.currentUserNode">
-                <div class="btn-group">
-                  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" data-bind="click: false">
-                    <i class="icon-user"></i> <span data-bind="text: userModel.currentUserNode().name"></span>
-                    <span class="caret"></span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a href="#user">Profile</a></li>
-                    <li><a href="#user/admin">Administration</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#" data-bind="click: userModel.signOutClicked">Sign Out</a></li>
-                  </ul>
+            <!-- The drop down menu -->
+            <ul class="nav pull-right">
+              <li class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                  <span data-bind="ifnot: userModel.currentUserNode">Sign In</span>
+                  <span data-bind="if: userModel.currentUserNode, text: userModel.currentUserNode().name"></span>
+                  <strong class="caret"></strong>
+                </a>
+                <div class="dropdown-menu">
+                
+                  <form class="" data-bind="submit: userModel.loginSubmit, visible: !userModel.currentUserNode()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+                    <input placeholder="Username" id="inputUsername" style="margin-bottom: 15px;" type="text" name="user[inputUsername]" size="30" data-bind="hasfocus: userModel.usernameFocused, disable: userModel.loading, value: userModel.inputUsername"/>
+                    <input placeholder="Password" id="inputPassword" style="margin-bottom: 15px;" type="password" name="user[inputPassword]" size="30" data-bind="disable: userModel.loading, value: userModel.inputPassword"/>
+                    <input id="inputRemember" style="float: left; margin-right: 10px;" type="checkbox" name="user[inputRemember]" value="1" data-bind="disable: userModel.loading, checked: userModel.inputRemember"/>
+                    <label class="string optional" for="inputRemember"> Remember me</label>
+
+                    <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
+                    <div data-bind="visible: userModel.errorText() != '', text: userModel.errorText" style="margin-bottom: 15px;"></div>
+                  </form>
+
+                  <div data-bind="visible: userModel.currentUserNode">
+                    <a href="#user">Profile</a>
+                    <a href="#" data-bind="click: userModel.signOutClicked">Sign out</a>
+                  </div>
+                  
                 </div>
-              </div>
-            </div>
+              </li>
+            </ul>
+            
+            <div class="divider-vertical pull-right"></div>
+
+             <!-- The drop down menu -->
+            <ul class="nav pull-right">
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  Create new
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Create album</a></li>
+                  <li><a href="#">Create person</a></li>
+                  <li><a href="#">Create location</a></li>
+                </ul>
+              </li>
+            </ul>
 
             <div class="divider-vertical pull-right"></div>
 
-            <div class="btn-group pull-right">
-              <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                Create new
-                <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Create album</a></li>
-                <li><a href="#">Create person</a></li>
-                <li><a href="#">Create location</a></li>
-              </ul>
-            </div>
-
-          <div class="divider-vertical pull-right"></div>
-
-          <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
-            <input type="text" class="search-query" placeholder="Search" data-bind="value: searchModel.queryInput"/>
-          </form>
-
+            <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
+              <input type="text" class="search-query" placeholder="Search" data-bind="value: searchModel.queryInput"/>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -114,6 +125,7 @@
 
     <script src="js/jquery.history.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="js/jquery.cookie.js"></script>
     <script src="js/knockout-2.1.0.js"></script>
     <script src="js/knockout.mapping-latest.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -230,6 +242,11 @@
         ko.applyBindings(mainModel);
 
 
+        $(".dropdown-menu input, .dropdown-menu label").click(function(e)
+        {
+          e.stopPropagation();
+        });
+        
 
         /* Bind function to change content based on path */
         jQuery.History.bind(function(state)
