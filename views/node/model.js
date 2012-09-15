@@ -84,19 +84,7 @@ var NodeModel = function(parentModel)
       return;
     }
 
-    var nodeId = primary.args[0];
-
-    if (typeof nodeId != "number")
-    {
-      try
-      {
-        nodeId = parseInt(nodeId, 10);
-      }
-      catch (e)
-      {
-        nodeId = 0;
-      }
-    }
+    var nodeId = $.murrix.intval(primary.args[0]);
 
     console.log("NodeModel: Got nodeId = " + nodeId);
 

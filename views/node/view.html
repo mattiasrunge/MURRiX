@@ -2,17 +2,17 @@
   <div class="sidebar-nav-content">
     <ul class="nav nav-list">
       <li>
-        <div class="page-header">
+
+          <h5 data-bind="text: nodeModel.node() ? nodeModel.node().name : 'Unknown'"></h5>
+
           <!-- ko if: nodeModel.profilePictureNode() -->
-            <img class="thumbnail" src="" alt="" data-bind="<?/*event: { drop: sidebar.dragDrop, dragover: sidebar.dragOver }, */?>attr: { src: 'preview.php?nodeId=' + nodeModel.profilePictureNode().id() + '&amp;width=64&amp;height=64' }">
+            <img class="thumbnail" src="" alt="" data-bind="<?/*event: { drop: sidebar.dragDrop, dragover: sidebar.dragOver }, */?>attr: { src: 'preview.php?nodeId=' + nodeModel.profilePictureNode().id() + '&amp;width=214&amp;height=160' }">
           <!-- /ko -->
 
           <!-- ko if: !nodeModel.profilePictureNode() -->
-            <div class="thumbnail sidebar-nav-profilepicture"></div>
+            <img class="thumbnail" src="http://www.placehold.it/214x160/ffffff/000000/&text=Drop+profile+picture"/>
           <!-- /ko -->
 
-          <h5 data-bind="text: nodeModel.node() ? nodeModel.node().name : 'Unknown'"></h5>
-        </div>
       </li>
       
       <li class="nav-header">Actions</li>

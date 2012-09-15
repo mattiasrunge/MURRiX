@@ -130,7 +130,7 @@ class MurrixModuleDb extends MurrixModule
     }
    
    
-    return $nodes;  
+    return $nodes;
   }
   
   public function FetchPositions($db, $query)
@@ -648,6 +648,20 @@ class MurrixModuleDb extends MurrixModule
     $db = $this->GetDb();
     
     $out_node_list = $this->FetchNodes($db, $in_node_id_list);
+
+    foreach ($out_node_list as $node_id => $node)
+    {
+      if ($node["type"] == "user")
+      {
+        foreach ($node["attributes"] as $key => $attribute)
+        {
+          if ($attribute["name"] == "Password")
+          {
+            $out_node_list[$node_id]["attributes"][$key]["value"] = "";
+          }
+        }
+      }
+    }
   }
   
   public function ActionFetchPositions($in_query, &$out_position_list)

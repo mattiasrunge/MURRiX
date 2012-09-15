@@ -1,52 +1,38 @@
 
-var UserModel = function(parentModel, defaultNodeId)
+var UserModel = function(parentModel, initialUserNodeId)
 {
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "profile"; });
+  self.show = ko.computed(function() { return parentModel.path().primary().action === "user"; });
 
 
-  self.defaultUsername = "anonymous";
-  self.currentUserNodeId = ko.observable(defaultNodeId);
-/*
+  self.currentUserNode = ko.observable(false);
   self.inputUsername = ko.observable("");
   self.inputPassword = ko.observable("");
   self.usernameFocused = ko.observable(true);
-  self.statusText = ko.observable("");
-  self.loading = ko.observable(false);
+  self.errorText = ko.observable("");
+  self.loading = ko.observable(true);
 
   self.signOutClicked = function()
   {
     self.loading(true);
+    self.errorText("");
 
-    $.murrix.call("user", "Logout", { }, function(transaction_id, result_code, response_data, message)
+    $.murrix.call("user", "Logout", { }, function(transactionId, resultCode)
     {
       self.loading(false);
 
-      if (result_code != MURRIX_RESULT_CODE_OK)
+      if (resultCode != MURRIX_RESULT_CODE_OK)
       {
-        $('.notification').notify({
-          message: {
-            text: message
-          },
-          type: 'error',
-          fadeOut: {
-            enabled: false
-          }
-        }).show();
+        console.log("UserModel: Got error while trying to fetch node, resultCode = " + resultCode);
+        console.log("Failed to sign out, resultCode " + resultCode);
       }
       else
       {
-        $('.notification').notify({
-          message: {
-            text: 'Sign out successfull!'
-          }
-        }).show();
-
-        self.updateFromNode(response_data.Node);
+        self.currentUserNode(false);
       }
     });
 
@@ -56,90 +42,46 @@ var UserModel = function(parentModel, defaultNodeId)
   self.loginSubmit = function(form)
   {
     self.loading(true);
-    self.statusText("");
+    self.errorText("");
 
-    $.murrix.call("user", "Login", { "Username" : self.inputUsername(), "Password" : SHA1(self.inputPassword()) }, function(transaction_id, result_code, response_data, message)
+    $.murrix.call("user", "Login", { "Username" : self.inputUsername(), "Password" : self.inputPassword() }, function(transactionId, resultCode, response)
     {
       self.loading(false);
 
-      if (result_code != MURRIX_RESULT_CODE_OK)
+      if (resultCode != MURRIX_RESULT_CODE_OK)
       {
         self.usernameFocused(true);
-        self.statusText(message);
+        console.log("UserModel: Got error while trying to sign in, resultCode = " + resultCode);
+        self.errorText("Failed to sign in, try again, resultCode" + resultCode);
       }
       else
       {
-        $('.notification').notify({
-          message: {
-            text: 'Sign in successfull!'
-          }
-        }).show();
-
-        self.updateFromNode(response_data.Node);
+        self.inputUsername("");
+        self.inputPassword("");
+        self.currentUserNode(response.Node);
       }
     });
   };
-*/
-  self.currentUserNode = ko.computed(function()
-  {
-    console.log("UserModel: Current user id is now " + self.currentUserNodeId());
-
-    if (!$.murrix.module.db.nodes[self.currentUserNodeId()])
-    {
-      console.log("UserModel: Index was -1, returning false as user node!");
-      return false;
-    }
-
-    console.log("UserModel: User node is cached, returning!");
-    return $.murrix.module.db.nodes[self.currentUserNodeId()];
-  });
-
-  self.currentUserEmail = ko.computed(function()
-  {
-    var node = self.currentUserNode();
-
-    if (node === false)
-    {
-      return ko.observable("");
-    }
-
-    for (var n = 0; n < node.attributes().length; n++)
-    {
-      if (node.attributes()[n].name() === "Email")
-      {
-        return node.attributes()[n].value;
-      }
-    }
-
-    return ko.observable("");
-  });
-
-  self.isAnonymous = ko.computed(function()
-  {
-    if (self.currentUserNode() === false)
-    {
-      return true;
-    }
-
-    for (var n = 0; n < self.currentUserNode().attributes().length; n++)
-    {
-      if (self.currentUserNode().attributes()[n].name() === "Username" && self.currentUserNode().attributes()[n].value !== self.defaultUsername)
-      {
-        return false;
-      }
-    }
-    
-    return true;
-  });
-
-
 
   /* Get initial user information */
-  $.murrix.module.db.fetchNodesBuffered([ self.currentUserNodeId() ], function(transactionId, resultCode)
+  $.murrix.module.db.fetchNodesBufferedIndexed([ initialUserNodeId ], function(transactionId, resultCode, nodeList)
   {
+    self.loading(false);
+    self.errorText("");
+
     if (resultCode != MURRIX_RESULT_CODE_OK)
     {
-      console.log("UserModel: Got error while trying to fetch node, resultCode = " + resultCode)
+      console.log("UserModel: Got error while trying to fetch node, resultCode = " + resultCode);
+      self.errorText("Error while fetching user information, resultCode " + resultCode);
+    }
+    else if (nodeList.length === 0 || nodeList[initialUserNodeId].attr("Username") === "anonymous")
+    {
+      console.log("UserModel: You are now anonymous!");
+      self.currentUserNode(false);
+    }
+    else
+    {
+      self.currentUserNode(nodeList[initialUserNodeId]);
     }
   });
 };

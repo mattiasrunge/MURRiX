@@ -20,7 +20,7 @@ require_once("murrix.config.php");
 
 
 /* Start session */
-session_name("murrix_test18");
+session_name("murrix_test19");
 session_start();
 
 
@@ -170,31 +170,6 @@ foreach ($murrix_modules as $name => $options)
     }
 
     $murrix_js_options[$name] = $_SESSION["Modules"][$name]->getFrontendOptions();
-  }
-}
-
-
-$widgets = Murrix_GetSubfolders("murrix/widgets");
-
-foreach ($widgets as $widget)
-{
-  $widget_path = "murrix/widgets/" . $widget;
-
-  if (file_exists($widget_path . "/murrix.widget.css"))
-  {
-    $murrix_css_files[] = $widget_path . "/murrix.widget.css";
-  }
-
-  if (file_exists($widget_path . "/murrix.widget.js"))
-  {
-    $murrix_js_files[] = $widget_path . "/murrix.widget.js";
-  }
-
-  $templates = Murrix_GetSubfiles($widget_path . "/templates");
-
-  foreach ($templates as $template)
-  {
-    $murrix_js_templates[str_replace(".", "-", basename($template, ".html"))] = $widget_path . "/templates/" . $template;
   }
 }
 

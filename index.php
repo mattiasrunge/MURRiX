@@ -33,30 +33,30 @@
     <div class="loading-overlay"></div>
     <div class="notifications bottom-right notification"></div>
 
-    <div class="navbar navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
 
           <a class="brand" href="#">www.runge.se</a>
 
             <div class="pull-right">
-              <div class="pull-right" <?/*data-bind="if: profile.isAnonymous"*/?>>
-                <a class="btn" href="#" <?/*data-bind="click: profile.profileClicked"*/?>
+              <div class="pull-right" data-bind="ifnot: userModel.currentUserNode">
+                <a class="btn" href="#user">
                   <i class="icon-user"></i> Sign In
                 </a>
               </div>
 
-              <div class="pull-right" <?/*data-bind="ifnot: profile.isAnonymous"*/?>>
+              <div class="pull-right" data-bind="if: userModel.currentUserNode">
                 <div class="btn-group">
                   <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" data-bind="click: false">
-                    <i class="icon-user"></i> <span <?/*data-bind="text: profile.name"*/?>></span>
+                    <i class="icon-user"></i> <span data-bind="text: userModel.currentUserNode().name"></span>
                     <span class="caret"></span>
                   </a>
                   <ul class="dropdown-menu">
-                    <li><a href="#" <?/*data-bind="click: profile.profileClicked"*/?>>Profile</a></li>
-                    <li><a href="#">Administration</a></li>
+                    <li><a href="#user">Profile</a></li>
+                    <li><a href="#user/admin">Administration</a></li>
                     <li class="divider"></li>
-                    <li><a href="#" <?/*data-bind="click: profile.signOutClicked"*/?>>Sign Out</a></li>
+                    <li><a href="#" data-bind="click: userModel.signOutClicked">Sign Out</a></li>
                   </ul>
                 </div>
               </div>
@@ -101,7 +101,7 @@
     <? require("views/node/connections/view.html"); ?>
     <? require("views/node/rights/view.html"); ?>
     <? require("views/search/view.html"); ?>
-
+    <? require("views/user/view.html"); ?>
 
 
 
@@ -219,12 +219,7 @@
 
           self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
 
-          self.setPath = function(value)
-          {
-            $.murrix.updatePath(value, self.path);
-          };
-
-          self.userModel = new UserModel(self, startupConfig.user.user_id);
+          self.userModel = new UserModel(self, $.murrix.intval(startupConfig.user.user_id));
           self.nodeModel = new NodeModel(self);
           self.searchModel = new SearchModel(self);
         };
@@ -239,7 +234,7 @@
         /* Bind function to change content based on path */
         jQuery.History.bind(function(state)
         {
-          mainModel.setPath(state);
+          $.murrix.updatePath(state, mainModel.path);
         });
 
 

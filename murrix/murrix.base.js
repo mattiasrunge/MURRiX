@@ -169,7 +169,31 @@ $(function()
     return array;
   };
 
-  $.murrix.updatePath = function(pathString, pathObserveble)
+  $.murrix.intval = function(value)
+  {
+    var intvalue = value;
+
+    if (typeof value !== "number")
+    {
+      try
+      {
+        intvalue = parseInt(value, 10);
+      }
+      catch (e)
+      {
+      }
+    }
+
+    if (typeof intvalue !== "number" || isNaN(intvalue))
+    {
+      console.log("Could not convert value to int: \"" + value + "\" (" + (typeof value) + ") -> \"" + intvalue + "\" (" + typeof intvalue + ")");
+      intvalue = 0;
+    }
+
+    return intvalue;
+  };
+
+  $.murrix.updatePath = function(pathString, pathObservable)
   {
     var position = pathString.indexOf("/");
     var result = { primary: { action: "", args: [] }, secondary: "" };
@@ -192,14 +216,14 @@ $(function()
     result.primary.action = primarySplit.shift();
     result.primary.args = primarySplit;
 
-    if (JSON.stringify(result.primary) !== JSON.stringify(pathObserveble().primary()))
+    if (JSON.stringify(result.primary) !== JSON.stringify(pathObservable().primary()))
     {
-      pathObserveble().primary(result.primary);
+      pathObservable().primary(result.primary);
     }
 
-    if (result.secondary !== pathObserveble().secondary())
+    if (result.secondary !== pathObservable().secondary())
     {
-      pathObserveble().secondary(result.secondary);
+      pathObservable().secondary(result.secondary);
     }
 
     return result;

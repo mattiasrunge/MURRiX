@@ -44,14 +44,14 @@ class MurrixModuleUser extends MurrixModule
     return $_SESSION["Modules"]["db"]->FetchNode($db, $this->user_id_);
   }
 
-  
+
   /* Action functions */
   
   public function ActionLogin($in_username, $in_password, &$out_node)
   {
     $db = $_SESSION["Modules"]["db"]->GetDb();
     
-    $searchQuery = array("type" => "user", "attributes" => array("Username" => $in_username, "Password" => $in_password));
+    $searchQuery = array("type" => "user", "attributes" => array("Username" => $in_username, "Password" => sha1($in_password)));
     
     $node_id_list = $_SESSION["Modules"]["db"]->SearchNodeIds($db, $searchQuery);
     
@@ -61,6 +61,14 @@ class MurrixModuleUser extends MurrixModule
     }
     
     $out_node = $_SESSION["Modules"]["db"]->FetchNode($db, reset($node_id_list));
+
+    foreach ($out_node["attributes"] as $key => $attribute)
+    {
+      if ($attribute["name"] == "Password")
+      {
+        $out_node["attributes"][$key]["value"] = "";
+      }
+    }
     
     $this->user_id_ = $out_node["id"];
   }
@@ -79,6 +87,14 @@ class MurrixModuleUser extends MurrixModule
     }
     
     $out_node = $_SESSION["Modules"]["db"]->FetchNode($db, reset($node_id_list));
+
+    foreach ($out_node["attributes"] as $key => $attribute)
+    {
+      if ($attribute["name"] == "Password")
+      {
+        $out_node["attributes"][$key]["value"] = "";
+      }
+    }
     
     $this->user_id_ = $out_node["id"];
   }
