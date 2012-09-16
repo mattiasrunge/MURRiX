@@ -71,7 +71,7 @@ class MurrixModuleUser extends MurrixModule
     }
   }
 
-  public function CheckNodeAccess($right, $node_links)
+  public function IsAdmin()
   {
     if ($this->user_node_ != false)
     {
@@ -82,6 +82,16 @@ class MurrixModuleUser extends MurrixModule
           return true;
         }
       }
+    }
+
+    return false;
+  }
+
+  public function CheckNodeAccess($right, $node_links)
+  {
+    if ($this->IsAdmin())
+    {
+      return true;
     }
   
     $access_group_node_id_list = array();

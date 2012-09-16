@@ -6,45 +6,132 @@
       <h1>Administration</h1>
     </div>
 
-    <div class="row-fluid">
-      <div class="span6">
-        <h2>Users</h2>
+    <div class="row">
+      <div class="span12">
+        <h2>
+          Users
+
+          <span class="dropdown">
+            <a class="btn dropdown-toggle" href="#" data-toggle="dropdown">
+              Add
+              <strong class="caret"></strong>
+            </a>
+            <div class="dropdown-menu">
+
+              <form class="" data-bind="submit: adminModel.addUserSubmit" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+                <input placeholder="Name" id="inputAddUserName" style="margin-bottom: 15px;" type="text" name="user[inputAddUserName]" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputAddUserName"/>
+              
+                <input placeholder="Username" id="inputAddUserUsername" style="margin-bottom: 15px;" type="text" name="user[inputAddUserUsername]" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputAddUserUsername"/>
+                
+                <input placeholder="Password" id="inputAddUserPassword" style="margin-bottom: 15px;" type="password" name="user[inputAddUserPassword]" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputAddUserPassword"/>
+
+                <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Create User" />
+                <div data-bind="visible: adminModel.errorTextAddUser() != '', text: adminModel.errorTextAddUser" style="margin-bottom: 15px;"></div>
+              </form>
+
+            </span>
+          </div>
+          
+        </h2>
         <table class="table table-striped">
           <thead>
             <tr>
+              <th>&nbsp;</th>
               <th>Name</th>
               <th>Username</th>
               <th>Created</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody data-bind="foreach: adminModel.userNodeList">
             <tr>
-              <td><a href="#" data-bind="attr: { href: '#node:' + $data.id }, text: $data.name"></a></td>
+              <td>
+                <span class="dropdown">
+                  <a class="btn btn-mini dropdown-toggle" href="#" data-toggle="dropdown">
+                    <i class="icon-pencil"></i>
+                    <strong class="caret"></strong>
+                  </a>
+                  <div class="dropdown-menu">
+
+                    <form class="" data-bind="submit: $parent.adminModel.saveUserSubmit.bind($data, $data)" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+                      <input placeholder="Name" style="margin-bottom: 15px;" type="text" name="name" size="30" data-bind="disable: $parent.adminModel.loading, value: $data.name"/>
+
+                      <input placeholder="Username" style="margin-bottom: 15px;" type="text" size="30" data-bind="disable: $parent.adminModel.loading, value: $data.attr('Username')"/>
+
+                      <input placeholder="Password" style="margin-bottom: 15px;" type="password" size="30" data-bind="disable: $parent.adminModel.loading, value: $data.attr('Password')"/>
+
+                      <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" value="Save" />
+                      <div data-bind="visible: $parent.adminModel.errorTextSaveUser() != '', text: $parent.adminModel.errorTextSaveUser" style="margin-bottom: 15px;"></div>
+                    </form>
+
+                  </span>
+                </div>
+
+                <button class="btn btn-mini" data-bind="click: $parent.adminModel.userRemoveClicked.bind($data, $data)"><i class="icon-trash"></i></button>
+              </td>
+              <td><a href="#" data-bind="attr: { href: '#node:' + $data.id() }, text: $data.name"></a></td>
               <td data-bind="text: $data.attr('Username')"></td>
               <td data-bind="htmlDate: $data.created"></td>
-              <td></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="span6">
-        <h2>Groups</h2>
+    </div>
+    <div class="row">
+      <div class="span12">
+        <h2>
+          Groups
+          
+          <span class="dropdown">
+            <a class="btn dropdown-toggle" href="#" data-toggle="dropdown">
+              Add
+              <strong class="caret"></strong>
+            </a>
+            <div class="dropdown-menu">
+
+              <form class="" data-bind="submit: adminModel.addGroupSubmit" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+                <input placeholder="Name" id="inputAddGroupName" style="margin-bottom: 15px;" type="text" name="user[inputAddGroupName]" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputAddGroupName"/>
+
+                <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Create Group" />
+                <div data-bind="visible: adminModel.errorTextAddGroup() != '', text: adminModel.errorTextAddGroup" style="margin-bottom: 15px;"></div>
+              </form>
+
+            </span>
+          </div>
+          
+        </h2>
         <table class="table table-striped">
           <thead>
             <tr>
+              <th>&nbsp;</th>
               <th>Name</th>
               <th>Members</th>
               <th>Created</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody data-bind="foreach: adminModel.groupNodeList">
             <tr>
-              <td><a href="#" data-bind="attr: { href: '#node:' + $data.id }, text: $data.name"></a></td>
+              <td>
+                <span class="dropdown">
+                  <a class="btn btn-mini dropdown-toggle" href="#" data-toggle="dropdown">
+                    <i class="icon-pencil"></i>
+                    <strong class="caret"></strong>
+                  </a>
+                  <div class="dropdown-menu">
+
+                    <form class="" data-bind="submit: $parent.adminModel.saveGroupSubmit.bind($data, $data)" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+                      <input placeholder="Name" style="margin-bottom: 15px;" type="text" name="name" size="30" data-bind="disable: $parent.adminModel.loading, value: $data.name"/>
+
+                      <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" value="Save" />
+                      <div data-bind="visible: $parent.adminModel.errorTextSaveGroup() != '', text: $parent.adminModel.errorTextSaveGroup" style="margin-bottom: 15px;"></div>
+                    </form>
+
+                  </span>
+                </div>
+                <button class="btn btn-mini" data-bind="click: $parent.adminModel.groupRemoveClicked.bind($data, $data)"><i class="icon-trash"></i></button>
+              </td>
+              <td><a href="#" data-bind="attr: { href: '#node:' + $data.id() }, text: $data.name"></a></td>
               <td></td>
               <td data-bind="htmlDate: $data.created"></td>
-              <td></td>
             </tr>
           </tbody>
         </table>

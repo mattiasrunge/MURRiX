@@ -361,6 +361,50 @@ $(function()
         self.fetchNodesBuffered(queue_item.nodeIdList, queue_item.callback);
       }
     };
+
+    /**
+    * Create a new node.
+    *
+    * Callback(int transaction_id, MURRIX_RESULT_CODE result, JSON data)
+    *   param transaction_id - Transaction ID.
+    *   param result_code    - MURRIX_RESULT_CODE_OK on success.
+    *   param node_data      - Node data JSON object of the created node.
+    *
+    *
+    * @param node_data - Node data JSON object, should not have a valid id.
+    * @param callback  - Result callback function.
+    *
+    * @return          - Transaction ID.
+    * @throws          - MURRIX_RESULT_CODE
+    */
+    self.createNode = function(nodeData, callback)
+    {
+      if (!nodeData || !callback)
+      {
+        throw MURRIX_RESULT_CODE_PARAM;
+      }
+
+      return $.murrix.call("db", "CreateNode", { "Node" : nodeData }, function(transactionId, resultCode, responseData)
+      {
+        if (resultCode != MURRIX_RESULT_CODE_OK)
+        {
+          if (callback)
+          {
+            callback(transactionId, resultCode, null);
+          }
+        }
+        else
+        {
+          var nodeList = {};
+
+          nodeList[$.murrix.intval(responseData.Node.id)] = responseData.Node;
+        
+          nodeList = self.cacheNodesInternal(nodeList);
+
+          callback(transactionId, resultCode, nodeList[0]);
+        }
+      });
+    };
   
 // /*
 // 

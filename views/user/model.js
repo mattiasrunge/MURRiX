@@ -75,8 +75,12 @@ var UserModel = function(parentModel, initialUserNodeId)
         self.inputPassword("");
         self.inputRemember(false);
 
-        var nodeList = $.murrix.module.db.cacheNodesInternal([ response.Node ]);
+        var nodeList = {};
+
+        nodeList[$.murrix.intval(response.Node.id)] = response.Node;
         
+        nodeList = $.murrix.module.db.cacheNodesInternal(nodeList);
+
         self.currentUserNode(nodeList[0]);
       }
     });

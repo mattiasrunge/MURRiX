@@ -282,6 +282,10 @@ class MurrixModuleDb extends MurrixModule
   public function ActionCreateNode($in_node, &$out_node)
   {
     // TODO: Check if allowed to create type
+    if (($in_node["type"] == "user" || $in_node["type"] == "group") && !$_SESSION["Modules"]["user"]->IsAdmin())
+    {
+      throw new Exception("Could not create node.", MURRIX_RESULT_CODE_NO_RIGHTS);
+    }
     
     
     /* Check if this is a file and if it exists in the upload list */
@@ -404,6 +408,10 @@ class MurrixModuleDb extends MurrixModule
           $this->Query($db, $query);
         }
       }
+      else if ($in_node["type"] == "user")
+      {
+        $in_node["attributes"]["Password"] = sha1($in_node["attributes"]["Password"]);
+      }
       
       
       /* Insert into Attributes */
@@ -443,7 +451,10 @@ class MurrixModuleDb extends MurrixModule
     
     
     /* Set out node */
-    $out_node = $this->FetchNode($db, $in_node["id"]);
+    $out_node_list = array();
+    $this->ActionFetchNodes(array($in_node["id"]), $out_node_list);
+
+    $out_node = reset($out_node_list);
   }
 
   public function ActionAddPositions($in_node_id, $in_position_list)
