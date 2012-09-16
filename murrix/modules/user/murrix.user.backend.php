@@ -5,8 +5,12 @@ require_once("murrix/libs/murrix.utils.php");
 
 class MurrixModuleUser extends MurrixModule
 {
-  protected $default_username_  = "anonymous";
-  protected $user_id_           = 0;
+  protected $default_username_          = "anonymous";
+  protected $admin_username_            = "admin";
+  protected $user_node_                 = false;
+  protected $group_admin_node_id_list_  = array();
+  protected $group_all_node_id_list_    = array();
+  protected $group_read_node_id_list_   = array();
  
   
   function __construct($options)
@@ -34,16 +38,105 @@ class MurrixModuleUser extends MurrixModule
   
   public function GetUserId()
   {
-    return $this->user_id_;
+    return $this->user_node_ ? $this->user_node_->id : 0;
   }
 
   public function GetUser()
   {
-    $db = $_SESSION["Modules"]["db"]->GetDb();
-    
-    return $_SESSION["Modules"]["db"]->FetchNode($db, $this->user_id_);
+    return $this->user_node_;
   }
 
+  public function SetUser($out_node)
+  {
+    $this->user_node_ = $out_node;
+
+    $this->group_admin_node_id_list_ = array();
+    $this->group_all_node_id_list_ = array();
+    $this->group_read_node_id_list_ = array();
+
+    foreach ($this->user_node_["links"] as $link)
+    {
+      if ($link["role"] == "admin")
+      {
+        $this->group_admin_node_id_list_[] = $link["node_id"]; 
+      }
+      else if ($link["role"] == "all")
+      {
+        $this->group_all_node_id_list_[] = $link["node_id"];
+      }
+      else if ($link["role"] == "read")
+      {
+        $this->group_read_node_id_list_[] = $link["node_id"];
+      }
+    }
+  }
+
+  public function CheckNodeAccess($right, $node_links)
+  {
+    if ($this->user_node_ != false)
+    {
+      foreach ($this->user_node_["attributes"] as $attribute)
+      {
+        if ($attribute["name"] == "Username" && $attribute["value"] == $this->admin_username_)
+        {
+          return true;
+        }
+      }
+    }
+  
+    $access_group_node_id_list = array();
+  
+    foreach ($node_links as $link)
+    {
+      if ($link["role"] == "access")
+      {
+        $access_group_node_id_list[] = $link["node_id"];
+      }
+    }
+
+    if (count($access_group_node_id_list) > 0)
+    {
+      switch ($right)
+      {
+        case "read":
+        {
+          $result = count($this->group_read_node_id_list_) > 0 && count(array_intersect($access_group_node_id_list, $this->group_read_node_id_list_)) > 0;
+
+          if ($result)
+          {
+            return true;
+          }
+
+          /* If no explicit read, check higher order rights */
+        }
+        case "all":
+        {
+          $result = count($this->group_all_node_id_list_) > 0 && count(array_intersect($access_group_node_id_list, $this->group_all_node_id_list_)) > 0;
+
+          if ($result)
+          {
+            return true;
+          }
+          
+          /* If no explicit all, check higher order rights */
+        }
+        case "admin":
+        {
+          $result = count($this->group_admin_node_id_list_) > 0 && count(array_intersect($access_group_node_id_list, $this->group_admin_node_id_list_)) > 0;
+
+          if ($result)
+          {
+            return true;
+          }
+
+          /* If no explicit admin, nothing to be done, return false */
+        }
+      }
+    }
+
+    return false;
+  }
+  
 
   /* Action functions */
   
@@ -70,7 +163,7 @@ class MurrixModuleUser extends MurrixModule
       }
     }
     
-    $this->user_id_ = $out_node["id"];
+    $this->SetUser($out_node);
   }
   
   public function ActionLogout(&$out_node)
@@ -96,7 +189,7 @@ class MurrixModuleUser extends MurrixModule
       }
     }
     
-    $this->user_id_ = $out_node["id"];
+    $this->SetUser($out_node);
   }
 }
 

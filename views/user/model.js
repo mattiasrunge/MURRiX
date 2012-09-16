@@ -10,6 +10,7 @@ var UserModel = function(parentModel, initialUserNodeId)
 
 
   self.currentUserNode = ko.observable(false);
+  self.groupNodeList = ko.observableArray([]);
   self.inputUsername = ko.observable("");
   self.inputPassword = ko.observable("");
   self.inputRemember = ko.observable(false);
@@ -17,10 +18,7 @@ var UserModel = function(parentModel, initialUserNodeId)
   self.errorText = ko.observable("");
   self.loading = ko.observable(true);
 
-  self.profileClicked = function()
-  {
 
-  };
   
   self.signOutClicked = function()
   {
@@ -76,11 +74,39 @@ var UserModel = function(parentModel, initialUserNodeId)
         self.inputUsername("");
         self.inputPassword("");
         self.inputRemember(false);
+
+        var nodeList = $.murrix.module.db.cacheNodesInternal([ response.Node ]);
         
-        self.currentUserNode(response.Node);
+        self.currentUserNode(nodeList[0]);
       }
     });
   };
+
+  self.currentUserNode.subscribe(function(node)
+  {
+    self.groupNodeList.removeAll();
+
+    if (node === false)
+    {
+      return;
+    }
+
+    node.getLinkedNodes([ "admin", "all", "read" ], function(resultCode, nodeIdList, nodeList)
+    {
+      if (resultCode != MURRIX_RESULT_CODE_OK)
+      {
+        console.log("UserModel: Got error while trying to fetch required nodes, resultCode = " + resultCode);
+      }
+      else if (nodeList.length > 0)
+      {
+        self.groupNodeList(nodeList);
+      }
+      else
+      {
+        console.log("UserModel: No groups found.");
+      }
+    });
+  });
 
   if ($.cookie("userinfo") !== null)
   {

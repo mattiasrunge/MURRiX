@@ -135,7 +135,7 @@ $(function()
           return null;
         };
 
-        self.nodes[id].getLinkedNodes = function(role, callback)
+        self.nodes[id].getLinkedNodes = function(roles, callback)
         {
           var linkedIdList = [];
 
@@ -143,7 +143,7 @@ $(function()
           {
             var link = this.links()[n];
 
-            if (!role || link.role() === role)
+            if (!roles || link.role() === roles || (roles instanceof Array && $.murrix.inArray(link.role(), roles)))
             {
               linkedIdList.push(parseInt(link.node_id(), 10));
             }

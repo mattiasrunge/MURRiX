@@ -113,6 +113,7 @@
     <? require("views/node/rights/view.html"); ?>
     <? require("views/search/view.html"); ?>
     <? require("views/user/view.html"); ?>
+    <? require("views/admin/view.html"); ?>
 
 
 
@@ -158,6 +159,7 @@
     <script src="views/node/model.js"></script>
     <script src="views/search/model.js"></script>
     <script src="views/user/model.js"></script>
+    <script src="views/admin/model.js"></script>
 
 
 
@@ -232,6 +234,7 @@
           self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
 
           self.userModel = new UserModel(self, $.murrix.intval(startupConfig.user.user_id));
+          self.adminModel = new AdminModel(self);
           self.nodeModel = new NodeModel(self);
           self.searchModel = new SearchModel(self);
         };
@@ -242,6 +245,7 @@
         ko.applyBindings(mainModel);
 
 
+        /* Disable closing of popup in login form */
         $(".dropdown-menu input, .dropdown-menu label").click(function(e)
         {
           e.stopPropagation();

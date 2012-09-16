@@ -223,9 +223,12 @@ class MurrixModuleDb extends MurrixModule
       $dbQuery_where[] = "(`Nodes`.`name` " . mysql_escape_string($name_compare) . " '" . mysql_escape_string($searchQuery["name"]) . "')";
     }
     
-    if (isset($searchQuery["type"]))
+    if (isset($searchQuery["types"]))
     {
-      $dbQuery_where[] = "(`Nodes`.`type` = '" . mysql_escape_string($searchQuery["type"]) . "')";
+      foreach ($searchQuery["types"] as $type)
+      {
+        $dbQuery_where[] = "(`Nodes`.`type` = '" . mysql_escape_string($type) . "')";
+      }
     }
     
     if (isset($searchQuery["attributes"]))
@@ -639,17 +642,57 @@ class MurrixModuleDb extends MurrixModule
   public function ActionSearchNodeIds($in_query, &$out_node_id_list)
   {
     $db = $this->GetDb();
+
+    $out_node_id_list = array();
+    $node_links_list = array();
+    $node_id_list = $this->SearchNodeIds($db, $in_query, "LIKE", "OR");
+
+
+    foreach ($node_id_list as $node_id)
+    {
+      $node_links_list[$node_id] = array();
+    }
+
     
-    $out_node_id_list = $this->SearchNodeIds($db, $in_query, "LIKE", "OR");
+    /* Select from roles as up */
+    $query = "SELECT * FROM `Links` WHERE " . implode(" OR ", array_prefix_values($node_id_list, "`node_id_up` = "));
+
+    $db_result = $this->Query($db, $query);
+
+    while ($row = $db_result->fetch_assoc())
+    {
+      $node_links_list[$row["node_id_up"]][] = array("node_id" => $row["node_id_down"], "role" => $row["role"], "direction" => "down");
+    }
+
+
+    /* Select from roles as down */
+    $query = "SELECT * FROM `Links` WHERE " . implode(" OR ", array_prefix_values($node_id_list, "`node_id_down` = "));
+
+    $db_result = $this->Query($db, $query);
+
+    while ($row = $db_result->fetch_assoc())
+    {
+      $node_links_list[$row["node_id_down"]][] = array("node_id" => $row["node_id_up"], "role" => $row["role"], "direction" => "up");
+    }
+
+
+    foreach ($node_links_list as $node_id => $links)
+    {
+      if ($_SESSION["Modules"]["user"]->CheckNodeAccess("read", $links))
+      {
+        $out_node_id_list[] = $node_id;
+      }
+    }
   }
   
   public function ActionFetchNodes($in_node_id_list, &$out_node_list)
   {
     $db = $this->GetDb();
-    
-    $out_node_list = $this->FetchNodes($db, $in_node_id_list);
 
-    foreach ($out_node_list as $node_id => $node)
+    $out_node_list = array();
+    $node_list = $this->FetchNodes($db, $in_node_id_list);
+
+    foreach ($node_list as $node)
     {
       if ($node["type"] == "user")
       {
@@ -657,10 +700,15 @@ class MurrixModuleDb extends MurrixModule
         {
           if ($attribute["name"] == "Password")
           {
-            $out_node_list[$node_id]["attributes"][$key]["value"] = "";
+            $node["attributes"][$key]["value"] = "";
           }
         }
       }
+
+      if ($_SESSION["Modules"]["user"]->CheckNodeAccess("read", $node["links"]))
+      {
+        $out_node_list[] = $node;
+      } 
     }
   }
   

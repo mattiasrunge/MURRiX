@@ -140,7 +140,7 @@ var SearchModel = function(parentModel)
         {
           $('.notification').notify({
             message: {
-              text: 'No nodes found but search returned something, this is inconsitent!'
+              text: 'No nodes found but search returned something, this is inconsistent!'
             },
             type: 'error',
             fadeOut: {

@@ -169,6 +169,19 @@ $(function()
     return array;
   };
 
+  $.murrix.inArray = function(needle, haystack)
+  {
+    for (var n = 0; n < haystack.length; n++)
+    {
+      if (needle === haystack[n])
+      {
+        return true;
+      }
+    }
+
+    return true;
+  };
+
   $.murrix.intval = function(value)
   {
     var intvalue = value;

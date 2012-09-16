@@ -6,7 +6,19 @@
       <h1>Profile</h1>
     </div>
 
-    <div class="row">
+    <div class="row-fluid">
+      <div class="span6">
+        <h2>Information</h2>
+        <p>
+           
+        </p>
+      </div>
+      <div class="span6">
+        <h2>Group memberships</h2>
+        <ul data-bind="foreach: userModel.groupNodeList">
+          <li data-bind="text: name"></li>
+        </ul>
+      </div>
     </div>
 
   </div>
