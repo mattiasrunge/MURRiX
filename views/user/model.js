@@ -37,7 +37,8 @@ var UserModel = function(parentModel, initialUserNodeId)
       else
       {
         $.cookie("userinfo", null, { path : "/" });
-        
+
+        $(".dropdown.open .dropdown-toggle").dropdown("toggle");
         self.currentUserNode(false);
       }
     });
@@ -81,6 +82,7 @@ var UserModel = function(parentModel, initialUserNodeId)
         
         nodeList = $.murrix.module.db.cacheNodesInternal(nodeList);
 
+        $(".dropdown.open .dropdown-toggle").dropdown("toggle");
         self.currentUserNode(nodeList[0]);
       }
     });

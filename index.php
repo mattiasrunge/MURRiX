@@ -62,6 +62,7 @@
                   </form>
 
                   <div data-bind="visible: userModel.currentUserNode">
+                    <a href="#admin" data-bind="if: adminModel.accessable">Administration</a>
                     <a href="#user">Profile</a>
                     <a href="#" data-bind="click: userModel.signOutClicked">Sign out</a>
                   </div>
@@ -83,6 +84,7 @@
                   <li><a href="#">Create album</a></li>
                   <li><a href="#">Create person</a></li>
                   <li><a href="#">Create location</a></li>
+                  <li><a href="#">Create vehicle</a></li>
                 </ul>
               </li>
             </ul>
@@ -255,6 +257,7 @@
         /* Bind function to change content based on path */
         jQuery.History.bind(function(state)
         {
+          $(".dropdown.open .dropdown-toggle").dropdown("toggle");
           $.murrix.updatePath(state, mainModel.path);
         });
 

@@ -38,7 +38,7 @@ class MurrixModuleUser extends MurrixModule
   
   public function GetUserId()
   {
-    return $this->user_node_ !== false? $this->user_node_->id : 0;
+    return $this->user_node_ !== false ? $this->user_node_["id"] : 0;
   }
 
   public function GetUser()
