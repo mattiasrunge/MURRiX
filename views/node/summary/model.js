@@ -50,60 +50,60 @@ var SummaryModel = function(parentModel)
   self.descriptionEditClicked = function()
   {
     parentModel.node().descriptionEditing(true);
-  }
+  };
 
   self.descriptionCancelClicked = function()
   {
     parentModel.node().description(parentModel.node().descriptionOriginal());
     parentModel.node().descriptionEditing(false);
-  }
+  };
 
   self.descriptionSaveClicked = function()
   {
     parentModel.node().descriptionEditing(false);
     // TODO Save!
-  }
+  };
 
 
   self.nameEditClicked = function()
   {
     parentModel.node().nameEditing(true);
-  }
+  };
 
   self.nameCancelClicked = function()
   {
     parentModel.node().name(parentModel.node().nameOriginal());
     parentModel.node().nameEditing(false);
-  }
+  };
 
   self.nameSaveClicked = function()
   {
     parentModel.node().nameEditing(false);
     // TODO Save!
-  }
+  };
 
 
   self.typeEditClicked = function()
   {
     parentModel.node().typeEditing(true);
-  }
+  };
 
   self.typeCancelClicked = function()
   {
     parentModel.node().type(parentModel.node().typeOriginal());
     parentModel.node().typeEditing(false);
-  }
+  };
 
   self.typeSaveClicked = function()
   {
     parentModel.node().typeEditing(false);
     // TODO Save!
-  }
+  };
 
 
   self.itemClicked = function(item1, item2)
   {
-    if (self.editingItem() != "")
+    if (self.editingItem() !== "")
     {
       var parts = self.editingItem().split(".");
       console.log(self.editingItem());

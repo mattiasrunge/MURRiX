@@ -29,8 +29,7 @@ var SearchModel = function(parentModel)
       return;
     }
 
-    console.log(primary);
-    if (primary.args.length == 0)
+    if (primary.args.length === 0)
     {
       console.log("No query specified!");
       return;

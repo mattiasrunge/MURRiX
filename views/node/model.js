@@ -77,7 +77,7 @@ var NodeModel = function(parentModel)
    */
   parentModel.path().primary.subscribe(function(primary)
   {
-    if (primary.args.length == 0)
+    if (primary.args.length === 0)
     {
       console.log("NodeModel: No node id specified setting node to false!");
       self.node(false);
@@ -89,7 +89,7 @@ var NodeModel = function(parentModel)
     console.log("NodeModel: Got nodeId = " + nodeId);
 
     /* Zero is not a valid id */
-    if (nodeId == 0)
+    if (nodeId === 0)
     {
       console.log("NodeModel: Node id is invalid, setting node to false");
       self.node(false);
@@ -102,7 +102,7 @@ var NodeModel = function(parentModel)
     {
       if (resultCode != MURRIX_RESULT_CODE_OK)
       {
-        console.log("NodeModel: Got error while trying to fetch node, resultCode = " + resultCode)
+        console.log("NodeModel: Got error while trying to fetch node, resultCode = " + resultCode);
       }
       else if (typeof nodeList[nodeId] != 'undefined')
       {

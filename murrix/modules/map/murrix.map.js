@@ -64,7 +64,7 @@ $(function()
     {
       var path = self.polyline.getPath();
 
-      if (path.getLength() == 0)
+      if (path.getLength() === 0)
       {
         return true;
       }
@@ -73,7 +73,7 @@ $(function()
     };
   };
 
-  $.murrix.module.map = new function()
+  MurrixMap = function()
   {
     var self = this;
 
@@ -83,7 +83,7 @@ $(function()
     this.colors_ = [ "#FF0000", "#00FF00", "#0000FF" ];
 
     this.lastCreatedPosition = null;
-    this.lastDatetimePosition = null
+    this.lastDatetimePosition = null;
     this.nodes = [];
     this.timer = null;
 
@@ -255,7 +255,7 @@ $(function()
       {
         path.polyline.setMap(self.map_);
 
-        /*google.maps.event.addListener(path.polyline, "click", function(event)
+        google.maps.event.addListener(path.polyline, "click", function(event)
         {
           console.log(event);
         });
@@ -311,14 +311,14 @@ $(function()
       }
 
       self.timer = null;
-    }
+    };
 
     this.startPoll = function()
     {
       self.stopPoll();
 
       self.timer = setInterval(function() { self.checkForNewPositions(); }, kMapCheckTimeout);
-    }
+    };
 
     this.setNodes = function(nodes)
     {
@@ -430,7 +430,9 @@ $(function()
       {
         colorCounter = 0;
       }*/
-    }
+    };
 
-  }();
+  };
+
+  $.murrix.module.map = new MurrixMap();
 });

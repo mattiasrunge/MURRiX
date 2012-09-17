@@ -86,11 +86,11 @@ var NodeListMapping = {
 
 $(function()
 {
-  $.murrix.module.db = new function()
+  var MurrixDb = function()
   {
     var self = this;
   
-    self.nodes = {}
+    self.nodes = {};
     self.fetchNodesActive = false;
     self.fetchNodesQueue = [];
 
@@ -101,7 +101,7 @@ $(function()
 
       jQuery.each(nodeDataList, function(n, nodeData)
       {
-        var id = $.murrix.intval(nodeData["id"]);
+        var id = $.murrix.intval(nodeData.id);
 
         if (!self.nodes[id])
         {
@@ -186,7 +186,7 @@ $(function()
       });
 
       return nodeList;
-    }
+    };
 
       /**
       * Search for node ids based on a query object.
@@ -882,5 +882,7 @@ $(function()
 //         self.fetchNodesBuffered(queue_item.node_id_list, queue_item.callback);
 //       }
 //     };*/
-  }();
+  };
+
+  $.murrix.module.db = new MurrixDb();
 });

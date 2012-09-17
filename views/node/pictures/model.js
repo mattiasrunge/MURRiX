@@ -74,7 +74,7 @@ var PicturesModel = function(parentModel)
     console.log(data);
     event.originalEvent.dataTransfer.setData('node_id', data.id);
     return true;
-  }
+  };
 
   $("#pictures-droptarget").get(0).addEventListener("dragover", function(event)
   {
@@ -90,7 +90,7 @@ var PicturesModel = function(parentModel)
     event.stopPropagation();
     event.preventDefault();
 
-    if (event.dataTransfer.files.length == 0)
+    if (event.dataTransfer.files.length === 0)
     {
       return false;
     }

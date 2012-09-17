@@ -25,7 +25,7 @@ var LogbookModel = function(parentModel)
     console.log(this);
 
     return false;
-  }
+  };
 
   self.formSubmit = function(form)
   {
@@ -49,9 +49,9 @@ var LogbookModel = function(parentModel)
         {
           var position = {};
 
-          position['source'] = "manual";
-          position['type'] = "None";
-          position['datetime'] = datetime;
+          position.source = "manual";
+          position.type = "None";
+          position.datetime = datetime;
         
           $.murrix.module.db.addPositions(node_data.id, [ position ], function(transaction_id, result_code)
           {
