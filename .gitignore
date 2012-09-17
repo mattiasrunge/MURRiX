@@ -4,3 +4,4 @@ previews/*
 !preview/.htaccess
 files/*
 !files/.htaccess
+murrix.config.php
