@@ -87,12 +87,18 @@ class MurrixModuleUser extends MurrixModule
     return false;
   }
 
-  public function CheckNodeAccess($right, $node_links)
+  public function CheckNodeAccess($right, $node_id, $node_links)
   {
     if ($this->IsAdmin())
     {
       return true;
     }
+
+    if ($node_id == $this->GetUserId())
+    {
+      return true;
+    }
+    
   
     $access_group_node_id_list = array();
   

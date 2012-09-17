@@ -689,7 +689,7 @@ class MurrixModuleDb extends MurrixModule
 
     foreach ($node_links_list as $node_id => $links)
     {
-      if ($_SESSION["Modules"]["user"]->CheckNodeAccess("read", $links))
+      if ($_SESSION["Modules"]["user"]->CheckNodeAccess("read", $node_id, $links))
       {
         $out_node_id_list[] = $node_id;
       }
@@ -716,7 +716,7 @@ class MurrixModuleDb extends MurrixModule
         }
       }
 
-      if ($_SESSION["Modules"]["user"]->CheckNodeAccess("read", $node["links"]))
+      if ($_SESSION["Modules"]["user"]->CheckNodeAccess("read", $node["id"], $node["links"]))
       {
         $out_node_list[] = $node;
       } 
