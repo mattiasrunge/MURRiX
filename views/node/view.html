@@ -62,9 +62,9 @@
         </a>
       </li>
 
-      <li data-bind="fadeVisible: nodeModel.rightsModel.enabled, css: { 'active': nodeModel.rightsModel.show }" class="nav-link">
-        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.node().id() + '/rights' }">
-          <i class="icon-lock"></i> Rights <span data-bind="fadeVisible: nodeModel.rightsModel.rights().length > 0, text: nodeModel.rightsModel.rights().length" class="badge pull-right"></span>
+      <li data-bind="fadeVisible: nodeModel.accessesModel.enabled, css: { 'active': nodeModel.accessesModel.show }" class="nav-link">
+        <a href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.node().id() + '/accesses' }">
+          <i class="icon-lock"></i> Accesses <span data-bind="fadeVisible: nodeModel.accessesModel.accesses().length > 0, text: nodeModel.accessesModel.accesses().length" class="badge pull-right"></span>
         </a>
       </li>
 

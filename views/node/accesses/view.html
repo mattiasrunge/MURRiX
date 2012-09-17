@@ -1,0 +1,29 @@
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.accessesModel.show, if: nodeModel.node">
+  <div class="main-overlay-content">
+    <div class="page-header">
+      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.node().id() }">Close</a>
+
+      <h1>Accesses</h1>
+    </div>
+
+    <p>
+      The groups listed below have access to this node. The role that each member of a group has defines what
+      kind of access level is granted on this node to that member.
+    </p>
+    
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Group name</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: nodeModel.accessesModel.accesses">
+        <tr>
+          <td><a href="#" data-bind="attr: { href: '#node:' + $data.id }, text: $data.name"></a></td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>
+  <div class="well sidebar-nav-background"></div>
+</div>

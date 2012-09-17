@@ -125,5 +125,5 @@ var NodeModel = function(parentModel)
   self.logbookModel = new LogbookModel(self);
   self.commentsModel = new CommentsModel(self);
   self.connectionsModel = new ConnectionsModel(self);
-  self.rightsModel = new RightsModel(self);
+  self.accessesModel = new AccessesModel(self);
 };

@@ -1,28 +1,28 @@
 
-var RightsModel = function(parentModel)
+var AccessesModel = function(parentModel)
 {
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "rights"; });
+  self.show = ko.computed(function() { return parentModel.path().primary().action === "accesses"; });
   self.enabled = ko.observable(true);
   
-  self.rights = ko.observableArray([ ]);
+  self.accesses = ko.observableArray([ ]);
 
   parentModel.node.subscribe(function(node)
   {
-    self.rights.removeAll();
+    self.accesses.removeAll();
 
     if (!node)
     {
-      console.log("Node is false, not looking for rights!");
+      console.log("Node is false, not looking for accesses!");
       return;
     }
 
-    console.log("Looking for rights...");
-    node.getLinkedNodes("right", function(resultCode, nodeIdList, nodeList)
+    console.log("Looking for accesses...");
+    node.getLinkedNodes("access", function(resultCode, nodeIdList, nodeList)
     {
       if (resultCode != MURRIX_RESULT_CODE_OK)
       {
@@ -30,7 +30,7 @@ var RightsModel = function(parentModel)
       }
       else
       {
-        self.rights(nodeList);
+        self.accesses(nodeList);
       }
     });
   });

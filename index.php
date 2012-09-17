@@ -112,7 +112,7 @@
     <? require("views/node/logbook/view.html"); ?>
     <? require("views/node/comments/view.html"); ?>
     <? require("views/node/connections/view.html"); ?>
-    <? require("views/node/rights/view.html"); ?>
+    <? require("views/node/accesses/view.html"); ?>
     <? require("views/search/view.html"); ?>
     <? require("views/user/view.html"); ?>
     <? require("views/admin/view.html"); ?>
@@ -157,7 +157,7 @@
     <script src="views/node/logbook/model.js"></script>
     <script src="views/node/comments/model.js"></script>
     <script src="views/node/connections/model.js"></script>
-    <script src="views/node/rights/model.js"></script>
+    <script src="views/node/accesses/model.js"></script>
     <script src="views/node/model.js"></script>
     <script src="views/search/model.js"></script>
     <script src="views/user/model.js"></script>
