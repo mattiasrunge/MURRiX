@@ -20,7 +20,7 @@ require_once("murrix.config.php");
 
 
 /* Start session */
-session_name("murrix_test21");
+session_name("murrix_test22");
 session_start();
 
 

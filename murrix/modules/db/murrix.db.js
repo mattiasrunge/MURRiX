@@ -99,8 +99,10 @@ $(function()
     {
       var nodeList = [];
 
-      jQuery.each(nodeDataList, function(id, nodeData)
+      jQuery.each(nodeDataList, function(n, nodeData)
       {
+        var id = $.murrix.intval(nodeData["id"]);
+
         if (!self.nodes[id])
         {
           console.log("DbModel: Could not find mapped index, node is not cached, id " + id);

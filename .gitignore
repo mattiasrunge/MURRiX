@@ -1,2 +1,6 @@
 murrix.config.php 
 *~
+previews/*
+!preview/.htaccess
+files/*
+!files/.htaccess

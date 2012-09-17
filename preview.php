@@ -32,11 +32,11 @@ function isAttribute($node, $attributeName)
   return false;
 }
 
-if (!file_exists(dirname(__FILE__) . "/previews2/" . $filename))
+if (!file_exists(dirname(__FILE__) . "/previews/" . $filename))
 {
   require_once("murrix/murrix.base.php");
 
-  $originalFilename = dirname(__FILE__) . "/files2/" . $nodeId;
+  $originalFilename = dirname(__FILE__) . "/files/" . $nodeId;
 
   if (!file_exists($originalFilename))
   {
@@ -137,7 +137,7 @@ if (!file_exists(dirname(__FILE__) . "/previews2/" . $filename))
         return;
       }
 
-      if (!rename($tempfile, dirname(__FILE__) . "/previews2/" . $filename))
+      if (!rename($tempfile, dirname(__FILE__) . "/previews/" . $filename))
       {
         header("HTTP/1.0 404 Not Found - copy");
         return;
@@ -154,6 +154,6 @@ if (!file_exists(dirname(__FILE__) . "/previews2/" . $filename))
 }
 
 header("Content-Type: image/jpeg");
-echo @readfile(dirname(__FILE__) . "/previews2/" . $filename);
+echo @readfile(dirname(__FILE__) . "/previews/" . $filename);
 
 ?>

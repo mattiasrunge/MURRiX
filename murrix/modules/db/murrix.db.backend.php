@@ -374,17 +374,17 @@ class MurrixModuleDb extends MurrixModule
               $in_node["attributes"]["Angle"] = 0;
               break;
             }
-            case 8: // 270 CW
-            {
-              $in_node["attributes"]["Angle"] = 270;
-              break;
-            }
-            case 6: // 90 CW
+            case 8: // 270 CW (90 CCW)
             {
               $in_node["attributes"]["Angle"] = 90;
               break;
             }
-            case 3: // 180 CW
+            case 6: // 90 CW (270 CCW)
+            {
+              $in_node["attributes"]["Angle"] = 270;
+              break;
+            }
+            case 3: // 180 CW (180 CCW)
             {
               $in_node["attributes"]["Angle"] = 180;
               break;
