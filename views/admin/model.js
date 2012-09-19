@@ -116,7 +116,7 @@ var AdminModel = function(parentModel, initialUserNodeId)
   self.loadUsersAndGroups = function()
   {
     console.log("AdminModel: Loading users and groups");
-  
+
     self.groupNodeList.removeAll();
     self.userNodeList.removeAll();
   

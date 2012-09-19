@@ -129,7 +129,6 @@ foreach ($murrix_modules as $name => $options)
   }
 }
 
-
 /* Handle API calls */
 if (isset($_GET["Api"]))
 {

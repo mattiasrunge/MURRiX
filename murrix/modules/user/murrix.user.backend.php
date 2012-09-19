@@ -8,9 +8,7 @@ class MurrixModuleUser extends MurrixModule
   protected $default_username_          = "anonymous";
   protected $admin_username_            = "admin";
   protected $user_node_                 = false;
-  protected $group_admin_node_id_list_  = array();
-  protected $group_all_node_id_list_    = array();
-  protected $group_read_node_id_list_   = array();
+  protected $group_node_id_list_        = array();
  
   
   function __construct($options)
@@ -50,23 +48,13 @@ class MurrixModuleUser extends MurrixModule
   {
     $this->user_node_ = $out_node;
 
-    $this->group_admin_node_id_list_ = array();
-    $this->group_all_node_id_list_ = array();
-    $this->group_read_node_id_list_ = array();
+    $this->group_node_id_list_ = array();
 
     foreach ($this->user_node_["links"] as $link)
     {
-      if ($link["role"] == "admin")
+      if ($link["role"] == "member" && $link["direction"] == "up")
       {
-        $this->group_admin_node_id_list_[] = $link["node_id"]; 
-      }
-      else if ($link["role"] == "all")
-      {
-        $this->group_all_node_id_list_[] = $link["node_id"];
-      }
-      else if ($link["role"] == "read")
-      {
-        $this->group_read_node_id_list_[] = $link["node_id"];
+        $this->group_node_id_list_[] = $link["node_id"]; 
       }
     }
   }
@@ -87,7 +75,7 @@ class MurrixModuleUser extends MurrixModule
     return false;
   }
 
-  public function CheckNodeAccess($right, $node_id, $node_links)
+  public function CheckNodeAccess($right, $node_id)
   {
     if ($this->IsAdmin())
     {
@@ -98,56 +86,44 @@ class MurrixModuleUser extends MurrixModule
     {
       return true;
     }
-    
-  
-    $access_group_node_id_list = array();
-  
-    foreach ($node_links as $link)
+
+    if (count($this->group_node_id_list_) == 0)
     {
-      if ($link["role"] == "access")
+      return false;
+    }
+
+    if (in_array($node_id, $this->group_node_id_list_))
+    {
+      return true;
+    }
+
+    if (!isset($GLOBALS['node_id_access']))
+    {
+      $GLOBALS['node_id_access'] = array();
+    }
+
+    if (isset($GLOBALS['node_id_access'][$node_id]) && ($GLOBALS['node_id_access'][$node_id] == $right || $GLOBALS['node_id_access'][$node_id] == "all"))
+    {
+      return true;
+    }
+
+    $db = $_SESSION["Modules"]["db"]->GetDb();
+    
+    $query = "SELECT `level` FROM `Accesses` WHERE `node_id` = '" . $node_id . "' AND (" . implode(" OR ", array_prefix_values($this->group_node_id_list_, "`group_node_id` = ")) . ")";
+
+    $db_result = $_SESSION["Modules"]["db"]->Query($db, $query);
+
+    while ($row = $db_result->fetch_assoc())
+    {
+      if (!(isset($GLOBALS['node_id_access'][$node_id]) && $GLOBALS['node_id_access'][$node_id] == "all"))
       {
-        $access_group_node_id_list[] = $link["node_id"];
+        $GLOBALS['node_id_access'][$node_id] = $row["level"];
       }
     }
 
-    if (count($access_group_node_id_list) > 0)
+    if (isset($GLOBALS['node_id_access'][$node_id]) && ($GLOBALS['node_id_access'][$node_id] == $right || $GLOBALS['node_id_access'][$node_id] == "all"))
     {
-      switch ($right)
-      {
-        case "read":
-        {
-          $result = count($this->group_read_node_id_list_) > 0 && count(array_intersect($access_group_node_id_list, $this->group_read_node_id_list_)) > 0;
-
-          if ($result)
-          {
-            return true;
-          }
-
-          /* If no explicit read, check higher order rights */
-        }
-        case "all":
-        {
-          $result = count($this->group_all_node_id_list_) > 0 && count(array_intersect($access_group_node_id_list, $this->group_all_node_id_list_)) > 0;
-
-          if ($result)
-          {
-            return true;
-          }
-          
-          /* If no explicit all, check higher order rights */
-        }
-        case "admin":
-        {
-          $result = count($this->group_admin_node_id_list_) > 0 && count(array_intersect($access_group_node_id_list, $this->group_admin_node_id_list_)) > 0;
-
-          if ($result)
-          {
-            return true;
-          }
-
-          /* If no explicit admin, nothing to be done, return false */
-        }
-      }
+      return true;
     }
 
     return false;
