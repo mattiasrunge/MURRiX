@@ -28,6 +28,7 @@ class MurrixModuleDb extends MurrixModule
     $this->registerAction("LinkNodes",          array($this, "ActionLinkNodes"),          array("NodeIdUp", "NodeIdDown", "Role"),                  array("NodeUp", "NodeDown", "Role"));
     $this->registerAction("UnlinkNodes",        array($this, "ActionUnlinkNodes"),        array("NodeIdUp", "NodeIdDown", "Role"),                  array("NodeUp", "NodeDown", "Role"));
     $this->registerAction("SearchNodeIds",      array($this, "ActionSearchNodeIds"),      array("Query"),                                           array("NodeIdList"));
+    $this->registerAction("SearchNodes",        array($this, "ActionSearchNodes"),        array("Query"),                                           array("NodeList"));
     $this->registerAction("FetchNodes",         array($this, "ActionFetchNodes"),         array("NodeIdList"),                                      array("NodeList"));
     $this->registerAction("FetchPositions",     array($this, "ActionFetchPositions"),     array("Query"),                                           array("PositionList"));
     $this->registerAction("AddPositions",       array($this, "ActionAddPositions"),       array("NodeId", "PositionList"),                          array());
@@ -666,6 +667,15 @@ class MurrixModuleDb extends MurrixModule
     $out_role       = $in_role;
   }
 
+  public function ActionSearchNodes($in_query, &$out_node_list)
+  {
+    $db = $this->GetDb();
+
+    $node_id_list = $this->SearchNodeIds($db, $in_query, "LIKE", "OR");
+
+    $this->ActionFetchNodes($node_id_list, &$out_node_list);
+  }
+  
   public function ActionSearchNodeIds($in_query, &$out_node_id_list)
   {
     $db = $this->GetDb();

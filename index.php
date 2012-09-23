@@ -70,21 +70,21 @@
                 </div>
               </li>
             </ul>
-            
-            <div class="divider-vertical pull-right"></div>
+
+            <div class="divider-vertical pull-right" data-bind="if: userModel.currentUserNode"></div>
 
              <!-- The drop down menu -->
-            <ul class="nav pull-right">
+            <ul class="nav pull-right" data-bind="if: userModel.currentUserNode">
               <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                   Create new
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Create album</a></li>
-                  <li><a href="#">Create person</a></li>
-                  <li><a href="#">Create location</a></li>
-                  <li><a href="#">Create vehicle</a></li>
+                  <li><a href="#createAlbumModal" data-toggle="modal">Create album</a></li>
+                  <li><a href="#createPersonModal" data-toggle="modal">Create person</a></li>
+                  <li><a href="#createLocationModal" data-toggle="modal">Create location</a></li>
+                  <li><a href="#createVehicleModal" data-toggle="modal">Create vehicle</a></li>
                 </ul>
               </li>
             </ul>
@@ -100,6 +100,8 @@
     </div>
 
 
+
+
     <div class="background-map"></div>
 
 
@@ -113,6 +115,7 @@
     <? require("views/node/comments/view.html"); ?>
     <? require("views/node/connections/view.html"); ?>
     <? require("views/node/accesses/view.html"); ?>
+    <? require("views/node/overlay/view.html"); ?>
     <? require("views/search/view.html"); ?>
     <? require("views/user/view.html"); ?>
     <? require("views/admin/view.html"); ?>
@@ -158,6 +161,7 @@
     <script src="views/node/comments/model.js"></script>
     <script src="views/node/connections/model.js"></script>
     <script src="views/node/accesses/model.js"></script>
+    <script src="views/node/overlay/model.js"></script>
     <script src="views/node/model.js"></script>
     <script src="views/search/model.js"></script>
     <script src="views/user/model.js"></script>
@@ -182,6 +186,40 @@
         }
       };
 
+
+
+
+     /* Knockout HTML size formater */
+      ko.bindingHandlers.htmlSize = {
+        init: function(element, valueAccessor)
+        {
+          var fileSizeInBytes = $.murrix.intval(ko.utils.unwrapObservable(valueAccessor()));
+          var i = -1;
+          var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+          
+          do
+          {
+              fileSizeInBytes = fileSizeInBytes / 1024;
+              i++;
+          } while (fileSizeInBytes > 1024);
+
+          $(element).html(Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i]);
+        },
+        update: function(element, valueAccessor)
+        {
+          var fileSizeInBytes = ko.utils.unwrapObservable(valueAccessor());
+          var i = -1;
+          var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+
+          do
+          {
+              fileSizeInBytes = fileSizeInBytes / 1024;
+              i++;
+          } while (fileSizeInBytes > 1024);
+
+          $(element).html(Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i]);
+        }
+      };
 
 
       /* Knockout HTML data formater */
@@ -213,6 +251,109 @@
           {
             $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
           }
+        }
+      };
+
+
+            /* Knockout HTML data formater */
+      ko.bindingHandlers.htmlTimeAgo = {
+        init: function(element, valueAccessor)
+        {
+          var value = valueAccessor();
+          var dateItem = moment(ko.utils.unwrapObservable(value) + "+0000", "YYYY-MM-DD HH:mm:ss Z");
+
+          if (!dateItem.date())
+          {
+            $(element).html(ko.utils.unwrapObservable(value));
+          }
+          else
+          {
+            $(element).html(dateItem.fromNow());
+          }
+        },
+        update: function(element, valueAccessor)
+        {
+          var value = valueAccessor();
+          var dateItem = moment(ko.utils.unwrapObservable(value) + "+0000", "YYYY-MM-DD HH:mm:ss Z");
+
+          if (!dateItem.date())
+          {
+            $(element).html(ko.utils.unwrapObservable(value));
+          }
+          else
+          {
+            $(element).html(dateItem.fromNow());
+          }
+        }
+      };
+
+      ko.bindingHandlers.hrefFirst = {
+        init: function(element, valueAccessor)
+        {
+          var values = ko.utils.unwrapObservable(valueAccessor());
+          $(element).attr("href", $.murrix.createPath(0, values[0], values[1]));
+        },
+        update: function(element, valueAccessor)
+        {
+          var values = ko.utils.unwrapObservable(valueAccessor());
+          $(element).attr("href", $.murrix.createPath(0, values[0], values[1]));
+        }
+      };
+
+      ko.bindingHandlers.hrefFirstPrimary = {
+        init: function(element, valueAccessor)
+        {
+          $(element).attr("href", $.murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
+        },
+        update: function(element, valueAccessor)
+        {
+          $(element).attr("href", $.murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
+        }
+      };
+
+      ko.bindingHandlers.hrefFirstSecondary = {
+        init: function(element, valueAccessor)
+        {
+          $(element).attr("href", $.murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
+        },
+        update: function(element, valueAccessor)
+        {
+          $(element).attr("href", $.murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
+        }
+      };
+
+      ko.bindingHandlers.hrefSecond = {
+        init: function(element, valueAccessor)
+        {
+          var values = ko.utils.unwrapObservable(valueAccessor());
+          $(element).attr("href", $.murrix.createPath(1, values[0], values[1]));
+        },
+        update: function(element, valueAccessor)
+        {
+          var values = ko.utils.unwrapObservable(valueAccessor());
+          $(element).attr("href", $.murrix.createPath(1, values[0], values[1]));
+        }
+      };
+
+      ko.bindingHandlers.hrefSecondPrimary = {
+        init: function(element, valueAccessor)
+        {
+          $(element).attr("href", $.murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
+        },
+        update: function(element, valueAccessor)
+        {
+          $(element).attr("href", $.murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
+        }
+      };
+
+      ko.bindingHandlers.hrefSecondSecondary = {
+        init: function(element, valueAccessor)
+        {
+          $(element).attr("href", $.murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));
+        },
+        update: function(element, valueAccessor)
+        {
+          $(element).attr("href", $.murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));
         }
       };
 
@@ -294,6 +435,9 @@
 
         /* Clear loading overlay */
         $(".loading-overlay").fadeOut();
+
+
+        //$("[rel=tooltip]").tooltip();
       });
 
     </script>

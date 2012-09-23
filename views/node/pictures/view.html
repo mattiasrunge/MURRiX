@@ -24,9 +24,9 @@
 
     <ul class="thumbnails" data-bind="foreach:  nodeModel.picturesModel.pictures">
       <li class="">
-        <div draggable="true" class="thumbnail" <?/*data-bind="event: { dragstart: $parent.dragStart }"*/?>>
-          <img data-bind="attr: { src: 'preview.php?nodeId=' + $data.id() + '&amp;width=120&amp;height=120', title: $data.name }" src="http://placekitten.com/g/120/120" alt="">
-        </div>
+        <a href="#" draggable="true" class="thumbnail" data-bind="hrefSecondSecondary: $data.id<?/*event: { dragstart: $parent.dragStart }*/?>">
+          <img data-bind="attr: { src: 'preview.php?nodeId=' + $data.id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="http://placekitten.com/g/120/120" alt="">
+        </a>
       </li>
     </ul>
 

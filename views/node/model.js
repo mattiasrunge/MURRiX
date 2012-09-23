@@ -95,6 +95,11 @@ var NodeModel = function(parentModel)
       self.node(false);
       return;
     }
+    else if (self.node() && nodeId === self.node().id())
+    {
+      console.log("NodeModel: Node id is the same as before, will not update!");
+      return;
+    }
 
 
     /* Make sure the node is cached before setting the primary id */
@@ -117,6 +122,126 @@ var NodeModel = function(parentModel)
   });
 
 
+  /* Creating */
+
+  self.createLoading = ko.observable(false);
+  self.createErrorText = ko.observable("");
+  self.createName = ko.observable("");
+  self.createDescription = ko.observable("");
+
+  self.createSubmit = function(form)
+  {
+    var nodeData = {};
+
+    nodeData["type"]        = $(form).attr("data-murrix-node-type");
+    nodeData["name"]        = self.createName();
+    nodeData["description"] = self.createDescription();
+
+    self.createErrorText("");
+
+    if (nodeData["name"] == "")
+    {
+      self.createErrorText("Name is empty!");
+    }
+    else
+    {
+      self.createLoading(true);
+      
+      console.log(nodeData);
+  
+      $(".modal").modal('hide');
+    }
+  };
+
+  self.tagLoading = ko.observable(false);
+  self.tagErrorText = ko.observable("");
+  self.tagName = ko.observable("");
+
+  self.tagSubmit = function()
+  {
+    self.tagLoading(true);
+  
+    console.log(self.tagName());
+  };
+
+  self.tagRemove = function(tagNode)
+  {
+    self.tagLoading(true)
+  
+    console.log(tagNode.name());
+  };
+
+  self.tagAutocomplete = function(query, callback)
+  {
+    $.murrix.module.db.searchNodeIds({ types: [ "tag" ] }, function(transactionId, resultCode, nodeIdList)
+    {
+      if (resultCode != MURRIX_RESULT_CODE_OK)
+      {
+        console.log("Got error while trying to run query, resultCode = " + resultCode);
+        callback([]);
+      }
+      else if (nodeIdList.length > 0)
+      {
+        $.murrix.module.db.fetchNodesBuffered(nodeIdList, function(transactionId, resultCode, nodeList)
+        {
+          if (resultCode != MURRIX_RESULT_CODE_OK)
+          {
+            console.log("Got error while trying to run query, resultCode = " + resultCode);
+            callback([]);
+          }
+          else if (nodeList.length === 0)
+          {
+            callback([]);
+          }
+          else
+          {
+            var resultList = [];
+            
+            jQuery.each(nodeList, function(id, node)
+            {
+              var alreadyTagged = false;
+
+              for (var n = 0; n < self.tagNodeList().length; n++)
+              {
+                if (self.tagNodeList()[n].name() === node.name())
+                {
+                  alreadyTagged = true;
+                  break;
+                }
+              }
+
+              if (!alreadyTagged)
+              {
+                resultList.push(node.name());
+              }
+            });
+
+            callback(resultList);
+          }
+        });
+      }
+      else
+      {
+        callback([]);
+      }
+    });
+  };
+
+  $("[name=newTag]").typeahead({ source: function(query, callback) { self.tagAutocomplete(query, callback); } });
+
+  $(".modal").on('hidden', function ()
+  {
+    self.createLoading(false);
+    self.createErrorText("");
+    self.createName("");
+    self.createDescription("");
+
+    self.tagLoading(false);
+    self.tagErrorText("")
+    self.tagName("");
+  });
+  
+
   /* Define all sub views */
   self.summaryModel = new SummaryModel(self);
   self.timelineModel = new TimelineModel(self);
@@ -126,4 +251,5 @@ var NodeModel = function(parentModel)
   self.commentsModel = new CommentsModel(self);
   self.connectionsModel = new ConnectionsModel(self);
   self.accessesModel = new AccessesModel(self);
+  self.overlayModel = new OverlayModel(self);
 };

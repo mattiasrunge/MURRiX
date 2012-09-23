@@ -31,7 +31,7 @@
     <p>
       <div data-bind="foreach: searchModel.results">
         <div>
-          <a data-bind="attr: { href: '#node:' + $data.id() }, text: $data.name"></a>
+          <a data-bind="hrefFirst: ['node', $data.id()], text: $data.name"></a>
         </div>
       </div>
     </p>

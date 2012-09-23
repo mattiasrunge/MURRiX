@@ -77,15 +77,18 @@ class MurrixModuleUser extends MurrixModule
 
   public function CheckNodeAccess($right, $node_id)
   {
+    /* If admin, all accesses allowed */
     if ($this->IsAdmin())
     {
       return true;
     }
 
+    /* If the current user id is the same as the node, access is always granted to the own node */
     if ($node_id == $this->GetUserId())
     {
       return true;
     }
+    
 
     if (count($this->group_node_id_list_) == 0)
     {
@@ -126,6 +129,16 @@ class MurrixModuleUser extends MurrixModule
       return true;
     }
 
+
+    $query = "SELECT * FROM `Nodes` WHERE `id` = '" . $node_id . "' AND `type` = 'tag'";
+
+    $db_result = $_SESSION["Modules"]["db"]->Query($db, $query);
+
+    if ($db_result->num_rows > 0)
+    {
+      return true;
+    }
+    
     return false;
   }
   

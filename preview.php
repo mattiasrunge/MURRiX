@@ -3,8 +3,9 @@
 $nodeId = intval($_GET['nodeId']);
 $width = intval($_GET['width']);
 $height = intval($_GET['height']);
+$square = intval($_GET['square']);
 
-$filename = $nodeId . "_" . $width . "x" . $height . ".jpg";
+$filename = $nodeId . "_" . $width . "x" . $height . "_" . $square . ".jpg";
 
 function getAttribute($node, $attributeName)
 {
@@ -112,13 +113,48 @@ if (!file_exists(dirname(__FILE__) . "/previews/" . $filename))
         $options .= " -flop +repage";
       }
 
-      if ($width == $height)
+      $originalWidth = intval(getAttribute($node, "MetaImageWidth"));
+      $originalHeight = intval(getAttribute($node, "MetaImageHeight"));
+
+      
+      // Square (the biggest of width or height will be used
+      if ($square == 1)
       {
-        $options .= " -resize " . $width . "x" . $height . "^ +repage";
-        $options .= " -gravity center -crop " . $width . "x" . $height . "+0+0";
+        $size = max($width, $height);
+
+        $options .= " -resize " . $size . "x" . $size . "^ +repage";
+        $options .= " -gravity center -crop " . $size . "x" . $size . "+0+0";
       }
-      else
+
+      // Width and height specified, crop and resize image to those
+      else if ($width > 0 && $height > 0)
       {
+        if ($width > $height && $originalWidth < $originalHeight)
+        {
+          $options .= " -resize " . $width . "x" . $height . " +repage";
+        }
+        else
+        {
+          $options .= " -resize " . $width . "x" . $height . "^ +repage";
+          $options .= " -gravity center -crop " . $width . "x" . $height . "+0+0";
+        }
+      }
+
+      // Width specified, use width and calculate height to keep aspect ratio
+      else if ($width > 0)
+      {
+        $ratio = $originalHeight / $originalWidth;
+        $height = $width * $ratio;
+
+        $options .= " -resize " . $width . "x" . $height . " +repage";
+      }
+
+      // Height specified, use height and calculate width to keep aspect ratio
+      else if ($height > 0)
+      {
+        $ratio = $originalWidth / $originalHeight;
+        $width = $height * $ratio;
+
         $options .= " -resize " . $width . "x" . $height . " +repage";
       }
 

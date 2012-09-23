@@ -206,6 +206,54 @@ $(function()
     return intvalue;
   };
 
+  $.murrix.createPath = function(partIndex, primary, secondary)
+  {
+    var currentPath = document.location.hash;
+    var newPath = "";
+
+    var parts = currentPath.split("/");
+
+    if (partIndex > parts.length)
+    {
+      throw "Supplied partIndex " + partIndex + " is not valid for the current path!";
+    }
+
+    while (partIndex >= parts.length)
+    {
+      parts.push("");
+    }
+
+    var args = parts[partIndex].split(":");
+
+    if (primary == null)
+    {
+      primary = args[0];
+    }
+
+    if (secondary == null && args.length > 0)
+    {
+      secondary = args[1];
+    }
+
+    parts[partIndex] = primary;
+
+    if (secondary != null && secondary != "")
+    {
+      parts[partIndex] += ":" + secondary;
+    }
+
+    parts = parts.slice(0, partIndex + 1);
+
+    var newPath = parts.join("/");
+
+    if (newPath[0] != "#")
+    {
+      newPath = "#" + newPath;
+    }
+
+    return newPath;
+  };
+
   $.murrix.updatePath = function(pathString, pathObservable)
   {
     var position = pathString.indexOf("/");
