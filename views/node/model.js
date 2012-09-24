@@ -6,8 +6,15 @@ var NodeModel = function(parentModel)
   self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
   
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "node"; });
+  self.show = ko.observable(false);
 
+  parentModel.path().primary.subscribe(function(value)
+  {
+    if (self.show() !== (value.action === "node"))
+    {
+      self.show(value.action === "node");
+    }
+  });
 
 
   self.node = ko.observable(false);

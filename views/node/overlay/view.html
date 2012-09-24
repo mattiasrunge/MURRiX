@@ -1,7 +1,25 @@
-<div class="modal-backdrop" data-bind="fadeVisible: nodeModel.overlayModel.node, if: nodeModel.overlayModel.node"></div>
-<div style="position: absolute; top: 20px; left: 20px; bottom: 20px; right: 20px; z-index: 2050;" data-bind="fadeVisible: nodeModel.overlayModel.node, if: nodeModel.overlayModel.node">
+<div class="modal-backdrop" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show"></div>
+<div style="position: absolute; top: 20px; left: 20px; bottom: 20px; right: 20px; z-index: 2050;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show">
   <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 370px; text-align: center;">
-    <img style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" class="img-rounded" data-bind="attr: { src: 'preview.php?nodeId=' + nodeModel.overlayModel.node().id() + '&amp;width=1440', title: nodeModel.overlayModel.node().name() }" src="http://placekitten.com/g/1440/1440" alt="">
+
+    <div id="overlayCarousel" class="carousel slide">
+      <!-- Carousel items -->
+      <div class="carousel-inner" data-bind="foreach: nodeModel.picturesModel.pictures">
+
+        <div class="item" data-bind="css: { active: $index() == 0 }">
+          <img class="img-rounded" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview.php?nodeId=' + $data.id() + '&amp;width=1440', title: $data.name() }" src="http://placekitten.com/g/1440/1440" alt="">
+<!--          <div class="carousel-caption">
+            <h4 data-bind="text: $data.name"></h4>
+            <p data-bind="if: $data.description() != '', text: $data.description"></p>
+          </div>-->
+        </div>
+
+      </div>
+      <!-- Carousel nav -->
+      <a class="carousel-control left" href="#" data-bind="click: nodeModel.overlayModel.carouselLeft">&lsaquo;</a>
+      <a class="carousel-control right" href="#" data-bind="click: nodeModel.overlayModel.carouselRight">&rsaquo;</a>
+    </div>
+
   </div>
   <div style="position: absolute; top: 0px; width: 350px; bottom: 0px; right: 0px; margin: 0px; padding: 0px; overflow: auto;" class="well">
     <div style="padding: 10px;">
@@ -20,7 +38,7 @@
           </a>
         </div>
         <div id="overlayCollapseDetails" class="accordion-body collapse">
-          <div class="accordion-inner">
+          <div class="accordion-inner" style="padding: 10px;">
 
             <table class="table table-striped table-condensed">
                 <tr>

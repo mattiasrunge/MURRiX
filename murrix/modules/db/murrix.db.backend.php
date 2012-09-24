@@ -673,7 +673,7 @@ class MurrixModuleDb extends MurrixModule
 
     $node_id_list = $this->SearchNodeIds($db, $in_query, "LIKE", "OR");
 
-    $this->ActionFetchNodes($node_id_list, &$out_node_list);
+    $this->ActionFetchNodes($node_id_list, $out_node_list);
   }
   
   public function ActionSearchNodeIds($in_query, &$out_node_id_list)

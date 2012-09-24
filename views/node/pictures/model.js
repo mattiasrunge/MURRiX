@@ -6,7 +6,16 @@ var PicturesModel = function(parentModel)
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "pictures"; });
+  self.show = ko.observable(false);
+
+  parentModel.path().primary.subscribe(function(value)
+  {
+    if (self.show() !== (value.action === "pictures"))
+    {
+      self.show(value.action === "pictures");
+    }
+  });
+  
   self.enabled = ko.observable(true);
 
   self.pictures = ko.observableArray([ ]);

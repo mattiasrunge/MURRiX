@@ -7,11 +7,12 @@ var OverlayModel = function(parentModel)
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
   self.enabled = ko.observable(true);
+  self.show = ko.observable(false);
 
   self.node = ko.observable(false);
   
 
-  parentModel.node.subscribe(function(node)
+  /*parentModel.node.subscribe(function(node)
   {
     self.node(false);
   
@@ -21,15 +22,14 @@ var OverlayModel = function(parentModel)
       return;
     }
 
-    
-
-  });
+  });*/
 
   parentModel.path().primary.subscribe(function(primary)
   {
     if (primary.args.length === 0)
     {
       console.log("NodeModel: No overlay node id specified, setting node to false!");
+      self.show(false);
       self.node(false);
       return;
     }
@@ -42,6 +42,7 @@ var OverlayModel = function(parentModel)
     if (nodeId === 0)
     {
       console.log("OverlayModel: Node id is invalid, setting node to false");
+      self.show(false);
       self.node(false);
       return;
     }
@@ -62,7 +63,41 @@ var OverlayModel = function(parentModel)
       else if (typeof nodeList[nodeId] != 'undefined')
       {
         console.log("OverlayModel: Node found, setting node with id " + nodeId);
+
         self.node(nodeList[nodeId]);
+
+        if (self.show() !== true)
+        {
+          self.show(true);
+        }
+        
+        for (var index = 0; index < parentModel.picturesModel.pictures().length; index++)
+        {
+          if (parentModel.picturesModel.pictures()[index].id() === nodeId)
+          {
+            break;
+          }
+        }
+
+        console.log("OverlayModel: Index is " + index);
+        
+        if (index < 0)
+        {
+          index = parentModel.picturesModel.pictures().length - 1;
+        }
+        else if (index >= parentModel.picturesModel.pictures().length)
+        {
+          index = 0;
+        }
+
+        console.log("OverlayModel: Index is " + index);
+
+        $("#overlayCarousel").carousel(index);
+
+        $("#overlayCarousel").one("slid", function()
+        {
+          $(this).carousel('pause');
+        });
       }
       else
       {
@@ -71,6 +106,53 @@ var OverlayModel = function(parentModel)
     });
   });
 
+  self.carouselLeft = function()
+  {
+    for (var index = 0; index < parentModel.picturesModel.pictures().length; index++)
+    {
+      if (parentModel.picturesModel.pictures()[index].id() === self.node().id())
+      {
+        break;
+      }
+    }
+
+    index--; // Move left
+
+    if (index < 0)
+    {
+      index = parentModel.picturesModel.pictures().length - 1;
+    }
+    else if (index >= parentModel.picturesModel.pictures().length)
+    {
+      index = 0;
+    }
+
+    document.location.hash = $.murrix.createPath(1, null, parentModel.picturesModel.pictures()[index].id());
+  };
+
+  self.carouselRight = function()
+  {
+    for (var index = 0; index < parentModel.picturesModel.pictures().length; index++)
+    {
+      if (parentModel.picturesModel.pictures()[index].id() === self.node().id())
+      {
+        break;
+      }
+    }
+
+    index++; // Move right
+
+    if (index < 0)
+    {
+      index = parentModel.picturesModel.pictures().length - 1;
+    }
+    else if (index >= parentModel.picturesModel.pictures().length)
+    {
+      index = 0;
+    }
+
+    document.location.hash = $.murrix.createPath(1, null, parentModel.picturesModel.pictures()[index].id());
+  };
 };
 
  

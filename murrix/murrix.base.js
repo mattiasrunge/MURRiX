@@ -279,11 +279,14 @@ $(function()
 
     if (JSON.stringify(result.primary) !== JSON.stringify(pathObservable().primary()))
     {
+      //console.log("Updating primary.action, was \"" + pathObservable().primary().action + "\", is \"" + result.primary.action + "\"");
+      //console.log("Updating primary.args, was \"" + pathObservable().primary().args.toString() + "\", is \"" + result.primary.args.toString() + "\"");
       pathObservable().primary(result.primary);
     }
 
     if (result.secondary !== pathObservable().secondary())
     {
+      //console.log("Updating secondary, was \"" + pathObservable().secondary() + "\", is \"" + result.secondary + "\"");
       pathObservable().secondary(result.secondary);
     }
 

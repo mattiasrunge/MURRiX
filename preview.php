@@ -1,9 +1,9 @@
 <?
 
-$nodeId = intval($_GET['nodeId']);
-$width = intval($_GET['width']);
-$height = intval($_GET['height']);
-$square = intval($_GET['square']);
+$nodeId = isset($_GET['nodeId']) ? intval($_GET['nodeId']) : 0;
+$width = isset($_GET['width']) ? intval($_GET['width']) : 0;
+$height = isset($_GET['height']) ? intval($_GET['height']) : 0;
+$square = isset($_GET['square']) ? intval($_GET['square']) : 0;
 
 $filename = $nodeId . "_" . $width . "x" . $height . "_" . $square . ".jpg";
 
