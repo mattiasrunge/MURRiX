@@ -6,7 +6,16 @@ var ConnectionsModel = function(parentModel)
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "connections"; });
+  self.show = ko.observable(false);
+
+  parentModel.path().primary.subscribe(function(value)
+  {
+    if (self.show() !== (value.action === "connections"))
+    {
+      self.show(value.action === "connections");
+    }
+  });
+  
   self.enabled = ko.observable(true);
 
 
@@ -38,8 +47,11 @@ var ConnectionsModel = function(parentModel)
           for (var n = 0; n < node.links().length; n++)
           {
             var link = node.links()[n];
-
-            connections.push({ id: link.node_id(), name: nodeList[link.node_id()].name(), role: link.role(), direction: link.direction() });
+            
+            if (nodeList[link.node_id()])
+            {
+              connections.push({ id: link.node_id(), name: nodeList[link.node_id()].name(), role: link.role(), direction: link.direction() });
+            }
           }
 
           self.connections(connections);

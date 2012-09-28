@@ -23,8 +23,9 @@
   </div>
   <div style="position: absolute; top: 0px; width: 350px; bottom: 0px; right: 0px; margin: 0px; padding: 0px; overflow: auto;" class="well">
     <div style="padding: 10px;">
-      <a class="pull-right close" data-bind="hrefSecondSecondary: ''">×</a>
+      <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
       <h3 data-bind="text: nodeModel.node().name"></h3>
+      
       <p class="muted">
         <small>Picture taken on <span data-bind="htmlDate: nodeModel.node().modified"></span> at <a>Marklandsgatan 43</a>.<br/>Showing <a>Mattias Runge<a>, <a>Björn Ramberg</a> and <a>VW Golf II</a>.</small>
       </p>
@@ -72,6 +73,21 @@
         <div id="overlayCollapseComments" class="accordion-body collapse in">
           <div class="accordion-inner">
 
+            <div class="row-fluid">
+              <div class="span2">
+                <img src="http://placekitten.com/g/40/40" alt=""/>
+              </div>
+              <blockquote class="span10">
+                <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
+                  <textarea style="width: 218px; height: 60px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentText"></textarea>
+                  <span class="text-error pull-left" data-bind="disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentErrorText"></span>
+                  <button type="submit" class="btn btn-mini btn-primary pull-right">Comment</button>
+                </form>
+                
+              </blockquote>
+            </div>
+
+          
             <div class="row-fluid">
               <div class="span2">
                 <img src="http://placekitten.com/g/40/40" alt=""/>

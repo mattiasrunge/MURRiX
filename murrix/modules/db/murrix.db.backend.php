@@ -67,6 +67,241 @@ class MurrixModuleDb extends MurrixModule
     
     return $result;
   }
+
+  public function MaxAccess($access1, $access2)
+  {
+    if ($access1 == "admin" || $access2 == "admin")
+    {
+      return "admin";
+    }
+    else if ($access1 == "read" || $access2 == "read")
+    {
+      return "read";
+    }
+
+    return "";
+  }
+
+  
+  /*
+  <node_type_down>_<specific type>
+
+  creator        person_creator     (Node up read rights inherited)             Equal relation
+  father         person_father      (Node up read rights inherited)             Equal relation
+  mother         person_mother      (Node up read rights inherited)             Equal relation
+  partner        person_partner     (Node up read rights inherited)             Equal relation
+
+  event          event              (Node up * rights inherited)                Owning relation (up owns down)
+  *birth          event_birth        (Node up * rights inherited)                Owning relation (up owns down)
+  death          event_death        (Node up * rights inherited)                Owning relation (up owns down)
+  engagement     event_engagement   (Node up * rights inherited)                Owning relation (up owns down)
+  marriage       event_marriage     (Node up * rights inherited)                Owning relation (up owns down)
+
+  file           file               (Node up * rights inherited)                Owning relation (up owns down)
+  profilePicture file_profile       (Node up read rights inherited)             Equal relation
+
+  media          *_related          (Node up read rights inherited)             Equal relation
+
+  mediamark      mediamark          (Node up * rights inherited)                Owning relation (up owns down)
+
+  location       location           (Node up read rights inherited)             Equal relation
+  home           location_home      (Node up * rights inherited)                Owning relation (up owns down)
+
+  logentry       logentry           (Node up * rights inherited)                Owning relation (up owns down)
+
+  tag            tag                (All tags are readable?)
+
+  member         user_member        (Node up * rights inherited)                Owning relation (up owns down)
+                 user_admin         (Node up * rights inherited)                Owning relation (up owns down)
+
+                 comment            (Node up * rights inherited)                Owning relation (up owns down)
+  */
+  public function GetOwningNodeIdList($node_id)
+  {
+    /* Get the database */
+    $db = $this->GetDb();
+
+    $node = $this->FetchNode($db, $node_id);
+
+    $owning_node_id_list = array();
+
+    foreach ($node["links"] as $link)
+    {
+      /* Only get links where we are down and remote node is up */
+      if ($link["direction"] == "up")
+      {
+        continue;
+      }
+
+      switch ($link["role"])
+      {
+        case "event":
+        case "event_birth":
+        case "event_death":
+        case "event_engagement":
+        case "event_marriage":
+        case "file":
+        case "mediamark":
+        case "location_home":
+        case "logentry":
+        case "user_member":
+        case "user_admin":
+        case "comment":
+        {
+          $owning_node_id_list[] = $link["node_id"];
+          break;
+        }
+      }
+    }
+
+    return array_unique($owning_node_id_list);
+  }
+
+  public function GetEqualNodeIdList($node_id)
+  {
+    /* Get the database */
+    $db = $this->GetDb();
+
+    $node = $this->FetchNode($db, $node_id);
+
+    $equal_node_id_list = array();
+
+    foreach ($node["links"] as $link)
+    {
+      switch ($link["role"])
+      {
+        case "person_creator":
+        case "person_father":
+        case "person_mother":
+        case "person_partner":
+        case "file_profile":
+        case "*_related":
+        case "location":
+        {
+          $equal_node_id_list[] = $link["node_id"];
+          break;
+        }
+      }
+    }
+
+    return array_unique($equal_node_id_list);
+  }
+
+  public function GetNodeTypeAccess($node_id)
+  {
+    /* Get the database */
+    $db = $this->GetDb();
+
+    $node = $this->FetchNode($db, $node_id);
+
+    switch ($node["type"])
+    {
+      case "tag":
+      {
+        return "read";
+      }
+    }
+
+    return "";
+  }
+
+  public function GetNodeAccess($node_id, $root_node_id_list)
+  {
+    $root_node_id_list[] = $node_id;
+  
+    /* Default is no rights */
+    $access = "";
+
+
+    /* Check cached node access */
+    if (isset($GLOBALS['nodes']) && isset($GLOBALS['nodes'][$node_id]) && isset($GLOBALS['nodes'][$node_id]["access"]))
+    {
+      return $GLOBALS['nodes'][$node_id]["access"];
+    }
+
+    /* Check if explicit read rights exist for this node */
+    $access = $_SESSION["Modules"]["user"]->GetNodeIdAccess($node_id);
+    
+
+    /* Check if we have admin rights already */
+    if ($access == "admin")
+    {
+      $GLOBALS['nodes'][$node_id]["access"] = "admin";
+      return "admin";
+    }
+
+
+    /* Check if owning node grants read or admin access */
+    $owning_node_id_list = $this->GetOwningNodeIdList($node_id);
+
+    foreach ($owning_node_id_list as $owning_node_id)
+    {
+      if (!in_array($owning_node_id, $root_node_id_list))
+      {
+        $access = $this->MaxAccess($access, $this->GetNodeAccess($owning_node_id, $root_node_id_list));
+
+        /* Check if we have admin rights already */
+        if ($access == "admin")
+        {
+          $GLOBALS['nodes'][$node_id]["access"] = "admin";
+          return "admin";
+        }
+      }
+    }
+
+
+    /* == Past this point we can not get more than read rights == */
+
+
+    /* Check if we have read rights already */
+    if ($access == "read")
+    {
+      $GLOBALS['nodes'][$node_id]["access"] = "read";
+      return "read";
+    }
+
+      
+    /* Check if type grants access */
+    $access = $this->GetNodeTypeAccess($node_id);
+
+
+    /* Check if we have read rights already */
+    if ($access == "read")
+    {
+      $GLOBALS['nodes'][$node_id]["access"] = "read";
+      return "read";
+    }
+
+
+    /* Check if equal node grants read access */
+     $equal_node_id_list = $this->GetEqualNodeIdList($node_id);
+     $access = ""; // Access should already be this, but make sure
+
+    foreach ($equal_node_id_list as $equal_node_id)
+    {
+      if (!in_array($equal_node_id, $root_node_id_list))
+      {
+        $access = $this->MaxAccess($access, $this->GetNodeAccess($equal_node_id, $root_node_id_list));
+
+        /* Check if we have read rights already */
+        if ($access == "admin" || $access == "read")
+        {
+          $GLOBALS['nodes'][$node_id]["access"] = "read";
+          return "read";
+        }
+      }
+    }
+
+    
+    /* No rights on node */
+    $GLOBALS['nodes'][$node_id]["access"] = "";
+    return "";
+  }
+
+
+
+
+
   
   public function FetchNode($db, $node_id)
   {
@@ -83,53 +318,80 @@ class MurrixModuleDb extends MurrixModule
   public function FetchNodes($db, $node_id_list)
   {
     $nodes = array();
-    
-    
-    /* Select from nodes */
-    $query = "SELECT * FROM `Nodes` WHERE " . implode(" OR ", array_prefix_values($node_id_list, "`id` = "));
-   
-    $db_result = $this->Query($db, $query);
-    
-    while ($row = $db_result->fetch_assoc())
+    $node_id_list_to_fetch = array();
+
+
+    /* Make sure node cache list is initialized */
+    if (!isset($GLOBALS['nodes']))
     {
-      $nodes[$row["id"]] = $row;
-      $nodes[$row["id"]]["attributes"] = array();
-      $nodes[$row["id"]]["links"] = array();
+      $GLOBALS['nodes'] = array();
     }
-    
-    
-    /* Select from attributs */
-    $query = "SELECT * FROM `Attributes` WHERE " . implode(" OR ", array_prefix_values($node_id_list, "`node_id` = "));
-    
-    $db_result = $this->Query($db, $query);
-     
-    while ($row = $db_result->fetch_assoc())
+
+
+    /* Check for cached nodes */
+    foreach ($node_id_list as $node_id)
     {
-      $nodes[$row["node_id"]]["attributes"][] = array("name" => $row["name"], "value" => $row["value"]);
+      if (isset($GLOBALS['nodes'][$node_id]))
+      {
+        $nodes[$node_id] = $GLOBALS['nodes'][$node_id];
+      }
+      else
+      {
+        $node_id_list_to_fetch[] = $node_id;
+      }
     }
-   
-    
-    /* Select from roles as up */
-    $query = "SELECT * FROM `Links` WHERE " . implode(" OR ", array_prefix_values($node_id_list, "`node_id_up` = "));
-    
-    $db_result = $this->Query($db, $query);
-     
-    while ($row = $db_result->fetch_assoc())
+
+    if (count($node_id_list_to_fetch) > 0)
     {
-      $nodes[$row["node_id_up"]]["links"][] = array("node_id" => $row["node_id_down"], "role" => $row["role"], "direction" => "down");
+      /* Select from nodes */
+      $query = "SELECT * FROM `Nodes` WHERE " . implode(" OR ", array_prefix_values($node_id_list_to_fetch, "`id` = "));
+
+      $db_result = $this->Query($db, $query);
+
+      while ($row = $db_result->fetch_assoc())
+      {
+        $nodes[$row["id"]] = $row;
+        $nodes[$row["id"]]["attributes"] = array();
+        $nodes[$row["id"]]["links"] = array();
+      }
+
+
+      /* Select from attributs */
+      $query = "SELECT * FROM `Attributes` WHERE " . implode(" OR ", array_prefix_values($node_id_list_to_fetch, "`node_id` = "));
+
+      $db_result = $this->Query($db, $query);
+
+      while ($row = $db_result->fetch_assoc())
+      {
+        $nodes[$row["node_id"]]["attributes"][] = array("name" => $row["name"], "value" => $row["value"]);
+      }
+
+
+      /* Select from roles as up */
+      $query = "SELECT * FROM `Links` WHERE " . implode(" OR ", array_prefix_values($node_id_list_to_fetch, "`node_id_up` = "));
+
+      $db_result = $this->Query($db, $query);
+
+      while ($row = $db_result->fetch_assoc())
+      {
+        $nodes[$row["node_id_up"]]["links"][] = array("node_id" => $row["node_id_down"], "role" => $row["role"], "direction" => "down");
+      }
+
+
+      /* Select from roles as down */
+      $query = "SELECT * FROM `Links` WHERE " . implode(" OR ", array_prefix_values($node_id_list_to_fetch, "`node_id_down` = "));
+
+      $db_result = $this->Query($db, $query);
+
+      while ($row = $db_result->fetch_assoc())
+      {
+        $nodes[$row["node_id_down"]]["links"][] = array("node_id" => $row["node_id_up"], "role" => $row["role"], "direction" => "up");
+      }
+
+
+      /* Cache nodes */
+      $GLOBALS['nodes'] = array_merge($GLOBALS['nodes'], $nodes);
     }
-   
-   
-    /* Select from roles as down */
-    $query = "SELECT * FROM `Links` WHERE " . implode(" OR ", array_prefix_values($node_id_list, "`node_id_down` = "));
-   
-    $db_result = $this->Query($db, $query);
-     
-    while ($row = $db_result->fetch_assoc())
-    {
-      $nodes[$row["node_id_down"]]["links"][] = array("node_id" => $row["node_id_up"], "role" => $row["role"], "direction" => "up");
-    }
-   
    
     return $nodes;
   }
@@ -206,30 +468,43 @@ class MurrixModuleDb extends MurrixModule
     $dbQuery_select = array("`Nodes`.`id` AS `node_id`");
     $dbQuery_from = array("`Nodes`");
     $dbQuery_where = array();
+    $dbQuery_where_id = array();
+    $dbQuery_where_string = array();
+    $dbQuery_where_name = array();
+    $dbQuery_where_types = array();
+    $dbQuery_where_attributes = array();
     
     if (isset($searchQuery["id"]))
     {
-      $dbQuery_where[] = "(`Nodes`.`id` = " . mysql_escape_string($searchQuery["id"]) . ")";
+      $dbQuery_where_id[] = "(`Nodes`.`id` = " . mysql_escape_string($searchQuery["id"]) . ")";
+
+      $dbQuery_where[] = "(" . implode(" " . $delimiter . " ", $dbQuery_where_id) . ")";
     }
 
     // TODO string query type which searches name and attribute values
     
     if (isset($searchQuery["string"]))
     {
-      $dbQuery_where[] = "(`Nodes`.`name` COLLATE utf8_general_ci LIKE '%" . mysql_escape_string($searchQuery["string"]) . "%')";
+      $dbQuery_where_string[] = "(`Nodes`.`name` COLLATE utf8_general_ci LIKE '%" . mysql_escape_string($searchQuery["string"]) . "%')";
+
+      $dbQuery_where[] = "(" . implode(" " . $delimiter . " ", $dbQuery_where_string) . ")";
     }
 
     if (isset($searchQuery["name"]))
     {
-      $dbQuery_where[] = "(`Nodes`.`name` " . mysql_escape_string($name_compare) . " '" . mysql_escape_string($searchQuery["name"]) . "')";
+      $dbQuery_where_name[] = "(`Nodes`.`name` " . mysql_escape_string($name_compare) . " '" . mysql_escape_string($searchQuery["name"]) . "')";
+
+      $dbQuery_where[] = "(" . implode(" " . $delimiter . " ", $dbQuery_where_name) . ")";
     }
     
     if (isset($searchQuery["types"]))
     {
       foreach ($searchQuery["types"] as $type)
       {
-        $dbQuery_where[] = "(`Nodes`.`type` = '" . mysql_escape_string($type) . "')";
+        $dbQuery_where_types[] = "(`Nodes`.`type` = '" . mysql_escape_string($type) . "')";
       }
+
+      $dbQuery_where[] = "(" . implode(" " . $delimiter . " ", $dbQuery_where_types) . ")";
     }
     
     if (isset($searchQuery["attributes"]))
@@ -243,11 +518,14 @@ class MurrixModuleDb extends MurrixModule
         
         //$dbQuery_select[] = "`" . $alias . "`.`name` AS '" . $alias . "_name', `" . $alias . "`.`value` AS '" . $alias . "_value'";
         $dbQuery_from[] = "`Attributes` as `" . $alias . "`";
-        $dbQuery_where[] = "(`Nodes`.`id` = `" . $alias . "`.`node_id` AND `" . $alias . "`.`name` " . $name_compare . " '" . $name . "' AND `" . $alias . "`.`value` = '" . $value . "')";
+        $dbQuery_where_attributes[] = "(`Nodes`.`id` = `" . $alias . "`.`node_id` AND `" . $alias . "`.`name` " . $name_compare . " '" . $name . "' AND `" . $alias . "`.`value` = '" . $value . "')";
       }
+
+      $dbQuery_where[] = "(" . implode(" " . $delimiter . " ", $dbQuery_where_attributes) . ")";
     }
-    
-    $query = "SELECT " . implode(", ", $dbQuery_select) . " FROM " . implode(", ", $dbQuery_from) . " WHERE " . implode(" " . $delimiter . " ", $dbQuery_where);
+
+
+    $query = "SELECT " . implode(", ", $dbQuery_select) . " FROM " . implode(", ", $dbQuery_from) . " WHERE " . implode(" AND ", $dbQuery_where) . " LIMIT 100";
 
     $db_result = $this->Query($db, $query);
     
@@ -679,15 +957,22 @@ class MurrixModuleDb extends MurrixModule
   public function ActionSearchNodeIds($in_query, &$out_node_id_list)
   {
     $db = $this->GetDb();
+    $out_node_id_list = array();
 
     $node_id_list = $this->SearchNodeIds($db, $in_query, "LIKE", "OR");
 
-
-    foreach ($node_id_list as $node_id)
+    if (count($node_id_list) > 0)
     {
-      if ($_SESSION["Modules"]["user"]->CheckNodeAccess("read", $node_id))
+      $node_list = $this->FetchNodes($db, $node_id_list);
+
+      foreach ($node_list as $node)
       {
-        $out_node_id_list[] = $node_id;
+        $node["access"] = $this->GetNodeAccess($node["id"], array());
+
+        if ($node["access"] == "admin" || $node["access"] == "read")
+        {
+          $out_node_id_list[] = $node["id"];
+        }
       }
     }
   }
@@ -711,8 +996,10 @@ class MurrixModuleDb extends MurrixModule
           }
         }
       }
-
-      if ($_SESSION["Modules"]["user"]->CheckNodeAccess("read", $node["id"]) || $node["type"] == "tag")
+      
+      $node["access"] = $this->GetNodeAccess($node["id"], array());
+      
+      if ($node["access"] == "admin" || $node["access"] == "read")
       {
         $out_node_list[] = $node;
       } 

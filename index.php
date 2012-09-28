@@ -13,6 +13,7 @@
     <link href="css/bootstrap-notify.css" rel="stylesheet">
     <link href="css/datepicker.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/timeline.css" rel="stylesheet">
 
     <link href="views/search/style.css" rel="stylesheet">
     <link href="views/user/style.css" rel="stylesheet">
@@ -119,12 +120,13 @@
     <? require("views/search/view.html"); ?>
     <? require("views/user/view.html"); ?>
     <? require("views/admin/view.html"); ?>
+    <? require("views/home/view.html"); ?>
 
 
 
     <!-- Third-party script files -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/jquery-1.8.1.min.js"><\/script>')</script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.8.2.min.js"><\/script>')</script>
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
     <script>window.jQuery || document.write('<script type="text/javascript" src="js/jquery-ui-1.8.23.custom.min.js"><\/script>')</script>
@@ -138,6 +140,7 @@
     <script src="js/bootstrap-notify.js"></script>
     <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/moment.min.js"></script>
+    <script src="js/timeline-min.js"></script>
 
 
 
@@ -166,6 +169,7 @@
     <script src="views/search/model.js"></script>
     <script src="views/user/model.js"></script>
     <script src="views/admin/model.js"></script>
+    <script src="views/home/model.js"></script>
 
 
 
@@ -380,6 +384,7 @@
           self.adminModel = new AdminModel(self);
           self.nodeModel = new NodeModel(self);
           self.searchModel = new SearchModel(self);
+          self.homeModel = new HomeModel(self);
         };
 
 

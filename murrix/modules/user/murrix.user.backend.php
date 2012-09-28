@@ -52,7 +52,7 @@ class MurrixModuleUser extends MurrixModule
 
     foreach ($this->user_node_["links"] as $link)
     {
-      if ($link["role"] == "member" && $link["direction"] == "up")
+      if (($link["role"] == "user_member" || $link["role"] == "user_admin") && $link["direction"] == "up")
       {
         $this->group_node_id_list_[] = $link["node_id"]; 
       }
@@ -75,71 +75,54 @@ class MurrixModuleUser extends MurrixModule
     return false;
   }
 
-  public function CheckNodeAccess($right, $node_id)
+  public function GetNodeIdAccess($node_id)
   {
-    /* If admin, all accesses allowed */
+    /* If admin, admin access always allowed */
     if ($this->IsAdmin())
     {
-      return true;
+      return "admin";
     }
 
-    /* If the current user id is the same as the node, access is always granted to the own node */
+
+    /* If the current user id is the same as the node, admin access is always granted to the own node */
     if ($node_id == $this->GetUserId())
     {
-      return true;
+      return "admin";
     }
     
 
+    /* Not member of any groups, no access */
     if (count($this->group_node_id_list_) == 0)
     {
-      return false;
+      return "";
     }
 
-    if (in_array($node_id, $this->group_node_id_list_))
-    {
-      return true;
-    }
 
+    /* Make sure node access cache list is initialized */
     if (!isset($GLOBALS['node_id_access']))
     {
       $GLOBALS['node_id_access'] = array();
     }
 
-    if (isset($GLOBALS['node_id_access'][$node_id]) && ($GLOBALS['node_id_access'][$node_id] == $right || $GLOBALS['node_id_access'][$node_id] == "all"))
-    {
-      return true;
-    }
 
-    $db = $_SESSION["Modules"]["db"]->GetDb();
+    /* If node access is cached, if not fetch from database and cache */
+    if (!isset($GLOBALS['node_id_access'][$node_id]))
+    {
+      $db = $_SESSION["Modules"]["db"]->GetDb();
+
+      $GLOBALS['node_id_access'][$node_id] = "";
     
-    $query = "SELECT `level` FROM `Accesses` WHERE `node_id` = '" . $node_id . "' AND (" . implode(" OR ", array_prefix_values($this->group_node_id_list_, "`group_node_id` = ")) . ")";
+      $query = "SELECT `level` FROM `Accesses` WHERE `node_id` = '" . $node_id . "' AND (" . implode(" OR ", array_prefix_values($this->group_node_id_list_, "`group_node_id` = ")) . ")";
 
-    $db_result = $_SESSION["Modules"]["db"]->Query($db, $query);
+      $db_result = $_SESSION["Modules"]["db"]->Query($db, $query);
 
-    while ($row = $db_result->fetch_assoc())
-    {
-      if (!(isset($GLOBALS['node_id_access'][$node_id]) && $GLOBALS['node_id_access'][$node_id] == "all"))
+      while ($row = $db_result->fetch_assoc())
       {
-        $GLOBALS['node_id_access'][$node_id] = $row["level"];
+        $GLOBALS['node_id_access'][$node_id] = $_SESSION["Modules"]["db"]->MaxAccess($GLOBALS['node_id_access'][$node_id], $row["level"]);
       }
     }
 
-    if (isset($GLOBALS['node_id_access'][$node_id]) && ($GLOBALS['node_id_access'][$node_id] == $right || $GLOBALS['node_id_access'][$node_id] == "all"))
-    {
-      return true;
-    }
-
-
-    $query = "SELECT * FROM `Nodes` WHERE `id` = '" . $node_id . "' AND `type` = 'tag'";
-
-    $db_result = $_SESSION["Modules"]["db"]->Query($db, $query);
-
-    if ($db_result->num_rows > 0)
-    {
-      return true;
-    }
-    
-    return false;
+    return $GLOBALS['node_id_access'][$node_id];
   }
   
 

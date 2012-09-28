@@ -181,7 +181,7 @@ var SearchModel = function(parentModel)
 
     if (self.query() !== "")
     {
-      $.murrix.module.db.searchNodeIds({ string: self.query() }, function(transactionId, resultCode, nodeIdList)
+      $.murrix.module.db.searchNodeIds({ string: self.query(), types: [ "album", "location", "person", "vehicle" ] }, function(transactionId, resultCode, nodeIdList)
       {
         if (resultCode != MURRIX_RESULT_CODE_OK)
         {

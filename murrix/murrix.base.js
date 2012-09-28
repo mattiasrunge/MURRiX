@@ -246,9 +246,17 @@ $(function()
 
     var newPath = parts.join("/");
 
-    if (newPath[0] != "#")
+    if (newPath.length > 0)
     {
-      newPath = "#" + newPath;
+      if (newPath[0] !== "#")
+      {
+        newPath = "#" + newPath;
+      }
+
+      if (newPath[newPath.length - 1] === "/")
+      {
+        newPath = newPath.substr(0, newPath.length - 1);
+      }
     }
 
     return newPath;

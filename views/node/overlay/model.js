@@ -153,6 +153,15 @@ var OverlayModel = function(parentModel)
 
     document.location.hash = $.murrix.createPath(1, null, parentModel.picturesModel.pictures()[index].id());
   };
+
+  self.commentText = ko.observable("");
+  self.commentLoading = ko.observable(false);
+  self.commentErrorText = ko.observable("");
+  
+  self.commentSubmit = function()
+  {
+    console.log(self.commentText());
+  };
 };
 
  

@@ -41,7 +41,7 @@ var NodeModel = function(parentModel)
     }
 
 
-    node.getLinkedNodes("profilePicture", function(resultCode, nodeIdList, nodeList)
+    node.getLinkedNodes("file_profile", function(resultCode, nodeIdList, nodeList)
     {
       if (resultCode != MURRIX_RESULT_CODE_OK)
       {

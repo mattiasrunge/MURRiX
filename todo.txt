@@ -1,4 +1,106 @@
 
+
+NodeDocument
+============
+{
+  _id: "ObjectId(...)",
+  name: "",
+  description: "",
+  type: "",                                                                   /* person, file, location, vehicle, camera */
+
+  lAddedByPerson: "Node:ObjectId(...)",
+  addedDatetime: new Date(),
+  modifiedDatetime: new Date(),
+
+  lProfilePicture: "Node:ObjectId(...)",
+
+  comments: [
+  {
+    text: "",
+    lAddedByPerson: "Node:ObjectId(...)",
+    addedDatetime: new Date()
+  } ],
+
+  texts: [
+  {
+    addedDatetime: new Date(),
+    modifiedDatetime: new Date(),
+
+    lCreatedByPerson: "Node:ObjectId(...)",
+    createdDateTime: { datetime: new Date(), source: "" },
+    createdAtPosition: { longitude: 0, latitude: 0, altitude: 0, source: "" },
+
+    relations: [ "Node:ObjectId(...)", "Node:ObjectId(...)" ],
+  } ],
+
+  relations: [ "Node:ObjectId(...)", "Node:ObjectId(...)" ],
+
+  /* type = file */
+  fileType: "",
+  fileSize: "",
+  imageRegions: { ... },
+  lParent: "Node:ObjectId(...)",
+  lCreatedByPerson: "Node:ObjectId(...)",                                     /* Person taking the photo, shoting the video, writing the document, ... */
+  lCreatedByDevice: "Node:ObjectId(...)",                                     /* Camera most often */
+  createdDateTime: { datetime: new Date(), source: "" },                      /* When content was created, when the photo was taken etc */
+  createdAtPosition: { longitude: 0, latitude: 0, altitude: 0, source: "" },  /* Where the content was created, GPS position of camera for example */
+
+
+
+
+  /* type = vehicle */
+  positions: [
+  {
+    addedDatetime: new Date(),
+    
+    lCreatedByDevice: "Node:ObjectId(...)",
+    createdDateTime: { datetime: new Date(), source: "" },                      /* When content was created, when the photo was taken etc */
+    createdAtPosition: { longitude: 0, latitude: 0, altitude: 0, source: "" },  /* Where the content was created, GPS position of camera for example */
+  } ],
+
+
+  
+  /* type = person */
+  lMother: "Node:ObjectId(...)",
+  lFather: "Node:ObjectId(...)",
+  lPartner: "Node:ObjectId(...)",
+  lHome: "Node:ObjectId(...)",
+  lBirth: "Node:ObjectId(...)",
+  lDeath: "Node:ObjectId(...)",
+  lMarriage: "Node:ObjectId(...)",
+  lWedding: "Node:ObjectId(...)",
+
+
+  /* type = location */
+  address: "",
+  position: { longitude: 0, latitude: 0, altitude: 0, radius: 0 },
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OLD
+====
 Overview
 ========
 There should be 3 main visual components; a main view, a sidebar to the right and a filter bottom bar.
