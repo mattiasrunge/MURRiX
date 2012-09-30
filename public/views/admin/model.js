@@ -28,7 +28,7 @@ var AdminModel = function(parentModel, initialUserNodeId)
   
   self.addUserSubmit = function()
   {
-    self.loading(true);
+    /*self.loading(true);
     self.errorTextAddUser("");
 
     var nodeData = {};
@@ -59,12 +59,12 @@ var AdminModel = function(parentModel, initialUserNodeId)
 
         self.userNodeList.push(node);
       }
-    });
+    });*/
   };
 
   self.addGroupSubmit = function()
   {
-    self.loading(true);
+    /*self.loading(true);
     self.errorTextAddGroup("");
 
     var nodeData = {};
@@ -90,32 +90,32 @@ var AdminModel = function(parentModel, initialUserNodeId)
 
         self.groupNodeList.push(node);
       }
-    });
+    });*/
   };
 
   self.saveUserSubmit = function(node)
   {
-    console.log(node.name());
+    //console.log(node.name());
   };
 
   self.userRemoveClicked = function(node)
   {
-    console.log(node.name());
+    //console.log(node.name());
   };
 
   self.saveGroupSubmit = function(node)
   {
-    console.log(node.name());
+    //console.log(node.name());
   };
 
   self.groupRemoveClicked = function(node)
   {
-    console.log(node.name());
+    //console.log(node.name());
   };
 
   self.loadUsersAndGroups = function()
   {
-    console.log("AdminModel: Loading users and groups");
+   /* console.log("AdminModel: Loading users and groups");
 
     self.groupNodeList.removeAll();
     self.userNodeList.removeAll();
@@ -154,28 +154,27 @@ var AdminModel = function(parentModel, initialUserNodeId)
       {
         console.log("AdminModel: Found no users or groups");
       }
-    });
+    });*/
 
   };
   
   parentModel.userModel.currentUserNode.subscribe(function(node)
   {
-
-    self.accessable(false);
-  
-    if (node === false)
-    {
-      return;
-    }
-
-    if (node.attr("Username") === "admin")
-    {
-      self.accessable(true);
-
-      self.loadUsersAndGroups();
-    }
+//     self.accessable(false);
+//   
+//     if (node === false)
+//     {
+//       return;
+//     }
+// console.log(node);
+// console.log(node());
+// console.log(node().username);
+//     if (node().username() === "admin")
+//     {
+//       self.accessable(true);
+// 
+//       self.loadUsersAndGroups();
+//     }
   });
-
-  
 
 };

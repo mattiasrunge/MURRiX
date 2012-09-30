@@ -85,44 +85,44 @@ var PicturesModel = function(parentModel)
     return true;
   };
 
-  $("#pictures-droptarget").get(0).addEventListener("dragover", function(event)
-  {
-    event.stopPropagation();
-    event.preventDefault();
-    return false;
-    
-  }, true);
-
-
-  $("#pictures-droptarget").get(0).addEventListener("drop", function(event)
-  {
-    event.stopPropagation();
-    event.preventDefault();
-
-    if (event.dataTransfer.files.length === 0)
-    {
-      return false;
-    }
-
-    self.uploadDroppedFiles(0, event.dataTransfer.files, function(resultCode)
-    {
-      console.log(resultCode);
-
-      $.murrix.module.db.fetchNodesBuffered([ parentModel.primaryNodeId() ], function(transactionId, resultCode, nodeList)
-      {
-        if (resultCode != MURRIX_RESULT_CODE_OK)
-        {
-          console.log("Got error while trying to fetch required nodes, resultCode = " + resultCode);
-        }
-        else
-        {
-          console.log("TODO: We should now reload node");
-          //parentModel.currentNode(nodeList[parentModel.primaryNodeId()]);
-        }
-      });
-    });
-
-  }, false);
+//   $("#pictures-droptarget").get(0).addEventListener("dragover", function(event)
+//   {
+//     event.stopPropagation();
+//     event.preventDefault();
+//     return false;
+//     
+//   }, true);
+// 
+// 
+//   $("#pictures-droptarget").get(0).addEventListener("drop", function(event)
+//   {
+//     event.stopPropagation();
+//     event.preventDefault();
+// 
+//     if (event.dataTransfer.files.length === 0)
+//     {
+//       return false;
+//     }
+// 
+//     self.uploadDroppedFiles(0, event.dataTransfer.files, function(resultCode)
+//     {
+//       console.log(resultCode);
+// 
+//       $.murrix.module.db.fetchNodesBuffered([ parentModel.primaryNodeId() ], function(transactionId, resultCode, nodeList)
+//       {
+//         if (resultCode != MURRIX_RESULT_CODE_OK)
+//         {
+//           console.log("Got error while trying to fetch required nodes, resultCode = " + resultCode);
+//         }
+//         else
+//         {
+//           console.log("TODO: We should now reload node");
+//           //parentModel.currentNode(nodeList[parentModel.primaryNodeId()]);
+//         }
+//       });
+//     });
+// 
+//   }, false);
 
   self.uploadDroppedFiles = function(index, files, callback)
   {

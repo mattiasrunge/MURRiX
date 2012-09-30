@@ -58,17 +58,17 @@ var TimelineModel = function(parentModel)
   };
 
 
-  self.timeline = new links.Timeline($("#timeline").get(0));
-
-
-
-  links.events.addListener(self.timeline, 'rangechanged', function(properties)
-  {
-    console.log('rangechanged ' + properties.start + ' - ' + properties.end);
-  });
-
-  // Draw our timeline with the created data and options
-  self.timeline.draw(data, options);
+//   self.timeline = new links.Timeline($("#timeline").get(0));
+// 
+// 
+// 
+//   links.events.addListener(self.timeline, 'rangechanged', function(properties)
+//   {
+//     console.log('rangechanged ' + properties.start + ' - ' + properties.end);
+//   });
+// 
+//   // Draw our timeline with the created data and options
+//   self.timeline.draw(data, options);
 };
 
  

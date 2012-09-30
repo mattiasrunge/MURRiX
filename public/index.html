@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>www.runge.se</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/bootstrap-notify.css" rel="stylesheet">
+    <link href="css/datepicker.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/timeline.css" rel="stylesheet">
+
+    <link href="views/search/style.css" rel="stylesheet">
+    <link href="views/user/style.css" rel="stylesheet">
+    <link href="views/node/style.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="shortcut icon" href="ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+  </head>
+
+  <body>
+    <div class="loading-overlay"></div>
+    <div class="notifications bottom-right notification"></div>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+
+          <a class="brand" href="#">www.runge.se</a>
+
+          <div class="pull-right"><!-- Other nav bar content -->
+
+            <!-- The drop down menu -->
+            <ul class="nav pull-right">
+              <li class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                  <span data-bind="ifnot: userModel.currentUserNode">Sign In</span>
+                  <span data-bind="if: userModel.currentUserNode, text: userModel.currentUserNode().name"></span>
+                  <strong class="caret"></strong>
+                </a>
+                <div class="dropdown-menu">
+
+                  <form class="" data-bind="submit: userModel.loginSubmit, visible: !userModel.currentUserNode()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+                    <input placeholder="Username" id="inputUsername" style="margin-bottom: 15px;" type="text" name="user[inputUsername]" size="30" data-bind="hasfocus: userModel.usernameFocused, disable: userModel.loading, value: userModel.inputUsername"/>
+                    <input placeholder="Password" id="inputPassword" style="margin-bottom: 15px;" type="password" name="user[inputPassword]" size="30" data-bind="disable: userModel.loading, value: userModel.inputPassword"/>
+                    <input id="inputRemember" style="float: left; margin-right: 10px;" type="checkbox" name="user[inputRemember]" value="1" data-bind="disable: userModel.loading, checked: userModel.inputRemember"/>
+                    <label class="string optional" for="inputRemember"> Remember me</label>
+
+                    <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
+                    <div data-bind="visible: userModel.errorText() != '', text: userModel.errorText" style="margin-bottom: 15px;"></div>
+                  </form>
+
+                  <div data-bind="visible: userModel.currentUserNode">
+                    <a href="#admin" data-bind="if: adminModel.accessable">Administration</a>
+                    <a href="#user">Profile</a>
+                    <a href="#" data-bind="click: userModel.signOutClicked">Sign out</a>
+                  </div>
+
+                </div>
+              </li>
+            </ul>
+
+            <div class="divider-vertical pull-right" data-bind="if: userModel.currentUserNode"></div>
+
+             <!-- The drop down menu -->
+            <ul class="nav pull-right" data-bind="if: userModel.currentUserNode">
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  Create new
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="#createAlbumModal" data-toggle="modal">Create album</a></li>
+                  <li><a href="#createPersonModal" data-toggle="modal">Create person</a></li>
+                  <li><a href="#createLocationModal" data-toggle="modal">Create location</a></li>
+                  <li><a href="#createVehicleModal" data-toggle="modal">Create vehicle</a></li>
+                </ul>
+              </li>
+            </ul>
+
+            <div class="divider-vertical pull-right"></div>
+
+            <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
+              <input type="text" class="search-query" placeholder="Search" data-bind="value: searchModel.queryInput"/>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="background-map"></div>
+
+
+    <!-- MURRiX view HTML files -->
+
+
+    <!-- Third-party script files -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.8.2.min.js"><\/script>')</script>
+
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+    <script>window.jQuery || document.write('<script type="text/javascript" src="js/jquery-ui-1.8.23.custom.min.js"><\/script>')</script>
+
+    <script src="js/jquery.history.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <script src="js/knockout-2.1.0.js"></script>
+    <script src="js/knockout.mapping-latest.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-notify.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/timeline-min.js"></script>
+
+
+    <!-- MURRiX base library script files -->
+    <script src="js/murrix.js"></script>
+    <script src="js/knockout.extensions.js"></script>
+
+    
+
+
+
+
+
+    <!-- MURRiX view script files -->
+    <script src="views/node/summary/model.js"></script>
+    <script src="views/node/timeline/model.js"></script>
+    <script src="views/node/pictures/model.js"></script>
+    <script src="views/node/relations/model.js"></script>
+    <script src="views/node/logbook/model.js"></script>
+    <script src="views/node/comments/model.js"></script>
+    <script src="views/node/connections/model.js"></script>
+    <script src="views/node/accesses/model.js"></script>
+    <script src="views/node/overlay/model.js"></script>
+    <script src="views/node/model.js"></script>
+    <script src="views/search/model.js"></script>
+    <script src="views/user/model.js"></script>
+    <script src="views/admin/model.js"></script>
+    <script src="views/home/model.js"></script>
+
+
+
+    <!-- Initialization scripts and definitions -->
+    <script>
+
+      // MURRiX view HTML files
+      /*jQuery.get("views/node/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/summary/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/timeline/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/pictures/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/relations/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/logbook/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/comments/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/connections/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/accesses/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/node/overlay/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/search/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/user/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/admin/view.html", function(data) { $(data).appendTo("body"); });
+      jQuery.get("views/home/view.html", function(data) { $(data).appendTo("body"); });*/
+
+
+
+
+      /* Definitiation of main model */
+      murrix.model = new function()
+      {
+        var self = this;
+
+        self.server = io.connect();
+        self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
+
+        self.nodes = {};
+        
+        self.userModel = new UserModel(self, 0);
+        self.adminModel = new AdminModel(self);
+        //self.nodeModel = new NodeModel(self);
+        self.searchModel = new SearchModel(self);
+        //self.homeModel = new HomeModel(self);
+
+
+        self.cacheNode = function(nodeData)
+        {
+          if (nodeData === false)
+          {
+            return false;
+          }
+        
+          if (!self.nodes[nodeData._id])
+          {
+            console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
+
+            self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData, NodeMappingInternal);
+          }
+          else
+          {
+            console.log("Node " + nodeData._id + " already cached updating cache...");
+            ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
+          }
+
+
+          self.nodes[nodeData._id].getLinkedNodes = function(roles, callback)
+          {
+            callback(0, [], {});
+            /*
+            var linkedIdList = [];
+
+            for (var n = 0; n < this.links().length; n++)
+            {
+              var link = this.links()[n];
+
+              if (!roles || link.role() === roles || (roles instanceof Array && $.murrix.inArray(link.role(), roles)))
+              {
+                linkedIdList.push(parseInt(link.node_id(), 10));
+              }
+            }
+
+            if (linkedIdList.length > 0)
+            {
+              self.fetchNodesBuffered(linkedIdList, function(transactionId, resultCode, nodeList)
+              {
+                if (resultCode != MURRIX_RESULT_CODE_OK)
+                {
+                  console.log("Got error while trying to fetch required nodes, resultCode = " + resultCode);
+                  callback(resultCode, [], []);
+                }
+                else
+                {
+                  var list = [];
+
+                  jQuery.each(nodeList, function(id, listNode)
+                  {
+                    list.push(listNode);
+                  });
+
+                  callback(MURRIX_RESULT_CODE_OK, linkedIdList, list);
+                }
+              });
+            }
+            else
+            {
+              callback(MURRIX_RESULT_CODE_OK, [], []);
+            }
+
+            return linkedIdList;*/
+          };
+
+          
+          return self.nodes[nodeData._id];
+        }
+
+
+        self.server.socket.on("error", function(reason)
+        {
+          console.error("Unable to connect Socket.IO", reason);
+        });
+
+        self.server.on("connect", function()
+        {
+          console.info("Successfully established a working connection to server");
+        });
+
+        self.server.on("connection_established", function(data)
+        {
+          if (data.error)
+          {
+            console.log("Error while established connection to MURRiX: " + data.text);
+            return;
+          }
+
+          console.log("Successfully connected to MURRiX");
+
+          self.userModel.setInitialUser(self.cacheNode(data.userNode));
+        });
+      };
+//         server.emit("login", { username: "test", password: "test" }, function(error, userNode)
+//         {
+//           console.log(error, userNode);
+//         });
+      
+
+      $(function()
+      {
+        /* Apply bindings on available views */
+        ko.applyBindings(murrix.model);
+
+
+        /* Disable closing of popup in login form */
+        $(".dropdown-menu input, .dropdown-menu label").click(function(e)
+        {
+          e.stopPropagation();
+        });
+
+
+        /* Bind function to change content based on path */
+        jQuery.History.bind(function(state)
+        {
+          $(".dropdown.open .dropdown-toggle").dropdown("toggle");
+          murrix.updatePath(state, murrix.model.path);
+        });
+
+
+        /* Trigger loading if no path is set */
+        if (document.location.hash.length == 0)
+        {
+          jQuery.History.trigger("");
+        }
+
+
+        /* Initialize background map */
+        var options = {
+          zoom: 13,
+          center: new google.maps.LatLng(57.6706907666667, 11.9375348333333),
+          mapTypeId: google.maps.MapTypeId.HYBRID,
+
+          streetViewControl: false,
+          panControl: false,
+          mapTypeControl: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            style: google.maps.ZoomControlStyle.DEFAULT,
+            position: google.maps.ControlPosition.RIGHT_TOP
+          },
+          scaleControl: true,
+          scaleControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+          }
+        };
+
+        //$.murrix.module.map.show(".background-map", options);
+
+
+        /* Clear loading overlay */
+        $(".loading-overlay").fadeOut();
+      });
+
+    </script>
+  </body>
+</html>

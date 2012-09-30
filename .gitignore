@@ -5,3 +5,4 @@ previews/*
 files/*
 !files/.htaccess
 murrix.config.php
+node_modules
