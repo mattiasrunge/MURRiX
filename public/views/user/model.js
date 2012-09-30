@@ -109,7 +109,7 @@ var UserModel = function(parentModel, initialUserNodeId)
     self.currentUserNode(node);
 
     // TODO: Is this cookie not sent to the server on all requests, perform server side login!
-    if ($.cookie("userinfo") !== null)
+    /*if ($.cookie("userinfo") !== null)
     {
       console.log("UserModel: Signing in with cookie information");
       var data = JSON.parse($.cookie("userinfo"));
@@ -119,6 +119,50 @@ var UserModel = function(parentModel, initialUserNodeId)
       self.inputRemember(true);
 
       self.loginSubmit();
-    }
+    }*/
   }
+
+
+  self.changePasswordLoading = ko.observable(false);
+  self.changePasswordErrorText = ko.observable("");
+  self.changePasswordPassword1 = ko.observable("");
+  self.changePasswordPassword2 = ko.observable("");
+
+  self.changePasswordSubmit = function(form)
+  {
+    if (self.changePasswordPassword1() === "")
+    {
+      self.changePasswordErrorText("Password can not be empty");
+      return;
+    }
+
+    if (self.changePasswordPassword1() !== self.changePasswordPassword2())
+    {
+      self.changePasswordErrorText("Password do not match");
+      return;
+    }
+
+    self.changePasswordLoading(true);
+    self.changePasswordErrorText("");
+
+    murrix.model.server.emit("changePassword", { password: self.changePasswordPassword1() }, function(error)
+    {
+      self.changePasswordLoading(false);
+
+      if (error)
+      {
+        self.changePasswordPassword1(true);
+        self.changePasswordErrorText("Failed to change password, please report this to the administrator");
+        return;
+      }
+
+      self.changePasswordPassword1("");
+      self.changePasswordPassword2("");
+      self.changePasswordErrorText("");
+
+      $(".modal").modal('hide');
+
+      $.cookie("userinfo", null, { path: "/" });
+    });
+  };
 };

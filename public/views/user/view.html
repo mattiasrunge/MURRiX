@@ -25,3 +25,18 @@
   <div class="well sidebar-nav-background"></div>
 </div>
 
+<form class="modal" id="userChangePasswordModal" tabindex="-1" role="dialog" aria-labelledby="userChangePasswordModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: userModel.changePasswordSubmit">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="userChangePasswordModalLabel">Change password</h3>
+  </div>
+  <div class="modal-body">
+      <input placeholder="Password" type="text" name="password1" style="width: 515px;" data-bind="hasfocus: true, disable: userModel.changePasswordLoading, value: userModel.changePasswordPassword1"/>
+      <input placeholder="Repeat password" type="text" name="password2" style="width: 515px;" data-bind="disable: userModel.changePasswordLoading, value: userModel.changePasswordPassword2"/>
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: userModel.changePasswordErrorText() != '', text: userModel.changePasswordErrorText"></p>
+    <button data-bind="disable: userModel.changePasswordLoading" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: userModel.changePasswordLoading" class="btn btn-primary">Change</button>
+  </div>
+</form>

@@ -21,7 +21,7 @@ ko.bindingHandlers.fadeVisible = {
 ko.bindingHandlers.htmlSize = {
   init: function(element, valueAccessor)
   {
-    var fileSizeInBytes = $.murrix.intval(ko.utils.unwrapObservable(valueAccessor()));
+    var fileSizeInBytes = murrix.intval(ko.utils.unwrapObservable(valueAccessor()));
     var i = -1;
     var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
 
@@ -119,34 +119,34 @@ ko.bindingHandlers.hrefFirst = {
   init: function(element, valueAccessor)
   {
     var values = ko.utils.unwrapObservable(valueAccessor());
-    $(element).attr("href", $.murrix.createPath(0, values[0], values[1]));
+    $(element).attr("href", murrix.createPath(0, values[0], values[1]));
   },
   update: function(element, valueAccessor)
   {
     var values = ko.utils.unwrapObservable(valueAccessor());
-    $(element).attr("href", $.murrix.createPath(0, values[0], values[1]));
+    $(element).attr("href", murrix.createPath(0, values[0], values[1]));
   }
 };
 
 ko.bindingHandlers.hrefFirstPrimary = {
   init: function(element, valueAccessor)
   {
-    $(element).attr("href", $.murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
+    $(element).attr("href", murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
   },
   update: function(element, valueAccessor)
   {
-    $(element).attr("href", $.murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
+    $(element).attr("href", murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
   }
 };
 
 ko.bindingHandlers.hrefFirstSecondary = {
   init: function(element, valueAccessor)
   {
-    $(element).attr("href", $.murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
+    $(element).attr("href", murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
   },
   update: function(element, valueAccessor)
   {
-    $(element).attr("href", $.murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
+    $(element).attr("href", murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
   }
 };
 
@@ -154,33 +154,33 @@ ko.bindingHandlers.hrefSecond = {
   init: function(element, valueAccessor)
   {
     var values = ko.utils.unwrapObservable(valueAccessor());
-    $(element).attr("href", $.murrix.createPath(1, values[0], values[1]));
+    $(element).attr("href", murrix.createPath(1, values[0], values[1]));
   },
   update: function(element, valueAccessor)
   {
     var values = ko.utils.unwrapObservable(valueAccessor());
-    $(element).attr("href", $.murrix.createPath(1, values[0], values[1]));
+    $(element).attr("href", murrix.createPath(1, values[0], values[1]));
   }
 };
 
 ko.bindingHandlers.hrefSecondPrimary = {
   init: function(element, valueAccessor)
   {
-    $(element).attr("href", $.murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
+    $(element).attr("href", murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
   },
   update: function(element, valueAccessor)
   {
-    $(element).attr("href", $.murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
+    $(element).attr("href", murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
   }
 };
 
 ko.bindingHandlers.hrefSecondSecondary = {
   init: function(element, valueAccessor)
   {
-    $(element).attr("href", $.murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));
+    $(element).attr("href", murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));
   },
   update: function(element, valueAccessor)
   {
-    $(element).attr("href", $.murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));
+    $(element).attr("href", murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));
   }
 };

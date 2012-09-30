@@ -59,13 +59,14 @@
                     <input id="inputRemember" style="float: left; margin-right: 10px;" type="checkbox" name="user[inputRemember]" value="1" data-bind="disable: userModel.loading, checked: userModel.inputRemember"/>
                     <label class="string optional" for="inputRemember"> Remember me</label>
 
-                    <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
+                    <input data-bind="disable: userModel.loading" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
                     <div data-bind="visible: userModel.errorText() != '', text: userModel.errorText" style="margin-bottom: 15px;"></div>
                   </form>
 
                   <div data-bind="visible: userModel.currentUserNode">
                     <a href="#admin" data-bind="if: adminModel.accessable">Administration</a>
                     <a href="#user">Profile</a>
+                    <a href="#userChangePasswordModal" data-toggle="modal">Change password</a>
                     <a href="#" data-bind="click: userModel.signOutClicked">Sign out</a>
                   </div>
 
@@ -160,25 +161,6 @@
     <!-- Initialization scripts and definitions -->
     <script>
 
-      // MURRiX view HTML files
-      /*jQuery.get("views/node/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/summary/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/timeline/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/pictures/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/relations/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/logbook/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/comments/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/connections/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/accesses/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/node/overlay/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/search/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/user/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/admin/view.html", function(data) { $(data).appendTo("body"); });
-      jQuery.get("views/home/view.html", function(data) { $(data).appendTo("body"); });*/
-
-
-
-
       /* Definitiation of main model */
       murrix.model = new function()
       {
@@ -191,9 +173,9 @@
         
         self.userModel = new UserModel(self, 0);
         self.adminModel = new AdminModel(self);
-        //self.nodeModel = new NodeModel(self);
+        self.nodeModel = new NodeModel(self);
         self.searchModel = new SearchModel(self);
-        //self.homeModel = new HomeModel(self);
+        self.homeModel = new HomeModel(self);
 
 
         self.cacheNode = function(nodeData)
@@ -298,14 +280,33 @@
 
       $(function()
       {
-        /* Apply bindings on available views */
-        ko.applyBindings(murrix.model);
-
-
-        /* Disable closing of popup in login form */
-        $(".dropdown-menu input, .dropdown-menu label").click(function(e)
+        // MURRiX view HTML files
+        jQuery.when(
+          jQuery.get("views/node/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/summary/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/timeline/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/pictures/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/relations/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/logbook/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/comments/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/connections/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/accesses/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/node/overlay/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/search/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/user/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/admin/view.html", function(data) { $(data).appendTo("body"); }),
+          jQuery.get("views/home/view.html", function(data) { $(data).appendTo("body"); })
+        ).done(function()
         {
-          e.stopPropagation();
+          /* Apply bindings on available views */
+          ko.applyBindings(murrix.model);
+
+
+          /* Disable closing of popup in login form */
+          $(".dropdown-menu input, .dropdown-menu label").click(function(e)
+          {
+            e.stopPropagation();
+          });
         });
 
 

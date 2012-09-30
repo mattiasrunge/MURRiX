@@ -87,10 +87,31 @@ io.configure(function()
           callback("Failed to find session for session id " + sessionId, false);
           return;
         }
-    
+
         handshakeData.session = session;
 
-        callback(null, true);
+        
+        var cookies = {};
+        
+        handshakeData.headers.cookie.split(';').forEach(function(cookie)
+        {
+          var parts = cookie.split('=');
+          cookies[parts[0].trim()] = (parts[1] || '').trim();
+        });
+
+        if (cookies["userinfo"])
+        {
+          var userinfo = JSON.parse(unescape(cookies.userinfo));
+
+          user.login(session, userinfo.username, userinfo.password, function(error)
+          {
+            callback(null, true);
+          });
+        }
+        else
+        {
+          callback(null, true);
+        }
       });
     }
   });
@@ -135,6 +156,17 @@ io.sockets.on("connection", function(client)
   client.on("logout", function(data, callback)
   {
     user.logout(client.handshake.session, function(error)
+    {
+      if (callback)
+      {
+        callback(error);
+      }
+    });
+  });
+
+  client.on("changePassword", function(data, callback)
+  {
+    user.changePassword(client.handshake.session, data.password, function(error)
     {
       if (callback)
       {
