@@ -140,13 +140,13 @@ var NodeModel = function(parentModel)
   {
     var nodeData = {};
 
-    nodeData["type"]        = $(form).attr("data-murrix-node-type");
-    nodeData["name"]        = self.createName();
-    nodeData["description"] = self.createDescription();
+    nodeData.type        = $(form).attr("data-murrix-node-type");
+    nodeData.name        = self.createName();
+    nodeData.description = self.createDescription();
 
     self.createErrorText("");
 
-    if (nodeData["name"] == "")
+    if (nodeData.name === "")
     {
       self.createErrorText("Name is empty!");
     }
@@ -173,7 +173,7 @@ var NodeModel = function(parentModel)
 
   self.tagRemove = function(tagNode)
   {
-    self.tagLoading(true)
+    self.tagLoading(true);
   
     console.log(tagNode.name());
   };
@@ -244,7 +244,7 @@ var NodeModel = function(parentModel)
     self.createDescription("");
 
     self.tagLoading(false);
-    self.tagErrorText("")
+    self.tagErrorText("");
     self.tagName("");
   });
   

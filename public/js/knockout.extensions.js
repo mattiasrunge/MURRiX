@@ -10,7 +10,7 @@ ko.bindingHandlers.fadeVisible = {
   update: function(element, valueAccessor)
   {
     var value = valueAccessor();
-    ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).fadeOut();
+    ko.utils.unwrapObservable(value ? $(element).fadeIn() : $(element).fadeOut());
   }
 };
 

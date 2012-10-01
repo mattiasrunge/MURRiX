@@ -1,4 +1,4 @@
-SRC = $(shell find . -name "*.js" -type f | sort)
+SRC = $(shell find . \( -name "*.js" \) -o \( -name node_modules -prune \) -type f | sort)
 
 lint:
 	@jshint ${SRC}

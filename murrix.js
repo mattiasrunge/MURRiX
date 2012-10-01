@@ -1,4 +1,4 @@
-var static = require('node-static');
+var nodeStatic = require('node-static');
 var httpServer = require('http').createServer(httpRequestHandler);
 var url = require('url');
 var io = require('socket.io').listen(httpServer);
@@ -7,7 +7,7 @@ var mongo = require('mongodb');
 var ObjectID = require('mongodb').ObjectID;
 var Session = require('./lib/session').Session;
 var User = require('./lib/user').User;
-
+var NodeManager = require('./lib/node.js').NodeManager;
 
 var databaseHost = "localhost";
 var databasePort = 27017;
@@ -19,8 +19,8 @@ var mongoServer = new mongo.Server(databaseHost, databasePort, { auto_reconnect:
 var mongoDb = new mongo.Db(databaseName, mongoServer);
 var session = new Session(mongoDb, "murrix");
 var user = new User(mongoDb);
-
-var fileServer = new static.Server("./public");
+var nodeManager = new NodeManager(mongoDb);
+var fileServer = new nodeStatic.Server("./public");
 
 mongoDb.open(function(error, mongoDb)
 {
@@ -99,7 +99,7 @@ io.configure(function()
           cookies[parts[0].trim()] = (parts[1] || '').trim();
         });
 
-        if (cookies["userinfo"])
+        if (cookies.userinfo)
         {
           var userinfo = JSON.parse(unescape(cookies.userinfo));
 
@@ -141,7 +141,7 @@ io.sockets.on("connection", function(client)
   });
 
 
-  
+  /* User API */
   client.on("login", function(data, callback)
   {
     user.login(client.handshake.session, data.username, data.password, function(error, userNode)
@@ -174,4 +174,73 @@ io.sockets.on("connection", function(client)
       }
     });
   });
+
+  
+  /* Node API */
+  client.on("create", function(data, callback)
+  {
+    nodeManager.create(client.handshake.session, data.nodeData, function(error, nodeData)
+     {
+       if (callback)
+       {
+         callback(error, nodeData);
+       }
+     });
+  });
+
+  client.on("trash", function(data, callback)
+  {
+    nodeManager.trash(client.handshake.session, data.nodeId, function(error)
+    {
+      if (callback)
+      {
+        callback(error);
+      }
+    });
+  });
+
+  client.on("comment", function(data, callback)
+  {
+    nodeManager.comment(client.handshake.session, data.nodeId, data.text, function(error, nodeData)
+    {
+      if (callback)
+      {
+        callback(error, nodeData);
+      }
+    });
+  });
+
+  client.on("addPositions", function(data, callback)
+  {
+    nodeManager.addPositions(client.handshake.session, data.nodeId, data.positionList, function(error, positionList)
+    {
+      if (callback)
+      {
+        callback(error, positionList);
+      }
+    });
+  });
+
+  client.on("find", function(data, callback)
+  {
+    nodeManager.find(client.handshake.session, data.query, function(error, nodeDataList)
+    {
+      if (callback)
+      {
+        callback(error, nodeDataList);
+      }
+    });
+  });
+
+  client.on("findPositions", function(data, callback)
+  {
+    nodeManager.findPositions(client.handshake.session, data.query, function(error, positionList)
+    {
+      if (callback)
+      {
+        callback(error, positionList);
+      }
+    });
+  });
+
 });

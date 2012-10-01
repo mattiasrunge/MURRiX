@@ -120,7 +120,7 @@ var UserModel = function(parentModel, initialUserNodeId)
 
       self.loginSubmit();
     }*/
-  }
+  };
 
 
   self.changePasswordLoading = ko.observable(false);
