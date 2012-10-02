@@ -32,7 +32,7 @@ var NodeModel = function(parentModel)
     console.log("NodeModel: Clearing profile picture, tags and map");
     self.profilePictureNode(false);
     self.tagNodeList.removeAll();
-    $.murrix.module.map.clearMap();
+    //$.murrix.module.map.clearMap();
 
     if (!node)
     {
@@ -41,7 +41,7 @@ var NodeModel = function(parentModel)
     }
 
 
-    node.getLinkedNodes("file_profile", function(resultCode, nodeIdList, nodeList)
+    /*node.getLinkedNodes("file_profile", function(resultCode, nodeIdList, nodeList)
     {
       if (resultCode != MURRIX_RESULT_CODE_OK)
       {
@@ -74,7 +74,7 @@ var NodeModel = function(parentModel)
     });
 
     console.log("NodeModel: Setting node to map");
-    $.murrix.module.map.setNodes([ node ]);
+    $.murrix.module.map.setNodes([ node ]);*/
   });
   
 
@@ -91,7 +91,7 @@ var NodeModel = function(parentModel)
       return;
     }
 
-    var nodeId = $.murrix.intval(primary.args[0]);
+    var nodeId = primary.args[0];
 
     console.log("NodeModel: Got nodeId = " + nodeId);
 
@@ -108,24 +108,33 @@ var NodeModel = function(parentModel)
       return;
     }
 
-
-    /* Make sure the node is cached before setting the primary id */
-    $.murrix.module.db.fetchNodesBufferedIndexed([ nodeId ], function(transactionId, resultCode, nodeList)
+    murrix.model.server.emit("find", { _id: { "$oid" : nodeId } }, function(error, nodeDataList)
     {
-      if (resultCode != MURRIX_RESULT_CODE_OK)
+      if (error)
       {
-        console.log("NodeModel: Got error while trying to fetch node, resultCode = " + resultCode);
-      }
-      else if (typeof nodeList[nodeId] != 'undefined')
-      {
-        console.log("NodeModel: Node found, setting node with id " + nodeId);
-        self.node(nodeList[nodeId]);
-      }
-      else
-      {
-        console.log("NodeModel: No nodes found with that node id, maybe you do not have rights to it!");
-      }
+        console.log("NodeModel: Failed to find node!");
+        return;
+      }console.log(nodeDataList);
+
+      self.node(murrix.model.cacheNode(nodeDataList[nodeId]));
     });
+    /* Make sure the node is cached before setting the primary id */
+//     $.murrix.module.db.fetchNodesBufferedIndexed([ nodeId ], function(transactionId, resultCode, nodeList)
+//     {
+//       if (resultCode != MURRIX_RESULT_CODE_OK)
+//       {
+//         console.log("NodeModel: Got error while trying to fetch node, resultCode = " + resultCode);
+//       }
+//       else if (typeof nodeList[nodeId] != 'undefined')
+//       {
+//         console.log("NodeModel: Node found, setting node with id " + nodeId);
+//         self.node(nodeList[nodeId]);
+//       }
+//       else
+//       {
+//         console.log("NodeModel: No nodes found with that node id, maybe you do not have rights to it!");
+//       }
+//     });
   });
 
 
@@ -153,10 +162,24 @@ var NodeModel = function(parentModel)
     else
     {
       self.createLoading(true);
-      
-      console.log(nodeData);
-  
-      $(".modal").modal('hide');
+
+      murrix.model.server.emit("save", nodeData, function(error, nodeData)
+      {
+        self.createLoading(false);
+
+        if (error)
+        {
+          console.log("NodeModel: Failed to create album: " + error);
+          self.createErrorText("Failed to create album, maybe you don't have rights");
+          return;
+        }
+
+        var node = murrix.model.cacheNode(nodeData);
+
+        $(".modal").modal('hide');
+        
+        document.location.hash = murrix.createPath(0, "node", node._id());
+      });
     }
   };
 

@@ -3,11 +3,13 @@ var httpServer = require('http').createServer(httpRequestHandler);
 var url = require('url');
 var io = require('socket.io').listen(httpServer);
 var fs = require('fs');
+var path = require('path');
 var mongo = require('mongodb');
 var ObjectID = require('mongodb').ObjectID;
 var Session = require('./lib/session').Session;
 var User = require('./lib/user').User;
 var NodeManager = require('./lib/node.js').NodeManager;
+var MurrixUtils = require('./lib/utils.js');
 
 var databaseHost = "localhost";
 var databasePort = 27017;
@@ -19,7 +21,7 @@ var mongoServer = new mongo.Server(databaseHost, databasePort, { auto_reconnect:
 var mongoDb = new mongo.Db(databaseName, mongoServer);
 var session = new Session(mongoDb, "murrix");
 var user = new User(mongoDb);
-var nodeManager = new NodeManager(mongoDb);
+var nodeManager = new NodeManager(mongoDb, user);
 var fileServer = new nodeStatic.Server("./public");
 
 mongoDb.open(function(error, mongoDb)
@@ -35,6 +37,41 @@ mongoDb.open(function(error, mongoDb)
 
 httpServer.listen(httpPort);
 
+function getTemplateFile(filename, callback)
+{
+  var dirname = path.dirname(filename) + "/";
+
+  fs.readFile(filename, 'utf8', function(error, data)
+  {
+    if (error)
+    {
+      console.log("Could not read file " + filename);
+      callback("Could not read file " + filename, null);
+      return;
+    }
+
+    data = data.replace(/\{\{(.+?)\}\}/g, function(fullMatch, templateFilename)
+    {
+      if (templateFilename[0] === "#")
+      {
+        return "<!-- '" + templateFilename.substr(1) + "' not included -->";
+      }
+
+      templateFilename = dirname + templateFilename
+      
+      try
+      {
+        return fs.readFileSync(templateFilename, 'utf8');
+      }
+      catch (e)
+      {
+        return "<!-- " + e + " -->";
+      }
+    });
+
+    callback(null, data);
+  });
+}
 
 function httpRequestHandler(request, response)
 {
@@ -49,21 +86,39 @@ function httpRequestHandler(request, response)
 
     var requestParams = url.parse(request.url, true);
 
-    //console.log(requestParams);
+    console.log(requestParams);
 
-    fileServer.serve(request, response, function(error, result)
+    if (requestParams.pathname === "/" || requestParams.pathname === "/index.html" || requestParams.pathname === "/index.htm")
     {
-
-      //console.log(error, result);
-
-      if (error)
+      getTemplateFile("./public/index.html", function(error, data)
       {
-        console.log("Error serving " + request.url + " - " + error.message);
+        if (error)
+        {
+          response.writeHead(404);
+          response.end();
+          return;
+        }
+        
+        response.writeHead(200, { "Content-Type": "text/html" });
+        response.end(data);
+      });
+    }
+    else
+    {
+      fileServer.serve(request, response, function(error, result)
+      {
 
-        response.writeHead(error.status, error.headers);
-        response.end();
-      }
-    });
+        //console.log(error, result);
+
+        if (error)
+        {
+          console.log("Error serving " + request.url + " - " + error.message);
+
+          response.writeHead(error.status, error.headers);
+          response.end();
+        }
+      });
+    }
   });
 }
 
@@ -91,14 +146,8 @@ io.configure(function()
         handshakeData.session = session;
 
         
-        var cookies = {};
+        var cookies = MurrixUtils.parseCookieString(handshakeData.headers.cookie);
         
-        handshakeData.headers.cookie.split(';').forEach(function(cookie)
-        {
-          var parts = cookie.split('=');
-          cookies[parts[0].trim()] = (parts[1] || '').trim();
-        });
-
         if (cookies.userinfo)
         {
           var userinfo = JSON.parse(unescape(cookies.userinfo));
@@ -177,9 +226,9 @@ io.sockets.on("connection", function(client)
 
   
   /* Node API */
-  client.on("create", function(data, callback)
+  client.on("save", function(data, callback)
   {
-    nodeManager.create(client.handshake.session, data.nodeData, function(error, nodeData)
+    nodeManager.save(client.handshake.session, data, function(error, nodeData)
      {
        if (callback)
        {
@@ -223,7 +272,7 @@ io.sockets.on("connection", function(client)
 
   client.on("find", function(data, callback)
   {
-    nodeManager.find(client.handshake.session, data.query, function(error, nodeDataList)
+    nodeManager.find(client.handshake.session, data, function(error, nodeDataList)
     {
       if (callback)
       {
@@ -234,7 +283,7 @@ io.sockets.on("connection", function(client)
 
   client.on("findPositions", function(data, callback)
   {
-    nodeManager.findPositions(client.handshake.session, data.query, function(error, positionList)
+    nodeManager.findPositions(client.handshake.session, data, function(error, positionList)
     {
       if (callback)
       {

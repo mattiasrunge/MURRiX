@@ -84,7 +84,7 @@
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="#createAlbumModal" data-toggle="modal">Create album</a></li>
+                  <li><a href="#createEventModal" data-toggle="modal">Create event</a></li>
                   <li><a href="#createPersonModal" data-toggle="modal">Create person</a></li>
                   <li><a href="#createLocationModal" data-toggle="modal">Create location</a></li>
                   <li><a href="#createVehicleModal" data-toggle="modal">Create vehicle</a></li>
@@ -135,8 +135,20 @@
     <script src="js/knockout.extensions.js"></script>
 
     
-
-
+    {{views/node/view.html}}
+    {{#views/node/summary/view.html}}
+    {{#views/node/timeline/view.html}}
+    {{#views/node/pictures/view.html}}
+    {{#views/node/relations/view.html}}
+    {{#views/node/logbook/view.html}}
+    {{#views/node/comments/view.html}}
+    {{#views/node/connections/view.html}}
+    {{#views/node/accesses/view.html}}
+    {{#views/node/overlay/view.html}}
+    {{#views/search/view.html}}
+    {{views/user/view.html}}
+    {{#views/admin/view.html}}
+    {{#views/home/view.html}}
 
 
 
@@ -184,7 +196,7 @@
           {
             return false;
           }
-        
+
           if (!self.nodes[nodeData._id])
           {
             console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
@@ -277,36 +289,16 @@
 //           console.log(error, userNode);
 //         });
       
-
       $(function()
       {
-        // MURRiX view HTML files
-        jQuery.when(
-          jQuery.get("views/node/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/summary/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/timeline/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/pictures/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/relations/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/logbook/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/comments/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/connections/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/accesses/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/node/overlay/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/search/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/user/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/admin/view.html", function(data) { $(data).appendTo("body"); }),
-          jQuery.get("views/home/view.html", function(data) { $(data).appendTo("body"); })
-        ).done(function()
+        /* Apply bindings on available views */
+        ko.applyBindings(murrix.model);
+
+
+        /* Disable closing of popup in login form */
+        $(".dropdown-menu input, .dropdown-menu label").click(function(e)
         {
-          /* Apply bindings on available views */
-          ko.applyBindings(murrix.model);
-
-
-          /* Disable closing of popup in login form */
-          $(".dropdown-menu input, .dropdown-menu label").click(function(e)
-          {
-            e.stopPropagation();
-          });
+          e.stopPropagation();
         });
 
 
