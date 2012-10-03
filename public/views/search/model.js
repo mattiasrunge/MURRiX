@@ -6,8 +6,17 @@ var SearchModel = function(parentModel)
   self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "search"; });
+  self.show = ko.observable(false);
 
+  parentModel.path().primary.subscribe(function(value)
+  {
+    if (self.show() !== (value.action === "search"))
+    {
+      self.show(value.action === "search");
+    }
+  });
+
+  
   self.query = ko.observable("");
 
   self.queryInput = ko.observable("");
@@ -16,7 +25,7 @@ var SearchModel = function(parentModel)
   self.currentPage = ko.observable(0);
 
   self.itemsPerPage = 25;
-  self.resultIds = ko.observableArray([ ]);
+  self.resultCount = ko.observable(0);
 
   /* This function is run when the primary path is changed
    * and a new node id has been set. It tries to cache
@@ -42,19 +51,7 @@ var SearchModel = function(parentModel)
     /* If the page has been updated, update query to refresh database search */
     if (primary.args.length > 1)
     {
-      var currentPage = primary.args[1];
-
-      if (typeof currentPage != "number")
-      {
-        try
-        {
-          currentPage = parseInt(currentPage, 10);
-        }
-        catch (e)
-        {
-          currentPage = 0;
-        }
-      }
+      var currentPage = murrix.intval(primary.args[1]);
 
       if (currentPage !== self.currentPage())
       {
@@ -113,50 +110,28 @@ var SearchModel = function(parentModel)
 
   self.showResults = function()
   {
-    var offset = self.itemsPerPage * self.currentPage();
-
-    var id_list = self.resultIds.slice(offset, offset + self.itemsPerPage);
+    var skip = self.itemsPerPage * self.currentPage();
 
     self.results.removeAll();
 
-    if (id_list.length > 0)
+    if (self.resultCount() > 0)
     {
-      $.murrix.module.db.fetchNodesBuffered(id_list, function(transaction_id, result_code, node_list, message)
+      murrix.model.server.emit("find", { name: { $regex: ".*" + self.query() + ".*", $options: "-i" }, $limit: self.itemsPerPage, $skip: skip }, function(error, nodeDataList)
       {
-        if (result_code != MURRIX_RESULT_CODE_OK)
+        if (error)
         {
-          $('.notification').notify({
-            message: {
-              text: message
-            },
-            type: 'error',
-            fadeOut: {
-              enabled: false
-            }
-          }).show();
+          console.log(error);
+          return;
         }
-        else if (node_list.length === 0)
+
+        var resultList = [];
+
+        for (var key in nodeDataList)
         {
-          $('.notification').notify({
-            message: {
-              text: 'No nodes found but search returned something, this is inconsistent!'
-            },
-            type: 'error',
-            fadeOut: {
-              enabled: false
-            }
-          }).show();
+          resultList.push(murrix.model.cacheNode(nodeDataList[key]));
         }
-        else
-        {
-          jQuery.each(node_list, function(id, node)
-          {
-            self.results.push({
-              id: node.id,
-              name: node.name
-            });
-          });
-        }
+
+        self.results(resultList);
       });
     }
   };
@@ -177,35 +152,28 @@ var SearchModel = function(parentModel)
   {
     self.results.removeAll();
     self.pages.removeAll();
-    self.resultIds.removeAll();
+    self.resultCount(0);
 
     if (self.query() !== "")
     {
-      $.murrix.module.db.searchNodeIds({ string: self.query(), types: [ "album", "location", "person", "vehicle" ] }, function(transactionId, resultCode, nodeIdList)
+      murrix.model.server.emit("count", { name: { $regex: ".*" + self.query() + ".*", $options: "-i" } }, function(error, count)
       {
-        if (resultCode != MURRIX_RESULT_CODE_OK)
+        if (error)
         {
-          console.log("Got error while trying to run query, resultCode = " + resultCode);
+          console.log(error);
+          return;
         }
-        else
+
+        var pages = Math.ceil(count / self.itemsPerPage);
+
+        for (var n = 0; n < pages; n++)
         {
-          var length = 0;
-
-          jQuery.each(nodeIdList, function(n, nodeId)
-          {
-            self.resultIds.push(nodeId);
-            length++;
-          });
-
-          var pages = Math.ceil(length / self.itemsPerPage);
-
-          for (var n = 0; n < pages; n++)
-          {
-            self.pages.push(n);
-          }
-
-          self.showResults();
+          self.pages.push(n);
         }
+
+        self.resultCount(count);
+
+        self.showResults();
       });
     }
   };
