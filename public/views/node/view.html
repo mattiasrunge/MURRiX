@@ -71,8 +71,8 @@
 
       <li class="nav-header">Tags <button rel="tooltip" title="Edit tags" class="btn btn-link btn-mini pull-right" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button></li>
 
-      <li data-bind="foreach: nodeModel.tagNodeList">
-        <span data-bind="text: name" class="label label-inverse"></span>
+      <li data-bind="foreach: nodeModel.node().tags">
+        <span class="label label-inverse"><a href="#" data-bind="text: $data, attr: { href: '#search:' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a></span>
       </li>
 
       <li>
@@ -92,16 +92,16 @@
     <h3 id="editTagsModalLabel">Edit tags</h3>
   </div>
   <div class="modal-body">
-    <form data-bind="submit: nodeModel.tagSubmit">
+    <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px">
       <input placeholder="Tag name" type="text" name="newTag" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.tagLoading, value: nodeModel.tagName" data-provide="typeahead"/>
     </form>
 
-      <!-- ko foreach: nodeModel.tagNodeList -->
-          <span class="label label-inverse">
-            <span data-bind="text: name"></span>
-            <a href="#" style="color: red;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
-          </span>
-      <!-- /ko -->
+    <div data-bind="foreach: nodeModel.node().tags">
+      <span class="label label-inverse" style="display: inline-block;">
+        <span data-bind="text: $data"></span>&nbsp;&nbsp;
+        <a href="#" style="color: red;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
+      </span> 
+    </div>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>

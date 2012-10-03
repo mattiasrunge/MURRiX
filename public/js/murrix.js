@@ -23,7 +23,7 @@ murrix.inArray = function(needle, haystack)
     }
   }
 
-  return true;
+  return false;
 };
 
 murrix.intval = function(value)

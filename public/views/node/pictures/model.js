@@ -23,7 +23,7 @@ var PicturesModel = function(parentModel)
 
   parentModel.node.subscribe(function(node)
   {
-    self.pictures.removeAll();
+/*    self.pictures.removeAll();
   
     if (!node)
     {
@@ -41,7 +41,7 @@ var PicturesModel = function(parentModel)
       {
         self.pictures(nodeList);
       }
-    });
+    });*/
     /*
     var pictureIdList = [];
 

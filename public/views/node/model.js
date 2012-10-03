@@ -1,4 +1,3 @@
-
 var NodeModel = function(parentModel)
 {
   var self = this;
@@ -19,7 +18,7 @@ var NodeModel = function(parentModel)
 
   self.node = ko.observable(false);
   self.profilePictureNode = ko.observable(false);
-  self.tagNodeList = ko.observableArray([]);
+
 
   /* This function is called every time the node changes and tries to
    * set up variables for required sub nodes and also try to fetch
@@ -31,7 +30,6 @@ var NodeModel = function(parentModel)
 
     console.log("NodeModel: Clearing profile picture, tags and map");
     self.profilePictureNode(false);
-    self.tagNodeList.removeAll();
     //$.murrix.module.map.clearMap();
 
     if (!node)
@@ -40,41 +38,29 @@ var NodeModel = function(parentModel)
       return;
     }
 
-
-    /*node.getLinkedNodes("file_profile", function(resultCode, nodeIdList, nodeList)
+    if (self.node()._profilePicture)
     {
-      if (resultCode != MURRIX_RESULT_CODE_OK)
+      murrix.model.server.emit("find", { _id: self.node()._profilePicture() }, function(error, nodeDataList)
       {
-        console.log("NodeModel: Got error while trying to fetch required nodes, resultCode = " + resultCode);
-      }
-      else if (nodeList.length > 0)
-      {
-        self.profilePictureNode(nodeList[0]);
-      }
-      else
-      {
-        console.log("NodeModel: No profile picture set.");
-      }
-    });
+        if (error)
+        {
+          console.log(error);
+          console.log("NodeModel: Failed to get profile picture!");
+          return;
+        }
 
-    node.getLinkedNodes("tag", function(resultCode, nodeIdList, nodeList)
-    {
-      if (resultCode != MURRIX_RESULT_CODE_OK)
-      {
-        console.log("NodeModel: Got error while trying to fetch required nodes, resultCode = " + resultCode);
-      }
-      else if (nodeList.length > 0)
-      {
-        self.tagNodeList(nodeList);
-      }
-      else
-      {
-        console.log("NodeModel: No tags found.");
-      }
-    });
+        if (nodeDataList.length === 0)
+        {
+          console.log("NodeModel: No profile picture found even though we have a reference to it!");
+          return;
+        }
 
-    console.log("NodeModel: Setting node to map");
-    $.murrix.module.map.setNodes([ node ]);*/
+        self.profilePictureNode(murrix.model.cacheNode(nodeData[self.node()._profilePicture()]));
+      });
+    }
+
+    //console.log("NodeModel: Setting node to map");
+    //$.murrix.module.map.setNodes([ node ]);*/
   });
   
 
@@ -102,44 +88,34 @@ var NodeModel = function(parentModel)
       self.node(false);
       return;
     }
-    else if (self.node() && nodeId === self.node().id())
+    else if (self.node() && nodeId === self.node()._id())
     {
       console.log("NodeModel: Node id is the same as before, will not update!");
       return;
     }
 
-    murrix.model.server.emit("find", { _id: { "$oid" : nodeId } }, function(error, nodeDataList)
+    murrix.model.server.emit("find", { _id: nodeId }, function(error, nodeDataList)
     {
       if (error)
       {
+        console.log(error);
         console.log("NodeModel: Failed to find node!");
         return;
-      }console.log(nodeDataList);
+      }
 
+      if (nodeDataList.length === 0 || !nodeDataList[nodeId])
+      {
+        console.log("NodeModel: No results returned, you probably do not have rights to this node!");
+        return;
+      }
+      
       self.node(murrix.model.cacheNode(nodeDataList[nodeId]));
     });
-    /* Make sure the node is cached before setting the primary id */
-//     $.murrix.module.db.fetchNodesBufferedIndexed([ nodeId ], function(transactionId, resultCode, nodeList)
-//     {
-//       if (resultCode != MURRIX_RESULT_CODE_OK)
-//       {
-//         console.log("NodeModel: Got error while trying to fetch node, resultCode = " + resultCode);
-//       }
-//       else if (typeof nodeList[nodeId] != 'undefined')
-//       {
-//         console.log("NodeModel: Node found, setting node with id " + nodeId);
-//         self.node(nodeList[nodeId]);
-//       }
-//       else
-//       {
-//         console.log("NodeModel: No nodes found with that node id, maybe you do not have rights to it!");
-//       }
-//     });
   });
 
 
-  /* Creating */
 
+  /* Creating */
   self.createLoading = ko.observable(false);
   self.createErrorText = ko.observable("");
   self.createName = ko.observable("");
@@ -190,74 +166,106 @@ var NodeModel = function(parentModel)
   self.tagSubmit = function()
   {
     self.tagLoading(true);
-  
-    console.log(self.tagName());
+    self.tagErrorText("");
+
+    var nodeData = ko.mapping.toJS(self.node);
+
+    if (!nodeData.tags)
+    {
+      nodeData.tags = [];
+    }
+
+    nodeData.tags.push(self.tagName());
+
+    murrix.model.server.emit("save", nodeData, function(error, nodeData)
+    {
+      self.tagLoading(false);
+
+      if (error)
+      {
+        self.tagErrorText(error);
+        return;
+      }
+
+      self.tagName("");
+
+      murrix.model.cacheNode(nodeData); // This should update self.node() by reference
+    });
   };
 
   self.tagRemove = function(tagNode)
   {
     self.tagLoading(true);
-  
-    console.log(tagNode.name());
+    self.tagErrorText("");
+
+    var nodeData = ko.mapping.toJS(self.node);
+
+    if (!nodeData.tags)
+    {
+      nodeData.tags = [];
+    }
+
+    var tags = [];
+
+    for (var n = 0; n < nodeData.tags.length; n++)
+    {
+      if (nodeData.tags[n] !== tagNode)
+      {
+        tags.push(nodeData.tags[n]);
+      }
+    }
+
+    nodeData.tags = tags;
+
+    murrix.model.server.emit("save", nodeData, function(error, nodeData)
+    {
+      self.tagLoading(false);
+
+      if (error)
+      {
+        self.tagErrorText(error);
+        return;
+      }
+
+      murrix.model.cacheNode(nodeData); // This should update self.node() by reference
+    });
   };
 
   self.tagAutocomplete = function(query, callback)
   {
-    $.murrix.module.db.searchNodeIds({ types: [ "tag" ] }, function(transactionId, resultCode, nodeIdList)
+    murrix.model.server.emit("distinct", "tags", function(error, tagList)
     {
-      if (resultCode != MURRIX_RESULT_CODE_OK)
+      if (error)
       {
-        console.log("Got error while trying to run query, resultCode = " + resultCode);
+        console.log(error);
+        console.log("Failed to find tags!");
         callback([]);
+        return;
       }
-      else if (nodeIdList.length > 0)
+
+      if (self.node().tags)
       {
-        $.murrix.module.db.fetchNodesBuffered(nodeIdList, function(transactionId, resultCode, nodeList)
+        var resultList = [];
+
+        for (var n = 0; n < tagList.length; n++)
         {
-          if (resultCode != MURRIX_RESULT_CODE_OK)
+          if (!murrix.inArray(tagList[n], self.node().tags()))
           {
-            console.log("Got error while trying to run query, resultCode = " + resultCode);
-            callback([]);
+            resultList.push(tagList[n]);
           }
-          else if (nodeList.length === 0)
-          {
-            callback([]);
-          }
-          else
-          {
-            var resultList = [];
-            
-            jQuery.each(nodeList, function(id, node)
-            {
-              var alreadyTagged = false;
+        }
 
-              for (var n = 0; n < self.tagNodeList().length; n++)
-              {
-                if (self.tagNodeList()[n].name() === node.name())
-                {
-                  alreadyTagged = true;
-                  break;
-                }
-              }
-
-              if (!alreadyTagged)
-              {
-                resultList.push(node.name());
-              }
-            });
-
-            callback(resultList);
-          }
-        });
+        callback(resultList);
       }
       else
       {
-        callback([]);
+        callback(tagList);
       }
     });
   };
 
   $("[name=newTag]").typeahead({ source: function(query, callback) { self.tagAutocomplete(query, callback); } });
+  $(".typeahead").css({ "z-index": 1051 }); // Hack to show the typeahead box
 
   $(".modal").on('hidden', function ()
   {

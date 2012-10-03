@@ -57,7 +57,7 @@ function getTemplateFile(filename, callback)
         return "<!-- '" + templateFilename.substr(1) + "' not included -->";
       }
 
-      templateFilename = dirname + templateFilename
+      templateFilename = dirname + templateFilename;
       
       try
       {
@@ -237,17 +237,6 @@ io.sockets.on("connection", function(client)
      });
   });
 
-  client.on("trash", function(data, callback)
-  {
-    nodeManager.trash(client.handshake.session, data.nodeId, function(error)
-    {
-      if (callback)
-      {
-        callback(error);
-      }
-    });
-  });
-
   client.on("comment", function(data, callback)
   {
     nodeManager.comment(client.handshake.session, data.nodeId, data.text, function(error, nodeData)
@@ -277,6 +266,28 @@ io.sockets.on("connection", function(client)
       if (callback)
       {
         callback(error, nodeDataList);
+      }
+    });
+  });
+
+  client.on("count", function(data, callback)
+  {
+    nodeManager.count(client.handshake.session, data, function(error, count)
+    {
+      if (callback)
+      {
+        callback(error, count);
+      }
+    });
+  });
+
+  client.on("distinct", function(data, callback)
+  {
+    nodeManager.distinct(client.handshake.session, data, function(error, result)
+    {
+      if (callback)
+      {
+        callback(error, result);
       }
     });
   });

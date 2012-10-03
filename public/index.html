@@ -209,54 +209,6 @@
             ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
           }
 
-
-          self.nodes[nodeData._id].getLinkedNodes = function(roles, callback)
-          {
-            callback(0, [], {});
-            /*
-            var linkedIdList = [];
-
-            for (var n = 0; n < this.links().length; n++)
-            {
-              var link = this.links()[n];
-
-              if (!roles || link.role() === roles || (roles instanceof Array && $.murrix.inArray(link.role(), roles)))
-              {
-                linkedIdList.push(parseInt(link.node_id(), 10));
-              }
-            }
-
-            if (linkedIdList.length > 0)
-            {
-              self.fetchNodesBuffered(linkedIdList, function(transactionId, resultCode, nodeList)
-              {
-                if (resultCode != MURRIX_RESULT_CODE_OK)
-                {
-                  console.log("Got error while trying to fetch required nodes, resultCode = " + resultCode);
-                  callback(resultCode, [], []);
-                }
-                else
-                {
-                  var list = [];
-
-                  jQuery.each(nodeList, function(id, listNode)
-                  {
-                    list.push(listNode);
-                  });
-
-                  callback(MURRIX_RESULT_CODE_OK, linkedIdList, list);
-                }
-              });
-            }
-            else
-            {
-              callback(MURRIX_RESULT_CODE_OK, [], []);
-            }
-
-            return linkedIdList;*/
-          };
-
-          
           return self.nodes[nodeData._id];
         }
 
@@ -284,10 +236,6 @@
           self.userModel.setInitialUser(self.cacheNode(data.userNode));
         });
       };
-//         server.emit("login", { username: "test", password: "test" }, function(error, userNode)
-//         {
-//           console.log(error, userNode);
-//         });
       
       $(function()
       {

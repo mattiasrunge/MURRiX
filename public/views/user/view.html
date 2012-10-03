@@ -1,4 +1,4 @@
-<div class="main-overlay-big" data-bind="fadeVisible: userModel.show, if: userModel.currentUserNode">
+<div class="main-overlay-big" data-bind="fadeVisible: false | userModel.show(), if: userModel.currentUserNode">
   <div class="main-overlay-content">
     <div class="page-header">
       <a class="btn btn-primary pull-right" href="#">Close</a>
