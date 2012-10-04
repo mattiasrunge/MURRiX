@@ -49,7 +49,7 @@
 
       <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'comments'">
-          <i class="icon-comment"></i> Comments <span data-bind="fadeVisible: nodeModel.commentsModel.entries().length > 0, text: nodeModel.commentsModel.entries().length" class="badge pull-right"></span>
+          <i class="icon-comment"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right"></span>
         </a>
       </li>
       

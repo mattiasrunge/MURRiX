@@ -4,7 +4,7 @@ var OverlayModel = function(parentModel)
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
+  parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
   self.enabled = ko.observable(true);
   self.show = ko.observable(false);
@@ -26,7 +26,7 @@ var OverlayModel = function(parentModel)
 
   parentModel.path().primary.subscribe(function(primary)
   {
-    if (primary.args.length === 0)
+/*    if (primary.args.length === 0)
     {
       console.log("NodeModel: No overlay node id specified, setting node to false!");
       self.show(false);
@@ -34,11 +34,9 @@ var OverlayModel = function(parentModel)
       return;
     }
 
-    var nodeId = $.murrix.intval(primary.args[0]);
-
     console.log("OverlayModel: Got nodeId = " + nodeId);
 
-    /* Zero is not a valid id */
+
     if (nodeId === 0)
     {
       console.log("OverlayModel: Node id is invalid, setting node to false");
@@ -51,10 +49,10 @@ var OverlayModel = function(parentModel)
       console.log("OverlayModel: Node id is the same as before, will not update!");
       return;
     }
-
+*/
 
     /* Make sure the node is cached before setting the primary id */
-    $.murrix.module.db.fetchNodesBufferedIndexed([ nodeId ], function(transactionId, resultCode, nodeList)
+/*    $.murrix.module.db.fetchNodesBufferedIndexed([ nodeId ], function(transactionId, resultCode, nodeList)
     {
       if (resultCode != MURRIX_RESULT_CODE_OK)
       {
@@ -103,7 +101,7 @@ var OverlayModel = function(parentModel)
       {
         console.log("OverlayModel: No nodes found with that node id, maybe you do not have rights to it!");
       }
-    });
+    });*/
   });
 
   self.carouselLeft = function()

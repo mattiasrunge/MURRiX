@@ -3,7 +3,7 @@ var NodeModel = function(parentModel)
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
+  parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
   
   self.show = ko.observable(false);
 
@@ -82,9 +82,9 @@ var NodeModel = function(parentModel)
     console.log("NodeModel: Got nodeId = " + nodeId);
 
     /* Zero is not a valid id */
-    if (nodeId === 0)
+    if (primary.action !== "node")
     {
-      console.log("NodeModel: Node id is invalid, setting node to false");
+      console.log("NodeModel: Node not shown, setting node to false");
       self.node(false);
       return;
     }

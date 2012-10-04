@@ -4,7 +4,7 @@ var PicturesModel = function(parentModel)
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
+  parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
   self.show = ko.observable(false);
 
@@ -85,25 +85,43 @@ var PicturesModel = function(parentModel)
     return true;
   };
 
-//   $("#pictures-droptarget").get(0).addEventListener("dragover", function(event)
-//   {
-//     event.stopPropagation();
-//     event.preventDefault();
-//     return false;
-//     
-//   }, true);
-// 
-// 
-//   $("#pictures-droptarget").get(0).addEventListener("drop", function(event)
-//   {
-//     event.stopPropagation();
-//     event.preventDefault();
-// 
-//     if (event.dataTransfer.files.length === 0)
-//     {
-//       return false;
-//     }
-// 
+  self.init = function()
+  {
+  var dropElement = document.getElementById("pictures-droptarget");
+
+  console.log(dropElement);
+
+  function noopHandler(evt)
+  {
+    evt.stopPropagation();
+    evt.preventDefault();
+  };
+
+  dropElement.addEventListener("dragenter", noopHandler, false);
+  dropElement.addEventListener("dragexit", noopHandler, false);
+  dropElement.addEventListener("dragover", noopHandler, false);
+  dropElement.addEventListener("drop", dropHandler, false);
+
+ 
+   function dropHandler(event)
+   {
+     event.stopPropagation();
+     event.preventDefault();
+ 
+     console.log(event);
+
+     if (event.dataTransfer.files.length === 0)
+     {
+       return false;
+     }
+
+     murrix.file.upload(event.dataTransfer.files[0], function(error, id, progress)
+     {
+       console.log(error, id, progress);
+     });
+ 
+     return false;
+
 //     self.uploadDroppedFiles(0, event.dataTransfer.files, function(resultCode)
 //     {
 //       console.log(resultCode);
@@ -122,8 +140,8 @@ var PicturesModel = function(parentModel)
 //       });
 //     });
 // 
-//   }, false);
-
+   };
+  }
   self.uploadDroppedFiles = function(index, files, callback)
   {
      self.uploadDroppedFile(files[index], function(result_code)

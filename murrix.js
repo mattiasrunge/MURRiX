@@ -1,3 +1,5 @@
+
+/* Includes, TODO: Sanitize case */
 var nodeStatic = require('node-static');
 var httpServer = require('http').createServer(httpRequestHandler);
 var url = require('url');
@@ -10,20 +12,25 @@ var Session = require('./lib/session').Session;
 var User = require('./lib/user').User;
 var NodeManager = require('./lib/node.js').NodeManager;
 var MurrixUtils = require('./lib/utils.js');
+var UploadManager = require('./lib/upload.js').UploadManager;
 
+/* Configuration options, TODO: Move to another file */
 var databaseHost = "localhost";
 var databasePort = 27017;
 var databaseName = "murrix";
 var httpPort = 8080;
 
-
+/* Instances */
 var mongoServer = new mongo.Server(databaseHost, databasePort, { auto_reconnect: true });
 var mongoDb = new mongo.Db(databaseName, mongoServer);
 var session = new Session(mongoDb, "murrix");
 var user = new User(mongoDb);
 var nodeManager = new NodeManager(mongoDb, user);
+var uploadManager = new UploadManager();
 var fileServer = new nodeStatic.Server("./public");
 
+
+/* Connect to database */
 mongoDb.open(function(error, mongoDb)
 {
   if (error)
@@ -35,7 +42,9 @@ mongoDb.open(function(error, mongoDb)
   console.log("We are connected to mongo DB");
 });
 
+/* Start to listen to HTTP */
 httpServer.listen(httpPort);
+
 
 function getTemplateFile(filename, callback)
 {
@@ -228,79 +237,102 @@ io.sockets.on("connection", function(client)
   /* Node API */
   client.on("save", function(data, callback)
   {
-    nodeManager.save(client.handshake.session, data, function(error, nodeData)
-     {
-       if (callback)
-       {
-         callback(error, nodeData);
-       }
-     });
+    if (!callback)
+    {
+      console.log("No callback supplied for nodeManager.save!");
+      return;
+    }
+
+    nodeManager.save(client.handshake.session, data, callback);
   });
 
   client.on("comment", function(data, callback)
   {
-    nodeManager.comment(client.handshake.session, data.nodeId, data.text, function(error, nodeData)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, nodeData);
-      }
-    });
+      console.log("No callback supplied for nodeManager.comment!");
+      return;
+    }
+
+    nodeManager.comment(client.handshake.session, data.nodeId, data.text, callback);
   });
 
   client.on("addPositions", function(data, callback)
   {
-    nodeManager.addPositions(client.handshake.session, data.nodeId, data.positionList, function(error, positionList)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, positionList);
-      }
-    });
+      console.log("No callback supplied for nodeManager.addPositions!");
+      return;
+    }
+
+    nodeManager.addPositions(client.handshake.session, data.nodeId, data.positionList, callback);
   });
 
   client.on("find", function(data, callback)
   {
-    nodeManager.find(client.handshake.session, data, function(error, nodeDataList)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, nodeDataList);
-      }
-    });
+      console.log("No callback supplied for nodeManager.find!");
+      return;
+    }
+
+    nodeManager.find(client.handshake.session, data, callback);
   });
 
   client.on("count", function(data, callback)
   {
-    nodeManager.count(client.handshake.session, data, function(error, count)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, count);
-      }
-    });
+      console.log("No callback supplied for nodeManager.count!");
+      return;
+    }
+
+    nodeManager.count(client.handshake.session, data, callback);
   });
 
   client.on("distinct", function(data, callback)
   {
-    nodeManager.distinct(client.handshake.session, data, function(error, result)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, result);
-      }
-    });
+      console.log("No callback supplied for nodeManager.distinct!");
+      return;
+    }
+
+    nodeManager.distinct(client.handshake.session, data, callback);
   });
 
   client.on("findPositions", function(data, callback)
   {
-    nodeManager.findPositions(client.handshake.session, data, function(error, positionList)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, positionList);
-      }
-    });
+      console.log("No callback supplied for nodeManager.addPositions!");
+      return;
+    }
+
+    nodeManager.findPositions(client.handshake.session, data, callback);
   });
 
+
+  /* Upload file API */
+  client.on("fileStart", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for uploadManager.start!");
+      return;
+    }
+
+    uploadManager.start(client.handshake.session, data.size, data.filename, callback);
+  });
+
+  client.on("fileChunk", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for uploadManager.chunk!");
+      return;
+    }
+
+    uploadManager.chunk(client.handshake.session, data.id, data.data, callback);
+  });
 });

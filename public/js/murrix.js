@@ -1,6 +1,80 @@
 
 var murrix = {};
 
+murrix.file = {};
+
+murrix.file.reader = null;
+
+murrix.file._readChunk = function(file, offset, chunkSize)
+{
+  var data = null;
+
+  if (file.webkitSlice)
+  {
+    data = file.webkitSlice(offset, offset + Math.min(chunkSize, file.size - offset));
+  }
+  else if (file.mozSlice)
+  {
+    data = file.mozSlice(offset, offset + Math.min(chunkSize, file.size - offset));
+  }
+  else if (file.slice)
+  {
+    data = file.slice(offset, offset + Math.min(chunkSize, file.size - offset));
+  }
+  else
+  {
+    murrix.file.reader = null;
+    return false;
+  }
+
+  murrix.file.reader.readAsBinaryString(data);
+  return true;
+};
+
+murrix.file.upload = function(file, callback)
+{
+  murrix.file.reader = new FileReader();
+
+  murrix.file.reader.onload = function(event)
+  {
+    var data = window.btoa(event.target.result); // base64 encode
+
+    murrix.model.server.emit("fileChunk", { id: file.uploadId, data: data }, function(error, id, progress, offset, chunkSize)
+    {
+      if (error)
+      {
+        console.log(error);
+        murrix.file.reader = null;
+        callback(error);
+        return;
+      }
+
+      callback(null, id, progress);
+ 
+      if (progress < 100)
+      {
+        if (!murrix.file._readChunk(file, offset, chunkSize))
+        {
+          console.log("Failed to read chunk!");
+          callback("Failed to read chunk!"); // TODO: Check this before we start, and tell server on fails so it can clear states
+          return;
+        }
+      }
+      else
+      {
+        // We are done, clear
+        murrix.file.reader = null;
+      }
+    });
+  };
+
+  murrix.model.server.emit("fileStart", { filename: file.name, size: file.size }, function(error, id, offset, chunkSize)
+  {
+    file.uploadId = id;
+    murrix.file._readChunk(file, offset, chunkSize);
+  });
+};
+
 murrix.makeArray = function(hash)
 {
   var array = [];
