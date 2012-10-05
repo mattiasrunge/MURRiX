@@ -18,6 +18,7 @@ var NodeModel = function(parentModel)
 
   self.node = ko.observable(false);
   self.profilePictureNode = ko.observable(false);
+  self.fileNodes = ko.observableArray();
 
 
   /* This function is called every time the node changes and tries to
@@ -30,6 +31,7 @@ var NodeModel = function(parentModel)
 
     console.log("NodeModel: Clearing profile picture, tags and map");
     self.profilePictureNode(false);
+    self.fileNodes.removeAll();
     //$.murrix.module.map.clearMap();
 
     if (!node)
@@ -58,6 +60,26 @@ var NodeModel = function(parentModel)
         self.profilePictureNode(murrix.model.cacheNode(nodeData[self.node()._profilePicture()]));
       });
     }
+
+    murrix.model.server.emit("find", { _parentNode: { $in: self.node()._id() }, type: "file" }, function(error, nodeDataList)
+    {
+      if (error)
+      {
+        console.log(error);
+        console.log("NodeModel: Failed to get files!");
+        return;
+      }
+
+      var count = 0;
+      
+      for (var id in nodeDataList)
+      {
+        self.fileNodes.push(murrix.model.cacheNode(nodeData[id]));
+        count++;
+      }
+
+      console.log("NodeModel: Found " + count + " files!");
+    });
 
     //console.log("NodeModel: Setting node to map");
     //$.murrix.module.map.setNodes([ node ]);*/

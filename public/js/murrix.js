@@ -148,7 +148,7 @@ murrix.createPath = function(partIndex, primary, secondary)
     primary = args[0];
   }
 
-  if (secondary === null && args.length > 0)
+  if (secondary === null && args.length > 1)
   {
     secondary = args[1];
   }
