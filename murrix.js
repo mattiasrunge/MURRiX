@@ -246,6 +246,17 @@ io.sockets.on("connection", function(client)
     nodeManager.save(client.handshake.session, data, callback);
   });
 
+  client.on("createFile", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for nodeManager.createFile!");
+      return;
+    }
+
+    nodeManager.createFile(client.handshake.session, uploadManager, data.name, data.uploadId, data.parentId, callback);
+  });
+
   client.on("comment", function(data, callback)
   {
     if (!callback)

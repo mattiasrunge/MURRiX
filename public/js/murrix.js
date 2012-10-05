@@ -3,8 +3,6 @@ var murrix = {};
 
 murrix.file = {};
 
-murrix.file.reader = null;
-
 murrix.file._readChunk = function(file, offset, chunkSize)
 {
   var data = null;
@@ -23,19 +21,18 @@ murrix.file._readChunk = function(file, offset, chunkSize)
   }
   else
   {
-    murrix.file.reader = null;
     return false;
   }
 
-  murrix.file.reader.readAsBinaryString(data);
+  file.reader.readAsBinaryString(data);
   return true;
 };
 
 murrix.file.upload = function(file, callback)
 {
-  murrix.file.reader = new FileReader();
+  file.reader = new FileReader();
 
-  murrix.file.reader.onload = function(event)
+  file.reader.onload = function(event)
   {
     var data = window.btoa(event.target.result); // base64 encode
 
@@ -59,11 +56,6 @@ murrix.file.upload = function(file, callback)
           callback("Failed to read chunk!"); // TODO: Check this before we start, and tell server on fails so it can clear states
           return;
         }
-      }
-      else
-      {
-        // We are done, clear
-        murrix.file.reader = null;
       }
     });
   };

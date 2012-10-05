@@ -60,30 +60,40 @@ var NodeModel = function(parentModel)
         self.profilePictureNode(murrix.model.cacheNode(nodeData[self.node()._profilePicture()]));
       });
     }
-
-    murrix.model.server.emit("find", { _parentNode: { $in: self.node()._id() }, type: "file" }, function(error, nodeDataList)
-    {
-      if (error)
-      {
-        console.log(error);
-        console.log("NodeModel: Failed to get files!");
-        return;
-      }
-
-      var count = 0;
-      
-      for (var id in nodeDataList)
-      {
-        self.fileNodes.push(murrix.model.cacheNode(nodeData[id]));
-        count++;
-      }
-
-      console.log("NodeModel: Found " + count + " files!");
-    });
+    
+    self.loadFiles();
 
     //console.log("NodeModel: Setting node to map");
     //$.murrix.module.map.setNodes([ node ]);*/
   });
+
+  self.loadFiles = function()
+  {
+    self.fileNodes.removeAll();
+
+    if (self.node())
+    {
+      murrix.model.server.emit("find", { _parentNode: { $in: [ self.node()._id() ] }, type: "file" }, function(error, nodeDataList)
+      {
+        if (error)
+        {
+          console.log(error);
+          console.log("NodeModel: Failed to get files!");
+          return;
+        }
+        
+        var count = 0;
+        
+        for (var id in nodeDataList)
+        {
+          self.fileNodes.push(murrix.model.cacheNode(nodeDataList[id]));
+          count++;
+        }
+        
+        console.log("NodeModel: Found " + count + " files!");
+      });
+    }
+  };
   
 
   /* This function is run when the primary path is changed

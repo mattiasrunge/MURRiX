@@ -1,7 +1,7 @@
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.picturesModel.show, if: nodeModel.node">
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.picturesModel.show">
   <div class="main-overlay-content" id="pictures-droptarget">
-    <div class="page-header">
-      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.node()._id() }">Close</a>
+    <div class="page-header" data-bind="if: nodeModel.node">
+      <a class="btn btn-primary pull-right" href="#" data-bind="if: nodeModel.node, attr: { 'href' : '#node:' + nodeModel.node()._id() }">Close</a>
 
 
       <span class="pull-right btn-spacer-big">&nbsp;</span>
@@ -22,10 +22,10 @@
       <h1>Pictures</h1>
     </div>
 
-    <ul class="thumbnails" data-bind="foreach:  nodeModel.picturesModel.pictures">
+    <ul class="thumbnails" data-bind="foreach: nodeModel.fileNodes">
       <li class="">
-        <a href="#" draggable="true" class="thumbnail" data-bind="hrefSecondSecondary: $data.id<?/*event: { dragstart: $parent.dragStart }*/?>">
-          <img data-bind="attr: { src: 'preview.php?nodeId=' + $data.id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="http://placekitten.com/g/120/120" alt="">
+        <a href="#" draggable="true" class="thumbnail" data-bind="hrefSecondSecondary: $data._id">
+          <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&ampsquare=1', title: $data.name }" src="http://placekitten.com/g/120/120" alt="">
         </a>
       </li>
     </ul>
