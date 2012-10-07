@@ -95,8 +95,6 @@ function httpRequestHandler(request, response)
 
     var requestParams = url.parse(request.url, true);
 
-    console.log(requestParams);
-
     if (requestParams.pathname === "/" || requestParams.pathname === "/index.html" || requestParams.pathname === "/index.htm")
     {
       getTemplateFile("./public/index.html", function(error, data)
@@ -110,6 +108,22 @@ function httpRequestHandler(request, response)
         
         response.writeHead(200, { "Content-Type": "text/html" });
         response.end(data);
+      });
+    }
+    else if (requestParams.pathname === "/preview")
+    {
+      MurrixUtils.getPreview(session, nodeManager, requestParams.query.id, requestParams.query.width, requestParams.query.height, requestParams.query.square, function(error, filename)
+      {
+        if (error)
+        {
+          response.writeHead(404);
+          response.end(error);
+          return;
+        }
+
+        filename = path.basename(filename);
+
+        fileServer.serveFile("../previews/" + filename, 200, {}, request, response);
       });
     }
     else
