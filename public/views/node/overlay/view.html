@@ -4,10 +4,10 @@
 
     <div id="overlayCarousel" class="carousel slide">
       <!-- Carousel items -->
-      <div class="carousel-inner" data-bind="foreach: nodeModel.picturesModel.pictures">
+      <div class="carousel-inner" data-bind="foreach: nodeModel.fileNodes">
 
         <div class="item" data-bind="css: { active: $index() == 0 }">
-          <img class="img-rounded" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview.php?nodeId=' + $data.id() + '&amp;width=1440', title: $data.name() }" src="http://placekitten.com/g/1440/1440" alt="">
+          <img class="img-rounded" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview?id=' + $data._id() + '&amp;width=1440', title: $data.name() }" src="http://placekitten.com/g/1440/1440" alt="">
 <!--          <div class="carousel-caption">
             <h4 data-bind="text: $data.name"></h4>
             <p data-bind="if: $data.description() != '', text: $data.description"></p>
@@ -48,15 +48,15 @@
                 </tr>
                 <tr>
                   <td>File size</td>
-                  <td data-bind="htmlSize: nodeModel.overlayModel.node().attr('MetaFileSize')"></td>
+                  <td data-bind="htmlSize: nodeModel.overlayModel.node().exif.FileSize()"></td>
                 </tr>
                 <tr>
                   <td>Image size</td>
-                  <td data-bind="text: nodeModel.overlayModel.node().attr('MetaImageWidth') + 'x' + nodeModel.overlayModel.node().attr('MetaImageHeight')"></td>
+                  <td data-bind="text: nodeModel.overlayModel.node().exif.ImageWidth() + 'x' + nodeModel.overlayModel.node().exif.ImageHeight()"></td>
                 </tr>
-                <tr>
+                <tr data-bind="if: nodeModel.overlayModel.node().exif.CameraModelName">
                   <td>Camera model</td>
-                  <td data-bind="text: nodeModel.overlayModel.node().attr('MetaCameraModelName')"></td>
+                  <td data-bind="text: nodeModel.overlayModel.node().exif.CameraModelName()"></td>
                 </tr>
             </table>
     

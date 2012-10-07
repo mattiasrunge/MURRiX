@@ -7,10 +7,8 @@ var OverlayModel = function(parentModel)
   parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
   self.enabled = ko.observable(true);
-  self.show = ko.observable(false);
-
   self.node = ko.observable(false);
-  
+  this.show = ko.computed(function() { return self.node() !== false; }, this);
 
   /*parentModel.node.subscribe(function(node)
   {
@@ -26,9 +24,78 @@ var OverlayModel = function(parentModel)
 
   parentModel.path().primary.subscribe(function(primary)
   {
+    if (primary.args.length === 0)
+    {
+      console.log("OverlayModel: No node id specified setting node to false!");
+      self.node(false);
+      return;
+    }
+
+    var nodeId = primary.args[0];
+
+    console.log("OverlayModel: Got nodeId = " + nodeId);
+
+    /*if (primary.action !== "node")
+    {
+      console.log("OverlayModel: Node not shown, setting node to false");
+      self.node(false);
+      return;
+    }
+    else */if (self.node() && nodeId === self.node()._id())
+    {
+      console.log("OverlayModel: Node id is the same as before, will not update!");
+      return;
+    }
+
+    murrix.model.server.emit("find", { _id: nodeId }, function(error, nodeDataList)
+    {
+      if (error)
+      {
+        console.log(error);
+        console.log("OverlayModel: Failed to find node!");
+        return;
+      }
+
+      if (nodeDataList.length === 0 || !nodeDataList[nodeId])
+      {
+        console.log("OverlayModel: No results returned, you probably do not have rights to this node!");
+        return;
+      }
+
+      self.node(murrix.model.cacheNode(nodeDataList[nodeId]));
+
+      for (var index = 0; index < murrix.model.nodeModel.fileNodes().length; index++)
+      {
+        if (murrix.model.nodeModel.fileNodes()[index]._id() === nodeId)
+        {
+          break;
+        }
+      }
+
+      console.log("OverlayModel: Index is " + index);
+
+      if (index < 0)
+      {
+        index = murrix.model.nodeModel.fileNodes().length - 1;
+      }
+      else if (index >= murrix.model.nodeModel.fileNodes().length)
+      {
+        index = 0;
+      }
+
+      console.log("OverlayModel: Index is " + index);
+
+      $("#overlayCarousel").carousel(index);
+
+      $("#overlayCarousel").one("slid", function()
+      {
+        $(this).carousel('pause');
+      });
+    });
+  
 /*    if (primary.args.length === 0)
     {
-      console.log("NodeModel: No overlay node id specified, setting node to false!");
+      console.log("OverlayModel: No overlay node id specified, setting node to false!");
       self.show(false);
       self.node(false);
       return;
@@ -44,7 +111,7 @@ var OverlayModel = function(parentModel)
       self.node(false);
       return;
     }
-    else if (self.node() && nodeId === self.node().id())
+    else if (self.node() && nodeId === self.node()._id())
     {
       console.log("OverlayModel: Node id is the same as before, will not update!");
       return;
@@ -69,9 +136,9 @@ var OverlayModel = function(parentModel)
           self.show(true);
         }
         
-        for (var index = 0; index < parentModel.picturesModel.pictures().length; index++)
+        for (var index = 0; index < murrix.model.nodeModel.fileNodes().length; index++)
         {
-          if (parentModel.picturesModel.pictures()[index].id() === nodeId)
+          if (murrix.model.nodeModel.fileNodes()[index]._id() === nodeId)
           {
             break;
           }
@@ -81,9 +148,9 @@ var OverlayModel = function(parentModel)
         
         if (index < 0)
         {
-          index = parentModel.picturesModel.pictures().length - 1;
+          index = murrix.model.nodeModel.fileNodes().length - 1;
         }
-        else if (index >= parentModel.picturesModel.pictures().length)
+        else if (index >= murrix.model.nodeModel.fileNodes().length)
         {
           index = 0;
         }
@@ -106,9 +173,9 @@ var OverlayModel = function(parentModel)
 
   self.carouselLeft = function()
   {
-    for (var index = 0; index < parentModel.picturesModel.pictures().length; index++)
+    for (var index = 0; index < murrix.model.nodeModel.fileNodes().length; index++)
     {
-      if (parentModel.picturesModel.pictures()[index].id() === self.node().id())
+      if (murrix.model.nodeModel.fileNodes()[index]._id() === self.node()._id())
       {
         break;
       }
@@ -118,21 +185,21 @@ var OverlayModel = function(parentModel)
 
     if (index < 0)
     {
-      index = parentModel.picturesModel.pictures().length - 1;
+      index = murrix.model.nodeModel.fileNodes().length - 1;
     }
-    else if (index >= parentModel.picturesModel.pictures().length)
+    else if (index >= murrix.model.nodeModel.fileNodes().length)
     {
       index = 0;
     }
 
-    document.location.hash = $.murrix.createPath(1, null, parentModel.picturesModel.pictures()[index].id());
+    document.location.hash = murrix.createPath(1, null, murrix.model.nodeModel.fileNodes()[index]._id());
   };
 
   self.carouselRight = function()
   {
-    for (var index = 0; index < parentModel.picturesModel.pictures().length; index++)
+    for (var index = 0; index < murrix.model.nodeModel.fileNodes().length; index++)
     {
-      if (parentModel.picturesModel.pictures()[index].id() === self.node().id())
+      if (murrix.model.nodeModel.fileNodes()[index]._id() === self.node()._id())
       {
         break;
       }
@@ -142,14 +209,14 @@ var OverlayModel = function(parentModel)
 
     if (index < 0)
     {
-      index = parentModel.picturesModel.pictures().length - 1;
+      index = murrix.model.nodeModel.fileNodes().length - 1;
     }
-    else if (index >= parentModel.picturesModel.pictures().length)
+    else if (index >= murrix.model.nodeModel.fileNodes().length)
     {
       index = 0;
     }
 
-    document.location.hash = $.murrix.createPath(1, null, parentModel.picturesModel.pictures()[index].id());
+    document.location.hash = murrix.createPath(1, null, murrix.model.nodeModel.fileNodes()[index]._id());
   };
 
   self.commentText = ko.observable("");
