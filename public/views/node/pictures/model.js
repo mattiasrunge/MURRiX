@@ -21,12 +21,6 @@ var PicturesModel = function(parentModel)
   self.uploadFiles = [];
   self.uploadedFiles = [];
 
-  self.dragNoopHandler = function(element, event)
-  {
-    event.stopPropagation();
-    event.preventDefault();
-  };
-  
   function saveFile(index)
   {
     if (index >= self.uploadedFiles.length)
@@ -94,6 +88,12 @@ var PicturesModel = function(parentModel)
     });
   }
 
+  self.dragNoopHandler = function(element, event)
+  {
+    event.stopPropagation();
+    event.preventDefault();
+  };
+
   self.dragDropHandler = function(element, event)
   {
     event.stopPropagation();
@@ -108,6 +108,5 @@ var PicturesModel = function(parentModel)
     uploadFile(0);
 
     return false;
-  }
-
+  };
 };

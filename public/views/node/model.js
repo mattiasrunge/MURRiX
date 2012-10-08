@@ -295,7 +295,7 @@ var NodeModel = function(parentModel)
     console.log(event.originalEvent.dataTransfer.getData("text/plain"));
     console.log(event.originalEvent.dataTransfer.getData("text/uri-list"));
 */
-    console.log(event.originalEvent.dataTransfer.setData("DownloadURL", "/preview?id=" + element._id() + "&width=1024&height=1024"));
+    //console.log(event.originalEvent.dataTransfer.setData("DownloadURL", "/preview?id=" + element._id() + "&width=1024&height=1024"));
 /*    console.log("dragStart", "application/octet-stream:" + element.name() + ":/preview?id=" + element._id() + "&width=1024&height=1024");
 */
     event.originalEvent.dataTransfer.setData("id", element._id());
@@ -312,6 +312,7 @@ var NodeModel = function(parentModel)
     {
       if (error)
       {
+        console.log(error);
         return;
       }
 
@@ -321,7 +322,6 @@ var NodeModel = function(parentModel)
 
   self.dragOver = function(a, b, c)
   {
-    //console.log("dragOver", a, b, c);
   };
 
   /* Define all sub views */
