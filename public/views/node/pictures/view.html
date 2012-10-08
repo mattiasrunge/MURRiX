@@ -1,5 +1,5 @@
 <div class="main-overlay" data-bind="fadeVisible: nodeModel.picturesModel.show">
-  <div class="main-overlay-content" id="pictures-droptarget">
+  <div class="main-overlay-content" data-bind="event: { dragenter: nodeModel.picturesModel.dragNoopHandler, dragexit: nodeModel.picturesModel.dragNoopHandler, dragover: nodeModel.picturesModel.dragNoopHandler, drop: nodeModel.picturesModel.dragDropHandler }">
     <div class="page-header" data-bind="if: nodeModel.node">
       <a class="btn btn-primary pull-right" href="#" data-bind="if: nodeModel.node, attr: { 'href' : '#node:' + nodeModel.node()._id() }">Close</a>
 

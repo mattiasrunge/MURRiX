@@ -31,7 +31,7 @@
 
       <li data-bind="fadeVisible: nodeModel.picturesModel.enabled, css: { 'active': nodeModel.picturesModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'pictures'">
-          <i class="icon-th"></i> Pictures <span data-bind="fadeVisible: nodeModel.picturesModel.pictures().length > 0, text: nodeModel.picturesModel.pictures().length" class="badge pull-right"></span>
+          <i class="icon-th"></i> Pictures <span data-bind="fadeVisible: nodeModel.fileNodes().length > 0, text: nodeModel.fileNodes().length" class="badge pull-right"></span>
         </a>
       </li>
 
