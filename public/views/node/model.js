@@ -17,7 +17,6 @@ var NodeModel = function(parentModel)
 
 
   self.node = ko.observable(false);
-  self.profilePictureNode = ko.observable(false);
   self.fileNodes = ko.observableArray();
 
 
@@ -30,7 +29,6 @@ var NodeModel = function(parentModel)
     var requiredNodeIdList = [];
 
     console.log("NodeModel: Clearing profile picture, tags and map");
-    self.profilePictureNode(false);
     self.fileNodes.removeAll();
     //$.murrix.module.map.clearMap();
 
@@ -40,27 +38,6 @@ var NodeModel = function(parentModel)
       return;
     }
 
-    if (self.node()._profilePicture)
-    {
-      murrix.model.server.emit("find", { _id: self.node()._profilePicture() }, function(error, nodeDataList)
-      {
-        if (error)
-        {
-          console.log(error);
-          console.log("NodeModel: Failed to get profile picture!");
-          return;
-        }
-
-        if (nodeDataList.length === 0)
-        {
-          console.log("NodeModel: No profile picture found even though we have a reference to it!");
-          return;
-        }
-
-        self.profilePictureNode(murrix.model.cacheNode(nodeData[self.node()._profilePicture()]));
-      });
-    }
-    
     self.loadFiles();
 
     //console.log("NodeModel: Setting node to map");
@@ -317,16 +294,29 @@ var NodeModel = function(parentModel)
     console.log(event.originalEvent.dataTransfer.getData("DownloadURL"));
     console.log(event.originalEvent.dataTransfer.getData("text/plain"));
     console.log(event.originalEvent.dataTransfer.getData("text/uri-list"));
-
-    console.log(event.originalEvent.dataTransfer.setData("URL", "/preview?id=" + element._id() + "&width=1024&height=1024"));
-    console.log("dragStart", "application/octet-stream:" + element.name() + ":/preview?id=" + element._id() + "&width=1024&height=1024");
 */
+    console.log(event.originalEvent.dataTransfer.setData("URL", "/preview?id=" + element._id() + "&width=1024&height=1024"));
+/*    console.log("dragStart", "application/octet-stream:" + element.name() + ":/preview?id=" + element._id() + "&width=1024&height=1024");
+*/
+    event.originalEvent.dataTransfer.setData("id", element._id());
     return true;
   };
 
-  self.dragDrop = function(a, b, c)
+  self.dragDrop = function(element, event)
   {
-    console.log("dragDrop", a, b, c);
+    var nodeData = ko.mapping.toJS(self.node);
+
+    nodeData._profilePicture = event.originalEvent.dataTransfer.getData("id");
+
+    murrix.model.server.emit("save", nodeData, function(error, nodeData)
+    {
+      if (error)
+      {
+        return;
+      }
+
+      murrix.model.cacheNode(nodeData); // This should update self.node() by reference
+    });
   };
 
   self.dragOver = function(a, b, c)

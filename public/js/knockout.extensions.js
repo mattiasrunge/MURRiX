@@ -44,6 +44,7 @@ $(function()
     }
   };
 
+
   /* Knockout HTML size formater */
   ko.bindingHandlers.htmlSize = {
     update: function(element, valueAccessor)

@@ -83,13 +83,6 @@ var PicturesModel = function(parentModel)
     }*/
   });
 
-  self.dragStart = function(data, event)
-  {
-    console.log(data);
-    event.originalEvent.dataTransfer.setData('node_id', data.id);
-    return true;
-  };
-
   self.uploadFiles = [];
   self.uploadedFiles = [];
 
