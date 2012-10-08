@@ -310,7 +310,29 @@ var NodeModel = function(parentModel)
     self.tagErrorText("");
     self.tagName("");
   });
-  
+
+  self.dragStart = function(element, event)
+  {
+/*    console.log(event.originalEvent.dataTransfer.getData("URL"));
+    console.log(event.originalEvent.dataTransfer.getData("DownloadURL"));
+    console.log(event.originalEvent.dataTransfer.getData("text/plain"));
+    console.log(event.originalEvent.dataTransfer.getData("text/uri-list"));
+
+    console.log(event.originalEvent.dataTransfer.setData("URL", "/preview?id=" + element._id() + "&width=1024&height=1024"));
+    console.log("dragStart", "application/octet-stream:" + element.name() + ":/preview?id=" + element._id() + "&width=1024&height=1024");
+*/
+    return true;
+  };
+
+  self.dragDrop = function(a, b, c)
+  {
+    console.log("dragDrop", a, b, c);
+  };
+
+  self.dragOver = function(a, b, c)
+  {
+    //console.log("dragOver", a, b, c);
+  };
 
   /* Define all sub views */
   self.summaryModel = new SummaryModel(self);

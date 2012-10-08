@@ -135,14 +135,15 @@ murrix.createPath = function(partIndex, primary, secondary)
 
   var args = parts[partIndex].split(":");
 
+
+  if (secondary === null && args.length > 1 && primary === null)
+  {
+    secondary = args[1];
+  }
+  
   if (primary === null)
   {
     primary = args[0];
-  }
-
-  if (secondary === null && args.length > 1)
-  {
-    secondary = args[1];
   }
 
   parts[partIndex] = primary;
@@ -214,40 +215,7 @@ murrix.updatePath = function(pathString, pathObservable)
 
 
 
-
-
-var NodeAttributeMapping = function(data)
-{
-  ko.mapping.fromJS(data, {}, this);
-
-  this.editing = ko.observable(false);
-  this.originalValue = ko.observable(this.value());
-};
-
-var NodeMapping = {
-  create: function(options)
-  {
-    return  ko.mapping.fromJS(options.data, NodeMappingInternal, this);
-  }
-};
-
 var NodeMappingInternal = {
-  attributes: {
-    key: function(data)
-    {
-      return ko.utils.unwrapObservable(data.name);
-    },
-    create: function(options)
-    {
-      return new NodeAttributeMapping(options.data);
-    }
-  },
-  id: {
-    create: function(options)
-    {
-      return ko.observable(options.data);
-    }
-  },
   description: {
     create: function(options)
     {
@@ -277,9 +245,3 @@ var NodeMappingInternal = {
   }
 };
 
-var NodeListMapping = {
-  key: function(data)
-  {
-    return ko.utils.unwrapObservable(data.id);
-  }
-};

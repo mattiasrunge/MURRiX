@@ -79,7 +79,7 @@
               </div>
               <blockquote class="span10">
                 <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
-                  <textarea style="width: 218px; height: 60px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentText"></textarea>
+                  <textarea style="width: 218px; height: 60px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.overlayModel.commentLoading, value: nodeModel.overlayModel.commentText"></textarea>
                   <span class="text-error pull-left" data-bind="disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentErrorText"></span>
                   <button type="submit" class="btn btn-mini btn-primary pull-right">Comment</button>
                 </form>
@@ -87,44 +87,19 @@
               </blockquote>
             </div>
 
+            <!-- ko foreach: nodeModel.overlayModel.node().comments -->
           
             <div class="row-fluid">
               <div class="span2">
                 <img src="http://placekitten.com/g/40/40" alt=""/>
               </div>
               <blockquote class="span10">
-                <div style="padding-bottom: 5px;">
-                  Detta är en väldigt fin bild! och man kan skriva så mycket text så det inte får plats eller kanske måste byta rad och så.
-                </div>
-                <small><span data-bind="htmlTimeAgo: nodeModel.node().modified"></span> by <a data-bind="">Mattias Runge</a></small>
+                <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
+                <small><span data-bind="htmlTimeAgo: $data.addedDatetime"></span> by <a data-bind="textNodeAttribute: [ $data._addedBy(), 'name' ]"></a></small>
               </blockquote>
             </div>
 
-            <div class="row-fluid">
-              <div class="span2">
-                <img src="http://placekitten.com/g/40/40" alt=""/>
-              </div>
-              <blockquote class="span10">
-                <div style="padding-bottom: 5px;">
-                  Detta är en väldigt fin bild! och man kan skriva så mycket text så det inte får plats eller kanske måste byta rad och så.
-                </div>
-                <small><span data-bind="htmlTimeAgo: nodeModel.node().modified"></span> by <a data-bind="">Mattias Runge</a></small>
-              </blockquote>
-            </div>
-
-
-            <div class="row-fluid">
-              <div class="span2">
-                <img src="http://placekitten.com/g/40/40" alt=""/>
-              </div>
-              <blockquote class="span10">
-                <div style="padding-bottom: 5px;">
-                  Detta är en väldigt fin bild! och man kan skriva så mycket text så det inte får plats eller kanske måste byta rad och så.
-                </div>
-                <small><span data-bind="htmlTimeAgo: nodeModel.node().modified"></span> by <a data-bind="">Mattias Runge</a></small>
-              </blockquote>
-            </div>
-
+            <!-- /ko --> 
 
           </div>
         </div>

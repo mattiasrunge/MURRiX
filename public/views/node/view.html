@@ -6,11 +6,11 @@
           <h5 data-bind="text: nodeModel.node() ? nodeModel.node().name : 'Unknown'"></h5>
 
           <!-- ko if: nodeModel.profilePictureNode() -->
-            <img class="img-rounded" src="" alt="" data-bind="<?/*event: { drop: sidebar.dragDrop, dragover: sidebar.dragOver }, */?>attr: { src: 'preview.php?nodeId=' + nodeModel.profilePictureNode().id() + '&amp;width=214&amp;height=160' }">
+            <img class="img-rounded" src="" alt="" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }, attr: { src: 'preview.php?nodeId=' + nodeModel.profilePictureNode().id() + '&amp;width=214&amp;height=160' }">
           <!-- /ko -->
 
           <!-- ko if: !nodeModel.profilePictureNode() -->
-            <img class="img-rounded" src="http://www.placehold.it/214x160/ffffff/000000/&text=Drop+profile+picture"/>
+            <img class="img-rounded" alt="" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }" src="http://www.placehold.it/214x160/ffffff/000000/&text=Drop+profile+picture"/>
           <!-- /ko -->
 
       </li>

@@ -90,11 +90,12 @@ var PicturesModel = function(parentModel)
     return true;
   };
 
+  self.uploadFiles = [];
+  self.uploadedFiles = [];
+
   self.init = function()
   {
     var dropElement = document.getElementById("pictures-droptarget");
-
-    console.log(dropElement);
 
     function noopHandler(evt)
     {
@@ -107,19 +108,21 @@ var PicturesModel = function(parentModel)
     dropElement.addEventListener("dragover", noopHandler, false);
     dropElement.addEventListener("drop", dropHandler, false);
 
-    function saveFile(index, files)
+    function saveFile(index)
     {
-      if (index >= files.length)
+      if (index >= self.uploadedFiles.length)
       {
         console.log("All files saved!");
+        self.uploadedFiles = [];
 //        murrix.model.nodeModel.loadFiles();
         return;
       }
 
-      murrix.model.server.emit("createFile", { name: files[index].name, uploadId: files[index].uploadId, parentId: murrix.model.nodeModel.node()._id() }, function(error, fileNodeData, parentNodeData)
+      murrix.model.server.emit("createFile", { name: self.uploadedFiles[index].name, uploadId: self.uploadedFiles[index].uploadId, parentId: self.uploadedFiles[index].parentId }, function(error, fileNodeData, parentNodeData)
       {
         if (error)
         {
+          console.log(self.uploadedFiles);
           console.log(error);
           console.log("Failed to save file node!");
           return;
@@ -132,23 +135,25 @@ var PicturesModel = function(parentModel)
         // TODO: this may be a hack...
         murrix.model.nodeModel.fileNodes.push(fileNode);
 
-        saveFile(index + 1, files);
+        saveFile(index + 1);
       });
     }
 
 
-    function uploadFile(index, files)
+    function uploadFile(index)
     {
-      if (index >= files.length)
+      if (index >= self.uploadFiles.length)
       {
         console.log("All files uploaded!");
 
-        saveFile(0, files);
+        self.uploadFiles = [];
+
+        saveFile(0);
 
         return;
       }
 
-      murrix.file.upload(files[index], function(error, id, progress)
+      murrix.file.upload(self.uploadFiles[index], function(error, id, progress)
       {
         if (error)
         {
@@ -157,15 +162,15 @@ var PicturesModel = function(parentModel)
           return;
         }
 
-        console.log("Upload " + id + " at " + progress + "%");
+        console.log("Upload " + id + "(index " + index + ") at " + progress + "%");
 
         if (progress === 100)
         {
           console.log("Upload " + id + " complete!");
 
-          files[index].uploadId = id;
+          self.uploadedFiles.push({ name: self.uploadFiles[index].name, uploadId: id, parentId: murrix.model.nodeModel.node()._id() });
 
-          uploadFile(index + 1, files);
+          uploadFile(index + 1);
         }
       });
     }
@@ -180,7 +185,8 @@ var PicturesModel = function(parentModel)
         return false;
       }
 
-      uploadFile(0, event.dataTransfer.files);
+      self.uploadFiles = event.dataTransfer.files;
+      uploadFile(0);
  
       return false;
     }

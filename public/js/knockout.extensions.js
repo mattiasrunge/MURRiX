@@ -16,24 +16,36 @@ $(function()
   };
 
 
+  ko.bindingHandlers.textNodeAttribute = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var params = ko.utils.unwrapObservable(value);
 
+      $(element).text("Loading " + params[1] + "...");
+
+      murrix.model.getNodes([ params[0] ], function(error, nodeList)
+      {
+        if (error)
+        {
+          $(element).text(error);
+          return;
+        }
+
+        if (nodeList[params[0]])
+        {
+          $(element).text(nodeList[params[0]][params[1]]());
+        }
+        else
+        {
+          $(element).text("Unknown");
+        }
+      });
+    }
+  };
 
   /* Knockout HTML size formater */
   ko.bindingHandlers.htmlSize = {
-    init: function(element, valueAccessor)
-    {
-      var fileSizeInBytes = murrix.intval(ko.utils.unwrapObservable(valueAccessor()));
-      var i = -1;
-      var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
-
-      do
-      {
-          fileSizeInBytes = fileSizeInBytes / 1024;
-          i++;
-      } while (fileSizeInBytes > 1024);
-
-      $(element).html(Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i]);
-    },
     update: function(element, valueAccessor)
     {
       var fileSizeInBytes = ko.utils.unwrapObservable(valueAccessor());
@@ -53,20 +65,6 @@ $(function()
 
   /* Knockout HTML data formater */
   ko.bindingHandlers.htmlDate = {
-    init: function(element, valueAccessor)
-    {
-      var value = valueAccessor();
-      var dateItem = moment(ko.utils.unwrapObservable(value) + "+0000", "YYYY-MM-DD HH:mm:ss Z");
-
-      if (!dateItem.date())
-      {
-        $(element).html(ko.utils.unwrapObservable(value));
-      }
-      else
-      {
-        $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
-      }
-    },
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
@@ -86,28 +84,25 @@ $(function()
 
         /* Knockout HTML data formater */
   ko.bindingHandlers.htmlTimeAgo = {
-    init: function(element, valueAccessor)
-    {
-      var value = valueAccessor();
-      var dateItem = moment(ko.utils.unwrapObservable(value) + "+0000", "YYYY-MM-DD HH:mm:ss Z");
-
-      if (!dateItem.date())
-      {
-        $(element).html(ko.utils.unwrapObservable(value));
-      }
-      else
-      {
-        $(element).html(dateItem.fromNow());
-      }
-    },
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
-      var dateItem = moment(ko.utils.unwrapObservable(value) + "+0000", "YYYY-MM-DD HH:mm:ss Z");
+
+      var rawValue = ko.utils.unwrapObservable(value);
+      var dateItem = null;
+
+      if (typeof rawValue === "number")
+      {
+        dateItem = moment(rawValue);
+      }
+      else
+      {
+        dateItem = moment(rawValue + "+0000", "YYYY-MM-DD HH:mm:ss Z");
+      }
 
       if (!dateItem.date())
       {
-        $(element).html(ko.utils.unwrapObservable(value));
+        $(element).html(ko.utils.unwrapObservable(rawValue));
       }
       else
       {
@@ -117,11 +112,6 @@ $(function()
   };
 
   ko.bindingHandlers.hrefFirst = {
-    init: function(element, valueAccessor)
-    {
-      var values = ko.utils.unwrapObservable(valueAccessor());
-      $(element).attr("href", murrix.createPath(0, values[0], values[1]));
-    },
     update: function(element, valueAccessor)
     {
       var values = ko.utils.unwrapObservable(valueAccessor());
@@ -130,10 +120,6 @@ $(function()
   };
 
   ko.bindingHandlers.hrefFirstPrimary = {
-    init: function(element, valueAccessor)
-    {
-      $(element).attr("href", murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
-    },
     update: function(element, valueAccessor)
     {
       $(element).attr("href", murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
@@ -141,10 +127,6 @@ $(function()
   };
 
   ko.bindingHandlers.hrefFirstSecondary = {
-    init: function(element, valueAccessor)
-    {
-      $(element).attr("href", murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
-    },
     update: function(element, valueAccessor)
     {
       $(element).attr("href", murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
@@ -152,11 +134,6 @@ $(function()
   };
 
   ko.bindingHandlers.hrefSecond = {
-    init: function(element, valueAccessor)
-    {
-      var values = ko.utils.unwrapObservable(valueAccessor());
-      $(element).attr("href", murrix.createPath(1, values[0], values[1]));
-    },
     update: function(element, valueAccessor)
     {
       var values = ko.utils.unwrapObservable(valueAccessor());
@@ -165,10 +142,6 @@ $(function()
   };
 
   ko.bindingHandlers.hrefSecondPrimary = {
-    init: function(element, valueAccessor)
-    {
-      $(element).attr("href", murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
-    },
     update: function(element, valueAccessor)
     {
       $(element).attr("href", murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
@@ -176,10 +149,6 @@ $(function()
   };
 
   ko.bindingHandlers.hrefSecondSecondary = {
-    init: function(element, valueAccessor)
-    {
-      $(element).attr("href", murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));
-    },
     update: function(element, valueAccessor)
     {
       $(element).attr("href", murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));

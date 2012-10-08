@@ -202,6 +202,16 @@
             console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
 
             self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData, NodeMappingInternal);
+
+            self.nodes[nodeData._id].comments.subscribe(function(value)
+            {
+              value.sort(function(a, b)
+              {
+                return (b.addedDatetime && a.addedDatetime) ? b.addedDatetime() - a.addedDatetime() : 0;
+              });
+            });
+
+            self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
           }
           else
           {
@@ -210,8 +220,47 @@
           }
 
           return self.nodes[nodeData._id];
-        }
+        };
 
+        self.getNodes = function(idList, callback)
+        {
+          var nodeList = {};
+          var idRequestList = [];
+
+          for (var n = 0; n < idList.length; n++)
+          {
+            if (self.nodes[idList[n]])
+            {
+              nodeList[idList[n]] = self.nodes[idList[n]];
+            }
+            else
+            {
+              idRequestList.push(idList[n]);
+            }
+          }
+
+          if (idRequestList.length === 0)
+          {
+            callback(null, nodeList);
+            return;
+          }
+
+          murrix.model.server.emit("find", { _id: idRequestList }, function(error, nodeDataList)
+          {
+            if (error)
+            {
+              callback(error, []);
+              return;
+            }
+
+            for (var id in nodeDataList)
+            {
+              nodeList[id] = murrix.model.cacheNode(nodeDataList[id]);
+            }
+
+            callback(null, nodeList);
+          });
+        };
 
         self.server.socket.on("error", function(reason)
         {

@@ -8,19 +8,16 @@ var OverlayModel = function(parentModel)
 
   self.enabled = ko.observable(true);
   self.node = ko.observable(false);
-  this.show = ko.computed(function() { return self.node() !== false; }, this);
 
-  /*parentModel.node.subscribe(function(node)
+  self.show = ko.observable(false);
+
+  self.node.subscribe(function(value)
   {
-    self.node(false);
-  
-    if (!node)
+    if (self.show() !== (value !== false))
     {
-      console.log("Node is false, not loading node for overlay!");
-      return;
+      self.show(value !== false);
     }
-
-  });*/
+  });
 
   parentModel.path().primary.subscribe(function(primary)
   {
@@ -225,7 +222,37 @@ var OverlayModel = function(parentModel)
   
   self.commentSubmit = function()
   {
-    console.log(self.commentText());
+    
+    if (self.commentText() === "")
+    {
+      self.commentErrorText("Comment field can not be empty!");
+      return;
+    }
+
+    self.commentErrorText("");
+    self.commentLoading(true);
+
+    var nodeData = ko.mapping.toJS(self.node);
+
+    if (!nodeData.comments)
+    {
+      nodeData.comments = [];
+    }
+
+    murrix.model.server.emit("comment", { nodeId: self.node()._id(), text: self.commentText() }, function(error, nodeData)
+    {
+      self.commentLoading(false);
+
+      if (error)
+      {
+        self.commentErrorText(error);
+        return;
+      }
+
+      self.commentText("");
+
+      murrix.model.cacheNode(nodeData); // This should update self.node() by reference
+    });
   };
 };
 
