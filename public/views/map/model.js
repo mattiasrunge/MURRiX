@@ -1,28 +1,36 @@
+var MapModel = function(parentModel)
+{
+  var self = this;
 
+  var options = {
+    zoom: 13,
+    center: new google.maps.LatLng(57.6706907666667, 11.9375348333333),
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+
+    streetViewControl: false,
+    panControl: false,
+    mapTypeControl: false,
+    zoomControl: true,
+    zoomControlOptions: {
+      style: google.maps.ZoomControlStyle.DEFAULT,
+      position: google.maps.ControlPosition.RIGHT_TOP
+    },
+    scaleControl: true,
+    scaleControlOptions: {
+      position: google.maps.ControlPosition.RIGHT_BOTTOM
+    }
+  };
+
+  self.map = new google.maps.Map($(".background-map").get(0), options);
+};
 /*
 
 
-var options = {
-  zoom: 13,
-  center: new google.maps.LatLng(57.6706907666667, 11.9375348333333),
-  mapTypeId: google.maps.MapTypeId.HYBRID,
-
-  streetViewControl: false,
-  panControl: false,
-  mapTypeControl: false,
-  zoomControl: true,
-  zoomControlOptions: {
-    style: google.maps.ZoomControlStyle.DEFAULT,
-    position: google.maps.ControlPosition.RIGHT_TOP
-  },
-  scaleControl: true,
-  scaleControlOptions: {
-    position: google.maps.ControlPosition.RIGHT_BOTTOM
-  }
-};
 
         //$.murrix.module.map.show(".background-map", options);
 */
+
+
 
 $(function()
 {
@@ -293,6 +301,4 @@ $(function()
     };
 
   };
-
-  $.murrix.module.map = new MurrixMap();
 });

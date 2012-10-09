@@ -10,6 +10,7 @@ murrix.model = function()
   self.nodeModel = new NodeModel(self);
   self.searchModel = new SearchModel(self);
   self.homeModel = new HomeModel(self);
-
+  self.mapModel = new MapModel(self);
+  
   return this;
 }();
