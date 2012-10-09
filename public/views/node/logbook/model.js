@@ -6,15 +6,23 @@ var LogbookModel = function(parentModel)
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "logbook"; });
+  self.show = ko.observable(false);
+
+  parentModel.path().primary.subscribe(function(value)
+  {
+    if (self.show() !== (value.action === "logbook"))
+    {
+      self.show(value.action === "logbook");
+    }
+  });
+  
   self.enabled = ko.observable(true);
   
-  self.entries = ko.observableArray([ ]);
-  self.formDate = ko.observable("");
-  self.formTime = ko.observable("");
-  self.formText = ko.observable("");
-  self.saving = ko.observable(false);
-  self.statusText = ko.observable("");
+  self.addTextDate = ko.observable("");
+  self.addTextTime = ko.observable("");
+  self.addTextText = ko.observable("");
+  self.addTextSaving = ko.observable(false);
+  self.addTextErrorText = ko.observable("");
   
   $("#logbookFormDate").datepicker({ format: 'yyyy-mm-dd', weekStart: 1 });
   
@@ -27,8 +35,43 @@ var LogbookModel = function(parentModel)
     return false;
   };
 
-  self.formSubmit = function(form)
+  self.addTextSubmit = function(form)
   {
+    self.addTextLoading(true);
+    self.addTextErrorText("");
+
+    var nodeData = ko.mapping.toJS(murrix.nodeModel.node);
+
+    if (!nodeData.texts)
+    {
+      nodeData.texts = [];
+    }
+
+    var text = {};
+
+    nodeData.texts.push(text);
+
+    murrix.server.emit("save", nodeData, function(error, nodeData)
+    {
+      self.addTextLoading(false);
+
+      if (error)
+      {
+        self.addTextErrorText(error);
+        return;
+      }
+
+      self.addTextErrorText("");
+      self.addTextDate("");
+      self.addTextTime("");
+      self.addTextText("");
+
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+
+      $(".modal").modal('hide');
+    });
+
+  
 //     if ($("#logbookFormDate").find("input").val().length > 0 && self.formTime().length > 0 && self.formText().length > 0)
 //     {
 //       var datetime = $("#logbookFormDate").find("input").val() + " " + self.formTime();

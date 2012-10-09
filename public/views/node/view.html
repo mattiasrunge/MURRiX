@@ -43,7 +43,7 @@
 
       <li data-bind="fadeVisible: nodeModel.logbookModel.enabled, css: { 'active': nodeModel.logbookModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'logbook'">
-          <i class="icon-book"></i> Logbook <span data-bind="fadeVisible: nodeModel.logbookModel.entries().length > 0, text: nodeModel.logbookModel.entries().length" class="badge pull-right"></span>
+          <i class="icon-book"></i> Logbook <span data-bind="fadeVisible: nodeModel.node().texts().length > 0, text: nodeModel.node().texts().length" class="badge pull-right"></span>
         </a>
       </li>
 
