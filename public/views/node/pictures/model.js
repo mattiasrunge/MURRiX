@@ -31,7 +31,7 @@ var PicturesModel = function(parentModel)
       return;
     }
 
-    murrix.model.server.emit("createFile", { name: self.uploadedFiles[index].name, uploadId: self.uploadedFiles[index].uploadId, parentId: self.uploadedFiles[index].parentId }, function(error, fileNodeData, parentNodeData)
+    murrix.server.emit("createFile", { name: self.uploadedFiles[index].name, uploadId: self.uploadedFiles[index].uploadId, parentId: self.uploadedFiles[index].parentId }, function(error, fileNodeData, parentNodeData)
     {
       if (error)
       {
@@ -42,8 +42,8 @@ var PicturesModel = function(parentModel)
       }
 
       console.log("Saved node!");
-      var fileNode = murrix.model.cacheNode(fileNodeData);
-      murrix.model.cacheNode(parentNodeData); // TODO: Is there any point to this?
+      var fileNode = murrix.cache.addNodeData(fileNodeData);
+      murrix.cache.addNodeData(parentNodeData); // TODO: Is there any point to this?
 
       // TODO: this may be a hack...
       murrix.model.nodeModel.fileNodes.push(fileNode);

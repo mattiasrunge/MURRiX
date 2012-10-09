@@ -16,6 +16,7 @@ $(function()
   };
 
 
+  /* Knockout text, set attribute of node loaded async */
   ko.bindingHandlers.textNodeAttribute = {
     update: function(element, valueAccessor)
     {
@@ -24,7 +25,7 @@ $(function()
 
       $(element).text("Loading " + params[1] + "...");
 
-      murrix.model.getNodes([ params[0] ], function(error, nodeList)
+      murrix.cache.getNodes([ params[0] ], function(error, nodeList)
       {
         if (error)
         {
@@ -43,6 +44,68 @@ $(function()
       });
     }
   };
+
+  /* Knockout src, get profile picture async */
+  ko.bindingHandlers.srcNodeProfilePicture = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var params = ko.utils.unwrapObservable(value);
+
+      var id = params[0] || false;
+      var width = params[1] || 0;
+      var height = params[2] || 0;
+      var square = params[3] || 0;
+
+      if (!id)
+      {
+        console.log("No id given to srcNodeProfilePicture");
+        return;
+      }
+
+      $(element).attr("src", "img/120x120_spinner.gif");
+
+
+      murrix.cache.getNodes([id ], function(error, nodeList)
+      {
+        if (error)
+        {
+          $(element).text(error);
+          return;
+        }
+
+        if (nodeList[id])
+        {
+          if (!nodeList[id]._profilePicture || !nodeList[id]._profilePicture())
+          {
+            $(element).attr("src", "http://placekitten.com/g/40/40"); // TODO: Set generic user icon image
+            return;
+          }
+
+          var src = "/preview?id=" + nodeList[id]._profilePicture() + "&width=" + width + "&height=" + height + "&square=" + square;
+
+          var image = new Image();
+
+          image.onload = function()
+          {
+            $(element).attr("src", src);
+          };
+          
+          image.onerror = function()
+          {
+            //$(element).attr("src", ""); TODO: Set error image
+          };
+          
+          image.src = src;
+
+          return;
+        }
+
+        $(element).attr("src", "http://placekitten.com/g/40/40"); // TODO: Set generic user icon image
+      });
+    }
+  };
+
 
 
   /* Knockout HTML size formater */
@@ -64,7 +127,7 @@ $(function()
   };
 
 
-  /* Knockout HTML data formater */
+  /* Knockout HTML date formater */
   ko.bindingHandlers.htmlDate = {
     update: function(element, valueAccessor)
     {
@@ -83,7 +146,27 @@ $(function()
   };
 
 
-        /* Knockout HTML data formater */
+  /* Knockout HTML timestamp formater */
+  ko.bindingHandlers.htmlTimestamp = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var dateItem = moment.utc(ko.utils.unwrapObservable(value) * 1000);
+
+      if (!dateItem.date())
+      {
+        $(element).html(ko.utils.unwrapObservable(value));
+      }
+      else
+      {
+        $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
+      }
+    }
+  };
+
+
+
+  /* Knockout HTML time ago formater */
   ko.bindingHandlers.htmlTimeAgo = {
     update: function(element, valueAccessor)
     {

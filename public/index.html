@@ -33,82 +33,23 @@
 
   <body>
     <div class="loading-overlay"></div>
-    <div class="notifications bottom-right notification"></div>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-
-          <a class="brand" href="#">www.runge.se</a>
-
-          <div class="pull-right"><!-- Other nav bar content -->
-
-            <!-- The drop down menu -->
-            <ul class="nav pull-right">
-              <li class="dropdown">
-                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                  <span data-bind="ifnot: userModel.currentUserNode">Sign In</span>
-                  <span data-bind="if: userModel.currentUserNode, text: userModel.currentUserNode().name"></span>
-                  <strong class="caret"></strong>
-                </a>
-                <div class="dropdown-menu">
-
-                  <form class="" data-bind="submit: userModel.loginSubmit, visible: !userModel.currentUserNode()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
-                    <input placeholder="Username" id="inputUsername" style="margin-bottom: 15px;" type="text" name="user[inputUsername]" size="30" data-bind="hasfocus: userModel.usernameFocused, disable: userModel.loading, value: userModel.inputUsername"/>
-                    <input placeholder="Password" id="inputPassword" style="margin-bottom: 15px;" type="password" name="user[inputPassword]" size="30" data-bind="disable: userModel.loading, value: userModel.inputPassword"/>
-                    <input id="inputRemember" style="float: left; margin-right: 10px;" type="checkbox" name="user[inputRemember]" value="1" data-bind="disable: userModel.loading, checked: userModel.inputRemember"/>
-                    <label class="string optional" for="inputRemember"> Remember me</label>
-
-                    <input data-bind="disable: userModel.loading" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
-                    <div data-bind="visible: userModel.errorText() != '', text: userModel.errorText" style="margin-bottom: 15px;"></div>
-                  </form>
-
-                  <div data-bind="visible: userModel.currentUserNode">
-                    <a href="#admin" data-bind="if: adminModel.accessable">Administration</a>
-                    <a href="#user">Profile</a>
-                    <a href="#userChangePasswordModal" data-toggle="modal">Change password</a>
-                    <a href="#" data-bind="click: userModel.signOutClicked">Sign out</a>
-                  </div>
-
-                </div>
-              </li>
-            </ul>
-
-            <div class="divider-vertical pull-right" data-bind="if: userModel.currentUserNode"></div>
-
-             <!-- The drop down menu -->
-            <ul class="nav pull-right" data-bind="if: userModel.currentUserNode">
-              <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                  Create new
-                  <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a href="#createEventModal" data-toggle="modal">Create event</a></li>
-                  <li><a href="#createPersonModal" data-toggle="modal">Create person</a></li>
-                  <li><a href="#createLocationModal" data-toggle="modal">Create location</a></li>
-                  <li><a href="#createVehicleModal" data-toggle="modal">Create vehicle</a></li>
-                </ul>
-              </li>
-            </ul>
-
-            <div class="divider-vertical pull-right"></div>
-
-            <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
-              <input type="text" class="search-query" placeholder="Search" data-bind="value: searchModel.queryInput"/>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
-
-    <div class="background-map"></div>
-
-
-    <!-- MURRiX view HTML files -->
+    {{views/view.html}}
+    {{views/map/view.html}}
+    {{views/node/view.html}}
+    {{#views/node/summary/view.html}}
+    {{#views/node/timeline/view.html}}
+    {{views/node/pictures/view.html}}
+    {{#views/node/relations/view.html}}
+    {{#views/node/logbook/view.html}}
+    {{views/node/comments/view.html}}
+    {{#views/node/connections/view.html}}
+    {{#views/node/accesses/view.html}}
+    {{views/node/overlay/view.html}}
+    {{views/search/view.html}}
+    {{views/user/view.html}}
+    {{#views/admin/view.html}}
+    {{#views/home/view.html}}
 
 
     <!-- Third-party script files -->
@@ -135,22 +76,6 @@
     <script src="js/knockout.extensions.js"></script>
 
     
-    {{views/node/view.html}}
-    {{#views/node/summary/view.html}}
-    {{#views/node/timeline/view.html}}
-    {{views/node/pictures/view.html}}
-    {{#views/node/relations/view.html}}
-    {{#views/node/logbook/view.html}}
-    {{views/node/comments/view.html}}
-    {{#views/node/connections/view.html}}
-    {{#views/node/accesses/view.html}}
-    {{views/node/overlay/view.html}}
-    {{views/search/view.html}}
-    {{views/user/view.html}}
-    {{#views/admin/view.html}}
-    {{#views/home/view.html}}
-
-
 
     <!-- MURRiX view script files -->
     <script src="views/node/summary/model.js"></script>
@@ -167,132 +92,47 @@
     <script src="views/user/model.js"></script>
     <script src="views/admin/model.js"></script>
     <script src="views/home/model.js"></script>
-
+    <script src="views/model.js"></script>
 
 
     <!-- Initialization scripts and definitions -->
     <script>
 
-      /* Definitiation of main model */
-      murrix.model = new function()
+      /* Connect to server and set up startup event handlers */
+      murrix.server = io.connect();
+
+      murrix.server.socket.on("error", function(reason)
       {
-        var self = this;
+        console.error("Unable to connect Socket.IO", reason);
+      });
 
-        self.server = io.connect();
-        self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
+      murrix.server.on("connect", function()
+      {
+        console.info("Successfully established a working connection to server");
+      });
 
-        self.nodes = {};
-        
-        self.userModel = new UserModel(self, 0);
-        self.adminModel = new AdminModel(self);
-        self.nodeModel = new NodeModel(self);
-        self.searchModel = new SearchModel(self);
-        self.homeModel = new HomeModel(self);
-
-
-        self.cacheNode = function(nodeData)
+      murrix.server.on("connection_established", function(data)
+      {
+        if (data.error)
         {
-          if (nodeData === false)
-          {
-            return false;
-          }
+          console.log("Error while established connection to MURRiX: " + data.text);
+          return;
+        }
 
-          if (!self.nodes[nodeData._id])
-          {
-            console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
+        console.log("Successfully connected to MURRiX backend");
 
-            self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData, NodeMappingInternal);
+        murrix.model.userModel.setInitialUser(murrix.cache.addNodeData(data.userNode));
+      });
 
-            self.nodes[nodeData._id].comments.subscribe(function(value)
-            {
-              value.sort(function(a, b)
-              {
-                return (b.addedDatetime && a.addedDatetime) ? b.addedDatetime() - a.addedDatetime() : 0;
-              });
-            });
+    
 
-            self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
-          }
-          else
-          {
-            console.log("Node " + nodeData._id + " already cached updating cache...");
-            ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
-          }
-
-          return self.nodes[nodeData._id];
-        };
-
-        self.getNodes = function(idList, callback)
-        {
-          var nodeList = {};
-          var idRequestList = [];
-
-          for (var n = 0; n < idList.length; n++)
-          {
-            if (self.nodes[idList[n]])
-            {
-              nodeList[idList[n]] = self.nodes[idList[n]];
-            }
-            else
-            {
-              idRequestList.push(idList[n]);
-            }
-          }
-
-          if (idRequestList.length === 0)
-          {
-            callback(null, nodeList);
-            return;
-          }
-
-          murrix.model.server.emit("find", { _id: idRequestList }, function(error, nodeDataList)
-          {
-            if (error)
-            {
-              callback(error, []);
-              return;
-            }
-
-            for (var id in nodeDataList)
-            {
-              nodeList[id] = murrix.model.cacheNode(nodeDataList[id]);
-            }
-
-            callback(null, nodeList);
-          });
-        };
-
-        self.server.socket.on("error", function(reason)
-        {
-          console.error("Unable to connect Socket.IO", reason);
-        });
-
-        self.server.on("connect", function()
-        {
-          console.info("Successfully established a working connection to server");
-        });
-
-        self.server.on("connection_established", function(data)
-        {
-          if (data.error)
-          {
-            console.log("Error while established connection to MURRiX: " + data.text);
-            return;
-          }
-
-          console.log("Successfully connected to MURRiX");
-
-          self.userModel.setInitialUser(self.cacheNode(data.userNode));
-        });
-      };
-      
       $(function()
       {
-        /* Apply bindings on available views */
+        /* Apply bindings on base model */
         ko.applyBindings(murrix.model);
 
 
-        /* Disable closing of popup in login form */
+        /* HACK: Disable closing of popup in login form */
         $(".dropdown-menu input, .dropdown-menu label").click(function(e)
         {
           e.stopPropagation();
@@ -302,39 +142,19 @@
         /* Bind function to change content based on path */
         jQuery.History.bind(function(state)
         {
+          /* HACK: Close open dropdowns */
           $(".dropdown.open .dropdown-toggle").dropdown("toggle");
+
+          /* Update the current path of the base model */
           murrix.updatePath(state, murrix.model.path);
         });
 
 
-        /* Trigger loading if no path is set */
+        /* HACK?: Trigger loading if no path is set */
         if (document.location.hash.length == 0)
         {
           jQuery.History.trigger("");
         }
-
-
-        /* Initialize background map */
-        var options = {
-          zoom: 13,
-          center: new google.maps.LatLng(57.6706907666667, 11.9375348333333),
-          mapTypeId: google.maps.MapTypeId.HYBRID,
-
-          streetViewControl: false,
-          panControl: false,
-          mapTypeControl: false,
-          zoomControl: true,
-          zoomControlOptions: {
-            style: google.maps.ZoomControlStyle.DEFAULT,
-            position: google.maps.ControlPosition.RIGHT_TOP
-          },
-          scaleControl: true,
-          scaleControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
-          }
-        };
-
-        //$.murrix.module.map.show(".background-map", options);
 
 
         /* Clear loading overlay */

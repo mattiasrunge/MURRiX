@@ -1,5 +1,5 @@
 
-var UserModel = function(parentModel, initialUserNodeId)
+var UserModel = function(parentModel)
 {
   var self = this;
 
@@ -24,7 +24,7 @@ var UserModel = function(parentModel, initialUserNodeId)
     self.loading(true);
     self.errorText("");
 
-    murrix.model.server.emit("logout", { }, function(error)
+    murrix.server.emit("logout", { }, function(error)
     {
       self.loading(false);
 
@@ -47,7 +47,7 @@ var UserModel = function(parentModel, initialUserNodeId)
     self.loading(true);
     self.errorText("");
 
-    murrix.model.server.emit("login", { username: self.inputUsername(), password: self.inputPassword() }, function(error, userNode)
+    murrix.server.emit("login", { username: self.inputUsername(), password: self.inputPassword() }, function(error, userNodeData)
     {
       self.loading(false);
       
@@ -74,7 +74,7 @@ var UserModel = function(parentModel, initialUserNodeId)
 
       $(".dropdown.open .dropdown-toggle").dropdown("toggle");
       
-      self.currentUserNode(murrix.model.cacheNode(userNode));
+      self.currentUserNode(murrix.cache.addNodeData(userNodeData));
     });
   };
 
@@ -145,7 +145,7 @@ var UserModel = function(parentModel, initialUserNodeId)
     self.changePasswordLoading(true);
     self.changePasswordErrorText("");
 
-    murrix.model.server.emit("changePassword", { password: self.changePasswordPassword1() }, function(error)
+    murrix.server.emit("changePassword", { password: self.changePasswordPassword1() }, function(error)
     {
       self.changePasswordLoading(false);
 

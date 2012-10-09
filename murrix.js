@@ -15,18 +15,23 @@ var MurrixUtils = require('./lib/utils.js');
 var UploadManager = require('./lib/upload.js').UploadManager;
 
 /* Configuration options, TODO: Move to another file */
-var databaseHost = "localhost";
-var databasePort = 27017;
-var databaseName = "murrix";
-var httpPort = 8080;
+var configuration = {};
+
+configuration.databaseHost = "localhost";
+configuration.databasePort = 27017;
+configuration.databaseName = "murrix";
+configuration.httpPort = 8080;
+configuration.filesPath = "/mnt/raid/www/murrix.runge.se/files/";
+configuration.previewsPath = "../previews/";
+configuration.sessionName = "murrix";
 
 /* Instances */
-var mongoServer = new mongo.Server(databaseHost, databasePort, { auto_reconnect: true });
-var mongoDb = new mongo.Db(databaseName, mongoServer);
-var session = new Session(mongoDb, "murrix");
+var mongoServer = new mongo.Server(configuration.databaseHost, configuration.databasePort, { auto_reconnect: true });
+var mongoDb = new mongo.Db(configuration.databaseName, mongoServer);
+var session = new Session(mongoDb, configuration);
 var user = new User(mongoDb);
 var nodeManager = new NodeManager(mongoDb, user);
-var uploadManager = new UploadManager();
+var uploadManager = new UploadManager(configuration);
 var fileServer = new nodeStatic.Server("./public");
 
 
@@ -43,44 +48,8 @@ mongoDb.open(function(error, mongoDb)
 });
 
 /* Start to listen to HTTP */
-httpServer.listen(httpPort);
+httpServer.listen(configuration.httpPort);
 
-
-function getTemplateFile(filename, callback)
-{
-  var dirname = path.dirname(filename) + "/";
-
-  fs.readFile(filename, 'utf8', function(error, data)
-  {
-    if (error)
-    {
-      console.log("Could not read file " + filename);
-      callback("Could not read file " + filename, null);
-      return;
-    }
-
-    data = data.replace(/\{\{(.+?)\}\}/g, function(fullMatch, templateFilename)
-    {
-      if (templateFilename[0] === "#")
-      {
-        return "<!-- '" + templateFilename.substr(1) + "' not included -->";
-      }
-
-      templateFilename = dirname + templateFilename;
-      
-      try
-      {
-        return fs.readFileSync(templateFilename, 'utf8');
-      }
-      catch (e)
-      {
-        return "<!-- " + e + " -->";
-      }
-    });
-
-    callback(null, data);
-  });
-}
 
 function httpRequestHandler(request, response)
 {
@@ -89,7 +58,6 @@ function httpRequestHandler(request, response)
     if (error)
     {
       response.statusCode = 500;
-      console.log(response);
       return response.end("Error starting session");
     }
 
@@ -97,12 +65,12 @@ function httpRequestHandler(request, response)
 
     if (requestParams.pathname === "/" || requestParams.pathname === "/index.html" || requestParams.pathname === "/index.htm")
     {
-      getTemplateFile("./public/index.html", function(error, data)
+      MurrixUtils.getTemplateFile("./public/index.html", function(error, data)
       {
         if (error)
         {
           response.writeHead(404);
-          response.end();
+          response.end(error);
           return;
         }
         
@@ -123,16 +91,13 @@ function httpRequestHandler(request, response)
 
         filename = path.basename(filename);
 
-        fileServer.serveFile("../previews/" + filename, 200, {}, request, response);
+        fileServer.serveFile(configuration.previewsPath + filename, 200, {}, request, response);
       });
     }
     else
     {
       fileServer.serve(request, response, function(error, result)
       {
-
-        //console.log(error, result);
-
         if (error)
         {
           console.log("Error serving " + request.url + " - " + error.message);
@@ -194,7 +159,8 @@ io.sockets.on("connection", function(client)
   /* A session should already be started, if not we will do nothing */
   if (!client.handshake.session)
   {
-    console.log("Unknown session!");
+    console.log("Could not find session!");
+    client.emit("connection_established", { error: error, text: "Could not find session" });
     return;
   }
 

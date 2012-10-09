@@ -19,6 +19,8 @@ var NodeModel = function(parentModel)
   self.node = ko.observable(false);
   self.fileNodes = ko.observableArray();
 
+  self.firstDatetime = false;
+  self.lastDatetime = false;
 
   /* This function is called every time the node changes and tries to
    * set up variables for required sub nodes and also try to fetch
@@ -38,24 +40,123 @@ var NodeModel = function(parentModel)
       return;
     }
 
-    self.loadFiles();
+    if (self.node().type() === "file")
+    {
+      // TODO: Redirect to event
+    }
+
+    // TODO: Load all related nodes (look
+    // 
+
+    self.loadFiles(function(error)
+    {
+      var n = 0;
+
+      if (error)
+      {
+        return;
+      }
+
+      /* Get time range of files */
+      if (self.fileNodes().length > 0)
+      {
+        for (n = 0; n < self.fileNodes().length; n++)
+        {
+          if (self.fileNodes()[n].createdDatetime)
+          {
+            if (self.firstDatetime === false || self.firstDatetime > self.fileNodes()[n].createdDatetime)
+            {
+              self.firstDatetime = self.fileNodes()[n].createdDatetime;
+            }
+
+            if (self.lastDatetime === false || self.lastDatetime < self.fileNodes()[n].createdDatetime)
+            {
+              self.lastDatetime = self.fileNodes()[n].createdDatetime;
+            }
+          }
+        }
+      }
+
+      /* Get time range of texts */
+      if (self.node().texts().length > 0)
+      {
+        for (n = 0; n < self.node().texts().length; n++)
+        {
+          if (self.node().texts()[n].createdDatetime)
+          {
+            if (self.firstDatetime === false || self.firstDatetime > self.node().texts()[n].createdDatetime)
+            {
+              self.firstDatetime = self.node().texts()[n].createdDatetime;
+            }
+
+            if (self.lastDatetime === false || self.lastDatetime < self.node().texts()[n].createdDatetime)
+            {
+              self.lastDatetime = self.node().texts()[n].createdDatetime;
+            }
+          }
+        }
+      }
+
+
+      if (self.node().type() === "event")
+      {
+        // Find start and stop datatimes if defined
+
+        // Load related files, direct parent link
+
+        // Calculate start stop datetimes from files and texts datetimes
+        
+        // Compile a list of markers from files, texts and possibly locations
+        // Compile a list of tracks for linked vehicles for the range above
+      }
+      else if (self.node().type() === "location")
+      {
+        // No start and stop datetimes exist
+
+        // Load persons livining here and events connected to this location
+
+
+      // Compile a list of markers with the location itself
+      // Empty tracks list
+      }
+      else if (self.node().type() === "person")
+      {
+      // Calculate start stop datetimes from files or events
+
+      // Compile a list of markers for connected events, files and home location
+      // Empty tracks list
+      }
+      else if (self.node().type() === "vehicle")
+      {
+      // Set start and stop datatimes to position range
+
+      // Compile a list of marker for connected files
+      // Compile a track list for a "good" range
+      }
+      
+    });
 
     //console.log("NodeModel: Setting node to map");
     //$.murrix.module.map.setNodes([ node ]);*/
   });
 
-  self.loadFiles = function()
+  self.loadFiles = function(callback)
   {
     self.fileNodes.removeAll();
 
     if (self.node())
     {
-      murrix.model.server.emit("find", { _parentNode: { $in: [ self.node()._id() ] }, type: "file" }, function(error, nodeDataList)
+      murrix.server.emit("find", { _parentNode: { $in: [ self.node()._id() ] }, type: "file" }, function(error, nodeDataList)
       {
         if (error)
         {
           console.log(error);
           console.log("NodeModel: Failed to get files!");
+
+          if (callback)
+          {
+            callback(error);
+          }
           return;
         }
         
@@ -63,12 +164,24 @@ var NodeModel = function(parentModel)
         
         for (var id in nodeDataList)
         {
-          self.fileNodes.push(murrix.model.cacheNode(nodeDataList[id]));
+          self.fileNodes.push(murrix.cache.addNodeData(nodeDataList[id]));
           count++;
         }
         
         console.log("NodeModel: Found " + count + " files!");
+
+        if (callback)
+        {
+          callback(null);
+        }
       });
+
+      return;
+    }
+
+    if (callback)
+    {
+      callback(null);
     }
   };
   
@@ -103,7 +216,7 @@ var NodeModel = function(parentModel)
       return;
     }
 
-    murrix.model.server.emit("find", { _id: nodeId }, function(error, nodeDataList)
+    murrix.cache.getNodes([ nodeId ], function(error, nodeList)
     {
       if (error)
       {
@@ -112,13 +225,13 @@ var NodeModel = function(parentModel)
         return;
       }
 
-      if (nodeDataList.length === 0 || !nodeDataList[nodeId])
+      if (nodeList.length === 0 || !nodeList[nodeId])
       {
         console.log("NodeModel: No results returned, you probably do not have rights to this node!");
         return;
       }
       
-      self.node(murrix.model.cacheNode(nodeDataList[nodeId]));
+      self.node(nodeList[nodeId]);
     });
   });
 
@@ -148,7 +261,7 @@ var NodeModel = function(parentModel)
     {
       self.createLoading(true);
 
-      murrix.model.server.emit("save", nodeData, function(error, nodeData)
+      murrix.server.emit("save", nodeData, function(error, nodeData)
       {
         self.createLoading(false);
 
@@ -159,7 +272,7 @@ var NodeModel = function(parentModel)
           return;
         }
 
-        var node = murrix.model.cacheNode(nodeData);
+        var node = murrix.cache.addNodeData(nodeData);
 
         $(".modal").modal('hide');
         
@@ -186,7 +299,7 @@ var NodeModel = function(parentModel)
 
     nodeData.tags.push(self.tagName());
 
-    murrix.model.server.emit("save", nodeData, function(error, nodeData)
+    murrix.server.emit("save", nodeData, function(error, nodeData)
     {
       self.tagLoading(false);
 
@@ -198,7 +311,7 @@ var NodeModel = function(parentModel)
 
       self.tagName("");
 
-      murrix.model.cacheNode(nodeData); // This should update self.node() by reference
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
   };
 
@@ -226,7 +339,7 @@ var NodeModel = function(parentModel)
 
     nodeData.tags = tags;
 
-    murrix.model.server.emit("save", nodeData, function(error, nodeData)
+    murrix.server.emit("save", nodeData, function(error, nodeData)
     {
       self.tagLoading(false);
 
@@ -236,13 +349,13 @@ var NodeModel = function(parentModel)
         return;
       }
 
-      murrix.model.cacheNode(nodeData); // This should update self.node() by reference
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
   };
 
   self.tagAutocomplete = function(query, callback)
   {
-    murrix.model.server.emit("distinct", "tags", function(error, tagList)
+    murrix.server.emit("distinct", "tags", function(error, tagList)
     {
       if (error)
       {
@@ -294,9 +407,9 @@ var NodeModel = function(parentModel)
     console.log(event.originalEvent.dataTransfer.getData("DownloadURL"));
     console.log(event.originalEvent.dataTransfer.getData("text/plain"));
     console.log(event.originalEvent.dataTransfer.getData("text/uri-list"));
-*/
-    //console.log(event.originalEvent.dataTransfer.setData("DownloadURL", "/preview?id=" + element._id() + "&width=1024&height=1024"));
-/*    console.log("dragStart", "application/octet-stream:" + element.name() + ":/preview?id=" + element._id() + "&width=1024&height=1024");
+
+    console.log(event.originalEvent.dataTransfer.setData("DownloadURL", "/preview?id=" + element._id() + "&width=1024&height=1024"));
+    console.log("dragStart", "application/octet-stream:" + element.name() + ":/preview?id=" + element._id() + "&width=1024&height=1024");
 */
     event.originalEvent.dataTransfer.setData("id", element._id());
     return true;
@@ -308,7 +421,7 @@ var NodeModel = function(parentModel)
 
     nodeData._profilePicture = event.originalEvent.dataTransfer.getData("id");
 
-    murrix.model.server.emit("save", nodeData, function(error, nodeData)
+    murrix.server.emit("save", nodeData, function(error, nodeData)
     {
       if (error)
       {
@@ -316,7 +429,7 @@ var NodeModel = function(parentModel)
         return;
       }
 
-      murrix.model.cacheNode(nodeData); // This should update self.node() by reference
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
   };
 

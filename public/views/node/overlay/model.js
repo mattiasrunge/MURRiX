@@ -44,7 +44,7 @@ var OverlayModel = function(parentModel)
       return;
     }
 
-    murrix.model.server.emit("find", { _id: nodeId }, function(error, nodeDataList)
+    murrix.cache.getNodes([ nodeId ], function(error, nodeList)
     {
       if (error)
       {
@@ -53,13 +53,13 @@ var OverlayModel = function(parentModel)
         return;
       }
 
-      if (nodeDataList.length === 0 || !nodeDataList[nodeId])
+      if (nodeList.length === 0 || !nodeList[nodeId])
       {
         console.log("OverlayModel: No results returned, you probably do not have rights to this node!");
         return;
       }
 
-      self.node(murrix.model.cacheNode(nodeDataList[nodeId]));
+      self.node(nodeList[nodeId]);
 
       for (var index = 0; index < murrix.model.nodeModel.fileNodes().length; index++)
       {
@@ -239,7 +239,7 @@ var OverlayModel = function(parentModel)
       nodeData.comments = [];
     }
 
-    murrix.model.server.emit("comment", { nodeId: self.node()._id(), text: self.commentText() }, function(error, nodeData)
+    murrix.server.emit("comment", { nodeId: self.node()._id(), text: self.commentText() }, function(error, nodeData)
     {
       self.commentLoading(false);
 
@@ -251,7 +251,7 @@ var OverlayModel = function(parentModel)
 
       self.commentText("");
 
-      murrix.model.cacheNode(nodeData); // This should update self.node() by reference
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
   };
 };

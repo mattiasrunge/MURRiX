@@ -1,71 +1,160 @@
 
 var murrix = {};
 
-murrix.file = {};
-
-murrix.file._readChunk = function(file, offset, chunkSize)
+murrix.cache = new function()
 {
-  var data = null;
+  var self = this;
 
-  if (file.webkitSlice)
-  {
-    data = file.webkitSlice(offset, offset + Math.min(chunkSize, file.size - offset));
-  }
-  else if (file.mozSlice)
-  {
-    data = file.mozSlice(offset, offset + Math.min(chunkSize, file.size - offset));
-  }
-  else if (file.slice)
-  {
-    data = file.slice(offset, offset + Math.min(chunkSize, file.size - offset));
-  }
-  else
-  {
-    return false;
-  }
+  self.nodes = {};
 
-  file.reader.readAsBinaryString(data);
-  return true;
-};
-
-murrix.file.upload = function(file, callback)
-{
-  file.reader = new FileReader();
-
-  file.reader.onload = function(event)
+  self.addNodeData = function(nodeData)
   {
-    var data = window.btoa(event.target.result); // base64 encode
+    if (nodeData === false)
+    {
+      return false;
+    }
 
-    murrix.model.server.emit("fileChunk", { id: file.uploadId, data: data }, function(error, id, progress, offset, chunkSize)
+    if (!self.nodes[nodeData._id])
+    {
+      console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
+
+      self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData, NodeMappingInternal);
+
+      self.nodes[nodeData._id].comments.subscribe(function(value)
+      {
+        value.sort(function(a, b)
+        {
+          return (b.addedDatetime && a.addedDatetime) ? b.addedDatetime() - a.addedDatetime() : 0;
+        });
+      });
+
+      self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
+    }
+    else
+    {
+      console.log("Node " + nodeData._id + " already cached updating cache...");
+      ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
+    }
+
+    return self.nodes[nodeData._id];
+  };
+
+  self.getNodes = function(idList, callback)
+  {
+    var nodeList = {};
+    var idRequestList = [];
+
+    for (var n = 0; n < idList.length; n++)
+    {
+      if (self.nodes[idList[n]])
+      {
+        nodeList[idList[n]] = self.nodes[idList[n]];
+      }
+            else
+      {
+        idRequestList.push(idList[n]);
+      }
+    }
+
+    if (idRequestList.length === 0)
+    {
+      callback(null, nodeList);
+      return;
+    }
+
+    murrix.server.emit("find", { _id: { $in: idRequestList } }, function(error, nodeDataList)
     {
       if (error)
       {
-        console.log(error);
-        murrix.file.reader = null;
-        callback(error);
+        callback(error, []);
         return;
       }
 
-      callback(null, id, progress);
- 
-      if (progress < 100)
+      for (var id in nodeDataList)
       {
-        if (!murrix.file._readChunk(file, offset, chunkSize))
-        {
-          console.log("Failed to read chunk!");
-          callback("Failed to read chunk!"); // TODO: Check this before we start, and tell server on fails so it can clear states
-          return;
-        }
+        nodeList[id] = self.addNodeData(nodeDataList[id]);
       }
+
+      callback(null, nodeList);
     });
   };
-
-  murrix.model.server.emit("fileStart", { filename: file.name, size: file.size }, function(error, id, offset, chunkSize)
-  {
-    file.uploadId = id;
-    murrix.file._readChunk(file, offset, chunkSize);
-  });
 };
+
+
+
+
+murrix.file = new function()
+{
+  var self = this;
+
+  self._readChunk = function(file, offset, chunkSize)
+  {
+    var data = null;
+
+    if (file.slice)
+    {
+      data = file.slice(offset, offset + Math.min(chunkSize, file.size - offset));
+    }
+    else if (file.webkitSlice)
+    {
+      data = file.webkitSlice(offset, offset + Math.min(chunkSize, file.size - offset));
+    }
+    else if (file.mozSlice)
+    {
+      data = file.mozSlice(offset, offset + Math.min(chunkSize, file.size - offset));
+    }
+    else
+    {
+      return false;
+    }
+    
+    file.reader.readAsBinaryString(data);
+    return true;
+  };
+
+  self.upload = function(file, callback)
+  {
+    file.reader = new FileReader();
+    
+    file.reader.onload = function(event)
+    {
+      var data = window.btoa(event.target.result); // base64 encode
+      
+      murrix.server.emit("fileChunk", { id: file.uploadId, data: data }, function(error, id, progress, offset, chunkSize)
+      {
+        if (error)
+        {
+          console.log(error);
+          murrix.file.reader = null;
+          callback(error);
+          return;
+        }
+        
+        callback(null, id, progress);
+        
+        if (progress < 100)
+        {
+          if (!murrix.file._readChunk(file, offset, chunkSize))
+          {
+            console.log("Failed to read chunk!");
+            callback("Failed to read chunk!"); // TODO: Check this before we start, and tell server on fails so it can clear states
+            return;
+          }
+        }
+      });
+    };
+    
+    murrix.server.emit("fileStart", { filename: file.name, size: file.size }, function(error, id, offset, chunkSize)
+    {
+      file.uploadId = id;
+      murrix.file._readChunk(file, offset, chunkSize);
+    });
+  };
+};
+
+
+
+
 
 murrix.makeArray = function(hash)
 {

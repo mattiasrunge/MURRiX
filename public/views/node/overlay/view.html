@@ -27,7 +27,11 @@
       <h3 data-bind="text: nodeModel.node().name"></h3>
       
       <p class="muted">
-        <small>Picture taken on <span data-bind="htmlDate: nodeModel.node().modified"></span> at <a>Marklandsgatan 43</a>.<br/>Showing <a>Mattias Runge<a>, <a>Björn Ramberg</a> and <a>VW Golf II</a>.</small>
+        <small>Picture taken 
+          <span data-bind="if: nodeModel.overlayModel.node().createdDatetime">on <span data-bind="htmlTimestamp: nodeModel.overlayModel.node().createdDatetime.datetime()"></span></span>
+          <span data-bind="">at <a>Marklandsgatan 43</a></span>.
+          <br/>Showing <a>Mattias Runge<a>, <a>Björn Ramberg</a> and <a>VW Golf II</a>.
+        </small>
       </p>
     </div>
   
@@ -58,6 +62,19 @@
                   <td>Camera model</td>
                   <td data-bind="text: nodeModel.overlayModel.node().exif.CameraModelName()"></td>
                 </tr>
+                <tr data-bind="if: nodeModel.overlayModel.node().exif.Orientation">
+                  <td>Orientation</td>
+                  <td data-bind="text: nodeModel.overlayModel.node().exif.Orientation()"></td>
+                </tr>
+                <tr data-bind="if: nodeModel.overlayModel.node().angle()">
+                  <td>Angle</td>
+                  <td data-bind="text: nodeModel.overlayModel.node().angle()"></td>
+                </tr>
+                <tr data-bind="if: nodeModel.overlayModel.node().mirror()">
+                  <td>Mirror</td>
+                  <td data-bind="text: nodeModel.overlayModel.node().mirror()"></td>
+                </tr>
+
             </table>
     
           </div>
@@ -75,7 +92,7 @@
 
             <div class="row-fluid">
               <div class="span2">
-                <img src="http://placekitten.com/g/40/40" alt=""/>
+                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="if: userModel.currentUserNode(), srcNodeProfilePicture: [ userModel.currentUserNode()._id(), 40, 40, 1 ]"/>
               </div>
               <blockquote class="span10">
                 <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
@@ -91,7 +108,7 @@
           
             <div class="row-fluid">
               <div class="span2">
-                <img src="http://placekitten.com/g/40/40" alt=""/>
+                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcNodeProfilePicture: [ $data._addedBy(), 40, 40, 1 ]"/>
               </div>
               <blockquote class="span10">
                 <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
