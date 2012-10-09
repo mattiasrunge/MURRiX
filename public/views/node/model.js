@@ -403,6 +403,7 @@ var NodeModel = function(parentModel)
 
   self.dragStart = function(element, event)
   {
+    self.showDrop(true);
 /*    console.log(event.originalEvent.dataTransfer.getData("URL"));
     console.log(event.originalEvent.dataTransfer.getData("DownloadURL"));
     console.log(event.originalEvent.dataTransfer.getData("text/plain"));
@@ -415,8 +416,14 @@ var NodeModel = function(parentModel)
     return true;
   };
 
+  self.dragEnd = function(element, event)
+  {
+    self.showDrop(false);
+  };
+
   self.dragDrop = function(element, event)
   {
+    self.showDrop(false);
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._profilePicture = event.originalEvent.dataTransfer.getData("id");
@@ -433,10 +440,27 @@ var NodeModel = function(parentModel)
     });
   };
 
-  self.dragOver = function(a, b, c)
+  self.showDrop = ko.observable(false);
+
+  self.dragEnter = function(element, event)
   {
+    console.log("enter");
+    self.showDrop(true);
+    return true;
   };
 
+  self.dragLeave = function(element, event)
+  {
+    console.log("leave");
+    self.showDrop(false);
+    return true;
+  };
+
+  self.dragOver = function(element, event)
+  {
+  
+  };
+  
   /* Define all sub views */
   self.summaryModel = new SummaryModel(self);
   self.timelineModel = new TimelineModel(self);

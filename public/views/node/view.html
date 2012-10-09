@@ -5,14 +5,14 @@
 
           <h5 data-bind="text: nodeModel.node() ? nodeModel.node().name : 'Unknown'"></h5>
 
-          <!-- ko if: nodeModel.node()._profilePicture && nodeModel.node()._profilePicture() !== false -->
-            <img class="img-rounded" src="" alt="" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }, attr: { src: 'preview?id=' + nodeModel.node()._profilePicture() + '&amp;width=214&amp;height=160' }">
-          <!-- /ko -->
-
-          <!-- ko if: !nodeModel.node()._profilePicture || nodeModel.node()._profilePicture() === false -->
-            <img class="img-rounded" alt="" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }" src="http://www.placehold.it/214x160/ffffff/000000/&text=Drop+profile+picture"/>
-          <!-- /ko -->
-
+          <div style="position: relative; width: 230px; height: 153px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
+            <img class="img-rounded" src="img/230x153_drop-profile-picture.png" style="width: 230px; height: 153px; position: absolute; top: 0px; left: 0px;" data-bind="visible: nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()">
+          
+            <!-- ko if: nodeModel.node()._profilePicture && nodeModel.node()._profilePicture() !== false -->
+              <img class="img-rounded" src="" alt="" data-bind="attr: { src: 'preview?id=' + nodeModel.node()._profilePicture() + '&amp;width=230&amp;height=153' }">
+            <!-- /ko -->
+          </div>
+          
       </li>
       
       <li class="nav-header">Actions</li>
