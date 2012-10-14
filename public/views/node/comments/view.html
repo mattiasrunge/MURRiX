@@ -1,20 +1,55 @@
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.commentsModel.show, if: nodeModel.node">
-  <div class="main-overlay-content">
-    <div class="page-header">
-      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.node()._id() }">Close</a>
-
-      <h1>Comments</h1>
-    </div>
-
-    <div class="logentries" data-bind="foreach: nodeModel.node.comments">
-      <div class="well">
-        <h4>
-          <span data-bind="htmlDate: $data.addedDatetime || '<i>No date and time information found</i>'"></span>
-        </h4>
-        <p></p>
-        <span data-bind="html: $data.text"></span>
-      </div>
+<div class="main-overlay" data-bind="slideVisible: nodeModel.commentsModel.show">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <span class="brand" style="padding-left: 35px;">Comments</span>
+      <ul class="nav pull-right">
+        <li>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            Add
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" style="margin-right: 46px;">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </li>
+        <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
+      </ul>
     </div>
   </div>
-  <div class="well sidebar-nav-background"></div>
+
+  <div class="main-overlay-content" data-bind="if: nodeModel.node">
+
+    <div class="row-fluid well" style="width: auto;">
+      <div class="span2">
+        <img src="" alt="" style="width: 133px; height: 133px;" data-bind="if: userModel.currentUserNode(), srcNodeProfilePicture: [ userModel.currentUserNode()._id(), 133, 133, 1 ]"/>
+      </div>
+      <blockquote class="span8" style="margin-bottom: 0px">
+        <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.commentsModel.commentSubmit">
+          <textarea style="width: 572px; height: 80px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.commentsModel.commentLoading, value: nodeModel.commentsModel.commentText"></textarea><br/>
+          <span class="text-error pull-left" data-bind="disable: nodeModel.commentsModel.commentLoading, text: nodeModel.commentsModel.commentErrorText"></span>
+          <button type="submit" class="btn btn-primary pull-right">Comment</button>
+        </form>
+      </blockquote>
+    </div>
+
+    <!-- ko foreach: nodeModel.node().comments -->
+
+    <div class="row-fluid well" style="width: auto;">
+      <div class="span2">
+        <img src="" alt="" style="width: 133px; height: 133px;" data-bind="srcNodeProfilePicture: [ $data._addedBy(), 133, 133, 1 ]"/>
+      </div>
+      <blockquote class="span8" style="margin-bottom: 0px">
+        <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
+        <small><span data-bind="htmlTimeAgo: $data.addedDatetime"></span> by <a data-bind="textNodeAttribute: [ $data._addedBy(), 'name' ]"></a></small>
+      </blockquote>
+    </div>
+
+    <!-- /ko --> 
+
+  </div>
+  <div class="main-overlay-background"></div>
 </div>

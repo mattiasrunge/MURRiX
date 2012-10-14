@@ -1,13 +1,13 @@
 <div class="modal-backdrop" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show"></div>
-<div style="position: absolute; top: 20px; left: 20px; bottom: 20px; right: 20px; z-index: 2050;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show">
-  <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 370px; text-align: center;">
+<div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show">
+  <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center;">
 
-    <div id="overlayCarousel" class="carousel slide">
+    <div id="overlayCarousel" class="slide">
       <!-- Carousel items -->
       <div class="carousel-inner" data-bind="foreach: nodeModel.fileNodes">
 
-        <div class="item" data-bind="css: { active: $index() == 0 }">
-          <img class="img-rounded" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview?id=' + $data._id() + '&amp;width=1440', title: $data.name() }" src="http://placekitten.com/g/1440/1440" alt="">
+        <div class="item" data-bind="visible: $data._id() == $parent.nodeModel.overlayModel.node()._id(), attr: { 'data-murrix-id': $data._id() }">
+          <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview?id=' + $data._id() + '&amp;width=1440', title: $data.name() }" src="" alt="">
 <!--          <div class="carousel-caption">
             <h4 data-bind="text: $data.name"></h4>
             <p data-bind="if: $data.description() != '', text: $data.description"></p>
@@ -21,7 +21,7 @@
     </div>
 
   </div>
-  <div style="position: absolute; top: 0px; width: 350px; bottom: 0px; right: 0px; margin: 0px; padding: 0px; overflow: auto;" class="well">
+  <div style="position: absolute; top: 0px; width: 350px; bottom: 0px; right: 0px; margin: 0px; padding: 0px; overflow: auto; background-color: whiteSmoke;">
     <div style="padding: 10px;">
       <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
       <h3 data-bind="text: nodeModel.node().name"></h3>
@@ -29,8 +29,8 @@
       <p class="muted">
         <small>Picture taken 
           <span data-bind="if: nodeModel.overlayModel.node().createdDatetime">on <span data-bind="htmlTimestamp: nodeModel.overlayModel.node().createdDatetime.datetime()"></span></span>
-          <span data-bind="">at <a>Marklandsgatan 43</a></span>.
-          <br/>Showing <a>Mattias Runge<a>, <a>Björn Ramberg</a> and <a>VW Golf II</a>.
+          <span data-bind="">at <a>Marklandsgatan 43</a></span>.<button rel="tooltip" title="When and where" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button>
+          <br/>Showing <a>Mattias Runge<a>, <a>Björn Ramberg</a> and <a>VW Golf II</a>.<button rel="tooltip" title="Who and what" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button>
         </small>
       </p>
     </div>
@@ -84,7 +84,7 @@
       <div class="accordion-group">
         <div class="accordion-heading">
           <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseComments">
-            Comments
+            Comments<span data-bind="visible: nodeModel.overlayModel.node().comments().length > 0"> (<span data-bind="text: nodeModel.overlayModel.node().comments().length"></span>)</span>
           </a>
         </div>
         <div id="overlayCollapseComments" class="accordion-body collapse in">

@@ -2,7 +2,7 @@
   <div class="navbar-inner">
     <div class="container-fluid">
 
-      <a class="brand" href="#">www.runge.se</a>
+      <a class="brand" href="#" data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se', attr: { 'href' : nodeModel.node() ? '#node:' + nodeModel.node()._id() : '#' }"></a>
       
       <div class="pull-right"><!-- Other nav bar content -->
         
@@ -47,10 +47,10 @@
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="#createEventModal" data-toggle="modal">Create event</a></li>
-              <li><a href="#createPersonModal" data-toggle="modal">Create person</a></li>
-              <li><a href="#createLocationModal" data-toggle="modal">Create location</a></li>
-              <li><a href="#createVehicleModal" data-toggle="modal">Create vehicle</a></li>
+              <li><a href="#createEventModal" data-toggle="modal">Create an event</a></li>
+              <li><a href="#createPersonModal" data-toggle="modal">Create a person</a></li>
+              <li><a href="#createLocationModal" data-toggle="modal">Create a location</a></li>
+              <li><a href="#createThingModal" data-toggle="modal">Create a thing</a></li>
             </ul>
           </li>
         </ul>

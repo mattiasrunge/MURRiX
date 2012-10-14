@@ -11,7 +11,30 @@ $(function()
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
-      ko.utils.unwrapObservable(ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).fadeOut());
+      ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).fadeOut();
+    }
+  };
+
+  /* Knockout visibility changer (fading) handler  */
+  ko.bindingHandlers.slideVisible = {
+    init: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      $(element).toggle(ko.utils.unwrapObservable(value));
+    },
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+
+      if (ko.utils.unwrapObservable(value))
+      {
+        $(element).show("slide", function() { $(element).height(''); });
+      }
+      else
+      {
+        $(element).height($(element).height());
+        $(element).hide("slide");
+      }
     }
   };
 
@@ -78,7 +101,7 @@ $(function()
         {
           if (!nodeList[id]._profilePicture || !nodeList[id]._profilePicture())
           {
-            $(element).attr("src", "http://placekitten.com/g/40/40"); // TODO: Set generic user icon image
+            $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
             return;
           }
 
@@ -101,7 +124,7 @@ $(function()
           return;
         }
 
-        $(element).attr("src", "http://placekitten.com/g/40/40"); // TODO: Set generic user icon image
+        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
       });
     }
   };
@@ -177,7 +200,7 @@ $(function()
 
       if (typeof rawValue === "number")
       {
-        dateItem = moment(rawValue);
+        dateItem = moment.unix(rawValue);
       }
       else
       {

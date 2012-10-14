@@ -1,37 +1,30 @@
 <div class="sidebar-nav" data-bind="fadeVisible: nodeModel.show, if: nodeModel.node">
+
+  <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
+    <div style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()">
+      <br/>
+      <br/>
+      <br/>
+      Drop here
+    </div>
+
+    <img class="" src="img/profile_picture_overlay.png" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px;">
+
+    <img src="" alt="" style="width: 250px; height: 250px;" data-bind="if: nodeModel.node(), srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
+  </div>
+          
   <div class="sidebar-nav-content">
     <ul class="nav nav-list">
-      <li>
 
-          <h5 data-bind="text: nodeModel.node() ? nodeModel.node().name : 'Unknown'"></h5>
-
-          <div style="position: relative; width: 230px; height: 153px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
-            <img class="img-rounded" src="img/230x153_drop-profile-picture.png" style="width: 230px; height: 153px; position: absolute; top: 0px; left: 0px;" data-bind="visible: nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()">
-          
-            <!-- ko if: nodeModel.node()._profilePicture && nodeModel.node()._profilePicture() !== false -->
-              <img class="img-rounded" src="" alt="" data-bind="attr: { src: 'preview?id=' + nodeModel.node()._profilePicture() + '&amp;width=230&amp;height=153' }">
-            <!-- /ko -->
-          </div>
-          
-      </li>
-      
-      <li class="nav-header">Actions</li>
-      
       <li data-bind="fadeVisible: nodeModel.summaryModel.enabled, css: { 'active': nodeModel.summaryModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'summary'">
           <i class="icon-list-alt"></i> Summary
         </a>
       </li>
 
-      <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefSecondPrimary: 'timeline'">
-          <i class="icon-time"></i> Timeline
-        </a>
-      </li>
-
       <li data-bind="fadeVisible: nodeModel.picturesModel.enabled, css: { 'active': nodeModel.picturesModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'pictures'">
-          <i class="icon-th"></i> Pictures <span data-bind="fadeVisible: nodeModel.fileNodes().length > 0, text: nodeModel.fileNodes().length" class="badge pull-right"></span>
+          <i class="icon-th"></i> Items <span data-bind="fadeVisible: nodeModel.fileNodes().length > 0, text: nodeModel.fileNodes().length" class="badge pull-right"></span>
         </a>
       </li>
 
@@ -41,19 +34,13 @@
         </a>
       </li>
 
-      <li data-bind="fadeVisible: nodeModel.logbookModel.enabled, css: { 'active': nodeModel.logbookModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefSecondPrimary: 'logbook'">
-          <i class="icon-book"></i> Logbook <span data-bind="fadeVisible: nodeModel.node().texts().length > 0, text: nodeModel.node().texts().length" class="badge pull-right"></span>
-        </a>
-      </li>
-
       <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'comments'">
           <i class="icon-comment"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right"></span>
         </a>
       </li>
       
-
+<!--
       <li class="nav-header">Administration</li>
 
       <li data-bind="fadeVisible: nodeModel.connectionsModel.enabled, css: { 'active': nodeModel.connectionsModel.show }" class="nav-link">
@@ -67,12 +54,15 @@
           <i class="icon-lock"></i> Accesses <span data-bind="fadeVisible: nodeModel.accessesModel.accesses().length > 0, text: nodeModel.accessesModel.accesses().length" class="badge pull-right"></span>
         </a>
       </li>
+-->
 
+      <li>
+        <br/>
+        <!-- ko foreach: nodeModel.node().tags -->
+          <span class="label label-inverse"><a href="#" data-bind="text: $data, attr: { href: '#search:' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a></span>
+        <!-- /ko -->
 
-      <li class="nav-header">Tags <button rel="tooltip" title="Edit tags" class="btn btn-link btn-mini pull-right" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button></li>
-
-      <li data-bind="foreach: nodeModel.node().tags">
-        <span class="label label-inverse"><a href="#" data-bind="text: $data, attr: { href: '#search:' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a></span>
+        <button rel="tooltip" title="Edit tags" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button>
       </li>
 
       <li>
@@ -83,7 +73,7 @@
     </ul>
   </div>
   
-  <div class="well sidebar-nav-background"></div>
+  <div class="sidebar-nav-background"></div>
 </div>
 
 <div class="modal" id="editTagsModal" tabindex="-1" role="dialog" aria-labelledby="editTagsModalLabel" aria-hidden="true" style="display: none;">
@@ -112,7 +102,7 @@
 <form class="modal" id="createEventModal" tabindex="-1" role="dialog" aria-labelledby="createEventModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="event">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createEventModalLabel">Create event</h3>
+    <h3 id="createEventModalLabel">Create an event</h3>
   </div>
   <div class="modal-body">
       <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.createLoading, value: nodeModel.createName"/>
@@ -128,7 +118,7 @@
 <form class="modal" id="createPersonModal" tabindex="-1" role="dialog" aria-labelledby="createPersonModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="person">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createPersonModalLabel">Create person</h3>
+    <h3 id="createPersonModalLabel">Create a person</h3>
   </div>
   <div class="modal-body">
       <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.createLoading, value: nodeModel.createName"/>
@@ -144,7 +134,7 @@
 <form class="modal" id="createLocationModal" tabindex="-1" role="dialog" aria-labelledby="createLocationModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="location">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createLocationModalLabel">Create location</h3>
+    <h3 id="createLocationModalLabel">Create a location</h3>
   </div>
   <div class="modal-body">
       <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.createLoading, value: nodeModel.createName"/>
@@ -157,10 +147,10 @@
   </div>
 </form>
 
-<form class="modal" id="createVehicleModal" tabindex="-1" role="dialog" aria-labelledby="createVehicleModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="vehicle">
+<form class="modal" id="createThingModal" tabindex="-1" role="dialog" aria-labelledby="createThingModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="thing">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createLocationModalLabel">Create vehicle</h3>
+    <h3 id="createLocationModalLabel">Create a thing</h3>
   </div>
   <div class="modal-body">
       <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.createLoading, value: nodeModel.createName"/>

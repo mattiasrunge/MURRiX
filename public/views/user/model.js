@@ -51,7 +51,7 @@ var UserModel = function(parentModel)
     {
       self.loading(false);
       
-      if (error || userNode === false)
+      if (error || userNodeData === false)
       {
         self.usernameFocused(true);
         console.log("UserModel: Failed to login!");
@@ -107,19 +107,6 @@ var UserModel = function(parentModel)
   self.setInitialUser = function(node)
   {
     self.currentUserNode(node);
-
-    // TODO: Is this cookie not sent to the server on all requests, perform server side login!
-    /*if ($.cookie("userinfo") !== null)
-    {
-      console.log("UserModel: Signing in with cookie information");
-      var data = JSON.parse($.cookie("userinfo"));
-
-      self.inputUsername(data.username);
-      self.inputPassword(data.password);
-      self.inputRemember(true);
-
-      self.loginSubmit();
-    }*/
   };
 
 

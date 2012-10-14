@@ -1,35 +1,37 @@
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.picturesModel.show">
-  <div class="main-overlay-content" data-bind="event: { dragenter: nodeModel.picturesModel.dragNoopHandler, dragexit: nodeModel.picturesModel.dragNoopHandler, dragover: nodeModel.picturesModel.dragNoopHandler, drop: nodeModel.picturesModel.dragDropHandler }">
-    <div class="page-header" data-bind="if: nodeModel.node">
-      <a class="btn btn-primary pull-right" href="#" data-bind="hrefSecondPrimary: ''">Close</a>
-
-
-      <span class="pull-right btn-spacer-big">&nbsp;</span>
-      <div class="btn-group pull-right">
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-          Cameras
-          <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li class="divider"></li>
-          <li><a href="#">Separated link</a></li>
-        </ul>
-      </div>
-
-      <h1>Pictures</h1>
+<div class="main-overlay" data-bind="slideVisible: nodeModel.picturesModel.show">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <span class="brand" style="padding-left: 35px;">Items</span>
+      <ul class="nav pull-right">
+        <li>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            Filter
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" style="margin-right: 46px;">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </li>
+        <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
+      </ul>
     </div>
+  </div>
+
+
+  <div class="main-overlay-content" data-bind="event: { dragenter: nodeModel.picturesModel.dragNoopHandler, dragexit: nodeModel.picturesModel.dragNoopHandler, dragover: nodeModel.picturesModel.dragNoopHandler, drop: nodeModel.picturesModel.dragDropHandler }">
 
     <ul class="thumbnails" data-bind="foreach: nodeModel.fileNodes">
       <li class="">
-        <a href="#" draggable="true" class="thumbnail" data-bind="hrefSecond: [ 'pictures', $data._id() ], event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
+        <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecond: [ 'pictures', $data._id() ], event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
           <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
         </a>
       </li>
     </ul>
 
   </div>
-  <div class="well sidebar-nav-background"></div>
+  <div class="main-overlay-background"></div>
 </div>

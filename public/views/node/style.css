@@ -1,32 +1,35 @@
 
 .sidebar-nav {
-  z-index: 2;
+  z-index: 5;
   position: absolute;
-  top: 100px;
-  bottom: 60px;
-  left: 60px;
-  width: 300px;
+  top: 40px;
+  bottom: 0px;
+  left: 20px;
+  width: 250px;
   margin-bottom: 0px;
 }
 
 .sidebar-nav-background {
   z-index: -1;
-  opacity: 0.8;
   position: absolute;
   top: 0px;
   bottom: 0px;
   left: 0px;
   right: 0px;
   margin-bottom: 0px;
+  background-color: whiteSmoke;
+  border-left: 1px solid #E3E3E3;
+  border-right: 1px solid #E3E3E3;
 }
 
 .sidebar-nav-content {
   position: absolute;
-  top: 20px;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
+  top: 200px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
   overflow: auto;
+  z-index: 100;
 }
  
 .sidebar-nav-profilepicture {

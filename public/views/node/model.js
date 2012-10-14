@@ -78,7 +78,7 @@ var NodeModel = function(parentModel)
       }
 
       /* Get time range of texts */
-      if (self.node().texts().length > 0)
+      if (self.node().texts && self.node().texts().length > 0)
       {
         for (n = 0; n < self.node().texts().length; n++)
         {
@@ -97,12 +97,17 @@ var NodeModel = function(parentModel)
         }
       }
 
+      
+
 
       if (self.node().type() === "event")
       {
+        // Load files (direct parent link of file node)
+        // Load persons (birth death, marrige, engagement or relation list of remote person)
+        // Load things
+
         // Find start and stop datatimes if defined
 
-        // Load related files, direct parent link
 
         // Calculate start stop datetimes from files and texts datetimes
         
@@ -111,27 +116,41 @@ var NodeModel = function(parentModel)
       }
       else if (self.node().type() === "location")
       {
+        // Load persons livining here (home of person node)
+        // Load events (relationlist of remote event)
+        // Load files connected to this location... (how to do this, search on position with radius?)
+
+
         // No start and stop datetimes exist
 
-        // Load persons livining here and events connected to this location
 
-
-      // Compile a list of markers with the location itself
-      // Empty tracks list
+        // Compile a list of markers with the location itself
+        // Empty tracks list
       }
       else if (self.node().type() === "person")
       {
-      // Calculate start stop datetimes from files or events
+        // Load pictures (relation list of remote file)
+        // Load birth, death, marrige and engagement events (direct link)
+        // Load events (relationslist of remote event)
+        // Load home location (direct link)
+        // Load mother, father, partner (direct link)
 
-      // Compile a list of markers for connected events, files and home location
-      // Empty tracks list
+
+        // Calculate start stop datetimes from files or events
+
+        // Compile a list of markers for connected events, files and home location
+        // Empty tracks list
       }
-      else if (self.node().type() === "vehicle")
+      else if (self.node().type() === "thing")
       {
-      // Set start and stop datatimes to position range
+        // Load owners (list of direct links)
+        // Load pictures (relation list of remote file)
+        // Load events (relationslist of remote event)
 
-      // Compile a list of marker for connected files
-      // Compile a track list for a "good" range
+        // Set start and stop datatimes to position range + events range
+
+        // Compile a list of marker for connected files and events
+        // Compile a track list for a "good" range
       }
       
     });
@@ -146,7 +165,7 @@ var NodeModel = function(parentModel)
 
     if (self.node())
     {
-      murrix.server.emit("find", { _parentNode: { $in: [ self.node()._id() ] }, type: "file" }, function(error, nodeDataList)
+      murrix.server.emit("find", { _parentNode: self.node()._id(), type: "file" }, function(error, nodeDataList)
       {
         if (error)
         {
@@ -161,12 +180,20 @@ var NodeModel = function(parentModel)
         }
         
         var count = 0;
+        var nodeList = [];
         
         for (var id in nodeDataList)
         {
-          self.fileNodes.push(murrix.cache.addNodeData(nodeDataList[id]));
+          nodeList.push(murrix.cache.addNodeData(nodeDataList[id]));
           count++;
         }
+
+        nodeList.sort(function(a, b)
+        {
+          return (b.createdDatetime && a.createdDatetime) ? a.createdDatetime.datetime() - b.createdDatetime.datetime() : 0;
+        });
+
+        self.fileNodes(nodeList);
         
         console.log("NodeModel: Found " + count + " files!");
 

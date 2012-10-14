@@ -1,16 +1,16 @@
 div.timeline-frame {
-    border: 1px solid #BEBEBE;
+    border: 0px solid #BEBEBE;
     overflow: hidden;
 }
 
 div.timeline-axis {
     border-color: #BEBEBE;
-    border-width: 1px;
+    border-width: 0px;
     border-top-style: solid;
 }
 div.timeline-axis-grid {
     border-left-style: solid;
-    border-width: 1px;
+    border-width: 0px;
 }
 div.timeline-axis-grid-minor {
     border-color: #e5e5e5;
