@@ -1,28 +1,27 @@
 <div class="main-overlay" data-bind="slideVisible: nodeModel.picturesModel.show">
-  <div class="navbar">
-    <div class="navbar-inner">
-      <span class="brand" style="padding-left: 35px;">Items</span>
-      <ul class="nav pull-right">
-        <li>
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            Filter
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu" style="margin-right: 46px;">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </li>
-        <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
-      </ul>
-    </div>
-  </div>
-
-
   <div class="main-overlay-content" data-bind="event: { dragenter: nodeModel.picturesModel.dragNoopHandler, dragexit: nodeModel.picturesModel.dragNoopHandler, dragover: nodeModel.picturesModel.dragNoopHandler, drop: nodeModel.picturesModel.dragDropHandler }">
+
+    <div class="navbar navbar-inverse navbar-color">
+      <div class="navbar-inner">
+        <span class="brand" style="padding-left: 35px;">Items</span>
+        <ul class="nav pull-right">
+          <li>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              Filter
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" style="margin-right: 46px;">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </li>
+          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+      </div>
+    </div>
 
     <ul class="thumbnails" data-bind="foreach: nodeModel.fileNodes">
       <li class="">

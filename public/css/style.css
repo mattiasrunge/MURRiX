@@ -60,7 +60,7 @@
 
 .thumbnail-picture {
   display: block;
-  border: 1px solid #DDD;
+  border: 1px solid black;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
@@ -68,15 +68,52 @@
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+}
+
+.thumbnail-picture img {
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+}
+
+.thumbnails {
+  margin-left: -18px;
+}
+
+.thumbnails > li {
+  float: left;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.navbar-color .navbar-inner {
+  background-color: #1b1b1b;
+  background-image: -moz-linear-gradient(top, #959595, #3F3F3F);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#959595), to(#3F3F3F));
+  background-image: -webkit-linear-gradient(top, #959595, #3F3F3F);
+  background-image: -o-linear-gradient(top, #959595, #3F3F3F);
+  background-image: linear-gradient(to bottom, #959595, #3F3F3F);
+  background-repeat: repeat-x;
+  border-color: #252525;
+  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#959595', endColorstr='#3F3F3F', GradientType=0);
+}
+
+.navbar-color .brand,
+.navbar-color .nav > li > a {
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
 .main-overlay {
   z-index: 2;
   position: absolute;
-  top: 100px;
-  bottom: 60px;
-  left: 265px;
-  right: 60px;
+  top: 40px;
+  bottom: 0px;
+  left: 270px;
+  right: 0px;
   margin-bottom: 0px;
 }
 
@@ -93,7 +130,7 @@
 
 .main-overlay-background {
   z-index: -1;
-  opacity: 0.7;
+  opacity: 0.5;
   position: absolute;
   top: 0px;
   bottom: 0px;
@@ -108,13 +145,14 @@
 
 .main-overlay-content {
   position: absolute;
-  top: 42px;
+  top: 0px;
   bottom: 0px;
-  left: 35px;
+  left: 0px;
   right: 0px;
   overflow: auto;
-  padding-top: 30px;
-  padding-right: 30px;
+  padding-top: 20px;
+  padding-right: 20px;
+  padding-left: 20px;
 }
 
 .main-overlay-centered-form {

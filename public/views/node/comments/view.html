@@ -1,27 +1,14 @@
 <div class="main-overlay" data-bind="slideVisible: nodeModel.commentsModel.show">
-  <div class="navbar">
-    <div class="navbar-inner">
-      <span class="brand" style="padding-left: 35px;">Comments</span>
-      <ul class="nav pull-right">
-        <li>
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            Add
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu" style="margin-right: 46px;">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </li>
-        <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
-      </ul>
-    </div>
-  </div>
-
   <div class="main-overlay-content" data-bind="if: nodeModel.node">
+  
+    <div class="navbar navbar-color navbar-inverse">
+      <div class="navbar-inner">
+        <span class="brand" style="padding-left: 35px;">Comments</span>
+        <ul class="nav pull-right">
+          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+      </div>
+    </div>
 
     <div class="row-fluid well" style="width: auto;">
       <div class="span2">
