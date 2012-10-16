@@ -20,20 +20,42 @@ murrix.cache = new function()
 
       self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData, NodeMappingInternal);
 
-      self.nodes[nodeData._id].comments.subscribe(function(value)
+      if (self.nodes[nodeData._id].comments)
       {
-        value.sort(function(a, b)
+        self.nodes[nodeData._id].comments.subscribe(function(value)
         {
-          return (b.addedDatetime && a.addedDatetime) ? b.addedDatetime() - a.addedDatetime() : 0;
+          value.sort(function(a, b)
+          {
+            return b.added.timestamp() - a.added.timestamp();
+          });
         });
-      });
 
-      self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
+        self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
+      }
     }
     else
     {
       console.log("Node " + nodeData._id + " already cached updating cache...");
+
+      var hassubscribed = self.nodes[nodeData._id].comments ? true : false;
+      
       ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
+
+      if (!hassubscribed)
+      {
+        if (self.nodes[nodeData._id].comments)
+        {
+          self.nodes[nodeData._id].comments.subscribe(function(value)
+          {
+            value.sort(function(a, b)
+            {
+              return b.added.timestamp() - a.added.timestamp();
+            });
+          });
+
+          self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
+        }
+      }
     }
 
     return self.nodes[nodeData._id];
@@ -62,7 +84,7 @@ murrix.cache = new function()
       return;
     }
 
-    murrix.server.emit("find", { _id: { $in: idRequestList } }, function(error, nodeDataList)
+    murrix.server.emit("find", { query: { _id: { $in: idRequestList } }, options: "nodes" }, function(error, nodeDataList)
     {
       if (error)
       {

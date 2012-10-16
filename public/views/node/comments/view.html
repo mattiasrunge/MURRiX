@@ -27,11 +27,11 @@
 
     <div class="row-fluid well" style="width: auto;">
       <div class="span2">
-        <img src="" alt="" style="width: 133px; height: 133px;" data-bind="srcNodeProfilePicture: [ $data._addedBy(), 133, 133, 1 ]"/>
+        <img src="" alt="" style="width: 133px; height: 133px;" data-bind="srcNodeProfilePicture: [ $data.added._by(), 133, 133, 1 ]"/>
       </div>
       <blockquote class="span8" style="margin-bottom: 0px">
         <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
-        <small><span data-bind="htmlTimeAgo: $data.addedDatetime"></span> by <a data-bind="textNodeAttribute: [ $data._addedBy(), 'name' ]"></a></small>
+        <small><span data-bind="htmlTimeAgo: $data.added.timestamp()"></span> by <a data-bind="textNodeAttribute: [ $data.added._by(), 'name' ]"></a></small>
       </blockquote>
     </div>
 

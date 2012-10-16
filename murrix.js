@@ -215,48 +215,59 @@ io.sockets.on("connection", function(client)
 
   
   /* Node API */
-  client.on("save", function(data, callback)
+  client.on("saveNode", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.save!");
+      console.log("No callback supplied for nodeManager.saveNode!");
       return;
     }
 
-    nodeManager.save(client.handshake.session, data, callback);
+    nodeManager.saveNode(client.handshake.session, data, callback);
   });
 
-  client.on("createFile", function(data, callback)
+  client.on("saveItem", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.createFile!");
+      console.log("No callback supplied for nodeManager.saveItem!");
       return;
     }
 
-    nodeManager.createFile(client.handshake.session, uploadManager, data.name, data.uploadId, data.parentId, callback);
+    nodeManager.saveItem(client.handshake.session, data, callback);
   });
 
-  client.on("comment", function(data, callback)
+  client.on("createFileItem", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.comment!");
+      console.log("No callback supplied for nodeManager.createFileItem!");
       return;
     }
 
-    nodeManager.comment(client.handshake.session, data.nodeId, data.text, callback);
+    nodeManager.createFileItem(client.handshake.session, uploadManager, data.name, data.uploadId, data.parentId, callback);
   });
 
-  client.on("addPositions", function(data, callback)
+  client.on("commentNode", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.addPositions!");
+      console.log("No callback supplied for nodeManager.commentNode!");
       return;
     }
 
-    nodeManager.addPositions(client.handshake.session, data.nodeId, data.positionList, callback);
+    nodeManager.commentNode(client.handshake.session, data.nodeId, data.text, callback);
+  });
+
+  client.on("commentItem", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for nodeManager.commentItem!");
+      return;
+    }
+
+    nodeManager.commentItem(client.handshake.session, data.nodeId, data.text, callback);
   });
 
   client.on("find", function(data, callback)
@@ -267,7 +278,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    nodeManager.find(client.handshake.session, data, callback);
+    nodeManager.find(client.handshake.session, data.query, data.options, callback);
   });
 
   client.on("count", function(data, callback)
@@ -278,7 +289,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    nodeManager.count(client.handshake.session, data, callback);
+    nodeManager.count(client.handshake.session, data.query, data.options, callback);
   });
 
   client.on("distinct", function(data, callback)
@@ -289,18 +300,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    nodeManager.distinct(client.handshake.session, data, callback);
-  });
-
-  client.on("findPositions", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for nodeManager.addPositions!");
-      return;
-    }
-
-    nodeManager.findPositions(client.handshake.session, data, callback);
+    nodeManager.distinct(client.handshake.session, data.query, data.options, callback);
   });
 
 

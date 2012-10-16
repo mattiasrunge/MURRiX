@@ -25,7 +25,7 @@ var MapModel = function(parentModel)
 
   self.markers = [];
 
-  parentModel.nodeModel.fileNodes.subscribe(function(value)
+  parentModel.nodeModel.items.subscribe(function(value)
   {
     console.log("map sub");
 
@@ -38,11 +38,11 @@ var MapModel = function(parentModel)
 
     for (var n = 0; n < value.length; n++)
     {
-      if (typeof value[n].position == "object")
+      if (typeof value[n].where == "object")
       {
-        console.log(value[n].name(), value[n].position.latitude(), value[n].position.longitude());
+        console.log(value[n].name(), value[n].where.latitude(), value[n].where.longitude());
         self.markers.push(new google.maps.Marker({
-          position: new google.maps.LatLng(value[n].position.latitude(), value[n].position.longitude()),
+          position: new google.maps.LatLng(value[n].where.latitude(), value[n].where.longitude()),
           map: self.map,
           title: value[n].name()
         }));

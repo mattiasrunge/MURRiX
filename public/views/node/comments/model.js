@@ -42,7 +42,7 @@ var CommentsModel = function(parentModel)
       nodeData.comments = [];
     }
 
-    murrix.server.emit("comment", { nodeId: parentModel.node()._id(), text: self.commentText() }, function(error, nodeData)
+    murrix.server.emit("commentNode", { nodeId: parentModel.node()._id(), text: self.commentText() }, function(error, nodeData)
     {
       self.commentLoading(false);
 

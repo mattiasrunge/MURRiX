@@ -116,7 +116,7 @@ var SearchModel = function(parentModel)
 
     if (self.resultCount() > 0)
     {
-      murrix.server.emit("find", { name: { $regex: ".*" + self.query() + ".*", $options: "-i" }, $limit: self.itemsPerPage, $skip: skip }, function(error, nodeDataList)
+      murrix.server.emit("find", { query: { name: { $regex: ".*" + self.query() + ".*", $options: "-i" } }, options: { collection: "nodes", limit: self.itemsPerPage, skip: skip } }, function(error, nodeDataList)
       {
         if (error)
         {
@@ -156,7 +156,7 @@ var SearchModel = function(parentModel)
 
     if (self.query() !== "")
     {
-      murrix.server.emit("count", { name: { $regex: ".*" + self.query() + ".*", $options: "-i" } }, function(error, count)
+      murrix.server.emit("count", { query: { name: { $regex: ".*" + self.query() + ".*", $options: "-i" } }, options: "nodes" }, function(error, count)
       {
         if (error)
         {

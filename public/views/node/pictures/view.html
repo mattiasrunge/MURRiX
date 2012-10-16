@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <ul class="thumbnails" data-bind="foreach: nodeModel.fileNodes">
+    <ul class="thumbnails" data-bind="foreach: nodeModel.items">
       <li class="">
         <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecond: [ 'pictures', $data._id() ], event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
           <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
