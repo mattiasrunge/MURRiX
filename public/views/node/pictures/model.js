@@ -31,22 +31,21 @@ var PicturesModel = function(parentModel)
       return;
     }
 
-    murrix.server.emit("createFileItem", { name: self.uploadedFiles[index].name, uploadId: self.uploadedFiles[index].uploadId, parentId: self.uploadedFiles[index].parentId }, function(error, fileNodeData, parentNodeData)
+    murrix.server.emit("createFileItem", { name: self.uploadedFiles[index].name, uploadId: self.uploadedFiles[index].uploadId, parentId: self.uploadedFiles[index].parentId }, function(error, itemData)
     {
       if (error)
       {
         console.log(self.uploadedFiles);
         console.log(error);
-        console.log("Failed to save file node!");
+        console.log("Failed to save file item!");
         return;
       }
 
-      console.log("Saved node!");
-      var fileNode = murrix.cache.addNodeData(fileNodeData);
-      murrix.cache.addNodeData(parentNodeData); // TODO: Is there any point to this?
+      console.log("Saved item!");
+      var item = murrix.cache.addItemData(itemData);
 
       // TODO: this may be a hack...
-      murrix.model.nodeModel.items.push(fileNode);
+      murrix.model.nodeModel.items.push(item);
 
       saveFile(index + 1);
     });

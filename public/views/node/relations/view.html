@@ -1,11 +1,15 @@
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.relationsModel.show, if: nodeModel.node">
-  <div class="main-overlay-content">
-    <div class="page-header">
-      <a class="btn btn-primary pull-right" href="#" data-bind="attr: { 'href' : '#node:' + nodeModel.node().id() }">Close</a>
+<div class="main-overlay" data-bind="slideVisible: nodeModel.relationsModel.show">
+  <div class="main-overlay-content" data-bind="if: nodeModel.node">
 
-      <h1>Relations</h1>
+    <div class="navbar navbar-color navbar-inverse">
+      <div class="navbar-inner">
+        <span class="brand" style="padding-left: 35px;">Relations</span>
+        <ul class="nav pull-right">
+          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+      </div>
     </div>
 
   </div>
-  <div class="well sidebar-nav-background"></div>
+  <div class="main-overlay-background"></div>
 </div>

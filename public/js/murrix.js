@@ -6,6 +6,7 @@ murrix.cache = new function()
   var self = this;
 
   self.nodes = {};
+  self.items = {};
 
   self.addNodeData = function(nodeData)
   {
@@ -18,7 +19,7 @@ murrix.cache = new function()
     {
       console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
 
-      self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData, NodeMappingInternal);
+      self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData);
 
       if (self.nodes[nodeData._id].comments)
       {
@@ -61,6 +62,60 @@ murrix.cache = new function()
     return self.nodes[nodeData._id];
   };
 
+  self.addItemData = function(itemData)
+  {
+    if (itemData === false)
+    {
+      return false;
+    }
+
+    if (!self.items[itemData._id])
+    {
+      console.log("Could not find mapped index, item is not cached, id " + itemData._id);
+
+      self.items[itemData._id] = ko.mapping.fromJS(itemData);
+
+      if (self.items[itemData._id].comments)
+      {
+        self.items[itemData._id].comments.subscribe(function(value)
+        {
+          value.sort(function(a, b)
+          {
+            return b.added.timestamp() - a.added.timestamp();
+          });
+        });
+
+        self.items[itemData._id].comments.valueHasMutated(); // Force sort!
+      }
+    }
+    else
+    {
+      console.log("Item " + itemData._id + " already cached updating cache...");
+
+      var hassubscribed = self.items[itemData._id].comments ? true : false;
+
+      ko.mapping.fromJS(itemData, self.items[itemData._id]);
+
+      if (!hassubscribed)
+      {
+        if (self.items[itemData._id].comments)
+        {
+          self.items[itemData._id].comments.subscribe(function(value)
+          {
+            value.sort(function(a, b)
+            {
+              return b.added.timestamp() - a.added.timestamp();
+            });
+          });
+
+          self.items[itemData._id].comments.valueHasMutated(); // Force sort!
+        }
+      }
+    }
+
+    return self.items[itemData._id];
+  };
+
   self.getNodes = function(idList, callback)
   {
     var nodeList = {};
@@ -72,7 +127,7 @@ murrix.cache = new function()
       {
         nodeList[idList[n]] = self.nodes[idList[n]];
       }
-            else
+      else
       {
         idRequestList.push(idList[n]);
       }
@@ -98,6 +153,46 @@ murrix.cache = new function()
       }
 
       callback(null, nodeList);
+    });
+  };
+
+  self.getItems = function(idList, callback)
+  {
+    var itemList = {};
+    var idRequestList = [];
+
+    for (var n = 0; n < idList.length; n++)
+    {
+      if (self.items[idList[n]])
+      {
+        itemList[idList[n]] = self.items[idList[n]];
+      }
+            else
+      {
+        idRequestList.push(idList[n]);
+      }
+    }
+
+    if (idRequestList.length === 0)
+    {
+      callback(null, itemList);
+      return;
+    }
+
+    murrix.server.emit("find", { query: { _id: { $in: idRequestList } }, options: "items" }, function(error, itemDataList)
+    {
+      if (error)
+      {
+        callback(error, []);
+        return;
+      }
+
+      for (var id in itemDataList)
+      {
+        itemList[id] = self.addItemData(itemDataList[id]);
+      }
+
+      callback(null, itemList);
     });
   };
 };
@@ -322,37 +417,3 @@ murrix.updatePath = function(pathString, pathObservable)
 
   return result;
 };
-
-
-
-
-var NodeMappingInternal = {
-  description: {
-    create: function(options)
-    {
-      options.parent.descriptionEditing = ko.observable(false);
-      options.parent.descriptionOriginal = ko.observable(options.data);
-
-      return ko.observable(options.data);
-    }
-  },
-  name: {
-    create: function(options)
-    {
-      options.parent.nameEditing = ko.observable(false);
-      options.parent.nameOriginal = ko.observable(options.data);
-
-      return ko.observable(options.data);
-    }
-  },
-  type: {
-    create: function(options)
-    {
-      options.parent.typeEditing = ko.observable(false);
-      options.parent.typeOriginal = ko.observable(options.data);
-
-      return ko.observable(options.data);
-    }
-  }
-};
-

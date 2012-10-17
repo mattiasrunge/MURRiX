@@ -89,23 +89,24 @@ $(function()
       $(element).attr("src", "img/120x120_spinner.gif");
 
 
-      murrix.cache.getNodes([id ], function(error, nodeList)
+      murrix.cache.getItems([ id ], function(error, itemList)
       {
         if (error)
         {
-          $(element).text(error);
+          $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+          console.log(error);
           return;
         }
 
-        if (nodeList[id])
+        if (itemList[id])
         {
-          if (!nodeList[id]._profilePicture || !nodeList[id]._profilePicture())
+          if (!itemList[id]._profilePicture || !itemList[id]._profilePicture())
           {
             $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
             return;
           }
 
-          var src = "/preview?id=" + nodeList[id]._profilePicture() + "&width=" + width + "&height=" + height + "&square=" + square;
+          var src = "/preview?id=" + itemList[id]._profilePicture() + "&width=" + width + "&height=" + height + "&square=" + square;
 
           var image = new Image();
 
