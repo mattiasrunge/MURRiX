@@ -1,6 +1,23 @@
 
 $(function()
 {
+  ko.bindingHandlers.ifset = {
+    update: function(element, valueAccessor)
+    {
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      $(element).toggle(typeof value !== 'undefined' && value === true);
+    }
+  };
+
+  ko.bindingHandlers.ifnotset = {
+    update: function(element, valueAccessor)
+    {
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      $(element).toggle(typeof value === 'undefined' || value !== true);
+    }
+  };
+  
+  
   /* Knockout visibility changer (fading) handler  */
   ko.bindingHandlers.fadeVisible = {
     init: function(element, valueAccessor)
@@ -46,6 +63,12 @@ $(function()
       var value = valueAccessor();
       var params = ko.utils.unwrapObservable(value);
 
+      if (params[0] === null ||  params[0] === "")
+      {
+        $(element).text("Unknown");
+        return;
+      }
+      
       $(element).text("Loading " + params[1] + "...");
 
       murrix.cache.getNodes([ params[0] ], function(error, nodeList)
@@ -80,33 +103,33 @@ $(function()
       var height = params[2] || 0;
       var square = params[3] || 0;
 
-      if (!id)
+      if (!id || id === null || id === "")
       {
+        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
         console.log("No id given to srcNodeProfilePicture");
         return;
       }
 
       $(element).attr("src", "img/120x120_spinner.gif");
 
-
-      murrix.cache.getItems([ id ], function(error, itemList)
+      murrix.cache.getNodes([ id ], function(error, nodeList)
       {
         if (error)
         {
           $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
-          console.log(error);
+          console.log("error received from the server: " + error);
           return;
         }
 
-        if (itemList[id])
+        if (nodeList[id])
         {
-          if (!itemList[id]._profilePicture || !itemList[id]._profilePicture())
+          if (!nodeList[id]._profilePicture || !nodeList[id]._profilePicture())
           {
             $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
             return;
           }
 
-          var src = "/preview?id=" + itemList[id]._profilePicture() + "&width=" + width + "&height=" + height + "&square=" + square;
+          var src = "/preview?id=" + nodeList[id]._profilePicture() + "&width=" + width + "&height=" + height + "&square=" + square;
 
           var image = new Image();
 

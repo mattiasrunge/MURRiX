@@ -186,6 +186,7 @@ murrix.cache = new function()
         callback(error, []);
         return;
       }
+      console.log(itemDataList);
 
       for (var id in itemDataList)
       {

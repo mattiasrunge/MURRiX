@@ -161,7 +161,7 @@ var NodeModel = function(parentModel)
 
     if (self.node())
     {
-      murrix.server.emit("find", { query: { _parents: self.node()._id(), what: "file" }, options: "items" }, function(error, nodeDataList)
+      murrix.server.emit("find", { query: { _parents: self.node()._id(), what: "file" }, options: "items" }, function(error, itemDataList)
       {
         if (error)
         {
@@ -176,20 +176,20 @@ var NodeModel = function(parentModel)
         }
 
         var count = 0;
-        var nodeList = [];
+        var itemList = [];
 
-        for (var id in nodeDataList)
+        for (var id in itemDataList)
         {
-          nodeList.push(murrix.cache.addNodeData(nodeDataList[id]));
+          itemList.push(murrix.cache.addItemData(itemDataList[id]));
           count++;
         }
 
-        nodeList.sort(function(a, b)
+        itemList.sort(function(a, b)
         {
           return (b.when && a.when) ? a.when.timestamp() - b.when.timestamp() : 0;
         });
 
-        self.items(nodeList);
+        self.items(itemList);
 
         console.log("NodeModel: Found " + count + " items!");
 
@@ -320,6 +320,13 @@ var NodeModel = function(parentModel)
       nodeData.tags = [];
     }
 
+    if (murrix.inArray(self.tagName(), nodeData.tags))
+    {
+      self.tagLoading(false);
+      self.tagErrorText("Can not save multiple tags with the same name");
+      return;
+    }
+    
     nodeData.tags.push(self.tagName());
 
     murrix.server.emit("saveNode", nodeData, function(error, nodeData)
@@ -482,6 +489,38 @@ var NodeModel = function(parentModel)
   self.dragOver = function(element, event)
   {
   
+  };
+
+  self.publicLoading = ko.observable(false);
+  
+  self.changePublic = function(public, a, b, c, d)
+  {
+    self.publicLoading(true);
+  
+    var nodeData = ko.mapping.toJS(self.node);
+
+    if (public)
+    {
+      nodeData.public = true;
+    }
+    else
+    {
+      nodeData.public = false;
+    }
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.publicLoading(false);
+    
+      if (error)
+      {
+        console.log(error);
+        alert("Could not make node " + (public ? "public" : "private") + "!");
+        return;
+      }
+
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+    });
   };
   
   /* Define all sub views */

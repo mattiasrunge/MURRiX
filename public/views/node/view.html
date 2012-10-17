@@ -62,15 +62,17 @@
           <span class="label label-inverse"><a href="#" data-bind="text: $data, attr: { href: '#search:' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a></span>
         <!-- /ko -->
 
-        <button rel="tooltip" title="Edit tags" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button>
+       
       </li>
 
-      <li>
-
-
-
-      </li>
     </ul>
+
+    <div class="modal-footer" style="position: absolute; left: 0px; right: 0px; bottom: 0px;">
+      <button rel="tooltip" title="Edit accesses" class="btn btn-link btn-mini pull-left" href="#editAccessModal" data-toggle="modal">Edit access</button>
+      <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Make public" class="btn btn-link btn-mini pull-left">Make public</button>
+      <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Make private" class="btn btn-link btn-mini pull-left" style="margin: 0px;">Make private</button>
+      <button rel="tooltip" title="Edit tags" class="btn btn-link btn-mini pull-left" href="#editTagsModal" data-toggle="modal">Edit tags</button>
+    </div>
   </div>
   
   <div class="sidebar-nav-background"></div>
@@ -94,7 +96,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
+    <p class="pull-left text-error" data-bind="visible: nodeModel.tagErrorText() != '', text: nodeModel.tagErrorText"></p>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
   </div>
 </div>
