@@ -37,10 +37,10 @@
           </li>
         </ul>
         
-        <div class="divider-vertical pull-right" data-bind="if: userModel.currentUserNode"></div>
+        <div class="divider-vertical pull-right" data-bind="visible: userModel.currentUserNode"></div>
             
         <!-- The drop down menu -->
-        <ul class="nav pull-right" data-bind="if: userModel.currentUserNode">
+        <ul class="nav pull-right" data-bind="visible: userModel.currentUserNode">
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
               Create new
