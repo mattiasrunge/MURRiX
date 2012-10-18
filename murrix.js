@@ -6,6 +6,7 @@ var url = require('url');
 var io = require('socket.io').listen(httpServer);
 var fs = require('fs');
 var path = require('path');
+var sha1 = require('sha1');
 var mongo = require('mongodb');
 var ObjectID = require('mongodb').ObjectID;
 var Session = require('./lib/session').Session;
@@ -45,6 +46,54 @@ mongoDb.open(function(error, mongoDb)
   }
 
   console.log("We are connected to mongo DB");
+
+  /* Check if the admin user exists */
+  nodeManager._findOne(null, { "user.username": "admin", type: "person" }, "nodes", function(error, nodeData)
+  {
+    if (error)
+    {
+      console.log(error);
+      exit(1);
+    }
+
+    if (nodeData === null)
+    {
+      console.log("Could not find admin user!");
+
+      var nodeData = {};
+
+      nodeData.name = "Administrator";
+      nodeData.type = "person";
+      nodeData.added = { timestamp: MurrixUtils.timestamp(), _by: false };
+      nodeData.modified = nodeData.added;
+      nodeData.description = "";
+      nodeData.comments = [];
+      nodeData._admins = [];
+      nodeData._readers = [];
+      nodeData.public = false;
+      nodeData.tags = [];
+      nodeData.specific = {};
+      nodeData.user = {};
+      nodeData.user.username = "admin";
+      nodeData.user.password = sha1("password");
+      nodeData.user._groups = [];
+
+      nodeManager._saveNode(nodeData, function(error, nodeData)
+      {
+        if (error)
+        {
+          console.log(error);
+          exit(1);
+        }
+
+        console.log("Admin user created!");
+      });
+    }
+    else
+    {
+      console.log("Admin user found!");
+    }
+  });
 });
 
 /* Start to listen to HTTP */

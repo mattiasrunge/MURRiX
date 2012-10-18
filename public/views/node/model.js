@@ -454,6 +454,12 @@ var NodeModel = function(parentModel)
   self.dragDrop = function(element, event)
   {
     self.showDrop(false);
+
+    if (event.originalEvent.dataTransfer.getData("id") === "")
+    {
+      return;
+    }
+    
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._profilePicture = event.originalEvent.dataTransfer.getData("id");

@@ -1,16 +1,16 @@
 <div class="sidebar-nav" data-bind="fadeVisible: nodeModel.show, if: nodeModel.node" style="border-left: 1px solid #252525; border-right: 1px solid #252525;">
 
   <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
-    <div style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()">
+    <div draggable="false" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()">
       <br/>
       <br/>
       <br/>
       Drop here
     </div>
 
-    <img class="" src="img/profile_picture_overlay.png" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px;">
+    <img draggable="false" class="" src="img/profile_picture_overlay.png" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px;">
 
-    <img src="" alt="" style="width: 250px; height: 250px;" data-bind="if: nodeModel.node(), srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
+    <img draggable="false" src="" alt="" style="width: 250px; height: 250px;" data-bind="if: nodeModel.node(), srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
   </div>
           
   <div class="sidebar-nav-content">
@@ -101,6 +101,29 @@
   </div>
 </div>
 
+<div class="modal" id="editAccessModal" tabindex="-1" role="dialog" aria-labelledby="editAccessModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="editAccessModalLabel">Edit accesses</h3>
+  </div>
+  <div class="modal-body">
+    <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px">
+      <input placeholder="Group name" type="text" name="groupName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.groupLoading, value: nodeModel.groupName" data-provide="typeahead"/>
+    </form>
+
+    <div data-bind="foreach: nodeModel.node().tags">
+      <span class="label label-inverse" style="display: inline-block;">
+        <span data-bind="text: $data"></span>&nbsp;&nbsp;
+        <a href="#" style="color: red;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
+      </span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: nodeModel.tagErrorText() != '', text: nodeModel.tagErrorText"></p>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+
 <form class="modal" id="createAlbumModal" tabindex="-1" role="dialog" aria-labelledby="createAlbumModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="album">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -149,10 +172,10 @@
   </div>
 </form>
 
-<form class="modal" id="creatCameraModal" tabindex="-1" role="dialog" aria-labelledby="creatCameraModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="camera">
+<form class="modal" id="createCameraModal" tabindex="-1" role="dialog" aria-labelledby="createCameraModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="camera">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="creatCameraModalLabel">Create a camera</h3>
+    <h3 id="createCameraModalLabel">Create a camera</h3>
   </div>
   <div class="modal-body">
       <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.createLoading, value: nodeModel.createName"/>
@@ -165,10 +188,10 @@
   </div>
 </form>
 
-<form class="modal" id="creatVehicleModal" tabindex="-1" role="dialog" aria-labelledby="creatVehicleModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="camera">
+<form class="modal" id="createVehicleModal" tabindex="-1" role="dialog" aria-labelledby="createVehicleModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="camera">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="creatVehicleModalLabel">Create a vehicle</h3>
+    <h3 id="createVehicleModalLabel">Create a vehicle</h3>
   </div>
   <div class="modal-body">
       <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.createLoading, value: nodeModel.createName"/>
