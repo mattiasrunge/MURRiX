@@ -1,6 +1,16 @@
 # About
 
-TODO
+MURRiX is a specialized Content Management System. The intention is to have a tool where lives can be documented. MURRiX enables storing and organizing of photos, written tests, events etc.
+All items in the database can be connected to people, things and should be positioned geographically as well as in time.
+
+The aim is to visualize all this information in a way that is easy to understand and use. Photos and other content should always be accessible and not just stored away in a box somewhere where they are never looked at. By recording content from lives in a family a repository with the family history will be created where everyone in the family can view and add to the content.
+
+Data is stored and represented by nodes and items. Nodes are things like locations, persons, cars, albums, cameras etc. A node can have several items connected to it in different ways. A person can be set as the creator of a photo, a camera as the device with which a photo was taken and so forth. An item should, if applicable, always have a position in both space and time. Keywords that represent an item are “who”, “with”, “when” and “where”. Examples of items are photos, logbook entries, events such as birth, death etc.
+
+The main use case is for a family to share their common history and lives, a repository for pictures and a family tree. But MURRiX could also be used only as an online photo album if so desired.
+
+MURRiX tries to leverage the latest technologies available and relies heavily on HTML5 which makes a newer browser a requirement. Javascript is used throughout the application, MongoDB as database, Node.js as backend and in the browser.
+
 
 
 ## How to install
@@ -29,3 +39,4 @@ node murrix
 * [JSHint](http://www.jshint.com/)
 * [Exiftool](http://owl.phy.queensu.ca/~phil/exiftool/)
 * [FFmpeg](http://ffmpeg.org/)
+* [Google Maps](https://maps.google.se/)
