@@ -1,3 +1,45 @@
+<div class="sidebar-nav" data-bind="fadeVisible: !nodeModel.show()">
+
+  <div style="position: relative; width: 250px; height: 250px; z-index: 100">
+    <img draggable="false" class="" src="img/profile_picture_overlay.png" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px;">
+
+    <img draggable="false" src="http://placekitten.com/g/250/250" alt="" style="width: 250px; height: 250px;"/>
+  </div>
+
+  <div class="sidebar-nav-content">
+    <ul class="nav nav-list">
+
+      <li data-bind="css: { 'active': welcomeModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefFirstPrimary: welcomeModel.show() ? ' ' : 'welcome'">
+          <i class="icon-home"></i> Welcome
+        </a>
+      </li>
+
+      <li data-bind="css: { 'active': newsModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
+          <i class="icon-bullhorn"></i> News
+        </a>
+      </li>
+
+      <li data-bind="css: { 'active': searchModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefFirstPrimary: searchModel.show() ? ' ' : 'search'">
+          <i class="icon-search"></i> Search
+        </a>
+      </li>
+
+      <li data-bind="css: { 'active': adminModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefFirstPrimary: adminModel.show() ? ' ' : 'admin'">
+          <i class="icon-lock"></i> Administration
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+
+  <div class="sidebar-nav-background"></div>
+</div>
+
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container-fluid">
@@ -10,13 +52,13 @@
         <ul class="nav pull-right">
           <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-              <span data-bind="ifnot: userModel.currentUserNode">Sign In</span>
-              <span data-bind="if: userModel.currentUserNode, text: userModel.currentUserNode().name"></span>
+              <span data-bind="ifnot: userModel.currentUser">Sign In</span>
+              <span data-bind="if: userModel.currentUser, text: userModel.currentUser().name"></span>
               <strong class="caret"></strong>
             </a>
             <div class="dropdown-menu">
               
-              <form class="" data-bind="submit: userModel.loginSubmit, visible: !userModel.currentUserNode()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+              <form class="" data-bind="submit: userModel.loginSubmit, visible: !userModel.currentUser()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
                 <input placeholder="Username" id="inputUsername" style="margin-bottom: 15px;" type="text" name="user[inputUsername]" size="30" data-bind="hasfocus: userModel.usernameFocused, disable: userModel.loading, value: userModel.inputUsername"/>
                 <input placeholder="Password" id="inputPassword" style="margin-bottom: 15px;" type="password" name="user[inputPassword]" size="30" data-bind="disable: userModel.loading, value: userModel.inputPassword"/>
                 <input id="inputRemember" style="float: left; margin-right: 10px;" type="checkbox" name="user[inputRemember]" value="1" data-bind="disable: userModel.loading, checked: userModel.inputRemember"/>
@@ -26,7 +68,7 @@
                 <div data-bind="visible: userModel.errorText() != '', text: userModel.errorText" style="margin-bottom: 15px;"></div>
               </form>
               
-              <div data-bind="visible: userModel.currentUserNode">
+              <div data-bind="visible: userModel.currentUser">
                 <a href="#admin" data-bind="if: adminModel.accessable">Administration</a>
                 <a href="#user">Profile</a>
                 <a href="#userChangePasswordModal" data-toggle="modal">Change password</a>
@@ -37,10 +79,10 @@
           </li>
         </ul>
         
-        <div class="divider-vertical pull-right" data-bind="visible: userModel.currentUserNode"></div>
+        <div class="divider-vertical pull-right" data-bind="visible: userModel.currentUser"></div>
             
         <!-- The drop down menu -->
-        <ul class="nav pull-right" data-bind="visible: userModel.currentUserNode">
+        <ul class="nav pull-right" data-bind="visible: userModel.currentUser">
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
               Create new

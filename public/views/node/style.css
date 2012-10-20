@@ -7,6 +7,8 @@
   left: 20px;
   width: 250px;
   margin-bottom: 0px;
+  border-left: 1px solid #252525;
+  border-right: 1px solid #252525;
 }
 
 .sidebar-nav-background {

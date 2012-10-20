@@ -6,7 +6,6 @@ var url = require('url');
 var io = require('socket.io').listen(httpServer);
 var fs = require('fs');
 var path = require('path');
-var sha1 = require('sha1');
 var mongo = require('mongodb');
 var ObjectID = require('mongodb').ObjectID;
 var Session = require('./lib/session').Session;
@@ -47,51 +46,12 @@ mongoDb.open(function(error, mongoDb)
 
   console.log("We are connected to mongo DB");
 
-  /* Check if the admin user exists */
-  nodeManager._findOne(null, { "user.username": "admin", type: "person" }, "nodes", function(error, nodeData)
+  user.checkAdminUser(function(error)
   {
     if (error)
     {
       console.log(error);
       exit(1);
-    }
-
-    if (nodeData === null)
-    {
-      console.log("Could not find admin user!");
-
-      var nodeData = {};
-
-      nodeData.name = "Administrator";
-      nodeData.type = "person";
-      nodeData.added = { timestamp: MurrixUtils.timestamp(), _by: false };
-      nodeData.modified = nodeData.added;
-      nodeData.description = "";
-      nodeData.comments = [];
-      nodeData._admins = [];
-      nodeData._readers = [];
-      nodeData.public = false;
-      nodeData.tags = [];
-      nodeData.specific = {};
-      nodeData.user = {};
-      nodeData.user.username = "admin";
-      nodeData.user.password = sha1("password");
-      nodeData.user._groups = [];
-
-      nodeManager._saveNode(nodeData, function(error, nodeData)
-      {
-        if (error)
-        {
-          console.log(error);
-          exit(1);
-        }
-
-        console.log("Admin user created!");
-      });
-    }
-    else
-    {
-      console.log("Admin user found!");
     }
   });
 });
@@ -254,6 +214,72 @@ io.sockets.on("connection", function(client)
   client.on("changePassword", function(data, callback)
   {
     user.changePassword(client.handshake.session, data.password, function(error)
+    {
+      if (callback)
+      {
+        callback(error);
+      }
+    });
+  });
+
+  client.on("getGroups", function(data, callback)
+  {console.log(data);console.log(callback);
+    user.getGroups(client.handshake.session, function(error, groupDataList)
+    {
+      if (callback)
+      {
+        callback(error, groupDataList);
+      }
+    });
+  });
+
+  client.on("getUsers", function(data, callback)
+  {
+    user.getUsers(client.handshake.session, function(error, userDataList)
+    {
+      if (callback)
+      {
+        callback(error, userDataList);
+      }
+    });
+  });
+
+  client.on("saveGroup", function(data, callback)
+  {
+    user.saveGroup(client.handshake.session, data, function(error, groupData)
+    {
+      if (callback)
+      {
+        callback(error, groupData);
+      }
+    });
+  });
+
+  client.on("saveUser", function(data, callback)
+  {
+    user.saveUser(client.handshake.session, data, function(error, userData)
+    {
+      if (callback)
+      {
+        callback(error, userData);
+      }
+    });
+  });
+
+  client.on("removeGroup", function(data, callback)
+  {
+    user.removeGroup(client.handshake.session, data, function(error)
+    {
+      if (callback)
+      {
+        callback(error);
+      }
+    });
+  });
+
+  client.on("removeUser", function(data, callback)
+  {
+    user.removeUser(client.handshake.session, data, function(error)
     {
       if (callback)
       {

@@ -1,56 +1,62 @@
-<div class="main-overlay-big" data-bind="fadeVisible: searchModel.show">
+<div class="main-overlay" data-bind="slideVisible: searchModel.show">
   <div class="main-overlay-content">
-    <div class="page-header">
-      <a class="btn btn-primary pull-right" href="#">Close</a>
 
-      <h1>Search</h1>
+    <div class="navbar navbar-color navbar-inverse">
+      <div class="navbar-inner">
+        <span class="brand" style="padding-left: 35px;">Search</span>
+        <ul class="nav pull-right">
+          <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+      </div>
     </div>
 
     <form class="well form-search" data-bind="submit: searchModel.searchSubmit">
       <div class="input-append">
         <input class="input-xxlarge search-query" type="text" data-bind="value: searchModel.queryInput"><button class="btn" type="submit">Search</button>
       </div>
+      <br/>
+      <br/>
+      <p data-bind="text: searchModel.resultCount() == 1 ? '1 match found.' : searchModel.resultCount() + ' matches found.'"></p>
     </form>
 
-    <h6 data-bind="text: searchModel.resultCount() == 1 ? '1 match found.' : searchModel.resultCount() + ' matches found.'"></h6>
-    
-    <div class="pagination" data-bind="visible: searchModel.pages().length > 1">
-      <ul>
+    <div class="well">
+      <div class="pagination" data-bind="visible: searchModel.pages().length > 1">
+        <ul>
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
+          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
-        <!-- ko foreach: searchModel.pages -->
-          <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
-        <!-- /ko -->
+          <!-- ko foreach: searchModel.pages -->
+            <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
+          <!-- /ko -->
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
 
-      </ul>
-    </div>
-
-    <p>
-      <div data-bind="foreach: searchModel.results">
-        <div>
-          <a data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a>
-        </div>
+        </ul>
       </div>
-    </p>
 
-    <div class="pagination" data-bind="visible: searchModel.pages().length > 1">
-      <ul>
+      <p>
+        <div data-bind="foreach: searchModel.results">
+          <div>
+            <a data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a>
+          </div>
+        </div>
+      </p>
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
+      <div class="pagination" data-bind="visible: searchModel.pages().length > 1">
+        <ul>
 
-        <!-- ko foreach: searchModel.pages -->
-          <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
-        <!-- /ko -->
+          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+          <!-- ko foreach: searchModel.pages -->
+            <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
+          <!-- /ko -->
 
-      </ul>
+          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+
+        </ul>
+      </div>
     </div>
-    
-  </div>
-  <div class="well sidebar-nav-background"></div>
-</div>
 
+  </div>
+  <div class="main-overlay-background"></div>
+</div>

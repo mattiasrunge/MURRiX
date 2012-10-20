@@ -9,7 +9,7 @@ var UserModel = function(parentModel)
   self.show = ko.computed(function() { return parentModel.path().primary().action === "user"; });
 
 
-  self.currentUserNode = ko.observable(false);
+  self.currentUser = ko.observable(false);
   self.groupNodeList = ko.observableArray([]);
   self.inputUsername = ko.observable("");
   self.inputPassword = ko.observable("");
@@ -38,7 +38,7 @@ var UserModel = function(parentModel)
       $.cookie("userinfo", null, { path : "/" });
 
       $(".dropdown.open .dropdown-toggle").dropdown("toggle");
-      self.currentUserNode(false);
+      self.currentUser(false);
     });
   };
 
@@ -47,11 +47,11 @@ var UserModel = function(parentModel)
     self.loading(true);
     self.errorText("");
 
-    murrix.server.emit("login", { username: self.inputUsername(), password: self.inputPassword() }, function(error, userNodeData)
+    murrix.server.emit("login", { username: self.inputUsername(), password: self.inputPassword() }, function(error, userData)
     {
       self.loading(false);
       
-      if (error || userNodeData === false)
+      if (error || userData === false)
       {
         self.usernameFocused(true);
         console.log("UserModel: Failed to login!");
@@ -74,39 +74,13 @@ var UserModel = function(parentModel)
 
       $(".dropdown.open .dropdown-toggle").dropdown("toggle");
       
-      self.currentUserNode(murrix.cache.addNodeData(userNodeData));
+      self.currentUser(ko.mapping.fromJS(userData));
     });
   };
 
-  self.currentUserNode.subscribe(function(node)
+  self.setInitialUser = function(user)
   {
-    self.groupNodeList.removeAll();
-
-    if (node === false)
-    {
-      return;
-    }
-
-//     node.getLinkedNodes([ "admin", "all", "read" ], function(resultCode, nodeIdList, nodeList)
-//     {
-//       if (resultCode != MURRIX_RESULT_CODE_OK)
-//       {
-//         console.log("UserModel: Got error while trying to fetch required nodes, resultCode = " + resultCode);
-//       }
-//       else if (nodeList.length > 0)
-//       {
-//         self.groupNodeList(nodeList);
-//       }
-//       else
-//       {
-//         console.log("UserModel: No groups found.");
-//       }
-//     });
-  });
-
-  self.setInitialUser = function(node)
-  {
-    self.currentUserNode(node);
+    self.currentUser(user);
   };
 
 

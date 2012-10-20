@@ -1,180 +1,206 @@
 
-var AdminModel = function(parentModel, initialUserNodeId)
+var AdminModel = function(parentModel)
 {
   var self = this;
 
-  self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
+  self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "admin"; });
+  self.show = ko.observable(false);
 
-
-  self.groupNodeList = ko.observableArray([]);
-  self.userNodeList = ko.observableArray([]);
-  self.accessable = ko.observable(false);
-
-  self.inputAddUserName = ko.observable("");
-  self.inputAddUserUsername = ko.observable("");
-  self.inputAddUserPassword = ko.observable("");
-  self.errorTextAddUser = ko.observable("");
-  self.errorTextSaveUser = ko.observable("");
-  
-  self.inputAddGroupName = ko.observable("");
-  self.errorTextAddGroup = ko.observable("");
-  self.errorTextSaveGroup = ko.observable("");
-  
-  self.loading = ko.observable(false);
-
-  
-  self.addUserSubmit = function()
+  parentModel.path().primary.subscribe(function(value)
   {
-    /*self.loading(true);
-    self.errorTextAddUser("");
-
-    var nodeData = {};
-
-    nodeData.attributes = {};
-    nodeData.type = "user";
-    nodeData.name = self.inputAddUserName();
-
-    nodeData.attributes.Username = self.inputAddUserUsername();
-    nodeData.attributes.Password = self.inputAddUserPassword();
-    
-    
-    $.murrix.module.db.createNode(nodeData, function(transactionId, resultCode, node)
+    if (self.show() !== (value.action === "admin"))
     {
-      self.loading(false);
-
-      if (resultCode != MURRIX_RESULT_CODE_OK)
-      {
-        console.log("AdminModel: Got error while trying to create node, resultCode = " + resultCode);
-        self.errorTextAddUser("Failed to add user, try again, resultCode" + resultCode);
-      }
-      else
-      {
-        self.inputAddUserName("");
-        self.inputAddUserUsername("");
-        self.inputAddUserPassword("");
-        $(".dropdown.open .dropdown-toggle").dropdown("toggle");
-
-        self.userNodeList.push(node);
-      }
-    });*/
-  };
-
-  self.addGroupSubmit = function()
-  {
-    /*self.loading(true);
-    self.errorTextAddGroup("");
-
-    var nodeData = {};
-
-    nodeData.attributes = {};
-    nodeData.type = "group";
-    nodeData.name = self.inputAddGroupName();
-
-
-    $.murrix.module.db.createNode(nodeData, function(transactionId, resultCode, node)
-    {
-      self.loading(false);
-
-      if (resultCode != MURRIX_RESULT_CODE_OK)
-      {
-        console.log("AdminModel: Got error while trying to create node, resultCode = " + resultCode);
-        self.errorTextAddGroup("Failed to add group, try again, resultCode" + resultCode);
-      }
-      else
-      {
-        self.inputAddGroupName("");
-        $(".dropdown.open .dropdown-toggle").dropdown("toggle");
-
-        self.groupNodeList.push(node);
-      }
-    });*/
-  };
-
-  self.saveUserSubmit = function(node)
-  {
-    //console.log(node.name());
-  };
-
-  self.userRemoveClicked = function(node)
-  {
-    //console.log(node.name());
-  };
-
-  self.saveGroupSubmit = function(node)
-  {
-    //console.log(node.name());
-  };
-
-  self.groupRemoveClicked = function(node)
-  {
-    //console.log(node.name());
-  };
-
-  self.loadUsersAndGroups = function()
-  {
-   /* console.log("AdminModel: Loading users and groups");
-
-    self.groupNodeList.removeAll();
-    self.userNodeList.removeAll();
-  
-    $.murrix.module.db.searchNodeIds({ types: [ "user", "group" ] }, function(transactionId, resultCode, nodeIdList)
-    {
-      if (resultCode != MURRIX_RESULT_CODE_OK)
-      {
-        console.log("AdminModel: Got error while trying to run query, resultCode = " + resultCode);
-      }
-      else if (nodeIdList.length > 0)
-      {
-        $.murrix.module.db.fetchNodesBuffered(nodeIdList, function(transactionId, resultCode, nodeList)
-        {
-          if (resultCode != MURRIX_RESULT_CODE_OK)
-          {
-            console.log("AdminModel: Got error while trying to run query, resultCode = " + resultCode);
-          }
-          else
-          {
-            for (var n = 0; n < nodeList.length; n++)
-            {
-              if (nodeList[n].type() === "user")
-              {
-                self.userNodeList.push(nodeList[n]);
-              }
-              else if (nodeList[n].type() === "group")
-              {
-                self.groupNodeList.push(nodeList[n]);
-              }
-            }
-          }
-        });
-      }
-      else
-      {
-        console.log("AdminModel: Found no users or groups");
-      }
-    });*/
-
-  };
-  
-  parentModel.userModel.currentUserNode.subscribe(function(node)
-  {
-//     self.accessable(false);
-//   
-//     if (node === false)
-//     {
-//       return;
-//     }
-// console.log(node);
-// console.log(node());
-// console.log(node().username);
-//     if (node().username() === "admin")
-//     {
-//       self.accessable(true);
-// 
-//       self.loadUsersAndGroups();
-//     }
+      self.show(value.action === "admin");
+    }
   });
 
+  self.users = ko.observableArray();
+  self.groups = ko.observableArray();
+
+  self.show.subscribe(function(value)
+  {
+    if (value)
+    {
+      self._loadGroups();
+      self._loadUsers();
+    }
+    else
+    {
+      self.users.removeAll();
+      self.groups.removeAll();
+    }
+  });
+
+  self._loadUsers = function()
+  {
+    self.users.removeAll();
+
+    murrix.server.emit("getUsers", {}, function(error, userDataList)
+    {
+      if (error)
+      {
+        console.log(error);
+        console.log("AdminModel: Failed to get users!");
+        return;
+      }
+
+      var count = 0;
+      var userList = [];
+
+      for (var id in userDataList)
+      {
+        userList.push(ko.mapping.fromJS(userDataList[id]));
+        count++;
+      }
+
+      userList.sort(function(a, b)
+      {
+        if (a.name() === b.name())
+        {
+          return 0;
+        }
+
+        return (a.name() < b.name()) ? -1 : 1;
+      });
+
+      self.users(userList);
+
+      console.log("AdminModel: Found " + count + " users!");
+    });
+  }
+  
+  self._loadGroups = function()
+  {
+    self.groups.removeAll();
+  
+    murrix.server.emit("getGroups", {}, function(error, groupDataList)
+    {
+      if (error)
+      {
+        console.log(error);
+        console.log("AdminModel: Failed to get groups!");
+        return;
+      }
+
+      var count = 0;
+      var groupList = [];
+
+      for (var id in groupDataList)
+      {
+        groupList.push(ko.mapping.fromJS(groupDataList[id]));
+        count++;
+      }
+
+      groupList.sort(function(a, b)
+      {
+        if (a.name() === b.name())
+        {
+          return 0;
+        }
+
+        return (a.name() < b.name()) ? -1 : 1;
+      });
+
+      self.groups(groupList);
+
+      console.log("AdminModel: Found " + count + " groups!");
+    });
+  };
+
+  self.groupSaveLoading = ko.observable(false);
+  self.groupSaveErrorText = ko.observable("");
+  self.groupSaveId = ko.observable(false);
+  self.groupSaveName = ko.observable("");
+  self.groupSaveDescription = ko.observable("");
+
+  self.groupSaveSubmit = function()
+  {
+    var groupData = {};
+
+    if (self.groupSaveId() !== false)
+    {
+      groupData._id = self.groupSaveId();
+    }
+    
+    groupData.name        = self.groupSaveName();
+    groupData.description = self.groupSaveDescription();
+
+    self.groupSaveErrorText("");
+
+    if (groupData.name === "")
+    {
+      self.groupSaveErrorText("Name is empty!");
+    }
+    else
+    {
+      self.groupSaveLoading(true);
+
+      murrix.server.emit("saveGroup", groupData, function(error, groupData)
+      {
+        self.groupSaveLoading(false);
+
+        if (error)
+        {
+          console.log("AdminModel: Failed to create group: " + error);
+          self.groupSaveErrorText("Failed to create group, maybe you don't have rights");
+          return;
+        }
+
+        self._loadGroups();
+        self._loadUsers();
+
+        $(".modal").modal('hide');
+      });
+    }
+  };
+
+
+  self.userSaveLoading = ko.observable(false);
+  self.userSaveErrorText = ko.observable("");
+  self.userSaveId = ko.observable(false);
+  self.userSaveName = ko.observable("");
+  self.userSaveUsername = ko.observable("");
+
+  self.userSaveSubmit = function()
+  {
+    var userData = {};
+
+    if (self.userSaveId() !== false)
+    {
+      userData._id = self.userSaveId();
+    }
+
+    userData.name = self.userSaveName();
+    userData.username = self.userSaveUsername();
+
+    self.userSaveErrorText("");
+
+    if (userData.name === "")
+    {
+      self.userSaveErrorText("Name is empty!");
+    }
+    else
+    {
+      self.userSaveLoading(true);
+
+      murrix.server.emit("saveUser", userData, function(error, userData)
+      {
+        self.userSaveLoading(false);
+
+        if (error)
+        {
+          console.log("AdminModel: Failed to create user: " + error);
+          self.userSaveErrorText("Failed to create user, maybe you don't have rights");
+          return;
+        }
+
+        self._loadGroups();
+        self._loadUsers();
+
+        $(".modal").modal('hide');
+      });
+    }
+  };
 };
