@@ -175,7 +175,7 @@ io.sockets.on("connection", function(client)
 
 
   /* Emit connection established event to client and supply the current user if any */
-  user.getUser(client.handshake.session, function(error, userNode)
+  user.getUser(client.handshake.session, function(error, userData)
   {
     if (error)
     {
@@ -184,18 +184,18 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    client.emit("connection_established", { userNode: userNode });
+    client.emit("connection_established", { userData: userData });
   });
 
 
   /* User API */
   client.on("login", function(data, callback)
   {
-    user.login(client.handshake.session, data.username, data.password, function(error, userNode)
+    user.login(client.handshake.session, data.username, data.password, function(error, userData)
     {
       if (callback)
       {
-        callback(error, userNode);
+        callback(error, userData);
       }
     });
   });
@@ -213,7 +213,7 @@ io.sockets.on("connection", function(client)
 
   client.on("changePassword", function(data, callback)
   {
-    user.changePassword(client.handshake.session, data.password, function(error)
+    user.changePassword(client.handshake.session, data.id, data.password, function(error)
     {
       if (callback)
       {
@@ -223,7 +223,7 @@ io.sockets.on("connection", function(client)
   });
 
   client.on("getGroups", function(data, callback)
-  {console.log(data);console.log(callback);
+  {
     user.getGroups(client.handshake.session, function(error, groupDataList)
     {
       if (callback)

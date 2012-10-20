@@ -32,9 +32,9 @@
 
           <div class="well" draggable="true" style="padding: 10px">
             <div class="pull-right">
-              <button rel="tooltip" title="Change password" class="btn btn-mini pull-right" href="#userChangePasswordModal" data-toggle="modal">Change password</button>
+              <button rel="tooltip" title="Change password" class="btn btn-mini btn-link pull-right" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Change password</button>
               <br/>
-              <button rel="tooltip" title="Connect person" class="btn btn-mini pull-right" href="#userFindPersonModal" data-toggle="modal">Connect person</button>
+              <button rel="tooltip" title="Connect person" class="btn btn-mini btn-link pull-right" href="#userFindPersonModal" data-toggle="modal">Connect person</button>
             </div>
             <img draggable="false" src="" alt="" style="width: 40px; height: 40px;" class="pull-left" data-bind="srcNodeProfilePicture: [ $data._person(), 40, 40, 1 ]"/>
             <div style="padding-left: 50px; font-weight: bold;" data-bind="text: $data.name"></div>
@@ -50,6 +50,22 @@
   </div>
   <div class="main-overlay-background"></div>
 </div>
+
+<form class="modal" id="adminChangePasswordModal" tabindex="-1" role="dialog" aria-labelledby="adminChangePasswordModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: adminModel.changePasswordSubmit">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="adminChangePasswordModalLabel">Change password</h3>
+  </div>
+  <div class="modal-body">
+      <input placeholder="Password" type="password" name="password1" style="width: 515px;" data-bind="hasfocus: true, disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword1"/>
+      <input placeholder="Repeat password" type="password" name="password2" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword2"/>
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: adminModel.changePasswordErrorText() != '', text: adminModel.changePasswordErrorText"></p>
+    <button data-bind="disable: adminModel.changePasswordLoading" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: adminModel.changePasswordLoading" class="btn btn-primary">Change</button>
+  </div>
+</form>
 
 <form class="modal" id="saveGroupModal" tabindex="-1" role="dialog" aria-labelledby="saveGroupModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: adminModel.groupSaveSubmit">
   <div class="modal-header">

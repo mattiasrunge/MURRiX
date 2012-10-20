@@ -203,4 +203,130 @@ var AdminModel = function(parentModel)
       });
     }
   };
+
+  self.changePasswordId = ko.observable(false);
+  self.changePasswordLoading = ko.observable(false);
+  self.changePasswordErrorText = ko.observable("");
+  self.changePasswordPassword1 = ko.observable("");
+  self.changePasswordPassword2 = ko.observable("");
+
+  self.changePasswordClicked = function(id)
+  {
+    self.changePasswordId(ko.utils.unwrapObservable(id));
+    return true;
+  }
+
+  self.changePasswordSubmit = function(form)
+  {
+    if (self.changePasswordPassword1() === "")
+    {
+      self.changePasswordErrorText("Password can not be empty");
+      return;
+    }
+
+    if (self.changePasswordPassword1() !== self.changePasswordPassword2())
+    {
+      self.changePasswordErrorText("Password do not match");
+      return;
+    }
+
+    self.changePasswordLoading(true);
+    self.changePasswordErrorText("");
+
+    var id = murrix.model.currentUser()._id();
+
+    if (self.changePasswordId() !== false)
+    {
+      id = self.changePasswordId();
+    }
+
+    murrix.server.emit("changePassword", { id: id, password: self.changePasswordPassword1() }, function(error)
+    {
+      self.changePasswordLoading(false);
+
+      if (error)
+      {
+        self.changePasswordErrorText("Failed to change password, please report this to the administrator");
+        return;
+      }
+
+      self.changePasswordPassword1("");
+      self.changePasswordPassword2("");
+      self.changePasswordErrorText("");
+      self.changePasswordId(false);
+
+      $(".modal").modal('hide');
+
+      $.cookie("userinfo", null, { path: "/" });
+    });
+  };
+
+
+  self.inputUsername = ko.observable("");
+  self.inputPassword = ko.observable("");
+  self.inputRemember = ko.observable(false);
+  self.usernameFocused = ko.observable(true);
+  self.errorText = ko.observable("");
+  self.loading = ko.observable(false);
+
+
+  self.signOutClicked = function()
+  {
+    self.loading(true);
+    self.errorText("");
+
+    murrix.server.emit("logout", { }, function(error)
+    {
+      self.loading(false);
+
+      if (error)
+      {
+        console.log("AdminModel: Failed to logout!");
+        self.errorText("Failed to sign out, try again");
+        return;
+      }
+
+      $.cookie("userinfo", null, { path : "/" });
+
+      $(".dropdown.open .dropdown-toggle").dropdown("toggle");
+      
+      murrix.model.setCurrentUserData(false);
+    });
+  };
+
+  self.loginSubmit = function()
+  {
+    self.loading(true);
+    self.errorText("");
+
+    murrix.server.emit("login", { username: self.inputUsername(), password: self.inputPassword() }, function(error, userData)
+    {
+      self.loading(false);
+
+      if (error || userData === false)
+      {
+        self.usernameFocused(true);
+        console.log("AdminModel: Failed to login!");
+        self.errorText("Failed to sign in, try again");
+        return;
+      }
+
+      if (self.inputRemember() === true)
+      {
+        $.cookie("userinfo", JSON.stringify({ username: self.inputUsername(), password: self.inputPassword() }), { expires: 365, path: '/' });
+      }
+      else
+      {
+        $.cookie("userinfo", null, { path: "/" });
+      }
+
+      self.inputUsername("");
+      self.inputPassword("");
+      self.inputRemember(false);
+
+      $(".dropdown.open .dropdown-toggle").dropdown("toggle");
+
+      murrix.model.setCurrentUserData(userData);
+    });
+  };
 };

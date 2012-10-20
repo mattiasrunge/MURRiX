@@ -52,37 +52,37 @@
         <ul class="nav pull-right">
           <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-              <span data-bind="ifnot: userModel.currentUser">Sign In</span>
-              <span data-bind="if: userModel.currentUser, text: userModel.currentUser().name"></span>
+              <span data-bind="ifnot: currentUser">Sign In</span>
+              <span data-bind="if: currentUser, text: currentUser().name"></span>
               <strong class="caret"></strong>
             </a>
             <div class="dropdown-menu">
               
-              <form class="" data-bind="submit: userModel.loginSubmit, visible: !userModel.currentUser()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
-                <input placeholder="Username" id="inputUsername" style="margin-bottom: 15px;" type="text" name="user[inputUsername]" size="30" data-bind="hasfocus: userModel.usernameFocused, disable: userModel.loading, value: userModel.inputUsername"/>
-                <input placeholder="Password" id="inputPassword" style="margin-bottom: 15px;" type="password" name="user[inputPassword]" size="30" data-bind="disable: userModel.loading, value: userModel.inputPassword"/>
-                <input id="inputRemember" style="float: left; margin-right: 10px;" type="checkbox" name="user[inputRemember]" value="1" data-bind="disable: userModel.loading, checked: userModel.inputRemember"/>
+              <form class="" data-bind="submit: adminModel.loginSubmit, visible: !currentUser()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+                <input placeholder="Username" id="inputUsername" style="margin-bottom: 15px;" type="text" name="user[inputUsername]" size="30" data-bind="hasfocus: adminModel.usernameFocused, disable: adminModel.loading, value: adminModel.inputUsername"/>
+                <input placeholder="Password" id="inputPassword" style="margin-bottom: 15px;" type="password" name="user[inputPassword]" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputPassword"/>
+                <input id="inputRemember" style="float: left; margin-right: 10px;" type="checkbox" name="user[inputRemember]" value="1" data-bind="disable: adminModel.loading, checked: adminModel.inputRemember"/>
                 <label class="string optional" for="inputRemember"> Remember me</label>
                 
-                <input data-bind="disable: userModel.loading" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
-                <div data-bind="visible: userModel.errorText() != '', text: userModel.errorText" style="margin-bottom: 15px;"></div>
+                <input data-bind="disable: adminModel.loading" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
+                <div data-bind="visible: adminModel.errorText() != '', text: adminModel.errorText" style="margin-bottom: 15px;"></div>
               </form>
               
-              <div data-bind="visible: userModel.currentUser">
+              <div data-bind="visible: currentUser">
                 <a href="#admin" data-bind="if: adminModel.accessable">Administration</a>
                 <a href="#user">Profile</a>
-                <a href="#userChangePasswordModal" data-toggle="modal">Change password</a>
-                <a href="#" data-bind="click: userModel.signOutClicked">Sign out</a>
+                <a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)">Change password</a>
+                <a href="#" data-bind="click: adminModel.signOutClicked">Sign out</a>
               </div>
               
             </div>
           </li>
         </ul>
         
-        <div class="divider-vertical pull-right" data-bind="visible: userModel.currentUser"></div>
+        <div class="divider-vertical pull-right" data-bind="visible: currentUser"></div>
             
         <!-- The drop down menu -->
-        <ul class="nav pull-right" data-bind="visible: userModel.currentUser">
+        <ul class="nav pull-right" data-bind="visible: currentUser">
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
               Create new

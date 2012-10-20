@@ -47,7 +47,6 @@
     {{#views/node/accesses/view.html}}
     {{views/node/overlay/view.html}}
     {{views/search/view.html}}
-    {{views/user/view.html}}
     {{views/admin/view.html}}
     {{views/welcome/view.html}}
     {{views/news/view.html}}
@@ -90,7 +89,6 @@
     <script src="views/node/overlay/model.js"></script>
     <script src="views/node/model.js"></script>
     <script src="views/search/model.js"></script>
-    <script src="views/user/model.js"></script>
     <script src="views/admin/model.js"></script>
     <script src="views/welcome/model.js"></script>
     <script src="views/news/model.js"></script>
@@ -124,7 +122,7 @@
 
         console.log("Successfully connected to MURRiX backend");
 
-        murrix.model.userModel.setInitialUser(murrix.cache.addNodeData(data.userNode));
+        murrix.model.setCurrentUserData(data.userData);
       });
 
     
