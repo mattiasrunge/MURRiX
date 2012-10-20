@@ -33,6 +33,20 @@ var AdminModel = function(parentModel)
     }
   });
 
+  parentModel.currentUser.subscribe(function(value)
+  {
+    if (self.show())
+    {
+      self._loadGroups();
+      self._loadUsers();
+    }
+    else
+    {
+      self.users.removeAll();
+      self.groups.removeAll();
+    }
+  });
+
   self._loadUsers = function()
   {
     self.users.removeAll();

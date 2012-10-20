@@ -135,18 +135,11 @@ var SearchModel = function(parentModel)
       });
     }
   };
-/*
-  parentViewModel.currentSubview.subscribe(function(newValue)
+
+  parentModel.currentUser.subscribe(function(value)
   {
-    if (newValue === "")
-    {
-      newValue = 0;
-    }
-  
-    self.currentPage(parseInt(newValue, 10));
-    self.showResults();
+    self.runQuery();
   });
-*/
 
   self.runQuery = function()
   {

@@ -213,21 +213,32 @@ var NodeModel = function(parentModel)
    * and a new node id has been set. It tries to cache
    * the node and set the primary node id observable.
    */
-  parentModel.path().primary.subscribe(function(primary)
+  parentModel.path().primary.subscribe(function(value)
   {
-    if (primary.args.length === 0)
+    self.loadNode();
+  });
+
+  parentModel.currentUser.subscribe(function(value)
+  {
+    self.node(false);
+    self.loadNode();
+  });
+  
+  self.loadNode = function()
+  {
+    if (parentModel.path().primary().args.length === 0)
     {
       console.log("NodeModel: No node id specified setting node to false!");
       self.node(false);
       return;
     }
 
-    var nodeId = primary.args[0];
+    var nodeId = parentModel.path().primary().args[0];
 
     console.log("NodeModel: Got nodeId = " + nodeId);
 
     /* Zero is not a valid id */
-    if (primary.action !== "node")
+    if (parentModel.path().primary().action !== "node")
     {
       console.log("NodeModel: Node not shown, setting node to false");
       self.node(false);
@@ -256,7 +267,7 @@ var NodeModel = function(parentModel)
       
       self.node(nodeList[nodeId]);
     });
-  });
+  };
 
 
 

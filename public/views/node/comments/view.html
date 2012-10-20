@@ -12,7 +12,7 @@
 
     <div class="row-fluid well" style="width: auto;">
       <div class="span2">
-        <img src="" alt="" style="width: 133px; height: 133px;" data-bind="if: userModel.currentUserNode(), srcNodeProfilePicture: [ userModel.currentUserNode() ? userModel.currentUserNode()._id() : null, 133, 133, 1 ]"/>
+        <img src="" alt="" style="width: 133px; height: 133px;" data-bind="if: currentUser(), srcNodeProfilePicture: [ currentUser() ? currentUser()._id() : null, 133, 133, 1 ]"/>
       </div>
       <blockquote class="span8" style="margin-bottom: 0px">
         <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.commentsModel.commentSubmit">

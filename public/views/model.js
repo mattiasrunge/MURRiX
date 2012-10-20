@@ -13,6 +13,7 @@ murrix.model = function()
     {
       if (userData !== false)
       {
+        murrix.cache.clear();
         self.currentUser(ko.mapping.fromJS(userData));
       }
     }
@@ -20,15 +21,17 @@ murrix.model = function()
     {
       if (userData === false)
       {
+        murrix.cache.clear();
         self.currentUser(userData);
       }
       else
       {
+        murrix.cache.clear();
         ko.mapping.fromJS(userData, self.currentUser);
       }
     }
   };
-    
+
   self.adminModel = new AdminModel(self);
   self.nodeModel = new NodeModel(self);
   self.searchModel = new SearchModel(self);
