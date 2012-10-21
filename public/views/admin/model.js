@@ -199,6 +199,28 @@ var AdminModel = function(parentModel)
   self.groupSaveName = ko.observable("");
   self.groupSaveDescription = ko.observable("");
 
+  self.groupEditClicked = function(element)
+  {
+    self.groupSaveId(element._id());
+    self.groupSaveName(element.name());
+    self.groupSaveDescription(element.description());
+    return true;
+  };
+
+  self.groupRemoveClicked = function(element)
+  {
+    murrix.server.emit("removeGroup", element._id(), function(error)
+    {
+      if (error)
+      {
+        console.log("AdminModel: Failed to remove group: " + error);
+        return;
+      }
+
+      self._loadGroups();
+    });
+  };
+  
   self.groupSaveSubmit = function()
   {
     var groupData = {};
@@ -234,6 +256,7 @@ var AdminModel = function(parentModel)
 
         self.groupSaveName("");
         self.groupSaveDescription("");
+        self.groupSaveId(false);
         self.groupSaveErrorText("");
 
         self._loadGroups();
@@ -250,6 +273,28 @@ var AdminModel = function(parentModel)
   self.userSaveName = ko.observable("");
   self.userSaveUsername = ko.observable("");
 
+  self.userEditClicked = function(element)
+  {
+    self.userSaveId(element._id());
+    self.userSaveName(element.name());
+    self.userSaveUsername(element.username());
+    return true;
+  };
+
+  self.userRemoveClicked = function(element)
+  {
+    murrix.server.emit("removeUser", element._id(), function(error)
+    {
+      if (error)
+      {
+        console.log("AdminModel: Failed to remove user: " + error);
+        return;
+      }
+
+      self._loadUsers();
+    });
+  };
+  
   self.userSaveSubmit = function()
   {
     var userData = {};
@@ -283,8 +328,9 @@ var AdminModel = function(parentModel)
           return;
         }
 
+        self.userSaveId(false);
         self.userSaveName("");
-        self.userSaveDescription("");
+        self.userSaveUsername("");
         self.userSaveErrorText("");
 
         self._loadUsers();
