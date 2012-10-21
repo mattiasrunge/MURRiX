@@ -111,31 +111,37 @@
       <input placeholder="Group name" type="text" id="groupAccessInput" name="groupAccessInput" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.groupAccessLoading, value: nodeModel.groupAccessName" data-provide="typesearch"/>
     </form>
 
-    <h4>Groups with read access</h4>
-    <table>
+    <h4>Groups with accesses</h4>
+    <table class="table table-condensed table-hover">
       <thead>
         <tr>
           <th>Name</th>
+          <th>&nbsp;</th>
         </tr>
       </thead>
-      <tbody data-bind="foreach: nodeModel.node()._readers">
-        <tr>
-          <td data-bind="textGroupAttribute: [ $data, 'name' ]"></td>
-        </tr>
-      </tbody>
-    </table>
+      <tbody>
 
-    <h4>Groups with administration access</h4>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
+      <!-- ko foreach: nodeModel.node()._admins -->
+        <tr class="info">
+          <td data-bind="textGroupAttribute: [ $data, 'name' ]"></td>
+          <td>
+            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove"><i class="icon-remove"></i> Remove</button>
+            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeReader"><i class="icon-arrow-down"></i> Remove admin access</button>
+          </td>
         </tr>
-      </thead>
-      <tbody data-bind="foreach: nodeModel.node()._admins">
+      <!-- /ko -->
+      
+      <!-- ko foreach: nodeModel.node()._readers -->
         <tr>
           <td data-bind="textGroupAttribute: [ $data, 'name' ]"></td>
+          <td>
+            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove"><i class="icon-remove"></i> Remove</button>
+            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin"><i class="icon-arrow-up"></i> Give admin access</button>
+          </td>
         </tr>
+      <!-- /ko -->
+
+      
       </tbody>
     </table>
 

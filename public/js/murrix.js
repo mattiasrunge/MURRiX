@@ -305,6 +305,31 @@ murrix.inArray = function(needle, haystack)
   return false;
 };
 
+murrix.removeFromArray = function(needle, haystack)
+{
+  var list = [];
+
+  for (var n = 0; n < haystack.length; n++)
+  {
+    if (haystack[n] !== needle)
+    {
+      list.push(haystack[n]);
+    }
+  }
+
+  return list;
+};
+
+murrix.addToArray = function(needle, haystack)
+{
+  if (!murrix.inArray(needle, haystack))
+  {
+    haystack.push(needle);
+  }
+
+  return haystack;
+};
+
 murrix.intval = function(value)
 {
   var intvalue = value;

@@ -125,7 +125,6 @@ $(function()
           }
         }
         
-        
         if (groupData)
         {
           $(element).text(groupData[params[1]]);

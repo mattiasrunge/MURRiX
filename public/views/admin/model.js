@@ -162,6 +162,10 @@ var AdminModel = function(parentModel)
           return;
         }
 
+        self.groupSaveName("");
+        self.groupSaveDescription("");
+        self.groupSaveErrorText("");
+
         self._loadGroups();
         self._loadUsers();
 
@@ -209,6 +213,11 @@ var AdminModel = function(parentModel)
           self.userSaveErrorText("Failed to create user, maybe you don't have rights");
           return;
         }
+
+        self.userSaveName("");
+        self.userSaveDescription("");
+        self.userSaveErrorText("");
+
 
         self._loadGroups();
         self._loadUsers();

@@ -323,6 +323,87 @@ var NodeModel = function(parentModel)
   {
     // Do nothing
   };
+
+  self.groupAccessRemove = function()
+  {
+    self.groupAccessLoading(true);
+    self.groupAccessErrorText("");
+
+    var nodeData = ko.mapping.toJS(self.node);
+
+    nodeData._readers = nodeData._readers || [];
+    nodeData._admins = nodeData._admins || [];
+
+    nodeData._readers = murrix.removeFromArray(this.toString(), nodeData._readers);
+    nodeData._admins = murrix.removeFromArray(this.toString(), nodeData._admins);
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.groupAccessLoading(false);
+
+      if (error)
+      {
+        self.groupAccessErrorText(error);
+        return;
+      }
+
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+    });
+  };
+
+  self.groupAccessMakeAdmin = function()
+  {
+    self.groupAccessLoading(true);
+    self.groupAccessErrorText("");
+
+    var nodeData = ko.mapping.toJS(self.node);
+
+    nodeData._readers = nodeData._readers || [];
+    nodeData._admins = nodeData._admins || [];
+
+    nodeData._readers = murrix.removeFromArray(this.toString(), nodeData._readers);
+    nodeData._admins = murrix.addToArray(this.toString(), nodeData._admins);
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.groupAccessLoading(false);
+
+      if (error)
+      {
+        self.groupAccessErrorText(error);
+        return;
+      }
+
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+    });
+  };
+
+  self.groupAccessMakeReader = function()
+  {
+    self.groupAccessLoading(true);
+    self.groupAccessErrorText("");
+
+    var nodeData = ko.mapping.toJS(self.node);
+
+    nodeData._readers = nodeData._readers || [];
+    nodeData._admins = nodeData._admins || [];
+
+    nodeData._readers = murrix.addToArray(this.toString(), nodeData._readers);
+    nodeData._admins = murrix.removeFromArray(this.toString(), nodeData._admins);
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.groupAccessLoading(false);
+
+      if (error)
+      {
+        self.groupAccessErrorText(error);
+        return;
+      }
+
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+    });
+  }
   
   $("#groupAccessInput").typesearch({
     limit: 20,
@@ -361,11 +442,8 @@ var NodeModel = function(parentModel)
 
       var nodeData = ko.mapping.toJS(self.node);
 
-      if (!nodeData._readers)
-      {
-        nodeData._readers = [];
-      }
-
+      nodeData._readers = nodeData._readers || [];
+      
       if (murrix.inArray(key, nodeData._readers))
       {
         self.groupAccessLoading(false);
@@ -373,7 +451,7 @@ var NodeModel = function(parentModel)
         return;
       }
 
-      nodeData._readers.push(key);
+      nodeData._readers = murrix.addToArray(key, nodeData._readers);
 
       murrix.server.emit("saveNode", nodeData, function(error, nodeData)
       {
