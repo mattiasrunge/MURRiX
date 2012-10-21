@@ -91,6 +91,53 @@ $(function()
     }
   };
 
+  /* Knockout text, set attribute of group loaded async */
+  ko.bindingHandlers.textGroupAttribute = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var params = ko.utils.unwrapObservable(value);
+
+      if (params[0] === null ||  params[0] === "")
+      {
+        $(element).text("Unknown");
+        return;
+      }
+
+      $(element).text("Loading " + params[1] + "...");
+
+      murrix.server.emit("getGroups", {}, function(error, groupDataList)
+      {
+        if (error)
+        {
+          $(element).text(error);
+          return;
+        }
+
+        var groupData = null;
+
+        for (var n = 0; n < groupDataList.length; n++)
+        {
+          if (groupDataList[n]._id === params[0])
+          {
+            groupData = groupDataList[n];
+            break;
+          }
+        }
+        
+        
+        if (groupData)
+        {
+          $(element).text(groupData[params[1]]);
+        }
+        else
+        {
+          $(element).text("Unknown");
+        }
+      });
+    }
+  };
+
   /* Knockout src, get profile picture async */
   ko.bindingHandlers.srcNodeProfilePicture = {
     update: function(element, valueAccessor)

@@ -315,6 +315,83 @@ var NodeModel = function(parentModel)
     }
   };
 
+  self.groupAccessLoading = ko.observable(false);
+  self.groupAccessErrorText = ko.observable("");
+  self.groupAccessName = ko.observable("");
+
+  self.groupAccessSubmit = function()
+  {
+    // Do nothing
+  };
+  
+  $("#groupAccessInput").typesearch({
+    limit: 20,
+    source: function(query, callback)
+    {
+      murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { collection: "groups", limit: 20 } }, function(error, groupDataList)
+      {
+        if (error)
+        {
+          console.log(error);
+          callback([]);
+        }
+
+        var resultList = [];
+
+        for (var key in groupDataList)
+        {
+          var item = {};
+          item.name = groupDataList[key].name;
+          item.key = groupDataList[key]._id;
+          item.html = "<li><a class='typesearch-name' href='#'></a></li>";
+
+          if (!murrix.inArray(item.key, self.node()._readers()) && !murrix.inArray(item.key, self.node()._admins()))
+          {
+            resultList.push(item);
+          }
+        }
+
+        callback(resultList);
+      });
+    },
+    selectFn: function(key)
+    {
+      self.groupAccessLoading(true);
+      self.groupAccessErrorText("");
+
+      var nodeData = ko.mapping.toJS(self.node);
+
+      if (!nodeData._readers)
+      {
+        nodeData._readers = [];
+      }
+
+      if (murrix.inArray(key, nodeData._readers))
+      {
+        self.groupAccessLoading(false);
+        self.groupAccessErrorText("Group is already in readers");
+        return;
+      }
+
+      nodeData._readers.push(key);
+
+      murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+      {
+        self.groupAccessLoading(false);
+
+        if (error)
+        {
+          self.groupAccessErrorText(error);
+          return;
+        }
+
+        self.groupAccessName("");
+
+        murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+      });
+    }
+  });
+
   self.tagLoading = ko.observable(false);
   self.tagErrorText = ko.observable("");
   self.tagName = ko.observable("");
@@ -428,7 +505,7 @@ var NodeModel = function(parentModel)
   };
 
   $("[name=newTag]").typeahead({ source: function(query, callback) { self.tagAutocomplete(query, callback); } });
-  $(".typeahead").css({ "z-index": 1051 }); // Hack to show the typeahead box
+
 
   $(".modal").on('hidden', function ()
   {

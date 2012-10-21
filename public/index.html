@@ -73,6 +73,7 @@
     <!-- MURRiX base library script files -->
     <script src="js/murrix.js"></script>
     <script src="js/knockout.extensions.js"></script>
+    <script src="js/bootstrap-typesearch.js"></script>
 
     
 
@@ -151,7 +152,7 @@
 
 
         /* HACK?: Trigger loading if no path is set */
-        if (document.location.hash.length == 0)
+        if (document.location.hash.length === 0)
         {
           jQuery.History.trigger("");
         }

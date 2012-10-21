@@ -58,6 +58,10 @@
   padding-right: 0px;
 }
 
+.typeahead {
+  z-index: 1051;
+}
+
 .thumbnail-picture {
   display: block;
   border: 1px solid black;

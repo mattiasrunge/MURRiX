@@ -107,19 +107,41 @@
     <h3 id="editAccessModalLabel">Edit accesses</h3>
   </div>
   <div class="modal-body">
-    <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px">
-      <input placeholder="Group name" type="text" name="groupName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.groupLoading, value: nodeModel.groupName" data-provide="typeahead"/>
+    <form data-bind="submit: nodeModel.groupAccessSubmit" style="margin: 0px">
+      <input placeholder="Group name" type="text" id="groupAccessInput" name="groupAccessInput" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.groupAccessLoading, value: nodeModel.groupAccessName" data-provide="typesearch"/>
     </form>
 
-    <div data-bind="foreach: nodeModel.node().tags">
-      <span class="label label-inverse" style="display: inline-block;">
-        <span data-bind="text: $data"></span>&nbsp;&nbsp;
-        <a href="#" style="color: red;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
-      </span>
-    </div>
+    <h4>Groups with read access</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: nodeModel.node()._readers">
+        <tr>
+          <td data-bind="textGroupAttribute: [ $data, 'name' ]"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Groups with administration access</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: nodeModel.node()._admins">
+        <tr>
+          <td data-bind="textGroupAttribute: [ $data, 'name' ]"></td>
+        </tr>
+      </tbody>
+    </table>
+
   </div>
   <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.tagErrorText() != '', text: nodeModel.tagErrorText"></p>
+    <p class="pull-left text-error" data-bind="visible: nodeModel.groupAccessErrorText() != '', text: nodeModel.groupAccessErrorText"></p>
     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
   </div>
 </div>
