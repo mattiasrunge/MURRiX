@@ -31,7 +31,7 @@
       </div>
       <blockquote class="span8" style="margin-bottom: 0px">
         <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
-        <small><span data-bind="htmlTimeAgo: $data.added.timestamp()"></span> by <a data-bind="textNodeAttribute: [ $data.added._by(), 'name' ]"></a></small>
+        <small><span data-bind="htmlTimeAgo: $data.added.timestamp()"></span> by <a data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></a></small>
       </blockquote>
     </div>
 

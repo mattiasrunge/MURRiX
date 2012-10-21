@@ -12,37 +12,67 @@
 
     <div class="well">
       <div class="row-fluid">
-        <div class="span6">
+        <div class="span7">
           <h4>Groups <button rel="tooltip" title="Create group" class="btn btn-link btn-mini" href="#saveGroupModal" data-toggle="modal">Create</button></h4>
 
-          <!-- ko foreach: adminModel.groups -->
+          <table class="table table-condensed table-hover">
+            <tbody>
 
-          <div class="well" draggable="true" style="padding: 10px">
-            <div style="font-weight: bold;" data-bind="text: $data.name"></div>
-            <div data-bind="text: $data.description"></div>
-          </div>
+            <!-- ko foreach: adminModel.groups -->
+              <tr>
+                <td>
+                  <blockquote style="margin-bottom: 0px;">
+                    <p>
+                      <span data-bind="text: $data.name"></span>
+                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Edit</button>
+                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Remove</button>
+                    </p>
+                    <small data-bind="text: $data.description"></small>
+                  </blockquote>
+                </td>
+                <td data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: adminModel.groupDropUserHandler }">
+                  <h6 data-bind="text: adminModel.groupMarkDropZone() ? 'Drop user here' : 'Member'">Members</h6>
 
-          <!-- /ko -->
+                  <!-- ko foreach: adminModel.users -->
+                    <!-- ko if: murrix.inArray($parent._id(), $data._groups()) -->
+                      <div><i data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-remove"></i>&nbsp;<span data-bind="text: $data.name"></span></div>
+                    <!-- /ko -->
+                  <!-- /ko -->
+                  
+                </td>
+              </tr>
+            <!-- /ko -->
+
+            </tbody>
+          </table>
+
         </div>
 
-        <div class="span6">
+        <div class="span5">
           <h4>Users <button rel="tooltip" title="Create user" class="btn btn-link btn-mini" href="#saveUserModal" data-toggle="modal">Create</button></h4>
 
-          <!-- ko foreach: adminModel.users -->
+          <table class="table table-condensed table-striped table-hover">
+            <tbody>
 
-          <div class="well" draggable="true" style="padding: 10px">
-            <div class="pull-right">
-              <button rel="tooltip" title="Change password" class="btn btn-mini btn-link pull-right" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Change password</button>
-              <br/>
-              <button rel="tooltip" title="Connect person" class="btn btn-mini btn-link pull-right" href="#userFindPersonModal" data-toggle="modal">Connect person</button>
-            </div>
-            <img draggable="false" src="" alt="" style="width: 40px; height: 40px;" class="pull-left" data-bind="srcNodeProfilePicture: [ $data._person(), 40, 40, 1 ]"/>
-            <div style="padding-left: 50px; font-weight: bold;" data-bind="text: $data.name"></div>
-            <div style="padding-left: 50px;" data-bind="text: $data.username"></div>
-          </div>
+            <!-- ko foreach: adminModel.users -->
+              <tr>
+                <td>
+                  <img draggable="false" src="" alt="" style="width: 44px; height: 44px;" class="pull-left" data-bind="srcNodeProfilePicture: [ $data._person(), 44, 44, 1 ]"/>
+                  <blockquote style="margin-left: 52px; margin-bottom: 0px;" draggable="true" data-bind="event: { dragstart : $parent.adminModel.userDragStart, dragend: $parent.adminModel.userDragEnd }">
+                    <p>
+                      <span data-bind="text: $data.name"></span>
+                      <button rel="tooltip" title="Change password" class="btn btn-mini btn-link" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Password</button>
+                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Edit</button>
+                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Remove</button>
+                    </p>
+                    <small data-bind="text: $data.username"></small>
+                  </blockquote>
+              </tr>
+            <!-- /ko -->
 
-          <!-- /ko -->
-          
+            </tbody>
+          </table>
+
         </div>
       </div>
     </div>

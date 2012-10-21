@@ -123,6 +123,76 @@ var AdminModel = function(parentModel)
     });
   };
 
+  self.groupMarkDropZone = ko.observable(false);
+
+  self.groupRemoveUserHandler = function(group, user)
+  {
+    userData = ko.mapping.toJS(user);
+
+    userData._groups = userData._groups || [];
+
+    userData._groups = murrix.removeFromArray(group._id(), userData._groups);
+
+    murrix.server.emit("saveUser", userData, function(error, userData)
+    {
+      if (error)
+      {
+        console.log("AdminModel: Failed to remove group from user: " + error);
+        return;
+      }
+
+      self._loadUsers();
+    });
+  };
+  
+  self.groupDropUserHandler = function(element, event)
+  {
+    var id = event.originalEvent.dataTransfer.getData("id");
+
+    var userData = {};
+
+    for (var n = 0; n < self.users().length; n++)
+    {
+      if (self.users()[n]._id() === id)
+      {
+        userData = ko.mapping.toJS(self.users()[n]);
+      }
+    }
+
+    if (!userData)
+    {
+      console.log("No user with id " + id + " found!");
+      return;
+    }
+
+    userData._groups = userData._groups || [];
+
+    userData._groups = murrix.addToArray(element._id(), userData._groups);
+
+    murrix.server.emit("saveUser", userData, function(error, userData)
+    {
+      if (error)
+      {
+        console.log("AdminModel: Failed to add group to user: " + error);
+        return;
+      }
+
+      self._loadUsers();
+    });
+  };
+
+  self.userDragStart = function(element, event)
+  {
+    self.groupMarkDropZone(true);
+    event.originalEvent.dataTransfer.setData("id", element._id());
+    return true;
+  };
+
+  self.userDragEnd = function(element, event)
+  {
+    self.groupMarkDropZone(false);
+  };
+
   self.groupSaveLoading = ko.observable(false);
   self.groupSaveErrorText = ko.observable("");
   self.groupSaveId = ko.observable(false);
@@ -167,7 +237,6 @@ var AdminModel = function(parentModel)
         self.groupSaveErrorText("");
 
         self._loadGroups();
-        self._loadUsers();
 
         $(".modal").modal('hide');
       });
@@ -218,8 +287,6 @@ var AdminModel = function(parentModel)
         self.userSaveDescription("");
         self.userSaveErrorText("");
 
-
-        self._loadGroups();
         self._loadUsers();
 
         $(".modal").modal('hide');

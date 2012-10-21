@@ -277,7 +277,11 @@ murrix.file = new function()
 };
 
 
-
+murrix.dragNoopHandler = function(element, event)
+{
+  event.stopPropagation();
+  event.preventDefault();
+};
 
 
 murrix.makeArray = function(hash)

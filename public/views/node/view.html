@@ -113,35 +113,28 @@
 
     <h4>Groups with accesses</h4>
     <table class="table table-condensed table-hover">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>&nbsp;</th>
-        </tr>
-      </thead>
       <tbody>
 
       <!-- ko foreach: nodeModel.node()._admins -->
         <tr class="info">
-          <td data-bind="textGroupAttribute: [ $data, 'name' ]"></td>
+          <td><i title="Administration access" class="icon-eye-open"></i>&nbsp;&nbsp;<span data-bind="textGroupAttribute: [ $data, 'name' ]"></span></td>
           <td>
             <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove"><i class="icon-remove"></i> Remove</button>
-            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeReader"><i class="icon-arrow-down"></i> Remove admin access</button>
+            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeReader"><i class="icon-arrow-down"></i> Revoke admin access</button>
           </td>
         </tr>
       <!-- /ko -->
       
       <!-- ko foreach: nodeModel.node()._readers -->
         <tr>
-          <td data-bind="textGroupAttribute: [ $data, 'name' ]"></td>
+          <td><i title="Read access" class="icon-edit"></i>&nbsp;&nbsp;<span data-bind="textGroupAttribute: [ $data, 'name' ]"></span></td>
           <td>
             <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove"><i class="icon-remove"></i> Remove</button>
-            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin"><i class="icon-arrow-up"></i> Give admin access</button>
+            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin"><i class="icon-arrow-up"></i> Grant admin access</button>
           </td>
         </tr>
       <!-- /ko -->
 
-      
       </tbody>
     </table>
 

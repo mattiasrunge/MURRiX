@@ -87,12 +87,6 @@ var PicturesModel = function(parentModel)
     });
   }
 
-  self.dragNoopHandler = function(element, event)
-  {
-    event.stopPropagation();
-    event.preventDefault();
-  };
-
   self.dragDropHandler = function(element, event)
   {
     event.stopPropagation();
