@@ -7,6 +7,7 @@ var ContentModel = function(parentModel)
   parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
   self.show = ko.observable(false);
+  self.enabled = ko.observable(true);
 
   parentModel.path().primary.subscribe(function(value)
   {
@@ -15,29 +16,18 @@ var ContentModel = function(parentModel)
       self.show(value.action === "content");
     }
   });
+
+  self.uploadErrorText = ko.observable("");
+  self.uploadFiles = ko.observableArray();
+  self.uploadComplete = ko.observable(false);
   
-  self.enabled = ko.observable(true);
-
-  self.uploadFiles = [];
-  self.uploadedFiles = [];
-
-  function saveFile(index)
+  self._saveFile = function(fileItem, callback)
   {
-    if (index >= self.uploadedFiles.length)
-    {
-      console.log("All files saved!");
-      self.uploadedFiles = [];
-//        murrix.model.nodeModel.loadFiles();
-      return;
-    }
-
-    murrix.server.emit("createFileItem", { name: self.uploadedFiles[index].name, uploadId: self.uploadedFiles[index].uploadId, parentId: self.uploadedFiles[index].parentId }, function(error, itemData)
+    murrix.server.emit("createFileItem", { name: fileItem.name(), uploadId: fileItem.uploadId(), parentId: murrix.model.nodeModel.node()._id() }, function(error, itemData)
     {
       if (error)
       {
-        console.log(self.uploadedFiles);
-        console.log(error);
-        console.log("Failed to save file item!");
+        callback(error);
         return;
       }
 
@@ -47,59 +37,109 @@ var ContentModel = function(parentModel)
       // TODO: this may be a hack...
       murrix.model.nodeModel.items.push(item);
 
-      saveFile(index + 1);
+      callback(null);
     });
-  }
+  };
 
-
-  function uploadFile(index)
+  self._uploadFile = function(callback)
   {
-    if (index >= self.uploadFiles.length)
+    var index = false;
+
+    for (var n = 0; n < self.uploadFiles().length; n++)
     {
-      console.log("All files uploaded!");
+      console.log(self.uploadFiles()[n].progress() === 0);
+      if (!self.uploadFiles()[n].failed() && self.uploadFiles()[n].progress() === 0)
+      {
+        index = n;
+        break;
+      }
+    }
 
-      self.uploadFiles = [];
-
-      saveFile(0);
-
+    if (index === false)
+    {
+      console.log("All files done!");
+      callback(null, false);
       return;
     }
 
-    murrix.file.upload(self.uploadFiles[index], function(error, id, progress)
+    murrix.file.upload(self.uploadFiles()[index].file, function(error, id, progress)
     {
       if (error)
       {
-        console.log(error);
-        console.log("Failed to upload files!");
+        self.uploadFiles()[index].statusText(error);
+        self.uploadFiles()[index].failed(true);
+        callback(error, true);
         return;
       }
 
       console.log("Upload " + id + "(index " + index + ") at " + progress + "%");
+      self.uploadFiles()[index].uploadId(id);
+      self.uploadFiles()[index].progress(progress);
 
       if (progress === 100)
       {
         console.log("Upload " + id + " complete!");
 
-        self.uploadedFiles.push({ name: self.uploadFiles[index].name, uploadId: id, parentId: murrix.model.nodeModel.node()._id() });
+        self._saveFile(self.uploadFiles()[index], function(error)
+        {
+          if (error)
+          {
+            self.uploadFiles()[index].statusText(error);
+            self.uploadFiles()[index].failed(true);
+            callback(error, true);
+            return;
+          }
 
-        uploadFile(index + 1);
+          self.uploadFiles()[index].statusText("File item created!");
+          callback(null, true);
+        });
       }
     });
-  }
+  };
+
+
+  self._startUpload = function(error, notDone)
+  {
+    if (error)
+    {
+      // TODO: Should we continue?
+    }
+
+    if (notDone)
+    {
+      self._uploadFile(function(error, notDone) { self._startUpload(error, notDone) });
+      return;
+    }
+
+    self.uploadComplete(true);
+  };
 
   self.dragDropHandler = function(element, event)
   {
+    self.uploadFiles.removeAll();
+    self.uploadErrorText("");
+    self.uploadComplete(false);
+    
     event.stopPropagation();
     event.preventDefault();
 
-    if (event.originalEvent.dataTransfer.files.length === 0)
+    for (var n = 0; n < event.originalEvent.dataTransfer.files.length; n++)
     {
-      return false;
+      var uploadFile = {};
+      
+      uploadFile.progress = ko.observable(0);
+      uploadFile.uploadId = ko.observable(false);
+      uploadFile.size = ko.observable(event.originalEvent.dataTransfer.files[n].size);
+      uploadFile.name = ko.observable(event.originalEvent.dataTransfer.files[n].name);
+      uploadFile.file = event.originalEvent.dataTransfer.files[n];
+      uploadFile.statusText = ko.observable("");
+      uploadFile.failed = ko.observable(false);
+
+      self.uploadFiles.push(uploadFile);
     }
 
-    self.uploadFiles = event.originalEvent.dataTransfer.files;
-    uploadFile(0);
+    $("#itemUploadModal").modal({ keyboard: false, backdrop: "static" });
 
-    return false;
+    self._startUpload(null, true);
   };
 };
