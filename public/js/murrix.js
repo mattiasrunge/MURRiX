@@ -39,6 +39,66 @@ murrix.cache = new function()
 
         self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
       }
+
+      self.nodes[nodeData._id].hasAdminAccess = function()
+      {
+        if (murrix.model.currentUser() === false)
+        {
+          console.log("No user, no admin access");
+          return false;
+        }
+
+        if (murrix.model.currentUser().admin() === true)
+        {
+          console.log("User is admin, admin access");
+          return true;
+        }
+
+        if (murrix.model.currentUser()._id() === this._id())
+        {
+          console.log("Node is current user, admin access");
+          return true;
+        }
+
+        if (murrix.model.currentUser()._id() === this.added._by())
+        {
+          console.log("Node added by user, admin access");
+          return true;
+        }
+        
+        var intersection = this._admins().filter(function(n)
+        {
+          return murrix.model.currentUser()._groups().indexOf(n) !== -1;
+        });
+
+        console.log("Group intersection length is " + intersection.length + ", admin access");
+
+        return intersection.length > 0;
+      };
+
+      self.nodes[nodeData._id].hasReadAccess = function()
+      {
+        if (this.public() === true)
+        {
+          console.log("Node is public, read access");
+          return true;
+        }
+
+        if (this.hasAdminAccess())
+        {
+          console.log("Admin access, read access");
+          return true;
+        }
+
+        var intersection = this._readers().filter(function(n)
+        {
+          return murrix.model.currentUser()._groups().indexOf(n) !== -1;
+        });
+
+        console.log("Group intersection length is " + intersection.length + ", read access");
+
+        return intersection.length > 0;
+      };
     }
     else
     {

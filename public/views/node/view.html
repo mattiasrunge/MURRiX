@@ -1,7 +1,7 @@
 <div class="sidebar-nav" data-bind="fadeVisible: nodeModel.show, if: nodeModel.node">
 
   <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
-    <div draggable="false" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()">
+    <div draggable="false" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: (nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()) && nodeModel.node().hasAdminAccess()">
       <br/>
       <br/>
       <br/>
@@ -43,7 +43,7 @@
       <li>
         <br/>
         <!-- ko foreach: nodeModel.node().tags -->
-          <span class="label label-inverse"><a href="#" data-bind="text: $data, attr: { href: '#search:' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a></span>
+          <span class="label label-inverse"><a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a></span>
         <!-- /ko -->
 
        
@@ -53,7 +53,7 @@
 
     <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center;">
       <button style="margin-bottom: 10px;" data-bind="visible: nodeModel.timelineModel.showButton, text: nodeModel.timelineModel.visible() ? 'Hide timeline' : 'Show timeline', click: nodeModel.timelineModel.toggleTimeline" rel="tooltip" title="Timeline switch" class="btn btn-link btn-mini" href="#">Timeline</button>
-      <div class="modal-footer" style="text-align: center;">
+      <div class="modal-footer" style="text-align: center;" data-bind="visible: nodeModel.node().hasAdminAccess()">
         <button rel="tooltip" title="Edit accesses" class="btn btn-link btn-mini" href="#editAccessModal" data-toggle="modal">Accesses</button>
         <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Make public" class="btn btn-link btn-mini">Make public</button>
         <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Make private" class="btn btn-link btn-mini" style="margin: 0px;">Make private</button>

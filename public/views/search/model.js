@@ -18,6 +18,7 @@ var SearchModel = function(parentModel)
 
   
   self.query = ko.observable("");
+  self.findQuery = false;
 
   self.queryInput = ko.observable("");
   self.results = ko.observableArray([ ]);
@@ -116,7 +117,7 @@ var SearchModel = function(parentModel)
 
     if (self.resultCount() > 0)
     {
-      murrix.server.emit("find", { query: { name: { $regex: ".*" + self.query() + ".*", $options: "-i" } }, options: { collection: "nodes", limit: self.itemsPerPage, skip: skip } }, function(error, nodeDataList)
+      murrix.server.emit("find", { query: self.findQuery, options: { collection: "nodes", limit: self.itemsPerPage, skip: skip } }, function(error, nodeDataList)
       {
         if (error)
         {
@@ -146,10 +147,35 @@ var SearchModel = function(parentModel)
     self.results.removeAll();
     self.pages.removeAll();
     self.resultCount(0);
+    self.findQuery = false;
 
     if (self.query() !== "")
     {
-      murrix.server.emit("count", { query: { name: { $regex: ".*" + self.query() + ".*", $options: "-i" } }, options: "nodes" }, function(error, count)
+      var parts = self.query().split("=");
+
+      var action = "name";
+      var query = "";
+      
+      if (parts.length === 1)
+      {
+        query = self.query();
+      }
+      else
+      {
+        action = parts[0];
+        query = parts[1];
+      }
+
+      if (action === "tag")
+      {
+        self.findQuery = { tags: query };
+      }
+      else //(action === name)
+      {
+        self.findQuery = { name: { $regex: ".*" + query + ".*", $options: "-i" } };
+      }
+    
+      murrix.server.emit("count", { query: self.findQuery, options: "nodes" }, function(error, count)
       {
         if (error)
         {
