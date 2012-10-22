@@ -66,6 +66,8 @@ var SearchModel = function(parentModel)
       }
     }
 
+    self.queryInput(query);
+
     if (query !== self.query())
     {
       console.log("Query has changed to \"" + query + "\"");
