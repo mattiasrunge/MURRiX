@@ -7,11 +7,11 @@ var OverlayModel = function(parentModel)
   parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
   self.enabled = ko.observable(true);
-  self.node = ko.observable(false);
+  self.item = ko.observable(false);
 
   self.show = ko.observable(false);
 
-  self.node.subscribe(function(value)
+  self.item.subscribe(function(value)
   {
     if (self.show() !== (value !== false))
     {
@@ -23,14 +23,14 @@ var OverlayModel = function(parentModel)
   {
     if (primary.args.length === 0)
     {
-      console.log("OverlayModel: No node id specified setting node to false!");
-      self.node(false);
+      console.log("OverlayModel: No item id specified setting item to false!");
+      self.item(false);
       return;
     }
 
-    var nodeId = primary.args[0];
+    var itemId = primary.args[0];
 
-    console.log("OverlayModel: Got nodeId = " + nodeId);
+    console.log("OverlayModel: Got itemId = " + itemId);
 
     /*if (primary.action !== "node")
     {
@@ -38,28 +38,28 @@ var OverlayModel = function(parentModel)
       self.node(false);
       return;
     }
-    else */if (self.node() && nodeId === self.node()._id())
+    else */if (self.item() && itemId === self.item()._id())
     {
-      console.log("OverlayModel: Node id is the same as before, will not update!");
+      console.log("OverlayModel: Item id is the same as before, will not update!");
       return;
     }
 
-    murrix.cache.getNodes([ nodeId ], function(error, nodeList)
+    murrix.cache.getItems([ itemId ], function(error, itemList)
     {
       if (error)
       {
         console.log(error);
-        console.log("OverlayModel: Failed to find node!");
+        console.log("OverlayModel: Failed to find item!");
         return;
       }
 
-      if (nodeList.length === 0 || !nodeList[nodeId])
+      if (itemList.length === 0 || !itemList[itemId])
       {
-        console.log("OverlayModel: No results returned, you probably do not have rights to this node!");
+        console.log("OverlayModel: No results returned, you probably do not have rights to this item!");
         return;
       }
 
-      self.node(nodeList[nodeId]);
+      self.item(itemList[itemId]);
     });
   });
 
@@ -103,14 +103,14 @@ var OverlayModel = function(parentModel)
     self.commentErrorText("");
     self.commentLoading(true);
 
-    var nodeData = ko.mapping.toJS(self.node);
+    var itemData = ko.mapping.toJS(self.item);
 
-    if (!nodeData.comments)
+    if (!itemData.comments)
     {
-      nodeData.comments = [];
+      itemData.comments = [];
     }
 
-    murrix.server.emit("comment", { nodeId: self.node()._id(), text: self.commentText() }, function(error, nodeData)
+    murrix.server.emit("commentItem", { id: self.item()._id(), text: self.commentText() }, function(error, itemData)
     {
       self.commentLoading(false);
 
@@ -122,7 +122,7 @@ var OverlayModel = function(parentModel)
 
       self.commentText("");
 
-      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+      murrix.cache.addItemData(itemData); // This should update self.node() by reference
     });
   };
 };

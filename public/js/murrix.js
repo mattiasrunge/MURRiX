@@ -75,6 +75,8 @@ murrix.cache = new function()
       return false;
     }
 
+    itemData.comments = itemData.comments || [];
+    
     if (!self.items[itemData._id])
     {
       console.log("Could not find mapped index, item is not cached, id " + itemData._id);
@@ -192,7 +194,6 @@ murrix.cache = new function()
         callback(error, []);
         return;
       }
-      console.log(itemDataList);
 
       for (var id in itemDataList)
       {

@@ -232,7 +232,7 @@ $(function()
           
           image.onerror = function()
           {
-            //$(element).attr("src", ""); TODO: Set error image
+            $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height);// TODO: Set error image
           };
           
           image.src = src;

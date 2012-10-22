@@ -14,9 +14,16 @@ var NodeManager = require('./lib/node.js').NodeManager;
 var MurrixUtils = require('./lib/utils.js');
 var UploadManager = require('./lib/upload.js').UploadManager;
 
-/* Configuration options */
-var configuration = require('./configuration.js').Configuration;
+/* Configuration options, TODO: Move to another file */
+var configuration = {};
 
+configuration.databaseHost = "localhost";
+configuration.databasePort = 27017;
+configuration.databaseName = "murrix";
+configuration.httpPort = 8080;
+configuration.filesPath = "/mnt/raid/www/murrix.runge.se/files/";
+configuration.previewsPath = "../previews/";
+configuration.sessionName = "murrix";
 
 /* Instances */
 var mongoServer = new mongo.Server(configuration.databaseHost, configuration.databasePort, { auto_reconnect: true });
@@ -324,7 +331,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    nodeManager.commentNode(client.handshake.session, data.nodeId, data.text, callback);
+    nodeManager.commentNode(client.handshake.session, data.id, data.text, callback);
   });
 
   client.on("commentItem", function(data, callback)
@@ -335,7 +342,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    nodeManager.commentItem(client.handshake.session, data.nodeId, data.text, callback);
+    nodeManager.commentItem(client.handshake.session, data.id, data.text, callback);
   });
 
   client.on("find", function(data, callback)

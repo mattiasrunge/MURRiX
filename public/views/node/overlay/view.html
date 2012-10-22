@@ -4,10 +4,10 @@
 
     <div id="overlayCarousel" class="slide">
       <!-- Carousel items -->
-      <div class="carousel-inner" data-bind="foreach: nodeModel.fileNodes">
+      <div class="carousel-inner" data-bind="foreach: nodeModel.items">
 
-        <div class="item" data-bind="visible: $data._id() == $parent.nodeModel.overlayModel.node()._id(), attr: { 'data-murrix-id': $data._id() }">
-          <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview?id=' + $data._id() + '&amp;width=1440', title: $data.name() }" src="" alt="">
+        <div class="item" data-bind="visible: $data._id() == $parent.nodeModel.overlayModel.item()._id(), attr: { 'data-murrix-id': $data._id() }">
+          <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview?id=' + $data._id() + '&amp;width=1440', title: $data.specific.name() }" src="" alt="">
 <!--          <div class="carousel-caption">
             <h4 data-bind="text: $data.name"></h4>
             <p data-bind="if: $data.description() != '', text: $data.description"></p>
@@ -28,7 +28,7 @@
       
       <p class="muted">
         <small>Picture taken 
-          <span data-bind="if: nodeModel.overlayModel.node().createdDatetime">on <span data-bind="htmlTimestamp: nodeModel.overlayModel.node().createdDatetime.datetime()"></span></span>
+          <span data-bind="if: nodeModel.overlayModel.item().createdDatetime">on <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().createdDatetime.datetime()"></span></span>
           <span data-bind="">at <a>Marklandsgatan 43</a></span>.<button rel="tooltip" title="When and where" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button>
           <br/>Showing <a>Mattias Runge<a>, <a>Björn Ramberg</a> and <a>VW Golf II</a>.<button rel="tooltip" title="Who and what" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button>
         </small>
@@ -48,31 +48,31 @@
             <table class="table table-striped table-condensed">
                 <tr>
                   <td>Filename</td>
-                  <td data-bind="text: nodeModel.overlayModel.node().name()"></td>
+                  <td data-bind="text: nodeModel.overlayModel.item().specific.name()"></td>
                 </tr>
                 <tr>
                   <td>File size</td>
-                  <td data-bind="htmlSize: nodeModel.overlayModel.node().exif.FileSize()"></td>
+                  <td data-bind="htmlSize: nodeModel.overlayModel.item().specific.exif.FileSize()"></td>
                 </tr>
                 <tr>
                   <td>Image size</td>
-                  <td data-bind="text: nodeModel.overlayModel.node().exif.ImageWidth() + 'x' + nodeModel.overlayModel.node().exif.ImageHeight()"></td>
+                  <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().specific.exif.ImageHeight()"></td>
                 </tr>
-                <tr data-bind="if: nodeModel.overlayModel.node().exif.CameraModelName">
+                <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.CameraModelName">
                   <td>Camera model</td>
-                  <td data-bind="text: nodeModel.overlayModel.node().exif.CameraModelName()"></td>
+                  <td data-bind="text: nodeModel.overlayModel.item().specific.exif.CameraModelName()"></td>
                 </tr>
-                <tr data-bind="if: nodeModel.overlayModel.node().exif.Orientation">
+                <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Orientation">
                   <td>Orientation</td>
-                  <td data-bind="text: nodeModel.overlayModel.node().exif.Orientation()"></td>
+                  <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Orientation()"></td>
                 </tr>
-                <tr data-bind="if: nodeModel.overlayModel.node().angle()">
+                <tr data-bind="if: nodeModel.overlayModel.item().specific.angle">
                   <td>Angle</td>
-                  <td data-bind="text: nodeModel.overlayModel.node().angle()"></td>
+                  <td data-bind="text: nodeModel.overlayModel.item().specific.angle()"></td>
                 </tr>
-                <tr data-bind="if: nodeModel.overlayModel.node().mirror()">
+                <tr data-bind="if: nodeModel.overlayModel.item().specific.mirror">
                   <td>Mirror</td>
-                  <td data-bind="text: nodeModel.overlayModel.node().mirror()"></td>
+                  <td data-bind="text: nodeModel.overlayModel.item().specific.mirror()"></td>
                 </tr>
 
             </table>
@@ -84,7 +84,7 @@
       <div class="accordion-group">
         <div class="accordion-heading">
           <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseComments">
-            Comments<span data-bind="visible: nodeModel.overlayModel.node().comments().length > 0"> (<span data-bind="text: nodeModel.overlayModel.node().comments().length"></span>)</span>
+            Comments<span data-bind="visible: nodeModel.overlayModel.item().comments().length > 0"> (<span data-bind="text: nodeModel.overlayModel.item().comments().length"></span>)</span>
           </a>
         </div>
         <div id="overlayCollapseComments" class="accordion-body collapse in">
@@ -92,7 +92,7 @@
 
             <div class="row-fluid">
               <div class="span2">
-                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="if: userModel.currentUserNode(), srcNodeProfilePicture: [ userModel.currentUserNode()._id(), 40, 40, 1 ]"/>
+                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcNodeProfilePicture: [ currentUser()._id(), 40, 40, 1 ]"/>
               </div>
               <blockquote class="span10">
                 <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
@@ -104,15 +104,15 @@
               </blockquote>
             </div>
 
-            <!-- ko foreach: nodeModel.overlayModel.node().comments -->
+            <!-- ko foreach: nodeModel.overlayModel.item().comments -->
           
             <div class="row-fluid">
               <div class="span2">
-                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcNodeProfilePicture: [ $data._addedBy(), 40, 40, 1 ]"/>
+                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcNodeProfilePicture: [ $data.added._by(), 40, 40, 1 ]"/>
               </div>
               <blockquote class="span10">
                 <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
-                <small><span data-bind="htmlTimeAgo: $data.addedDatetime"></span> by <a data-bind="textNodeAttribute: [ $data._addedBy(), 'name' ]"></a></small>
+                <small><span data-bind="htmlTimeAgo: $data.added.timestamp"></span> by <a data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></a></small>
               </blockquote>
             </div>
 
