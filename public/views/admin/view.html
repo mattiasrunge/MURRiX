@@ -38,7 +38,7 @@
 
                   <!-- ko if: !adminModel.groupMarkDropZone() -->
                     <!-- ko foreach: adminModel.users -->
-                      <!-- ko if: murrix.inArray($parent._id(), $data._groups()) -->
+                      <!-- ko if: $data._groups && murrix.inArray($parent._id(), $data._groups()) -->
                         <div><i data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-remove"></i>&nbsp;<span data-bind="text: $data.name"></span></div>
                       <!-- /ko -->
                     <!-- /ko -->

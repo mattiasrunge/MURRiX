@@ -378,7 +378,6 @@ murrix.createPath = function(partIndex, primary, secondary)
 
   var args = parts[partIndex].split(":");
 
-
   if (secondary === null && args.length > 1 && primary === null)
   {
     secondary = args[1];
