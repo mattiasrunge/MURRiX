@@ -6,59 +6,78 @@ var TimelineModel = function(parentModel)
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
 
-  self.show = ko.computed(function() { return parentModel.path().primary().action === "timeline"; });
-  self.enabled = ko.observable(true);
-
-
-
-  // Create a JSON data table
-  var data = [
+  self.visible = ko.observable(false);
+  self.show = ko.observable(false);
+  self.showButton = ko.observable(true);
+  
+  parentModel.path().primary.subscribe(function(value)
+  {
+    if (self.show() !== (value.action === "" && self.visible()))
     {
-      'start': new Date(2010,7,23),
-      'content': 'Conversation<br><img src="img/comments-icon.png" style="width:32px; height:32px;">'
-    },
-    {
-      'start': new Date(2010,7,23,23,0,0),
-      'content': 'Mail from boss<br><img src="img/mail-icon.png" style="width:32px; height:32px;">'
-    },
-    {
-      'start': new Date(2010,7,24,16,0,0),
-      'content': 'Report'
-    },
-    {
-      'start': new Date(2010,7,26),
-      'end': new Date(2010,8,2),
-      'content': 'Traject A'
-    },
-    {
-      'start': new Date(2010,7,28),
-      'content': 'Memo<br><img src="img/notes-edit-icon.png" style="width:48px; height:48px;">'
-    },
-    {
-      'start': new Date(2010,7,29),
-      'content': 'Phone call<br><img src="img/Hardware-Mobile-Phone-icon.png" style="width:32px; height:32px;">'
-    },
-    {
-      'start': new Date(2010,7,31),
-      'end': new Date(2010,8,3),
-      'content': 'Traject B'
-    },
-    {
-      'start': new Date(2010,8,4,12,0,0),
-      'content': 'Report<br><img src="img/attachment-icon.png" style="width:32px; height:32px;">'
+      self.show(value.action === "" && self.visible());
     }
-  ];
 
-  // specify options
-  var options = {
-    width:    '100%',
-    height:   'auto',
-    editable: true,   // enable dragging and editing events
-    style:    'box'
-  };
+    if (self.showButton() !== (value.action === ""))
+    {
+      self.showButton(value.action === "");
+    }
+  });
+
+  self.visible.subscribe(function(value)
+  {
+    if (self.show() !== (parentModel.path().primary().action === "" && self.visible()))
+    {
+      self.show(parentModel.path().primary().action === "" && self.visible());
+    }
+  });
+
+  self.show.subscribe(function(value)
+  {
+    if (value)
+    {
+      setTimeout(function()
+      {
+        self.timeline.redraw();
+        self.timeline.setVisibleChartRangeAuto();
+      }, 500);
+    }
+  });
+  
+  self.dataList = [];
+  self.timeline = new links.Timeline($(".background-timeline-content").get(0));
+  
+  parentModel.items.subscribe(function(value)
+  {
+    self.dataList = [];
+
+    for (var n = 0; n < value.length; n++)
+    {
+      if (typeof value[n].when === "object")
+      {
+        var dataItem = {};
+        dataItem.start = new Date(value[n].when.timestamp() * 1000);
+        dataItem.content = value[n].specific.name();
+        //dataItem.end;
+
+        self.dataList.push(dataItem);
+      }
+    }
+    
+    self.timeline.draw(self.dataList, {
+      width:    '100%',
+      height:   'auto',
+      editable: true,   // enable dragging and editing events
+      style:    'box'
+    });
+
+    self.timeline.setVisibleChartRangeAuto();
+
+    
+  });
 
 
-//   self.timeline = new links.Timeline($("#timeline").get(0));
+
+  
 // 
 // 
 // 
@@ -68,7 +87,17 @@ var TimelineModel = function(parentModel)
 //   });
 // 
 //   // Draw our timeline with the created data and options
-//   self.timeline.draw(data, options);
+  self.timeline.draw(self.dataList, {
+    width:    '100%',
+    height:   'auto',
+    editable: true,   // enable dragging and editing events
+    style:    'box'
+  });
+
+  self.toggleTimeline = function()
+  {
+    self.visible(!self.visible());
+  };
 };
 
  

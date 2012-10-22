@@ -1,8 +1,7 @@
-murrix.config.php 
 *~
 previews/*
 !preview/.htaccess
 files/*
 !files/.htaccess
-murrix.config.php
 node_modules
+configuration.js

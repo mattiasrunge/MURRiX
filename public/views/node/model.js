@@ -403,7 +403,7 @@ var NodeModel = function(parentModel)
 
       murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
-  }
+  };
   
   $("#groupAccessInput").typesearch({
     limit: 20,
@@ -665,13 +665,13 @@ var NodeModel = function(parentModel)
 
   self.publicLoading = ko.observable(false);
   
-  self.changePublic = function(public, a, b, c, d)
+  self.changePublic = function(publicFlag, a, b, c, d)
   {
     self.publicLoading(true);
   
     var nodeData = ko.mapping.toJS(self.node);
 
-    if (public)
+    if (publicFlag)
     {
       nodeData.public = true;
     }
@@ -687,7 +687,7 @@ var NodeModel = function(parentModel)
       if (error)
       {
         console.log(error);
-        alert("Could not make node " + (public ? "public" : "private") + "!");
+        alert("Could not make node " + (publicFlag ? "public" : "private") + "!");
         return;
       }
 
@@ -696,13 +696,10 @@ var NodeModel = function(parentModel)
   };
   
   /* Define all sub views */
-  self.summaryModel = new SummaryModel(self);
-  self.timelineModel = new TimelineModel(self);
-  self.picturesModel = new PicturesModel(self);
+  self.contentModel = new ContentModel(self);
+  self.aboutModel = new AboutModel(self);
   self.relationsModel = new RelationsModel(self);
-  self.logbookModel = new LogbookModel(self);
   self.commentsModel = new CommentsModel(self);
-  self.connectionsModel = new ConnectionsModel(self);
-  self.accessesModel = new AccessesModel(self);
   self.overlayModel = new OverlayModel(self);
+  self.timelineModel = new TimelineModel(self);
 };

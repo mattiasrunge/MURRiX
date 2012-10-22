@@ -83,7 +83,7 @@ var AdminModel = function(parentModel)
 
       console.log("AdminModel: Found " + count + " users!");
     });
-  }
+  };
   
   self._loadGroups = function()
   {
@@ -350,7 +350,7 @@ var AdminModel = function(parentModel)
   {
     self.changePasswordId(ko.utils.unwrapObservable(id));
     return true;
-  }
+  };
 
   self.changePasswordSubmit = function(form)
   {

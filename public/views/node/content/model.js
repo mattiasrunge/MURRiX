@@ -1,5 +1,5 @@
 
-var PicturesModel = function(parentModel)
+var ContentModel = function(parentModel)
 {
   var self = this;
 
@@ -10,9 +10,9 @@ var PicturesModel = function(parentModel)
 
   parentModel.path().primary.subscribe(function(value)
   {
-    if (self.show() !== (value.action === "pictures"))
+    if (self.show() !== (value.action === "content"))
     {
-      self.show(value.action === "pictures");
+      self.show(value.action === "content");
     }
   });
   

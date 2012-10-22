@@ -16,15 +16,15 @@
   <div class="sidebar-nav-content">
     <ul class="nav nav-list">
 
-      <li data-bind="fadeVisible: nodeModel.summaryModel.enabled, css: { 'active': nodeModel.summaryModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefSecondPrimary: 'summary'">
+      <li data-bind="fadeVisible: nodeModel.aboutModel.enabled, css: { 'active': nodeModel.aboutModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefSecondPrimary: 'about'">
           <i class="icon-list-alt"></i> About
         </a>
       </li>
 
-      <li data-bind="fadeVisible: nodeModel.picturesModel.enabled, css: { 'active': nodeModel.picturesModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefSecondPrimary: 'pictures'">
-          <i class="icon-th"></i> Items <span data-bind="fadeVisible: nodeModel.items().length > 0, text: nodeModel.items().length" class="badge pull-right"></span>
+      <li data-bind="fadeVisible: nodeModel.contentModel.enabled, css: { 'active': nodeModel.contentModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefSecondPrimary: 'content'">
+          <i class="icon-th"></i> Content <span data-bind="fadeVisible: nodeModel.items().length > 0, text: nodeModel.items().length" class="badge pull-right"></span>
         </a>
       </li>
 
@@ -39,22 +39,6 @@
           <i class="icon-comment"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right"></span>
         </a>
       </li>
-      
-<!--
-      <li class="nav-header">Administration</li>
-
-      <li data-bind="fadeVisible: nodeModel.connectionsModel.enabled, css: { 'active': nodeModel.connectionsModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefSecondPrimary: 'connections'">
-          <i class="icon-retweet"></i> Connections <span data-bind="fadeVisible: nodeModel.connectionsModel.connections().length > 0, text: nodeModel.connectionsModel.connections().length" class="badge pull-right"></span>
-        </a>
-      </li>
-
-      <li data-bind="fadeVisible: nodeModel.accessesModel.enabled, css: { 'active': nodeModel.accessesModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefSecondPrimary: 'accesses'">
-          <i class="icon-lock"></i> Accesses <span data-bind="fadeVisible: nodeModel.accessesModel.accesses().length > 0, text: nodeModel.accessesModel.accesses().length" class="badge pull-right"></span>
-        </a>
-      </li>
--->
 
       <li>
         <br/>
@@ -67,11 +51,14 @@
 
     </ul>
 
-    <div class="modal-footer" style="position: absolute; left: 0px; right: 0px; bottom: 0px;">
-      <button rel="tooltip" title="Edit accesses" class="btn btn-link btn-mini pull-left" href="#editAccessModal" data-toggle="modal">Accesses</button>
-      <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Make public" class="btn btn-link btn-mini pull-left">Make public</button>
-      <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Make private" class="btn btn-link btn-mini pull-left" style="margin: 0px;">Make private</button>
-      <button rel="tooltip" title="Edit tags" class="btn btn-link btn-mini pull-left" href="#editTagsModal" data-toggle="modal">Tags</button>
+    <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center;">
+      <button style="margin-bottom: 10px;" data-bind="visible: nodeModel.timelineModel.showButton, text: nodeModel.timelineModel.visible() ? 'Hide timeline' : 'Show timeline', click: nodeModel.timelineModel.toggleTimeline" rel="tooltip" title="Timeline switch" class="btn btn-link btn-mini" href="#">Timeline</button>
+      <div class="modal-footer" style="text-align: center;">
+        <button rel="tooltip" title="Edit accesses" class="btn btn-link btn-mini" href="#editAccessModal" data-toggle="modal">Accesses</button>
+        <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Make public" class="btn btn-link btn-mini">Make public</button>
+        <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Make private" class="btn btn-link btn-mini" style="margin: 0px;">Make private</button>
+        <button rel="tooltip" title="Edit tags" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal">Tags</button>
+      </div>
     </div>
   </div>
   
