@@ -30,129 +30,23 @@ var NodeModel = function(parentModel)
   {
     var requiredNodeIdList = [];
 
-    console.log("NodeModel: Clearing profile picture, tags and map");
+    console.log("NodeModel: Clearing items");
     self.items.removeAll();
-    //$.murrix.module.map.clearMap();
 
     if (!node)
     {
-      console.log("NodeModel: Node is false, setting profile id to false!");
+      console.log("NodeModel: Node is false, do nothing more!");
       return;
     }
 
-
-    // TODO: Load all related nodes (look
-    // 
-
     self.loadItems(function(error)
     {
-      var n = 0;
-
       if (error)
       {
+        console.log(error);
         return;
       }
-
-      /* Get time range of files */
-//       if (self.items().length > 0)
-//       {
-//         for (n = 0; n < self.items().length; n++)
-//         {
-//           if (self.items()[n].createdDatetime)
-//           {
-//             if (self.firstDatetime === false || self.firstDatetime > self.items()[n].createdDatetime)
-//             {
-//               self.firstDatetime = self.items()[n].createdDatetime;
-//             }
-// 
-//             if (self.lastDatetime === false || self.lastDatetime < self.items()[n].createdDatetime)
-//             {
-//               self.lastDatetime = self.items()[n].createdDatetime;
-//             }
-//           }
-//         }
-//       }
-// 
-//       /* Get time range of texts */
-//       if (self.node().texts && self.node().texts().length > 0)
-//       {
-//         for (n = 0; n < self.node().texts().length; n++)
-//         {
-//           if (self.node().texts()[n].createdDatetime)
-//           {
-//             if (self.firstDatetime === false || self.firstDatetime > self.node().texts()[n].createdDatetime)
-//             {
-//               self.firstDatetime = self.node().texts()[n].createdDatetime;
-//             }
-// 
-//             if (self.lastDatetime === false || self.lastDatetime < self.node().texts()[n].createdDatetime)
-//             {
-//               self.lastDatetime = self.node().texts()[n].createdDatetime;
-//             }
-//           }
-//         }
-//       }
-
-      
-
-
-      if (self.node().type() === "event")
-      {
-        // Load files (direct parent link of file node)
-        // Load persons (birth death, marrige, engagement or relation list of remote person)
-        // Load things
-
-        // Find start and stop datatimes if defined
-
-
-        // Calculate start stop datetimes from files and texts datetimes
-        
-        // Compile a list of markers from files, texts and possibly locations
-        // Compile a list of tracks for linked vehicles for the range above
-      }
-      else if (self.node().type() === "location")
-      {
-        // Load persons livining here (home of person node)
-        // Load events (relationlist of remote event)
-        // Load files connected to this location... (how to do this, search on position with radius?)
-
-
-        // No start and stop datetimes exist
-
-
-        // Compile a list of markers with the location itself
-        // Empty tracks list
-      }
-      else if (self.node().type() === "person")
-      {
-        // Load pictures (relation list of remote file)
-        // Load birth, death, marrige and engagement events (direct link)
-        // Load events (relationslist of remote event)
-        // Load home location (direct link)
-        // Load mother, father, partner (direct link)
-
-
-        // Calculate start stop datetimes from files or events
-
-        // Compile a list of markers for connected events, files and home location
-        // Empty tracks list
-      }
-      else if (self.node().type() === "thing")
-      {
-        // Load owners (list of direct links)
-        // Load pictures (relation list of remote file)
-        // Load events (relationslist of remote event)
-
-        // Set start and stop datatimes to position range + events range
-
-        // Compile a list of marker for connected files and events
-        // Compile a track list for a "good" range
-      }
-      
     });
-
-    //console.log("NodeModel: Setting node to map");
-    //$.murrix.module.map.setNodes([ node ]);*/
   });
 
   self.loadItems = function(callback)
@@ -167,11 +61,7 @@ var NodeModel = function(parentModel)
         {
           console.log(error);
           console.log("NodeModel: Failed to get items!");
-
-          if (callback)
-          {
-            callback(error);
-          }
+          callback(error);
           return;
         }
 
@@ -193,19 +83,13 @@ var NodeModel = function(parentModel)
 
         console.log("NodeModel: Found " + count + " items!");
 
-        if (callback)
-        {
-          callback(null);
-        }
+        callback(null);
       });
 
       return;
     }
 
-    if (callback)
-    {
-      callback(null);
-    }
+    callback(null);
   };
   
 
@@ -223,6 +107,8 @@ var NodeModel = function(parentModel)
     self.node(false);
     self.loadNode();
   });
+
+  self.loadingNode = ko.observable(false);
   
   self.loadNode = function()
   {
@@ -230,6 +116,7 @@ var NodeModel = function(parentModel)
     {
       console.log("NodeModel: No node id specified setting node to false!");
       self.node(false);
+      self.loadingNode(false);
       return;
     }
 
@@ -242,30 +129,39 @@ var NodeModel = function(parentModel)
     {
       console.log("NodeModel: Node not shown, setting node to false");
       self.node(false);
+      self.loadingNode(false);
       return;
     }
     else if (self.node() && nodeId === self.node()._id())
     {
       console.log("NodeModel: Node id is the same as before, will not update!");
+      self.loadingNode(false);
       return;
     }
 
+    self.loadingNode(true);
+    
     murrix.cache.getNodes([ nodeId ], function(error, nodeList)
     {
       if (error)
       {
         console.log(error);
         console.log("NodeModel: Failed to find node!");
+        self.node(false);
+        self.loadingNode(false);
         return;
       }
 
       if (nodeList.length === 0 || !nodeList[nodeId])
       {
         console.log("NodeModel: No results returned, you probably do not have rights to this node!");
+        self.node(false);
+        self.loadingNode(false);
         return;
       }
       
       self.node(nodeList[nodeId]);
+      self.loadingNode(false);
     });
   };
 

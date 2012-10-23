@@ -23,12 +23,15 @@ $(function()
     init: function(element, valueAccessor)
     {
       var value = valueAccessor();
+
       $(element).toggle(ko.utils.unwrapObservable(value));
     },
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
-
+      
+      $(element).stop(false, true);
+       
       if ($(element).is(":visible") !== ko.utils.unwrapObservable(value))
       {
         ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).fadeOut();
@@ -41,22 +44,49 @@ $(function()
     init: function(element, valueAccessor)
     {
       var value = valueAccessor();
+
+      if ($(element).is(":visible"))
+      {
+        $(element).height($(element).height());
+      }
+      
       $(element).toggle(ko.utils.unwrapObservable(value));
     },
     update: function(element, valueAccessor)
     {
-      var value = valueAccessor();
+      var value = ko.utils.unwrapObservable(valueAccessor());
 
-      if ($(element).is(":visible") !== ko.utils.unwrapObservable(value))
+      $element = $(element);
+      
+      if ($element.is(":animated"))
       {
-        if (ko.utils.unwrapObservable(value))
+        if ($element.data("slideTarget") !== value)
         {
-          $(element).show("slide", function() { $(element).height(''); });
+          $element.data("slideTarget", value);
+        
+          if (value)
+          {
+            $element.show("slide", function() { $element.height(''); });
+          }
+          else
+          {
+            $element.height($element.height());
+            $element.hide("slide");
+          }
+        }
+      }
+      else
+      {
+        $element.data("slideTarget", value);
+
+        if (value)
+        {
+          $element.show("slide", function() { $element.height(''); });
         }
         else
         {
-          $(element).height($(element).height());
-          $(element).hide("slide");
+          $element.height($element.height());
+          $element.hide("slide");
         }
       }
     }

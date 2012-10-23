@@ -1,4 +1,4 @@
-<div class="sidebar-nav" data-bind="fadeVisible: nodeModel.show() && nodeModel.node(), if: nodeModel.node">
+<div class="sidebar-nav" data-bind="slideVisible: nodeModel.show() && nodeModel.node() && !nodeModel.loadingNode(), if: nodeModel.node">
 
   <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
     <div draggable="false" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: (nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()) && nodeModel.node().hasAdminAccess()">
@@ -65,7 +65,7 @@
   <div class="sidebar-nav-background"></div>
 </div>
 
-<div class="well" data-bind="fadeVisible: nodeModel.show() && !nodeModel.node()"  style="width: 500px; margin-left: auto; margin-right: auto; margin-top: 60px; text-align: center; position: relative; z-index: 5;">
+<div class="well" data-bind="fadeVisible: nodeModel.show() && !nodeModel.node() && !nodeModel.loadingNode()"  style="width: 500px; margin-left: auto; margin-right: auto; margin-top: 60px; text-align: center; position: relative; z-index: 5;">
   <h3>Could not access the requested node</h3>
   <p class="text-error">The node might not exist or there are insufficient rights to access it.</p>
   <p><a href="#">Back to the start page</a></p>
