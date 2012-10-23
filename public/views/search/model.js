@@ -16,6 +16,11 @@ var SearchModel = function(parentModel)
     }
   });
 
+  self.searchTypeAlbum = ko.observable(true);
+  self.searchTypePerson = ko.observable(true);
+  self.searchTypeLocation = ko.observable(true);
+  self.searchTypeCamera = ko.observable(true);
+  self.searchTypeVehicle = ko.observable(true);
   
   self.query = ko.observable("");
   self.findQuery = false;
@@ -25,7 +30,7 @@ var SearchModel = function(parentModel)
   self.pages = ko.observableArray([ ]);
   self.currentPage = ko.observable(0);
 
-  self.itemsPerPage = 25;
+  self.itemsPerPage = 5;
   self.resultCount = ko.observable(0);
 
   /* This function is run when the primary path is changed
@@ -144,6 +149,32 @@ var SearchModel = function(parentModel)
     self.runQuery();
   });
 
+  self.searchTypeAlbum.subscribe(function(value)
+  {
+    self.runQuery();
+  });
+
+  self.searchTypePerson.subscribe(function(value)
+  {
+    self.runQuery();
+  });
+
+  self.searchTypeLocation.subscribe(function(value)
+  {
+    self.runQuery();
+  });
+
+  self.searchTypeCamera.subscribe(function(value)
+  {
+    self.runQuery();
+  });
+
+  self.searchTypeVehicle.subscribe(function(value)
+  {
+    self.runQuery();
+  });
+
+
   self.runQuery = function()
   {
     self.results.removeAll();
@@ -175,6 +206,41 @@ var SearchModel = function(parentModel)
       else //(action === name)
       {
         self.findQuery = { name: { $regex: ".*" + query + ".*", $options: "-i" } };
+      }
+
+      var types = [];
+
+      if (self.searchTypeAlbum())
+      {
+        types.push("album");
+      }
+
+      if (self.searchTypePerson())
+      {
+        types.push("person");
+      }
+
+      if (self.searchTypeLocation())
+      {
+        types.push("location");
+      }
+
+      if (self.searchTypeCamera())
+      {
+        types.push("camera");
+      }
+
+      if (self.searchTypeVehicle())
+      {
+        types.push("vechicle");
+      }
+
+      self.findQuery.type = { $in: types };
+
+      if (types.length === 0)
+      {
+        self.showResults();
+        return;
       }
     
       murrix.server.emit("count", { query: self.findQuery, options: "nodes" }, function(error, count)
