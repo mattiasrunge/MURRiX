@@ -57,6 +57,8 @@
         <tbody data-bind="foreach: searchModel.results">
           <tr>
             <td>
+              <i data-bind="visible: $data.hasAdminAccess()" title="Administration access" class="icon-edit pull-right"></i>
+              <i data-bind="visible: !$data.hasAdminAccess()" title="Read access" class="icon-eye-open pull-right"></i>
               <img src="" alt="" style="width: 40px; height: 40px;" class="pull-left" data-bind="srcNodeProfilePicture: [ $data._id(), 40, 40, 1 ]"/>
               <blockquote style="margin-bottom: 0px; margin-left: 50px;">
                 <a style="padding-bottom: 5px;" data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a>

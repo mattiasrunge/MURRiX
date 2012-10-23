@@ -30,7 +30,7 @@ var SearchModel = function(parentModel)
   self.pages = ko.observableArray([ ]);
   self.currentPage = ko.observable(0);
 
-  self.itemsPerPage = 5;
+  self.itemsPerPage = 25;
   self.resultCount = ko.observable(0);
 
   /* This function is run when the primary path is changed
