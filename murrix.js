@@ -345,6 +345,18 @@ io.sockets.on("connection", function(client)
     nodeManager.commentItem(client.handshake.session, data.id, data.text, callback);
   });
 
+  client.on("findRandom", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for nodeManager.findRandom!");
+      return;
+    }
+
+    nodeManager.findRandom(client.handshake.session, data, callback);
+  });
+
+
   client.on("find", function(data, callback)
   {
     if (!callback)

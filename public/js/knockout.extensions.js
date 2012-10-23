@@ -28,7 +28,11 @@ $(function()
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
-      ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).fadeOut();
+
+      if ($(element).is(":visible") !== ko.utils.unwrapObservable(value))
+      {
+        ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).fadeOut();
+      }
     }
   };
 
@@ -43,14 +47,17 @@ $(function()
     {
       var value = valueAccessor();
 
-      if (ko.utils.unwrapObservable(value))
+      if ($(element).is(":visible") !== ko.utils.unwrapObservable(value))
       {
-        $(element).show("slide", function() { $(element).height(''); });
-      }
-      else
-      {
-        $(element).height($(element).height());
-        $(element).hide("slide");
+        if (ko.utils.unwrapObservable(value))
+        {
+          $(element).show("slide", function() { $(element).height(''); });
+        }
+        else
+        {
+          $(element).height($(element).height());
+          $(element).hide("slide");
+        }
       }
     }
   };

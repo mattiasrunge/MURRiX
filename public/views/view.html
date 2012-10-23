@@ -15,13 +15,13 @@
         </a>
       </li>
 
-      <li data-bind="css: { 'active': newsModel.show }" class="nav-link">
+      <li data-bind="adeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
           <i class="icon-bullhorn"></i> News
         </a>
       </li>
 
-      <li data-bind="css: { 'active': searchModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': searchModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: searchModel.show() ? ' ' : 'search'">
           <i class="icon-search"></i> Search
         </a>
@@ -44,14 +44,14 @@
   <div class="navbar-inner">
     <div class="container-fluid">
 
-      <a class="brand" href="#" data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se', attr: { 'href' : nodeModel.node() ? '#node:' + nodeModel.node()._id() : '#' }"></a>
+      <a class="brand" style="margin-left: -5px;" href="#" data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se', attr: { 'href' : nodeModel.node() ? '#node:' + nodeModel.node()._id() : '#' }"></a>
       
-      <div class="pull-right"><!-- Other nav bar content -->
+      <div class="pull-right">
         
-        <!-- The drop down menu -->
         <ul class="nav pull-right">
           <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+              <i class="icon-user icon-white"></i>
               <span data-bind="ifnot: currentUser">Sign In</span>
               <span data-bind="if: currentUser, text: currentUser().name"></span>
               <strong class="caret"></strong>
@@ -78,15 +78,28 @@
             </div>
           </li>
         </ul>
+
+        <div class="divider-vertical pull-right"></div>
+
+        <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
+          <input type="text" class="search-query navbar-search-input" placeholder="Search" data-provide="typesearch" data-bind="value: searchModel.queryInput"/>
+        </form>
+
         
         <div class="divider-vertical pull-right" data-bind="visible: currentUser"></div>
             
-        <!-- The drop down menu -->
+        <a class="nav pull-right" rel="tooltip" title="Go to start page" style="padding: 10px 15px 10px;" href="#" data-placement="bottom">
+          <i class="icon-home icon-white"></i>
+        </a>
+
+        <a class="nav pull-right" rel="tooltip" data-bind="visible: currentUser, click: randomClicked" title="Go to random node" style="padding: 10px 15px 10px;" href="#"  data-placement="bottom">
+          <i class="icon-random icon-white"></i>
+        </a>
+
         <ul class="nav pull-right" data-bind="visible: currentUser">
           <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-              Create new
-              <span class="caret"></span>
+            <a class="dropdown-toggle" rel="tooltip" data-toggle="dropdown" href="#" data-placement="bottom">
+              <i class="icon-plus icon-white" title="Create new node"></i>
             </a>
             <ul class="dropdown-menu">
               <li><a href="#createAlbumModal" data-toggle="modal">Album</a></li>
@@ -98,11 +111,6 @@
           </li>
         </ul>
         
-        <div class="divider-vertical pull-right"></div>
-        
-        <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
-          <input type="text" class="search-query navbar-search-input" placeholder="Search" data-provide="typesearch" data-bind="value: searchModel.queryInput"/>
-        </form>
       </div>
     </div>
   </div>

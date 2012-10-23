@@ -1,4 +1,4 @@
-<div class="modal-backdrop" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show"></div>
+<div class="modal-backdrop" data-bind="fadeVisible: nodeModel.overlayModel.show() && nodeModel.show(), if: nodeModel.overlayModel.show"></div>
 <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show">
   <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center;">
 

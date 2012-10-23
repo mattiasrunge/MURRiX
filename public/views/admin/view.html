@@ -24,25 +24,28 @@
                   <blockquote style="margin-bottom: 0px;">
                     <p>
                       <span data-bind="text: $data.name"></span>
-                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link" href="#saveGroupModal" data-toggle="modal" data-bind="click: adminModel.groupEditClicked">Edit</button>
-                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link" data-bind="click: adminModel.groupRemoveClicked">Remove</button>
+                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link pull-right" href="#saveGroupModal" data-toggle="modal" data-bind="click: adminModel.groupEditClicked">Edit</button>
+                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link pull-right" data-bind="click: adminModel.groupRemoveClicked">Remove</button>
                     </p>
                     <small data-bind="text: $data.description"></small>
                   </blockquote>
                 </td>
-                <td data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: adminModel.groupDropUserHandler }">
+                <td data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: adminModel.groupDropUserHandler }" style="width: 250px;">
 
-                  <!-- ko if: adminModel.groupMarkDropZone() -->
-                    <div class="well" style="margin-bottom: 0px; text-align: center;"><strong>Drop user here!</strong></div>
-                  <!-- /ko -->
+                  <div class="well" style="margin-bottom: 0px;">
 
-                  <!-- ko if: !adminModel.groupMarkDropZone() -->
-                    <!-- ko foreach: adminModel.users -->
-                      <!-- ko if: $data._groups && murrix.inArray($parent._id(), $data._groups()) -->
-                        <div><i data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-remove"></i>&nbsp;<span data-bind="text: $data.name"></span></div>
+                    <!-- ko if: adminModel.groupMarkDropZone() -->
+                    <div style="text-align: center;"><strong>Drop user here!</strong></div>
+                    <!-- /ko -->
+
+                    <!-- ko if: !adminModel.groupMarkDropZone() -->
+                      <!-- ko foreach: adminModel.users -->
+                        <!-- ko if: $data._groups && murrix.inArray($parent._id(), $data._groups()) -->
+                          <div><i style="cursor: pointer;" title="Remove user from group" data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-remove"></i>&nbsp;<span data-bind="text: $data.name"></span></div>
+                        <!-- /ko -->
                       <!-- /ko -->
                     <!-- /ko -->
-                  <!-- /ko -->
+                  </div>
                   
                 </td>
               </tr>
@@ -66,9 +69,9 @@
                   <blockquote style="margin-left: 52px; margin-bottom: 0px;" draggable="true" data-bind="event: { dragstart : $parent.adminModel.userDragStart, dragend: $parent.adminModel.userDragEnd }">
                     <p>
                       <span data-bind="text: $data.name"></span>
-                      <button rel="tooltip" title="Change password" class="btn btn-mini btn-link" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Password</button>
-                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link" href="#saveUserModal" data-toggle="modal" data-bind="click: adminModel.userEditClicked"">Edit</button>
-                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link" data-bind="click: adminModel.userRemoveClicked">Remove</button>
+                      <button rel="tooltip" title="Change password" class="btn btn-mini btn-link pull-right" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Password</button>
+                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link pull-right" href="#saveUserModal" data-toggle="modal" data-bind="click: adminModel.userEditClicked"">Edit</button>
+                      <button rel="tooltip" title="Edit" class="btn btn-mini btn-link pull-right" data-bind="click: adminModel.userRemoveClicked">Remove</button>
                     </p>
                     <small data-bind="text: $data.username"></small>
                   </blockquote>

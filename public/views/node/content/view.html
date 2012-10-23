@@ -1,4 +1,4 @@
-<div class="main-overlay" data-bind="slideVisible: nodeModel.contentModel.show">
+<div class="main-overlay" data-bind="slideVisible: nodeModel.contentModel.show() && nodeModel.node()">
   <div class="main-overlay-content" data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: nodeModel.contentModel.dragDropHandler }">
 
     <div class="navbar navbar-inverse navbar-color">

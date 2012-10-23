@@ -1,4 +1,4 @@
-<div class="main-overlay" data-bind="slideVisible: nodeModel.relationsModel.show">
+<div class="main-overlay" data-bind="slideVisible: nodeModel.relationsModel.show() && nodeModel.node()">
   <div class="main-overlay-content" data-bind="if: nodeModel.node">
 
     <div class="navbar navbar-color navbar-inverse">

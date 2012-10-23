@@ -1,4 +1,4 @@
-<div class="background-timeline" data-bind="fadeVisible: nodeModel.timelineModel.show">
+<div class="background-timeline" data-bind="fadeVisible: nodeModel.timelineModel.show() && nodeModel.node()">
   <div class="background-timeline-background"></div>
   <div class="background-timeline-content"></div>
 </div>
