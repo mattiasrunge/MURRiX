@@ -344,6 +344,24 @@ murrix.dragNoopHandler = function(element, event)
   event.preventDefault();
 };
 
+murrix.resetForm = function(element)
+{
+  $(element).find("input:text, input:password, input:file, select, textarea").val("");
+  $(element).find("input:radio, input:checkbox").removeAttr("checked").removeAttr("selected");
+};
+
+murrix.getFormData = function(element)
+{
+  var data = {};
+
+  jQuery.each($(element).find("input, select, textarea"), function(n, input)
+  {
+    $input = $(input)
+    data[$input.attr("name")] = $input.val();
+  });
+
+  return data;
+};
 
 murrix.makeArray = function(hash)
 {

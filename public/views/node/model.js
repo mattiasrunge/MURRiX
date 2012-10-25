@@ -166,20 +166,13 @@ var NodeModel = function(parentModel)
   };
 
 
-
   /* Creating */
   self.createLoading = ko.observable(false);
   self.createErrorText = ko.observable("");
-  self.createName = ko.observable("");
-  self.createDescription = ko.observable("");
 
   self.createSubmit = function(form)
   {
-    var nodeData = {};
-
-    nodeData.type        = $(form).attr("data-murrix-node-type");
-    nodeData.name        = self.createName();
-    nodeData.description = self.createDescription();
+    var nodeData = murrix.getFormData(form);
 
     self.createErrorText("");
 
@@ -197,8 +190,8 @@ var NodeModel = function(parentModel)
 
         if (error)
         {
-          console.log("NodeModel: Failed to create album: " + error);
-          self.createErrorText("Failed to create album, maybe you don't have rights");
+          console.log(error);
+          self.createErrorText(error);
           return;
         }
 
@@ -485,8 +478,6 @@ var NodeModel = function(parentModel)
   {
     self.createLoading(false);
     self.createErrorText("");
-    self.createName("");
-    self.createDescription("");
 
     self.tagLoading(false);
     self.tagErrorText("");

@@ -139,82 +139,99 @@
   </div>
 </div>
 
-<form class="modal" id="createAlbumModal" tabindex="-1" role="dialog" aria-labelledby="createAlbumModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="album">
+<form class="modal" id="createAlbumModal" tabindex="-1" role="dialog" aria-labelledby="createAlbumModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="createAlbumModalLabel">Create an album</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="disable: nodeModel.createLoading, value: nodeModel.createName"/>
-      <textarea placeholder="Description" name="createNodeDescription" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading, value: nodeModel.createDescription"></textarea>
+      <input type="hidden" name="type" value="album" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
     <button class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 
-<form class="modal" id="createPersonModal" tabindex="-1" role="dialog" aria-labelledby="createPersonModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="person">
+<form class="modal" id="createPersonModal" tabindex="-1" role="dialog" aria-labelledby="createPersonModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createPersonModalLabel">Create a person</h3>
+    <button type="createPersonModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="createAlbumModalLabel">Create a person</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="disable: nodeModel.createLoading, value: nodeModel.createName"/>
-      <textarea placeholder="Description" name="createNodeDescription" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading, value: nodeModel.createDescription"></textarea>
+      <input type="hidden" name="type" value="person" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <input placeholder="Birthname" type="text" name="birthname" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <p>
+        <label class="radio inline">
+          <input type="radio" name="gender" value="male" checked>
+          Male
+        </label>
+        <label class="radio inline">
+          <input type="radio" name="gender" value="female">
+          Female
+        </label>
+      </p>
+      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
     <button class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 
-<form class="modal" id="createLocationModal" tabindex="-1" role="dialog" aria-labelledby="createLocationModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="location">
+<form class="modal" id="createLocationModal" tabindex="-1" role="dialog" aria-labelledby="createLocationModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createLocationModalLabel">Create a location</h3>
+    <button type="createLocationModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="createAlbumModalLabel">Create a location</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind=" disable: nodeModel.createLoading, value: nodeModel.createName"/>
-      <textarea placeholder="Description" name="createNodeDescription" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading, value: nodeModel.createDescription"></textarea>
+      <input type="hidden" name="type" value="location" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
     <button class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 
-<form class="modal" id="createCameraModal" tabindex="-1" role="dialog" aria-labelledby="createCameraModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="camera">
+<form class="modal" id="createCameraModal" tabindex="-1" role="dialog" aria-labelledby="createCameraModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createCameraModalLabel">Create a camera</h3>
+    <button type="createCameraModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="createAlbumModalLabel">Create a camera</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.createLoading, value: nodeModel.createName"/>
-      <textarea placeholder="Description" name="createNodeDescription" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading, value: nodeModel.createDescription"></textarea>
+      <input type="hidden" name="type" value="camera" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
     <button class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 
-<form class="modal" id="createVehicleModal" tabindex="-1" role="dialog" aria-labelledby="createVehicleModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit" data-murrix-node-type="camera">
+<form class="modal" id="createVehicleModal" tabindex="-1" role="dialog" aria-labelledby="createVehicleModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createVehicleModalLabel">Create a vehicle</h3>
+    <button type="createVehicleModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="createAlbumModalLabel">Create a vehicle</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="createNodeName" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.createLoading, value: nodeModel.createName"/>
-      <textarea placeholder="Description" name="createNodeDescription" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading, value: nodeModel.createDescription"></textarea>
+      <input type="hidden" name="type" value="vechicle" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
     <button class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
+

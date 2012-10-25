@@ -48,6 +48,21 @@ murrix.model = function()
     });
   };
 
+  $("form.modal").on("show", function(form)
+  {
+    murrix.resetForm(form.target);
+  });
+
+  $("form.modal").on("shown", function(form)
+  {
+    $(form.target).find("input, textarea, select").get(0).focus();
+  });
+
+  $("form.modal").on("hidden", function(form)
+  {
+    murrix.resetForm(form.target);
+  });
+
   self.adminModel = new AdminModel(self);
   self.nodeModel = new NodeModel(self);
   self.searchModel = new SearchModel(self);

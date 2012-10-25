@@ -50,7 +50,7 @@ $(function()
         $(element).height($(element).height());
       }
       
-      $(element).toggle(ko.utils.unwrapObservable(value));
+      //$(element).toggle(ko.utils.unwrapObservable(value));
     },
     update: function(element, valueAccessor)
     {
