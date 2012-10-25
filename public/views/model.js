@@ -64,6 +64,7 @@ murrix.model = function()
   });
 
   self.adminModel = new AdminModel(self);
+  self.configModel = new ConfigModel(self);
   self.nodeModel = new NodeModel(self);
   self.searchModel = new SearchModel(self);
   self.welcomeModel = new WelcomeModel(self);

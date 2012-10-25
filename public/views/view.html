@@ -33,6 +33,12 @@
         </a>
       </li>
 
+      <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': configModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefFirstPrimary: configModel.show() ? ' ' : 'config'">
+          <i class="icon-wrench"></i> Configuration
+        </a>
+      </li>
+
     </ul>
 
   </div>
