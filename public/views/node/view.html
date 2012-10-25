@@ -74,12 +74,12 @@
 
 <div class="modal" id="editTagsModal" tabindex="-1" role="dialog" aria-labelledby="editTagsModalLabel" aria-hidden="true" style="display: none;">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button data-bind="disable: nodeModel.tagLoading" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="editTagsModalLabel">Edit tags</h3>
   </div>
   <div class="modal-body">
     <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px">
-      <input placeholder="Tag name" type="text" name="newTag" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.tagLoading, value: nodeModel.tagName" data-provide="typeahead"/>
+      <input placeholder="Tag name" type="text" name="newTag" style="width: 515px;" data-bind="disable: nodeModel.tagLoading, value: nodeModel.tagName" data-provide="typeahead"/>
     </form>
 
     <div data-bind="foreach: nodeModel.node().tags">
@@ -91,18 +91,18 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.tagErrorText() != '', text: nodeModel.tagErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button data-bind="disable: nodeModel.tagLoading" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
   </div>
 </div>
 
 <div class="modal" id="editAccessModal" tabindex="-1" role="dialog" aria-labelledby="editAccessModalLabel" aria-hidden="true" style="display: none;">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button data-bind="disable: nodeModel.groupAccessLoading" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="editAccessModalLabel">Edit accesses</h3>
   </div>
   <div class="modal-body">
     <form data-bind="submit: nodeModel.groupAccessSubmit" style="margin: 0px">
-      <input placeholder="Group name" type="text" id="groupAccessInput" name="groupAccessInput" style="width: 515px;" data-bind="hasfocus: true, disable: nodeModel.groupAccessLoading, value: nodeModel.groupAccessName" data-provide="typesearch"/>
+      <input placeholder="Group name" type="text" id="groupAccessInput" name="groupAccessInput" style="width: 515px;" data-bind="disable: nodeModel.groupAccessLoading, value: nodeModel.groupAccessName" data-provide="typesearch"/>
     </form>
 
     <h4>Groups with accesses</h4>
@@ -113,8 +113,8 @@
         <tr class="info">
           <td><i title="Administration access" class="icon-eye-open"></i>&nbsp;&nbsp;<span data-bind="textGroupAttribute: [ $data, 'name' ]"></span></td>
           <td>
-            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove">Remove</button>
-            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeReader">Revoke admin access</button>
+            <button data-bind="disable: nodeModel.groupAccessLoading" class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove">Remove</button>
+            <button data-bind="disable: nodeModel.groupAccessLoading" class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeReader">Revoke admin access</button>
           </td>
         </tr>
       <!-- /ko -->
@@ -123,8 +123,8 @@
         <tr>
           <td><i title="Read access" class="icon-edit"></i>&nbsp;&nbsp;<span data-bind="textGroupAttribute: [ $data, 'name' ]"></span></td>
           <td>
-            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove">Remove</button>
-            <button class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">Grant admin access</button>
+            <button data-bind="disable: nodeModel.groupAccessLoading" class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove">Remove</button>
+            <button data-bind="disable: nodeModel.groupAccessLoading" class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">Grant admin access</button>
           </td>
         </tr>
       <!-- /ko -->
@@ -135,13 +135,13 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.groupAccessErrorText() != '', text: nodeModel.groupAccessErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button data-bind="disable: nodeModel.groupAccessLoading" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
   </div>
 </div>
 
 <form class="modal" id="createAlbumModal" tabindex="-1" role="dialog" aria-labelledby="createAlbumModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button data-bind="disable: nodeModel.createLoading" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="createAlbumModalLabel">Create an album</h3>
   </div>
   <div class="modal-body">
@@ -151,14 +151,14 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button class="btn btn-primary" type="submit">Create</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 
 <form class="modal" id="createPersonModal" tabindex="-1" role="dialog" aria-labelledby="createPersonModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="createPersonModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button data-bind="disable: nodeModel.createLoading" type="createPersonModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="createAlbumModalLabel">Create a person</h3>
   </div>
   <div class="modal-body">
@@ -179,14 +179,14 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button class="btn btn-primary" type="submit">Create</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 
 <form class="modal" id="createLocationModal" tabindex="-1" role="dialog" aria-labelledby="createLocationModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="createLocationModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button data-bind="disable: nodeModel.createLoading" type="createLocationModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="createAlbumModalLabel">Create a location</h3>
   </div>
   <div class="modal-body">
@@ -196,14 +196,14 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button class="btn btn-primary" type="submit">Create</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 
 <form class="modal" id="createCameraModal" tabindex="-1" role="dialog" aria-labelledby="createCameraModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="createCameraModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button data-bind="disable: nodeModel.createLoading" type="createCameraModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="createAlbumModalLabel">Create a camera</h3>
   </div>
   <div class="modal-body">
@@ -213,14 +213,14 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button class="btn btn-primary" type="submit">Create</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 
 <form class="modal" id="createVehicleModal" tabindex="-1" role="dialog" aria-labelledby="createVehicleModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
-    <button type="createVehicleModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button data-bind="disable: nodeModel.createLoading" type="createVehicleModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="createAlbumModalLabel">Create a vehicle</h3>
   </div>
   <div class="modal-body">
@@ -230,8 +230,8 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button class="btn btn-primary" type="submit">Create</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
   </div>
 </form>
 

@@ -95,13 +95,13 @@
     <h3 id="adminChangePasswordModalLabel">Change password</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Password" type="password" name="password1" style="width: 515px;" data-bind="hasfocus: true, disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword1"/>
+      <input placeholder="Password" type="password" name="password1" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword1"/>
       <input placeholder="Repeat password" type="password" name="password2" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword2"/>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: adminModel.changePasswordErrorText() != '', text: adminModel.changePasswordErrorText"></p>
-    <button data-bind="disable: adminModel.changePasswordLoading" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button data-bind="disable: adminModel.changePasswordLoading" class="btn btn-primary">Change</button>
+    <button data-bind="disable: adminModel.changePasswordLoading" type="button" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: adminModel.changePasswordLoading" type="submit" class="btn btn-primary">Change</button>
   </div>
 </form>
 
@@ -116,8 +116,8 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: adminModel.groupSaveErrorText() != '', text: adminModel.groupSaveErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button class="btn btn-primary" type="submit">Save</button>
+    <button data-bind="disable: adminModel.groupSaveLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: adminModel.groupSaveLoading" class="btn btn-primary" type="submit">Save</button>
   </div>
 </form>
 
@@ -132,7 +132,7 @@
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: adminModel.userSaveErrorText() != '', text: adminModel.userSaveErrorText"></p>
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button class="btn btn-primary" type="submit">Save</button>
+    <button data-bind="disable: adminModel.userSaveLoading" class="btn" data-dismiss="modal" type="button" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: adminModel.userSaveLoading" class="btn btn-primary" type="submit">Save</button>
   </div>
 </form>
