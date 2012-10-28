@@ -50,7 +50,7 @@ murrix.model = function()
 
   $("form.modal").on("show", function(form)
   {
-    murrix.resetForm(form.target);
+    //murrix.resetForm(form.target);
   });
 
   $("form.modal").on("shown", function(form)

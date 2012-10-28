@@ -1,4 +1,4 @@
-<div class="main-overlay" data-bind="slideVisible: adminModel.show">
+<div class="main-overlay" data-bind="slideVisible: adminModel.show() && currentUser() && currentUser().admin()">
   <div class="main-overlay-content">
 
     <div class="navbar navbar-color navbar-inverse">
@@ -61,7 +61,7 @@
             <tbody>
 
             <!-- ko foreach: adminModel.users -->
-              <tr>
+              <tr data-bind="css: { info: $data.admin }">
                 <td>
                   <img draggable="false" src="" alt="" style="width: 44px; height: 44px;" class="pull-left" data-bind="srcNodeProfilePicture: [ $data._person(), 44, 44, 1 ]"/>
                   <blockquote style="margin-left: 52px; margin-bottom: 0px;" draggable="true" data-bind="event: { dragstart : $parent.adminModel.userDragStart, dragend: $parent.adminModel.userDragEnd }">
@@ -125,8 +125,15 @@
     <h3 id="saveUserModalLabel" data-bind="text: adminModel.userSaveId() === false ? 'Create user' : 'Edit user'"></h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="userSaveName" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, value: adminModel.userSaveName"/>
-      <input placeholder="Username" type="text" name="userSaveUsername" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, value: adminModel.userSaveUsername"/>
+    <input placeholder="Name" type="text" name="userSaveName" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, value: adminModel.userSaveName"/>
+    <input placeholder="Username" type="text" name="userSaveUsername" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, value: adminModel.userSaveUsername"/>
+
+    <input placeholder="Search for person" type="text" id="adminUserPersonInput" name="adminUserPersonInput" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading" data-provide="typesearch"/>
+
+    <div data-bind="if: adminModel.userSavePerson() !== false">
+      <img class="pull-left img-polaroid" draggable="false" src="" alt="" style="width: 44px; height: 44px;" data-bind="srcNodeProfilePicture: [ adminModel.userSavePerson(), 44, 44, 1 ]"/>
+      <h5 style="padding-left: 60px"><span data-bind="textNodeAttribute: [ adminModel.userSavePerson(), 'name' ]"></span>&nbsp;<i style="cursor: pointer;" title="Disconnect person" data-bind="click: adminModel.userSaveClearPerson" class="icon-remove"></i></h5>
+    </div>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: adminModel.userSaveErrorText() != '', text: adminModel.userSaveErrorText"></p>

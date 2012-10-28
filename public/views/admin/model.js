@@ -287,12 +287,59 @@ var AdminModel = function(parentModel)
   self.userSaveId = ko.observable(false);
   self.userSaveName = ko.observable("");
   self.userSaveUsername = ko.observable("");
+  self.userSavePerson = ko.observable(false);
 
+  $("#adminUserPersonInput").typesearch({
+    source: function(query, callback)
+    {
+      murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" }, type: "person" }, options: { collection: "nodes" } }, function(error, nodeDataList)
+      {
+        if (error)
+        {
+          console.log(error);
+          callback([]);
+        }
+
+        var resultList = [];
+
+        for (var key in nodeDataList)
+        {
+          var imgUrl = "http://placekitten.com/g/32/32";
+
+          if (nodeDataList[key]._profilePicture)
+          {
+            imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
+          }
+
+          var item = {};
+          item.name = nodeDataList[key].name;
+          item.key = nodeDataList[key]._id;
+          item.html = "<li ><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
+
+          resultList.push(item);
+        }
+
+        callback(resultList);
+      });
+    },
+    selectFn: function(key)
+    {
+      $("#adminUserPersonInput").val("");
+      self.userSavePerson(key);
+    }
+  });
+
+  self.userSaveClearPerson = function()
+  {
+    self.userSavePerson(false);
+  };
+  
   self.userEditClicked = function(element)
   {
     self.userSaveId(element._id());
     self.userSaveName(element.name());
     self.userSaveUsername(element.username());
+    self.userSavePerson(element._person());
     return true;
   };
 
@@ -317,10 +364,19 @@ var AdminModel = function(parentModel)
     if (self.userSaveId() !== false)
     {
       userData._id = self.userSaveId();
+
+      for (var n = 0; n < self.users().length; n++)
+      {
+        if (self.users()[n]._id() === self.userSaveId())
+        {
+          userData = ko.mapping.toJS(self.users()[n]);
+        }
+      }
     }
 
     userData.name = self.userSaveName();
     userData.username = self.userSaveUsername();
+    userData._person = self.userSavePerson();
 
     self.userSaveErrorText("");
 
@@ -346,6 +402,7 @@ var AdminModel = function(parentModel)
         self.userSaveId(false);
         self.userSaveName("");
         self.userSaveUsername("");
+        self.userSavePerson(false);
         self.userSaveErrorText("");
 
         self._loadUsers();
