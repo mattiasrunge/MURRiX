@@ -4,10 +4,10 @@ var TimelineModel = function(parentModel)
   var self = this;
 
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { $.murrix.updatePath(value, self.path); });
+  parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
   self.visible = ko.observable(false);
-  self.show = ko.observable(false);
+  self.show = ko.observable(true);
   self.showButton = ko.observable(true);
   
   parentModel.path().primary.subscribe(function(value)
@@ -30,7 +30,7 @@ var TimelineModel = function(parentModel)
       self.show(parentModel.path().primary().action === "" && self.visible());
     }
   });
-
+/*
   self.show.subscribe(function(value)
   {
     if (value)
@@ -41,9 +41,9 @@ var TimelineModel = function(parentModel)
         self.timeline.setVisibleChartRangeAuto();
       }, 500);
     }
-  });
+  });*/
   
-  self.dataList = [];
+  /*self.dataList = [];
   self.timeline = new links.Timeline($(".background-timeline-content").get(0));
   
   parentModel.items.subscribe(function(value)
@@ -97,7 +97,7 @@ var TimelineModel = function(parentModel)
   self.toggleTimeline = function()
   {
     self.visible(!self.visible());
-  };
+  };*/
 };
 
  

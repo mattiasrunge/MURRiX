@@ -36,7 +36,7 @@ var MapModel = function(parentModel)
 
     for (n = 0; n < value.length; n++)
     {
-      if (typeof value[n].where == "object")
+      if (typeof value[n].where === "object")
       {
         console.log(value[n].name(), value[n].where.latitude(), value[n].where.longitude());
         self.markers.push(new google.maps.Marker({

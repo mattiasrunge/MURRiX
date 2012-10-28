@@ -15,7 +15,7 @@
         </a>
       </li>
 
-      <li data-bind="adeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
           <i class="icon-bullhorn"></i> News
         </a>
@@ -87,21 +87,19 @@
 
         <div class="divider-vertical pull-right"></div>
         
-        <form class="navbar-search pull-right" data-bind="submit: searchModel.searchSubmit">
+        <form class="navbar-search pull-right" data-bind="fadeVisible: currentUser, submit: searchModel.searchSubmit">
           <input type="text" class="search-query navbar-search-input" placeholder="Search" data-provide="typesearch" data-bind="value: searchModel.queryInput"/>
         </form>
 
-        <a class="nav pull-right" rel="tooltip" title="Go to search page" style="padding: 10px 15px 10px;" href="#" data-placement="bottom">
+        <a class="nav pull-right" rel="tooltip" title="Go to search page" style="padding: 10px 15px 10px;" href="#" data-placement="bottom" data-bind="fadeVisible: currentUser">
           <i class="icon-search icon-white"></i>
         </a>
-        
-        <div class="divider-vertical pull-right" data-bind="visible: currentUser"></div>
-            
+
         <a class="nav pull-right" rel="tooltip" title="Go to start page" style="padding: 10px 15px 10px;" href="#" data-placement="bottom">
           <i class="icon-home icon-white"></i>
         </a>
 
-        <a class="nav pull-right" rel="tooltip" data-bind="visible: currentUser, click: randomClicked" title="Go to random node" style="padding: 10px 15px 10px;" href="#"  data-placement="bottom">
+        <a class="nav pull-right" rel="tooltip" data-bind="fadeVisible: currentUser, click: randomClicked" title="Go to random node" style="padding: 10px 15px 10px;" href="#"  data-placement="bottom">
           <i class="icon-random icon-white"></i>
         </a>
 

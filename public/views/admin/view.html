@@ -32,18 +32,16 @@
                 </td>
                 <td data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: adminModel.groupDropUserHandler }" style="width: 250px;">
 
-                  <div class="well" style="margin-bottom: 0px;">
+                  <div class="well" style="margin-bottom: 0px; overflow: auto; max-height: 200px; background-color: #F9F9F9">
 
-                    <!-- ko if: adminModel.groupMarkDropZone() -->
-                    <div style="text-align: center;"><strong>Drop user here!</strong></div>
+                    <!-- ko if: adminModel.groupMarkDropZone() || adminModel.groupUsers($data)().length === 0 -->
+                    <div class="text-warning" style="text-align: center;"><strong>Drop user here!</strong></div>
                     <!-- /ko -->
 
                     <!-- ko if: !adminModel.groupMarkDropZone() -->
-                      <!-- ko foreach: adminModel.users -->
-                        <!-- ko if: $data._groups && murrix.inArray($parent._id(), $data._groups()) -->
-                          <div><i style="cursor: pointer;" title="Remove user from group" data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-remove"></i>&nbsp;<span data-bind="text: $data.name"></span></div>
-                        <!-- /ko -->
-                      <!-- /ko -->
+                      <!-- ko foreach: adminModel.groupUsers($data) -->
+                        <div><i style="cursor: pointer;" title="Remove user from group" data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-remove"></i>&nbsp;<span data-bind="text: $data.name"></span></div>
+                        <!-- /ko --> <!-- /ko -->
                     <!-- /ko -->
                   </div>
                   

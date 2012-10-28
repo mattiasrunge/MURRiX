@@ -21,11 +21,11 @@
 
 .background-timeline {
   position: absolute;
+  top: 40px;
   bottom: 0px;
-  left: 0px;
-  right: 0px;
-  height: 410px;
-  z-index: 0;
+  left: 271px;
+  width: 0px;
+  z-index: 1;
 }
 
 .background-timeline-background {
@@ -44,6 +44,18 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
+}
+
+.timeline-dot {
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  left: 21px;
+  background-color: white;
 }
 
 .btn-spacer-small {

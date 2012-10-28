@@ -123,6 +123,21 @@ var AdminModel = function(parentModel)
     });
   };
 
+  self.groupUsers = function(group)
+  {
+    var filtered = ko.observableArray();
+
+    for (var n = 0; n < self.users().length; n++)
+    {
+      if (murrix.inArray(group._id(), self.users()[n]._groups()))
+      {
+        filtered.push(self.users()[n]);
+      }
+    }
+  
+    return filtered;
+  };
+
   self.groupMarkDropZone = ko.observable(false);
 
   self.groupRemoveUserHandler = function(group, user)
