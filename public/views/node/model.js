@@ -298,7 +298,7 @@ var NodeModel = function(parentModel)
     limit: 20,
     source: function(query, callback)
     {
-      murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { collection: "groups", limit: 20 } }, function(error, groupDataList)
+      murrix.server.emit("findGroups", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { limit: 20 } }, function(error, groupDataList)
       {
         if (error)
         {
@@ -319,6 +319,8 @@ var NodeModel = function(parentModel)
           {
             resultList.push(item);
           }
+
+          murrix.cache.addGroupData(groupDataList[key]);
         }
 
         callback(resultList);

@@ -51,7 +51,7 @@ var AdminModel = function(parentModel)
   {
     self.users.removeAll();
 
-    murrix.server.emit("getUsers", {}, function(error, userDataList)
+    murrix.server.emit("findUsers", {}, function(error, userDataList)
     {
       if (error)
       {
@@ -65,7 +65,7 @@ var AdminModel = function(parentModel)
 
       for (var id in userDataList)
       {
-        userList.push(ko.mapping.fromJS(userDataList[id]));
+        userList.push(murrix.cache.addUserData(userDataList[id]));
         count++;
       }
 
@@ -89,7 +89,7 @@ var AdminModel = function(parentModel)
   {
     self.groups.removeAll();
   
-    murrix.server.emit("getGroups", {}, function(error, groupDataList)
+    murrix.server.emit("findGroups", {}, function(error, groupDataList)
     {
       if (error)
       {
@@ -103,7 +103,7 @@ var AdminModel = function(parentModel)
 
       for (var id in groupDataList)
       {
-        groupList.push(ko.mapping.fromJS(groupDataList[id]));
+        groupList.push(murrix.cache.addGroupData(groupDataList[id]));
         count++;
       }
 

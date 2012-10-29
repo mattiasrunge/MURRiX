@@ -7,11 +7,15 @@ murrix.cache = new function()
 
   self.nodes = {};
   self.items = {};
+  self.groups = {};
+  self.users = {};
 
   self.clear = function()
   {
     self.nodes = {};
     self.items = {};
+    self.groups = {};
+    self.users = {};
   };
 
   self.addNodeData = function(nodeData)
@@ -184,6 +188,52 @@ murrix.cache = new function()
     return self.items[itemData._id];
   };
 
+  self.addGroupData = function(groupData)
+  {
+    if (groupData === false)
+    {
+      return false;
+    }
+
+    if (!self.groups[groupData._id])
+    {
+      console.log("Could not find mapped index, group is not cached, id " + groupData._id);
+
+      self.groups[groupData._id] = ko.mapping.fromJS(groupData);
+    }
+    else
+    {
+      console.log("Group " + groupData._id + " already cached updating cache...");
+
+      ko.mapping.fromJS(groupData, self.groups[groupData._id]);
+    }
+
+    return self.groups[groupData._id];
+  };
+
+  self.addUserData = function(userData)
+  {
+    if (userData === false)
+    {
+      return false;
+    }
+
+    if (!self.users[userData._id])
+    {
+      console.log("Could not find mapped index, user is not cached, id " + userData._id);
+
+      self.users[userData._id] = ko.mapping.fromJS(userData);
+    }
+    else
+    {
+      console.log("User " + userData._id + " already cached updating cache...");
+
+      ko.mapping.fromJS(userData, self.users[userData._id]);
+    }
+
+    return self.users[userData._id];
+  };
+  
   self.getNodes = function(idList, callback)
   {
     var nodeList = {};
@@ -235,7 +285,7 @@ murrix.cache = new function()
       {
         itemList[idList[n]] = self.items[idList[n]];
       }
-            else
+      else
       {
         idRequestList.push(idList[n]);
       }
@@ -261,6 +311,86 @@ murrix.cache = new function()
       }
 
       callback(null, itemList);
+    });
+  };
+
+  self.getGroups = function(idList, callback)
+  {
+    var groupList = {};
+    var idRequestList = [];
+
+    for (var n = 0; n < idList.length; n++)
+    {
+      if (self.groups[idList[n]])
+      {
+        groupList[idList[n]] = self.groups[idList[n]];
+      }
+      else
+      {
+        idRequestList.push(idList[n]);
+      }
+    }
+
+    if (idRequestList.length === 0)
+    {
+      callback(null, groupList);
+      return;
+    }
+
+    murrix.server.emit("findGroups", { query: { _id: { $in: idRequestList } }, options: {} }, function(error, groupDataList)
+    {
+      if (error)
+      {
+        callback(error, []);
+        return;
+      }
+
+      for (var id in groupDataList)
+      {
+        groupList[id] = self.addGroupData(groupDataList[id]);
+      }
+
+      callback(null, groupList);
+    });
+  };
+
+  self.getUsers = function(idList, callback)
+  {
+    var userList = {};
+    var idRequestList = [];
+
+    for (var n = 0; n < idList.length; n++)
+    {
+      if (self.users[idList[n]])
+      {
+        userList[idList[n]] = self.users[idList[n]];
+      }
+      else
+      {
+        idRequestList.push(idList[n]);
+      }
+    }
+
+    if (idRequestList.length === 0)
+    {
+      callback(null, userList);
+      return;
+    }
+
+    murrix.server.emit("findUsers", { query: { _id: { $in: idRequestList } }, options: {} }, function(error, userListList)
+    {
+      if (error)
+      {
+        callback(error, []);
+        return;
+      }
+
+      for (var id in userListList)
+      {
+        userList[id] = self.addUserData(userListList[id]);
+      }
+
+      callback(null, userList);
     });
   };
 };
@@ -337,6 +467,32 @@ murrix.file = new function()
   };
 };
 
+murrix.loadProfilePicture = function(element, pictureId, width, height, square)
+{
+  if (!pictureId)
+  {
+    $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+    return;
+  }
+
+  var src = "/preview?id=" + pictureId + "&width=" + width + "&height=" + height + "&square=" + square;
+
+  var image = new Image();
+
+  image.onload = function()
+  {
+    $(element).attr("src", src);
+  };
+
+  image.onerror = function()
+  {
+    $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height);// TODO: Set error image
+  };
+
+  image.src = src;
+
+  return;
+};
 
 murrix.dragNoopHandler = function(element, event)
 {

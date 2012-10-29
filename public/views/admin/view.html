@@ -63,7 +63,7 @@
             <!-- ko foreach: adminModel.users -->
               <tr data-bind="css: { info: $data.admin }">
                 <td>
-                  <img draggable="false" src="" alt="" style="width: 44px; height: 44px;" class="pull-left" data-bind="srcNodeProfilePicture: [ $data._person(), 44, 44, 1 ]"/>
+                  <img draggable="false" src="" alt="" style="width: 44px; height: 44px;" class="pull-left" data-bind="srcUserProfilePicture: [ $data._id(), 44, 44, 1 ]"/>
                   <blockquote style="margin-left: 52px; margin-bottom: 0px;" draggable="true" data-bind="event: { dragstart : $parent.adminModel.userDragStart, dragend: $parent.adminModel.userDragEnd }">
                     <p>
                       <span data-bind="text: $data.name"></span>

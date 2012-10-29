@@ -191,101 +191,101 @@ io.sockets.on("connection", function(client)
   /* User API */
   client.on("login", function(data, callback)
   {
-    user.login(client.handshake.session, data.username, data.password, function(error, userData)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, userData);
-      }
-    });
+      console.log("No callback supplied for user.login!");
+      return;
+    }
+  
+    user.login(client.handshake.session, data.username, data.password, callback);
   });
 
   client.on("logout", function(data, callback)
   {
-    user.logout(client.handshake.session, function(error)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error);
-      }
-    });
+      console.log("No callback supplied for user.logout!");
+      return;
+    }
+  
+    user.logout(client.handshake.session, callback);
   });
 
   client.on("changePassword", function(data, callback)
   {
-    user.changePassword(client.handshake.session, data.id, data.password, function(error)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error);
-      }
-    });
+      console.log("No callback supplied for user.changePassword!");
+      return;
+    }
+  
+    user.changePassword(client.handshake.session, data.id, data.password, callback);
   });
 
-  client.on("getGroups", function(data, callback)
+  client.on("findGroups", function(data, callback)
   {
-    user.getGroups(client.handshake.session, function(error, groupDataList)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, groupDataList);
-      }
-    });
-  });
+      console.log("No callback supplied for user.findGroups!");
+      return;
+    }
 
-  client.on("getUsers", function(data, callback)
+    user.findGroups(client.handshake.session, data.query || {}, data.options || {}, callback);
+  });
+  
+  client.on("findUsers", function(data, callback)
   {
-    user.getUsers(client.handshake.session, function(error, userDataList)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, userDataList);
-      }
-    });
+      console.log("No callback supplied for user.findUsers!");
+      return;
+    }
+
+    user.findUsers(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
   client.on("saveGroup", function(data, callback)
   {
-    user.saveGroup(client.handshake.session, data, function(error, groupData)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, groupData);
-      }
-    });
+      console.log("No callback supplied for user.saveGroup!");
+      return;
+    }
+  
+    user.saveGroup(client.handshake.session, data, callback);
   });
 
   client.on("saveUser", function(data, callback)
   {
-    user.saveUser(client.handshake.session, data, function(error, userData)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error, userData);
-      }
-    });
+      console.log("No callback supplied for user.saveUser!");
+      return;
+    }
+  
+    user.saveUser(client.handshake.session, data, callback);
   });
 
   client.on("removeGroup", function(data, callback)
   {
-    user.removeGroup(client.handshake.session, data, function(error)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error);
-      }
-    });
+      console.log("No callback supplied for user.removeGroup!");
+      return;
+    }
+  
+    user.removeGroup(client.handshake.session, data, callback);
   });
 
   client.on("removeUser", function(data, callback)
   {
-    user.removeUser(client.handshake.session, data, function(error)
+    if (!callback)
     {
-      if (callback)
-      {
-        callback(error);
-      }
-    });
+      console.log("No callback supplied for user.removeUser!");
+      return;
+    }
+  
+    user.removeUser(client.handshake.session, data, callback);
   });
 
   
@@ -356,7 +356,6 @@ io.sockets.on("connection", function(client)
     nodeManager.findRandom(client.handshake.session, data, callback);
   });
 
-
   client.on("find", function(data, callback)
   {
     if (!callback)
@@ -365,7 +364,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    nodeManager.find(client.handshake.session, data.query, data.options, callback);
+    nodeManager.find(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
   client.on("count", function(data, callback)
@@ -376,7 +375,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    nodeManager.count(client.handshake.session, data.query, data.options, callback);
+    nodeManager.count(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
   client.on("distinct", function(data, callback)
@@ -387,7 +386,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    nodeManager.distinct(client.handshake.session, data.query, data.options, callback);
+    nodeManager.distinct(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
 

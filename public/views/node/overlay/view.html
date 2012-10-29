@@ -92,7 +92,7 @@
 
             <div class="row-fluid">
               <div class="span2">
-                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcNodeProfilePicture: [ currentUser()._person(), 40, 40, 1 ]"/>
+                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ currentUser()._id(), 40, 40, 1 ]"/>
               </div>
               <blockquote class="span10">
                 <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
@@ -108,7 +108,7 @@
           
             <div class="row-fluid">
               <div class="span2">
-                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcNodeProfilePicture: [ $data.added._by(), 40, 40, 1 ]"/>
+                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 40, 40, 1 ]"/>
               </div>
               <blockquote class="span10">
                 <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>

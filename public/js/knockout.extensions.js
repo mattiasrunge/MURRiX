@@ -181,7 +181,9 @@ $(function()
       var value = valueAccessor();
       var params = ko.utils.unwrapObservable(value);
 
-      if (params[0] === null ||  params[0] === "")
+      var id = params[0] || false;
+      
+      if (!id || id === null || id === "")
       {
         $(element).text("Unknown");
         return;
@@ -189,7 +191,7 @@ $(function()
 
       $(element).text("Loading " + params[1] + "...");
 
-      murrix.server.emit("getUsers", {}, function(error, userDataList)
+      murrix.cache.getUsers([ id ], function(error, userList)
       {
         if (error)
         {
@@ -197,20 +199,9 @@ $(function()
           return;
         }
 
-        var groupData = null;
-
-        for (var n = 0; n < userDataList.length; n++)
+        if (userList[id])
         {
-          if (userDataList[n]._id === params[0])
-          {
-            groupData = userDataList[n];
-            break;
-          }
-        }
-
-        if (groupData)
-        {
-          $(element).text(groupData[params[1]]);
+          $(element).text(userList[id][params[1]]());
         }
         else
         {
@@ -219,6 +210,8 @@ $(function()
       });
     }
   };
+
+  
 
   /* Knockout src, get profile picture async */
   ko.bindingHandlers.srcNodeProfilePicture = {
@@ -252,28 +245,88 @@ $(function()
 
         if (nodeList[id])
         {
+          
           if (!nodeList[id]._profilePicture || !nodeList[id]._profilePicture())
           {
             $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
             return;
           }
 
-          var src = "/preview?id=" + nodeList[id]._profilePicture() + "&width=" + width + "&height=" + height + "&square=" + square;
+          murrix.loadProfilePicture(element, nodeList[id]._profilePicture(), width, height, square);
 
-          var image = new Image();
+          return;
+        }
 
-          image.onload = function()
+        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+      });
+    }
+  };
+
+  /* Knockout src, get profile picture async */
+  ko.bindingHandlers.srcUserProfilePicture = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var params = ko.utils.unwrapObservable(value);
+
+      var id = params[0] || false;
+      var width = params[1] || 0;
+      var height = params[2] || 0;
+      var square = params[3] || 0;
+
+      if (!id || id === null || id === "")
+      {
+        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+        console.log("No id given to srcUserProfilePicture");
+        return;
+      }
+
+      $(element).attr("src", "img/120x120_spinner.gif");
+
+      murrix.cache.getUsers([ id ], function(error, userList)
+      {
+        if (error)
+        {
+          $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+          console.log("error received from the server: " + error);
+          return;
+        }
+
+        if (userList[id])
+        {
+          if (!userList[id]._person || !userList[id]._person())
           {
-            $(element).attr("src", src);
-          };
-          
-          image.onerror = function()
-          {
-            $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height);// TODO: Set error image
-          };
-          
-          image.src = src;
+            $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+            return;
+          }
 
+
+          murrix.cache.getNodes([ userList[id]._person() ], function(error, nodeList)
+          {
+            if (error)
+            {
+              $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+              console.log("error received from the server: " + error);
+              return;
+            }
+
+            if (nodeList[userList[id]._person()])
+            {
+
+              if (!nodeList[userList[id]._person()]._profilePicture || !nodeList[userList[id]._person()]._profilePicture())
+              {
+                $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+                return;
+              }
+
+              murrix.loadProfilePicture(element, nodeList[userList[id]._person()]._profilePicture(), width, height, square);
+
+              return;
+            }
+
+            $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+          });
+          
           return;
         }
 
