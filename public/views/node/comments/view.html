@@ -10,33 +10,50 @@
       </div>
     </div>
 
-    <div class="row-fluid well" style="width: auto;">
-      <div class="span2">
-        <img src="" alt="" style="width: 133px; height: 133px;" data-bind="if: currentUser(), srcUserProfilePicture: [ currentUser()._id(), 133, 133, 1 ]"/>
-      </div>
-      <blockquote class="span8" style="margin-bottom: 0px">
-        <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.commentsModel.commentSubmit">
-          <textarea style="width: 572px; height: 80px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.commentsModel.commentLoading, value: nodeModel.commentsModel.commentText"></textarea><br/>
-          <span class="text-error pull-left" data-bind="disable: nodeModel.commentsModel.commentLoading, text: nodeModel.commentsModel.commentErrorText"></span>
-          <button type="submit" class="btn btn-primary pull-right">Comment</button>
-        </form>
-      </blockquote>
+
+    <div class="well" style="padding-bottom: 0px;">
+      <table class="table table-condensed table-striped table-hover">
+        <tbody>
+
+          <tr>
+            <td class="media">
+              <a class="pull-left" href="#">
+                <img class="media-object img-polaroid" src="" alt="" style="width: 123px; height: 123px;" data-bind="srcUserProfilePicture: [ currentUser()._id(), 123, 123, 1 ]"/>
+              </a>
+              <div class="media-body">
+                <blockquote style="margin-bottom: 0px; min-height: 133px;">
+                  <form style="margin-bottom: 0px; position: relative;" data-bind="submit: nodeModel.commentsModel.commentSubmit">
+                    <textarea style="position: absolute; left: 0px; right: 0px; height: 80px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.commentsModel.commentLoading, value: nodeModel.commentsModel.commentText"></textarea>
+                    <div style="position: absolute; left: 0px; right: 0px; top: 100px;">
+                      <span class="text-error pull-left" data-bind="disable: nodeModel.commentsModel.commentLoading, text: nodeModel.commentsModel.commentErrorText"></span>
+                      <button type="submit" class="btn btn-primary pull-right">Comment</button>
+                    </div>
+                  </form>
+                </blockquote>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ko foreach: nodeModel.node().comments -->
+            <tr>
+              <td class="media">
+                <a class="pull-left" href="#">
+                  <img class="media-object img-polaroid" src="" alt="" style="width: 123px; height: 123px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 123, 123, 1 ]"/>
+                </a>
+                <div class="media-body">
+                  <blockquote style="margin-bottom: 0px; min-height: 133px;">
+                    <div style="padding-bottom: 5px; min-height: 100px;" data-bind="text: $data.text"></div>
+                    <small><span data-bind="htmlTimeAgo: $data.added.timestamp()"></span> by <a data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></a></small>
+                  </blockquote>
+                </div>
+              </td>
+            </tr>
+          <!-- /ko -->
+
+        </tbody>
+      </table>
     </div>
-
-    <!-- ko foreach: nodeModel.node().comments -->
-
-    <div class="row-fluid well" style="width: auto;">
-      <div class="span2">
-        <img src="" alt="" style="width: 133px; height: 133px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 133, 133, 1 ]"/>
-      </div>
-      <blockquote class="span8" style="margin-bottom: 0px">
-        <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
-        <small><span data-bind="htmlTimeAgo: $data.added.timestamp()"></span> by <a data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></a></small>
-      </blockquote>
-    </div>
-
-    <!-- /ko --> 
-
+    
   </div>
   <div class="main-overlay-background"></div>
 </div>

@@ -55,7 +55,37 @@ var NodeModel = function(parentModel)
 
     if (self.node())
     {
-      murrix.server.emit("find", { query: { _parents: self.node()._id(), what: "file" }, options: "items" }, function(error, itemDataList)
+      var query = { $or: [] };
+
+      query.what = "file";
+      query.$or.push({ _parents: self.node()._id()});
+
+      
+      switch (self.node().type())
+      {
+        case "album":
+        {
+          break;
+        }
+        case "person":
+        {
+          break;
+        }
+        case "location":
+        {
+          break;
+        }
+        case "camera":
+        {
+          break;
+        }
+        case "vehicle":
+        {
+          break;
+        }
+      };
+    
+      murrix.server.emit("find", { query: query, options: "items" }, function(error, itemDataList)
       {
         if (error)
         {
