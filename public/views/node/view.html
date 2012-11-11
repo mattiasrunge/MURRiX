@@ -111,20 +111,20 @@
 
       <!-- ko foreach: nodeModel.node()._admins -->
         <tr class="info">
-          <td><i title="Administration access" class="icon-eye-open"></i>&nbsp;&nbsp;<span data-bind="textGroupAttribute: [ $data, 'name' ]"></span></td>
+          <td><i title="Administration access" class="icon-edit"></i>&nbsp;&nbsp;<span data-bind="textGroupAttribute: [ $data, 'name' ]"></span></td>
           <td>
-            <button data-bind="disable: nodeModel.groupAccessLoading" class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove">Remove</button>
-            <button data-bind="disable: nodeModel.groupAccessLoading" class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeReader">Revoke admin access</button>
+            <button data-bind="disable: $parent.nodeModel.groupAccessLoading, click: $parent.nodeModel.groupAccessRemove" class="btn btn-mini btn-link pull-right">Remove</button>
+            <button data-bind="disable: $parent.nodeModel.groupAccessLoading, click: $parent.nodeModel.groupAccessMakeReader" class="btn btn-mini btn-link pull-right">Revoke admin access</button>
           </td>
         </tr>
       <!-- /ko -->
       
       <!-- ko foreach: nodeModel.node()._readers -->
         <tr>
-          <td><i title="Read access" class="icon-edit"></i>&nbsp;&nbsp;<span data-bind="textGroupAttribute: [ $data, 'name' ]"></span></td>
+          <td><i title="Read access" class="icon-eye-open"></i>&nbsp;&nbsp;<span data-bind="textGroupAttribute: [ $data, 'name' ]"></span></td>
           <td>
-            <button data-bind="disable: nodeModel.groupAccessLoading" class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove">Remove</button>
-            <button data-bind="disable: nodeModel.groupAccessLoading" class="btn btn-mini btn-link pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">Grant admin access</button>
+            <button data-bind="disable: $parent.nodeModel.groupAccessLoading, click: $parent.nodeModel.groupAccessRemove" class="btn btn-mini btn-link pull-right">Remove</button>
+            <button data-bind="disable: $parent.nodeModel.groupAccessLoading, click: $parent.nodeModel.groupAccessMakeAdmin" class="btn btn-mini btn-link pull-right">Grant admin access</button>
           </td>
         </tr>
       <!-- /ko -->
