@@ -60,9 +60,127 @@ var OverlayModel = function(parentModel)
       }
 
       self.item(itemList[itemId]);
+
+
+
+      
     });
   });
 
+  self.timeout = null;
+  
+  $(window).on("resize", function()
+  {
+    if (self.timeout === null)
+    {
+      self.timeout = setTimeout(function()
+      {
+        self.detectFaces();
+      }, 500);
+    }
+  });
+
+  self.detectFaces = function()
+  {
+    $(".face").remove();
+  
+    murrix.server.emit("detectFaces", self.item()._id(), function(error, coords)
+    {
+      if (error)
+      {
+        console.log(error);
+        self.timeout = null;
+        return;
+      }
+
+      console.log("coords", coords);
+/*
+    coords.push({ x: 2047, y: 160, w: 116, h: 116 });
+    coords.push({ x: 1467, y: 2511, w: 105, h: 105 });
+    coords.push({ x: 2908, y: 2420, w: 117, h: 117 });
+    coords.push({ x: 1547, y: 679, w: 267, h: 267 });
+    coords.push({ x: 2043, y: 783, w: 246, h: 246 });
+    coords.push({ x: 2446, y: 804, w: 267, h: 267 });
+    coords.push({ x: 2956, y: 710, w: 292, h: 292 });
+    coords.push({ x: 1881, y: 1684, w: 286, h: 286 });*/
+
+
+    var imgHeight = murrix.intval(self.item().specific.exif.ImageHeight());
+    var imgWidth = murrix.intval(self.item().specific.exif.ImageWidth());
+
+
+    if (self.item().specific.angle && self.item().specific.angle === 90 || self.item().specific.angle === 270)
+    {
+      var t = imgHeight;
+      imgHeight = imgWidth;
+      imgWidth = t;
+    }
+    
+ console.log(imgHeight, imgWidth);
+    var scaleHeight = $(".imgContainer:visible").height();
+    var scaleWidth = $(".imgContainer:visible").width();
+ console.log(scaleHeight, scaleWidth);
+    var ratioHeight = scaleHeight / imgHeight;
+    var ratioWidth = scaleWidth / imgWidth;
+ console.log(ratioHeight, ratioWidth);
+    for (var i = 0; i < coords.length; i++) {
+      console.log(coords[i].h, coords[i].w);
+       console.log(coords[i].y, coords[i].x);
+ 
+       console.log(coords[i].h * ratioHeight, coords[i].w * ratioWidth);
+       console.log(coords[i].y * ratioHeight, coords[i].x * ratioWidth);
+ 
+       console.log("==================");
+    
+      $('<div>', {
+        'class':'face',
+        'css': {
+          'position': 'absolute',
+          'left':   Math.floor(coords[i].x * ratioWidth) +'px',
+          'top':    Math.floor(coords[i].y * ratioHeight) +'px',
+          'width':  Math.floor(coords[i].w * ratioWidth)   +'px',
+          'height':   Math.floor(coords[i].h * ratioHeight)  +'px',
+          'border': '1px solid red'
+        }
+      })
+      .appendTo('.imgContainer:visible');
+    }
+
+    self.timeout = null;
+    });
+  };
+  
+/*
+  self.detectFaces = function()
+  {
+    var coords = $('.imgContainer img:visible').faceDetection({
+      complete:function(img, coords) {
+        console.log('Done!');
+        console.log(coords);
+      },
+      error:function(img, code, message) {
+        console.log('Error: '+message);
+      }
+    });
+
+    console.log(coords);
+    
+    for (var i = 0; i < coords.length; i++) {
+      $('<div>', {
+        'class':'face',
+        'css': {
+          'position': 'absolute',
+          'left':   coords[i].positionX +'px',
+          'top':    coords[i].positionY +'px',
+          'width':  coords[i].width   +'px',
+          'height':   coords[i].height  +'px',
+          'border': '1px solid red'
+        }
+      })
+      .appendTo('.imgContainer');
+    }
+  };
+*/
   self.carouselLeft = function()
   {
     var element = $(".carousel-inner").children(":visible").prev();

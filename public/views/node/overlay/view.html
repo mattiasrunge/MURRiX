@@ -7,11 +7,13 @@
       <div class="carousel-inner" data-bind="foreach: nodeModel.items">
 
         <div class="item" data-bind="visible: $data._id() == $parent.nodeModel.overlayModel.item()._id(), attr: { 'data-murrix-id': $data._id() }">
-          <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview?id=' + $data._id() + '&amp;width=1440', title: $data.specific.name() }" src="" alt="">
+          <div class="imgContainer" style="position: relative; display: inline-block;">
+            <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview?id=' + $data._id() + '&amp;width=1440', title: $data.specific.name() }" src="" alt="">
 <!--          <div class="carousel-caption">
             <h4 data-bind="text: $data.name"></h4>
             <p data-bind="if: $data.description() != '', text: $data.description"></p>
           </div>-->
+          </div>
         </div>
 
       </div>
@@ -25,7 +27,7 @@
     <div style="padding: 10px;">
       <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
       <h3 data-bind="text: nodeModel.node().name"></h3>
-      
+      <button data-bind="click: nodeModel.overlayModel.detectFaces">Detect faces</button>
       <p class="muted">
         <small>Picture taken 
           <span data-bind="if: nodeModel.overlayModel.item().createdDatetime">on <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().createdDatetime.datetime()"></span></span>

@@ -390,6 +390,17 @@ io.sockets.on("connection", function(client)
   });
 
 
+  client.on("detectFaces", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for MurrixUtils.detectFaces!");
+      return;
+    }
+
+    MurrixUtils.detectFaces(configuration.filesPath + data, callback);
+  });
+
   /* Upload file API */
   client.on("fileStart", function(data, callback)
   {
