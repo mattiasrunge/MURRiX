@@ -71,6 +71,8 @@
                       <button rel="tooltip" title="Edit" class="btn btn-mini btn-link pull-right" href="#saveUserModal" data-toggle="modal" data-bind="click: adminModel.userEditClicked"">Edit</button>
                       <button rel="tooltip" title="Edit" class="btn btn-mini btn-link pull-right" data-bind="click: adminModel.userRemoveClicked">Remove</button>
                     </p>
+                    <p style="color: #999; font-size: 11px; padding-right: 8px;" class="pull-right" data-bind="visible: !$data.lastLogin()">User has never logged in<p>
+                    <p style="color: #999; font-size: 11px; padding-right: 8px;" class="pull-right" data-bind="visible: $data.lastLogin()">User logged in <span data-bind="htmlTimeAgo: $data.lastLogin()"></span></p>
                     <small data-bind="text: $data.username"></small>
                   </blockquote>
               </tr>

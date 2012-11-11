@@ -62,7 +62,7 @@
               <span data-bind="if: currentUser, text: currentUser().name"></span>
               <strong class="caret"></strong>
             </a>
-            <div class="dropdown-menu">
+            <ul class="dropdown-menu">
               
               <form class="" data-bind="submit: adminModel.loginSubmit, visible: !currentUser()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
                 <input placeholder="Username" id="inputUsername" style="margin-bottom: 15px;" type="text" name="user[inputUsername]" size="30" data-bind="hasfocus: adminModel.usernameFocused, disable: adminModel.loading, value: adminModel.inputUsername"/>
@@ -75,13 +75,13 @@
               </form>
               
               <div data-bind="visible: currentUser">
-                <a href="#admin" data-bind="visible: currentUser().admin">Administration</a>
-                <a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]">Me</a>
-                <a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)">Change password</a>
-                <a href="#" data-bind="click: adminModel.signOutClicked">Sign out</a>
+                <li><a href="#admin" data-bind="visible: currentUser().admin">Administration</a></li>
+                <li><a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]">Me</a></li>
+                <li><a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)">Change password</a></li>
+                <li><a href="#" data-bind="click: adminModel.signOutClicked">Sign out</a></li>
               </div>
               
-            </div>
+            </ul>
           </li>
         </ul>
 
