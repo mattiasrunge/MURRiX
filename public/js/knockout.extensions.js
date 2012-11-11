@@ -135,7 +135,9 @@ $(function()
       var value = valueAccessor();
       var params = ko.utils.unwrapObservable(value);
 
-      if (params[0] === null ||  params[0] === "")
+      var id = params[0] || false;
+
+      if (!id || id === null || id === "")
       {
         $(element).text("Unknown");
         return;
@@ -143,7 +145,7 @@ $(function()
 
       $(element).text("Loading " + params[1] + "...");
 
-      murrix.server.emit("getGroups", {}, function(error, groupDataList)
+      murrix.cache.getGroups([ id ], function(error, groupList)
       {
         if (error)
         {
@@ -151,20 +153,9 @@ $(function()
           return;
         }
 
-        var groupData = null;
-
-        for (var n = 0; n < groupDataList.length; n++)
+        if (groupList[id])
         {
-          if (groupDataList[n]._id === params[0])
-          {
-            groupData = groupDataList[n];
-            break;
-          }
-        }
-        
-        if (groupData)
-        {
-          $(element).text(groupData[params[1]]);
+          $(element).text(groupList[id][params[1]]());
         }
         else
         {
