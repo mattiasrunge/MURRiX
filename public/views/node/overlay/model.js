@@ -211,7 +211,6 @@ var OverlayModel = function(parentModel)
 
   self.commentSubmit = function()
   {
-
     if (self.commentText() === "")
     {
       self.commentErrorText("Comment field can not be empty!");
@@ -241,6 +240,114 @@ var OverlayModel = function(parentModel)
       self.commentText("");
 
       murrix.cache.addItemData(itemData); // This should update self.node() by reference
+    });
+  };
+
+
+  self.showingName = ko.observable("");
+  self.showingLoading = ko.observable(false);
+  self.showingErrorText = ko.observable("");
+
+   $("#showingInput").typesearch({
+    source: function(query, callback)
+    {
+      murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { collection: "nodes" } }, function(error, nodeDataList)
+      {
+        if (error)
+        {
+          console.log(error);
+          callback([]);
+        }
+
+        var resultList = [];
+
+        for (var key in nodeDataList)
+        {
+          if (self.item()._showing && murrix.inArray(nodeDataList[key]._id, self.item()._showing()))
+          {
+            continue;
+          }
+
+          var imgUrl = "http://placekitten.com/g/32/32";
+
+          if (nodeDataList[key]._profilePicture)
+          {
+            imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
+          }
+
+          var item = {};
+          item.name = nodeDataList[key].name;
+          item.key = nodeDataList[key]._id;
+          item.html = "<li ><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
+
+          resultList.push(item);
+        }
+
+        callback(resultList);
+      });
+    },
+    selectFn: function(key)
+    {
+      self.showingLoading(true);
+      self.showingErrorText("");
+
+      var itemData = ko.mapping.toJS(self.item);
+
+      itemData._showing = itemData._showing || [];
+
+      if (murrix.inArray(key, itemData._showing))
+      {
+        self.showingLoading(false);
+        self.showingErrorText("Item is already in list");
+        return;
+      }
+
+      itemData._showing = murrix.addToArray(key, itemData._showing);
+
+      murrix.server.emit("saveItem", itemData, function(error, itemData)
+      {
+        self.showingLoading(false);
+
+        if (error)
+        {
+          self.showingErrorText(error);
+          return;
+        }
+
+        self.showingName("");
+
+        murrix.cache.addItemData(itemData);
+      });
+    }
+  });
+
+  self.showingSubmit = function()
+  {
+    // Do nothing
+  };
+
+  self.showingRemove = function()
+  {
+    self.showingLoading(true);
+    self.showingErrorText("");
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData._showing = itemData._showing || [];
+
+    itemData._showing = murrix.removeFromArray(this.toString(), itemData._showing);
+
+    murrix.server.emit("saveItem", itemData, function(error, itemData)
+    {
+      self.showingLoading(false);
+
+      if (error)
+      {
+        self.showingErrorText(error);
+        return;
+      }
+
+      murrix.cache.addItemData(itemData);
     });
   };
 };

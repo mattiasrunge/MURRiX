@@ -27,16 +27,30 @@
     <div style="padding: 10px;">
       <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
       <h3 data-bind="text: nodeModel.node().name"></h3>
-      <button data-bind="click: nodeModel.overlayModel.detectFaces">Detect faces</button>
+<!--       <button data-bind="click: nodeModel.overlayModel.detectFaces">Detect faces</button> -->
+
       <p class="muted">
-        <small>Picture taken 
+        <small>Picture taken
           <span data-bind="if: nodeModel.overlayModel.item().createdDatetime">on <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().createdDatetime.datetime()"></span></span>
-          <span data-bind="">at <a>Marklandsgatan 43</a></span>.<button rel="tooltip" title="When and where" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button>
-          <br/>Showing <a>Mattias Runge<a>, <a>Björn Ramberg</a> and <a>VW Golf II</a>.<button rel="tooltip" title="Who and what" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal"><span class="icon-pencil"></span></button>
+
+          <span data-bind="">at <a>Marklandsgatan 43</a></span>.
+
+          <br/>
+          <div data-bind="visible: nodeModel.overlayModel.item()._showing">
+            Showing
+            <span data-bind="foreach: nodeModel.overlayModel.item()._showing">
+              <a href="#" data-bind="hrefPrimary: [ 'node', $data ], textNodeAttribute: [ $data, 'name' ]"></a><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item()._showing().length"> and</span><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item()._showing().length">, </span><span data-bind="if: $index() + 1 === $parent.nodeModel.overlayModel.item()._showing().length">.</span>
+            </span>
+          </div>
         </small>
       </p>
+
+      <div class="btn-group">
+        <button rel="tooltip" title="Edit when and where" class="btn btn-mini" href="#editTagsModal" data-toggle="modal">Edit  when and where</button>
+        <button rel="tooltip" title="Edit who or what" class="btn btn-mini" href="#editShowing" data-toggle="modal">Edit who or what</button>
+      </div>
     </div>
-  
+
     <div class="accordion" id="overlayAccordion" style="height: 100%;">
       <div class="accordion-group">
         <div class="accordion-heading">
@@ -78,11 +92,11 @@
                 </tr>
 
             </table>
-    
+
           </div>
         </div>
       </div>
-    
+
       <div class="accordion-group">
         <div class="accordion-heading">
           <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseComments">
@@ -102,12 +116,12 @@
                   <span class="text-error pull-left" data-bind="disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentErrorText"></span>
                   <button type="submit" class="btn btn-mini btn-primary pull-right">Comment</button>
                 </form>
-                
+
               </blockquote>
             </div>
 
             <!-- ko foreach: nodeModel.overlayModel.item().comments -->
-          
+
             <div class="row-fluid">
               <div class="span2">
                 <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 40, 40, 1 ]"/>
@@ -118,12 +132,49 @@
               </blockquote>
             </div>
 
-            <!-- /ko --> 
+            <!-- /ko -->
 
           </div>
         </div>
       </div>
 
     </div>
+  </div>
+</div>
+
+
+<div class="modal" id="editShowing" tabindex="-1" role="dialog" aria-labelledby="editShowingLabel" aria-hidden="true" style="display: none; z-index: 2060;">
+  <div class="modal-header">
+    <button data-bind="disable: nodeModel.overlayModel.showingLoading" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="editShowingLabel">Edit who or what</h3>
+  </div>
+  <div class="modal-body">
+    <form data-bind="submit: nodeModel.overlayModel.showingSubmit" style="margin: 0px">
+      <input placeholder="Search for who or what" type="text" id="showingInput" name="showingInput" style="width: 515px;" data-bind="disable: nodeModel.overlayModel.showingLoading, value: nodeModel.overlayModel.showingName" data-provide="typesearch"/>
+    </form>
+
+    <h4>Showing</h4>
+    <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
+      <tbody>
+
+      <!-- ko foreach: nodeModel.overlayModel.item()._showing -->
+        <tr>
+          <td>
+            <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
+            <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
+          </td>
+          <td>
+            <button data-bind="disable: $parent.nodeModel.overlayModel.showingLoading, click: $parent.nodeModel.overlayModel.showingRemove" class="btn btn-mini btn-link pull-right">Remove</button>
+          </td>
+        </tr>
+      <!-- /ko -->
+
+      </tbody>
+    </table>
+
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: nodeModel.overlayModel.showingErrorText() != '', text: nodeModel.overlayModel.showingErrorText"></p>
+    <button data-bind="disable: nodeModel.overlayModel.showingLoading" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
   </div>
 </div>
