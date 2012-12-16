@@ -36,12 +36,12 @@
           <span data-bind="">at <a>Marklandsgatan 43</a></span>.
 
           <br/>
-          <div data-bind="visible: nodeModel.overlayModel.item()._showing">
+          <span data-bind="visible: nodeModel.overlayModel.item()._showing">
             Showing
             <span data-bind="foreach: nodeModel.overlayModel.item()._showing">
-              <a href="#" data-bind="hrefPrimary: [ 'node', $data ], textNodeAttribute: [ $data, 'name' ]"></a><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item()._showing().length"> and</span><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item()._showing().length">, </span><span data-bind="if: $index() + 1 === $parent.nodeModel.overlayModel.item()._showing().length">.</span>
+              <a href="#" data-bind="hrefFirst: [ 'node', $data ], textNodeAttribute: [ $data, 'name' ]"></a><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item()._showing().length"> and</span><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item()._showing().length">, </span><span data-bind="if: $index() + 1 === $parent.nodeModel.overlayModel.item()._showing().length">.</span>
             </span>
-          </div>
+          </span>
         </small>
       </p>
 
