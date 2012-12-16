@@ -10,6 +10,32 @@
       </div>
     </div>
 
+    <div class="container-fluid" data-bind="if: nodeModel.node().type() === 'person'">
+      <div class="row-fluid">
+        <div class="span6">
+          <table class="table table-bordered" style="background-color: whiteSmoke;">
+            <tr>
+              <td>Name</td>
+              <td data-bind="text: nodeModel.node().name"></td>
+            </tr>
+            <tr>
+              <td>Birthname</td>
+              <td data-bind="text: nodeModel.node().specific.birthname"></td>
+            </tr>
+            <tr>
+              <td>Gender</td>
+              <td data-bind="text: nodeModel.node().specific.gender"></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="well span6">
+          <h3>Events</h3>
+        </div>
+
+      </div>
+    </div>
+    
   </div>
   <div class="main-overlay-background"></div>
 </div>

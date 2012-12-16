@@ -38,17 +38,26 @@ var MapModel = function(parentModel)
     {
       if (typeof value[n].where === "object")
       {
-        console.log(value[n].name(), value[n].where.latitude(), value[n].where.longitude());
-        self.markers.push(new google.maps.Marker({
+        console.log(value[n].specific.name(), value[n].where.latitude(), value[n].where.longitude());
+        var marker = new google.maps.Marker({
           position: new google.maps.LatLng(value[n].where.latitude(), value[n].where.longitude()),
           map: self.map,
-          title: value[n].name()
-        }));
+          title: value[n].specific.name()
+        });
+
+        marker._id = value[n]._id();
+
+        google.maps.event.addListener(marker, 'click', function()
+        {
+          document.location.hash += "/:" + this._id;
+        });
+
+        self.markers.push(marker);
       }
     }
   });
 
-  
+
 };
 /*
 
@@ -178,7 +187,7 @@ $(function()
       {
         this.options_ = options;
       }
-      
+
       this.map_ = new google.maps.Map(this.container_.get(0), this.options_);
     };
 
@@ -252,7 +261,7 @@ $(function()
         });
       });
     };
-    
+
     this.handleUpdatedPositionList = function(node, positionList)
     {
       var colorCounter = 0;
@@ -275,7 +284,7 @@ $(function()
         }
 
         position.coordinates = new google.maps.LatLng(position.latitude, position.longitude);
-            
+
         var foundPath = false;
 
         jQuery.each(self.paths_, function(n, path)
