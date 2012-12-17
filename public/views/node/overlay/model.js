@@ -244,86 +244,131 @@ var OverlayModel = function(parentModel)
   };
 
 
+  self.showingEditing = ko.observable(false);
   self.showingName = ko.observable("");
   self.showingLoading = ko.observable(false);
   self.showingErrorText = ko.observable("");
 
-   $("#showingInput").typesearch({
-    source: function(query, callback)
-    {
-      murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { collection: "nodes" } }, function(error, nodeDataList)
+  self.showingEditClicked = function()
+  {
+    self.showingEditing(true);
+
+    $("#showingInput").typesearch({
+      source: function(query, callback)
       {
-        if (error)
+        murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { collection: "nodes" } }, function(error, nodeDataList)
         {
-          console.log(error);
-          callback([]);
-        }
-
-        var resultList = [];
-
-        for (var key in nodeDataList)
-        {
-          if (self.item()._showing && murrix.inArray(nodeDataList[key]._id, self.item()._showing()))
+          if (error)
           {
-            continue;
+            console.log(error);
+            callback([]);
           }
 
-          var imgUrl = "http://placekitten.com/g/32/32";
+          var resultList = [];
 
-          if (nodeDataList[key]._profilePicture)
+          for (var key in nodeDataList)
           {
-            imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
+            if (self.item()._showing && murrix.inArray(nodeDataList[key]._id, self.item()._showing()))
+            {
+              continue;
+            }
+
+            var imgUrl = "http://placekitten.com/g/32/32";
+
+            if (nodeDataList[key]._profilePicture)
+            {
+              imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
+            }
+
+            var item = {};
+            item.name = nodeDataList[key].name;
+            item.key = nodeDataList[key]._id;
+            item.html = "<li ><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
+
+            resultList.push(item);
           }
 
-          var item = {};
-          item.name = nodeDataList[key].name;
-          item.key = nodeDataList[key]._id;
-          item.html = "<li ><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
-
-          resultList.push(item);
-        }
-
-        callback(resultList);
-      });
-    },
-    selectFn: function(key)
-    {
-      self.showingLoading(true);
-      self.showingErrorText("");
-
-      var itemData = ko.mapping.toJS(self.item);
-
-      itemData._showing = itemData._showing || [];
-
-      if (murrix.inArray(key, itemData._showing))
+          callback(resultList);
+        });
+      },
+      selectFn: function(key)
       {
-        self.showingLoading(false);
-        self.showingErrorText("Item is already in list");
-        return;
+        self.showingAdd(key);
+      }
+    });
+  };
+
+  self.showingFinishClicked = function()
+  {
+    self.showingEditing(false);
+  };
+
+  self.showingOther = ko.computed(function()
+  {
+    var list = [];
+
+    for (var n = 0; n < parentModel.items().length; n++)
+    {
+      if (!parentModel.items()[n]._showing || parentModel.items()[n]._id() === self.item()._id())
+      {
+        continue;
       }
 
-      itemData._showing = murrix.addToArray(key, itemData._showing);
-
-      murrix.server.emit("saveItem", itemData, function(error, itemData)
+      for (var i = 0; i < parentModel.items()[n]._showing().length; i++)
       {
-        self.showingLoading(false);
-
-        if (error)
+        if (!self.item()._showing || !murrix.inArray(parentModel.items()[n]._showing()[i], self.item()._showing()))
         {
-          self.showingErrorText(error);
-          return;
+          if (!murrix.inArray(parentModel.items()[n]._showing()[i], list))
+          {
+            list.push(parentModel.items()[n]._showing()[i]);
+          }
         }
-
-        self.showingName("");
-
-        murrix.cache.addItemData(itemData);
-      });
+      }
     }
+
+    return ko.observableArray(list);
   });
+
 
   self.showingSubmit = function()
   {
     // Do nothing
+  };
+
+  self.showingAdd = function(key)
+  {
+    console.log(key);
+
+    self.showingLoading(true);
+    self.showingErrorText("");
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData._showing = itemData._showing || [];
+
+    if (murrix.inArray(key, itemData._showing))
+    {
+      self.showingLoading(false);
+      self.showingErrorText("Item is already in list");
+      return;
+    }
+
+    itemData._showing = murrix.addToArray(key, itemData._showing);
+
+    murrix.server.emit("saveItem", itemData, function(error, itemData)
+    {
+      self.showingLoading(false);
+
+      if (error)
+      {
+        self.showingErrorText(error);
+        return;
+      }
+
+      self.showingName("");
+
+      murrix.cache.addItemData(itemData);
+    });
   };
 
   self.showingRemove = function()

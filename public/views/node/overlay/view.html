@@ -24,157 +24,170 @@
 
   </div>
   <div style="position: absolute; top: 0px; width: 350px; bottom: 0px; right: 0px; margin: 0px; padding: 0px; overflow: auto; background-color: whiteSmoke;">
-    <div style="padding: 10px;">
-      <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
-      <h3 data-bind="text: nodeModel.node().name"></h3>
-<!--       <button data-bind="click: nodeModel.overlayModel.detectFaces">Detect faces</button> -->
+    <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.showingEditing">
 
-      <p class="muted">
-        <small>Picture taken
-          <span data-bind="if: nodeModel.overlayModel.item().createdDatetime">on <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().createdDatetime.datetime()"></span></span>
+      <button rel="tooltip" title="Go back" class="btn btn-primary" href="#" style="width: 330px; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.showingFinishClicked">&laquo; Go back</button>
 
-          <span data-bind="">at <a>Marklandsgatan 43</a></span>.
+      <form data-bind="submit: nodeModel.overlayModel.showingSubmit" style="margin: 0px">
+        <input placeholder="Search for who or what" type="text" id="showingInput" name="showingInput" style="width: 316px;" data-bind="disable: nodeModel.overlayModel.showingLoading, value: nodeModel.overlayModel.showingName" data-provide="typesearch"/>
+      </form>
 
-          <br/>
-          <span data-bind="visible: nodeModel.overlayModel.item()._showing">
-            Showing
-            <span data-bind="foreach: nodeModel.overlayModel.item()._showing">
-              <a href="#" data-bind="hrefFirst: [ 'node', $data ], textNodeAttribute: [ $data, 'name' ]"></a><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item()._showing().length"> and</span><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item()._showing().length">, </span><span data-bind="if: $index() + 1 === $parent.nodeModel.overlayModel.item()._showing().length">.</span>
+      <h4>In this picture</h4>
+      <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
+        <tbody>
+
+        <!-- ko foreach: nodeModel.overlayModel.item()._showing -->
+          <tr>
+            <td>
+              <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
+              <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
+            </td>
+            <td>
+              <button data-bind="disable: $parent.nodeModel.overlayModel.showingLoading, click: $parent.nodeModel.overlayModel.showingRemove" class="btn btn-mini btn-link pull-right">Remove</button>
+            </td>
+          </tr>
+        <!-- /ko -->
+
+        </tbody>
+      </table>
+
+      <h4>In album</h4>
+      <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
+        <tbody>
+
+        <!-- ko foreach: nodeModel.overlayModel.showingOther -->
+          <tr>
+            <td>
+              <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
+              <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
+            </td>
+            <td>
+              <button data-bind="disable: $parent.nodeModel.overlayModel.showingLoading, click: $parent.nodeModel.overlayModel.showingAdd" class="btn btn-mini btn-link pull-right">Add</button>
+            </td>
+          </tr>
+        <!-- /ko -->
+
+        </tbody>
+      </table>
+    </div>
+
+    <div data-bind="visible: !nodeModel.overlayModel.showingEditing()">
+      <div style="padding: 10px;">
+        <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
+        <h3 data-bind="text: nodeModel.node().name"></h3>
+  <!--       <button data-bind="click: nodeModel.overlayModel.detectFaces">Detect faces</button> -->
+
+        <p class="muted">
+          <small>Picture taken
+            <span data-bind="if: nodeModel.overlayModel.item().createdDatetime">on <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().createdDatetime.datetime()"></span></span>
+
+            <span data-bind="">at <a>Marklandsgatan 43</a></span>.
+
+            <br/>
+            <span data-bind="visible: nodeModel.overlayModel.item()._showing">
+              Showing
+              <span data-bind="foreach: nodeModel.overlayModel.item()._showing">
+                <a href="#" data-bind="hrefFirst: [ 'node', $data ], textNodeAttribute: [ $data, 'name' ]"></a><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item()._showing().length"> and</span><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item()._showing().length">, </span><span data-bind="if: $index() + 1 === $parent.nodeModel.overlayModel.item()._showing().length">.</span>
+              </span>
             </span>
-          </span>
-        </small>
-      </p>
+          </small>
+        </p>
 
-      <div class="btn-group">
-        <button rel="tooltip" title="Edit when and where" class="btn btn-mini" href="#editTagsModal" data-toggle="modal">Edit  when and where</button>
-        <button rel="tooltip" title="Edit who or what" class="btn btn-mini" href="#editShowing" data-toggle="modal">Edit who or what</button>
-      </div>
-    </div>
-
-    <div class="accordion" id="overlayAccordion" style="height: 100%;">
-      <div class="accordion-group">
-        <div class="accordion-heading">
-          <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseDetails">
-            Details
-          </a>
+        <div class="btn-group">
+          <button rel="tooltip" title="Edit when and where" class="btn btn-mini" href="#editTagsModal" data-toggle="modal">Edit  when and where</button>
+          <button rel="tooltip" title="Edit who or what" class="btn btn-mini" href="#" data-bind="click: nodeModel.overlayModel.showingEditClicked">Edit who or what</button>
         </div>
-        <div id="overlayCollapseDetails" class="accordion-body collapse">
-          <div class="accordion-inner" style="padding: 10px;">
+      </div>
 
-            <table class="table table-striped table-condensed">
-                <tr>
-                  <td>Filename</td>
-                  <td data-bind="text: nodeModel.overlayModel.item().specific.name()"></td>
-                </tr>
-                <tr>
-                  <td>File size</td>
-                  <td data-bind="htmlSize: nodeModel.overlayModel.item().specific.exif.FileSize()"></td>
-                </tr>
-                <tr>
-                  <td>Image size</td>
-                  <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().specific.exif.ImageHeight()"></td>
-                </tr>
-                <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.CameraModelName">
-                  <td>Camera model</td>
-                  <td data-bind="text: nodeModel.overlayModel.item().specific.exif.CameraModelName()"></td>
-                </tr>
-                <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Orientation">
-                  <td>Orientation</td>
-                  <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Orientation()"></td>
-                </tr>
-                <tr data-bind="if: nodeModel.overlayModel.item().specific.angle">
-                  <td>Angle</td>
-                  <td data-bind="text: nodeModel.overlayModel.item().specific.angle()"></td>
-                </tr>
-                <tr data-bind="if: nodeModel.overlayModel.item().specific.mirror">
-                  <td>Mirror</td>
-                  <td data-bind="text: nodeModel.overlayModel.item().specific.mirror()"></td>
-                </tr>
+      <div class="accordion" id="overlayAccordion" style="height: 100%;">
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseDetails">
+              Details
+            </a>
+          </div>
+          <div id="overlayCollapseDetails" class="accordion-body collapse">
+            <div class="accordion-inner" style="padding: 10px;">
 
-            </table>
+              <table class="table table-striped table-condensed">
+                  <tr>
+                    <td>Filename</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.name()"></td>
+                  </tr>
+                  <tr>
+                    <td>File size</td>
+                    <td data-bind="htmlSize: nodeModel.overlayModel.item().specific.exif.FileSize()"></td>
+                  </tr>
+                  <tr>
+                    <td>Image size</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().specific.exif.ImageHeight()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.CameraModelName">
+                    <td>Camera model</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.CameraModelName()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Orientation">
+                    <td>Orientation</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Orientation()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.angle">
+                    <td>Angle</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.angle()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.mirror">
+                    <td>Mirror</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.mirror()"></td>
+                  </tr>
 
+              </table>
+
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="accordion-group">
-        <div class="accordion-heading">
-          <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseComments">
-            Comments<span data-bind="visible: nodeModel.overlayModel.item().comments().length > 0"> (<span data-bind="text: nodeModel.overlayModel.item().comments().length"></span>)</span>
-          </a>
-        </div>
-        <div id="overlayCollapseComments" class="accordion-body collapse in">
-          <div class="accordion-inner">
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseComments">
+              Comments<span data-bind="visible: nodeModel.overlayModel.item().comments().length > 0"> (<span data-bind="text: nodeModel.overlayModel.item().comments().length"></span>)</span>
+            </a>
+          </div>
+          <div id="overlayCollapseComments" class="accordion-body collapse in">
+            <div class="accordion-inner">
 
-            <div class="row-fluid">
-              <div class="span2">
-                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ currentUser()._id(), 40, 40, 1 ]"/>
+              <div class="row-fluid">
+                <div class="span2">
+                  <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ currentUser()._id(), 40, 40, 1 ]"/>
+                </div>
+                <blockquote class="span10">
+                  <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
+                    <textarea style="width: 218px; height: 60px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.overlayModel.commentLoading, value: nodeModel.overlayModel.commentText"></textarea>
+                    <span class="text-error pull-left" data-bind="disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentErrorText"></span>
+                    <button type="submit" class="btn btn-mini btn-primary pull-right">Comment</button>
+                  </form>
+
+                </blockquote>
               </div>
-              <blockquote class="span10">
-                <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
-                  <textarea style="width: 218px; height: 60px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.overlayModel.commentLoading, value: nodeModel.overlayModel.commentText"></textarea>
-                  <span class="text-error pull-left" data-bind="disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentErrorText"></span>
-                  <button type="submit" class="btn btn-mini btn-primary pull-right">Comment</button>
-                </form>
 
-              </blockquote>
-            </div>
+              <!-- ko foreach: nodeModel.overlayModel.item().comments -->
 
-            <!-- ko foreach: nodeModel.overlayModel.item().comments -->
-
-            <div class="row-fluid">
-              <div class="span2">
-                <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 40, 40, 1 ]"/>
+              <div class="row-fluid">
+                <div class="span2">
+                  <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 40, 40, 1 ]"/>
+                </div>
+                <blockquote class="span10">
+                  <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
+                  <small><span data-bind="htmlTimeAgo: $data.added.timestamp"></span> by <a data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></a></small>
+                </blockquote>
               </div>
-              <blockquote class="span10">
-                <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
-                <small><span data-bind="htmlTimeAgo: $data.added.timestamp"></span> by <a data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></a></small>
-              </blockquote>
+
+              <!-- /ko -->
+
             </div>
-
-            <!-- /ko -->
-
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   </div>
 </div>
 
-
-<div class="modal" id="editShowing" tabindex="-1" role="dialog" aria-labelledby="editShowingLabel" aria-hidden="true" style="display: none; z-index: 2060;">
-  <div class="modal-header">
-    <button data-bind="disable: nodeModel.overlayModel.showingLoading" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="editShowingLabel">Edit who or what</h3>
-  </div>
-  <div class="modal-body">
-    <form data-bind="submit: nodeModel.overlayModel.showingSubmit" style="margin: 0px">
-      <input placeholder="Search for who or what" type="text" id="showingInput" name="showingInput" style="width: 515px;" data-bind="disable: nodeModel.overlayModel.showingLoading, value: nodeModel.overlayModel.showingName" data-provide="typesearch"/>
-    </form>
-
-    <h4>Showing</h4>
-    <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
-      <tbody>
-
-      <!-- ko foreach: nodeModel.overlayModel.item()._showing -->
-        <tr>
-          <td>
-            <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
-            <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
-          </td>
-          <td>
-            <button data-bind="disable: $parent.nodeModel.overlayModel.showingLoading, click: $parent.nodeModel.overlayModel.showingRemove" class="btn btn-mini btn-link pull-right">Remove</button>
-          </td>
-        </tr>
-      <!-- /ko -->
-
-      </tbody>
-    </table>
-
-  </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.overlayModel.showingErrorText() != '', text: nodeModel.overlayModel.showingErrorText"></p>
-    <button data-bind="disable: nodeModel.overlayModel.showingLoading" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-  </div>
-</div>
