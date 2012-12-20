@@ -26,6 +26,7 @@ var OverlayModel = function(parentModel)
     {
       self.showingFinishClicked();
       self.whoFinishClicked();
+      self.withFinishClicked();
     }
   });
 
@@ -296,6 +297,10 @@ var OverlayModel = function(parentModel)
   self.whoLoading = ko.observable(false);
   self.whoErrorText = ko.observable("");
 
+  self.withEditing = ko.observable(false);
+  self.withLoading = ko.observable(false);
+  self.withErrorText = ko.observable("");
+
   self.showingEditing = ko.observable(false);
   self.showingLoading = ko.observable(false);
   self.showingErrorText = ko.observable("");
@@ -416,8 +421,16 @@ var OverlayModel = function(parentModel)
     self.initializeOverlayNodeQuery();
   };
 
+  self.withEditClicked = function()
+  {
+    self.withEditing(true);
+    self.initializeOverlayNodeQuery();
+  };
+
   self.initializeOverlayNodeQuery = function()
   {
+    $(".overlayNodeQuery").val("");
+
     $(".overlayNodeQuery").typesearch({
       source: function(query, callback)
       {
@@ -458,6 +471,8 @@ var OverlayModel = function(parentModel)
       },
       selectFn: function(key)
       {
+        $(".overlayNodeQuery").val("");
+
         if (self.showingEditing())
         {
           self.showingAdd({ _id: key });
@@ -465,6 +480,10 @@ var OverlayModel = function(parentModel)
         else if (self.whoEditing())
         {
           self.whoSet(key);
+        }
+        else if (self.withEditing())
+        {
+          self.withSet(key);
         }
       }
     });
@@ -480,6 +499,11 @@ var OverlayModel = function(parentModel)
   self.whoFinishClicked = function()
   {
     self.whoEditing(false);
+  };
+
+  self.withFinishClicked = function()
+  {
+    self.withEditing(false);
   };
 
   self.showingOther = ko.computed(function()
@@ -541,6 +565,36 @@ var OverlayModel = function(parentModel)
         {
           list.push(parentModel.items()[n]._who());
           takenIds.push(parentModel.items()[n]._who());
+        }
+      }
+    }
+
+    return ko.observableArray(list);
+  });
+
+  self.withOther = ko.computed(function()
+  {
+    var list = [];
+    var takenIds = [];
+
+    if (self.item() !== false)
+    {
+      if (self.item()._with)
+      {
+        takenIds.push(self.item()._with());
+      }
+
+      for (var n = 0; n < parentModel.items().length; n++)
+      {
+        if (!parentModel.items()[n]._with || parentModel.items()[n]._with() === false)
+        {
+          continue;
+        }
+
+        if (!murrix.inArray(parentModel.items()[n]._with(), takenIds))
+        {
+          list.push(parentModel.items()[n]._with());
+          takenIds.push(parentModel.items()[n]._with());
         }
       }
     }
@@ -625,6 +679,36 @@ var OverlayModel = function(parentModel)
       if (error)
       {
         self.whoErrorText(error);
+        return;
+      }
+
+      self.item(murrix.cache.addItemData(itemData));
+    });
+  };
+
+  self.withRemove = function()
+  {
+    self.withSet(false);
+  };
+
+  self.withSet = function(id)
+  {
+    id = id ? ko.mapping.toJS(id) : false;
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData._with = id ? ko.mapping.toJS(id) : false;
+
+    self.withLoading(true);
+    self.withErrorText("");
+
+    murrix.server.emit("saveItem", itemData, function(error, itemData)
+    {
+      self.withLoading(false);
+
+      if (error)
+      {
+        self.withErrorText(error);
         return;
       }
 

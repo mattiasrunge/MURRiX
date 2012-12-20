@@ -124,7 +124,7 @@ $(function()
           }
           else
           {
-            $(element).text("<i>Where was this item created?</i>");
+            $(element).text("<i class='muted'>Where was this item created?</i>");
           }
         });
       }
@@ -141,7 +141,7 @@ $(function()
         {
           if (data.status !== "OK" || data.results.length === 0)
           {
-            $(element).text("<i>Where was this item created?</i>");
+            $(element).text("<i class='muted'>Where was this item created?</i>");
             return;
           }
 
@@ -150,7 +150,7 @@ $(function()
       }
       else
       {
-         $(element).html("<i>Where was this item created?</i>");
+         $(element).html("<i class='muted'>Where was this item created?</i>");
       }
     }
   };

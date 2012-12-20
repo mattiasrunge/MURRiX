@@ -106,18 +106,60 @@
       </div>
     </div>
 
-    <div data-bind="visible: !nodeModel.overlayModel.showingEditing() && !nodeModel.overlayModel.whoEditing()">
+    <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.withEditing">
+
+      <div style="position: relative; height: 40px;">
+        <button rel="tooltip" title="Go back" class="btn btn-primary" href="#" style="left: 0px; right: 0px; position: absolute; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.withFinishClicked"><i class="icon-chevron-left icon-white"></i> Go back</button>
+      </div>
+      <form data-bind="submit: dummySubmit" style="margin: 0px; position: relative; height: 40px;">
+        <input class="overlayNodeQuery" style="left: 0px; right: 0px; position: absolute;" placeholder="Search for with" type="text" id="withInput" name="withInput" data-bind="disable: nodeModel.overlayModel.withLoading" data-provide="typesearch"/>
+      </form>
+      <div style="overflow: auto;">
+        <table class="table table-condensed">
+          <tbody data-bind="if: nodeModel.overlayModel.item()._with">
+            <tr>
+              <td>
+                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._with(), 44, 44, 1 ]"/>
+                <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with(), 'name' ]" style="margin: 0px;"></h5>
+              </td>
+              <td>
+                <button title="Remove" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.withLoading, click: nodeModel.overlayModel.withRemove" class="btn pull-right"><i class="icon-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div data-bind="if: nodeModel.overlayModel.item()">
+          <h4>Suggestions</h4>
+          <table class="table table-condensed table-hover">
+            <tbody data-bind="foreach: nodeModel.overlayModel.withOther">
+              <tr>
+                <td>
+                  <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
+                  <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
+                </td>
+                <td>
+                  <button title="Set" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.withLoading, click: $parent.nodeModel.overlayModel.withSet" class="btn pull-right"><i class="icon-plus"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div data-bind="visible: !nodeModel.overlayModel.showingEditing() && !nodeModel.overlayModel.whoEditing() && !nodeModel.overlayModel.withEditing()">
       <div style="padding: 10px;">
         <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
         <h3 data-bind="text: nodeModel.node().name"></h3>
   <!--       <button data-bind="click: nodeModel.overlayModel.detectFaces">Detect faces</button> -->
 
-        <table class="table table-condensed muted" style="font-size: 10px;">
+        <table class="table table-condensed" style="font-size: 10px;">
           <tr>
             <td>
               <button class="btn btn-mini btn-link pull-right" style="padding: 0px;">Edit</button>
               <span data-bind="if: !nodeModel.overlayModel.item().when">
-                <i>When was this item created?</i>
+                <i class="muted">When was this item created?</i>
               </span>
               <span data-bind="if: nodeModel.overlayModel.item().when">
                 <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp()"></span>
@@ -132,12 +174,14 @@
           </tr>
           <tr>
             <td>
-              <button class="btn btn-mini btn-link pull-right" style="padding: 0px;">Edit</button>
+              <button class="btn btn-mini btn-link pull-right" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.withEditClicked">Edit</button>
               <span data-bind="if: !nodeModel.overlayModel.item()._with || !nodeModel.overlayModel.item()._with()">
-                <i>With what was this item created?</i>
+                <i class="muted">What was used to create this item?</i>
               </span>
               <span data-bind="if: nodeModel.overlayModel.item()._with && nodeModel.overlayModel.item()._with()">
-                <span data-bind="">Canon IXUS 2</span>
+              <span data-bind="if: nodeModel.overlayModel.item()._with && nodeModel.overlayModel.item()._with()">
+                <a data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._with() ], textNodeAttribute: [ nodeModel.overlayModel.item()._with(), 'name' ]"></a> was used to create this item.
+              </span>
               </span>
             </td>
           </tr>
@@ -145,10 +189,10 @@
             <td>
               <button class="btn btn-mini btn-link pull-right" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.whoEditClicked">Edit</button>
               <span data-bind="if: !nodeModel.overlayModel.item()._who || !nodeModel.overlayModel.item()._who()">
-                <i>Who created this item?</i>
+                <i class="muted">Who created this item?</i>
               </span>
               <span data-bind="if: nodeModel.overlayModel.item()._who && nodeModel.overlayModel.item()._who()">
-                <a data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._who() ], textNodeAttribute: [ nodeModel.overlayModel.item()._who(), 'name' ]"></a>
+                <a data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._who() ], textNodeAttribute: [ nodeModel.overlayModel.item()._who(), 'name' ]"></a> created this item.
               </span>
             </td>
           </tr>
@@ -156,7 +200,7 @@
             <td>
               <button class="btn btn-mini btn-link pull-right" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.showingEditClicked">Edit</button>
               <span data-bind="visible: !nodeModel.overlayModel.item().showing || nodeModel.overlayModel.item().showing().length === 0">
-                <i>Nothing is tagged on this item.</i>
+                <i class="muted">Nothing is tagged on this item.</i>
               </span>
               <span data-bind="visible: nodeModel.overlayModel.item().showing && nodeModel.overlayModel.item().showing().length > 0">
                 Showing
