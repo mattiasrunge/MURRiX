@@ -4,7 +4,7 @@ var NodeModel = function(parentModel)
 
   self.path = ko.observable({ primary: ko.observable({ action: "", args: [] }), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
-  
+
   self.show = ko.observable(false);
 
   parentModel.path().primary.subscribe(function(value)
@@ -60,7 +60,7 @@ var NodeModel = function(parentModel)
       query.what = "file";
       query.$or.push({ _parents: self.node()._id()});
 
-      
+
       switch (self.node().type())
       {
         case "album":
@@ -84,7 +84,7 @@ var NodeModel = function(parentModel)
           break;
         }
       };
-    
+
       murrix.server.emit("find", { query: query, options: "items" }, function(error, itemDataList)
       {
         if (error)
@@ -106,7 +106,7 @@ var NodeModel = function(parentModel)
 
         itemList.sort(function(a, b)
         {
-          return (b.when && a.when) ? a.when.timestamp() - b.when.timestamp() : 0;
+          return (b.when && b.when.timestamp && a.when && a.when.timestamp) ? a.when.timestamp() - b.when.timestamp() : 0;
         });
 
         self.items(itemList);
@@ -121,7 +121,7 @@ var NodeModel = function(parentModel)
 
     callback(null);
   };
-  
+
 
   /* This function is run when the primary path is changed
    * and a new node id has been set. It tries to cache
@@ -139,7 +139,7 @@ var NodeModel = function(parentModel)
   });
 
   self.loadingNode = ko.observable(false);
-  
+
   self.loadNode = function()
   {
     if (parentModel.path().primary().args.length === 0)
@@ -170,7 +170,7 @@ var NodeModel = function(parentModel)
     }
 
     self.loadingNode(true);
-    
+
     murrix.cache.getNodes([ nodeId ], function(error, nodeList)
     {
       if (error)
@@ -189,7 +189,7 @@ var NodeModel = function(parentModel)
         self.loadingNode(false);
         return;
       }
-      
+
       self.node(nodeList[nodeId]);
       self.loadingNode(false);
     });
@@ -228,7 +228,7 @@ var NodeModel = function(parentModel)
         var node = murrix.cache.addNodeData(nodeData);
 
         $(".modal").modal('hide');
-        
+
         document.location.hash = murrix.createPath(0, "node", node._id());
       });
     }
@@ -323,7 +323,7 @@ var NodeModel = function(parentModel)
       murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
   };
-  
+
   $("#groupAccessInput").typesearch({
     limit: 20,
     source: function(query, callback)
@@ -364,7 +364,7 @@ var NodeModel = function(parentModel)
       var nodeData = ko.mapping.toJS(self.node);
 
       nodeData._readers = nodeData._readers || [];
-      
+
       if (murrix.inArray(key, nodeData._readers))
       {
         self.groupAccessLoading(false);
@@ -413,7 +413,7 @@ var NodeModel = function(parentModel)
       self.tagErrorText("Can not save multiple tags with the same name");
       return;
     }
-    
+
     nodeData.tags.push(self.tagName());
 
     murrix.server.emit("saveNode", nodeData, function(error, nodeData)
@@ -544,7 +544,7 @@ var NodeModel = function(parentModel)
     {
       return;
     }
-    
+
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._profilePicture = event.originalEvent.dataTransfer.getData("id");
@@ -579,15 +579,15 @@ var NodeModel = function(parentModel)
 
   self.dragOver = function(element, event)
   {
-  
+
   };
 
   self.publicLoading = ko.observable(false);
-  
+
   self.changePublic = function(publicFlag, a, b, c, d)
   {
     self.publicLoading(true);
-  
+
     var nodeData = ko.mapping.toJS(self.node);
 
     if (publicFlag)
@@ -602,7 +602,7 @@ var NodeModel = function(parentModel)
     murrix.server.emit("saveNode", nodeData, function(error, nodeData)
     {
       self.publicLoading(false);
-    
+
       if (error)
       {
         console.log(error);
@@ -613,7 +613,7 @@ var NodeModel = function(parentModel)
       murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
   };
-  
+
   /* Define all sub views */
   self.contentModel = new ContentModel(self);
   self.aboutModel = new AboutModel(self);

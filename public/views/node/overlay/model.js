@@ -8,6 +8,7 @@ var OverlayModel = function(parentModel)
 
   self.enabled = ko.observable(true);
   self.item = ko.observable(false);
+  self.itemPictureUrl = ko.observable("");
 
   self.show = ko.observable(false);
 
@@ -16,6 +17,14 @@ var OverlayModel = function(parentModel)
     if (self.show() !== (value !== false))
     {
       self.show(value !== false);
+    }
+  });
+
+  self.show.subscribe(function(value)
+  {
+    if (!value)
+    {
+      self.showingFinishClicked();
     }
   });
 
@@ -60,10 +69,21 @@ var OverlayModel = function(parentModel)
       }
 
       self.item(itemList[itemId]);
+      self.itemPictureUrl("");
 
 
 
+      var image = new Image();
 
+      image.onload = function()
+      {
+        console.log("loaded!");
+
+        self.itemPictureUrl(image.src);
+      };
+
+      image.src = "preview?id=" + self.item()._id() + "&width=1440";
+      console.log(image.src);
     });
   });
 
@@ -183,26 +203,56 @@ var OverlayModel = function(parentModel)
 */
   self.carouselLeft = function()
   {
-    var element = $(".carousel-inner").children(":visible").prev();
+    var newItem = null;
 
-    if (element.length === 0)
+    self.showingId(false);
+    self.showingItemOut();
+
+    for (var n = 0; n < parentModel.items().length; n++)
     {
-      element = $(".carousel-inner").children(":last");
+      if (parentModel.items()[n] === self.item())
+      {
+        n--;
+
+        if (n < 0)
+        {
+          n = parentModel.items().length - 1;
+        }
+
+        newItem = parentModel.items()[n];
+
+        break;
+      }
     }
 
-    document.location.hash = murrix.createPath(1, null, element.attr("data-murrix-id"));
+    document.location.hash = murrix.createPath(1, null, newItem._id());
   };
 
   self.carouselRight = function()
   {
-    var element = $(".carousel-inner").children(":visible").next();
+    var newItem = null;
 
-    if (element.length === 0)
+    self.showingId(false);
+    self.showingItemOut();
+
+    for (var n = 0; n < parentModel.items().length; n++)
     {
-      element = $(".carousel-inner").children(":first");
+      if (parentModel.items()[n] === self.item())
+      {
+        n++;
+
+        if (n >= parentModel.items().length)
+        {
+          n = 0;
+        }
+
+        newItem = parentModel.items()[n];
+
+        break;
+      }
     }
 
-    document.location.hash = murrix.createPath(1, null, element.attr("data-murrix-id"));
+    document.location.hash = murrix.createPath(1, null, newItem._id());
   };
 
   self.commentText = ko.observable("");
@@ -239,7 +289,7 @@ var OverlayModel = function(parentModel)
 
       self.commentText("");
 
-      murrix.cache.addItemData(itemData); // This should update self.node() by reference
+      self.item(murrix.cache.addItemData(itemData)); // This should update self.node() by reference
     });
   };
 
@@ -248,6 +298,110 @@ var OverlayModel = function(parentModel)
   self.showingName = ko.observable("");
   self.showingLoading = ko.observable(false);
   self.showingErrorText = ko.observable("");
+  self.showingId = ko.observable(false);
+
+  self.showingItemOver = function(showingItem)
+  {
+    if (self.showingId() !== false)
+    {
+      return;
+    }
+
+    showingItem = ko.mapping.toJS(showingItem);
+
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+
+    var options = {
+      minWidth      : 32,
+      minHeight     : 32,
+      instance      : true,
+      movable       : false,
+      resizable     : false,
+      handles       : false,
+      keys          : false,
+      classPrefix   : 'imgareamark'
+    };
+
+    if (showingItem.x)
+    {
+      options.show = true;
+
+      options.x1 = $(".imgContainer").width() * (showingItem.x - showingItem.width / 2);
+      options.x2 = $(".imgContainer").width() * (showingItem.x + showingItem.width / 2);
+
+      options.y1 = $(".imgContainer").height() * (showingItem.y - showingItem.height / 2);
+      options.y2 = $(".imgContainer").height() * (showingItem.y + showingItem.height / 2);
+
+
+      $(".imgContainer").imgAreaSelect(options);
+    }
+  };
+
+  self.showingItemOut = function(showingItem)
+  {
+    if (self.showingId() !== false)
+    {
+      return;
+    }
+
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+  };
+
+  self.showingonSelectEnd = function(img, selection)
+  {
+    var showingItem = { _id: self.showingId() };
+
+    if (selection.width > 0 && selection.height > 0)
+    {
+      var pos_x = selection.x1 + (selection.width / 2);
+      var pos_y = selection.y1 + (selection.height / 2);
+
+      showingItem.x = pos_x / $(".imgContainer").width();
+      showingItem.y = pos_y / $(".imgContainer").height();
+
+      showingItem.width = selection.width / $(".imgContainer").width();
+      showingItem.height = selection.height / $(".imgContainer").height();
+    }
+
+    self.showingUpdate(showingItem, showingItem);
+  };
+
+  self.showingItemClicked = function(data)
+  {
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+
+    if (self.showingId() === data._id())
+    {
+      self.showingId(false);
+      return;
+    }
+
+    self.showingId(data._id());
+
+    var options = {
+      minWidth      : 32,
+      minHeight     : 32,
+      instance      : true,
+      movable       : true,
+      resizable     : true,
+      handles       : true,
+      keys          : false,
+      onSelectEnd   : function(img, selection) { self.showingonSelectEnd(img, selection); }
+    };
+
+    if (data.x)
+    {
+      options.show = true;
+
+      options.x1 = $(".imgContainer").width() * (data.x() - data.width() / 2);
+      options.x2 = $(".imgContainer").width() * (data.x() + data.width() / 2);
+
+      options.y1 = $(".imgContainer").height() * (data.y() - data.height() / 2);
+      options.y2 = $(".imgContainer").height() * (data.y() + data.height() / 2);
+    }
+
+    $(".imgContainer").imgAreaSelect(options);
+  };
 
   self.showingEditClicked = function()
   {
@@ -268,7 +422,7 @@ var OverlayModel = function(parentModel)
 
           for (var key in nodeDataList)
           {
-            if (self.item()._showing && murrix.inArray(nodeDataList[key]._id, self.item()._showing()))
+            if (self.item().showing && murrix.inArray(nodeDataList[key]._id, self.item().showing()))
             {
               continue;
             }
@@ -293,34 +447,47 @@ var OverlayModel = function(parentModel)
       },
       selectFn: function(key)
       {
-        self.showingAdd(key);
+        self.showingAdd({ _id: key });
       }
     });
   };
 
   self.showingFinishClicked = function()
   {
+    self.showingId(false);
+    self.showingItemOut();
     self.showingEditing(false);
   };
 
   self.showingOther = ko.computed(function()
   {
     var list = [];
+    var takenIds = [];
 
-    for (var n = 0; n < parentModel.items().length; n++)
+    if (self.item() !== false)
     {
-      if (!parentModel.items()[n]._showing || parentModel.items()[n]._id() === self.item()._id())
+      if (self.item().showing)
       {
-        continue;
+        for (var n = 0; n < self.item().showing().length; n++)
+        {
+          takenIds.push(self.item().showing()[n]._id());
+        }
       }
 
-      for (var i = 0; i < parentModel.items()[n]._showing().length; i++)
+
+      for (var n = 0; n < parentModel.items().length; n++)
       {
-        if (!self.item()._showing || !murrix.inArray(parentModel.items()[n]._showing()[i], self.item()._showing()))
+        if (!parentModel.items()[n].showing)
         {
-          if (!murrix.inArray(parentModel.items()[n]._showing()[i], list))
+          continue;
+        }
+
+        for (var i = 0; i < parentModel.items()[n].showing().length; i++)
+        {
+          if (!murrix.inArray(parentModel.items()[n].showing()[i]._id(), takenIds))
           {
-            list.push(parentModel.items()[n]._showing()[i]);
+            list.push(parentModel.items()[n].showing()[i]);
+            takenIds.push(parentModel.items()[n].showing()[i]._id());
           }
         }
       }
@@ -335,52 +502,45 @@ var OverlayModel = function(parentModel)
     // Do nothing
   };
 
-  self.showingAdd = function(key)
+  self.showingAdd = function(showingItem)
   {
-    console.log(key);
+    showingItem = ko.mapping.toJS(showingItem);
 
-    self.showingLoading(true);
-    self.showingErrorText("");
+    showingItem = { _id: showingItem._id };
 
-    var itemData = ko.mapping.toJS(self.item);
-
-    itemData._showing = itemData._showing || [];
-
-    if (murrix.inArray(key, itemData._showing))
-    {
-      self.showingLoading(false);
-      self.showingErrorText("Item is already in list");
-      return;
-    }
-
-    itemData._showing = murrix.addToArray(key, itemData._showing);
-
-    murrix.server.emit("saveItem", itemData, function(error, itemData)
-    {
-      self.showingLoading(false);
-
-      if (error)
-      {
-        self.showingErrorText(error);
-        return;
-      }
-
-      self.showingName("");
-
-      murrix.cache.addItemData(itemData);
-    });
+    self.showingUpdate(showingItem, showingItem);
   };
 
-  self.showingRemove = function()
+  self.showingRemove = function(showingItem)
   {
-    self.showingLoading(true);
-    self.showingErrorText("");
+    self.showingItemOut();
+    self.showingUpdate(showingItem, null);
+  };
+
+  self.showingUpdate = function(oldShowingItem, newShowingItem)
+  {
+    oldShowingItem = oldShowingItem ? ko.mapping.toJS(oldShowingItem) : null;
+    newShowingItem = newShowingItem ? ko.mapping.toJS(newShowingItem) : null;
 
     var itemData = ko.mapping.toJS(self.item);
 
-    itemData._showing = itemData._showing || [];
+    itemData.showing = itemData.showing || [];
 
-    itemData._showing = murrix.removeFromArray(this.toString(), itemData._showing);
+    if (oldShowingItem)
+    {
+      itemData.showing = itemData.showing.filter(function(showingItemTest)
+      {
+        return showingItemTest._id !== oldShowingItem._id;
+      });
+    }
+
+    if (newShowingItem)
+    {
+      itemData.showing.push(newShowingItem);
+    }
+
+    self.showingLoading(true);
+    self.showingErrorText("");
 
     murrix.server.emit("saveItem", itemData, function(error, itemData)
     {
@@ -392,7 +552,7 @@ var OverlayModel = function(parentModel)
         return;
       }
 
-      murrix.cache.addItemData(itemData);
+      self.item(murrix.cache.addItemData(itemData));
     });
   };
 };

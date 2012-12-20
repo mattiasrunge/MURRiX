@@ -358,3 +358,16 @@ input, textarea {
   font-size: 14px !important;
   font-weight: normal;
 }*/
+
+
+.imgareamark-border1 {
+    border: 1px solid white;
+}
+
+.imgareamark-outer {
+    background-color: #000;
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+}
+
+

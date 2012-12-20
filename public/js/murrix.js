@@ -69,7 +69,7 @@ murrix.cache = new function()
           console.log("Node added by user, admin access");
           return true;
         }
-        
+
         var intersection = this._admins().filter(function(n)
         {
           return murrix.model.currentUser()._groups().indexOf(n) !== -1;
@@ -109,7 +109,7 @@ murrix.cache = new function()
       console.log("Node " + nodeData._id + " already cached updating cache...");
 
       var hassubscribed = self.nodes[nodeData._id].comments ? true : false;
-      
+
       ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
 
       if (!hassubscribed)
@@ -140,7 +140,7 @@ murrix.cache = new function()
     }
 
     itemData.comments = itemData.comments || [];
-    
+
     if (!self.items[itemData._id])
     {
       console.log("Could not find mapped index, item is not cached, id " + itemData._id);
@@ -158,6 +158,19 @@ murrix.cache = new function()
         });
 
         self.items[itemData._id].comments.valueHasMutated(); // Force sort!
+      }
+
+      if (self.items[itemData._id].showing)
+      {
+        self.items[itemData._id].showing.subscribe(function(value)
+        {
+          value.sort(function(a, b)
+          {
+            return (b.x && a.x) ? a.x() - b.x() : 0;
+          });
+        });
+
+        self.items[itemData._id].showing.valueHasMutated(); // Force sort!
       }
     }
     else
@@ -181,6 +194,19 @@ murrix.cache = new function()
           });
 
           self.items[itemData._id].comments.valueHasMutated(); // Force sort!
+        }
+
+        if (self.items[itemData._id].showing)
+        {
+          self.items[itemData._id].showing.subscribe(function(value)
+          {
+            value.sort(function(a, b)
+            {
+              return (b.x && a.x) ? a.x() - b.x() : 0;
+            });
+          });
+
+          self.items[itemData._id].showing.valueHasMutated(); // Force sort!
         }
       }
     }
@@ -233,7 +259,7 @@ murrix.cache = new function()
 
     return self.users[userData._id];
   };
-  
+
   self.getNodes = function(idList, callback)
   {
     var nodeList = {};
@@ -422,7 +448,7 @@ murrix.file = new function()
     {
       return false;
     }
-    
+
     file.reader.readAsBinaryString(data);
     return true;
   };
@@ -430,11 +456,11 @@ murrix.file = new function()
   self.upload = function(file, callback)
   {
     file.reader = new FileReader();
-    
+
     file.reader.onload = function(event)
     {
       var data = window.btoa(event.target.result); // base64 encode
-      
+
       murrix.server.emit("fileChunk", { id: file.uploadId, data: data }, function(error, id, progress, offset, chunkSize)
       {
         if (error)
@@ -444,9 +470,9 @@ murrix.file = new function()
           callback(error);
           return;
         }
-        
+
         callback(null, id, progress);
-        
+
         if (progress < 100)
         {
           if (!murrix.file._readChunk(file, offset, chunkSize))
@@ -458,7 +484,7 @@ murrix.file = new function()
         }
       });
     };
-    
+
     murrix.server.emit("fileStart", { filename: file.name, size: file.size }, function(error, id, offset, chunkSize)
     {
       file.uploadId = id;
@@ -616,7 +642,7 @@ murrix.createPath = function(partIndex, primary, secondary)
   {
     secondary = args[1];
   }
-  
+
   if (primary === null)
   {
     primary = args[0];

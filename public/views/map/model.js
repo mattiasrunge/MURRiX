@@ -36,9 +36,9 @@ var MapModel = function(parentModel)
 
     for (n = 0; n < value.length; n++)
     {
-      if (typeof value[n].where === "object")
+      if (value[n].where && value[n].where.source)
       {
-        console.log(value[n].specific.name(), value[n].where.latitude(), value[n].where.longitude());
+        console.log(value[n].specific.name(), value[n].where);
         var marker = new google.maps.Marker({
           position: new google.maps.LatLng(value[n].where.latitude(), value[n].where.longitude()),
           map: self.map,

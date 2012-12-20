@@ -2,17 +2,13 @@
 <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show">
   <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center;">
 
-    <div id="overlayCarousel" class="slide">
+    <div id="overlayCarousel">
       <!-- Carousel items -->
-      <div class="carousel-inner" data-bind="foreach: nodeModel.items">
+      <div class="carousel-inner">
 
-        <div class="item" data-bind="visible: $data._id() == $parent.nodeModel.overlayModel.item()._id(), attr: { 'data-murrix-id': $data._id() }">
+        <div class="item">
           <div class="imgContainer" style="position: relative; display: inline-block;">
-            <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: 'preview?id=' + $data._id() + '&amp;width=1440', title: $data.specific.name() }" src="" alt="">
-<!--          <div class="carousel-caption">
-            <h4 data-bind="text: $data.name"></h4>
-            <p data-bind="if: $data.description() != '', text: $data.description"></p>
-          </div>-->
+            <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: nodeModel.overlayModel.itemPictureUrl }" src="" alt="">
           </div>
         </div>
 
@@ -26,49 +22,45 @@
   <div style="position: absolute; top: 0px; width: 350px; bottom: 0px; right: 0px; margin: 0px; padding: 0px; overflow: auto; background-color: whiteSmoke;">
     <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.showingEditing">
 
-      <button rel="tooltip" title="Go back" class="btn btn-primary" href="#" style="width: 330px; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.showingFinishClicked">&laquo; Go back</button>
-
-      <form data-bind="submit: nodeModel.overlayModel.showingSubmit" style="margin: 0px">
-        <input placeholder="Search for who or what" type="text" id="showingInput" name="showingInput" style="width: 316px;" data-bind="disable: nodeModel.overlayModel.showingLoading, value: nodeModel.overlayModel.showingName" data-provide="typesearch"/>
+      <div style="position: relative; height: 40px;">
+        <button rel="tooltip" title="Go back" class="btn btn-primary" href="#" style="left: 0px; right: 0px; position: absolute; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.showingFinishClicked"><i class="icon-chevron-left icon-white"></i> Go back</button>
+      </div>
+      <form data-bind="submit: nodeModel.overlayModel.showingSubmit" style="margin: 0px; position: relative; height: 40px;">
+        <input style="left: 0px; right: 0px; position: absolute;" placeholder="Search for who or what" type="text" id="showingInput" name="showingInput" data-bind="disable: nodeModel.overlayModel.showingLoading, value: nodeModel.overlayModel.showingName" data-provide="typesearch"/>
       </form>
+      <div style="overflow: auto;">
+        <h4>In this picture</h4>
+        <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
+          <tbody data-bind="foreach: nodeModel.overlayModel.item().showing">
+            <tr data-bind="css: { info:  nodeModel.overlayModel.showingId() === $data._id() }, event: { mouseover: nodeModel.overlayModel.showingItemOver, mouseout: nodeModel.overlayModel.showingItemOut }">
+              <td data-bind="click: nodeModel.overlayModel.showingItemClicked" style="cursor: pointer;">
+                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data._id(), 44, 44, 1 ]"/>
+                <h5 data-bind="textNodeAttribute: [ $data._id(), 'name' ]" style="margin: 0px;"></h5>
+                <small data-bind="visible: !$data.x">Not marked on the picture</small>
+                <small data-bind="visible: $data.x">Marked on the picture</small>
+              </td>
+              <td>
+                <button title="Remove" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.showingLoading, click: $parent.nodeModel.overlayModel.showingRemove" class="btn pull-right"><i class="icon-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-      <h4>In this picture</h4>
-      <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
-        <tbody>
-
-        <!-- ko foreach: nodeModel.overlayModel.item()._showing -->
-          <tr>
-            <td>
-              <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
-              <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
-            </td>
-            <td>
-              <button data-bind="disable: $parent.nodeModel.overlayModel.showingLoading, click: $parent.nodeModel.overlayModel.showingRemove" class="btn btn-mini btn-link pull-right">Remove</button>
-            </td>
-          </tr>
-        <!-- /ko -->
-
-        </tbody>
-      </table>
-
-      <h4>In album</h4>
-      <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
-        <tbody>
-
-        <!-- ko foreach: nodeModel.overlayModel.showingOther -->
-          <tr>
-            <td>
-              <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
-              <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
-            </td>
-            <td>
-              <button data-bind="disable: $parent.nodeModel.overlayModel.showingLoading, click: $parent.nodeModel.overlayModel.showingAdd" class="btn btn-mini btn-link pull-right">Add</button>
-            </td>
-          </tr>
-        <!-- /ko -->
-
-        </tbody>
-      </table>
+        <h4>In album</h4>
+        <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
+          <tbody data-bind="foreach: nodeModel.overlayModel.showingOther">
+            <tr>
+              <td>
+                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data._id(), 44, 44, 1 ]"/>
+                <h5 data-bind="textNodeAttribute: [ $data._id(), 'name' ]"></h5>
+              </td>
+              <td>
+                <button title="Add" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.showingLoading, click: $parent.nodeModel.overlayModel.showingAdd" class="btn pull-right"><i class="icon-plus"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div data-bind="visible: !nodeModel.overlayModel.showingEditing()">
@@ -84,18 +76,24 @@
             <span data-bind="">at <a>Marklandsgatan 43</a></span>.
 
             <br/>
-            <span data-bind="visible: nodeModel.overlayModel.item()._showing">
+
+            <span data-bind="visible: !nodeModel.overlayModel.item().showing || nodeModel.overlayModel.item().showing().length === 0">
+              <a rel="tooltip" title="Edit who or what" href="#" data-bind="click: nodeModel.overlayModel.showingEditClicked"><i class="icon-pencil"></i> What is shown on this picture?</a>
+            </span>
+            <span data-bind="visible: nodeModel.overlayModel.item().showing && nodeModel.overlayModel.item().showing().length > 0">
+              <a rel="tooltip" title="Edit who or what" href="#" data-bind="click: nodeModel.overlayModel.showingEditClicked"><i class="icon-pencil"></i></a>
               Showing
-              <span data-bind="foreach: nodeModel.overlayModel.item()._showing">
-                <a href="#" data-bind="hrefFirst: [ 'node', $data ], textNodeAttribute: [ $data, 'name' ]"></a><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item()._showing().length"> and</span><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item()._showing().length">, </span><span data-bind="if: $index() + 1 === $parent.nodeModel.overlayModel.item()._showing().length">.</span>
+              <span data-bind="foreach: nodeModel.overlayModel.item().showing">
+                <a href="#" data-bind="hrefFirst: [ 'node', $data._id() ], textNodeAttribute: [ $data._id(), 'name' ], event: { mouseover: nodeModel.overlayModel.showingItemOver, mouseout: nodeModel.overlayModel.showingItemOut }"></a><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item().showing().length"> and</span><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item().showing().length">, </span><span data-bind="if: $index() + 1 === $parent.nodeModel.overlayModel.item().showing().length">.</span>
               </span>
             </span>
+
           </small>
         </p>
 
         <div class="btn-group">
           <button rel="tooltip" title="Edit when and where" class="btn btn-mini" href="#editTagsModal" data-toggle="modal">Edit  when and where</button>
-          <button rel="tooltip" title="Edit who or what" class="btn btn-mini" href="#" data-bind="click: nodeModel.overlayModel.showingEditClicked">Edit who or what</button>
+
         </div>
       </div>
 
