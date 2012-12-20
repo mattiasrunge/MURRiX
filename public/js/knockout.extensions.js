@@ -16,8 +16,8 @@ $(function()
       $(element).toggle(typeof value === 'undefined' || value !== true);
     }
   };
-  
-  
+
+
   /* Knockout visibility changer (fading) handler  */
   ko.bindingHandlers.fadeVisible = {
     init: function(element, valueAccessor)
@@ -29,9 +29,9 @@ $(function()
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
-      
+
       $(element).stop(false, true);
-       
+
       if ($(element).is(":visible") !== ko.utils.unwrapObservable(value))
       {
         ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).fadeOut();
@@ -49,7 +49,7 @@ $(function()
       {
         $(element).height($(element).height());
       }
-      
+
       //$(element).toggle(ko.utils.unwrapObservable(value));
     },
     update: function(element, valueAccessor)
@@ -57,13 +57,13 @@ $(function()
       var value = ko.utils.unwrapObservable(valueAccessor());
 
       $element = $(element);
-      
+
       if ($element.is(":animated"))
       {
         if ($element.data("slideTarget") !== value)
         {
           $element.data("slideTarget", value);
-        
+
           if (value)
           {
             $element.show("slide", function() { $element.height(''); });
@@ -92,6 +92,69 @@ $(function()
     }
   };
 
+  ko.bindingHandlers.htmlReverseGeocoding = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var param = ko.utils.unwrapObservable(value);
+
+      var location = param || false;
+
+      if (!location || location === null)
+      {
+        $(element).html("<i>Where was this item created?</i>");
+        return;
+      }
+
+      $(element).text("Loading location...");
+
+      if (location._id)
+      {
+        murrix.cache.getNodes([ location._id() ], function(error, nodeList)
+        {
+          if (error)
+          {
+            $(element).text(error);
+            return;
+          }
+
+          if (nodeList[location._id()])
+          {
+            $(element).html("<a href='#node:" + location._id() + "'>" + nodeList[location._id()].name() + "</a>");
+          }
+          else
+          {
+            $(element).text("<i>Where was this item created?</i>");
+          }
+        });
+      }
+      else if (location.longitude && location.latitude)
+      {
+        // TODO: Look in our own database first
+
+        var options = {};
+
+        options.sensor = false;
+        options.latlng = location.latitude() + "," + location.longitude();
+
+        jQuery.getJSON("http://maps.googleapis.com/maps/api/geocode/json", options, function(data)
+        {
+          if (data.status !== "OK" || data.results.length === 0)
+          {
+            $(element).text("<i>Where was this item created?</i>");
+            return;
+          }
+
+          $(element).text("Near " + data.results[0].formatted_address);
+        });
+      }
+      else
+      {
+         $(element).html("<i>Where was this item created?</i>");
+      }
+    }
+  };
+
 
   /* Knockout text, set attribute of node loaded async */
   ko.bindingHandlers.textNodeAttribute = {
@@ -105,7 +168,7 @@ $(function()
         $(element).text("Unknown");
         return;
       }
-      
+
       $(element).text("Loading " + params[1] + "...");
 
       murrix.cache.getNodes([ params[0] ], function(error, nodeList)
@@ -173,7 +236,7 @@ $(function()
       var params = ko.utils.unwrapObservable(value);
 
       var id = params[0] || false;
-      
+
       if (!id || id === null || id === "")
       {
         $(element).text("Unknown");
@@ -202,7 +265,7 @@ $(function()
     }
   };
 
-  
+
 
   /* Knockout src, get profile picture async */
   ko.bindingHandlers.srcNodeProfilePicture = {
@@ -236,7 +299,7 @@ $(function()
 
         if (nodeList[id])
         {
-          
+
           if (!nodeList[id]._profilePicture || !nodeList[id]._profilePicture())
           {
             $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
@@ -317,7 +380,7 @@ $(function()
 
             $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
           });
-          
+
           return;
         }
 

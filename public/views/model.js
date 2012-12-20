@@ -32,6 +32,8 @@ murrix.model = function()
     }
   };
 
+  self.dummySubmit = function() {};
+
   self.randomClicked = function()
   {
     murrix.server.emit("findRandom", "nodes", function(error, nodeData)

@@ -25,6 +25,7 @@ var OverlayModel = function(parentModel)
     if (!value)
     {
       self.showingFinishClicked();
+      self.whoFinishClicked();
     }
   });
 
@@ -77,13 +78,11 @@ var OverlayModel = function(parentModel)
 
       image.onload = function()
       {
-        console.log("loaded!");
-
         self.itemPictureUrl(image.src);
       };
 
       image.src = "preview?id=" + self.item()._id() + "&width=1440";
-      console.log(image.src);
+//      console.log(image.src);
     });
   });
 
@@ -293,9 +292,11 @@ var OverlayModel = function(parentModel)
     });
   };
 
+  self.whoEditing = ko.observable(false);
+  self.whoLoading = ko.observable(false);
+  self.whoErrorText = ko.observable("");
 
   self.showingEditing = ko.observable(false);
-  self.showingName = ko.observable("");
   self.showingLoading = ko.observable(false);
   self.showingErrorText = ko.observable("");
   self.showingId = ko.observable(false);
@@ -406,8 +407,18 @@ var OverlayModel = function(parentModel)
   self.showingEditClicked = function()
   {
     self.showingEditing(true);
+    self.initializeOverlayNodeQuery();
+  };
 
-    $("#showingInput").typesearch({
+  self.whoEditClicked = function()
+  {
+    self.whoEditing(true);
+    self.initializeOverlayNodeQuery();
+  };
+
+  self.initializeOverlayNodeQuery = function()
+  {
+    $(".overlayNodeQuery").typesearch({
       source: function(query, callback)
       {
         murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { collection: "nodes" } }, function(error, nodeDataList)
@@ -447,7 +458,14 @@ var OverlayModel = function(parentModel)
       },
       selectFn: function(key)
       {
-        self.showingAdd({ _id: key });
+        if (self.showingEditing())
+        {
+          self.showingAdd({ _id: key });
+        }
+        else if (self.whoEditing())
+        {
+          self.whoSet(key);
+        }
       }
     });
   };
@@ -457,6 +475,11 @@ var OverlayModel = function(parentModel)
     self.showingId(false);
     self.showingItemOut();
     self.showingEditing(false);
+  };
+
+  self.whoFinishClicked = function()
+  {
+    self.whoEditing(false);
   };
 
   self.showingOther = ko.computed(function()
@@ -473,7 +496,6 @@ var OverlayModel = function(parentModel)
           takenIds.push(self.item().showing()[n]._id());
         }
       }
-
 
       for (var n = 0; n < parentModel.items().length; n++)
       {
@@ -496,11 +518,35 @@ var OverlayModel = function(parentModel)
     return ko.observableArray(list);
   });
 
-
-  self.showingSubmit = function()
+  self.whoOther = ko.computed(function()
   {
-    // Do nothing
-  };
+    var list = [];
+    var takenIds = [];
+
+    if (self.item() !== false)
+    {
+      if (self.item()._who)
+      {
+        takenIds.push(self.item()._who());
+      }
+
+      for (var n = 0; n < parentModel.items().length; n++)
+      {
+        if (!parentModel.items()[n]._who || parentModel.items()[n]._who() === false)
+        {
+          continue;
+        }
+
+        if (!murrix.inArray(parentModel.items()[n]._who(), takenIds))
+        {
+          list.push(parentModel.items()[n]._who());
+          takenIds.push(parentModel.items()[n]._who());
+        }
+      }
+    }
+
+    return ko.observableArray(list);
+  });
 
   self.showingAdd = function(showingItem)
   {
@@ -549,6 +595,36 @@ var OverlayModel = function(parentModel)
       if (error)
       {
         self.showingErrorText(error);
+        return;
+      }
+
+      self.item(murrix.cache.addItemData(itemData));
+    });
+  };
+
+  self.whoRemove = function()
+  {
+    self.whoSet(false);
+  };
+
+  self.whoSet = function(id)
+  {
+    id = id ? ko.mapping.toJS(id) : false;
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData._who = id ? ko.mapping.toJS(id) : false;
+
+    self.whoLoading(true);
+    self.whoErrorText("");
+
+    murrix.server.emit("saveItem", itemData, function(error, itemData)
+    {
+      self.whoLoading(false);
+
+      if (error)
+      {
+        self.whoErrorText(error);
         return;
       }
 
