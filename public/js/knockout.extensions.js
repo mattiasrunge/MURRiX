@@ -110,7 +110,7 @@ $(function()
 
       $(element).text("...loading...");
 
-      if (where._id)
+      if (where._id && where._id() !== false)
       {
         murrix.cache.getNodes([ where._id() ], function(error, nodeList)
         {

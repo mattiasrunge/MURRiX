@@ -370,6 +370,13 @@ input, textarea {
     opacity: 0.5;
 }
 
+.overlayWhereMap img {
+  max-width: none;
+}
+
+.overlayWhereMap label {
+  width: auto; display:inline;
+}
 
 
 

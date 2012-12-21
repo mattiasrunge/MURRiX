@@ -24,9 +24,7 @@ var OverlayModel = function(parentModel)
   {
     if (!value)
     {
-      self.showingFinishClicked();
-      self.whoFinishClicked();
-      self.withFinishClicked();
+      self.editFinishClicked();
     }
   });
 
@@ -293,17 +291,13 @@ var OverlayModel = function(parentModel)
     });
   };
 
-  self.whoEditing = ko.observable(false);
-  self.whoLoading = ko.observable(false);
-  self.whoErrorText = ko.observable("");
+  self.editType = ko.observable("");
+  self.editLoading = ko.observable(false);
+  self.editErrorText = ko.observable("");
 
-  self.withEditing = ko.observable(false);
-  self.withLoading = ko.observable(false);
-  self.withErrorText = ko.observable("");
+  self.whereLatitude = ko.observable("");
+  self.whereLongitude = ko.observable("");
 
-  self.showingEditing = ko.observable(false);
-  self.showingLoading = ko.observable(false);
-  self.showingErrorText = ko.observable("");
   self.showingId = ko.observable(false);
 
   self.showingItemOver = function(showingItem)
@@ -411,20 +405,97 @@ var OverlayModel = function(parentModel)
 
   self.showingEditClicked = function()
   {
-    self.showingEditing(true);
+    self.editType("showing");
     self.initializeOverlayNodeQuery();
   };
 
   self.whoEditClicked = function()
   {
-    self.whoEditing(true);
+    self.editType("who");
     self.initializeOverlayNodeQuery();
   };
 
   self.withEditClicked = function()
   {
-    self.withEditing(true);
+    self.editType("with");
     self.initializeOverlayNodeQuery();
+  };
+
+  self.whenEditClicked = function()
+  {
+    self.editType("when");
+  };
+
+  self.whereEditClicked = function()
+  {
+    self.editType("where");
+    self.initializeOverlayNodeQuery();
+    self.initializeOverlayMap();
+  };
+
+  self.initializeOverlayMap = function()
+  {
+    if (self.editType() !== "where" || (self.item().where._id && self.item().where._id() !== false))
+    {
+      console.log("Not where or have location!");
+      self.whereMap = null;
+      return;
+    }
+
+    var position = new google.maps.LatLng(57.6706907666667, 11.9375348333333);
+
+    self.whereLatitude("");
+    self.whereLongitude("");
+
+    if (self.item().where.latitude && self.item().where.latitude() && self.item().where.longitude && self.item().where.longitude())
+    {
+      position = new google.maps.LatLng(self.item().where.latitude(), self.item().where.longitude());
+      self.whereLatitude(self.item().where.latitude());
+      self.whereLongitude(self.item().where.longitude());
+    }
+
+    var options = {
+      zoom: 13,
+      center: position,
+      mapTypeId: google.maps.MapTypeId.HYBRID,
+      streetViewControl: false,
+      panControl: false,
+      mapTypeControl: false,
+      zoomControl: true,
+    };
+
+    self.whereMap = new google.maps.Map($(".overlayWhereMap").get(0), options);
+
+    var marker = new google.maps.Marker({
+      position: position,
+      map: self.whereMap,
+      draggable: true,
+      visible: false
+    });
+
+    google.maps.event.addListener(marker, "dragend", function(data)
+    {
+      self.whereLatitude(marker.getPosition().lat());
+      self.whereLongitude(marker.getPosition().lng());
+
+      self.whereSavePosition("manual");
+    });
+
+    if (self.item().where.latitude && self.item().where.latitude() && self.item().where.longitude && self.item().where.longitude())
+    {
+      marker.setVisible(true);
+    }
+
+    google.maps.event.addListener(self.whereMap, "click", function(data)
+    {
+      marker.setPosition(data.latLng);
+      marker.setVisible(true);
+
+      self.whereLatitude(marker.getPosition().lat());
+      self.whereLongitude(marker.getPosition().lng());
+
+      self.whereSavePosition("manual");
+    });
   };
 
   self.initializeOverlayNodeQuery = function()
@@ -473,37 +544,32 @@ var OverlayModel = function(parentModel)
       {
         $(".overlayNodeQuery").val("");
 
-        if (self.showingEditing())
+        if (self.editType() === "showing")
         {
           self.showingAdd({ _id: key });
         }
-        else if (self.whoEditing())
+        else if (self.editType() === "who")
         {
           self.whoSet(key);
         }
-        else if (self.withEditing())
+        else if (self.editType() === "with")
         {
           self.withSet(key);
+        }
+        else if (self.editType() === "where")
+        {
+          self.whereSet(key);
         }
       }
     });
   };
 
-  self.showingFinishClicked = function()
+  self.editFinishClicked = function()
   {
     self.showingId(false);
     self.showingItemOut();
-    self.showingEditing(false);
-  };
 
-  self.whoFinishClicked = function()
-  {
-    self.whoEditing(false);
-  };
-
-  self.withFinishClicked = function()
-  {
-    self.withEditing(false);
+    self.editType("");
   };
 
   self.showingOther = ko.computed(function()
@@ -602,6 +668,36 @@ var OverlayModel = function(parentModel)
     return ko.observableArray(list);
   });
 
+  self.whereOther = ko.computed(function()
+  {
+    var list = [];
+    var takenIds = [];
+
+    if (self.item() !== false)
+    {
+      if (self.item().where && self.item().where._id)
+      {
+        takenIds.push(self.item().where._id());
+      }
+
+      for (var n = 0; n < parentModel.items().length; n++)
+      {
+        if (!parentModel.items()[n].where || !parentModel.items()[n].where._id)
+        {
+          continue;
+        }
+
+        if (!murrix.inArray(parentModel.items()[n].where._id(), takenIds))
+        {
+          list.push(parentModel.items()[n].where._id());
+          takenIds.push(parentModel.items()[n].where._id());
+        }
+      }
+    }
+
+    return ko.observableArray(list);
+  });
+
   self.showingAdd = function(showingItem)
   {
     showingItem = ko.mapping.toJS(showingItem);
@@ -639,21 +735,7 @@ var OverlayModel = function(parentModel)
       itemData.showing.push(newShowingItem);
     }
 
-    self.showingLoading(true);
-    self.showingErrorText("");
-
-    murrix.server.emit("saveItem", itemData, function(error, itemData)
-    {
-      self.showingLoading(false);
-
-      if (error)
-      {
-        self.showingErrorText(error);
-        return;
-      }
-
-      self.item(murrix.cache.addItemData(itemData));
-    });
+    self.saveItem(itemData);
   };
 
   self.whoRemove = function()
@@ -669,26 +751,17 @@ var OverlayModel = function(parentModel)
 
     itemData._who = id ? ko.mapping.toJS(id) : false;
 
-    self.whoLoading(true);
-    self.whoErrorText("");
-
-    murrix.server.emit("saveItem", itemData, function(error, itemData)
-    {
-      self.whoLoading(false);
-
-      if (error)
-      {
-        self.whoErrorText(error);
-        return;
-      }
-
-      self.item(murrix.cache.addItemData(itemData));
-    });
+    self.saveItem(itemData);
   };
 
   self.withRemove = function()
   {
     self.withSet(false);
+  };
+
+  self.whereRemove = function()
+  {
+    self.whereSet(false);
   };
 
   self.withSet = function(id)
@@ -699,20 +772,66 @@ var OverlayModel = function(parentModel)
 
     itemData._with = id ? ko.mapping.toJS(id) : false;
 
-    self.withLoading(true);
-    self.withErrorText("");
+    self.saveItem(itemData);
+  };
+
+  self.whereSet = function(id)
+  {
+    id = id ? ko.mapping.toJS(id) : false;
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.where = {};
+
+    itemData.where._id = id;
+    itemData.where.latitude = false;
+    itemData.where.longitude = false;
+    itemData.where.source = false;
+
+    self.saveItem(itemData);
+  };
+
+  self.whereFileSet = function()
+  {
+    self.whereLatitude(self.item().specific.exif.GPSLatitude());
+    self.whereLongitude(self.item().specific.exif.GPSLongitude());
+
+    self.whereSavePosition("exif");
+  };
+
+  self.whereSavePosition = function(source)
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.where = {};
+
+    itemData.where._id = false;
+    itemData.where.latitude = self.whereLatitude();
+    itemData.where.longitude = self.whereLongitude();
+    itemData.where.source = source;
+
+    self.saveItem(itemData);
+  };
+
+  self.saveItem = function(itemData)
+  {
+    self.editLoading(true);
+    self.editErrorText("");
 
     murrix.server.emit("saveItem", itemData, function(error, itemData)
     {
-      self.withLoading(false);
+      self.editLoading(false);
 
       if (error)
       {
-        self.withErrorText(error);
+        self.editErrorText(error);
         return;
       }
 
       self.item(murrix.cache.addItemData(itemData));
+      self.initializeOverlayMap();
     });
   };
+
+
 };
