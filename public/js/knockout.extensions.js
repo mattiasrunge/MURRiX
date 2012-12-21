@@ -92,25 +92,27 @@ $(function()
     }
   };
 
-  ko.bindingHandlers.htmlReverseGeocoding = {
+  ko.bindingHandlers.htmlPrintWhere = {
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
       var param = ko.utils.unwrapObservable(value);
 
-      var location = param || false;
+      var where = param || false;
 
-      if (!location || location === null)
+      $(element).popover('destroy');
+
+      if (!where || where === null)
       {
-        $(element).html("<i>Where was this item created?</i>");
+        $(element).html("unknown location");
         return;
       }
 
-      $(element).text("Loading location...");
+      $(element).text("...loading...");
 
-      if (location._id)
+      if (where._id)
       {
-        murrix.cache.getNodes([ location._id() ], function(error, nodeList)
+        murrix.cache.getNodes([ where._id() ], function(error, nodeList)
         {
           if (error)
           {
@@ -118,42 +120,172 @@ $(function()
             return;
           }
 
-          if (nodeList[location._id()])
+          if (nodeList[where._id()])
           {
-            $(element).html("<a href='#node:" + location._id() + "'>" + nodeList[location._id()].name() + "</a>");
+            $(element).html("<a href='#node:" + where._id() + "'>" + nodeList[where._id()].name() + "</a>");
           }
           else
           {
-            $(element).text("<i class='muted'>Where was this item created?</i>");
+            $(element).text("unknown location");
           }
         });
       }
-      else if (location.longitude && location.latitude)
+      else if (where.longitude && where.latitude)
       {
         // TODO: Look in our own database first
 
         var options = {};
 
         options.sensor = false;
-        options.latlng = location.latitude() + "," + location.longitude();
+        options.latlng = where.latitude() + "," + where.longitude();
 
         jQuery.getJSON("http://maps.googleapis.com/maps/api/geocode/json", options, function(data)
         {
           if (data.status !== "OK" || data.results.length === 0)
           {
-            $(element).text("<i class='muted'>Where was this item created?</i>");
+            $(element).text("unknown location");
             return;
           }
 
-          $(element).text("Near " + data.results[0].formatted_address);
+          $(element).text(data.results[0].formatted_address);
+
+          /*var text = "";
+
+          text += "Latitude: " + where.latitude();
+          text += "<br/>";
+          text += "Longitude: " + where.longitude();
+          text += "<br/>";
+          text += "Source: " + where.source();
+
+          var options = {
+            html      : true,
+            placement : "left",
+            trigger   : "hover",
+            title     : "Where - " + data.results[0].formatted_address,
+            content   : text,
+            delay     : { show: 200, hide: 100 }
+          }
+
+          $(element).popover(options);*/
         });
       }
       else
       {
-         $(element).html("<i class='muted'>Where was this item created?</i>");
+         $(element).html("unknown location");
       }
     }
   };
+
+  ko.bindingHandlers.htmlPrintWhen = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var param = ko.utils.unwrapObservable(value);
+
+      var when = param || false;
+
+      $(element).popover('destroy');
+
+      if (!when || when === null)
+      {
+        $(element).html("at an unknown date and time");
+        return;
+      }
+
+      var dateItem = moment.utc(when.timestamp() * 1000);
+
+      if (!dateItem.date())
+      {
+        $(element).html("at " + ko.utils.unwrapObservable(value));
+      }
+      else
+      {
+        var title = dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z");
+
+        $(element).html("at " + title);
+
+        var text = "";
+
+        text += "Timestamp: " + when.timestamp();
+        text += "<br/>";
+        text += "Source: " + when.source();
+
+        var options = {
+          html      : true,
+          placement : "left",
+          trigger   : "hover",
+          title     : "When - " + title,
+          content   : text,
+          delay     : { show: 200, hide: 100 }
+        }
+
+        $(element).popover(options);
+      }
+    }
+  };
+
+  ko.bindingHandlers.htmlPrintWith = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var param = ko.utils.unwrapObservable(value);
+
+      var withId = param || false;
+
+      $(element).popover('destroy');
+
+      if (!withId || withId === null)
+      {
+        $(element).text("an unknown device");
+        return;
+      }
+
+      $(element).text("...loading...");
+
+      murrix.cache.getNodes([ withId ], function(error, nodeList)
+      {
+        if (error)
+        {
+          $(element).text(error);
+          return;
+        }
+
+        if (!nodeList[withId])
+        {
+          $(element).text("an unknown device");
+          return;
+        }
+
+        var title = "<a href='#node:" + withId + "'>" + nodeList[withId].name() + "</a>";
+
+        $(element).html("the " + title);
+
+        var text = "";
+
+        text += "Type: " + nodeList[withId].type();
+
+        if (nodeList[withId]._owner)
+        {
+          text += "<br/>";
+          text += "Owner: " + nodeList[withId]._owner();
+        }
+
+        var options = {
+          html      : true,
+          placement : "left",
+          trigger   : "hover",
+          title     : "With - " + nodeList[withId].name(),
+          content   : text,
+          delay     : { show: 200, hide: 100 }
+        }
+
+        $(element).popover(options);
+      });
+    }
+  };
+
+
+
 
 
   /* Knockout text, set attribute of node loaded async */
@@ -162,6 +294,11 @@ $(function()
     {
       var value = valueAccessor();
       var params = ko.utils.unwrapObservable(value);
+
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
 
       if (params[0] === null ||  params[0] === "")
       {
@@ -197,6 +334,11 @@ $(function()
     {
       var value = valueAccessor();
       var params = ko.utils.unwrapObservable(value);
+
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
 
       var id = params[0] || false;
 
@@ -234,6 +376,11 @@ $(function()
     {
       var value = valueAccessor();
       var params = ko.utils.unwrapObservable(value);
+
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
 
       var id = params[0] || false;
 
@@ -273,6 +420,11 @@ $(function()
     {
       var value = valueAccessor();
       var params = ko.utils.unwrapObservable(value);
+
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
 
       var id = params[0] || false;
       var width = params[1] || 0;
@@ -322,6 +474,11 @@ $(function()
     {
       var value = valueAccessor();
       var params = ko.utils.unwrapObservable(value);
+
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
 
       var id = params[0] || false;
       var width = params[1] || 0;
@@ -482,6 +639,11 @@ $(function()
     update: function(element, valueAccessor)
     {
       var values = ko.utils.unwrapObservable(valueAccessor());
+      for (var n = 0; n < values.length; n++)
+      {
+        values[n] = ko.utils.unwrapObservable(values[n]);
+      }
+
       $(element).attr("href", murrix.createPath(0, values[0], values[1]));
     }
   };
@@ -504,6 +666,10 @@ $(function()
     update: function(element, valueAccessor)
     {
       var values = ko.utils.unwrapObservable(valueAccessor());
+      for (var n = 0; n < values.length; n++)
+      {
+        values[n] = ko.utils.unwrapObservable(values[n]);
+      }
       $(element).attr("href", murrix.createPath(1, values[0], values[1]));
     }
   };

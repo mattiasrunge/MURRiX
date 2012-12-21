@@ -1,6 +1,6 @@
-<div class="modal-backdrop" data-bind="fadeVisible: nodeModel.overlayModel.show() && nodeModel.show(), if: nodeModel.overlayModel.show"></div>
-<div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show">
-  <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center;">
+<div class="modal-backdrop" style="opacity: 1; background-color: whiteSmoke;" data-bind="fadeVisible: nodeModel.overlayModel.show() && nodeModel.show(), if: nodeModel.overlayModel.show"></div>
+<div style="position: absolute; top: 0px; left: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show">
+  <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;">
 
     <div id="overlayCarousel">
       <!-- Carousel items -->
@@ -19,7 +19,7 @@
     </div>
 
   </div>
-  <div style="position: absolute; top: 0px; width: 350px; bottom: 0px; right: 0px; margin: 0px; padding: 0px; overflow: auto; background-color: whiteSmoke;">
+  <div style="position: absolute; top: 0px; width: 350px; right: 0px; margin: 0px; padding: 0px; background-color: whiteSmoke;">
     <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.showingEditing">
 
       <div style="position: relative; height: 40px;">
@@ -77,8 +77,8 @@
           <tbody data-bind="if: nodeModel.overlayModel.item()._who">
             <tr>
               <td>
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._who(), 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who(), 'name' ]" style="margin: 0px;"></h5>
+                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._who, 44, 44, 1 ]"/>
+                <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]" style="margin: 0px;"></h5>
               </td>
               <td>
                 <button title="Remove" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.whoLoading, click: nodeModel.overlayModel.whoRemove" class="btn pull-right"><i class="icon-trash"></i></button>
@@ -119,8 +119,8 @@
           <tbody data-bind="if: nodeModel.overlayModel.item()._with">
             <tr>
               <td>
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._with(), 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with(), 'name' ]" style="margin: 0px;"></h5>
+                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._with, 44, 44, 1 ]"/>
+                <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]" style="margin: 0px;"></h5>
               </td>
               <td>
                 <button title="Remove" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.withLoading, click: nodeModel.overlayModel.withRemove" class="btn pull-right"><i class="icon-trash"></i></button>
@@ -152,65 +152,109 @@
       <div style="padding: 10px;">
         <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
         <h3 data-bind="text: nodeModel.node().name"></h3>
-  <!--       <button data-bind="click: nodeModel.overlayModel.detectFaces">Detect faces</button> -->
 
-        <table class="table table-condensed" style="font-size: 10px;">
-          <tr>
-            <td>
-              <button class="btn btn-mini btn-link pull-right" style="padding: 0px;">Edit</button>
-              <span data-bind="if: !nodeModel.overlayModel.item().when">
-                <i class="muted">When was this item created?</i>
-              </span>
-              <span data-bind="if: nodeModel.overlayModel.item().when">
-                <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp()"></span>
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button class="btn btn-mini btn-link pull-right" style="padding: 0px;">Edit</button>
-              <span data-bind="htmlReverseGeocoding: nodeModel.overlayModel.item().where"></span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button class="btn btn-mini btn-link pull-right" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.withEditClicked">Edit</button>
-              <span data-bind="if: !nodeModel.overlayModel.item()._with || !nodeModel.overlayModel.item()._with()">
-                <i class="muted">What was used to create this item?</i>
-              </span>
-              <span data-bind="if: nodeModel.overlayModel.item()._with && nodeModel.overlayModel.item()._with()">
-              <span data-bind="if: nodeModel.overlayModel.item()._with && nodeModel.overlayModel.item()._with()">
-                <a data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._with() ], textNodeAttribute: [ nodeModel.overlayModel.item()._with(), 'name' ]"></a> was used to create this item.
-              </span>
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button class="btn btn-mini btn-link pull-right" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.whoEditClicked">Edit</button>
-              <span data-bind="if: !nodeModel.overlayModel.item()._who || !nodeModel.overlayModel.item()._who()">
-                <i class="muted">Who created this item?</i>
-              </span>
-              <span data-bind="if: nodeModel.overlayModel.item()._who && nodeModel.overlayModel.item()._who()">
-                <a data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._who() ], textNodeAttribute: [ nodeModel.overlayModel.item()._who(), 'name' ]"></a> created this item.
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button class="btn btn-mini btn-link pull-right" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.showingEditClicked">Edit</button>
-              <span data-bind="visible: !nodeModel.overlayModel.item().showing || nodeModel.overlayModel.item().showing().length === 0">
-                <i class="muted">Nothing is tagged on this item.</i>
-              </span>
-              <span data-bind="visible: nodeModel.overlayModel.item().showing && nodeModel.overlayModel.item().showing().length > 0">
-                Showing
-                <span data-bind="foreach: nodeModel.overlayModel.item().showing">
-                  <a href="#" data-bind="hrefFirst: [ 'node', $data._id() ], textNodeAttribute: [ $data._id(), 'name' ], event: { mouseover: nodeModel.overlayModel.showingItemOver, mouseout: nodeModel.overlayModel.showingItemOut }"></a><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item().showing().length"> and</span><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item().showing().length">, </span><span data-bind="if: $index() + 1 === $parent.nodeModel.overlayModel.item().showing().length">.</span>
-                </span>
-              </span>
-            </td>
-          </tr>
-        </table>
+        <div>
+          <span class="dropdown">
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]" href="#" style="font-size: 10px;"></a>
+            <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
+              <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._who, 22, 22, 1 ]"/>
+                <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]"></h5>
+                <div class="muted" style="font-size: 10px; margin-left: 32px;">
+                  <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._who ]">Goto</a>
+                  &bull;
+                  <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.whoEditClicked">Edit</a>
+                </div>
+              </li>
+            </ul>
+          </span>
+          <span style="font-size: 10px">
+            created this item with
+          </span>
+          <span class="dropdown">
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]" href="#" style="font-size: 10px;"></a>
+            <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
+              <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._with, 22, 22, 1 ]"/>
+                <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]"></h5>
+                <div class="muted" style="font-size: 10px; margin-left: 32px;">
+                  <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._with ]">Goto</a>
+                  &bull;
+                  <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.withEditClicked">Edit</a>
+                </div>
+                <div class="muted" style="font-size: 10px; margin-top: 5px; margin-left: 32px;">
+                  Owner: <span>Unknown</span><br/>
+                  Type: <span data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'type' ]"></span>
+                </div>
+              </li>
+            </ul>
+          </span>
+          <span style="font-size: 10px">
+            at
+          </span>
+          <span class="dropdown">
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp()" href="#" style="font-size: 10px;"></a>
+            <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
+              <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <h5 style="margin: 0px;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp()"></h5>
+                <div class="muted" style="font-size: 10px;">
+                  <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.whenEditClicked">Edit</a>
+                </div>
+                <div class="muted" style="font-size: 10px; margin-top: 5px;">
+                  Timestamp: <span data-bind="text: nodeModel.overlayModel.item().when.timestamp()"></span><br/>
+                  Source: <span data-bind="text: nodeModel.overlayModel.item().when.source()"></span>
+                </div>
+              </li>
+            </ul>
+          </span>
+          <span style="font-size: 10px">
+            near
+          </span>
+          <span class="dropdown">
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where" href="#" style="font-size: 10px;"></a>.
+            <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
+              <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <h5 style="margin: 0px;" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where"></h5>
+                <div class="muted" style="font-size: 10px;">
+                  <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.whereEditClicked">Edit</a>
+                </div>
+                <div class="muted" style="font-size: 10px; margin-top: 5px;" data-bind="if: nodeModel.overlayModel.item().where">
+                  Latitude: <span data-bind="text: nodeModel.overlayModel.item().where.latitude">Unknown</span><br/>
+                  Longitude: <span data-bind="text: nodeModel.overlayModel.item().where.longitude">Unknown</span><br/>
+                  Source: <span data-bind="text: nodeModel.overlayModel.item().where.source">Unknown</span>
+                </div>
+              </li>
+            </ul>
+          </span>
+        </div>
+        <div style="font-size: 10px;">
+          <span data-bind="visible: !nodeModel.overlayModel.item().showing || nodeModel.overlayModel.item().showing().length === 0">
+            <button class="btn btn-mini btn-link" style="padding: 0px; font-size: 10px;" data-bind="click: nodeModel.overlayModel.showingEditClicked">Tag something or someone</button>.
+          </span>
+          <span data-bind="if: nodeModel.overlayModel.item().showing && nodeModel.overlayModel.item().showing().length > 0">
+            <span data-bind="foreach: nodeModel.overlayModel.item().showing">
+              <span class="dropdown">
+                <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="textNodeAttribute: [ $data._id, 'name' ], event: { mouseover: nodeModel.overlayModel.showingItemOver, mouseout: nodeModel.overlayModel.showingItemOut }" href="#" style="font-size: 10px;"></a><!--
+             --><ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
+                  <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                    <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data._id, 22, 22, 1 ]"/>
+                    <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ $data._id, 'name' ]"></h5>
+                    <div class="muted" style="font-size: 10px; margin-left: 32px;">
+                      <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', $data._id ]">Goto</a>
+                    &bull;
+                      <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: $parent.nodeModel.overlayModel.showingEditClicked">Edit</a>
+                    </div>
+                  </li>
+                </ul><!--
+           --></span><!--
+           --><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item().showing().length"> and</span><!--
+           --><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item().showing().length">, </span>
+            </span>
+            <span data-bind="if: nodeModel.overlayModel.item().showing().length === 1">is</span>
+            <span data-bind="if: nodeModel.overlayModel.item().showing().length > 1">are</span>
+            tagged on this item.
+          </span>
+        </div>
       </div>
 
       <div class="accordion" id="overlayAccordion" style="height: 100%;">
@@ -233,12 +277,12 @@
                     <td data-bind="htmlSize: nodeModel.overlayModel.item().specific.exif.FileSize()"></td>
                   </tr>
                   <tr>
-                    <td>Image size</td>
+                    <td>Resolution</td>
                     <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().specific.exif.ImageHeight()"></td>
                   </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.CameraModelName">
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Model">
                     <td>Camera model</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.CameraModelName()"></td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Model()"></td>
                   </tr>
                   <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Orientation">
                     <td>Orientation</td>
@@ -252,7 +296,46 @@
                     <td>Mirror</td>
                     <td data-bind="text: nodeModel.overlayModel.item().specific.mirror()"></td>
                   </tr>
-
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.MIMEType">
+                    <td>MIME type</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.MIMEType()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ISO">
+                    <td>ISO</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ISO()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.FocalLength">
+                    <td>Focal length</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.FocalLength()"></td>
+                  </tr>
+                   <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ResolutionUnit">
+                    <td>Resolution unit</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ResolutionUnit()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Compression">
+                    <td>Compression</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Compression()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ColorSpace">
+                    <td>Color space</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ColorSpace()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ColorComponents">
+                    <td>Color components</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ColorComponents()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.BitsPerSample">
+                    <td>Bits per sample</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.BitsPerSample()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ComponentsConfiguration">
+                    <td>Components configuration</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ComponentsConfiguration()"></td>
+                  </tr>
+                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.EncodingProcess">
+                    <td>Encoding process</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.EncodingProcess()"></td>
+                  </tr>
               </table>
 
             </div>
