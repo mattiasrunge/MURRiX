@@ -182,7 +182,7 @@
         <i>Select date and time when item was created e.g. when was this picture taken. All times are stored in UTC, be sure that timezone information is correct.</i>
       </p>
 
-      <div data-bind="if: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.source() === 'exif'">
+      <div data-bind="if: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'exif'">
         <h5>Exif information</h5>
         <table class="table table-condensed" style="font-size: 12px;">
           <tbody>
@@ -202,7 +202,7 @@
         </table>
       </div>
 
-      <div data-bind="if: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.source() === 'synced'">
+      <div data-bind="if: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'synced'">
         <h5>Synced exif information</h5>
         <table class="table table-condensed" style="font-size: 12px;">
           <tbody>
@@ -418,14 +418,33 @@
             at
           </span>
           <span class="dropdown">
-            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp()" href="#" style="font-size: 10px;"></a>
+
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
+              <span data-bind="if: !nodeModel.overlayModel.item().when">
+                unknown date and time
+              </span>
+              <span data-bind="if: nodeModel.overlayModel.item().when">
+                <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp"></span>
+              </span>
+            </a>
+
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
-                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whenEditClicked, visible: nodeModel.node().hasAdminAccess() && nodeModel.overlayModel.item().when.source() !== 'gps'"><i class="icon-pencil" style="margin: 0px;"></i></a>
-                <h5 style="margin: 0px;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp()"></h5>
-                <div class="muted" style="font-size: 10px; margin-top: 5px;">
-                  Timestamp: <span data-bind="text: nodeModel.overlayModel.item().when.timestamp()"></span><br/>
-                  Source: <span data-bind="text: nodeModel.overlayModel.item().when.source()"></span>
+                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whenEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
+
+                <div data-bind="if: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.timestamp && nodeModel.overlayModel.item().when.timestamp() !== false">
+                  <h5 style="margin: 0px;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp"></h5>
+                  <div class="muted" style="font-size: 10px; margin-top: 5px;">
+                    Timestamp: <span data-bind="text: nodeModel.overlayModel.item().when.timestamp"></span><br/>
+                    Source: <span data-bind="text: nodeModel.overlayModel.item().when.source"></span>
+                  </div>
+                </div>
+
+                 <div data-bind="if: (!nodeModel.overlayModel.item().when || !nodeModel.overlayModel.item().when.timestamp || nodeModel.overlayModel.item().when.timestamp() === false)">
+                  <h5 style="margin: 0px;">Unknown date and time</h5>
+                  <div class="muted" style="font-size: 10px;">
+                    <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whenEditClicked, visible: nodeModel.node().hasAdminAccess()">Please select date and time</a>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -439,7 +458,7 @@
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
                 <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whereEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
 
-                <div data-bind="if: nodeModel.overlayModel.item().where._id && nodeModel.overlayModel.item().where._id() !== false">
+                <div data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where._id && nodeModel.overlayModel.item().where._id() !== false">
                   <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().where._id, 22, 22, 1 ]"/>
                   <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item().where._id, 'name' ]"></h5>
                   <div class="muted" style="font-size: 10px; margin-left: 32px;">
@@ -447,7 +466,7 @@
                   </div>
                 </div>
 
-                <div data-bind="if: nodeModel.overlayModel.item().where.latitude && nodeModel.overlayModel.item().where.latitude() !== false">
+                <div data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where.latitude && nodeModel.overlayModel.item().where.latitude() !== false">
                   <h5 style="margin: 0px;" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where"></h5>
                   <div class="muted" style="font-size: 10px; margin-top: 5px;" data-bind="if: nodeModel.overlayModel.item().where">
                     Latitude: <span data-bind="text: nodeModel.overlayModel.item().where.latitude">Unknown</span><br/>
@@ -456,7 +475,7 @@
                   </div>
                 </div>
 
-                <div data-bind="if: (!nodeModel.overlayModel.item().where.latitude || nodeModel.overlayModel.item().where.latitude() === false) && (!nodeModel.overlayModel.item().where._id || nodeModel.overlayModel.item().where._id() === false)">
+                <div data-bind="if: (!nodeModel.overlayModel.item().where || !nodeModel.overlayModel.item().where.latitude || nodeModel.overlayModel.item().where.latitude() === false) && (!nodeModel.overlayModel.item().where || !nodeModel.overlayModel.item().where._id || nodeModel.overlayModel.item().where._id() === false)">
                   <h5 style="margin: 0px;">Unknown location</h5>
                   <div class="muted" style="font-size: 10px;">
                     <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whereEditClicked, visible: nodeModel.node().hasAdminAccess()">Please select a position</a>

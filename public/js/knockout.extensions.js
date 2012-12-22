@@ -591,11 +591,19 @@ $(function()
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
-      var dateItem = moment.utc(ko.utils.unwrapObservable(value) * 1000);
+      var rawValue = ko.utils.unwrapObservable(value);
+
+      if (!rawValue)
+      {
+        $(element).text("unknown date and time");
+        return;
+      }
+
+      var dateItem = moment.utc(rawValue * 1000);
 
       if (!dateItem.date())
       {
-        $(element).html(ko.utils.unwrapObservable(value));
+        $(element).html(rawValue);
       }
       else
       {
