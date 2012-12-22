@@ -339,7 +339,7 @@
         </div>
       </div>
 
-      <div data-bind="if: nodeModel.overlayModel.item().specific.exif">
+      <div data-bind="if: nodeModel.overlayModel.item().specific.exif && nodeModel.overlayModel.item().specific.exif.GPSLatitude">
         <h5>
           File information
           <button title="Set" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whereFileSet" class="btn btn-mini btn-link pull-right">Set file position</button>
@@ -393,14 +393,11 @@
             <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]" href="#" style="font-size: 10px;"></a>
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whoEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
                 <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._who, 22, 22, 1 ]"/>
                 <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]"></h5>
                 <div class="muted" style="font-size: 10px; margin-left: 32px;">
                   <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._who ]">Goto</a>
-                  <span data-bind="visible: nodeModel.node().hasAdminAccess()">
-                    &bull;
-                    <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.whoEditClicked">Edit</a>
-                  </span>
                 </div>
               </li>
             </ul>
@@ -412,14 +409,11 @@
             <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]" href="#" style="font-size: 10px;"></a>
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.withEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
                 <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._with, 22, 22, 1 ]"/>
                 <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]"></h5>
                 <div class="muted" style="font-size: 10px; margin-left: 32px;">
                   <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._with ]">Goto</a>
-                  <span data-bind="visible: nodeModel.node().hasAdminAccess()">
-                    &bull;
-                    <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.withEditClicked">Edit</a>
-                  </span>
                 </div>
                 <div class="muted" style="font-size: 10px; margin-top: 5px; margin-left: 32px;">
                   Owner: <span>Unknown</span><br/>
@@ -435,10 +429,8 @@
             <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp()" href="#" style="font-size: 10px;"></a>
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whenEditClicked, visible: nodeModel.node().hasAdminAccess() && nodeModel.overlayModel.item().when.source() !== 'gps'"><i class="icon-pencil" style="margin: 0px;"></i></a>
                 <h5 style="margin: 0px;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp()"></h5>
-                <div class="muted" style="font-size: 10px;" data-bind="visible: nodeModel.node().hasAdminAccess() && nodeModel.overlayModel.item().when.source() !== 'gps'">
-                  <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.whenEditClicked">Edit</a>
-                </div>
                 <div class="muted" style="font-size: 10px; margin-top: 5px;">
                   Timestamp: <span data-bind="text: nodeModel.overlayModel.item().when.timestamp()"></span><br/>
                   Source: <span data-bind="text: nodeModel.overlayModel.item().when.source()"></span>
@@ -453,10 +445,8 @@
             <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where" href="#" style="font-size: 10px;"></a>.
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whereEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
                 <h5 style="margin: 0px;" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where"></h5>
-                <div class="muted" style="font-size: 10px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
-                  <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: nodeModel.overlayModel.whereEditClicked">Edit</a>
-                </div>
                 <div class="muted" style="font-size: 10px; margin-top: 5px;" data-bind="if: nodeModel.overlayModel.item().where">
                   Latitude: <span data-bind="text: nodeModel.overlayModel.item().where.latitude">Unknown</span><br/>
                   Longitude: <span data-bind="text: nodeModel.overlayModel.item().where.longitude">Unknown</span><br/>
@@ -476,14 +466,12 @@
                 <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="textNodeAttribute: [ $data._id, 'name' ], event: { mouseover: nodeModel.overlayModel.showingItemOver, mouseout: nodeModel.overlayModel.showingItemOut }" href="#" style="font-size: 10px;"></a><!--
              --><ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
                   <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                    <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.showingEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
                     <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data._id, 22, 22, 1 ]"/>
+
                     <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ $data._id, 'name' ]"></h5>
                     <div class="muted" style="font-size: 10px; margin-left: 32px;">
                       <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', $data._id ]">Goto</a>
-                      <span data-bind="visible: nodeModel.node().hasAdminAccess()">
-                        &bull;
-                        <a class="btn btn-mini btn-link" style="padding: 0px;" data-bind="click: $parent.nodeModel.overlayModel.showingEditClicked">Edit</a>
-                      </span>
                     </div>
                   </li>
                 </ul><!--

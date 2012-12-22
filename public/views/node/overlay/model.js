@@ -70,6 +70,8 @@ var OverlayModel = function(parentModel)
 
       self.item(itemList[itemId]);
       self.itemPictureUrl("");
+      self.initializeOverlayNodeQuery();
+      self.initializeOverlayMap();
 
 
 
@@ -796,7 +798,7 @@ var OverlayModel = function(parentModel)
     self.whereLatitude(self.item().specific.exif.GPSLatitude());
     self.whereLongitude(self.item().specific.exif.GPSLongitude());
 
-    self.whereSavePosition("exif");
+    self.whereSavePosition("gps");
   };
 
   self.whereSavePosition = function(source)
@@ -829,6 +831,7 @@ var OverlayModel = function(parentModel)
       }
 
       self.item(murrix.cache.addItemData(itemData));
+      self.initializeOverlayNodeQuery();
       self.initializeOverlayMap();
     });
   };
