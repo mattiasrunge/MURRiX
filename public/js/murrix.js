@@ -161,6 +161,7 @@ murrix.cache = new function()
     }
 
 
+    self.items[id]._with = self.items[id]._with || ko.observable(false);
     self.items[id].with = ko.observable(false);
 
     ko.dependentObservable(function()
@@ -185,6 +186,7 @@ murrix.cache = new function()
     });
 
 
+    self.items[id]._who = self.items[id]._who || ko.observable(false);
     self.items[id].who = ko.observable(false);
 
     ko.dependentObservable(function()
@@ -209,6 +211,7 @@ murrix.cache = new function()
     });
 
 
+    self.items[id].where = self.items[id].where || ko.observable({});
     self.items[id].whereString = ko.observable(false);
     self.items[id].whereNode = ko.observable(false);
 
@@ -266,6 +269,7 @@ murrix.cache = new function()
     });
 
 
+    self.items[id].when = self.items[id].when || ko.observable({});
     self.items[id].whenTimestamp = ko.observable(false);
 
     ko.dependentObservable(function()

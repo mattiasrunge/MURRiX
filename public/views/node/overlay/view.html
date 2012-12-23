@@ -196,7 +196,7 @@
         </div>
       </div>
 
-      <div data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif">
+      <div data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif && (nodeModel.overlayModel.item().specific.exif.GPSDateTime || nodeModel.overlayModel.item().specific.exif.DateTimeOriginal)">
         <h5>File information</h5>
         <p class="muted" style="font-size: 12px;">
           <i>This file has metadata stored in it, all timestamps found are listed here.</i>
@@ -417,77 +417,83 @@
 
         <div>
           <span class="dropdown">
-            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]" href="#" style="font-size: 10px;"></a>
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
+              <span data-bind="if: nodeModel.overlayModel.item().who() !== false">
+                <span data-bind="text: nodeModel.overlayModel.item().who().name"></span>
+              </span>
+              <span data-bind="visible: nodeModel.overlayModel.item().who() === false">
+                Unknown person
+              </span>
+            </a>
+
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
                 <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whoEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
 
-                <div data-bind="if: nodeModel.overlayModel.item()._who && nodeModel.overlayModel.item()._who() !== false">
-                  <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._who, 22, 22, 1 ]"/>
+                <span data-bind="if: nodeModel.overlayModel.item().who() !== false">
+                  <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().who()._id, 22, 22, 1 ]"/>
                   <h5 style="margin: 0px;">
-                     <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._who ], textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]"></a>
+                     <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().who()._id ], text: nodeModel.overlayModel.item().who().name"></a>
                   </h5>
-                  <div class="muted" style="font-size: 10px; margin-left: 32px;">
-                  </div>
-                </div>
+                </span>
 
-                <div data-bind="if: !nodeModel.overlayModel.item()._who || nodeModel.overlayModel.item()._who() === false">
-                  <h5 style="margin: 0px;">Unknown person</h5>
-                  <div class="muted" style="font-size: 10px;">
-                    <div data-bind="visible: nodeModel.node().hasAdminAccess()">
-
-                      <div data-bind="foreach: nodeModel.overlayModel.whoOther">
-                        <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whoSet">Did <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> create this item?</a><br/>
-                      </div>
-
-                      <a class="btn btn-mini btn-link" style="padding: 0px; text-align: left;" href="#" data-bind="click: nodeModel.overlayModel.whoEditClicked">
-                        Select who created this item.
-                      </a><br/>
-
+                <div data-bind="visible: nodeModel.overlayModel.item().who() === false">
+                  <h5 style="margin: 0px;">
+                    Unknown person
+                  </h5>
+                  <div class="muted" style="font-size: 10px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
+                    <div data-bind="foreach: nodeModel.overlayModel.whoOther">
+                      <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whoSet">Did <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> create this item?</a><br/>
                     </div>
+                    <a class="btn btn-mini btn-link" style="padding: 0px; text-align: left;" href="#" data-bind="click: nodeModel.overlayModel.whoEditClicked">
+                      Select who created this item.
+                    </a>
                   </div>
                 </div>
               </li>
             </ul>
           </span>
+
           <span style="font-size: 10px">
             created this item with
           </span>
+
           <span class="dropdown">
-            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]" href="#" style="font-size: 10px;"></a>
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
+              <span data-bind="if: nodeModel.overlayModel.item().with() !== false">
+                <span data-bind="text: nodeModel.overlayModel.item().with().name"></span>
+              </span>
+              <span data-bind="visible: nodeModel.overlayModel.item().with() === false">
+                Unknown device
+              </span>
+            </a>
+
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
                 <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.withEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
 
-                <div data-bind="if: nodeModel.overlayModel.item()._with && nodeModel.overlayModel.item()._with() !== false">
-                  <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._with, 22, 22, 1 ]"/>
+                <span data-bind="if: nodeModel.overlayModel.item().with() !== false">
+                  <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().with()._id, 22, 22, 1 ]"/>
                   <h5 style="margin: 0px;">
-                    <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._with ], textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]"></a>
+                     <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().with()._id ], text: nodeModel.overlayModel.item().with().name"></a>
                   </h5>
-                  <div class="muted" style="font-size: 10px; margin-left: 32px;">
-                  </div>
-                  <div class="muted" style="font-size: 10px; margin-top: 5px; margin-left: 32px;">
-                    Owner: <span>Unknown</span><br/>
-                    Type: <span data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'type' ]"></span>
-                  </div>
-                </div>
+                </span>
 
-                <div data-bind="if: !nodeModel.overlayModel.item()._with || nodeModel.overlayModel.item()._with() === false">
-                  <h5 style="margin: 0px;">Unknown device</h5>
-                  <div class="muted" style="font-size: 10px;">
-
-                    <div data-bind="visible: nodeModel.node().hasAdminAccess()">
-
-                      <div data-bind="foreach: nodeModel.overlayModel.withOther">
-                        <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.withSet">Was <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> used to create this item?</a><br/>
-                      </div>
-
-                      <a class="btn btn-mini btn-link" style="padding: 0px; text-align: left;" href="#" data-bind="click: nodeModel.overlayModel.withEditClicked">
-                        Select the device used to create this item.
-                      </a><br/>
+                <div data-bind="visible: nodeModel.overlayModel.item().with() === false">
+                  <h5 style="margin: 0px;">
+                    Unknown device
+                  </h5>
+                  <div class="muted" style="font-size: 10px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
+                    <div data-bind="foreach: nodeModel.overlayModel.withOther">
+                      <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.withSet">Was <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> used to create this item?</a><br/>
                     </div>
+
+                    <a class="btn btn-mini btn-link" style="padding: 0px; text-align: left;" href="#" data-bind="click: nodeModel.overlayModel.withEditClicked">
+                      Select the device used to create this item.
+                    </a><br/>
                   </div>
                 </div>
+
               </li>
             </ul>
           </span>
@@ -495,36 +501,57 @@
           <span style="font-size: 10px">
             near
           </span>
+
           <span class="dropdown">
-            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where" href="#" style="font-size: 10px;"></a>
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
+              <span data-bind="if: nodeModel.overlayModel.item().whereNode() !== false">
+                <span data-bind="text: nodeModel.overlayModel.item().whereNode().name"></span>
+              </span>
+              <span data-bind="visible: nodeModel.overlayModel.item().whereString() !== false">
+                <span data-bind="text: nodeModel.overlayModel.item().whereString"></span>
+              </span>
+              <span data-bind="visible: nodeModel.overlayModel.item().whereNode() === false && nodeModel.overlayModel.item().whereString() === false">
+                Unknown location
+              </span>
+            </a>
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
                 <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whereEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
 
-                <div data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where._id && nodeModel.overlayModel.item().where._id() !== false">
-                  <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().where._id, 22, 22, 1 ]"/>
+                <span data-bind="if: nodeModel.overlayModel.item().whereNode() !== false">
+                  <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().whereNode()._id, 22, 22, 1 ]"/>
                   <h5 style="margin: 0px;">
-                    <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().where._id ], textNodeAttribute: [ nodeModel.overlayModel.item().where._id, 'name' ]"></a>
+                     <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().whereNode()._id ], text: nodeModel.overlayModel.item().whereNode().name"></a>
                   </h5>
-                  <div class="muted" style="font-size: 10px; margin-left: 32px;">
-                  </div>
-                </div>
 
-                <div data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where.latitude && nodeModel.overlayModel.item().where.latitude() !== false">
-                  <h5 style="margin: 0px;" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where"></h5>
-                  <div class="muted" style="font-size: 10px; margin-top: 5px;" data-bind="if: nodeModel.overlayModel.item().where">
+                  <div class="muted" style="font-size: 10px; margin-top: 5px;"  data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where.latitude && nodeModel.overlayModel.item().where.latitude() !== false">
                     Latitude: <span data-bind="text: nodeModel.overlayModel.item().where.latitude">Unknown</span><br/>
                     Longitude: <span data-bind="text: nodeModel.overlayModel.item().where.longitude">Unknown</span><br/>
                     Source: <span data-bind="text: nodeModel.overlayModel.item().where.source">Unknown</span>
                   </div>
-                </div>
+                </span>
 
-                <div data-bind="if: (!nodeModel.overlayModel.item().where || !nodeModel.overlayModel.item().where.latitude || nodeModel.overlayModel.item().where.latitude() === false) && (!nodeModel.overlayModel.item().where || !nodeModel.overlayModel.item().where._id || nodeModel.overlayModel.item().where._id() === false)">
-                  <h5 style="margin: 0px;">Unknown location</h5>
-                  <div class="muted" style="font-size: 10px;">
+                <div data-bind="visible: nodeModel.overlayModel.item().whereNode() === false">
+                  <h5 style="margin: 0px;">
+                    <span data-bind="visible: nodeModel.overlayModel.item().whereString() !== false">
+                      <span data-bind="text: nodeModel.overlayModel.item().whereString"></span>
+                    </span>
+                    <span data-bind="visible: nodeModel.overlayModel.item().whereString() === false">
+                      Unknown location
+                    </span>
+                  </h5>
+
+                  <div class="muted" style="font-size: 10px; margin-top: 5px;"  data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where.latitude && nodeModel.overlayModel.item().where.latitude() !== false">
+                    Latitude: <span data-bind="text: nodeModel.overlayModel.item().where.latitude">Unknown</span><br/>
+                    Longitude: <span data-bind="text: nodeModel.overlayModel.item().where.longitude">Unknown</span><br/>
+                    Source: <span data-bind="text: nodeModel.overlayModel.item().where.source">Unknown</span>
+                  </div>
+
+                  <div class="muted" style="font-size: 10px;" data-bind="visible: nodeModel.overlayModel.item().whereString() === false">
                     <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whereEditClicked, visible: nodeModel.node().hasAdminAccess()">Select a position</a>
                   </div>
                 </div>
+
               </li>
             </ul>
           </span>
@@ -532,6 +559,7 @@
           <span style="font-size: 10px">
             on
           </span>
+
           <span class="dropdown">
 
             <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
