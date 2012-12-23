@@ -53,7 +53,7 @@ var OverlayModel = function(parentModel)
       return;
     }
 
-    murrix.cache.getItems([ itemId ], function(error, itemList)
+    murrix.cache.getItem(itemId, function(error, item)
     {
       if (error)
       {
@@ -62,18 +62,11 @@ var OverlayModel = function(parentModel)
         return;
       }
 
-      if (itemList.length === 0 || !itemList[itemId])
-      {
-        console.log("OverlayModel: No results returned, you probably do not have rights to this item!");
-        return;
-      }
-
-      self.item(itemList[itemId]);
+      self.item(item);
+      self.whenUpdateTimezone();
       self.itemPictureUrl("");
       self.initializeOverlayNodeQuery();
       self.initializeOverlayMap();
-
-
 
       var image = new Image();
 
@@ -301,41 +294,75 @@ var OverlayModel = function(parentModel)
   self.whereLongitude = ko.observable("");
 
   // This variable should contain best guess for timezone UTC offset
-  self.whenTimezone = ko.observable(3600)
+  self.whenManualTimezone = ko.observable((new Date()).getTimezoneOffset() * 60);
+  self.whenManualDaylightSavings = ko.observable(false);
+  self.whenManualDatetime = ko.observable("");
+  self.whenManualSource = ko.observable("manual");
+
+  self.whenManualSubmit = function()
+  {
+    if (self.whenManualDatetime() === "")
+    {
+      self.editErrorText = ko.observable("Can not set empty manual date and time!");
+      return;
+    }
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.when = {};
+
+    itemData.when.timestamp = (new Date(self.whenManualDatetime() + " +00:00")).getTime() / 1000;
+console.log(itemData.when.timestamp);
+    itemData.when.timestamp += parseInt(self.whenManualTimezone(), 10);
+console.log(itemData.when.timestamp);
+    if (self.whenManualDaylightSavings())
+    {
+      itemData.when.timestamp += 3600;console.log(itemData.when.timestamp);
+    }
+
+    itemData.when.source = self.whenManualSource();
+    itemData.when._syncId = false;
+
+    self.saveItem(itemData);
+  };
 
   self.whenUpdateTimezone = function()
   {
-    if (self.item().where)
-    {
-      if (self.item().where.latitude && self.item().where.latitude() !== false)
-      {
-        var options = {};
-        options.location = self.item().where.latitude() + "," + self.item().where.longitude();
-        options.timestamp = 0;
-        options.sensor = false;
-
-        jQuery.getJSON("https://maps.googleapis.com/maps/api/timezone/json", options, function(data)
-        {
-          if (data.status !== "OK")
-          {
-            console.log("Lookup of timezone failed", options, data);
-            self.whenTimezone(3600);
-            return;
-          }
-
-          console.log(options, data);
-
-          self.whenTimezone(data.rawOffset);
-        });
-      }
-      else if (self.item().where._id && self.item().where._id() !== false)
-      {
-        console.log("TODO - Location timezone lookup");
-        // Check location and if location has coordinates use them to finde timezone
-      }
-    }
-
-    self.whenTimezone((new Date()).getTimezoneOffset() * 60);
+    return; // TODO: Decide how to do this if it should be done
+//     if (self.item().where)
+//     {
+//       if (self.item().where.latitude && self.item().where.latitude() !== false &&
+//           self.item().where.longitude && self.item().where.longitude() !== false
+//       )
+//       {
+//         var options = {};
+//         options.location = self.item().where.latitude() + "," + self.item().where.longitude();
+//         options.timestamp = 0;
+//         options.sensor = false;
+//
+//         jQuery.getJSON("https://maps.googleapis.com/maps/api/timezone/json", options, function(data)
+//         {
+//           if (data.status !== "OK")
+//           {
+//             console.log("Lookup of timezone failed", options, data);
+//             self.whenTimezone((new Date()).getTimezoneOffset() * 60);
+//             return;
+//           }
+//
+//           console.log(options, data);
+//
+//           self.whenTimezone(data.rawOffset);
+//         });
+//
+//         return;
+//       }
+//       else if (self.item().where._id && self.item().where._id() !== false)
+//       {
+//         console.log("TODO - Location timezone lookup");
+//         // Check location and if location has coordinates use them to finde timezone
+//         self.whenTimezone((new Date()).getTimezoneOffset() * 60);
+//       }
+//     }
   };
 
   self.showingId = ko.observable(false);
@@ -981,6 +1008,7 @@ var OverlayModel = function(parentModel)
       self.item(murrix.cache.addItemData(itemData));
       self.initializeOverlayNodeQuery();
       self.initializeOverlayMap();
+      self.whenUpdateTimezone();
     });
   };
 

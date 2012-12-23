@@ -298,20 +298,21 @@
 
       <div>
         <h5>Enter manual information</h5>
-        <form>
-          <select data-bind="foreach: timezones" style="width: 320px;">
-            <option data-bind="attr: { value: $data.value, selected: $parent.nodeModel.overlayModel.whenTimezone() === $data.value }, text: $data.name"></option>
+        <form data-bind="submit: nodeModel.overlayModel.whenManualSubmit">
+          <input class="input-large" style="width: 306px;" id="" type="datetime" placeholder="YYYY-MM-DD HH:mm:ss" data-bind="value: nodeModel.overlayModel.whenManualDatetime">
+          <select data-bind="foreach: timezones, value: nodeModel.overlayModel.whenManualTimezone" style="width: 320px;">
+            <option data-bind="attr: { value: $data.offset }, text: $data.name"></option>
           </select>
           <label class="checkbox">
-            <input type="checkbox" value="">
+            <input type="checkbox" data-bind="checked: nodeModel.overlayModel.whenManualDaylightSavings">
             Daylight savings
           </label>
-          <input class="input-large" style="width: 306px;" id="" type="datetime" placeholder="YYYY-MM-DD HH:mm:ss">
-          <select style="width: 320px;">
+
+          <select style="width: 320px;" data-bind="value: nodeModel.overlayModel.whenManualSource">
             <option value="manual">Best guess quality</option>
             <option value="gps">Gps quality</option>
           </select>
-          <button class="btn btn-primary" style="width: 320px;">Set</button>
+          <button type="submit" class="btn btn-primary" style="width: 320px;">Set</button>
         </form>
       </div>
     </div>
