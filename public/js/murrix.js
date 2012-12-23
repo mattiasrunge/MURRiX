@@ -231,6 +231,7 @@ murrix.cache = new function()
               return;
             }
 
+            self.items[id].whereString(false)
             self.items[id].whereNode(node);
           });
 
