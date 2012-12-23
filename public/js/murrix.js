@@ -132,6 +132,179 @@ murrix.cache = new function()
     return self.nodes[nodeData._id];
   };
 
+  self.extendItem = function(id)
+  {
+    if (self.items[id].comments)
+    {
+      self.items[id].comments.subscribe(function(value)
+      {
+        value.sort(function(a, b)
+        {
+          return b.added.timestamp() - a.added.timestamp();
+        });
+      });
+
+      self.items[id].comments.valueHasMutated(); // Force sort!
+    }
+
+    if (self.items[id].showing)
+    {
+      self.items[id].showing.subscribe(function(value)
+      {
+        value.sort(function(a, b)
+        {
+          return (b.x && a.x) ? a.x() - b.x() : 0;
+        });
+      });
+
+      self.items[id].showing.valueHasMutated(); // Force sort!
+    }
+
+
+    self.items[id].with = ko.observable(false);
+
+    ko.dependentObservable(function()
+    {
+      if (!self.items[id]._with || self.items[id]._with() === false)
+      {
+        self.items[id].with(false);
+        return;
+      }
+
+      murrix.cache.getNode(self.items[id]._with(), function(error, node)
+      {
+        if (error)
+        {
+          console.log(error);
+          self.items[id].with(false);
+          return;
+        }
+
+        self.items[id].with(node);
+      });
+    });
+
+
+    self.items[id].who = ko.observable(false);
+
+    ko.dependentObservable(function()
+    {
+      if (!self.items[id]._who || self.items[id]._who() === false)
+      {
+        self.items[id].who(false);
+        return;
+      }
+
+      murrix.cache.getNode(self.items[id]._who(), function(error, node)
+      {
+        if (error)
+        {
+          console.log(error);
+          self.items[id].who(false);
+          return;
+        }
+
+        self.items[id].who(node);
+      });
+    });
+
+
+    self.items[id].whereString = ko.observable(false);
+    self.items[id].whereNode = ko.observable(false);
+
+    ko.dependentObservable(function()
+    {
+      if (self.items[id].where)
+      {
+        if (self.items[id].where._id && self.items[id].where._id() !== false)
+        {
+          murrix.cache.getNode(self.items[id].where._id(), function(error, node)
+          {
+            if (error)
+            {
+              console.log(error);
+              self.items[id].whereString(false)
+              self.items[id].whereNode(false);
+              return;
+            }
+
+            self.items[id].whereNode(node);
+          });
+
+          return;
+        }
+        else if (self.items[id].where.latitude && self.items[id].where.latitude() !== false)
+        {
+          // TODO: Look in our own database first and use google as a fallback if nothing is found
+
+          var options = {};
+
+          options.sensor = false;
+          options.latlng = self.items[id].where.latitude() + "," + self.items[id].where.longitude();
+
+          jQuery.getJSON("http://maps.googleapis.com/maps/api/geocode/json", options, function(data)
+          {
+            if (data.status !== "OK" || data.results.length === 0)
+            {
+              console.log("Could not lookup position at google", options, data);
+              self.items[id].whereString(false);
+              self.items[id].whereNode(false);
+              return;
+            }
+
+            self.items[id].whereString(data.results[0].formatted_address);
+            self.items[id].whereNode(false);
+          });
+
+          return;
+        }
+      }
+
+      // If nothing else reset
+      self.items[id].whereString(false);
+      self.items[id].whereNode(false);
+    });
+
+
+    self.items[id].whenTimestamp = ko.observable(false);
+
+    ko.dependentObservable(function()
+    {
+      if (!self.items[id].when || !self.items[id].when.timestamp)
+      {
+        self.items[id].whenTimestamp(false);
+        return;
+      }
+
+      if (self.items[id].with && self.items[id].with() !== false &&
+          self.items[id].with().specific && self.items[id].with().specific.whenOffsets)
+      {
+        var index = self.items[id].with().specific.whenOffsets().length === 0 ? -1 : 0; // First is default if one exists
+
+        if (self.items[id].when._syncId && self.items[id].when._syncId() !== false)
+        {
+          for (var n = 0; n < self.items[id].with().specific.whenOffsets().length; n++)
+          {
+            if (self.items[id].with().specific.whenOffsets()[n]._id() === self.items[id].when._syncId())
+            {
+              index = n;
+              break;
+            }
+          }
+        }
+
+        if (index >= 0)
+        {
+
+          self.items[id].whenTimestamp(self.items[id].when.timestamp() + self.items[id].with().specific.whenOffsets()[index].value());
+          return;
+        }
+      }
+
+      self.items[id].whenTimestamp(self.items[id].when.timestamp());
+    });
+  };
+
   self.addItemData = function(itemData)
   {
     if (itemData === false)
@@ -147,31 +320,7 @@ murrix.cache = new function()
 
       self.items[itemData._id] = ko.mapping.fromJS(itemData);
 
-      if (self.items[itemData._id].comments)
-      {
-        self.items[itemData._id].comments.subscribe(function(value)
-        {
-          value.sort(function(a, b)
-          {
-            return b.added.timestamp() - a.added.timestamp();
-          });
-        });
-
-        self.items[itemData._id].comments.valueHasMutated(); // Force sort!
-      }
-
-      if (self.items[itemData._id].showing)
-      {
-        self.items[itemData._id].showing.subscribe(function(value)
-        {
-          value.sort(function(a, b)
-          {
-            return (b.x && a.x) ? a.x() - b.x() : 0;
-          });
-        });
-
-        self.items[itemData._id].showing.valueHasMutated(); // Force sort!
-      }
+      self.extendItem(itemData._id);
     }
     else
     {
@@ -183,31 +332,7 @@ murrix.cache = new function()
 
       if (!hassubscribed)
       {
-        if (self.items[itemData._id].comments)
-        {
-          self.items[itemData._id].comments.subscribe(function(value)
-          {
-            value.sort(function(a, b)
-            {
-              return b.added.timestamp() - a.added.timestamp();
-            });
-          });
-
-          self.items[itemData._id].comments.valueHasMutated(); // Force sort!
-        }
-
-        if (self.items[itemData._id].showing)
-        {
-          self.items[itemData._id].showing.subscribe(function(value)
-          {
-            value.sort(function(a, b)
-            {
-              return (b.x && a.x) ? a.x() - b.x() : 0;
-            });
-          });
-
-          self.items[itemData._id].showing.valueHasMutated(); // Force sort!
-        }
+        self.extendItem(itemData._id);
       }
     }
 
@@ -300,6 +425,26 @@ murrix.cache = new function()
     });
   };
 
+  self.getNode = function(id, callback)
+  {
+    murrix.cache.getNodes([ id ], function(error, nodeList)
+    {
+      if (error)
+      {
+        callback(error);
+        return;
+      }
+
+      if (nodeList.length === 0 || !nodeList[id])
+      {
+        callback("No results returned, you probably do not have rights to this node!");
+        return;
+      }
+
+      callback(null, nodeList[id]);
+    });
+  };
+
   self.getItems = function(idList, callback)
   {
     var itemList = {};
@@ -339,6 +484,27 @@ murrix.cache = new function()
       callback(null, itemList);
     });
   };
+
+  self.getItem = function(id, callback)
+  {
+    murrix.cache.getItems([ id ], function(error, itemList)
+    {
+      if (error)
+      {
+        callback(error);
+        return;
+      }
+
+      if (itemList.length === 0 || !itemList[id])
+      {
+        callback("No results returned, you probably do not have rights to this item!");
+        return;
+      }
+
+      callback(null, itemList[id]);
+    });
+  };
+
 
   self.getGroups = function(idList, callback)
   {
@@ -709,4 +875,36 @@ murrix.updatePath = function(pathString, pathObservable)
   }
 
   return result;
+};
+
+murrix.parseExifGps = function(data)
+{
+  parts = data.split(" ")
+  parts[0] = parts[0].replace(/:/g, "-")
+  parts.push("+00:00");
+
+  var datetime = parts.join(" ");
+
+  return murrix.timestamp(datetime);
+};
+
+murrix.parseExifCamera = function(data)
+{
+  parts = data.split(" ")
+  parts[0] = parts[0].replace(/:/g, "-")
+  parts.push("+00:00");
+
+  var datetime = parts.join(" ");
+
+  return murrix.timestamp(datetime);
+};
+
+murrix.timestamp = function(value)
+{
+  if (value)
+  {
+    return Math.floor(new Date(value).getTime() / 1000);
+  }
+
+  return Math.floor(new Date().getTime() / 1000);
 };

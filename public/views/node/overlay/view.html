@@ -178,68 +178,141 @@
       <a class="pull-right close" data-bind="click: nodeModel.overlayModel.editFinishClicked" style="font-size: 30px">×</a>
 
       <h3>Set date and time</h3>
+      <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
       <p class="muted" style="font-size: 12px;">
-        <i>Select date and time when item was created e.g. when was this picture taken. All times are stored in UTC, be sure that timezone information is correct.</i>
+        <i>Set date and time when item was created e.g. when was this picture taken. All times are stored in UTC, be sure that timezone information is correct.</i>
       </p>
 
-      <div data-bind="if: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'exif'">
-        <h5>Exif information</h5>
-        <table class="table table-condensed" style="font-size: 12px;">
-          <tbody>
-            <tr>
-              <td>
-                Timestamp
-              </td>
-              <td data-bind="text: nodeModel.overlayModel.item().when.timestamp"></td>
-            </tr>
-            <tr>
-              <td>
-                Formated
-              </td>
-              <td data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div data-bind="if: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'synced'">
-        <h5>Synced exif information</h5>
-        <table class="table table-condensed" style="font-size: 12px;">
-          <tbody>
-            <tr>
-              <td>
-                Timestamp
-              </td>
-              <td data-bind="text: nodeModel.overlayModel.item().when.timestamp"></td>
-            </tr>
-            <tr>
-              <td>
-                Formated
-              </td>
-              <td data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
       <div data-bind="if: nodeModel.overlayModel.item().when">
-        <h5>Manual information</h5>
-        <table class="table table-condensed" style="font-size: 12px;">
+        <h5>Current information</h5>
+        <div style="font-size: 12px; margin-bottom: 20px;">
+          <div style="font-weight: bold;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().whenTimestamp"></div>
+          <div>Source: <span data-bind="text: nodeModel.overlayModel.item().when.source"></span></div>
+
+          <div class="alert alert-warning" data-bind="visible: nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'exif' && nodeModel.overlayModel.item().with() === false">
+            <strong>Warning!</strong> No camera selected for this file!
+          </div>
+
+        </div>
+      </div>
+
+      <div data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif">
+        <h5>File information</h5>
+        <p class="muted" style="font-size: 12px;">
+          <i>This file has metadata stored in it, all timestamps found are listed here.</i>
+        </p>
+        <table class="table table-condensed" style="font-size: 10px; margin-bottom: 20px;">
           <tbody>
-            <tr>
+            <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.GPSDateTime">
               <td>
-                Timestamp
+                GPS
               </td>
-              <td data-bind="text: nodeModel.overlayModel.item().when.timestamp"></td>
+              <td data-bind="htmlTimestamp: murrix.parseExifGps(nodeModel.overlayModel.item().specific.exif.GPSDateTime())"></td>
+              <td>
+                <button title="Set" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whenSetExifGps" class="btn btn-mini btn-link pull-right">Set</button>
+              </td>
             </tr>
-            <tr>
+            <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.DateTimeOriginal">
               <td>
-                Formated
+                Camera
               </td>
-              <td data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp"></td>
+              <td data-bind="htmlTimestamp: murrix.parseExifCamera(nodeModel.overlayModel.item().specific.exif.DateTimeOriginal())"></td>
+              <td>
+                <button title="Set" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whenSetExifCamera" class="btn btn-mini btn-link pull-right">Set</button>
+              </td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div data-bind="visible: nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'exif'">
+        <h5>Select camera offset</h5>
+        <p class="muted" style="font-size: 12px;">
+          <i>This file does not have a GPS quality timestamp. Though if the camera has one or more offsets defined, the timestamp on this file can be adjusted and get the same quality. If there are any offsets please select one of them in the list below, if none is selected the first in the list will be used.</i>
+        </p>
+
+        <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.item().with() === false">
+          <strong>Warning!</strong> No camera selected for this file!
+        </div>
+
+        <div class="alert alert-warning" data-bind="visible: nodeModel.overlayModel.item().with() !== false && (!nodeModel.overlayModel.item().with().specific || !nodeModel.overlayModel.item().with().specific.whenOffsets || nodeModel.overlayModel.item().with().specific.whenOffsets().length === 0)">
+          <strong>Warning!</strong> No camera offsets found!
+        </div>
+
+        <div data-bind="if: nodeModel.overlayModel.item().with() !== false && nodeModel.overlayModel.item().with().specific && nodeModel.overlayModel.item().with().specific.whenOffsets">
+          <table class="table table-condensed" style="font-size: 10px;" data-bind="foreach: nodeModel.overlayModel.item().with().specific.whenOffsets">
+            <tbody>
+              <tr data-bind="css: { info: nodeModel.overlayModel.item().when._syncId && nodeModel.overlayModel.item().when._syncId() === $data._id() }, click: nodeModel.overlayModel.whenSetOffset" style="cursor: pointer;">
+                <td>
+                  <input type="checkbox" data-bind="checked: nodeModel.overlayModel.item().when._syncId && nodeModel.overlayModel.item().when._syncId() === $data._id()">
+                </td>
+                </td>
+                <td data-bind="text: $data.name"></td>
+                <td>
+                  <span data-bind="text: $data.value"></span>s
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div data-bind="if: nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'gps' && nodeModel.overlayModel.item().specific.exif && nodeModel.overlayModel.item().specific.exif.DateTimeOriginal && nodeModel.overlayModel.item().with() !== false">
+
+        <h5>Camera offsets for <span data-bind="text: nodeModel.overlayModel.item().with().name"></span></h5>
+
+        <p class="muted" style="font-size: 12px;">
+          <i>This file has a GPS quality timestamp as well as a timestamp for the camera used to create it. It can be used to create a correct offset that can be used for files created with the same camera but does not have a GPS quality timestamp.</i>
+        </p>
+        <form data-bind="submit: nodeModel.overlayModel.whenCreateOffsetSubmit" style="">
+          <table class="table table-condensed" style="font-size: 10px; margin-bottom: 0px;">
+            <tbody>
+              <!-- ko foreach: nodeModel.overlayModel.item().with().specific.whenOffsets -->
+              <tr>
+                <td data-bind="text: $data.name"></td>
+                <td>
+                  <span data-bind="text: $data.value"></span>s
+                </td>
+                <td>
+                  <button title="Remove" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whenRemoveOffset" class="btn btn-mini btn-link pull-right">Remove</button>
+                </td>
+              </tr>
+              <!-- /ko -->
+
+              <tr data-bind="if: nodeModel.overlayModel.whenCreateOffsetAllowed">
+                <td>
+                  <input style="width: 160px; margin: 0px;" id="" type="text" placeholder="Name" data-bind="value: nodeModel.overlayModel.whenCreateOffsetName, disable: nodeModel.overlayModel.editLoading">
+                </td>
+                <td>
+                  <span data-bind="text: murrix.parseExifGps(nodeModel.overlayModel.item().specific.exif.GPSDateTime()) - murrix.parseExifCamera(nodeModel.overlayModel.item().specific.exif.DateTimeOriginal())"></span>s
+                </td>
+                <td>
+                  <button class="btn btn-mini btn-link pull-right" type="submit" data-bind="disable: nodeModel.overlayModel.editLoading">Create</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+
+      </div>
+
+      <div>
+        <h5>Enter manual information</h5>
+        <form>
+          <select data-bind="foreach: timezones" style="width: 320px;">
+            <option data-bind="attr: { value: $data.value, selected: $parent.nodeModel.overlayModel.whenTimezone() === $data.value }, text: $data.name"></option>
+          </select>
+          <label class="checkbox">
+            <input type="checkbox" value="">
+            Daylight savings
+          </label>
+          <input class="input-large" style="width: 306px;" id="" type="datetime" placeholder="YYYY-MM-DD HH:mm:ss">
+          <select style="width: 320px;">
+            <option value="manual">Best guess quality</option>
+            <option value="gps">Gps quality</option>
+          </select>
+          <button class="btn btn-primary" style="width: 320px;">Set</button>
+        </form>
       </div>
     </div>
 
@@ -251,48 +324,46 @@
         <i>Select a position or location where this item was created e.g. where this picture was taken. Setting a position is the preferred way since it is more accurate, but a location can be selected directly if the exact position is uncertain.</i>
       </p>
 
-      <div data-bind="if: nodeModel.overlayModel.item().where">
-        <div data-bind="if: nodeModel.overlayModel.item().where._id">
-          <h5>Currently selected location</h5>
-          <table class="table table-condensed">
-            <tbody>
-              <tr>
-                <td>
-                  <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().where._id, 44, 44, 1 ]"/>
-                  <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item().where._id, 'name' ]" style="margin: 0px;"></h5>
-                </td>
-                <td>
-                  <button title="Remove" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whereRemove" class="btn pull-right"><i class="icon-trash"></i></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where._id && nodeModel.overlayModel.item().where._id() !== false">
+        <h5>Currently selected location</h5>
+        <table class="table table-condensed">
+          <tbody>
+            <tr>
+              <td>
+                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().where._id, 44, 44, 1 ]"/>
+                <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item().where._id, 'name' ]" style="margin: 0px;"></h5>
+              </td>
+              <td>
+                <button title="Remove" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whereRemove" class="btn pull-right"><i class="icon-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <div data-bind="if: !nodeModel.overlayModel.item().where._id || nodeModel.overlayModel.item().where._id() === false">
-          <h5>Currently selected position</h5>
-          <div class="overlayWhereMap" style="width: 330px; height: 200px; position: relative;"></div>
-          <table class="table table-condensed" style="font-size: 12px;">
-            <tbody>
-              <tr>
-                <td>
-                  Latitude
-                </td>
-                <td>
-                  <input type="text" style="margin: 0px; font-size: 11px; padding: 0px 5px 0px 5px;" placeholder="Latitude" data-bind="value: nodeModel.overlayModel.whereLatitude">
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Longitude
-                </td>
-                <td>
-                  <input type="text" style="margin: 0px; font-size: 11px; padding: 0px 5px 0px 5px;" placeholder="Longitude" data-bind="value: nodeModel.overlayModel.whereLongitude">
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div data-bind="if: !nodeModel.overlayModel.item().where || !nodeModel.overlayModel.item().where._id || nodeModel.overlayModel.item().where._id() === false">
+        <h5>Currently selected position</h5>
+        <div class="overlayWhereMap" style="width: 330px; height: 200px; position: relative;"></div>
+        <table class="table table-condensed" style="font-size: 12px;">
+          <tbody>
+            <tr>
+              <td>
+                Latitude
+              </td>
+              <td>
+                <input type="text" style="margin: 0px; font-size: 11px; padding: 0px 5px 0px 5px;" placeholder="Latitude" data-bind="value: nodeModel.overlayModel.whereLatitude">
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Longitude
+              </td>
+              <td>
+                <input type="text" style="margin: 0px; font-size: 11px; padding: 0px 5px 0px 5px;" placeholder="Longitude" data-bind="value: nodeModel.overlayModel.whereLongitude">
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div data-bind="if: nodeModel.overlayModel.item().specific.exif && nodeModel.overlayModel.item().specific.exif.GPSLatitude">
@@ -353,9 +424,10 @@
 
                 <div data-bind="if: nodeModel.overlayModel.item()._who && nodeModel.overlayModel.item()._who() !== false">
                   <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._who, 22, 22, 1 ]"/>
-                  <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]"></h5>
+                  <h5 style="margin: 0px;">
+                     <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._who ], textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]"></a>
+                  </h5>
                   <div class="muted" style="font-size: 10px; margin-left: 32px;">
-                    <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._who ]">Goto</a>
                   </div>
                 </div>
 
@@ -368,7 +440,9 @@
                         <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whoSet">Did <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> create this item?</a><br/>
                       </div>
 
-                       <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whoEditClicked">Another person created this item.</a><br/>
+                      <a class="btn btn-mini btn-link" style="padding: 0px; text-align: left;" href="#" data-bind="click: nodeModel.overlayModel.whoEditClicked">
+                        Select who created this item.
+                      </a><br/>
 
                     </div>
                   </div>
@@ -387,9 +461,10 @@
 
                 <div data-bind="if: nodeModel.overlayModel.item()._with && nodeModel.overlayModel.item()._with() !== false">
                   <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._with, 22, 22, 1 ]"/>
-                  <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]"></h5>
+                  <h5 style="margin: 0px;">
+                    <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._with ], textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]"></a>
+                  </h5>
                   <div class="muted" style="font-size: 10px; margin-left: 32px;">
-                    <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item()._with ]">Goto</a>
                   </div>
                   <div class="muted" style="font-size: 10px; margin-top: 5px; margin-left: 32px;">
                     Owner: <span>Unknown</span><br/>
@@ -407,62 +482,31 @@
                         <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.withSet">Was <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> used to create this item?</a><br/>
                       </div>
 
-                      <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whoEditClicked">Another device was used to created this item.</a><br/>
+                      <a class="btn btn-mini btn-link" style="padding: 0px; text-align: left;" href="#" data-bind="click: nodeModel.overlayModel.withEditClicked">
+                        Select the device used to create this item.
+                      </a><br/>
                     </div>
                   </div>
                 </div>
               </li>
             </ul>
           </span>
-          <span style="font-size: 10px">
-            at
-          </span>
-          <span class="dropdown">
 
-            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
-              <span data-bind="if: !nodeModel.overlayModel.item().when">
-                unknown date and time
-              </span>
-              <span data-bind="if: nodeModel.overlayModel.item().when">
-                <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp"></span>
-              </span>
-            </a>
-
-            <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
-              <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
-                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whenEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
-
-                <div data-bind="if: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.timestamp && nodeModel.overlayModel.item().when.timestamp() !== false">
-                  <h5 style="margin: 0px;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().when.timestamp"></h5>
-                  <div class="muted" style="font-size: 10px; margin-top: 5px;">
-                    Timestamp: <span data-bind="text: nodeModel.overlayModel.item().when.timestamp"></span><br/>
-                    Source: <span data-bind="text: nodeModel.overlayModel.item().when.source"></span>
-                  </div>
-                </div>
-
-                 <div data-bind="if: (!nodeModel.overlayModel.item().when || !nodeModel.overlayModel.item().when.timestamp || nodeModel.overlayModel.item().when.timestamp() === false)">
-                  <h5 style="margin: 0px;">Unknown date and time</h5>
-                  <div class="muted" style="font-size: 10px;">
-                    <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whenEditClicked, visible: nodeModel.node().hasAdminAccess()">Please select date and time</a>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </span>
           <span style="font-size: 10px">
             near
           </span>
           <span class="dropdown">
-            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where" href="#" style="font-size: 10px;"></a>.
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" data-bind="htmlPrintWhere: nodeModel.overlayModel.item().where" href="#" style="font-size: 10px;"></a>
             <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
               <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
                 <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whereEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
 
                 <div data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where._id && nodeModel.overlayModel.item().where._id() !== false">
                   <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().where._id, 22, 22, 1 ]"/>
-                  <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ nodeModel.overlayModel.item().where._id, 'name' ]"></h5>
+                  <h5 style="margin: 0px;">
+                    <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().where._id ], textNodeAttribute: [ nodeModel.overlayModel.item().where._id, 'name' ]"></a>
+                  </h5>
                   <div class="muted" style="font-size: 10px; margin-left: 32px;">
-                    <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().where._id ]">Goto</a>
                   </div>
                 </div>
 
@@ -478,12 +522,53 @@
                 <div data-bind="if: (!nodeModel.overlayModel.item().where || !nodeModel.overlayModel.item().where.latitude || nodeModel.overlayModel.item().where.latitude() === false) && (!nodeModel.overlayModel.item().where || !nodeModel.overlayModel.item().where._id || nodeModel.overlayModel.item().where._id() === false)">
                   <h5 style="margin: 0px;">Unknown location</h5>
                   <div class="muted" style="font-size: 10px;">
-                    <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whereEditClicked, visible: nodeModel.node().hasAdminAccess()">Please select a position</a>
+                    <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whereEditClicked, visible: nodeModel.node().hasAdminAccess()">Select a position</a>
                   </div>
                 </div>
               </li>
             </ul>
           </span>
+
+          <span style="font-size: 10px">
+            on
+          </span>
+          <span class="dropdown">
+
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
+              <span data-bind="if: nodeModel.overlayModel.item().whenTimestamp() === false">
+                unknown date and time.
+              </span>
+              <span data-bind="if: nodeModel.overlayModel.item().whenTimestamp() !== false">
+                <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().whenTimestamp"></span>.
+              </span>
+            </a>
+
+            <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
+              <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.whenEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
+
+                <div data-bind="if: nodeModel.overlayModel.item().whenTimestamp() !== false">
+                  <h5 style="margin: 0px;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().whenTimestamp"></h5>
+                  <div class="muted" style="font-size: 10px; margin-top: 5px;">
+                    Adjusted timestamp: <span data-bind="text: nodeModel.overlayModel.item().whenTimestamp"></span><br/>
+                    Timestamp: <span data-bind="text: nodeModel.overlayModel.item().when.timestamp"></span><br/>
+                    Source: <span data-bind="text: nodeModel.overlayModel.item().when.source"></span><br/>
+                    <div data-bind="if: nodeModel.overlayModel.item().when._syncId">
+                      Has defined camera offset!
+                    </div>
+                  </div>
+                </div>
+
+                 <div data-bind="if: nodeModel.overlayModel.item().whenTimestamp() === false">
+                  <h5 style="margin: 0px;">Unknown date and time</h5>
+                  <div class="muted" style="font-size: 10px;">
+                    <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="click: nodeModel.overlayModel.whenEditClicked, visible: nodeModel.node().hasAdminAccess()">Set date and time</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </span>
+
         </div>
         <div style="font-size: 10px;">
           <span data-bind="visible: !nodeModel.overlayModel.item().showing || nodeModel.overlayModel.item().showing().length === 0">
@@ -498,9 +583,10 @@
                     <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.showingEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
                     <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data._id, 22, 22, 1 ]"/>
 
-                    <h5 style="margin: 0px;" data-bind="textNodeAttribute: [ $data._id, 'name' ]"></h5>
+                    <h5 style="margin: 0px;">
+                      <a href="#" data-bind="hrefFirst: [ 'node', $data._id ], textNodeAttribute: [ $data._id, 'name' ]"></a>
+                    </h5>
                     <div class="muted" style="font-size: 10px; margin-left: 32px;">
-                      <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="hrefFirst: [ 'node', $data._id ]">Goto</a>
                     </div>
                   </li>
                 </ul><!--

@@ -285,8 +285,39 @@ $(function()
   };
 
 
+  /* Knockout text, set attribute of item loaded async */
 
+/* ko.bindingHandlers.textItemAttribute = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var params = ko.utils.unwrapObservable(value);
 
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
+
+      if (params[0] === null ||  params[0] === "")
+      {
+        $(element).text("Unknown");
+        return;
+      }
+
+      $(element).text("Loading " + params[1] + "...");
+
+      murrix.cache.getItem(params[0], function(error, item)
+      {
+        if (error)
+        {
+          $(element).text(error);
+          return;
+        }
+
+        $(element).text(item.specific[params[1]]());
+      });
+    }
+  };*/
 
   /* Knockout text, set attribute of node loaded async */
   ko.bindingHandlers.textNodeAttribute = {
@@ -308,7 +339,7 @@ $(function()
 
       $(element).text("Loading " + params[1] + "...");
 
-      murrix.cache.getNodes([ params[0] ], function(error, nodeList)
+      murrix.cache.getNode(params[0], function(error, node)
       {
         if (error)
         {
@@ -316,14 +347,7 @@ $(function()
           return;
         }
 
-        if (nodeList[params[0]])
-        {
-          $(element).text(nodeList[params[0]][params[1]]());
-        }
-        else
-        {
-          $(element).text("Unknown");
-        }
+        $(element).text(node[params[1]]());
       });
     }
   };

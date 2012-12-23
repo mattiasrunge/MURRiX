@@ -300,6 +300,44 @@ var OverlayModel = function(parentModel)
   self.whereLatitude = ko.observable("");
   self.whereLongitude = ko.observable("");
 
+  // This variable should contain best guess for timezone UTC offset
+  self.whenTimezone = ko.observable(3600)
+
+  self.whenUpdateTimezone = function()
+  {
+    if (self.item().where)
+    {
+      if (self.item().where.latitude && self.item().where.latitude() !== false)
+      {
+        var options = {};
+        options.location = self.item().where.latitude() + "," + self.item().where.longitude();
+        options.timestamp = 0;
+        options.sensor = false;
+
+        jQuery.getJSON("https://maps.googleapis.com/maps/api/timezone/json", options, function(data)
+        {
+          if (data.status !== "OK")
+          {
+            console.log("Lookup of timezone failed", options, data);
+            self.whenTimezone(3600);
+            return;
+          }
+
+          console.log(options, data);
+
+          self.whenTimezone(data.rawOffset);
+        });
+      }
+      else if (self.item().where._id && self.item().where._id() !== false)
+      {
+        console.log("TODO - Location timezone lookup");
+        // Check location and if location has coordinates use them to finde timezone
+      }
+    }
+
+    self.whenTimezone((new Date()).getTimezoneOffset() * 60);
+  };
+
   self.showingId = ko.observable(false);
 
   self.showingItemOver = function(showingItem)
@@ -309,9 +347,15 @@ var OverlayModel = function(parentModel)
       return;
     }
 
-    showingItem = ko.mapping.toJS(showingItem);
-
     $(".imgContainer").imgAreaSelect({ "remove" : true });
+
+    if (self.showingTimer)
+    {
+      clearTimeout(self.showingTimer);
+      self.showingTimer = null;
+    }
+
+    showingItem = ko.mapping.toJS(showingItem);
 
     var options = {
       minWidth      : 32,
@@ -321,7 +365,8 @@ var OverlayModel = function(parentModel)
       resizable     : false,
       handles       : false,
       keys          : false,
-      classPrefix   : 'imgareamark'
+      classPrefix   : 'imgareamark',
+      fadeSpeed     : 200
     };
 
     if (showingItem.x)
@@ -339,7 +384,20 @@ var OverlayModel = function(parentModel)
     }
   };
 
+  self.showingTimer = null;
+
   self.showingItemOut = function(showingItem)
+  {
+    if (self.showingTimer)
+    {
+      clearTimeout(self.showingTimer);
+      self.showingTimer = null;
+    }
+
+    self.showingTimer = setTimeout(function() { self.showingUnmark(); }, 300);
+  };
+
+  self.showingUnmark = function()
   {
     if (self.showingId() !== false)
     {
@@ -347,6 +405,8 @@ var OverlayModel = function(parentModel)
     }
 
     $(".imgContainer").imgAreaSelect({ "remove" : true });
+
+    self.showingTimer = null;
   };
 
   self.showingonSelectEnd = function(img, selection)
@@ -437,7 +497,7 @@ var OverlayModel = function(parentModel)
 
   self.initializeOverlayMap = function()
   {
-    if (self.editType() !== "where" || (self.item().where._id && self.item().where._id() !== false))
+    if (self.editType() !== "where" || (self.item().where && self.item().where._id && self.item().where._id() !== false))
     {
       console.log("Not where or have location!");
       self.whereMap = null;
@@ -449,7 +509,7 @@ var OverlayModel = function(parentModel)
     self.whereLatitude("");
     self.whereLongitude("");
 
-    if (self.item().where.latitude && self.item().where.latitude() && self.item().where.longitude && self.item().where.longitude())
+    if (self.item().where && self.item().where.latitude && self.item().where.latitude() && self.item().where.longitude && self.item().where.longitude())
     {
       position = new google.maps.LatLng(self.item().where.latitude(), self.item().where.longitude());
       self.whereLatitude(self.item().where.latitude());
@@ -483,7 +543,7 @@ var OverlayModel = function(parentModel)
       self.whereSavePosition("manual");
     });
 
-    if (self.item().where.latitude && self.item().where.latitude() && self.item().where.longitude && self.item().where.longitude())
+    if (self.item().where && self.item().where.latitude && self.item().where.latitude() && self.item().where.longitude && self.item().where.longitude())
     {
       marker.setVisible(true);
     }
@@ -573,6 +633,94 @@ var OverlayModel = function(parentModel)
 
     self.editType("");
   };
+
+  self.whenSetExifGps = function(data)
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.when = {};
+
+    itemData.when.timestamp = murrix.parseExifGps(self.item().specific.exif.GPSDateTime());
+    itemData.when.source = "gps";
+
+    self.saveItem(itemData);
+  };
+
+  self.whenSetExifCamera = function(data)
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.when = {};
+
+    itemData.when.timestamp = murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
+    itemData.when.source = "exif";
+    itemData.when._syncId = false;
+
+    self.saveItem(itemData);
+  };
+
+  self.whenCreateOffsetName = ko.observable("");
+
+  self.whenSetOffset = function(data)
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    if (itemData.when._syncId === data._id())
+    {
+      itemData.when._syncId = false;
+    }
+    else
+    {
+      itemData.when._syncId = data._id();
+    }
+
+    self.saveItem(itemData);
+  };
+
+  self.whenRemoveOffset = function(data)
+  {
+    self.whenSaveOffset(data._id());
+  };
+
+  self.whenCreateOffsetSubmit = function()
+  {
+    if (self.whenCreateOffsetName() === "")
+    {
+      self.editErrorText("Can not create offset without name!");
+      return;
+    }
+
+    self.whenSaveOffset(null);
+  };
+
+  self.whenCreateOffsetAllowed = ko.computed(function()
+  {
+    var value = true;
+
+    if (self.item() === false || !self.item().specific || !self.item().specific.exif || !self.item().specific.exif.GPSDateTime || !self.item().specific.exif.DateTimeOriginal || self.item().with() === false)
+    {
+      value = false;
+    }
+    else
+    {
+      if (self.item().with().specific && self.item().with().specific.whenOffsets)
+      {
+        var offsetValue = murrix.parseExifGps(self.item().specific.exif.GPSDateTime()) - murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
+
+        for (var n = 0; n < self.item().with().specific.whenOffsets().length; n++)
+        {
+          if (self.item().with().specific.whenOffsets()[n]._id() === self.item()._id() ||
+              self.item().with().specific.whenOffsets()[n].value() === offsetValue)
+          {
+            value = false;
+            break;
+          }
+        }
+      }
+    }
+
+    return value;
+  });
 
   self.showingOther = ko.computed(function()
   {
@@ -684,7 +832,7 @@ var OverlayModel = function(parentModel)
 
       for (var n = 0; n < parentModel.items().length; n++)
       {
-        if (!parentModel.items()[n].where || !parentModel.items()[n].where._id)
+        if (!parentModel.items()[n].where || !parentModel.items()[n].where._id || parentModel.items()[n].where._id() === false)
         {
           continue;
         }
@@ -836,5 +984,56 @@ var OverlayModel = function(parentModel)
     });
   };
 
+  self.whenSaveOffset = function(removeId)
+  {
+    if (self.item() === false || self.item().with() === false)
+    {
+      self.editErrorText("Can not save with no item or with nodes!");
+      return;
+    }
 
+    if (!removeId && !self.whenCreateOffsetAllowed())
+    {
+      self.editErrorText("Not allowed to create offsets with equal value, one is enough!");
+      return;
+    }
+
+    var nodeData = ko.mapping.toJS(self.item().with());
+
+    nodeData.specific = nodeData.specific || {};
+    nodeData.specific.whenOffsets = nodeData.specific.whenOffsets || [];
+
+    if (!removeId) // Add offset
+    {
+      var newOffset = {};
+      newOffset._id = self.item()._id();
+      newOffset.name = self.whenCreateOffsetName();
+      newOffset.value = murrix.parseExifGps(self.item().specific.exif.GPSDateTime()) - murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
+
+      nodeData.specific.whenOffsets.push(newOffset);
+    }
+    else
+    {
+      nodeData.specific.whenOffsets = nodeData.specific.whenOffsets.filter(function(offset)
+      {
+        return offset._id !== removeId;
+      });
+    }
+
+    self.editLoading(true);
+    self.editErrorText("");
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.editLoading(false);
+
+      if (error)
+      {
+        self.editErrorText(error);
+        return;
+      }
+
+      murrix.cache.addNodeData(nodeData);
+    });
+  };
 };
