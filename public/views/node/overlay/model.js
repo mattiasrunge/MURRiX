@@ -724,7 +724,7 @@ console.log(itemData.when.timestamp);
   {
     var value = true;
 
-    if (self.item() === false || !self.item().specific || !self.item().specific.exif || !self.item().specific.exif.GPSDateTime || !self.item().specific.exif.DateTimeOriginal || self.item().with() === false)
+    if (self.item() === false || !self.item().specific || !self.item().specific.exif || !self.item().specific.exif.DateTimeOriginal || !self.item().when.source || self.item().when.source() !== 'gps' || self.item().with() === false)
     {
       value = false;
     }
@@ -732,7 +732,7 @@ console.log(itemData.when.timestamp);
     {
       if (self.item().with().specific && self.item().with().specific.whenOffsets)
       {
-        var offsetValue = murrix.parseExifGps(self.item().specific.exif.GPSDateTime()) - murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
+        var offsetValue = self.item().when.timestamp() - murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
 
         for (var n = 0; n < self.item().with().specific.whenOffsets().length; n++)
         {
@@ -1036,7 +1036,7 @@ console.log(itemData.when.timestamp);
       var newOffset = {};
       newOffset._id = self.item()._id();
       newOffset.name = self.whenCreateOffsetName();
-      newOffset.value = murrix.parseExifGps(self.item().specific.exif.GPSDateTime()) - murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
+      newOffset.value = self.item().when.timestamp() - murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
 
       nodeData.specific.whenOffsets.push(newOffset);
     }
