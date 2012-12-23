@@ -69,22 +69,29 @@ var NodeModel = function(parentModel)
         }
         case "person":
         {
+          query.$or.push({ "showing._id": self.node()._id()});
           break;
         }
         case "location":
         {
+          query.$or.push({ "showing._id": self.node()._id()});
+          query.$or.push({ "where._id": self.node()._id()});
+          // TODO: Search on coordinates
           break;
         }
         case "camera":
         {
+          query.$or.push({ "showing._id": self.node()._id()});
+          query.$or.push({ "_with": self.node()._id()});
           break;
         }
         case "vehicle":
         {
+          query.$or.push({ "showing._id": self.node()._id()});
           break;
         }
       };
-
+console.log(query);
       murrix.server.emit("find", { query: query, options: "items" }, function(error, itemDataList)
       {
         if (error)
