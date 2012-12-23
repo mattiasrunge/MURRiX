@@ -509,7 +509,7 @@ var OverlayModel = function(parentModel)
     self.whereLatitude("");
     self.whereLongitude("");
 
-    if (self.item().where && self.item().where.latitude && self.item().where.latitude() && self.item().where.longitude && self.item().where.longitude())
+    if (self.item().where && self.item().where.latitude && self.item().where.latitude() !== false && self.item().where.longitude && self.item().where.longitude() !== false)
     {
       position = new google.maps.LatLng(self.item().where.latitude(), self.item().where.longitude());
       self.whereLatitude(self.item().where.latitude());
@@ -543,7 +543,7 @@ var OverlayModel = function(parentModel)
       self.whereSavePosition("manual");
     });
 
-    if (self.item().where && self.item().where.latitude && self.item().where.latitude() && self.item().where.longitude && self.item().where.longitude())
+    if (self.item().where && self.item().where.latitude && self.item().where.latitude() !== false && self.item().where.longitude && self.item().where.longitude() !== false)
     {
       marker.setVisible(true);
     }
