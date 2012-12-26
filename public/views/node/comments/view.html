@@ -1,6 +1,6 @@
 <div class="main-overlay" data-bind="slideVisible: nodeModel.commentsModel.show() && nodeModel.node()">
-  <div class="main-overlay-content" data-bind="if: nodeModel.node">
-  
+  <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false">
+
     <div class="navbar navbar-color navbar-inverse">
       <div class="navbar-inner">
         <span class="brand" style="padding-left: 35px;">Comments</span>
@@ -53,7 +53,7 @@
         </tbody>
       </table>
     </div>
-    
+
   </div>
   <div class="main-overlay-background"></div>
 </div>

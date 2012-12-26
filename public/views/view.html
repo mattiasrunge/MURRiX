@@ -51,9 +51,9 @@
     <div class="container-fluid">
 
       <a class="brand" style="margin-left: -5px;" href="#" data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se', attr: { 'href' : nodeModel.node() ? '#node:' + nodeModel.node()._id() : '#' }"></a>
-      
+
       <div class="pull-right">
-        
+
         <ul class="nav pull-right">
           <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">
@@ -63,30 +63,30 @@
               <strong class="caret"></strong>
             </a>
             <ul class="dropdown-menu">
-              
+
               <form class="" data-bind="submit: adminModel.loginSubmit, visible: !currentUser()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
                 <input placeholder="Username" id="inputUsername" style="margin-bottom: 15px;" type="text" name="user[inputUsername]" size="30" data-bind="hasfocus: adminModel.usernameFocused, disable: adminModel.loading, value: adminModel.inputUsername"/>
                 <input placeholder="Password" id="inputPassword" style="margin-bottom: 15px;" type="password" name="user[inputPassword]" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputPassword"/>
                 <input id="inputRemember" style="float: left; margin-right: 10px;" type="checkbox" name="user[inputRemember]" value="1" data-bind="disable: adminModel.loading, checked: adminModel.inputRemember"/>
                 <label class="string optional" for="inputRemember"> Remember me</label>
-                
+
                 <input data-bind="disable: adminModel.loading" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
                 <div data-bind="visible: adminModel.errorText() != '', text: adminModel.errorText" style="margin-bottom: 15px;"></div>
               </form>
-              
+
               <div data-bind="visible: currentUser">
                 <li><a href="#admin" data-bind="visible: currentUser().admin">Administration</a></li>
                 <li><a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]">Me</a></li>
                 <li><a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)">Change password</a></li>
                 <li><a href="#" data-bind="click: adminModel.signOutClicked">Sign out</a></li>
               </div>
-              
+
             </ul>
           </li>
         </ul>
 
         <div class="divider-vertical pull-right"></div>
-        
+
         <form class="navbar-search pull-right" data-bind="fadeVisible: currentUser, submit: searchModel.searchSubmit">
           <input type="text" class="search-query navbar-search-input" placeholder="Search" data-provide="typesearch" data-bind="value: searchModel.queryInput"/>
         </form>
@@ -117,8 +117,49 @@
             </ul>
           </li>
         </ul>
-        
+
       </div>
     </div>
   </div>
 </div>
+
+
+
+<form class="modal" id="selectDatetimeModal" tabindex="-1" role="dialog" aria-labelledby="selectDatetimeModalLabel" aria-hidden="true" style="display: none;" data-bind="">
+  <div class="modal-header">
+    <button data-bind="disable: nodeModel.createLoading" type="selectDatetimeModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="selectDatetimeModalLabel">Select date and time</h3>
+  </div>
+  <div class="modal-body">
+
+    <div class="input-append bootstrap-timepicker-component">
+      <input type="text" class="timepicker input-small">
+      <span class="add-on">
+          <i class="icon-time"></i>
+      </span>
+    </div>
+
+    <div class="input-append date" data-date="">
+      <input class="datepicker" style="margin: 0px;" size="16" type="text">
+      <span class="add-on">
+        <i class="icon-th"></i>
+      </span>
+    </div>
+
+
+
+      <select data-bind="foreach: timezones, value: nodeModel.overlayModel.whenManualTimezone" class="input-medium">
+        <option data-bind="attr: { value: $data.offset }, text: $data.name"></option>
+      </select>
+      <label class="checkbox">
+        <input type="checkbox" data-bind="checked: nodeModel.overlayModel.whenManualDaylightSavings">
+        Daylight savings
+      </label>
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
+    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
+  </div>
+</form>
+

@@ -1,4 +1,4 @@
-<div class="sidebar-nav" data-bind="slideVisible: nodeModel.show() && nodeModel.node() && !nodeModel.loadingNode(), if: nodeModel.node">
+<div class="sidebar-nav" data-bind="slideVisible: nodeModel.show() && nodeModel.node() && !nodeModel.loadingNode(), if: nodeModel.node() !== false">
 
   <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
     <div draggable="false" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: (nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()) && nodeModel.node().hasAdminAccess()">
@@ -10,7 +10,7 @@
 
     <img draggable="false" class="" src="img/profile_picture_overlay.png" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px;">
 
-    <img draggable="false" src="" alt="" style="width: 250px; height: 250px;" data-bind="if: nodeModel.node(), srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
+    <img draggable="false" src="" alt="" style="width: 250px; height: 250px;" data-bind="srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
   </div>
 
   <div class="sidebar-nav-content">

@@ -10,10 +10,10 @@
       </div>
     </div>
 
-    <div class="container-fluid" data-bind="if: nodeModel.node().type() === 'person'">
+    <div class="container-fluid well" data-bind="if: nodeModel.node().type() === 'person'">
       <div class="row-fluid">
         <div class="span6">
-          <table class="table table-bordered" style="background-color: whiteSmoke;">
+          <table class="table table-bordered">
             <tr>
               <td>Name</td>
               <td data-bind="text: nodeModel.node().name"></td>
@@ -29,13 +29,30 @@
           </table>
         </div>
 
-        <div class="well span6">
-          <h3>Events</h3>
+        <div class="span6">
+          <h3>Events <button rel="tooltip" title="Create event" class="btn btn-link btn-mini" href="#itemEventEditModal" data-toggle="modal">Create</button></h3>
+
+          <div class="accordion" id="personEventsAccordion">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <div style="font-size: 10px; margin: 10px 15px 0px 15px;">Wednesday, July 25th 2012, 18:37:27 +00:00</div>
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#personEventsAccordion" href="#collapseOne">
+                  Mattias födelse
+                </a>
+              </div>
+              <div id="collapseOne" class="accordion-body collapse" style="padding-top: 0px; background-color: white;">
+                <div class="accordion-inner">
+                  Anim pariatur cliche...
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
 
       </div>
     </div>
-    
+
   </div>
   <div class="main-overlay-background"></div>
 </div>

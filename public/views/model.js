@@ -73,6 +73,23 @@ murrix.model = function()
   self.newsModel = new NewsModel(self);
   self.mapModel = new MapModel(self);
 
+
+  $("#selectDatetimeModal").on("shown", function()
+  {
+    $(".timepicker").timepicker({
+      minuteStep  : 1,
+      showSeconds : true,
+      defaultTime : "value",
+      showMeridian: false,
+      showInputs  : false
+    });
+
+    $(".datepicker").datepicker({
+      format    : "yyyy-mm-dd",
+      weekStart : 1
+    });
+  });
+
   self.timezones = [
     { offset: -43200, name: "(GMT-12:00) International Date Line West" },
     { offset: -39600, name: "(GMT-11:00) Midway Island, Samoa" },

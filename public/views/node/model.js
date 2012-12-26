@@ -57,7 +57,7 @@ var NodeModel = function(parentModel)
     {
       var query = { $or: [] };
 
-      query.what = "file";
+      query.what = { $in : ["file", "text" ] };
       query.$or.push({ _parents: self.node()._id()});
 
 
@@ -91,7 +91,7 @@ var NodeModel = function(parentModel)
           break;
         }
       };
-console.log(query);
+
       murrix.server.emit("find", { query: query, options: "items" }, function(error, itemDataList)
       {
         if (error)
@@ -620,6 +620,7 @@ console.log(query);
       murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
   };
+
 
   /* Define all sub views */
   self.contentModel = new ContentModel(self);

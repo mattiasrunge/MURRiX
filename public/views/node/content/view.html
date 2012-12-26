@@ -11,7 +11,7 @@
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" style="margin-right: 46px;">
-              <li><a href="#">Create text</a></li>
+              <li><a rel="tooltip" title="Create text" class="" href="#textItemEditModal" data-toggle="modal">Create</a></li>
               <li class="divider"></li>
               <li><h5 style="margin-left: 20px;">View mode</h5></li>
               <li><a href="#">Thumbnails</a></li>
@@ -27,7 +27,14 @@
     <ul class="thumbnails" data-bind="foreach: nodeModel.items">
       <li class="">
         <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
-          <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
+          <span data-bind="if: $data.what() === 'file'">
+            <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
+          </span>
+          <span data-bind="if: $data.what() === 'text'">
+            <div style="width: 120px; height: 120px; background-color: black;">
+              <div style="padding: 10px;" data-bind="text: $data.specific.name"></div>
+            </div>
+          </span>
         </a>
       </li>
     </ul>
@@ -69,3 +76,19 @@
     <button data-bind="enable: nodeModel.contentModel.uploadComplete" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
   </div>
 </div>
+
+<form class="modal" id="textItemEditModal" tabindex="-1" role="dialog" aria-labelledby="textItemEditModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.contentModel.textItemEditSubmit">
+  <div class="modal-header">
+    <button data-bind="disable: nodeModel.contentModel.textItemEditLoading" type="textItemEditModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="textItemEditModalLabel">Text details</h3>
+  </div>
+  <div class="modal-body">
+    <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="value: nodeModel.contentModel.textItemEditName, disable: nodeModel.contentModel.textItemEditLoading"/>
+     <textarea placeholder="Text" name="text" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="value: nodeModel.contentModel.textItemEditText, disable: nodeModel.contentModel.textItemEditLoading"></textarea>
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: nodeModel.contentModel.textItemEditErrorText() != '', text: nodeModel.contentModel.textItemEditErrorText"></p>
+    <button data-bind="disable: nodeModel.contentModel.textItemEditLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.contentModel.textItemEditLoading" class="btn btn-primary" type="submit">Save</button>
+  </div>
+</form>

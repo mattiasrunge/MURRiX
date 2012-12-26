@@ -20,7 +20,7 @@ var ContentModel = function(parentModel)
   self.uploadErrorText = ko.observable("");
   self.uploadFiles = ko.observableArray();
   self.uploadComplete = ko.observable(false);
-  
+
   self._saveFile = function(fileItem, callback)
   {
     murrix.server.emit("createFileItem", { name: fileItem.name(), uploadId: fileItem.uploadId(), parentId: murrix.model.nodeModel.node()._id() }, function(error, itemData)
@@ -119,14 +119,14 @@ var ContentModel = function(parentModel)
     self.uploadFiles.removeAll();
     self.uploadErrorText("");
     self.uploadComplete(false);
-    
+
     event.stopPropagation();
     event.preventDefault();
 
     for (var n = 0; n < event.originalEvent.dataTransfer.files.length; n++)
     {
       var uploadFile = {};
-      
+
       uploadFile.progress = ko.observable(0);
       uploadFile.uploadId = ko.observable(false);
       uploadFile.size = ko.observable(event.originalEvent.dataTransfer.files[n].size);
@@ -142,4 +142,84 @@ var ContentModel = function(parentModel)
 
     self._startUpload(null, true);
   };
+
+
+
+  /* Text item stuff */
+  self.textItemEditLoading = ko.observable(false);
+  self.textItemEditErrorText = ko.observable("");
+  self.textItemEditId = ko.observable(false);
+  self.textItemEditName = ko.observable("");
+  self.textItemEditText = ko.observable("");
+
+  self.textItemEditSubmit = function(form)
+  {
+    var itemData = {};
+
+    if (self.textItemEditId() !== false)
+    {
+      murrix.cache.getItem(self.textItemEditId(), function(error, item)
+      {
+        itemData.specific = itemData.specific || {};
+        itemData.specific.text = self.textItemEditText();
+        itemData.specific.name = self.textItemEditName();
+
+        self.textItemEditSave(itemData);
+      });
+
+      return;
+    }
+
+    itemData.specific = {};
+    itemData._parents = [ parentModel.node()._id() ];
+    itemData.showing = [ { _id: parentModel.node()._id() } ];
+    itemData.what = "text";
+    itemData.when = {};
+    itemData.specific.text = self.textItemEditText();
+    itemData.specific.name = self.textItemEditName();
+
+    self.textItemEditSave(itemData);
+  };
+
+  self.textItemEditSave = function(itemData)
+  {
+    self.textItemEditLoading(true);
+    self.textItemEditErrorText("");
+
+    murrix.server.emit("saveItem", itemData, function(error, itemData)
+    {
+      self.textItemEditLoading(false);
+
+      if (error)
+      {
+        self.textItemEditErrorText(error);
+        return;
+      }
+
+      console.log("Saved item!");
+      var item = murrix.cache.addItemData(itemData);
+
+      // TODO: this may be a hack...
+      murrix.model.nodeModel.items.push(item);
+
+      self.textItemEditId(false);
+      self.textItemEditName("");
+      self.textItemEditText("");
+
+      $(".modal").modal('hide');
+    });
+  };
+
+  self.textItemEditOpen = function(data)
+  {
+    self.itemEventId(data._id());
+    self.itemEventName(data.name());
+    self.textItemEditDatetime(moment(data.whenTimestamp()).format("YYYY-MM-dd HH:mm:ss"));
+    self.textItemEditTimezone(0);
+    self.textItemEditDaylightSavings(false);
+    self.textItemEditText(data.specific.text());
+
+    $("#textItemEditModal").modal("show");
+  };
+
 };

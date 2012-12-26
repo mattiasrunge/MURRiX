@@ -1,9 +1,10 @@
 <div class="modal-backdrop" style="opacity: 1; background-color: whiteSmoke;" data-bind="fadeVisible: nodeModel.overlayModel.show() && nodeModel.show(), if: nodeModel.overlayModel.show"></div>
-<div style="position: absolute; top: 0px; left: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.show">
-  <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;">
+
+<div style="position: absolute; top: 0px; left: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show, if: nodeModel.overlayModel.item() !== false">
+
+  <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;" data-bind="if: nodeModel.overlayModel.item().what() === 'file'">
 
     <div id="overlayCarousel">
-      <!-- Carousel items -->
       <div class="carousel-inner">
 
         <div class="item">
@@ -13,12 +14,31 @@
         </div>
 
       </div>
-      <!-- Carousel nav -->
+
       <a class="carousel-control left" href="#" data-bind="click: nodeModel.overlayModel.carouselLeft">&lsaquo;</a>
       <a class="carousel-control right" href="#" data-bind="click: nodeModel.overlayModel.carouselRight">&rsaquo;</a>
     </div>
-
   </div>
+
+  <!-- ko if: nodeModel.overlayModel.item().what() === 'text' -->
+    <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;"></div>
+
+    <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center;">
+
+      <div style="padding: 20px 80px 20px 80px; text-align: left; color: white">
+        <h3 data-bind="text: nodeModel.overlayModel.item().specific.name"></h3>
+        <p data-bind="text: nodeModel.overlayModel.item().specific.text"></p>
+      </div>
+
+      <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; width: 75px;">
+        <a class="carousel-control left" href="#" data-bind="click: nodeModel.overlayModel.carouselLeft">&lsaquo;</a>
+      </div>
+      <div style="position: fixed; top: 0px; bottom: 0px; right: 350px; width: 75px;">
+        <a class="carousel-control right" href="#" data-bind="click: nodeModel.overlayModel.carouselRight">&rsaquo;</a>
+      </div>
+    </div>
+  <!-- /ko -->
+
   <div style="position: absolute; top: 0px; width: 350px; right: 0px; margin: 0px; padding: 0px; background-color: whiteSmoke;">
     <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.editType() === 'showing'">
       <a class="pull-right close" data-bind="click: nodeModel.overlayModel.editFinishClicked" style="font-size: 30px">×</a>
@@ -133,7 +153,7 @@
         </tbody>
       </table>
 
-      <div data-bind="if: nodeModel.overlayModel.item().specific.exif">
+      <div data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif">
         <h5>File information</h5>
         <table class="table table-condensed" style="font-size: 12px;">
           <tbody>
@@ -189,7 +209,7 @@
           <div style="font-weight: bold;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().whenTimestamp"></div>
           <div>Source: <span data-bind="text: nodeModel.overlayModel.item().when.source"></span></div>
 
-          <div class="alert alert-warning" data-bind="visible: nodeModel.overlayModel.item().with() === false">
+          <div class="alert alert-warning" data-bind="visible: nodeModel.overlayModel.item().with() === false && nodeModel.overlayModel.item().what() === 'file'">
             <strong>Warning!</strong> No camera selected for this file!
           </div>
 
@@ -203,7 +223,7 @@
         </p>
         <table class="table table-condensed" style="font-size: 10px; margin-bottom: 20px;">
           <tbody>
-            <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.GPSDateTime">
+            <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.GPSDateTime">
               <td>
                 GPS
               </td>
@@ -212,7 +232,7 @@
                 <button title="Set" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whenSetExifGps" class="btn btn-mini btn-link pull-right">Set</button>
               </td>
             </tr>
-            <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.DateTimeOriginal">
+            <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.DateTimeOriginal">
               <td>
                 Camera
               </td>
@@ -225,7 +245,7 @@
         </table>
       </div>
 
-      <div data-bind="visible: nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'exif'">
+      <div data-bind="visible: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'exif'">
         <h5>Select camera offset</h5>
         <p class="muted" style="font-size: 12px;">
           <i>This file does not have a GPS quality timestamp. Though if the camera has one or more offsets defined, the timestamp on this file can be adjusted and get the same quality. If there are any offsets please select one of them in the list below, if none is selected the first in the list will be used.</i>
@@ -367,7 +387,7 @@
         </table>
       </div>
 
-      <div data-bind="if: nodeModel.overlayModel.item().specific.exif && nodeModel.overlayModel.item().specific.exif.GPSLatitude">
+      <div data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif && nodeModel.overlayModel.item().specific.exif.GPSLatitude">
         <h5>
           File information
           <button title="Set" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whereFileSet" class="btn btn-mini btn-link pull-right">Set file position</button>
@@ -478,9 +498,15 @@
                   <h5 style="margin: 0px;">
                      <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().with()._id ], text: nodeModel.overlayModel.item().with().name"></a>
                   </h5>
+
+                  <div class="muted" style="font-size: 10px;">
+                    <div data-bind="if: nodeModel.overlayModel.item().with()._owner">
+                      Owner: <span data-bind="textNodeAttribute: [ nodeModel.overlayModel.item().with()._owner, 'name' ]"></span>
+                    </div>
+                  </div>
                 </span>
 
-                <div data-bind="visible: nodeModel.overlayModel.item().with() === false">
+                <div data-bind="if: nodeModel.overlayModel.item().with() === false">
                   <h5 style="margin: 0px;">
                     Unknown device
                   </h5>
@@ -532,7 +558,7 @@
                   </div>
                 </span>
 
-                <div data-bind="visible: nodeModel.overlayModel.item().whereNode() === false">
+                <div data-bind="if: nodeModel.overlayModel.item().whereNode() === false">
                   <h5 style="margin: 0px;">
                     <span data-bind="visible: nodeModel.overlayModel.item().whereString() !== false">
                       <span data-bind="text: nodeModel.overlayModel.item().whereString"></span>
@@ -642,73 +668,75 @@
 
               <table class="table table-striped table-condensed">
                   <tr>
-                    <td>Filename</td>
+                    <td>Name</td>
                     <td data-bind="text: nodeModel.overlayModel.item().specific.name()"></td>
                   </tr>
-                  <tr>
-                    <td>File size</td>
-                    <td data-bind="htmlSize: nodeModel.overlayModel.item().specific.exif.FileSize()"></td>
-                  </tr>
-                  <tr>
-                    <td>Resolution</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().specific.exif.ImageHeight()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Model">
-                    <td>Camera model</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Model()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Orientation">
-                    <td>Orientation</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Orientation()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.angle">
-                    <td>Angle</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.angle()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.mirror">
-                    <td>Mirror</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.mirror()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.MIMEType">
-                    <td>MIME type</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.MIMEType()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ISO">
-                    <td>ISO</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ISO()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.FocalLength">
-                    <td>Focal length</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.FocalLength()"></td>
-                  </tr>
-                   <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ResolutionUnit">
-                    <td>Resolution unit</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ResolutionUnit()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.Compression">
-                    <td>Compression</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Compression()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ColorSpace">
-                    <td>Color space</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ColorSpace()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ColorComponents">
-                    <td>Color components</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ColorComponents()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.BitsPerSample">
-                    <td>Bits per sample</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.BitsPerSample()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.ComponentsConfiguration">
-                    <td>Components configuration</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ComponentsConfiguration()"></td>
-                  </tr>
-                  <tr data-bind="if: nodeModel.overlayModel.item().specific.exif.EncodingProcess">
-                    <td>Encoding process</td>
-                    <td data-bind="text: nodeModel.overlayModel.item().specific.exif.EncodingProcess()"></td>
-                  </tr>
+                  <!-- ko if: nodeModel.overlayModel.item().specific.exif -->
+                    <tr>
+                      <td>File size</td>
+                      <td data-bind="htmlSize: nodeModel.overlayModel.item().specific.exif.FileSize()"></td>
+                    </tr>
+                    <tr>
+                      <td>Resolution</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().specific.exif.ImageHeight()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.Model">
+                      <td>Camera model</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Model()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.Orientation">
+                      <td>Orientation</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Orientation()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.angle">
+                      <td>Angle</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.angle()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.mirror">
+                      <td>Mirror</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.mirror()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.MIMEType">
+                      <td>MIME type</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.MIMEType()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.ISO">
+                      <td>ISO</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ISO()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.FocalLength">
+                      <td>Focal length</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.FocalLength()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.ResolutionUnit">
+                      <td>Resolution unit</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ResolutionUnit()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.Compression">
+                      <td>Compression</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.Compression()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.ColorSpace">
+                      <td>Color space</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ColorSpace()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.ColorComponents">
+                      <td>Color components</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ColorComponents()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.BitsPerSample">
+                      <td>Bits per sample</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.BitsPerSample()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.ComponentsConfiguration">
+                      <td>Components configuration</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.ComponentsConfiguration()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().specific && nodeModel.overlayModel.item().specific.exif.EncodingProcess">
+                      <td>Encoding process</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().specific.exif.EncodingProcess()"></td>
+                    </tr>
+                  <!-- /ko -->
               </table>
 
             </div>
