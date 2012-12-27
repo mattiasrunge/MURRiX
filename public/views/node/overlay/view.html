@@ -27,7 +27,7 @@
 
       <div style="padding: 20px 80px 20px 80px; text-align: left; color: white">
         <h3 data-bind="text: nodeModel.overlayModel.item().specific.name"></h3>
-        <p data-bind="text: nodeModel.overlayModel.item().specific.text"></p>
+        <p data-bind="html: nodeModel.overlayModel.item().specific.text"></p>
       </div>
 
       <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; width: 75px;">
@@ -133,12 +133,12 @@
     <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.editType() === 'with'">
       <a class="pull-right close" data-bind="click: nodeModel.overlayModel.editFinishClicked" style="font-size: 30px">×</a>
 
-      <h3>Select device</h3>
+      <h3>Select camera</h3>
       <p class="muted" style="font-size: 12px;">
-        <i>Select which device this item was created with e.g. what camera was used to take this picture.</i>
+        <i>Select which camera this item was created with e.g. what camera was used to take this picture.</i>
       </p>
 
-      <h5>Currently selected device</h5>
+      <h5>Currently selected camera</h5>
       <table class="table table-condensed">
         <tbody data-bind="if: nodeModel.overlayModel.item()._with">
           <tr>
@@ -173,7 +173,7 @@
         </table>
       </div>
 
-      <h5>Select a device</h5>
+      <h5>Select a camera</h5>
       <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
       <form data-bind="submit: dummySubmit" style="margin: 0px; position: relative; height: 40px;">
         <input class="overlayNodeQuery" style="left: 0px; right: 0px; position: absolute;" placeholder="Enter search query..." type="text" id="withInput" name="withInput" data-bind="disable: nodeModel.overlayModel.editLoading" data-provide="typesearch"/>
@@ -476,53 +476,59 @@
           </span>
 
           <span style="font-size: 10px">
-            created this item with
+            created this item
           </span>
 
-          <span class="dropdown">
-            <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
-              <span data-bind="if: nodeModel.overlayModel.item().with() !== false">
-                <span data-bind="text: nodeModel.overlayModel.item().with().name"></span>
-              </span>
-              <span data-bind="visible: nodeModel.overlayModel.item().with() === false">
-                Unknown device
-              </span>
-            </a>
+          <span data-bind="visible: nodeModel.overlayModel.item().what() === 'file'">
+            <span style="font-size: 10px">
+              with
+            </span>
 
-            <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
-              <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
-                <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.withEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
-
+            <span class="dropdown">
+              <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
                 <span data-bind="if: nodeModel.overlayModel.item().with() !== false">
-                  <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().with()._id, 22, 22, 1 ]"/>
-                  <h5 style="margin: 0px;">
-                     <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().with()._id ], text: nodeModel.overlayModel.item().with().name"></a>
-                  </h5>
-
-                  <div class="muted" style="font-size: 10px;">
-                    <div data-bind="if: nodeModel.overlayModel.item().with()._owner">
-                      Owner: <span data-bind="textNodeAttribute: [ nodeModel.overlayModel.item().with()._owner, 'name' ]"></span>
-                    </div>
-                  </div>
+                  <span data-bind="text: nodeModel.overlayModel.item().with().name"></span>
                 </span>
+                <span data-bind="visible: nodeModel.overlayModel.item().with() === false">
+                  Unknown camera
+                </span>
+              </a>
 
-                <div data-bind="if: nodeModel.overlayModel.item().with() === false">
-                  <h5 style="margin: 0px;">
-                    Unknown device
-                  </h5>
-                  <div class="muted" style="font-size: 10px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
-                    <div data-bind="foreach: nodeModel.overlayModel.withOther">
-                      <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.withSet">Was <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> used to create this item?</a><br/>
+              <ul class="dropdown-menu" role="menu" style="width: 250px; right: 0px; left: auto;">
+                <li class="clearfix" style="margin: 10px; margin-top: 5px; margin-bottom: 5px;">
+                  <a class="btn btn-mini btn-link pull-right" style="padding: 0px; height: 20px; width: 20px;" data-bind="click: nodeModel.overlayModel.withEditClicked, visible: nodeModel.node().hasAdminAccess()"><i class="icon-pencil" style="margin: 0px;"></i></a>
+
+                  <span data-bind="if: nodeModel.overlayModel.item().with() !== false">
+                    <img class="pull-left" draggable="false" src="" alt="" style="width: 22px; height: 22px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().with()._id, 22, 22, 1 ]"/>
+                    <h5 style="margin: 0px;">
+                      <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().with()._id ], text: nodeModel.overlayModel.item().with().name"></a>
+                    </h5>
+
+                    <div class="muted" style="font-size: 10px;">
+                      <div data-bind="if: nodeModel.overlayModel.item().with()._owner">
+                        Owner: <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().with()._owner ], textNodeAttribute: [ nodeModel.overlayModel.item().with()._owner, 'name' ]"></a>
+                      </div>
                     </div>
+                  </span>
 
-                    <a class="btn btn-mini btn-link" style="padding: 0px; text-align: left;" href="#" data-bind="click: nodeModel.overlayModel.withEditClicked">
-                      Select the device used to create this item.
-                    </a><br/>
+                  <div data-bind="if: nodeModel.overlayModel.item().with() === false">
+                    <h5 style="margin: 0px;">
+                      Unknown camera
+                    </h5>
+                    <div class="muted" style="font-size: 10px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
+                      <div data-bind="foreach: nodeModel.overlayModel.withOther">
+                        <a class="btn btn-mini btn-link" style="padding: 0px;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.withSet">Was <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> used to create this item?</a><br/>
+                      </div>
+
+                      <a class="btn btn-mini btn-link" style="padding: 0px; text-align: left;" href="#" data-bind="click: nodeModel.overlayModel.withEditClicked">
+                        Select the camera used to create this item.
+                      </a><br/>
+                    </div>
                   </div>
-                </div>
 
-              </li>
-            </ul>
+                </li>
+              </ul>
+            </span>
           </span>
 
           <span style="font-size: 10px">

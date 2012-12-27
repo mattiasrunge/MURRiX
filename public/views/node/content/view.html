@@ -11,12 +11,28 @@
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" style="margin-right: 46px;">
-              <li><a rel="tooltip" title="Create text" class="" href="#textItemEditModal" data-toggle="modal">Create</a></li>
+              <li>
+                <a style="padding-left: 25px;" rel="tooltip" title="Create text" href="#textItemEditModal" data-toggle="modal">Create text</a>
+              </li>
               <li class="divider"></li>
-              <li><h5 style="margin-left: 20px;">View mode</h5></li>
-              <li><a href="#">Thumbnails</a></li>
-              <li><a href="#">Document</a></li>
-              <li><a href="#">List</a></li>
+              <li>
+                <h5 style="margin-left: 25px;">View mode</h5>
+              </li>
+              <li>
+                <a style="padding-left: 25px;" href="#" data-bind="style: { paddingLeft: nodeModel.contentModel.viewMode() === 'thumbnail' ? '5px' : '25px' }, click: nodeModel.contentModel.setViewMode.bind($data, 'thumbnail')">
+                  <i class="icon-ok" data-bind="visible: nodeModel.contentModel.viewMode() === 'thumbnail'"></i> Thumbnail
+                </a>
+                </li>
+              <li>
+                <a style="padding-left: 25px;" href="#" data-bind="style: { paddingLeft: nodeModel.contentModel.viewMode() === 'log' ? '5px' : '25px' }, click: nodeModel.contentModel.setViewMode.bind($data, 'log')">
+                  <i class="icon-ok" data-bind="visible: nodeModel.contentModel.viewMode() === 'log'"></i> Log
+                </a>
+              </li>
+              <li>
+                <a style="padding-left: 25px;" href="#" data-bind="style: { paddingLeft: nodeModel.contentModel.viewMode() === 'list' ? '5px' : '25px' }, click: nodeModel.contentModel.setViewMode.bind($data, 'list')">
+                  <i class="icon-ok" data-bind="visible: nodeModel.contentModel.viewMode() === 'list'"></i> List
+                </a>
+              </li>
             </ul>
           </li>
           <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
@@ -24,20 +40,42 @@
       </div>
     </div>
 
-    <ul class="thumbnails" data-bind="foreach: nodeModel.items">
-      <li class="">
-        <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
-          <span data-bind="if: $data.what() === 'file'">
-            <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
-          </span>
-          <span data-bind="if: $data.what() === 'text'">
-            <div style="width: 120px; height: 120px; background-color: black;">
-              <div style="padding: 10px;" data-bind="text: $data.specific.name"></div>
-            </div>
-          </span>
-        </a>
-      </li>
-    </ul>
+    <div data-bind="if: nodeModel.contentModel.viewMode() === 'thumbnail'">
+      <ul class="thumbnails" data-bind="foreach: nodeModel.items">
+        <li class="">
+          <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
+            <span data-bind="if: $data.what() === 'file'">
+              <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
+            </span>
+            <span data-bind="if: $data.what() === 'text'">
+              <div style="width: 120px; height: 120px; background-color: black;">
+                <div style="padding: 10px;" data-bind="text: $data.specific.name"></div>
+              </div>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div data-bind="if: nodeModel.contentModel.viewMode() === 'log'">
+      <div data-bind="foreach: nodeModel.logItems" style="margin: 10px;">
+        <div class="" style="padding-bottom: 0px; padding-top: 0px; color: white;">
+          <h4 data-bind="htmlTimestampToDate: $data.datestamp" style="border-bottom: 1px solid white;"></h4>
+          <div data-bind="foreach: $data.texts">
+            <div style="font-weight: bold; margin-bottom: 5px;"><a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()"><i class="icon-time icon-white"></i> <span data-bind="htmlTimestampToTime: $data.whenTimestamp"></span> - <span data-bind="text: $data.specific.name"></span></a></div>
+            <p data-bind="html: $data.specific.text"></p>
+          </div>
+
+          <ul class="thumbnails" data-bind="foreach: $data.files">
+            <li class="">
+              <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id()">
+                <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=80&amp;height=80&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
   </div>
   <div class="main-overlay-background"></div>

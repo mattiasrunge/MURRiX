@@ -47,7 +47,7 @@ $(function()
 
       if ($(element).is(":visible"))
       {
-        $(element).height($(element).height());
+        //$(element).height($(element).height());
       }
 
       //$(element).toggle(ko.utils.unwrapObservable(value));
@@ -66,11 +66,11 @@ $(function()
 
           if (value)
           {
-            $element.show("slide", function() { $element.height(''); });
+            $element.show("slide", function() { /*$element.height('');*/ });
           }
           else
           {
-            $element.height($element.height());
+            //$element.height($element.height());
             $element.hide("slide");
           }
         }
@@ -81,11 +81,11 @@ $(function()
 
         if (value)
         {
-          $element.show("slide", function() { $element.height(''); });
+          $element.show("slide", function() { /*$element.height('');*/ });
         }
         else
         {
-          $element.height($element.height());
+          //$element.height($element.height());
           $element.hide("slide");
         }
       }
@@ -632,6 +632,56 @@ $(function()
       else
       {
         $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
+      }
+    }
+  };
+
+  ko.bindingHandlers.htmlTimestampToTime = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var rawValue = ko.utils.unwrapObservable(value);
+
+      if (!rawValue)
+      {
+        $(element).text("unknown time");
+        return;
+      }
+
+      var dateItem = moment.utc(rawValue * 1000);
+
+      if (!dateItem.date())
+      {
+        $(element).html(rawValue);
+      }
+      else
+      {
+        $(element).html(dateItem.format("HH:mm:ss"));
+      }
+    }
+  };
+
+  ko.bindingHandlers.htmlTimestampToDate = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var rawValue = ko.utils.unwrapObservable(value);
+
+      if (!rawValue)
+      {
+        $(element).text("unknown date");
+        return;
+      }
+
+      var dateItem = moment.utc(rawValue * 1000);
+
+      if (!dateItem.date())
+      {
+        $(element).html(rawValue);
+      }
+      else
+      {
+        $(element).html(dateItem.format("dddd, MMMM Do YYYY"));
       }
     }
   };

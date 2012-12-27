@@ -8,12 +8,27 @@ var ContentModel = function(parentModel)
 
   self.show = ko.observable(false);
   self.enabled = ko.observable(true);
+  self.viewMode = ko.observable("log");
 
   parentModel.path().primary.subscribe(function(value)
   {
     if (self.show() !== (value.action === "content"))
     {
       self.show(value.action === "content");
+    }
+  });
+
+  self.setViewMode = function(mode)
+  {
+    self.viewMode(mode);
+  };
+
+  parentModel.node.subscribe(function(value)
+  {
+    if (value !== false)
+    {
+      // TODO: select different modes based on type ? console.log(value.type());
+      self.viewMode("log");
     }
   });
 

@@ -129,6 +129,61 @@ var NodeModel = function(parentModel)
     callback(null);
   };
 
+  self.logItems = ko.computed(function()
+  {
+    var results = {};
+
+    for (var n = 0; n < self.items().length; n++)
+    {
+      var item = self.items()[n];
+
+      var datestamp = false;
+      var timestamp = false;
+
+      if (item.whenTimestamp() === false)
+      {
+        datestamp = "unknown";
+        timestamp = "unknown";
+      }
+      else
+      {
+        datestamp = Math.floor(item.whenTimestamp() / 86400) * 86400;
+        timestamp = item.whenTimestamp() - datestamp;
+      }
+
+      if (!results[datestamp])
+      {
+        results[datestamp] = {};
+        results[datestamp]["texts"] = [];
+        results[datestamp]["files"] = [];
+      }
+
+      if (item.what() === "file")
+      {
+        results[datestamp]["files"].push(item);
+      }
+      else if (item.what() === "text")
+      {
+        results[datestamp]["texts"].push(item);
+      }
+    }
+
+    var list = [];
+
+    for (var datestamp in results)
+    {
+      var item = {};
+
+      item.datestamp = datestamp;
+      item.texts = results[datestamp].texts;
+      item.files = results[datestamp].files;
+
+      list.push(item);
+    }
+
+    return list;
+  });
+
 
   /* This function is run when the primary path is changed
    * and a new node id has been set. It tries to cache
