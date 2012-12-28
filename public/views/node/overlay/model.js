@@ -68,15 +68,17 @@ var OverlayModel = function(parentModel)
       self.initializeOverlayNodeQuery();
       self.initializeOverlayMap();
 
-      var image = new Image();
-
-      image.onload = function()
+      if (item.what() === "file")
       {
-        self.itemPictureUrl(image.src);
-      };
+        var image = new Image();
 
-      image.src = "preview?id=" + self.item()._id() + "&width=1440";
-//      console.log(image.src);
+        image.onload = function()
+        {
+          self.itemPictureUrl(image.src);
+        };
+
+        image.src = "preview?id=" + self.item()._id() + "&width=1440";
+      }
     });
   });
 
@@ -294,7 +296,7 @@ var OverlayModel = function(parentModel)
   self.whereLongitude = ko.observable("");
 
   // This variable should contain best guess for timezone UTC offset
-  self.whenManualTimezone = ko.observable((new Date()).getTimezoneOffset() * 60);
+  self.whenManualTimezone = ko.observable(-(new Date()).getTimezoneOffset() * 60);
   self.whenManualDaylightSavings = ko.observable(false);
   self.whenManualDatetime = ko.observable("");
   self.whenManualSource = ko.observable("manual");
@@ -312,12 +314,12 @@ var OverlayModel = function(parentModel)
     itemData.when = {};
 
     itemData.when.timestamp = (new Date(self.whenManualDatetime() + " +00:00")).getTime() / 1000;
-console.log(itemData.when.timestamp);
+
     itemData.when.timestamp += parseInt(self.whenManualTimezone(), 10);
-console.log(itemData.when.timestamp);
+
     if (self.whenManualDaylightSavings())
     {
-      itemData.when.timestamp += 3600;console.log(itemData.when.timestamp);
+      itemData.when.timestamp += 3600;
     }
 
     itemData.when.source = self.whenManualSource();
@@ -930,6 +932,9 @@ console.log(itemData.when.timestamp);
 
     self.saveItem(itemData);
   };
+
+
+
 
   self.withRemove = function()
   {

@@ -717,6 +717,8 @@ $(function()
     }
   };
 
+
+
   ko.bindingHandlers.hrefFirst = {
     update: function(element, valueAccessor)
     {
@@ -726,21 +728,41 @@ $(function()
         values[n] = ko.utils.unwrapObservable(values[n]);
       }
 
-      $(element).attr("href", murrix.createPath(0, values[0], values[1]));
+      $(element).off("click");
+
+      $(element).on("click", function(event)
+      {
+        document.location.hash = murrix.createPath(0, values[0], values[1]);
+        event.preventDefault();
+      });
     }
   };
 
   ko.bindingHandlers.hrefFirstPrimary = {
     update: function(element, valueAccessor)
     {
-      $(element).attr("href", murrix.createPath(0, ko.utils.unwrapObservable(valueAccessor()), null));
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      $(element).off("click");
+
+      $(element).on("click", function(event)
+      {
+        document.location.hash = murrix.createPath(0, value, null);
+        event.preventDefault();
+      });
     }
   };
 
   ko.bindingHandlers.hrefFirstSecondary = {
     update: function(element, valueAccessor)
     {
-      $(element).attr("href", murrix.createPath(0, null, ko.utils.unwrapObservable(valueAccessor())));
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      $(element).off("click");
+
+      $(element).on("click", function(event)
+      {
+        document.location.hash = murrix.createPath(0, null, value);
+        event.preventDefault();
+      });
     }
   };
 
@@ -752,21 +774,42 @@ $(function()
       {
         values[n] = ko.utils.unwrapObservable(values[n]);
       }
-      $(element).attr("href", murrix.createPath(1, values[0], values[1]));
+
+      $(element).off("click");
+
+      $(element).on("click", function(event)
+      {
+        document.location.hash = murrix.createPath(1, values[0], values[1]);
+        event.preventDefault();
+      });
     }
   };
 
   ko.bindingHandlers.hrefSecondPrimary = {
     update: function(element, valueAccessor)
     {
-      $(element).attr("href", murrix.createPath(1, ko.utils.unwrapObservable(valueAccessor()), null));
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      $(element).off("click");
+
+      $(element).on("click", function(event)
+      {
+        document.location.hash = murrix.createPath(1, value, null);
+        event.preventDefault();
+      });
     }
   };
 
   ko.bindingHandlers.hrefSecondSecondary = {
     update: function(element, valueAccessor)
     {
-      $(element).attr("href", murrix.createPath(1, null, ko.utils.unwrapObservable(valueAccessor())));
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      $(element).off("click");
+
+      $(element).on("click", function(event)
+      {
+        document.location.hash = murrix.createPath(1, null, value);
+        event.preventDefault();
+      });
     }
   };
 });

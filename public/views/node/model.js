@@ -113,7 +113,7 @@ var NodeModel = function(parentModel)
 
         itemList.sort(function(a, b)
         {
-          return (b.when && b.when.timestamp && a.when && a.when.timestamp) ? a.when.timestamp() - b.when.timestamp() : 0;
+          return (b.whenTimestamp() !== false && b.whenTimestamp() !== false) ? a.whenTimestamp() - b.whenTimestamp() : 0;
         });
 
         self.items(itemList);
@@ -138,17 +138,14 @@ var NodeModel = function(parentModel)
       var item = self.items()[n];
 
       var datestamp = false;
-      var timestamp = false;
 
       if (item.whenTimestamp() === false)
       {
-        datestamp = "unknown";
-        timestamp = "unknown";
+        datestamp = "Missing date information";
       }
       else
       {
         datestamp = Math.floor(item.whenTimestamp() / 86400) * 86400;
-        timestamp = item.whenTimestamp() - datestamp;
       }
 
       if (!results[datestamp])

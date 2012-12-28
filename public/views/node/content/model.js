@@ -189,7 +189,7 @@ var ContentModel = function(parentModel)
     itemData._parents = [ parentModel.node()._id() ];
     itemData.showing = [ { _id: parentModel.node()._id() } ];
     itemData.what = "text";
-    itemData.when = {};
+    itemData.when = { timestamp: false, source: false };
     itemData.specific.text = self.textItemEditText();
     itemData.specific.name = self.textItemEditName();
 
