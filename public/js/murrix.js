@@ -282,15 +282,15 @@ murrix.cache = new function()
       }
 
       if (self.items[id].with && self.items[id].with() !== false &&
-          self.items[id].with().specific && self.items[id].with().specific.whenOffsets)
+          self.items[id].with().whenOffsets)
       {
-        var index = self.items[id].with().specific.whenOffsets().length === 0 ? -1 : 0; // First is default if one exists
+        var index = self.items[id].with().whenOffsets().length === 0 ? -1 : 0; // First is default if one exists
 
         if (self.items[id].when._syncId && self.items[id].when._syncId() !== false)
         {
-          for (var n = 0; n < self.items[id].with().specific.whenOffsets().length; n++)
+          for (var n = 0; n < self.items[id].with().whenOffsets().length; n++)
           {
-            if (self.items[id].with().specific.whenOffsets()[n]._id() === self.items[id].when._syncId())
+            if (self.items[id].with().whenOffsets()[n]._id() === self.items[id].when._syncId())
             {
               index = n;
               break;
@@ -301,7 +301,7 @@ murrix.cache = new function()
         if (index >= 0)
         {
 
-          self.items[id].whenTimestamp(self.items[id].when.timestamp() + self.items[id].with().specific.whenOffsets()[index].value());
+          self.items[id].whenTimestamp(self.items[id].when.timestamp() + self.items[id].with().whenOffsets()[index].value());
           return;
         }
       }

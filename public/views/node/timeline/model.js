@@ -9,7 +9,7 @@ var TimelineModel = function(parentModel)
   self.visible = ko.observable(false);
   self.show = ko.observable(true);
   self.showButton = ko.observable(true);
-  
+
   parentModel.path().primary.subscribe(function(value)
   {
     if (self.show() !== (value.action === "" && self.visible()))
@@ -42,10 +42,10 @@ var TimelineModel = function(parentModel)
       }, 500);
     }
   });*/
-  
+
   /*self.dataList = [];
   self.timeline = new links.Timeline($(".background-timeline-content").get(0));
-  
+
   parentModel.items.subscribe(function(value)
   {
     self.dataList = [];
@@ -56,13 +56,13 @@ var TimelineModel = function(parentModel)
       {
         var dataItem = {};
         dataItem.start = new Date(value[n].when.timestamp() * 1000);
-        dataItem.content = value[n].specific.name();
+        dataItem.content = value[n].name();
         //dataItem.end;
 
         self.dataList.push(dataItem);
       }
     }
-    
+
     self.timeline.draw(self.dataList, {
       width:    '100%',
       height:   'auto',
@@ -72,20 +72,20 @@ var TimelineModel = function(parentModel)
 
     self.timeline.setVisibleChartRangeAuto();
 
-    
+
   });
 
 
 
-  
-// 
-// 
-// 
+
+//
+//
+//
 //   links.events.addListener(self.timeline, 'rangechanged', function(properties)
 //   {
 //     console.log('rangechanged ' + properties.start + ' - ' + properties.end);
 //   });
-// 
+//
 //   // Draw our timeline with the created data and options
   self.timeline.draw(self.dataList, {
     width:    '100%',
@@ -100,4 +100,4 @@ var TimelineModel = function(parentModel)
   };*/
 };
 
- 
+

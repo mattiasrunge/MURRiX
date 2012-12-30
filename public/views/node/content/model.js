@@ -175,9 +175,8 @@ var ContentModel = function(parentModel)
     {
       murrix.cache.getItem(self.textItemEditId(), function(error, item)
       {
-        itemData.specific = itemData.specific || {};
-        itemData.specific.text = self.textItemEditText();
-        itemData.specific.name = self.textItemEditName();
+        itemData.text = self.textItemEditText();
+        itemData.name = self.textItemEditName();
 
         self.textItemEditSave(itemData);
       });
@@ -185,13 +184,12 @@ var ContentModel = function(parentModel)
       return;
     }
 
-    itemData.specific = {};
     itemData._parents = [ parentModel.node()._id() ];
     itemData.showing = [ { _id: parentModel.node()._id() } ];
     itemData.what = "text";
     itemData.when = { timestamp: false, source: false };
-    itemData.specific.text = self.textItemEditText();
-    itemData.specific.name = self.textItemEditName();
+    itemData.text = self.textItemEditText();
+    itemData.name = self.textItemEditName();
 
     self.textItemEditSave(itemData);
   };
@@ -232,7 +230,7 @@ var ContentModel = function(parentModel)
     self.textItemEditDatetime(moment(data.whenTimestamp()).format("YYYY-MM-dd HH:mm:ss"));
     self.textItemEditTimezone(0);
     self.textItemEditDaylightSavings(false);
-    self.textItemEditText(data.specific.text());
+    self.textItemEditText(data.text());
 
     $("#textItemEditModal").modal("show");
   };

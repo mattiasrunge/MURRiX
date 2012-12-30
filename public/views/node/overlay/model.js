@@ -120,11 +120,11 @@ var OverlayModel = function(parentModel)
 //     coords.push({ x: 1881, y: 1684, w: 286, h: 286 });*/
 //
 //
-//     var imgHeight = murrix.intval(self.item().specific.exif.ImageHeight());
-//     var imgWidth = murrix.intval(self.item().specific.exif.ImageWidth());
+//     var imgHeight = murrix.intval(self.item().exif.ImageHeight());
+//     var imgWidth = murrix.intval(self.item().exif.ImageWidth());
 //
 //
-//     if (self.item().specific.angle && self.item().specific.angle === 90 || self.item().specific.angle === 270)
+//     if (self.item().angle && self.item()..angle === 90 || self.item().angle === 270)
 //     {
 //       var t = imgHeight;
 //       imgHeight = imgWidth;
@@ -669,7 +669,7 @@ var OverlayModel = function(parentModel)
 
     itemData.when = {};
 
-    itemData.when.timestamp = murrix.parseExifGps(self.item().specific.exif.GPSDateTime());
+    itemData.when.timestamp = murrix.parseExifGps(self.item().exif.GPSDateTime());
     itemData.when.source = "gps";
 
     self.saveItem(itemData);
@@ -681,7 +681,7 @@ var OverlayModel = function(parentModel)
 
     itemData.when = {};
 
-    itemData.when.timestamp = murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
+    itemData.when.timestamp = murrix.parseExifCamera(self.item().exif.DateTimeOriginal());
     itemData.when.source = "exif";
     itemData.when._syncId = false;
 
@@ -726,20 +726,20 @@ var OverlayModel = function(parentModel)
   {
     var value = true;
 
-    if (self.item() === false || !self.item().specific || !self.item().specific.exif || !self.item().specific.exif.DateTimeOriginal || !self.item().when.source || self.item().when.source() !== 'gps' || self.item().with() === false)
+    if (self.item() === false || !self.item().exif || !self.item().exif.DateTimeOriginal || !self.item().when.source || self.item().when.source() !== 'gps' || self.item().with() === false)
     {
       value = false;
     }
     else
     {
-      if (self.item().with().specific && self.item().with().specific.whenOffsets)
+      if (self.item().with().whenOffsets)
       {
-        var offsetValue = self.item().when.timestamp() - murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
+        var offsetValue = self.item().when.timestamp() - murrix.parseExifCamera(self.item().exif.DateTimeOriginal());
 
-        for (var n = 0; n < self.item().with().specific.whenOffsets().length; n++)
+        for (var n = 0; n < self.item().with().whenOffsets().length; n++)
         {
-          if (self.item().with().specific.whenOffsets()[n]._id() === self.item()._id() ||
-              self.item().with().specific.whenOffsets()[n].value() === offsetValue)
+          if (self.item().with().whenOffsets()[n]._id() === self.item()._id() ||
+              self.item().with().whenOffsets()[n].value() === offsetValue)
           {
             value = false;
             break;
@@ -975,8 +975,8 @@ var OverlayModel = function(parentModel)
 
   self.whereFileSet = function()
   {
-    self.whereLatitude(self.item().specific.exif.GPSLatitude());
-    self.whereLongitude(self.item().specific.exif.GPSLongitude());
+    self.whereLatitude(self.item().exif.GPSLatitude());
+    self.whereLongitude(self.item().exif.GPSLongitude());
 
     self.whereSavePosition("gps");
   };
@@ -1033,21 +1033,20 @@ var OverlayModel = function(parentModel)
 
     var nodeData = ko.mapping.toJS(self.item().with());
 
-    nodeData.specific = nodeData.specific || {};
-    nodeData.specific.whenOffsets = nodeData.specific.whenOffsets || [];
+    nodeData.whenOffsets = nodeData.whenOffsets || [];
 
     if (!removeId) // Add offset
     {
       var newOffset = {};
       newOffset._id = self.item()._id();
       newOffset.name = self.whenCreateOffsetName();
-      newOffset.value = self.item().when.timestamp() - murrix.parseExifCamera(self.item().specific.exif.DateTimeOriginal());
+      newOffset.value = self.item().when.timestamp() - murrix.parseExifCamera(self.item().exif.DateTimeOriginal());
 
-      nodeData.specific.whenOffsets.push(newOffset);
+      nodeData.whenOffsets.push(newOffset);
     }
     else
     {
-      nodeData.specific.whenOffsets = nodeData.specific.whenOffsets.filter(function(offset)
+      nodeData.whenOffsets = nodeData.whenOffsets.filter(function(offset)
       {
         return offset._id !== removeId;
       });

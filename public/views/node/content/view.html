@@ -49,7 +49,7 @@
             </span>
             <span data-bind="if: $data.what() === 'text'">
               <div style="width: 120px; height: 120px; background-color: black;">
-                <div style="padding: 10px;" data-bind="text: $data.specific.name"></div>
+                <div style="padding: 10px;" data-bind="text: $data.name"></div>
               </div>
             </span>
           </a>
@@ -62,8 +62,8 @@
         <div class="" style="padding-bottom: 0px; padding-top: 0px; color: white;">
           <h4 data-bind="htmlTimestampToDate: $data.datestamp" style="border-bottom: 1px solid white;"></h4>
           <div data-bind="foreach: $data.texts">
-            <div style="font-weight: bold; margin-bottom: 5px;"><a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()"><i class="icon-time icon-white"></i> <span data-bind="htmlTimestampToTime: $data.whenTimestamp"></span> - <span data-bind="text: $data.specific.name"></span></a></div>
-            <p data-bind="html: $data.specific.text"></p>
+            <div style="font-weight: bold; margin-bottom: 5px;"><a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()"><i class="icon-time icon-white"></i> <span data-bind="htmlTimestampToTime: $data.whenTimestamp"></span> - <span data-bind="text: $data.name"></span></a></div>
+            <p data-bind="html: $data.text"></p>
           </div>
 
           <ul class="thumbnails" data-bind="foreach: $data.files">
