@@ -12,6 +12,7 @@ var Session = require('./lib/session').Session;
 var User = require('./lib/user').User;
 var NodeManager = require('./lib/node.js').NodeManager;
 var MurrixUtils = require('./lib/utils.js');
+var MurrixMedia = require('./lib/media.js');
 var UploadManager = require('./lib/upload.js').UploadManager;
 
 /* Configuration options, TODO: Move to another file */
@@ -82,14 +83,14 @@ function httpRequestHandler(request, response)
           response.end(error);
           return;
         }
-        
+
         response.writeHead(200, { "Content-Type": "text/html" });
         response.end(data);
       });
     }
     else if (requestParams.pathname === "/preview")
     {
-      MurrixUtils.getPreview(session, nodeManager, requestParams.query.id, requestParams.query.width, requestParams.query.height, requestParams.query.square, function(error, filename)
+      MurrixMedia.getPreview(session, nodeManager, requestParams.query.id, requestParams.query.width, requestParams.query.height, requestParams.query.square, function(error, filename)
       {
         if (error)
         {
@@ -142,9 +143,9 @@ io.configure(function()
 
         handshakeData.session = session;
 
-        
+
         var cookies = MurrixUtils.parseCookieString(handshakeData.headers.cookie);
-        
+
         if (cookies.userinfo)
         {
           var userinfo = JSON.parse(unescape(cookies.userinfo));
@@ -196,7 +197,7 @@ io.sockets.on("connection", function(client)
       console.log("No callback supplied for user.login!");
       return;
     }
-  
+
     user.login(client.handshake.session, data.username, data.password, callback);
   });
 
@@ -207,7 +208,7 @@ io.sockets.on("connection", function(client)
       console.log("No callback supplied for user.logout!");
       return;
     }
-  
+
     user.logout(client.handshake.session, callback);
   });
 
@@ -218,7 +219,7 @@ io.sockets.on("connection", function(client)
       console.log("No callback supplied for user.changePassword!");
       return;
     }
-  
+
     user.changePassword(client.handshake.session, data.id, data.password, callback);
   });
 
@@ -232,7 +233,7 @@ io.sockets.on("connection", function(client)
 
     user.findGroups(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
-  
+
   client.on("findUsers", function(data, callback)
   {
     if (!callback)
@@ -251,7 +252,7 @@ io.sockets.on("connection", function(client)
       console.log("No callback supplied for user.saveGroup!");
       return;
     }
-  
+
     user.saveGroup(client.handshake.session, data, callback);
   });
 
@@ -262,7 +263,7 @@ io.sockets.on("connection", function(client)
       console.log("No callback supplied for user.saveUser!");
       return;
     }
-  
+
     user.saveUser(client.handshake.session, data, callback);
   });
 
@@ -273,7 +274,7 @@ io.sockets.on("connection", function(client)
       console.log("No callback supplied for user.removeGroup!");
       return;
     }
-  
+
     user.removeGroup(client.handshake.session, data, callback);
   });
 
@@ -284,11 +285,11 @@ io.sockets.on("connection", function(client)
       console.log("No callback supplied for user.removeUser!");
       return;
     }
-  
+
     user.removeUser(client.handshake.session, data, callback);
   });
 
-  
+
   /* Node API */
   client.on("saveNode", function(data, callback)
   {
