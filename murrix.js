@@ -3,7 +3,7 @@
 var nodeStatic = require('node-static');
 var httpServer = require('http').createServer(httpRequestHandler);
 var url = require('url');
-var io = require('socket.io').listen(httpServer);
+var io = require('socket.io').listen(httpServer, { log: false });
 var fs = require('fs');
 var path = require('path');
 var mongo = require('mongodb');
@@ -23,7 +23,7 @@ configuration.databasePort = 27017;
 configuration.databaseName = "murrix";
 configuration.httpPort = 8080;
 configuration.filesPath = "/mnt/raid/www/murrix.runge.se/files/";
-configuration.previewsPath = "../previews/";
+configuration.mediaCachePath = "../cache/";
 configuration.sessionName = "murrix";
 
 /* Instances */
@@ -101,7 +101,23 @@ function httpRequestHandler(request, response)
 
         filename = path.basename(filename);
 
-        fileServer.serveFile(configuration.previewsPath + filename, 200, {}, request, response);
+        fileServer.serveFile(configuration.mediaCachePath + filename, 200, {}, request, response);
+      });
+    }
+    else if (requestParams.pathname === "/video")
+    {
+      MurrixMedia.getVideo(session, nodeManager, requestParams.query.id, function(error, filename)
+      {
+        if (error)
+        {
+          response.writeHead(404);
+          response.end(error);
+          return;
+        }
+
+        filename = path.basename(filename);
+
+        fileServer.serveFile(configuration.mediaCachePath + filename, 200, {}, request, response);
       });
     }
     else

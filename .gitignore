@@ -1,6 +1,6 @@
 *~
-previews/*
-!preview/.htaccess
+cache/*
+!cache/.htaccess
 files/*
 !files/.htaccess
 node_modules
