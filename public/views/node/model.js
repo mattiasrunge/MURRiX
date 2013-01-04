@@ -152,14 +152,19 @@ var NodeModel = function(parentModel)
       {
         results[datestamp] = {};
         results[datestamp]["texts"] = [];
-        results[datestamp]["files"] = [];
+        results[datestamp]["media"] = [];
+        results[datestamp]["audio"] = [];
       }
 
-      if (item.what() === "file")
+      if (item.whatDetailed() === "audioFile")
       {
-        results[datestamp]["files"].push(item);
+        results[datestamp]["audio"].push(item);
       }
-      else if (item.what() === "text")
+      if (item.whatDetailed() === "imageFile" || item.whatDetailed() === "videoFile")
+      {
+        results[datestamp]["media"].push(item);
+      }
+      else if (item.whatDetailed() === "text")
       {
         results[datestamp]["texts"].push(item);
       }
@@ -173,7 +178,8 @@ var NodeModel = function(parentModel)
 
       item.datestamp = datestamp;
       item.texts = results[datestamp].texts;
-      item.files = results[datestamp].files;
+      item.media = results[datestamp].media;
+      item.audio = results[datestamp].audio;
 
       list.push(item);
     }

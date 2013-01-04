@@ -16,6 +16,13 @@
             <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
               <video class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;"  preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }" src="" alt=""></video>
             </div>
+
+            <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'audioFile'">
+              <div style="padding: 20px 80px 20px 80px; text-align: left; color: white">
+                <h3 data-bind="text: nodeModel.overlayModel.item().name"></h3>
+                <audio class="" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }" src="" alt=""></audio>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -442,7 +449,7 @@
         <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
         <h3 data-bind="text: nodeModel.node().name"></h3>
 
-        <div>
+        <div style="margin-bottom: 10px;">
           <span class="dropdown">
             <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
               <span data-bind="if: nodeModel.overlayModel.item().who() !== false">
@@ -637,7 +644,8 @@
           </span>
 
         </div>
-        <div style="font-size: 10px;">
+
+        <div style="font-size: 10px; margin-bottom: 10px;">
           <span data-bind="visible: !nodeModel.overlayModel.item().showing || nodeModel.overlayModel.item().showing().length === 0">
             <button class="btn btn-mini btn-link" style="padding: 0px; font-size: 10px;" data-bind="click: nodeModel.overlayModel.showingEditClicked">Tag something or someone</button>.
           </span>
@@ -666,6 +674,16 @@
             tagged on this item.
           </span>
         </div>
+
+        <div style="font-size: 10px; margin-bottom: 10px;">
+          This item belongs to
+          <span data-bind="foreach: nodeModel.overlayModel.item()._parents">
+            <a href="#" data-bind="hrefFirst: [ 'node', $data ], textNodeAttribute: [ $data, 'name' ]"></a><!--
+            --><span data-bind="if: $index() + 2 === $parent.nodeModel.overlayModel.item()._parents().length"> and</span><!--
+          --><span data-bind="if: $index() + 2 < $parent.nodeModel.overlayModel.item()._parents().length">, </span><!--
+          --></span>.
+        </div>
+
       </div>
 
       <div class="accordion" id="overlayAccordion" style="height: 100%;">
@@ -688,7 +706,7 @@
                       <td>File size</td>
                       <td data-bind="htmlSize: nodeModel.overlayModel.item().exif.FileSize()"></td>
                     </tr>
-                    <tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.ImageWidth && nodeModel.overlayModel.item().exif.ImageHeight">
                       <td>Resolution</td>
                       <td data-bind="text: nodeModel.overlayModel.item().exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().exif.ImageHeight()"></td>
                     </tr>

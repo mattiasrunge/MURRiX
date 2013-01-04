@@ -347,6 +347,11 @@ murrix.cache = new function()
               type = "videoFile";
               break;
             }
+            case "audio/mpeg":
+            {
+              type = "audioFile";
+              break;
+            }
           }
         }
       }

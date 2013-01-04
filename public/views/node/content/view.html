@@ -44,10 +44,15 @@
       <ul class="thumbnails" data-bind="foreach: nodeModel.items">
         <li class="">
           <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
-            <span data-bind="if: $data.what() === 'file'">
+            <span data-bind="if: $data.whatDetailed() === 'imageFile' || $data.whatDetailed() === 'videoFile'">
               <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
             </span>
-            <span data-bind="if: $data.what() === 'text'">
+            <span data-bind="if: $data.whatDetailed() === 'audioFile'">
+              <div style="width: 120px; height: 120px; background-color: black;">
+                <div style="padding: 10px;" data-bind="text: $data.name"></div>
+              </div>
+            </span>
+            <span data-bind="if: $data.whatDetailed() === 'text'">
               <div style="width: 120px; height: 120px; background-color: black;">
                 <div style="padding: 10px;" data-bind="text: $data.name"></div>
               </div>
@@ -61,9 +66,11 @@
       <div data-bind="foreach: nodeModel.logItems" style="margin: 10px;">
         <div class="" style="padding-bottom: 0px; padding-top: 0px; color: white;">
           <h4 data-bind="htmlTimestampToDate: $data.datestamp" style="border-bottom: 1px solid white;"></h4>
+
           <div data-bind="foreach: $data.texts">
             <div style="font-weight: bold; margin-bottom: 5px;">
-              <a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()"><i class="icon-time icon-white"></i>
+              <a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()">
+                <i class="icon-time icon-white"></i>
                 <span data-bind="htmlTimestampToTime: $data.whenTimestamp"></span>
                 -
                 <span data-bind="text: $data.name"></span>
@@ -73,7 +80,16 @@
             <p data-bind="html: $data.text"></p>
           </div>
 
-          <ul class="thumbnails" data-bind="foreach: $data.files">
+          <div data-bind="foreach: $data.audio">
+            <div style="font-weight: bold; margin-bottom: 5px;">
+              <a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()">
+                <i class="icon-headphones icon-white"></i>
+                <span data-bind="text: $data.name"></span>
+              </a>
+            </div>
+          </div>
+
+          <ul class="thumbnails" data-bind="foreach: $data.media">
             <li class="">
               <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id()">
                 <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=80&amp;height=80&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
