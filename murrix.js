@@ -16,16 +16,8 @@ var MurrixUtils = require('./lib/utils.js');
 var MurrixMedia = require('./lib/media.js');
 var UploadManager = require('./lib/upload.js').UploadManager;
 
-/* Configuration options, TODO: Move to another file */
-var configuration = {};
-
-configuration.databaseHost = "localhost";
-configuration.databasePort = 27017;
-configuration.databaseName = "murrix";
-configuration.httpPort = 8080;
-configuration.filesPath = "/mnt/raid/www/murrix.runge.se/files/";
-configuration.mediaCachePath = "../cache/";
-configuration.sessionName = "murrix";
+/* Configuration options */
+var configuration = require('./configuration.js').Configuration;
 
 /* Instances */
 var mongoServer = new mongo.Server(configuration.databaseHost, configuration.databasePort, { auto_reconnect: true });
