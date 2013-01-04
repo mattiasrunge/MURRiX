@@ -175,6 +175,8 @@ var ContentModel = function(parentModel)
     {
       murrix.cache.getItem(self.textItemEditId(), function(error, item)
       {
+        itemData = ko.mapping.toJS(item);
+
         itemData.text = self.textItemEditText();
         itemData.name = self.textItemEditName();
 
@@ -194,12 +196,12 @@ var ContentModel = function(parentModel)
     self.textItemEditSave(itemData);
   };
 
-  self.textItemEditSave = function(itemData)
+  self.textItemEditSave = function(newItemData)
   {
     self.textItemEditLoading(true);
     self.textItemEditErrorText("");
 
-    murrix.server.emit("saveItem", itemData, function(error, itemData)
+    murrix.server.emit("saveItem", newItemData, function(error, itemData)
     {
       self.textItemEditLoading(false);
 
@@ -212,8 +214,11 @@ var ContentModel = function(parentModel)
       console.log("Saved item!");
       var item = murrix.cache.addItemData(itemData);
 
-      // TODO: this may be a hack...
-      murrix.model.nodeModel.items.push(item);
+      if (!newItemData._id)
+      {
+        // TODO: this may be a hack...
+        murrix.model.nodeModel.items.push(item);
+      }
 
       self.textItemEditId(false);
       self.textItemEditName("");
@@ -225,11 +230,11 @@ var ContentModel = function(parentModel)
 
   self.textItemEditOpen = function(data)
   {
-    self.itemEventId(data._id());
-    self.itemEventName(data.name());
-    self.textItemEditDatetime(moment(data.whenTimestamp()).format("YYYY-MM-dd HH:mm:ss"));
-    self.textItemEditTimezone(0);
-    self.textItemEditDaylightSavings(false);
+    self.textItemEditId(data._id());
+    self.textItemEditName(data.name());
+//     self.textItemEditDatetime(moment(data.whenTimestamp()).format("YYYY-MM-dd HH:mm:ss"));
+//     self.textItemEditTimezone(0);
+//     self.textItemEditDaylightSavings(false);
     self.textItemEditText(data.text());
 
     $("#textItemEditModal").modal("show");

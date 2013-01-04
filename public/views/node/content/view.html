@@ -62,7 +62,14 @@
         <div class="" style="padding-bottom: 0px; padding-top: 0px; color: white;">
           <h4 data-bind="htmlTimestampToDate: $data.datestamp" style="border-bottom: 1px solid white;"></h4>
           <div data-bind="foreach: $data.texts">
-            <div style="font-weight: bold; margin-bottom: 5px;"><a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()"><i class="icon-time icon-white"></i> <span data-bind="htmlTimestampToTime: $data.whenTimestamp"></span> - <span data-bind="text: $data.name"></span></a></div>
+            <div style="font-weight: bold; margin-bottom: 5px;">
+              <a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()"><i class="icon-time icon-white"></i>
+                <span data-bind="htmlTimestampToTime: $data.whenTimestamp"></span>
+                -
+                <span data-bind="text: $data.name"></span>
+              </a>
+              <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.contentModel.textItemEditOpen"><i class="icon-pencil icon-white"></i></a>
+            </div>
             <p data-bind="html: $data.text"></p>
           </div>
 
