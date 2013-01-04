@@ -2,6 +2,7 @@
 /* Includes, TODO: Sanitize case */
 var nodeStatic = require('node-static');
 var httpServer = require('http').createServer(httpRequestHandler);
+var vidStreamer = require('vid-streamer');
 var url = require('url');
 var io = require('socket.io').listen(httpServer, { log: false });
 var fs = require('fs');
@@ -99,25 +100,32 @@ function httpRequestHandler(request, response)
           return;
         }
 
-        filename = path.basename(filename);
-
-        fileServer.serveFile(configuration.mediaCachePath + filename, 200, {}, request, response);
+        request.url = "/" + path.basename(filename);
+        console.log(request.url);
+        vidStreamer(request, response);
       });
     }
     else if (requestParams.pathname === "/video")
     {
       MurrixMedia.getVideo(session, nodeManager, requestParams.query.id, function(error, filename)
       {
-        if (error)
+        try
         {
-          response.writeHead(404);
-          response.end(error);
-          return;
+          if (error)
+          {
+            response.writeHead(404);
+            response.end(error);
+            return;
+          }
+
+          request.url = "/" + path.basename(filename);
+          console.log(request.url);
+          vidStreamer(request, response);
         }
-
-        filename = path.basename(filename);
-
-        fileServer.serveFile(configuration.mediaCachePath + filename, 200, {}, request, response);
+        catch (e)
+        {
+          console.log(e.toString());
+        }
       });
     }
     else

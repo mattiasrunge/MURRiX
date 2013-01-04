@@ -8,7 +8,6 @@ var OverlayModel = function(parentModel)
 
   self.enabled = ko.observable(true);
   self.item = ko.observable(false);
-  self.itemPictureUrl = ko.observable("");
 
   self.show = ko.observable(false);
 
@@ -53,6 +52,8 @@ var OverlayModel = function(parentModel)
       return;
     }
 
+    self.videoFile("");
+
     murrix.cache.getItem(itemId, function(error, item)
     {
       if (error)
@@ -64,36 +65,27 @@ var OverlayModel = function(parentModel)
 
       self.item(item);
       self.whenUpdateTimezone();
-      self.itemPictureUrl("");
       self.initializeOverlayNodeQuery();
       self.initializeOverlayMap();
 
-      if (item.what() === "file")
-      {
-        var image = new Image();
-
-        image.onload = function()
-        {
-          self.itemPictureUrl(image.src);
-        };
-
-        image.src = "preview?id=" + self.item()._id() + "&width=1440";
-      }
+      self.videoFile('/video?id=' + self.item()._id());
     });
   });
 
-  self.timeout = null;
+  self.videoFile = ko.observable("");
 
-  $(window).on("resize", function()
-  {
-    if (self.timeout === null)
-    {
-      self.timeout = setTimeout(function()
-      {
-        self.detectFaces();
-      }, 500);
-    }
-  });
+//   self.timeout = null;
+//
+//   $(window).on("resize", function()
+//   {
+//     if (self.timeout === null)
+//     {
+//       self.timeout = setTimeout(function()
+//       {
+//         self.detectFaces();
+//       }, 500);
+//     }
+//   });
 
   self.detectFaces = function()
   {
@@ -196,6 +188,7 @@ var OverlayModel = function(parentModel)
     }
   };
 */
+
   self.carouselLeft = function()
   {
     var newItem = null;

@@ -9,7 +9,13 @@
 
         <div class="item">
           <div class="imgContainer" style="position: relative; display: inline-block;">
-            <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="attr: { src: nodeModel.overlayModel.itemPictureUrl }" src="" alt="">
+            <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
+              <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="srcItemPicture: nodeModel.overlayModel.item()._id" src="" alt="">
+            </div>
+
+            <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
+              <video class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;"  preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }" src="" alt=""></video>
+            </div>
           </div>
         </div>
 
@@ -431,7 +437,7 @@
       </table>
     </div>
 
-    <div data-bind="visible: nodeModel.overlayModel.editType() === ''">
+    <div data-bind="visible: nodeModel.overlayModel.editType() === '', if: nodeModel.node() !== false">
       <div style="padding: 10px;">
         <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
         <h3 data-bind="text: nodeModel.node().name"></h3>

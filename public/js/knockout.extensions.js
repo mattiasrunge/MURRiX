@@ -438,6 +438,39 @@ $(function()
 
 
 
+  ko.bindingHandlers.srcItemPicture = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var id = ko.utils.unwrapObservable(value);
+
+      if (!id || id === null || id === "")
+      {
+        $(element).attr("src", "http://placekitten.com/g/1400/1400"); // TODO: Set generic user icon image
+        console.log("No id given to srcItemPicture");
+        return;
+      }
+
+      $(element).attr("src", "img/120x120_spinner.gif");
+
+      var src = "/preview?id=" + id + "&width=1400";
+
+      var image = new Image();
+
+      image.onload = function()
+      {
+        $(element).attr("src", src);
+      };
+
+      image.onerror = function()
+      {
+        $(element).attr("src", "http://placekitten.com/g/1400/1400");// TODO: Set error image
+      };
+
+      image.src = src;
+    }
+  };
+
   /* Knockout src, get profile picture async */
   ko.bindingHandlers.srcNodeProfilePicture = {
     update: function(element, valueAccessor)

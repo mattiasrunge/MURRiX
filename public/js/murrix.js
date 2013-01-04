@@ -308,6 +308,51 @@ murrix.cache = new function()
 
       self.items[id].whenTimestamp(self.items[id].when.timestamp());
     });
+
+
+    self.items[id].what = self.items[id].what || {};
+    self.items[id].whatDetailed = ko.observable("unknown");
+
+    ko.dependentObservable(function()
+    {
+      var type = self.items[id].what();
+
+      if (type === "file")
+      {
+        type = "unknownFile";
+
+        if (self.items[id].exif && self.items[id].exif.MIMEType)
+        {
+          switch (self.items[id].exif.MIMEType())
+          {
+            case "image/x-canon-cr2":
+            case "image/jpeg":
+            case "image/gif":
+            case "image/tiff":
+            case "image/png":
+            case "image/bmp":
+            case "image/x-raw":
+            {
+              type = "imageFile";
+              break;
+            }
+            case "video/mpeg":
+            case "video/avi":
+            case "video/quicktime":
+            case "video/x-ms-wmv":
+            case "video/mp4":
+            case "video/3gpp":
+            case "video/x-msvideo":
+            {
+              type = "videoFile";
+              break;
+            }
+          }
+        }
+      }
+
+      self.items[id].whatDetailed(type);
+    });
   };
 
   self.addItemData = function(itemData)
