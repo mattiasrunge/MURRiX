@@ -471,6 +471,49 @@ $(function()
     }
   };
 
+  ko.bindingHandlers.srcPicture = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var params = ko.utils.unwrapObservable(value);
+
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
+
+      var id = params[0] || false;
+      var width = params[1] || 0;
+      var height = params[2] || 0;
+      var square = params[3] || 0;
+
+      if (!id || id === null || id === "")
+      {
+        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+        console.log("No id given to srcItemPicture");
+        return;
+      }
+
+      $(element).attr("src", "img/120x120_spinner.gif");
+
+      var src = "/preview?id=" + id + "&width=" + width + "&height=" + height + "&square=" + square;
+
+      var image = new Image();
+
+      image.onload = function()
+      {
+        $(element).attr("src", src);
+      };
+
+      image.onerror = function()
+      {
+        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+      };
+
+      image.src = src;
+    }
+  };
+
   /* Knockout src, get profile picture async */
   ko.bindingHandlers.srcNodeProfilePicture = {
     update: function(element, valueAccessor)
@@ -629,7 +672,7 @@ $(function()
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
-      var dateItem = moment(ko.utils.unwrapObservable(value) + "+0000", "YYYY-MM-DD HH:mm:ss Z");
+      var dateItem = moment.utc(ko.utils.unwrapObservable(value) + "+0000", "YYYY-MM-DD HH:mm:ss Z").local();
 
       if (!dateItem.date())
       {
@@ -656,7 +699,7 @@ $(function()
         return;
       }
 
-      var dateItem = moment.utc(rawValue * 1000);
+      var dateItem = moment.utc(rawValue * 1000).local();
 
       if (!dateItem.date())
       {
@@ -681,7 +724,7 @@ $(function()
         return;
       }
 
-      var dateItem = moment.utc(rawValue * 1000);
+      var dateItem = moment.utc(rawValue * 1000).local();
 
       if (!dateItem.date())
       {
@@ -706,7 +749,7 @@ $(function()
         return;
       }
 
-      var dateItem = moment.utc(rawValue * 1000);
+      var dateItem = moment.utc(rawValue * 1000).local();
 
       if (!dateItem.date())
       {

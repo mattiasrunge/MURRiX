@@ -3,7 +3,7 @@
 
     <div class="navbar navbar-inverse navbar-color">
       <div class="navbar-inner">
-        <span class="brand" style="padding-left: 35px;">Content</span>
+        <span class="brand"><i style="vertical-align: baseline;" class="icon-th icon-white"></i> Content</span>
         <ul class="nav pull-right">
           <li>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -43,18 +43,24 @@
     <div data-bind="if: nodeModel.contentModel.viewMode() === 'thumbnail'">
       <ul class="thumbnails" data-bind="foreach: nodeModel.items">
         <li class="">
-          <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
+          <a href="#" draggable="true" style="color: white;" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
             <span data-bind="if: $data.whatDetailed() === 'imageFile' || $data.whatDetailed() === 'videoFile'">
-              <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=120&amp;height=120&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
+              <img data-bind="srcPicture: [ $data._id, 120, 120, 1 ], attr: { title: $data.name }" src="img/120x120_spinner.gif" alt="">
             </span>
             <span data-bind="if: $data.whatDetailed() === 'audioFile'">
-              <div style="width: 120px; height: 120px; background-color: black;">
-                <div style="padding: 10px;" data-bind="text: $data.name"></div>
+              <div style="width: 118px; height: 118px; background-color: black; border: 1px solid whiteSmoke;">
+                <div style="padding: 10px;">
+                  <i class="icon-headphones icon-white"></i>
+                  <span data-bind="text: $data.name"></span>
+                </div>
               </div>
             </span>
             <span data-bind="if: $data.whatDetailed() === 'text'">
-              <div style="width: 120px; height: 120px; background-color: black;">
-                <div style="padding: 10px;" data-bind="text: $data.name"></div>
+              <div style="width: 118px; height: 118px; background-color: black; border: 1px solid whiteSmoke;">
+                <div style="padding: 10px;">
+                  <i class="icon-font icon-white"></i>
+                  <span data-bind="text: $data.name"></span>
+                </div>
               </div>
             </span>
           </a>
@@ -92,11 +98,40 @@
           <ul class="thumbnails" data-bind="foreach: $data.media">
             <li class="">
               <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id()">
-                <img data-bind="attr: { src: '/preview?id=' + $data._id() + '&amp;width=80&amp;height=80&amp;square=1', title: $data.name }" src="img/120x120_spinner.gif" alt="">
+                <img data-bind="srcPicture: [ $data._id, 80, 80, 1 ], attr: { title: $data.name }" src="" alt="" style="width: 80px; height: 80px;">
               </a>
             </li>
           </ul>
         </div>
+      </div>
+    </div>
+
+    <div data-bind="if: nodeModel.contentModel.viewMode() === 'list'">
+      <div class="well">
+        <table class="table table-hover">
+          <thead>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Created on</th>
+            <th>Created by</th>
+            <th>Created with</th>
+          </thead>
+          <tbody data-bind="foreach: nodeModel.items">
+            <tr>
+              <td>
+                <a style="cursor: pointer;" data-bind="text: $data.name, hrefSecondSecondary: $data._id"></a>
+              </td>
+              <td data-bind="text: $data.what"></td>
+              <td data-bind="htmlTimestampToDate: $data.whenTimestamp"></td>
+              <td>
+                <a style="cursor: pointer;" data-bind="text: $data.who().name, hrefFirst: [ 'node', $data.who()._id ]"></a>
+              </td>
+              <td>
+                <a style="cursor: pointer;" data-bind="text: $data.with().name, hrefFirst: [ 'node', $data.with()._id ]"></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 

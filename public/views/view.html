@@ -50,7 +50,9 @@
   <div class="navbar-inner">
     <div class="container-fluid">
 
-      <a class="brand" style="margin-left: -5px;" href="#" data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se', attr: { 'href' : nodeModel.node() ? '#node:' + nodeModel.node()._id() : '#' }"></a>
+      <a class="brand" style="margin-left: -5px;" href="#" data-bind="attr: { 'href' : nodeModel.node() ? '#node:' + nodeModel.node()._id() : '#' }">
+        <span data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se'"></span>
+      </a>
 
       <div class="pull-right">
 

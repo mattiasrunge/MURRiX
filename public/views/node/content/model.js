@@ -28,7 +28,7 @@ var ContentModel = function(parentModel)
     if (value !== false)
     {
       // TODO: select different modes based on type ? console.log(value.type());
-      self.viewMode("log");
+      //self.viewMode("log");
     }
   });
 
