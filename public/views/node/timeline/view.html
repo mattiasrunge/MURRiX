@@ -1,23 +1,70 @@
-<!--<div class="background-timeline" data-bind="fadeVisible: nodeModel.timelineModel.show() && nodeModel.node()">
-  <div class="background-timeline-background"></div>
-  <div class="background-timeline-content">
+<div class="main-overlay" data-bind="slideVisible: nodeModel.timelineModel.show() && nodeModel.node() !== false">
+  <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false">
 
-    <div style="position: absolute; top: 0px: left: 0px; width: 250px; height: 100px; bborder: 1px solid gray; border-width-left: 0px; background-color: white;">
-      <div style="position: absolute; top: 0px; left: 0px; right: 0px; height: 20px; padding: 5px; border-bottom: 1px solid gray; background-color: #EEE">
-        1th of January 20:34:34 UTC
-      </div>
-      <div style="position: absolute; top: 31px; left: 0px; right: 0px; bottom: 0px; padding: 5px;">
-        hej hejh jeh jejdsölkfdsf
-        dsf
-        dsf
-        dsf
-        dsf
-        dsf
+    <div class="navbar navbar-inverse navbar-color">
+      <div class="navbar-inner">
+        <span class="brand"><i style="vertical-align: baseline;" class="icon-time icon-white"></i> Timeline</span>
 
-        sdfsdfdsfds
+        <ul class="nav pull-right">
+          <li><a class="pull-right" rel="tooltip" title="Create text" href="#textItemEditModal" data-toggle="modal">Create text</a></li>
+          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+
       </div>
+    </div>
+
+    <div data-bind="foreach: nodeModel.logItems" style="margin: 10px;">
+      <div class="" style="padding-bottom: 0px; padding-top: 0px; color: white;">
+        <h4 data-bind="htmlTimestampToDate: $data.datestamp" style="border-bottom: 1px solid white;"></h4>
+
+        <div data-bind="foreach: $data.texts">
+          <div style="font-weight: bold; margin-bottom: 5px;">
+            <a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()">
+              <i class="icon-time icon-white"></i>
+              <span data-bind="htmlTimestampToTime: $data.whenTimestamp"></span>
+              -
+              <span data-bind="text: $data.name"></span>
+            </a>
+            <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.timelineModel.textItemEditOpen"><i class="icon-pencil icon-white"></i></a>
+          </div>
+          <p data-bind="html: $data.text"></p>
+        </div>
+
+        <div data-bind="foreach: $data.audio">
+          <div style="font-weight: bold; margin-bottom: 5px;">
+            <a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()">
+              <i class="icon-headphones icon-white"></i>
+              <span data-bind="text: $data.name"></span>
+            </a>
+          </div>
+        </div>
+
+        <ul class="thumbnails" data-bind="foreach: $data.media">
+          <li class="">
+            <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id()">
+              <img data-bind="srcPicture: [ $data._id, 80, 80, 1 ], attr: { title: $data.name }" src="" alt="" style="width: 80px; height: 80px;">
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
 
   </div>
-</div>-->
+  <div class="main-overlay-background"></div>
+</div>
+
+<form class="modal" id="textItemEditModal" tabindex="-1" role="dialog" aria-labelledby="textItemEditModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.timelineModel.textItemEditSubmit">
+  <div class="modal-header">
+    <button data-bind="disable: nodeModel.timelineModel.textItemEditLoading" type="textItemEditModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="textItemEditModalLabel">Text details</h3>
+  </div>
+  <div class="modal-body">
+    <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="value: nodeModel.timelineModel.textItemEditName, disable: nodeModel.timelineModel.textItemEditLoading"/>
+     <textarea placeholder="Text" name="text" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="value: nodeModel.timelineModel.textItemEditText, disable: nodeModel.timelineModel.textItemEditLoading"></textarea>
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: nodeModel.timelineModel.textItemEditErrorText() != '', text: nodeModel.timelineModel.textItemEditErrorText"></p>
+    <button data-bind="disable: nodeModel.timelineModel.textItemEditLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.timelineModel.textItemEditLoading" class="btn btn-primary" type="submit">Save</button>
+  </div>
+</form>

@@ -1,0 +1,96 @@
+<div class="main-overlay" data-bind="slideVisible: nodeModel.filesModel.show() && nodeModel.node() !== false">
+  <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false, event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: nodeModel.filesModel.dragDropHandler }">
+
+    <div class="navbar navbar-inverse navbar-color">
+      <div class="navbar-inner">
+        <span class="brand"><i style="vertical-align: baseline;" class="icon-th icon-white"></i> Files</span>
+        <ul class="nav pull-right">
+          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <ul class="thumbnails" data-bind="foreach: nodeModel.files">
+      <li class="">
+        <a href="#" draggable="true" style="color: white;" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
+          <span data-bind="if: $data.whatDetailed() === 'imageFile' || $data.whatDetailed() === 'videoFile'">
+            <img data-bind="srcPicture: [ $data._id, 250, 250, 1 ], attr: { title: $data.name }" src="" alt="">
+          </span>
+          <span data-bind="if: $data.whatDetailed() === 'audioFile'">
+            <div style="width: 248px; height: 248px; background-color: black; border: 1px solid whiteSmoke;">
+              <div style="padding: 10px;">
+                <span data-bind="text: $data.name" style="width: 100%; overflow: hidden; text-overflow: ellipsis; display: inline-block;"></span>
+              </div>
+            </div>
+          </span>
+        </a>
+      </li>
+    </ul>
+
+
+    <div data-bind="if: false">
+      <div class="well">
+        <table class="table table-hover">
+          <thead>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Created on</th>
+            <th>Created by</th>
+            <th>Created with</th>
+          </thead>
+          <tbody data-bind="foreach: nodeModel.items">
+            <tr>
+              <td>
+                <a style="cursor: pointer;" data-bind="text: $data.name, hrefSecondSecondary: $data._id"></a>
+              </td>
+              <td data-bind="text: $data.what"></td>
+              <td data-bind="htmlTimestampToDate: $data.whenTimestamp"></td>
+              <td>
+                <a style="cursor: pointer;" data-bind="text: $data.who().name, hrefFirst: [ 'node', $data.who()._id ]"></a>
+              </td>
+              <td>
+                <a style="cursor: pointer;" data-bind="text: $data.with().name, hrefFirst: [ 'node', $data.with()._id ]"></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <div class="main-overlay-background"></div>
+</div>
+
+<div class="modal" id="itemUploadModal" tabindex="-1" role="dialog" aria-labelledby="itemUploadModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-header">
+    <button data-bind="fadeVisible: nodeModel.filesModel.uploadComplete" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="itemUploadModalLabel">Upload</h3>
+  </div>
+  <div class="modal-body">
+    <table class="table table-condensed table-striped">
+      <thead>
+        <th>Filename</th>
+        <th>Filesize</th>
+        <th>Progress</th>
+      </thead>
+      <tbody>
+
+      <!-- ko foreach: nodeModel.filesModel.uploadFiles -->
+        <tr>
+          <td data-bind="text: $data.name"></td>
+          <td data-bind="htmlSize: $data.size"></td>
+          <td class="progress" style="width: 300px" data-bind="css: { 'progress-success': $data.progress() === 100 && !$data.failed(), 'progress-striped': $data.progress() !== 100 && !$data.failed(), 'progress-danger': $data.failed(), active: $data.progress() !== 100 && !$data.failed() }">
+            <div class="bar" data-bind="style: { width: $data.progress() + '%' }, text: $data.statusText() === '' ? $data.progress() + '%' : $data.statusText()" style="width: 0%;"></div>
+          </td>
+        </tr>
+      <!-- /ko -->
+
+      </tbody>
+    </table>
+
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: nodeModel.filesModel.uploadErrorText() != '', text: nodeModel.filesModel.uploadErrorText"></p>
+    <button data-bind="enable: nodeModel.filesModel.uploadComplete" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>

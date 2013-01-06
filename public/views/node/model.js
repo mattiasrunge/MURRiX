@@ -129,6 +129,23 @@ var NodeModel = function(parentModel)
     callback(null);
   };
 
+  self.files = ko.computed(function()
+  {
+    var results = [];
+
+    for (var n = 0; n < self.items().length; n++)
+    {
+      var item = self.items()[n];
+
+      if (item.what() === "file")
+      {
+        results.push(item);
+      }
+    }
+
+    return results;
+  });
+
   self.logItems = ko.computed(function()
   {
     var results = {};
@@ -630,14 +647,12 @@ var NodeModel = function(parentModel)
 
   self.dragEnter = function(element, event)
   {
-    console.log("enter");
     self.showDrop(true);
     return true;
   };
 
   self.dragLeave = function(element, event)
   {
-    console.log("leave");
     self.showDrop(false);
     return true;
   };
@@ -681,7 +696,7 @@ var NodeModel = function(parentModel)
 
 
   /* Define all sub views */
-  self.contentModel = new ContentModel(self);
+  self.filesModel = new FilesModel(self);
   self.aboutModel = new AboutModel(self);
   self.relationsModel = new RelationsModel(self);
   self.commentsModel = new CommentsModel(self);

@@ -6,98 +6,96 @@ var TimelineModel = function(parentModel)
   self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
   parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
-  self.visible = ko.observable(false);
-  self.show = ko.observable(true);
-  self.showButton = ko.observable(true);
+  self.show = ko.observable(false);
+  self.enabled = ko.observable(true);
 
   parentModel.path().primary.subscribe(function(value)
   {
-    if (self.show() !== (value.action === "" && self.visible()))
+    if (self.show() !== (value.action === "timeline"))
     {
-      self.show(value.action === "" && self.visible());
-    }
-
-    if (self.showButton() !== (value.action === ""))
-    {
-      self.showButton(value.action === "");
+      self.show(value.action === "timeline");
     }
   });
 
-  self.visible.subscribe(function(value)
+
+  /* Text item stuff */
+  self.textItemEditLoading = ko.observable(false);
+  self.textItemEditErrorText = ko.observable("");
+  self.textItemEditId = ko.observable(false);
+  self.textItemEditName = ko.observable("");
+  self.textItemEditText = ko.observable("");
+
+  self.textItemEditSubmit = function(form)
   {
-    if (self.show() !== (parentModel.path().primary().action === "" && self.visible()))
+    var itemData = {};
+
+    if (self.textItemEditId() !== false)
     {
-      self.show(parentModel.path().primary().action === "" && self.visible());
-    }
-  });
-/*
-  self.show.subscribe(function(value)
-  {
-    if (value)
-    {
-      setTimeout(function()
+      murrix.cache.getItem(self.textItemEditId(), function(error, item)
       {
-        self.timeline.redraw();
-        self.timeline.setVisibleChartRangeAuto();
-      }, 500);
+        itemData = ko.mapping.toJS(item);
+
+        itemData.text = self.textItemEditText();
+        itemData.name = self.textItemEditName();
+
+        self.textItemEditSave(itemData);
+      });
+
+      return;
     }
-  });*/
 
-  /*self.dataList = [];
-  self.timeline = new links.Timeline($(".background-timeline-content").get(0));
+    itemData._parents = [ parentModel.node()._id() ];
+    itemData.showing = [ { _id: parentModel.node()._id() } ];
+    itemData.what = "text";
+    itemData.when = { timestamp: false, source: false };
+    itemData.text = self.textItemEditText();
+    itemData.name = self.textItemEditName();
 
-  parentModel.items.subscribe(function(value)
+    self.textItemEditSave(itemData);
+  };
+
+  self.textItemEditSave = function(newItemData)
   {
-    self.dataList = [];
+    self.textItemEditLoading(true);
+    self.textItemEditErrorText("");
 
-    for (var n = 0; n < value.length; n++)
+    murrix.server.emit("saveItem", newItemData, function(error, itemData)
     {
-      if (typeof value[n].when === "object")
-      {
-        var dataItem = {};
-        dataItem.start = new Date(value[n].when.timestamp() * 1000);
-        dataItem.content = value[n].name();
-        //dataItem.end;
+      self.textItemEditLoading(false);
 
-        self.dataList.push(dataItem);
+      if (error)
+      {
+        self.textItemEditErrorText(error);
+        return;
       }
-    }
 
-    self.timeline.draw(self.dataList, {
-      width:    '100%',
-      height:   'auto',
-      editable: true,   // enable dragging and editing events
-      style:    'box'
+      console.log("Saved item!");
+      var item = murrix.cache.addItemData(itemData);
+
+      if (!newItemData._id)
+      {
+        // TODO: this may be a hack...
+        murrix.model.nodeModel.items.push(item);
+      }
+
+      self.textItemEditId(false);
+      self.textItemEditName("");
+      self.textItemEditText("");
+
+      $(".modal").modal('hide');
     });
+  };
 
-    self.timeline.setVisibleChartRangeAuto();
-
-
-  });
-
-
-
-
-//
-//
-//
-//   links.events.addListener(self.timeline, 'rangechanged', function(properties)
-//   {
-//     console.log('rangechanged ' + properties.start + ' - ' + properties.end);
-//   });
-//
-//   // Draw our timeline with the created data and options
-  self.timeline.draw(self.dataList, {
-    width:    '100%',
-    height:   'auto',
-    editable: true,   // enable dragging and editing events
-    style:    'box'
-  });
-
-  self.toggleTimeline = function()
+  self.textItemEditOpen = function(data)
   {
-    self.visible(!self.visible());
-  };*/
+    self.textItemEditId(data._id());
+    self.textItemEditName(data.name());
+//     self.textItemEditDatetime(moment(data.whenTimestamp()).format("YYYY-MM-dd HH:mm:ss"));
+//     self.textItemEditTimezone(0);
+//     self.textItemEditDaylightSavings(false);
+    self.textItemEditText(data.text());
+
+    $("#textItemEditModal").modal("show");
+  };
+
 };
-
-

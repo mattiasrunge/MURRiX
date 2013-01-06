@@ -22,9 +22,15 @@
         </a>
       </li>
 
-      <li data-bind="fadeVisible: nodeModel.contentModel.enabled, css: { 'active': nodeModel.contentModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefSecondPrimary: 'content'">
-          <i class="icon-th"></i> Content <span data-bind="fadeVisible: nodeModel.items().length > 0, text: nodeModel.items().length" class="badge pull-right"></span>
+      <li data-bind="fadeVisible: nodeModel.filesModel.enabled, css: { 'active': nodeModel.filesModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefSecondPrimary: 'files'">
+          <i class="icon-th"></i> Files <span data-bind="fadeVisible: nodeModel.files().length > 0, text: nodeModel.files().length" class="badge pull-right"></span>
+        </a>
+      </li>
+
+      <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefSecondPrimary: 'timeline'">
+          <i class="icon-time"></i> Timeline <span data-bind="fadeVisible: nodeModel.items().length > 0, text: nodeModel.items().length" class="badge pull-right"></span>
         </a>
       </li>
 
