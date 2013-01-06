@@ -46,7 +46,14 @@ murrix.model = function()
 
       murrix.cache.addNodeData(nodeData);
 
-      document.location.hash = "node:" + nodeData._id;
+      var newPath = "node:" + nodeData._id;
+
+      if (murrix.model.path().secondary() !== "")
+      {
+        newPath += "/" + murrix.model.path().secondary();
+      }
+
+      document.location.hash = newPath;
     });
   };
 

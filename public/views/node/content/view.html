@@ -45,21 +45,19 @@
         <li class="">
           <a href="#" draggable="true" style="color: white;" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
             <span data-bind="if: $data.whatDetailed() === 'imageFile' || $data.whatDetailed() === 'videoFile'">
-              <img data-bind="srcPicture: [ $data._id, 120, 120, 1 ], attr: { title: $data.name }" src="img/120x120_spinner.gif" alt="">
+              <img data-bind="srcPicture: [ $data._id, 250, 250, 1 ], attr: { title: $data.name }" src="" alt="">
             </span>
             <span data-bind="if: $data.whatDetailed() === 'audioFile'">
-              <div style="width: 118px; height: 118px; background-color: black; border: 1px solid whiteSmoke;">
+              <div style="width: 248px; height: 248px; background-color: black; border: 1px solid whiteSmoke;">
                 <div style="padding: 10px;">
-                  <i class="icon-headphones icon-white"></i>
-                  <span data-bind="text: $data.name"></span>
+                  <span data-bind="text: $data.name" style="width: 100%; overflow: hidden; text-overflow: ellipsis; display: inline-block;"></span>
                 </div>
               </div>
             </span>
             <span data-bind="if: $data.whatDetailed() === 'text'">
-              <div style="width: 118px; height: 118px; background-color: black; border: 1px solid whiteSmoke;">
+              <div style="width: 248px; height: 248px; background-color: black; border: 1px solid whiteSmoke;">
                 <div style="padding: 10px;">
-                  <i class="icon-font icon-white"></i>
-                  <span data-bind="text: $data.name"></span>
+                  <span data-bind="text: $data.name" style="width: 100%; overflow: hidden; text-overflow: ellipsis; display: inline-block;"></span>
                 </div>
               </div>
             </span>

@@ -189,58 +189,62 @@ var OverlayModel = function(parentModel)
   };
 */
 
-  self.carouselLeft = function()
+  self.itemIndex = ko.computed(function()
   {
-    var newItem = null;
-
-    self.showingId(false);
-    self.showingItemOut();
+    var index = -1;
 
     for (var n = 0; n < parentModel.items().length; n++)
     {
       if (parentModel.items()[n] === self.item())
       {
-        n--;
-
-        if (n < 0)
-        {
-          n = parentModel.items().length - 1;
-        }
-
-        newItem = parentModel.items()[n];
-
+        index = n;
         break;
       }
     }
 
-    document.location.hash = murrix.createPath(1, null, newItem._id());
+    return index;
+  });
+
+  self.carouselLeft = function()
+  {
+    self.showingData(false);
+    self.showingItemOut();
+
+    if (self.itemIndex() === -1)
+    {
+      console.log("Invalid index!");
+      return;
+    }
+
+    var newIndex = self.itemIndex() - 1;
+
+    if (newIndex < 0)
+    {
+      newIndex = parentModel.items().length - 1;
+    }
+
+    document.location.hash = murrix.createPath(1, null, parentModel.items()[newIndex]._id());
   };
 
   self.carouselRight = function()
   {
-    var newItem = null;
-
-    self.showingId(false);
+    self.showingData(false);
     self.showingItemOut();
 
-    for (var n = 0; n < parentModel.items().length; n++)
+    if (self.itemIndex() === -1)
     {
-      if (parentModel.items()[n] === self.item())
-      {
-        n++;
-
-        if (n >= parentModel.items().length)
-        {
-          n = 0;
-        }
-
-        newItem = parentModel.items()[n];
-
-        break;
-      }
+      console.log("Invalid index!");
+      return;
     }
 
-    document.location.hash = murrix.createPath(1, null, newItem._id());
+    var newIndex = self.itemIndex() + 1;
+
+    if (newIndex >= parentModel.items().length)
+    {
+      newIndex = 0;
+    }
+
+    document.location.hash = murrix.createPath(1, null, parentModel.items()[newIndex]._id());
   };
 
   self.commentText = ko.observable("");
@@ -360,11 +364,11 @@ var OverlayModel = function(parentModel)
 //     }
   };
 
-  self.showingId = ko.observable(false);
+  self.showingData = ko.observable(false);
 
   self.showingItemOver = function(showingItem)
   {
-    if (self.showingId() !== false)
+    if (self.showingData() !== false)
     {
       return;
     }
@@ -416,12 +420,17 @@ var OverlayModel = function(parentModel)
       self.showingTimer = null;
     }
 
+    if (self.showingData() !== false)
+    {
+      return;
+    }
+
     self.showingTimer = setTimeout(function() { self.showingUnmark(); }, 300);
   };
 
   self.showingUnmark = function()
   {
-    if (self.showingId() !== false)
+    if (self.showingData() !== false)
     {
       return;
     }
@@ -433,7 +442,7 @@ var OverlayModel = function(parentModel)
 
   self.showingonSelectEnd = function(img, selection)
   {
-    var showingItem = { _id: self.showingId() };
+    var showingItem = { _id: self.showingData()._id() };
 
     if (selection.width > 0 && selection.height > 0)
     {
@@ -450,17 +459,22 @@ var OverlayModel = function(parentModel)
     self.showingUpdate(showingItem, showingItem);
   };
 
+  self.imageRemoved = function(elements)
+  {
+    console.log("imageRemoved", elements);
+  };
+
   self.showingItemClicked = function(data)
   {
     $(".imgContainer").imgAreaSelect({ "remove" : true });
 
-    if (self.showingId() === data._id())
+    if (self.showingData() !== false && self.showingData()._id() === data._id())
     {
-      self.showingId(false);
+      self.showingData(false);
       return;
     }
 
-    self.showingId(data._id());
+    self.showingData(data);
 
     var options = {
       minWidth      : 32,
@@ -650,8 +664,10 @@ var OverlayModel = function(parentModel)
 
   self.editFinishClicked = function()
   {
-    self.showingId(false);
+    self.showingData(false);
     self.showingItemOut();
+
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
 
     self.editType("");
   };
@@ -907,7 +923,7 @@ var OverlayModel = function(parentModel)
       itemData.showing.push(newShowingItem);
     }
 
-    self.saveItem(itemData);
+    self.saveItem(itemData, true);
   };
 
   self.whoRemove = function()
@@ -988,7 +1004,7 @@ var OverlayModel = function(parentModel)
     self.saveItem(itemData);
   };
 
-  self.saveItem = function(itemData)
+  self.saveItem = function(itemData, noreload)
   {
     self.editLoading(true);
     self.editErrorText("");
@@ -1003,7 +1019,13 @@ var OverlayModel = function(parentModel)
         return;
       }
 
-      self.item(murrix.cache.addItemData(itemData));
+      var item = murrix.cache.addItemData(itemData);
+
+      if (!noreload)
+      {
+        self.item(item);
+      }
+
       self.initializeOverlayNodeQuery();
       self.initializeOverlayMap();
       self.whenUpdateTimezone();

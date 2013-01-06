@@ -51,6 +51,13 @@
     <div class="container-fluid">
 
       <a class="brand" style="margin-left: -5px;" href="#" data-bind="attr: { 'href' : nodeModel.node() ? '#node:' + nodeModel.node()._id() : '#' }">
+        <span data-bind="if: nodeModel.node() !== false">
+          <i style="vertical-align: baseline;" class="icon-book icon-white" data-bind="visible: nodeModel.node().type() === 'album'"></i>
+          <i style="vertical-align: baseline;" class="icon-user icon-white" data-bind="visible: nodeModel.node().type() === 'person'"></i>
+          <i style="vertical-align: baseline;" class="icon-camera icon-white" data-bind="visible: nodeModel.node().type() === 'camera'"></i>
+          <i style="vertical-align: baseline;" class="icon-road icon-white" data-bind="visible: nodeModel.node().type() === 'vehicle'"></i>
+          <i style="vertical-align: baseline;" class="icon-flag icon-white" data-bind="visible: nodeModel.node().type() === 'location'"></i>
+        </span>
         <span data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se'"></span>
       </a>
 
