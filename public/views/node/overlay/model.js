@@ -223,6 +223,8 @@ var OverlayModel = function(parentModel)
       newIndex = parentModel.items().length - 1;
     }
 
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+
     document.location.hash = murrix.createPath(1, null, parentModel.items()[newIndex]._id());
   };
 
@@ -243,6 +245,8 @@ var OverlayModel = function(parentModel)
     {
       newIndex = 0;
     }
+
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
 
     document.location.hash = murrix.createPath(1, null, parentModel.items()[newIndex]._id());
   };
@@ -897,7 +901,9 @@ var OverlayModel = function(parentModel)
 
   self.showingRemove = function(showingItem)
   {
-    self.showingItemOut();
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+    self.showingData(false);
+
     self.showingUpdate(showingItem, null);
   };
 

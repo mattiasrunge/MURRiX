@@ -3,14 +3,14 @@
 </script>
 
 
-<script type="text/html" id="overlayNavigationArrowsTemplate">
-  <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; width: 75px;">
-    <a class="carousel-control left" href="#" data-bind="click: carouselLeft, clickKey: 'left'">&lsaquo;</a>
+<div data-bind="fadeVisible: nodeModel.overlayModel.show">
+  <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; width: 75px; z-index: 2060;">
+    <a class="carousel-control left" href="#" data-bind="click: nodeModel.overlayModel.carouselLeft, clickKey: 'left'">&lsaquo;</a>
   </div>
-  <div style="position: fixed; top: 0px; bottom: 0px; right: 350px; width: 75px;">
-    <a class="carousel-control right" href="#" data-bind="click: carouselRight, clickKey: 'right'">&rsaquo;</a>
+  <div style="position: fixed; top: 0px; bottom: 0px; right: 350px; width: 75px; z-index: 2060;">
+    <a class="carousel-control right" href="#" data-bind="click: nodeModel.overlayModel.carouselRight, clickKey: 'right'">&rsaquo;</a>
   </div>
-</script>
+</div>
 
 
 <div class="modal-backdrop" style="opacity: 1; background-color: whiteSmoke;" data-bind="fadeVisible: nodeModel.overlayModel.show"></div>
@@ -20,7 +20,6 @@
   <!-- ko if: nodeModel.overlayModel.item() !== false -->
 
     <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;" data-bind="if: nodeModel.overlayModel.item().what() === 'file'">
-
         <div class="imgContainer" style="position: relative; display: inline-block;">
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
             <div data-bind="template: { name: 'imageWithMarkingsTemplate', data: nodeModel.overlayModel, afterRender: nodeModel.overlayModel.imageRemoved }"></div>
@@ -37,18 +36,13 @@
             <audio style="width: 100%;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }" src="" alt=""></audio>
           </div>
         </div>
-
-      <div data-bind="template: { name: 'overlayNavigationArrowsTemplate', data: nodeModel.overlayModel }"></div>
     </div>
 
     <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center;" data-bind="if: nodeModel.overlayModel.item().what() === 'text'">
-
       <div style="padding: 20px 100px 20px 100px; text-align: left; color: white">
         <h3 style="text-align: center;" data-bind="text: nodeModel.overlayModel.item().name"></h3>
         <p data-bind="html: nodeModel.overlayModel.item().text"></p>
       </div>
-
-      <div data-bind="template: { name: 'overlayNavigationArrowsTemplate', data: nodeModel.overlayModel }"></div>
     </div>
 
 
