@@ -18,6 +18,25 @@ $(function()
   };
 
 
+  ko.bindingHandlers.clickKey = {
+    update: function(element, valueAccessor)
+    {
+      var value = ko.utils.unwrapObservable(valueAccessor());
+
+      $(document).bind("keydown", value, function()
+      {
+        if ($(element).is(":visible"))
+        {
+          $(element).trigger("click");
+        }
+        else
+        {
+          $(document).unbind("keydown", this);
+        }
+      });
+    }
+  };
+
   /* Knockout visibility changer (fading) handler  */
   ko.bindingHandlers.fadeVisible = {
     init: function(element, valueAccessor)

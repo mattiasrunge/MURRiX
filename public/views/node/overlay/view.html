@@ -5,10 +5,10 @@
 
 <script type="text/html" id="overlayNavigationArrowsTemplate">
   <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; width: 75px;">
-    <a class="carousel-control left" href="#" data-bind="click: carouselLeft">&lsaquo;</a>
+    <a class="carousel-control left" href="#" data-bind="click: carouselLeft, clickKey: 'left'">&lsaquo;</a>
   </div>
   <div style="position: fixed; top: 0px; bottom: 0px; right: 350px; width: 75px;">
-    <a class="carousel-control right" href="#" data-bind="click: carouselRight">&rsaquo;</a>
+    <a class="carousel-control right" href="#" data-bind="click: carouselRight, clickKey: 'right'">&rsaquo;</a>
   </div>
 </script>
 
@@ -448,7 +448,7 @@
 
       <div data-bind="visible: nodeModel.overlayModel.editType() === '', if: nodeModel.node() !== false">
         <div style="padding: 10px;">
-          <a class="pull-right close" data-bind="hrefSecondSecondary: ''" style="font-size: 30px">×</a>
+          <a class="pull-right close" data-bind="hrefSecondSecondary: '', clickKey: 'esc'" style="font-size: 30px">×</a>
           <h3 data-bind="text: nodeModel.node().name"></h3>
 
           <div style="margin-bottom: 10px;">
@@ -790,7 +790,7 @@
                   </div>
                   <blockquote class="span10">
                     <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
-                      <textarea style="width: 230px; height: 60px;" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.overlayModel.commentLoading, value: nodeModel.overlayModel.commentText"></textarea>
+                      <textarea style="width: 230px; height: 60px;" placeholder="Write a comment..." data-bind="disable: nodeModel.overlayModel.commentLoading, value: nodeModel.overlayModel.commentText"></textarea>
                       <span class="text-error pull-left" data-bind="disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentErrorText"></span>
                       <button type="submit" class="btn btn-mini btn-primary pull-right">Comment</button>
                     </form>
