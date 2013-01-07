@@ -78,6 +78,7 @@ murrix.model = function()
   self.searchModel = new SearchModel(self);
   self.welcomeModel = new WelcomeModel(self);
   self.newsModel = new NewsModel(self);
+  self.browseModel = new BrowseModel(self);
   self.mapModel = new MapModel(self);
 
 

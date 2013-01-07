@@ -111,6 +111,21 @@ $(function()
     }
   };
 
+  ko.bindingHandlers.yearSlider = {
+    update: function(element, valueAccessor)
+    {
+      $(element).slider({
+        value: ko.utils.unwrapObservable(valueAccessor()[0]),
+        min: 1600,
+        max: new Date().getFullYear(),
+        step: 1,
+        slide: function(event, ui) { valueAccessor()[0](ui.value); },
+        stop: function(event, ui) { valueAccessor()[0](ui.value); valueAccessor()[1](ui.value, true); }
+      });
+    }
+  };
+
+
   ko.bindingHandlers.htmlPrintWhere = {
     update: function(element, valueAccessor)
     {
@@ -517,21 +532,10 @@ $(function()
       $(element).height(height);
       $(element).attr("src", "img/120x120_spinner.gif");
 
-      var src = "/preview?id=" + id + "&width=" + width + "&height=" + height + "&square=" + square;
+      var path = "/preview?id=" + id + "&width=" + width + "&height=" + height + "&square=" + square;
+      var failurePath = "http://placekitten.com/g/" + width + "/" + height;
 
-      var image = new Image();
-
-      image.onload = function()
-      {
-        $(element).attr("src", src);
-      };
-
-      image.onerror = function()
-      {
-        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
-      };
-
-      image.src = src;
+      murrix.cache.loadImage($(element), path, failurePath);
     }
   };
 

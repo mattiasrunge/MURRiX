@@ -252,8 +252,9 @@ var NodeModel = function(parentModel)
     }
 
     self.loadingNode(true);
+    murrix.cache.clearItems();
 
-    murrix.cache.getNodes([ nodeId ], function(error, nodeList)
+    murrix.cache.getNode(nodeId, function(error, node)
     {
       if (error)
       {
@@ -264,15 +265,7 @@ var NodeModel = function(parentModel)
         return;
       }
 
-      if (nodeList.length === 0 || !nodeList[nodeId])
-      {
-        console.log("NodeModel: No results returned, you probably do not have rights to this node!");
-        self.node(false);
-        self.loadingNode(false);
-        return;
-      }
-
-      self.node(nodeList[nodeId]);
+      self.node(node);
       self.loadingNode(false);
     });
   };

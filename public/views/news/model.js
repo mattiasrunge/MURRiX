@@ -20,7 +20,7 @@ var NewsModel = function(parentModel)
   self.show.subscribe(function(value)
   {
     self.nodes.removeAll();
-  
+
     if (value)
     {
       murrix.server.emit("find", { query: { }, options: { collection: "nodes", limit: 25, sort: "modified.timestamp", sortDirection: "desc" } }, function(error, nodeDataList)
@@ -29,6 +29,7 @@ var NewsModel = function(parentModel)
         {
           console.log(error);
           callback([]);
+          return;
         }
 
         var nodeList = [];

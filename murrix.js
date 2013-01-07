@@ -54,6 +54,16 @@ mongoDb.open(function(error, mongoDb)
 httpServer.listen(configuration.httpPort);
 
 
+
+var videoStreamer = vidStreamer.settings({
+  "mode": "production",
+  "forceDownload": false,
+  "random": false,
+  "rootFolder": configuration.mediaCachePath,
+  "rootPath": "",
+  "server": "MURRiX"
+});
+
 function httpRequestHandler(request, response)
 {
   session.start(request, response, function(error, session)
@@ -94,7 +104,7 @@ function httpRequestHandler(request, response)
 
         request.url = "/" + path.basename(filename);
         console.log(request.url);
-        vidStreamer(request, response);
+        videoStreamer(request, response);
       });
     }
     else if (requestParams.pathname === "/video")
@@ -112,7 +122,7 @@ function httpRequestHandler(request, response)
 
           request.url = "/" + path.basename(filename);
           console.log(request.url);
-          vidStreamer(request, response);
+          videoStreamer(request, response);
         }
         catch (e)
         {

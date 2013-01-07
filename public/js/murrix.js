@@ -5,17 +5,98 @@ murrix.cache = new function()
 {
   var self = this;
 
+  self.nodesCount = 0;
   self.nodes = {};
+  self.itemsCount = 0;
   self.items = {};
+
   self.groups = {};
   self.users = {};
 
+  self.images = [];
+  self.imageTimer = setInterval(function() { self.imageTimeout(); }, 1000);
+
   self.clear = function()
   {
+    self.nodesCount = 0;
     self.nodes = {};
+    self.itemsCount = 0;
     self.items = {};
     self.groups = {};
     self.users = {};
+    self.images = [];
+  };
+
+  self.clearItems = function()
+  {
+    self.itemsCount = 0;
+    self.items = {};
+  }
+
+  self.loadImage = function(element, path, failurePath)
+  {
+    var obj = {};
+
+    obj.element = element;
+    obj.width = element.width();
+    obj.height = element.height();
+    obj.load = function()
+    {
+      var image = new Image();
+
+      image.onload = function()
+      {
+        element.attr("src", path);
+      };
+
+      image.onerror = function()
+      {
+        element.attr("src", failurePath);
+      };
+
+      image.src = path;
+      console.log("Start loading " + path);
+    };
+
+    self.images.push(obj);
+  };
+
+  self.imageTimeout = function()
+  {
+    var windowWidth = $(window).width();
+    var windowHeight = $(window).height();
+    var images = [];
+
+    var count = 0;
+
+    for (var n = 0; n < self.images.length; n++)
+    {
+      if (self.images[n].element.closest('html').length === 0)
+      {
+        continue;
+      }
+
+      if (count < 10 && self.images[n].element.is(":visible"))
+      {
+        var offset = self.images[n].element.offset();
+
+        if (offset.left + self.images[n].width >= 0 && offset.left <= windowWidth && offset.top + self.images[n].height >= 0 && offset.top <= windowHeight)
+        {
+          self.images[n].load();
+          count++;
+        }
+        else
+        {
+          images.push(self.images[n]);
+        }
+      }
+      else
+      {
+        images.push(self.images[n]);
+      }
+    }
+
+    self.images = images;
   };
 
   self.addNodeData = function(nodeData)
@@ -30,6 +111,7 @@ murrix.cache = new function()
       console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
 
       self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData);
+      self.nodesCount++;
 
       if (self.nodes[nodeData._id].comments)
       {
@@ -374,6 +456,7 @@ murrix.cache = new function()
       console.log("Could not find mapped index, item is not cached, id " + itemData._id);
 
       self.items[itemData._id] = ko.mapping.fromJS(itemData);
+      self.itemsCount++;
 
       self.extendItem(itemData._id);
     }
