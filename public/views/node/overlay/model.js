@@ -470,6 +470,11 @@ var OverlayModel = function(parentModel)
 
   self.showingItemClicked = function(data)
   {
+    if (self.item() === false || self.item().whatDetailed() !== "imageFile")
+    {
+      return;
+    }
+
     $(".imgContainer").imgAreaSelect({ "remove" : true });
 
     if (self.showingData() !== false && self.showingData()._id() === data._id())

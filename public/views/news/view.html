@@ -3,32 +3,14 @@
 
     <div class="navbar navbar-color navbar-inverse">
       <div class="navbar-inner">
-        <span class="brand" style="padding-left: 35px;">News</span>
+        <span class="brand"><i style="vertical-align: baseline;" class="icon-bullhorn icon-white"></i> News</span>
         <ul class="nav pull-right">
           <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
         </ul>
       </div>
     </div>
 
-    <div class="well" style="padding-bottom: 0px;">
-      <table class="table table-striped table-hover">
-        <tbody data-bind="foreach: newsModel.nodes">
-          <tr>
-            <td class="media">
-              <a class="pull-left" href="#" data-bind="hrefFirst: ['node', $data._id()]">
-                <img class="media-object img-polaroid" src="" alt="" style="width: 123px; height: 123px;" data-bind="srcNodeProfilePicture: [ $data._id(), 123, 123, 1 ]"/>
-              </a>
-              <div class="media-body">
-                <blockquote style="margin-bottom: 0px; min-height: 133px;">
-                  <h4 class="media-heading"><a src="#" style="cursor: pointer;" data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a></h4>
-                  <small><span data-bind="htmlTimeAgo: $data.added.timestamp()"></span> by <a data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></a></small>
-                </blockquote>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: newsModel.nodes }"></div>
 
   </div>
   <div class="main-overlay-background"></div>

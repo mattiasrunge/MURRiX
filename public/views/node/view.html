@@ -1,3 +1,32 @@
+<script type="text/html" id="nodeBoxTemplate">
+  <div class="media pull-left nodeBox" style="border: 1px solid black; width: 350px; background-color: whiteSmoke; margin: 0px 20px 20px 0px;">
+    <a class="pull-left" href="#" data-bind="hrefFirst: ['node', $data._id()]">
+      <img style="width: 80px; height: 80px;" class="media-object" data-bind="srcNodeProfilePicture: [ $data._id(), 80, 80, 1 ]">
+    </a>
+    <div class="media-body" style="margin-top: 5px; padding: 5px;">
+      <span class="pull-left">
+        <i style="vertical-align: center;" class="icon-book" data-bind="visible: $data.type() === 'album'"></i>
+        <i style="vertical-align: center;" class="icon-user" data-bind="visible: $data.type() === 'person'"></i>
+        <i style="vertical-align: center;" class="icon-camera" data-bind="visible: $data.type() === 'camera'"></i>
+        <i style="vertical-align: center;" class="icon-road" data-bind="visible: $data.type() === 'vehicle'"></i>
+        <i style="vertical-align: center;" class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
+      </span>
+      <h6 class="media-heading"><a href="#" style="cursor: pointer;" data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a></h6>
+      <div class="muted" style="font-size: 10px;">
+        -
+        <span data-bind="visible: $data.added.timestamp() === $data.modified.timestamp()">
+          added
+        </span>
+        <span data-bind="visible: $data.added.timestamp() !== $data.modified.timestamp()">
+          last modified
+        </span>
+        <span data-bind="htmlTimeAgo: $data.modified.timestamp()"></span> by <span data-bind="textUserAttribute: [ $data.modified._by(), 'name' ]"></span></div>
+<!--                       <i data-bind="visible: $data.hasAdminAccess()" title="Administration access" class="icon-edit pull-right"></i>-->
+<!--               <i data-bind="visible: !$data.hasAdminAccess()" title="Read access" class="icon-eye-open pull-right"></i>-->
+    </div>
+  </div>
+</script>
+
 <div class="sidebar-nav" data-bind="slideVisible: nodeModel.show() && nodeModel.node() && !nodeModel.loadingNode(), if: nodeModel.node() !== false">
 
   <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">

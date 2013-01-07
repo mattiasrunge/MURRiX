@@ -16,19 +16,17 @@ var RelationsModel = function(parentModel)
       self.show(value.action === "relations");
     }
   });
-  
-  self.entries = ko.observableArray([ ]);
 
-  parentModel.node.subscribe(function(node)
-  {
-    self.entries.removeAll();
-
-    if (!node)
-    {
-      console.log("Node is false, not looking for comments!");
-      return;
-    }
-
-    console.log("TODO: Find relations");
-  });
+//   self.entries = ko.observableArray([ ]);
+//
+//   parentModel.node.subscribe(function(node)
+//   {
+//     self.entries.removeAll();
+//
+//     if (!node)
+//     {
+//       console.log("Node is false, not looking for comments!");
+//       return;
+//     }
+//   });
 };

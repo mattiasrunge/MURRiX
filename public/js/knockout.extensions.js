@@ -116,7 +116,7 @@ $(function()
     {
       $(element).slider({
         value: ko.utils.unwrapObservable(valueAccessor()[0]),
-        min: 1600,
+        min: 1800,
         max: new Date().getFullYear(),
         step: 1,
         slide: function(event, ui) { valueAccessor()[0](ui.value); },
@@ -505,6 +505,32 @@ $(function()
     }
   };
 
+  ko.bindingHandlers.posterVideo = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var params = ko.utils.unwrapObservable(value);
+
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
+
+      var id = params[0] || false;
+      var width = params[1] || 0;
+      var height = params[2] || 0;
+
+      if (!id || id === null || id === "")
+      {
+        $(element).attr("poster", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+        console.log("No id given to posterVideo");
+        return;
+      }
+
+      $(element).attr("poster", "/preview?id=" + id + "&width=" + width + "&height=" + height);
+    }
+  };
+
   ko.bindingHandlers.srcPicture = {
     update: function(element, valueAccessor)
     {
@@ -524,7 +550,7 @@ $(function()
       if (!id || id === null || id === "")
       {
         $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
-        console.log("No id given to srcItemPicture");
+        console.log("No id given to srcPicture");
         return;
       }
 

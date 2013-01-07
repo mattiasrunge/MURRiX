@@ -383,6 +383,17 @@ io.sockets.on("connection", function(client)
     nodeManager.findRandom(client.handshake.session, data, callback);
   });
 
+  client.on("findNodesByYear", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for nodeManager.findNodesByYear!");
+      return;
+    }
+
+    nodeManager.findNodesByYear(client.handshake.session, data, callback);
+  });
+
   client.on("find", function(data, callback)
   {
     if (!callback)

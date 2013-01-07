@@ -84,11 +84,11 @@ var AdminModel = function(parentModel)
       console.log("AdminModel: Found " + count + " users!");
     });
   };
-  
+
   self._loadGroups = function()
   {
     self.groups.removeAll();
-  
+
     murrix.server.emit("findGroups", {}, function(error, groupDataList)
     {
       if (error)
@@ -134,7 +134,7 @@ var AdminModel = function(parentModel)
         filtered.push(self.users()[n]);
       }
     }
-  
+
     return filtered;
   };
 
@@ -159,7 +159,7 @@ var AdminModel = function(parentModel)
       self._loadUsers();
     });
   };
-  
+
   self.groupDropUserHandler = function(element, event)
   {
     var id = event.originalEvent.dataTransfer.getData("id");
@@ -235,7 +235,7 @@ var AdminModel = function(parentModel)
       self._loadGroups();
     });
   };
-  
+
   self.groupSaveSubmit = function()
   {
     var groupData = {};
@@ -244,7 +244,7 @@ var AdminModel = function(parentModel)
     {
       groupData._id = self.groupSaveId();
     }
-    
+
     groupData.name        = self.groupSaveName();
     groupData.description = self.groupSaveDescription();
 
@@ -333,7 +333,7 @@ var AdminModel = function(parentModel)
   {
     self.userSavePerson(false);
   };
-  
+
   self.userEditClicked = function(element)
   {
     self.userSaveId(element._id());
@@ -356,7 +356,7 @@ var AdminModel = function(parentModel)
       self._loadUsers();
     });
   };
-  
+
   self.userSaveSubmit = function()
   {
     var userData = {};
@@ -497,7 +497,9 @@ var AdminModel = function(parentModel)
       $.cookie("userinfo", null, { path : "/" });
 
       $(".dropdown.open .dropdown-toggle").dropdown("toggle");
-      
+
+      murrix.cache.clearNodes();
+      murrix.cache.clearItems();
       murrix.model.setCurrentUserData(false);
     });
   };
@@ -534,6 +536,8 @@ var AdminModel = function(parentModel)
 
       $(".dropdown.open .dropdown-toggle").dropdown("toggle");
 
+      murrix.cache.clearNodes();
+      murrix.cache.clearItems();
       murrix.model.setCurrentUserData(userData);
     });
   };

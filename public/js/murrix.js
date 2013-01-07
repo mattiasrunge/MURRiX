@@ -33,6 +33,12 @@ murrix.cache = new function()
     self.items = {};
   }
 
+  self.clearNodes = function()
+  {
+    self.nodesCount = 0;
+    self.nodes = {};
+  }
+
   self.loadImage = function(element, path, failurePath)
   {
     var obj = {};
@@ -76,7 +82,7 @@ murrix.cache = new function()
         continue;
       }
 
-      if (count < 10 && self.images[n].element.is(":visible"))
+      if (count < 20 && self.images[n].element.is(":visible"))
       {
         var offset = self.images[n].element.offset();
 
@@ -847,6 +853,59 @@ murrix.getFormData = function(element)
   });
 
   return data;
+};
+
+
+// Taken from http://my.opera.com/GreyWyvern/blog/show.dml/1671288
+murrix.natcasecmp = function(a, b) {
+  function chunkify(t) {
+    var tz = [], x = 0, y = -1, n = 0, i, j;
+
+    while (i = (j = t.charAt(x++)).charCodeAt(0)) {
+      var m = (i == 46 || (i >=48 && i <= 57));
+      if (m !== n) {
+        tz[++y] = "";
+        n = m;
+      }
+      tz[y] += j;
+    }
+    return tz;
+  }
+
+  var aa = chunkify(a);
+  var bb = chunkify(b);
+
+  for (x = 0; aa[x] && bb[x]; x++) {
+    if (aa[x] !== bb[x]) {
+      var c = Number(aa[x]), d = Number(bb[x]);
+      if (c == aa[x] && d == bb[x]) {
+        return c - d;
+      } else return (aa[x] > bb[x]) ? 1 : -1;
+    }
+  }
+  return aa.length - bb.length;
+};
+
+murrix.compareItemFunction = function(a, b)
+{
+  if (b.whenTimestamp() === false || a.whenTimestamp() === false)
+  {
+    if (!b.name || !a.name)
+    {
+      return 0;
+    }
+
+    return -murrix.natcasecmp(b.name(), a.name());
+  }
+
+  var offset = 0;
+
+  if (a.whenTimestamp() < 0 || b.whenTimestamp() < 0)
+  {
+    offset = Math.abs(Math.min(a.whenTimestamp(), b.whenTimestamp()));
+  }
+
+  return (a.whenTimestamp() + offset) - (b.whenTimestamp() + offset);
 };
 
 murrix.makeArray = function(hash)

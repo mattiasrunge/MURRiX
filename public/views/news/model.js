@@ -23,7 +23,7 @@ var NewsModel = function(parentModel)
 
     if (value)
     {
-      murrix.server.emit("find", { query: { }, options: { collection: "nodes", limit: 25, sort: "modified.timestamp", sortDirection: "desc" } }, function(error, nodeDataList)
+      murrix.server.emit("find", { query: { }, options: { collection: "nodes", limit: 100, sort: "modified.timestamp", sortDirection: "desc" } }, function(error, nodeDataList)
       {
         if (error)
         {

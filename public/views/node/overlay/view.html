@@ -26,7 +26,7 @@
           </div>
 
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
-            <video class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;"  preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }" src="" alt=""></video>
+            <video class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;"  preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().exif.ImageHeight ]" src="" alt=""></video>
           </div>
         </div>
 
@@ -44,9 +44,11 @@
         <p data-bind="html: nodeModel.overlayModel.item().text"></p>
       </div>
     </div>
+  <!-- /ko -->
+</div>
 
-
-
+<div style="position: absolute; top: 0px; width: 350px; right: 0px; z-index: 2070; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show">
+  <!-- ko if: nodeModel.overlayModel.item() !== false -->
 
     <div style="position: absolute; top: 0px; width: 350px; right: 0px; margin: 0px; padding: 0px; background-color: whiteSmoke;">
       <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.editType() === 'showing'">
@@ -61,11 +63,13 @@
         <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
           <tbody data-bind="foreach: nodeModel.overlayModel.item().showing">
             <tr data-bind="css: { info: nodeModel.overlayModel.showingData() !== false && nodeModel.overlayModel.showingData()._id() === $data._id() }, event: { mouseover: nodeModel.overlayModel.showingItemOver, mouseout: nodeModel.overlayModel.showingItemOut }">
-              <td data-bind="click: nodeModel.overlayModel.showingItemClicked" style="cursor: pointer;">
+              <td data-bind="click: nodeModel.overlayModel.showingItemClicked, style: { cursor: nodeModel.overlayModel.item().whatDetailed() === 'imageFile' ? 'pointer' : 'auto' }">
                 <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data._id(), 44, 44, 1 ]"/>
                 <h5 data-bind="textNodeAttribute: [ $data._id(), 'name' ]" style="margin: 0px;"></h5>
-                <small data-bind="visible: !$data.x">Not marked on the picture</small>
-                <small data-bind="visible: $data.x">Marked on the picture</small>
+                <span data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
+                  <small data-bind="visible: !$data.x">Not marked on the picture</small>
+                  <small data-bind="visible: $data.x">Marked on the picture</small>
+                </span>
               </td>
               <td>
                 <button title="Remove" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.showingRemove" class="btn pull-right"><i class="icon-trash"></i></button>

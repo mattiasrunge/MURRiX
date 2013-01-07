@@ -21,7 +21,7 @@ var SearchModel = function(parentModel)
   self.searchTypeLocation = ko.observable(true);
   self.searchTypeCamera = ko.observable(true);
   self.searchTypeVehicle = ko.observable(true);
-  
+
   self.query = ko.observable("");
   self.findQuery = false;
 
@@ -30,8 +30,10 @@ var SearchModel = function(parentModel)
   self.pages = ko.observableArray([ ]);
   self.currentPage = ko.observable(0);
 
-  self.itemsPerPage = 25;
+  self.itemsPerPage = 30;
   self.resultCount = ko.observable(0);
+  self.loading = ko.observable(false);
+  self.errorText = ko.observable("");
 
   /* This function is run when the primary path is changed
    * and a new node id has been set. It tries to cache
@@ -70,6 +72,10 @@ var SearchModel = function(parentModel)
         }
       }
     }
+    else
+    {
+      self.currentPage(0);
+    }
 
     self.queryInput(query);
 
@@ -78,6 +84,8 @@ var SearchModel = function(parentModel)
       console.log("Query has changed to \"" + query + "\"");
       self.query(query);
       self.queryInput(query);
+
+      murrix.cache.clearNodes();
 
       self.runQuery();
     }
@@ -91,7 +99,6 @@ var SearchModel = function(parentModel)
 
   self.pageClicked = function(page)
   {
-    console.log(page);
     document.location.hash = "#search:" + self.queryInput() + ":" + page;
     return false;
   };
@@ -121,13 +128,19 @@ var SearchModel = function(parentModel)
     var skip = self.itemsPerPage * self.currentPage();
 
     self.results.removeAll();
+    self.errorText("");
 
     if (self.resultCount() > 0)
     {
+      self.loading(true);
+
       murrix.server.emit("find", { query: self.findQuery, options: { collection: "nodes", limit: self.itemsPerPage, skip: skip } }, function(error, nodeDataList)
       {
+        self.loading(false);
+
         if (error)
         {
+          self.errorText(error);
           console.log(error);
           return;
         }
@@ -181,6 +194,7 @@ var SearchModel = function(parentModel)
     self.pages.removeAll();
     self.resultCount(0);
     self.findQuery = false;
+    self.errorText("");
 
     if (self.query() !== "")
     {
@@ -188,7 +202,7 @@ var SearchModel = function(parentModel)
 
       var action = "name";
       var query = "";
-      
+
       if (parts.length === 1)
       {
         query = self.query();
@@ -242,11 +256,16 @@ var SearchModel = function(parentModel)
         self.showResults();
         return;
       }
-    
+
+      self.loading(true);
+
       murrix.server.emit("count", { query: self.findQuery, options: "nodes" }, function(error, count)
       {
+        self.loading(false);
+
         if (error)
         {
+          self.errorText(error);
           console.log(error);
           return;
         }
@@ -287,12 +306,12 @@ var SearchModel = function(parentModel)
           {
             imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
           }
-        
+
           var item = {};
           item.name = nodeDataList[key].name;
           item.key = nodeDataList[key]._id;
           item.html = "<li ><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
-        
+
           resultList.push(item);
         }
 
@@ -304,5 +323,5 @@ var SearchModel = function(parentModel)
       document.location.hash = "#node:" + key;
     }
   });
-  
+
 };

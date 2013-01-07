@@ -111,10 +111,12 @@ var NodeModel = function(parentModel)
           count++;
         }
 
-        itemList.sort(function(a, b)
-        {
-          return (b.whenTimestamp() !== false && b.whenTimestamp() !== false) ? a.whenTimestamp() - b.whenTimestamp() : 0;
-        });
+        itemList.sort(murrix.compareItemFunction);
+
+//         for (var n = 0; n < itemList.length; n++)
+//         {
+//           console.log(n, itemList[n].whenTimestamp(), itemList[n].name());
+//         }
 
         self.items(itemList);
 
@@ -143,6 +145,8 @@ var NodeModel = function(parentModel)
       }
     }
 
+    results.sort(murrix.compareItemFunction);
+
     return results;
   });
 
@@ -168,6 +172,7 @@ var NodeModel = function(parentModel)
       if (!results[datestamp])
       {
         results[datestamp] = {};
+        results[datestamp].datestamp = datestamp;
         results[datestamp]["texts"] = [];
         results[datestamp]["media"] = [];
         results[datestamp]["audio"] = [];
@@ -193,13 +198,35 @@ var NodeModel = function(parentModel)
     {
       var item = {};
 
-      item.datestamp = datestamp;
+      item.datestamp = results[datestamp].datestamp;
       item.texts = results[datestamp].texts;
       item.media = results[datestamp].media;
       item.audio = results[datestamp].audio;
 
       list.push(item);
     }
+
+    list.sort(function(a, b)
+    {
+      if (typeof b.datestamp === 'string' || typeof a.datestamp === 'string')
+      {
+        return 0;
+      }
+
+      var offset = 0;
+
+      if (a.datestamp < 0 || b.datestamp < 0)
+      {
+        offset = Math.abs(Math.min(a.datestamp, b.datestamp));
+      }
+
+      return (a.datestamp + offset) - (b.datestamp + offset);
+    });
+
+//     for (var n = 0; n < list.length; n++)
+//     {
+//       console.log(list[n].datestamp);
+//     }
 
     return list;
   });

@@ -3,42 +3,60 @@
 
     <div class="navbar navbar-color navbar-inverse">
       <div class="navbar-inner">
-        <span class="brand" style="padding-left: 35px;">Search</span>
+        <span class="brand"><i style="vertical-align: baseline;" class="icon-search icon-white"></i> Search</span>
         <ul class="nav pull-right">
           <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
         </ul>
       </div>
     </div>
 
-    <form class="well form-search" data-bind="submit: searchModel.searchSubmit">
-      <div class="input-append">
-        <input class="input-xxlarge search-query" type="text" data-bind="value: searchModel.queryInput"><button class="btn" type="submit">Search</button>
-      </div>
-      <div style="margin-top: 10px;">
-        <label class="checkbox inline">
-          <input type="checkbox" data-bind="checked: searchModel.searchTypeAlbum"> Album
-        </label>
-        <label class="checkbox inline">
-          <input type="checkbox" data-bind="checked: searchModel.searchTypePerson"> Person
-        </label>
-        <label class="checkbox inline">
-          <input type="checkbox" data-bind="checked: searchModel.searchTypeLocation"> Location
-        </label>
-        <label class="checkbox inline">
-          <input type="checkbox" data-bind="checked: searchModel.searchTypeCamera"> Camera
-        </label>
-        <label class="checkbox inline">
-          <input type="checkbox" data-bind="checked: searchModel.searchTypeVehicle"> Vehicle
-        </label>
-      </div>
-    </form>
 
-    <div class="well" style="padding-bottom: 0px;">
-      <p class="muted" style="margin-bottom: 20px;">
-        Search for "<span data-bind="text: searchModel.query"></span>" returned
-        <span data-bind="text: searchModel.resultCount"></span>
-        <span data-bind="text: searchModel.resultCount() == 1 ? 'result' : 'results'"></span>.
-      </p>
+    <div class="well" style="padding-bottom: 0px; text-align: center;">
+      <div style="margin-bottom: 30px; font-size: 20px;">
+
+        <div data-bind="visible: searchModel.queryInput() === '' && !searchModel.loading()">
+          Please enter a search query.
+        </div>
+
+        <div data-bind="visible: searchModel.queryInput() !== '' && !searchModel.loading()">
+          Showing results of search for <span class="muted" data-bind="text: searchModel.queryInput"></span>, <span data-bind="text: searchModel.resultCount"></span> nodes found.
+        </div>
+
+        <div data-bind="visible: searchModel.loading">
+          Searching for <span class="muted" data-bind="text: searchModel.queryInput"></span>...
+        </div>
+
+      </div>
+
+      <div style="margin-bottom: 25px;">
+       <form class="form-search" data-bind="submit: searchModel.searchSubmit">
+          <div class="input-append">
+            <input style="padding-left: 15px;" class="input-xxlarge search-query" type="text" data-bind="value: searchModel.queryInput"><button class="btn" type="submit">Search</button>
+          </div>
+          <div style="margin-top: 10px;">
+            <label class="checkbox inline">
+              <input type="checkbox" data-bind="checked: searchModel.searchTypeAlbum"> Album
+            </label>
+            <label class="checkbox inline">
+              <input type="checkbox" data-bind="checked: searchModel.searchTypePerson"> Person
+            </label>
+            <label class="checkbox inline">
+              <input type="checkbox" data-bind="checked: searchModel.searchTypeLocation"> Location
+            </label>
+            <label class="checkbox inline">
+              <input type="checkbox" data-bind="checked: searchModel.searchTypeCamera"> Camera
+            </label>
+            <label class="checkbox inline">
+              <input type="checkbox" data-bind="checked: searchModel.searchTypeVehicle"> Vehicle
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <div class="alert alert-error" data-bind="visible: searchModel.errorText() !== '', text: searchModel.errorText"></div>
+    </div>
+
+    <div style="text-align: center;">
       <div class="pagination" data-bind="visible: searchModel.pages().length > 1" style="margin-top: 0px;">
         <ul>
 
@@ -52,36 +70,23 @@
 
         </ul>
       </div>
+    </div>
 
-      <table class="table table-striped table-hover" data-bind="visible: searchModel.resultCount() > 0">
-        <tbody data-bind="foreach: searchModel.results">
-          <tr>
-            <td>
-              <i data-bind="visible: $data.hasAdminAccess()" title="Administration access" class="icon-edit pull-right"></i>
-              <i data-bind="visible: !$data.hasAdminAccess()" title="Read access" class="icon-eye-open pull-right"></i>
-              <img src="" alt="" style="width: 40px; height: 40px;" class="pull-left" data-bind="srcNodeProfilePicture: [ $data._id(), 40, 40, 1 ]"/>
-              <blockquote style="margin-bottom: 0px; margin-left: 50px;">
-                <a style="padding-bottom: 5px; cursor: pointer;" data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a>
-                <small>Last modified <span data-bind="htmlTimeAgo: $data.modified.timestamp()"></span> by <a data-bind="textUserAttribute: [ $data.modified._by(), 'name' ]"></a></small>
-              </blockquote>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: searchModel.results }"></div>
 
-      <div class="pagination" data-bind="visible: searchModel.pages().length > 1" style="margin-top: 0px;">
-        <ul>
 
-          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
+    <div class="pagination" data-bind="visible: searchModel.pages().length > 1" style="margin-top: 0px;">
+      <ul>
 
-          <!-- ko foreach: searchModel.pages -->
-            <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
-          <!-- /ko -->
+        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
-          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+        <!-- ko foreach: searchModel.pages -->
+          <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
+        <!-- /ko -->
 
-        </ul>
-      </div>
+        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+
+      </ul>
     </div>
 
   </div>
