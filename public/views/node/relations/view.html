@@ -1,3 +1,17 @@
+<script type="text/html" id="personRelationsTemplate">
+  <div style="display: table-row">
+    <!-- ko foreach: $data.family.parentList -->
+      <div style="text-align: center; display: table-cell;">
+        <div data-bind="template: { name: 'personRelationsTemplate', data: $data }"></div>
+      </div>
+    <!-- /ko -->
+  </div>
+
+  <div style="display: table-row">
+    <div class="well" style="width: 25px; height: 25px; margin: auto; margin-bottom: 10px; display-table: cell;" data-bind="textNodeAttribute: [ $data._id(), 'name' ]"></div>
+  </div>
+</script>
+
 <div class="main-overlay" data-bind="slideVisible: nodeModel.relationsModel.show">
   <div class="main-overlay-content" data-bind="if: nodeModel.node">
 
@@ -10,7 +24,9 @@
       </div>
     </div>
 
-
+   <!-- <div data-bind="if: nodeModel.node().type() === 'person'" style="display: table;">
+      <div data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.node }" style="text-align: center;"></div>
+    </div>-->
 
   </div>
   <div class="main-overlay-background"></div>

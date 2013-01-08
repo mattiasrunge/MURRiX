@@ -105,6 +105,124 @@ murrix.cache = new function()
     self.images = images;
   };
 
+  self.extendNode = function(id)
+  {
+    self.nodes[id].comments = self.nodes[id].comments || ko.observableArray();
+
+    self.nodes[id].comments.subscribe(function(value)
+    {
+      value.sort(function(a, b)
+      {
+        return b.added.timestamp() - a.added.timestamp();
+      });
+    });
+
+    self.nodes[id].comments.valueHasMutated(); // Force sort!
+
+
+    self.nodes[id].hasAdminAccess = function()
+    {
+      if (murrix.model.currentUser() === false)
+      {
+        console.log("No user, no admin access");
+        return false;
+      }
+
+      if (murrix.model.currentUser().admin() === true)
+      {
+        console.log("User is admin, admin access");
+        return true;
+      }
+
+      if (murrix.model.currentUser()._id() === this._id())
+      {
+        console.log("Node is current user, admin access");
+        return true;
+      }
+
+      if (murrix.model.currentUser()._id() === this.added._by())
+      {
+        console.log("Node added by user, admin access");
+        return true;
+      }
+
+      var intersection = this._admins().filter(function(n)
+      {
+        return murrix.model.currentUser()._groups().indexOf(n) !== -1;
+      });
+
+      console.log("Group intersection length is " + intersection.length + ", admin access");
+
+      return intersection.length > 0;
+    };
+
+    self.nodes[id].hasReadAccess = function()
+    {
+      if (this.public() === true)
+      {
+        console.log("Node is public, read access");
+        return true;
+      }
+
+      if (this.hasAdminAccess())
+      {
+        console.log("Admin access, read access");
+        return true;
+      }
+
+      var intersection = this._readers().filter(function(n)
+      {
+        return murrix.model.currentUser()._groups().indexOf(n) !== -1;
+      });
+
+      console.log("Group intersection length is " + intersection.length + ", read access");
+
+      return intersection.length > 0;
+    };
+
+//     if (self.nodes[id].type() === "person")
+//     {
+//       self.nodes[id].family = self.nodes[id].family || {};
+//       self.nodes[id].family.parents = self.nodes[id].family.parents || ko.observableArray();
+//       self.nodes[id].family.parentList = ko.observableArray([]);
+//
+//       ko.dependentObservable(function()
+//       {
+//       //  self.nodes[id].family.parentList.removeAll();
+//
+//         if (self.nodes[id].family.parents().length === 0)
+//         {
+//           return;
+//         }
+//
+//         var ids = [];
+//
+//         for (var n = 0; n < self.nodes[id].family.parents().length; n++)
+//         {
+//           ids.push(self.nodes[id].family.parents()[n]._id());
+//         }
+//
+//         murrix.cache.getNodes(ids, function(error, nodeList)
+//         {
+//           if (error)
+//           {
+//             console.log(error);
+//             return;
+//           }
+//
+//           var list = [];
+//
+//           for (var n in nodeList)
+//           {
+//             list.push(nodeList[n]);
+//           }
+//
+//           self.nodes[id].family.parentList(list);
+//         });
+//       });
+//     }
+  }
+
   self.addNodeData = function(nodeData)
   {
     if (nodeData === false)
@@ -119,78 +237,7 @@ murrix.cache = new function()
       self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData);
       self.nodesCount++;
 
-      if (self.nodes[nodeData._id].comments)
-      {
-        self.nodes[nodeData._id].comments.subscribe(function(value)
-        {
-          value.sort(function(a, b)
-          {
-            return b.added.timestamp() - a.added.timestamp();
-          });
-        });
-
-        self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
-      }
-
-      self.nodes[nodeData._id].hasAdminAccess = function()
-      {
-        if (murrix.model.currentUser() === false)
-        {
-          console.log("No user, no admin access");
-          return false;
-        }
-
-        if (murrix.model.currentUser().admin() === true)
-        {
-          console.log("User is admin, admin access");
-          return true;
-        }
-
-        if (murrix.model.currentUser()._id() === this._id())
-        {
-          console.log("Node is current user, admin access");
-          return true;
-        }
-
-        if (murrix.model.currentUser()._id() === this.added._by())
-        {
-          console.log("Node added by user, admin access");
-          return true;
-        }
-
-        var intersection = this._admins().filter(function(n)
-        {
-          return murrix.model.currentUser()._groups().indexOf(n) !== -1;
-        });
-
-        console.log("Group intersection length is " + intersection.length + ", admin access");
-
-        return intersection.length > 0;
-      };
-
-      self.nodes[nodeData._id].hasReadAccess = function()
-      {
-        if (this.public() === true)
-        {
-          console.log("Node is public, read access");
-          return true;
-        }
-
-        if (this.hasAdminAccess())
-        {
-          console.log("Admin access, read access");
-          return true;
-        }
-
-        var intersection = this._readers().filter(function(n)
-        {
-          return murrix.model.currentUser()._groups().indexOf(n) !== -1;
-        });
-
-        console.log("Group intersection length is " + intersection.length + ", read access");
-
-        return intersection.length > 0;
-      };
+      self.extendNode(nodeData._id);
     }
     else
     {
@@ -199,22 +246,6 @@ murrix.cache = new function()
       var hassubscribed = self.nodes[nodeData._id].comments ? true : false;
 
       ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
-
-      if (!hassubscribed)
-      {
-        if (self.nodes[nodeData._id].comments)
-        {
-          self.nodes[nodeData._id].comments.subscribe(function(value)
-          {
-            value.sort(function(a, b)
-            {
-              return b.added.timestamp() - a.added.timestamp();
-            });
-          });
-
-          self.nodes[nodeData._id].comments.valueHasMutated(); // Force sort!
-        }
-      }
     }
 
     return self.nodes[nodeData._id];
@@ -222,31 +253,30 @@ murrix.cache = new function()
 
   self.extendItem = function(id)
   {
-    if (self.items[id].comments)
+    self.items[id].comments = self.items[id].comments || ko.observableArray();
+
+    self.items[id].comments.subscribe(function(value)
     {
-      self.items[id].comments.subscribe(function(value)
+      value.sort(function(a, b)
       {
-        value.sort(function(a, b)
-        {
-          return b.added.timestamp() - a.added.timestamp();
-        });
+        return b.added.timestamp() - a.added.timestamp();
       });
+    });
 
-      self.items[id].comments.valueHasMutated(); // Force sort!
-    }
+    self.items[id].comments.valueHasMutated(); // Force sort!
 
-    if (self.items[id].showing)
+
+    self.items[id].showing = self.items[id].showing || ko.observableArray();
+
+    self.items[id].showing.subscribe(function(value)
     {
-      self.items[id].showing.subscribe(function(value)
+      value.sort(function(a, b)
       {
-        value.sort(function(a, b)
-        {
-          return (b.x && a.x) ? a.x() - b.x() : 0;
-        });
+        return (b.x && a.x) ? a.x() - b.x() : 0;
       });
+    });
 
-      self.items[id].showing.valueHasMutated(); // Force sort!
-    }
+    self.items[id].showing.valueHasMutated(); // Force sort!
 
 
     self.items[id]._with = self.items[id]._with || ko.observable(false);
@@ -470,14 +500,7 @@ murrix.cache = new function()
     {
       console.log("Item " + itemData._id + " already cached updating cache...");
 
-      var hassubscribed = self.items[itemData._id].comments ? true : false;
-
       ko.mapping.fromJS(itemData, self.items[itemData._id]);
-
-      if (!hassubscribed)
-      {
-        self.extendItem(itemData._id);
-      }
     }
 
     return self.items[itemData._id];

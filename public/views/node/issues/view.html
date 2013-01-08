@@ -1,0 +1,33 @@
+<div class="main-overlay" data-bind="slideVisible: nodeModel.issuesModel.show() && nodeModel.node()">
+  <div class="main-overlay-content" data-bind="if: nodeModel.node">
+
+    <div class="navbar navbar-color navbar-inverse">
+      <div class="navbar-inner">
+        <span class="brand"><i style="vertical-align: baseline;" class="icon-warning-sign icon-white"></i> Issues</span>
+        <ul class="nav pull-right">
+          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="well">
+      <table class="table table-condensed table-striped" style="margin-bottom: 0px;">
+        <thead>
+          <th>Issue</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </thead>
+        <tbody data-bind="foreach: nodeModel.issuesModel.issues" style="font-size: 12px;">
+          <tr>
+            <td data-bind="html: $data.title"></td>
+            <td data-bind="html: $data.description"></td>
+            <td>
+              <a class="btn btn-mini btn-link" style="text-align: left;" data-bind="click: nodeModel.issuesModel.doIssueAction, html: $data.actionTitle"></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="main-overlay-background"></div>
+</div>

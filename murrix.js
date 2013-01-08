@@ -26,7 +26,7 @@ var session = new Session(mongoDb, configuration);
 var user = new User(mongoDb);
 var nodeManager = new NodeManager(mongoDb, user);
 var uploadManager = new UploadManager(configuration);
-var fileServer = new nodeStatic.Server("./public");
+var fileServer = new nodeStatic.Server("./public", { cache: false });
 
 
 /* Connect to database */

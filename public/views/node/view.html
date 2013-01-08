@@ -69,6 +69,12 @@
         </a>
       </li>
 
+      <li data-bind="fadeVisible: nodeModel.issuesModel.enabled, css: { 'active': nodeModel.issuesModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefSecondPrimary: 'issues'">
+          <i class="icon-warning-sign"></i> Issues <span data-bind="fadeVisible: nodeModel.issuesModel.issues().length > 0, text: nodeModel.issuesModel.issues().length" class="badge badge-important pull-right"></span>
+        </a>
+      </li>
+
       <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'comments'">
           <i class="icon-comment"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right"></span>

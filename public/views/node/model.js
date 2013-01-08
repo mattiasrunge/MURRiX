@@ -722,4 +722,5 @@ var NodeModel = function(parentModel)
   self.commentsModel = new CommentsModel(self);
   self.overlayModel = new OverlayModel(self);
   self.timelineModel = new TimelineModel(self);
+  self.issuesModel = new IssuesModel(self);
 };
