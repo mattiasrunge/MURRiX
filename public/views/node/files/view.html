@@ -13,16 +13,16 @@
     <ul class="thumbnails" data-bind="foreach: nodeModel.files">
       <li class="">
         <a href="#" draggable="true" style="color: white;" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
-          <span data-bind="if: $data.whatDetailed() === 'imageFile' || $data.whatDetailed() === 'videoFile'">
+          <span data-bind="if: $data.whatDetailed() === 'imageFile' || $data.whatDetailed() === 'videoFile' || $data.whatDetailed() === 'audioFile'">
             <img data-bind="srcPicture: [ $data._id, 250, 250, 1 ], attr: { title: $data.name }" src="" alt="">
           </span>
-          <span data-bind="if: $data.whatDetailed() === 'audioFile'">
+         <!-- <span data-bind="if: $data.whatDetailed() === 'audioFile'">
             <div style="width: 248px; height: 248px; background-color: black; border: 1px solid whiteSmoke;">
               <div style="padding: 10px;">
                 <span data-bind="text: $data.name" style="width: 100%; overflow: hidden; text-overflow: ellipsis; display: inline-block;"></span>
               </div>
             </div>
-          </span>
+          </span>-->
         </a>
       </li>
     </ul>

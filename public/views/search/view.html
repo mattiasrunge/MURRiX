@@ -34,21 +34,14 @@
             <input style="padding-left: 15px;" class="input-xxlarge search-query" type="text" data-bind="value: searchModel.queryInput"><button class="btn" type="submit">Search</button>
           </div>
           <div style="margin-top: 10px;">
-            <label class="checkbox inline">
-              <input type="checkbox" data-bind="checked: searchModel.searchTypeAlbum"> Album
-            </label>
-            <label class="checkbox inline">
-              <input type="checkbox" data-bind="checked: searchModel.searchTypePerson"> Person
-            </label>
-            <label class="checkbox inline">
-              <input type="checkbox" data-bind="checked: searchModel.searchTypeLocation"> Location
-            </label>
-            <label class="checkbox inline">
-              <input type="checkbox" data-bind="checked: searchModel.searchTypeCamera"> Camera
-            </label>
-            <label class="checkbox inline">
-              <input type="checkbox" data-bind="checked: searchModel.searchTypeVehicle"> Vehicle
-            </label>
+            <div class="btn-group">
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypeAlbumClicked, css: { active: searchModel.searchTypeAlbum }"><i style="vertical-align: center;" class="icon-book"></i> Album</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypePersonClicked, css: { active: searchModel.searchTypePerson }"><i style="vertical-align: center;" class="icon-user"></i> Person</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypeLocationClicked, css: { active: searchModel.searchTypeLocation }"><i style="vertical-align: center;" class="icon-flag"></i> Location</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypeCameraClicked, css: { active: searchModel.searchTypeCamera }"><i style="vertical-align: center;" class="icon-camera"></i> Camera</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypeVehicleClicked, css: { active: searchModel.searchTypeVehicle }"><i style="vertical-align: center;" class="icon-plane"></i> Vehicle</button>
+            </div>
+
           </div>
         </form>
       </div>

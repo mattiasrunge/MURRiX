@@ -31,9 +31,9 @@
         </div>
 
         <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'audioFile'">
-          <div style="padding: 20px 100px 20px 100px; text-align: left; color: white">
+          <div style="padding: 20px 100px 20px 100px; color: white">
             <h3 style="text-align: center;" data-bind="text: nodeModel.overlayModel.item().name"></h3>
-            <audio style="width: 100%;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }" src="" alt=""></audio>
+            <video style="display: inline-block; width: 720px; height: 288px; vertical-align: middle;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, 720, 288 ]" src="" alt=""></video>
           </div>
         </div>
     </div>

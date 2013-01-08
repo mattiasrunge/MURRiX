@@ -162,30 +162,35 @@ var SearchModel = function(parentModel)
     self.runQuery();
   });
 
-  self.searchTypeAlbum.subscribe(function(value)
+  self.searchTypeAlbumClicked = function()
   {
+    self.searchTypeAlbum(!self.searchTypeAlbum());
     self.runQuery();
-  });
+  };
 
-  self.searchTypePerson.subscribe(function(value)
+  self.searchTypePersonClicked = function()
   {
+    self.searchTypePerson(!self.searchTypePerson());
     self.runQuery();
-  });
+  };
 
-  self.searchTypeLocation.subscribe(function(value)
+  self.searchTypeLocationClicked = function()
   {
+    self.searchTypeLocation(!self.searchTypeLocation());
     self.runQuery();
-  });
+  };
 
-  self.searchTypeCamera.subscribe(function(value)
+  self.searchTypeCameraClicked = function()
   {
+    self.searchTypeCamera(!self.searchTypeCamera());
     self.runQuery();
-  });
+  };
 
-  self.searchTypeVehicle.subscribe(function(value)
+  self.searchTypeVehicleClicked = function()
   {
+    self.searchTypeVehicle(!self.searchTypeVehicle());
     self.runQuery();
-  });
+  };
 
 
   self.runQuery = function()

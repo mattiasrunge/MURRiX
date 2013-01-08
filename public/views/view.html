@@ -61,7 +61,7 @@
           <i style="vertical-align: baseline;" class="icon-book icon-white" data-bind="visible: nodeModel.node().type() === 'album'"></i>
           <i style="vertical-align: baseline;" class="icon-user icon-white" data-bind="visible: nodeModel.node().type() === 'person'"></i>
           <i style="vertical-align: baseline;" class="icon-camera icon-white" data-bind="visible: nodeModel.node().type() === 'camera'"></i>
-          <i style="vertical-align: baseline;" class="icon-road icon-white" data-bind="visible: nodeModel.node().type() === 'vehicle'"></i>
+          <i style="vertical-align: baseline;" class="icon-plane icon-white" data-bind="visible: nodeModel.node().type() === 'vehicle'"></i>
           <i style="vertical-align: baseline;" class="icon-flag icon-white" data-bind="visible: nodeModel.node().type() === 'location'"></i>
         </span>
         <span data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se'"></span>
@@ -124,11 +124,11 @@
               <i class="icon-plus icon-white" title="Create new node"></i>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="#createAlbumModal" data-toggle="modal">Album</a></li>
-              <li><a href="#createPersonModal" data-toggle="modal">Person</a></li>
-              <li><a href="#createLocationModal" data-toggle="modal">Location</a></li>
-              <li><a href="#createCameraModal" data-toggle="modal">Camera</a></li>
-              <li><a href="#createVehicleModal" data-toggle="modal">Vehicle</a></li>
+              <li><a href="#createAlbumModal" data-toggle="modal"><i style="vertical-align: center;" class="icon-book"></i> Album</a></li>
+              <li><a href="#createPersonModal" data-toggle="modal"><i style="vertical-align: center;" class="icon-user"></i> Person</a></li>
+              <li><a href="#createLocationModal" data-toggle="modal"><i style="vertical-align: center;" class="icon-flag"></i> Location</a></li>
+              <li><a href="#createCameraModal" data-toggle="modal"><i style="vertical-align: center;" class="icon-camera"></i> Camera</a></li>
+              <li><a href="#createVehicleModal" data-toggle="modal"><i style="vertical-align: center;" class="icon-plane"></i> Vehicle</a></li>
             </ul>
           </li>
         </ul>

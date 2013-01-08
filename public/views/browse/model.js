@@ -84,7 +84,7 @@ var BrowseModel = function(parentModel)
     });
   };
 
-  self.year = ko.observable(new Date().getFullYear() - 1);
+  self.year = ko.observable(new Date().getFullYear());
   self.lastSearchedYear = ko.observable(false);
 
   self.yearSliderChanged = function(year)
