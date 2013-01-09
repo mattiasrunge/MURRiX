@@ -236,6 +236,38 @@ var NodeModel = function(parentModel)
     return list;
   });
 
+  self.typeaheadPersonSource = function(query, callback)
+  {
+    murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" }, type: "person" }, options: { collection: "nodes" } }, function(error, nodeDataList)
+    {
+      if (error)
+      {
+        console.log(error);
+        callback([]);
+      }
+
+      var resultList = [];
+
+      for (var key in nodeDataList)
+      {
+        var imgUrl = "http://placekitten.com/g/32/32";
+
+        if (nodeDataList[key]._profilePicture)
+        {
+          imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
+        }
+
+        var item = {};
+        item.name = nodeDataList[key].name;
+        item.key = nodeDataList[key]._id;
+        item.html = "<li><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
+
+        resultList.push(item);
+      }
+
+      callback(resultList);
+    });
+  };
 
   /* This function is run when the primary path is changed
    * and a new node id has been set. It tries to cache
@@ -303,13 +335,62 @@ var NodeModel = function(parentModel)
   };
 
 
+  self.editNode = function()
+  {
+    if (self.node() === false)
+    {
+      return;
+    }
 
-  /* Create Camera */
+    if (self.node().type() === "camera")
+    {
+      self.editCameraNode(self.node());
+      self.editCameraGoto = function() { };
+      self.editCameraName(self.node().name());
+      self.editCameraDescription(self.node().description());
+      self.editCameraOwner(self.node()._owner());
+
+      $("#editCameraModal").modal('show');
+    }
+    else if (self.node().type() === "vehicle")
+    {
+      self.editVehicleNode(self.node());
+      self.editVehicleGoto = function() { };
+      self.editVehicleName(self.node().name());
+      self.editVehicleDescription(self.node().description());
+      self.editVehicleOwner(self.node()._owner());
+
+      $("#editVehicleModal").modal('show');
+    }
+    else if (self.node().type() === "person")
+    {
+      self.editPersonNode(self.node());
+      self.editPersonGoto = function() { };
+      self.editPersonName(self.node().name());
+      self.editPersonBirthname(self.node().birthname());
+      self.editPersonDescription(self.node().description());
+      self.editPersonGender(self.node().gender());
+
+      $("#editPersonModal").modal('show');
+    }
+    else if (self.node().type() === "album")
+    {
+      self.editAlbumNode(self.node());
+      self.editAlbumGoto = function() { };
+      self.editAlbumName(self.node().name());
+      self.editAlbumDescription(self.node().description());
+
+      $("#editAlbumModal").modal('show');
+    }
+  };
+
+
+  /* Edit Camera */
   self.editCameraGoto = false;
   self.editCameraNode = ko.observable(false);
   self.editCameraName = ko.observable("");
   self.editCameraDescription = ko.observable("");
-  self.editCameraOwner = ko.observable("");
+  self.editCameraOwner = ko.observable(false);
   self.editCameraLoading = ko.observable(false);
   self.editCameraErrorText = ko.observable("");
 
@@ -318,13 +399,13 @@ var NodeModel = function(parentModel)
     self.editCameraOpen();
   };
 
-  self.editCameraOpen = function(name, callback)
+  self.editCameraOpen = function(callback, name)
   {
     self.editCameraGoto = false;
     self.editCameraNode(false);
     self.editCameraName("");
     self.editCameraDescription("");
-    self.editCameraOwner("");
+    self.editCameraOwner(false);
 
     if (name)
     {
@@ -346,6 +427,11 @@ var NodeModel = function(parentModel)
     $("#createNodeDoneModal").modal('show');
   };
 
+  self.editCameraClearOwner = function()
+  {
+    self.editCameraOwner(false);
+  };
+
   self.editCameraSubmit = function()
   {
     self.editCameraErrorText("");
@@ -364,7 +450,6 @@ var NodeModel = function(parentModel)
     }
 
     nodeData.type = "camera";
-
     nodeData.name = self.editCameraName();
     nodeData.description = self.editCameraDescription();
     nodeData._owner = self.editCameraOwner();
@@ -399,9 +484,327 @@ var NodeModel = function(parentModel)
       self.editCameraNode(false);
       self.editCameraName("");
       self.editCameraDescription("");
-      self.editCameraOwner("");
+      self.editCameraOwner(false);
     });
   };
+
+  $("#editCameraOwnerInput").typesearch({
+    source: function(query, callback) { self.typeaheadPersonSource(query, callback); },
+    selectFn: function(key)
+    {
+      $("#editCameraOwnerInput").val("");
+      self.editCameraOwner(key);
+    }
+  });
+
+
+
+  /* Edit Vehicle */
+  self.editVehicleGoto = false;
+  self.editVehicleNode = ko.observable(false);
+  self.editVehicleName = ko.observable("");
+  self.editVehicleDescription = ko.observable("");
+  self.editVehicleOwner = ko.observable(false);
+  self.editVehicleLoading = ko.observable(false);
+  self.editVehicleErrorText = ko.observable("");
+
+  self.editVehicleNewOpen = function()
+  {
+    self.editVehicleOpen();
+  };
+
+  self.editVehicleOpen = function(callback)
+  {
+    self.editVehicleGoto = false;
+    self.editVehicleNode(false);
+    self.editVehicleName("");
+    self.editVehicleDescription("");
+    self.editVehicleOwner(false);
+
+    if (callback)
+    {
+      self.editVehicleGoto = callback;
+    }
+
+    $("#editVehicleModal").modal('show');
+  };
+
+  self.editVehicleComplete = function(node)
+  {
+    document.location.hash = murrix.createPath(0, "node", node._id());
+
+    $("#createNodeDoneModal").modal('show');
+  };
+
+  self.editVehicleClearOwner = function()
+  {
+    self.editVehicleOwner(false);
+  };
+
+  self.editVehicleSubmit = function()
+  {
+    self.editVehicleErrorText("");
+
+    if (self.editVehicleName() === "")
+    {
+      self.editVehicleErrorText("Name is empty!");
+      return;
+    }
+
+    var nodeData = {};
+
+    if (self.editVehicleNode() !== false)
+    {
+      nodeData = ko.mapping.toJS(self.editVehicleNode());
+    }
+
+    nodeData.type = "vehicle";
+    nodeData.name = self.editVehicleName();
+    nodeData.description = self.editVehicleDescription();
+    nodeData._owner = self.editVehicleOwner();
+
+    self.editVehicleLoading(true);
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.editVehicleLoading(false);
+
+      if (error)
+      {
+        console.log(error);
+        self.editVehicleErrorText(error);
+        return;
+      }
+
+      var node = murrix.cache.addNodeData(nodeData);
+
+      $(".modal").modal('hide');
+
+      if (!self.editVehicleGoto)
+      {
+        self.editVehicleComplete(node);
+      }
+      else
+      {
+        self.editVehicleGoto(node);
+      }
+
+      self.editVehicleGoto = false;
+      self.editVehicleNode(false);
+      self.editVehicleName("");
+      self.editVehicleDescription("");
+      self.editVehicleOwner(false);
+    });
+  };
+
+  $("#editVehicleOwnerInput").typesearch({
+    source: function(query, callback) { self.typeaheadPersonSource(query, callback); },
+    selectFn: function(key)
+    {
+      $("#editVehicleOwnerInput").val("");
+      self.editVehicleOwner(key);
+    }
+  });
+
+
+  /* Edit Person */
+  self.editPersonGoto = false;
+  self.editPersonNode = ko.observable(false);
+  self.editPersonName = ko.observable("");
+  self.editPersonBirthname = ko.observable("");
+  self.editPersonDescription = ko.observable("");
+  self.editPersonGender = ko.observable("male");
+  self.editPersonLoading = ko.observable(false);
+  self.editPersonErrorText = ko.observable("");
+
+  self.editPersonNewOpen = function()
+  {
+    self.editPersonOpen();
+  };
+
+  self.editPersonOpen = function(callback)
+  {
+    self.editPersonGoto = false;
+    self.editPersonNode(false);
+    self.editPersonName("");
+    self.editPersonBirthname("");
+    self.editPersonDescription("");
+    self.editPersonGender("male");
+
+    if (callback)
+    {
+      self.editPersonGoto = callback;
+    }
+
+    $("#editPersonModal").modal('show');
+  };
+
+  self.editPersonComplete = function(node)
+  {
+    document.location.hash = murrix.createPath(0, "node", node._id());
+
+    $("#createNodeDoneModal").modal('show');
+  };
+
+  self.editPersonMaleClicked = function()
+  {
+    self.editPersonGender("male");
+  };
+
+  self.editPersonFemaleClicked = function()
+  {
+    self.editPersonGender("female");
+  };
+
+  self.editPersonSubmit = function()
+  {
+    self.editPersonErrorText("");
+
+    if (self.editPersonName() === "")
+    {
+      self.editPersonErrorText("Name is empty!");
+      return;
+    }
+
+    var nodeData = {};
+
+    if (self.editPersonNode() !== false)
+    {
+      nodeData = ko.mapping.toJS(self.editPersonNode());
+    }
+
+    nodeData.type = "person";
+    nodeData.name = self.editPersonName();
+    nodeData.birthname = self.editPersonBirthname();
+    nodeData.description = self.editPersonDescription();
+    nodeData.gender = self.editPersonGender();
+
+    self.editPersonLoading(true);
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.editPersonLoading(false);
+
+      if (error)
+      {
+        console.log(error);
+        self.editPersonErrorText(error);
+        return;
+      }
+
+      var node = murrix.cache.addNodeData(nodeData);
+
+      $(".modal").modal('hide');
+
+      if (!self.editPersonGoto)
+      {
+        self.editPersonComplete(node);
+      }
+      else
+      {
+        self.editPersonGoto(node);
+      }
+
+      self.editPersonGoto = false;
+      self.editPersonNode(false);
+      self.editPersonName("");
+      self.editPersonBirthname("");
+      self.editPersonDescription("");
+      self.editPersonGender("male");
+    });
+  };
+
+
+
+  /* Edit Album */
+  self.editAlbumGoto = false;
+  self.editAlbumNode = ko.observable(false);
+  self.editAlbumName = ko.observable("");
+  self.editAlbumDescription = ko.observable("");
+  self.editAlbumLoading = ko.observable(false);
+  self.editAlbumErrorText = ko.observable("");
+
+  self.editAlbumNewOpen = function()
+  {
+    self.editAlbumOpen();
+  };
+
+  self.editAlbumOpen = function(callback)
+  {
+    self.editAlbumGoto = false;
+    self.editAlbumNode(false);
+    self.editAlbumName("");
+    self.editAlbumDescription("");
+
+    if (callback)
+    {
+      self.editAlbumGoto = callback;
+    }
+
+    $("#editAlbumModal").modal('show');
+  };
+
+  self.editAlbumComplete = function(node)
+  {
+    document.location.hash = murrix.createPath(0, "node", node._id());
+
+    $("#createNodeDoneModal").modal('show');
+  };
+
+  self.editAlbumSubmit = function()
+  {
+    self.editAlbumErrorText("");
+
+    if (self.editAlbumName() === "")
+    {
+      self.editAlbumErrorText("Name is empty!");
+      return;
+    }
+
+    var nodeData = {};
+
+    if (self.editAlbumNode() !== false)
+    {
+      nodeData = ko.mapping.toJS(self.editAlbumNode());
+    }
+
+    nodeData.type = "album";
+    nodeData.name = self.editAlbumName();
+    nodeData.description = self.editAlbumDescription();
+
+    self.editAlbumLoading(true);
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.editAlbumLoading(false);
+
+      if (error)
+      {
+        console.log(error);
+        self.editAlbumErrorText(error);
+        return;
+      }
+
+      var node = murrix.cache.addNodeData(nodeData);
+
+      $(".modal").modal('hide');
+
+      if (!self.editAlbumGoto)
+      {
+        self.editAlbumComplete(node);
+      }
+      else
+      {
+        self.editAlbumGoto(node);
+      }
+
+      self.editAlbumGoto = false;
+      self.editAlbumNode(false);
+      self.editAlbumName("");
+      self.editAlbumDescription("");
+    });
+  };
+
 
 
   /* Creating */

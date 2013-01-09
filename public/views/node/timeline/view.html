@@ -60,7 +60,15 @@
   </div>
   <div class="modal-body">
     <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="value: nodeModel.timelineModel.textItemEditName, disable: nodeModel.timelineModel.textItemEditLoading"/>
-     <textarea placeholder="Text" name="text" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="value: nodeModel.timelineModel.textItemEditText, disable: nodeModel.timelineModel.textItemEditLoading"></textarea>
+    <textarea placeholder="Text" name="text" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="value: nodeModel.timelineModel.textItemEditText, disable: nodeModel.timelineModel.textItemEditLoading"></textarea>
+
+    <div class="btn-group" style="margin-top: 10px;">
+      <button type="button" class="btn" data-bind="click: nodeModel.timelineModel.textItemEditTypeSetNone, css: { active: nodeModel.timelineModel.textItemEditType() === false }, disable: nodeModel.textItemEditLoading">None</button>
+      <button type="button" class="btn" data-bind="click: nodeModel.timelineModel.textItemEditTypeSetBirth, css: { active: nodeModel.timelineModel.textItemEditType() === 'birth' }, disable: nodeModel.textItemEditLoading">Birth</button>
+      <button type="button" class="btn" data-bind="click: nodeModel.timelineModel.textItemEditTypeSetEngagement, css: { active: nodeModel.timelineModel.textItemEditType() === 'engagement' }, disable: nodeModel.textItemEditLoading">Engagement</button>
+      <button type="button" class="btn" data-bind="click: nodeModel.timelineModel.textItemEditTypeSetMarriage, css: { active: nodeModel.timelineModel.textItemEditType() === 'marriage' }, disable: nodeModel.textItemEditLoading">Marriage</button>
+    </div>
+
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.timelineModel.textItemEditErrorText() != '', text: nodeModel.timelineModel.textItemEditErrorText"></p>

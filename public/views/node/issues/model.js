@@ -32,13 +32,29 @@ var IssuesModel = function(parentModel)
       self.checkDuplicateFiles();
       self.checkEmptyAlbum();
       self.checkIfPersonHasBirth();
+      self.checkAccesses();
     }
   });
 
 
-  self.doIssueAction = function(issue)
+  self.checkAccesses = function()
   {
-    console.log(issue);
+    if (parentModel.node() === false || parentModel.node()._readers().length > 0 || parentModel.node()._admins().length > 0)
+    {
+      return;
+    }
+
+    var issue = {};
+
+    issue.title = ko.observable("No groups with access found!");
+    issue.description = ko.observable("This node is readable to you only since you are the administrator or the creator of the node, do not forget to give access to the wanted groups.");
+    issue.actionTitle = ko.observable("Give a group access?");
+    issue.action = function()
+    {
+      $("#editAccessModal").modal('show');
+    };
+
+    self.issues.push(issue);
   };
 
   self.checkIfPersonHasBirth = function()
@@ -59,13 +75,20 @@ var IssuesModel = function(parentModel)
       }
     }
 
-    var issue = {};
-    issue.action = ko.observable("addBirthEvent");
-    issue.actionTitle = ko.observable("Add birth event?");
-    issue.title = ko.observable("No birth event found!");
-    issue.description = ko.observable("This person has no birth event associated with it, everyone has a birth date, this should be added!");
+    if (!found)
+    {
+      var issue = {};
 
-    self.issues.push(issue);
+      issue.title = ko.observable("No birth event found!");
+      issue.description = ko.observable("This person has no birth event associated with it, everyone has a birth date, this should be added!");
+      issue.actionTitle = ko.observable("Add birth event?");
+      issue.action = function()
+      {
+        murrix.model.nodeModel.timelineModel.textItemEditOpenType("birth");
+      };
+
+      self.issues.push(issue);
+    }
   };
 
   self.checkEmptyAlbum = function()
@@ -76,10 +99,14 @@ var IssuesModel = function(parentModel)
     }
 
     var issue = {};
-    issue.action = ko.observable("removeEmptyAlbum");
-    issue.actionTitle = ko.observable("Remove album?");
+
     issue.title = ko.observable("Empty album!");
     issue.description = ko.observable("No items found for this item, it should be removed or have something added to it!");
+    issue.actionTitle = ko.observable("Remove album?");
+    issue.action = function()
+    {
+      // TODO:
+    };
 
     self.issues.push(issue);
   };
@@ -88,13 +115,7 @@ var IssuesModel = function(parentModel)
   {
     var checkedFiles = [];
     var foundFiles = {};
-
-    var issue = {};
-    issue.action = ko.observable("removeDuplicateItems");
-    issue.actionTitle = ko.observable("Remove all duplicates?");
-    issue.ids = ko.observableArray();
-    issue.title = ko.observable("Duplicate files found!");
-    issue.description = ko.observable("");
+    var ids = [];
 
     for (var n = 0; n < parentModel.items().length; n++)
     {
@@ -107,7 +128,7 @@ var IssuesModel = function(parentModel)
 
       if (murrix.inArray(checksum, checkedFiles))
       {
-        issue.ids.push(parentModel.items()[n]._id());
+        ids.push(parentModel.items()[n]._id());
       }
       else
       {
@@ -116,9 +137,17 @@ var IssuesModel = function(parentModel)
       }
     }
 
-    if (issue.ids().length > 0)
+    if (ids.length > 0)
     {
-      issue.description(issue.ids().length + " files were found to be duplicates and should be removed!");
+      var issue = {};
+
+      issue.title = ko.observable("Duplicate files found!");
+      issue.description = ko.observable(ids.length + " files were found to be duplicates and should be removed!");
+      issue.actionTitle = ko.observable("Remove all duplicates?");
+      issue.action = function()
+      {
+        // TODO:
+      };
 
       self.issues.push(issue);
     }

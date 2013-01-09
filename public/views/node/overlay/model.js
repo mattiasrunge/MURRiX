@@ -884,21 +884,21 @@ var OverlayModel = function(parentModel)
               takenIds.push(node._id());
             }
           }
-console.log(list);
+
           self.withOther(list);
         });
       }
     }
-console.log(list);
+
     self.withOther(list);
   });
 
   self.withCreateFromExif = function()
   {
-    parentModel.editCameraOpen(self.item().exif.Model(), function(node)
+    parentModel.editCameraOpen(function(node)
     {
       self.withSet(node._id());
-    });
+    }, self.item().exif.Model());
   };
 
   self.whereOther = ko.computed(function()
@@ -930,6 +930,31 @@ console.log(list);
 
     return ko.observableArray(list);
   });
+
+
+  self.showingCreatePerson = function()
+  {
+    parentModel.editPersonOpen(function(node)
+    {
+      self.showingAdd({ _id: node._id() });
+    });
+  };
+
+  self.showingCreateVehicle = function()
+  {
+    parentModel.editVehicleOpen(function(node)
+    {
+      self.showingAdd({ _id: node._id() });
+    });
+  };
+
+  self.showingCreateCamera = function()
+  {
+    parentModel.editCameraOpen(function(node)
+    {
+      self.showingAdd({ _id: node._id() });
+    });
+  };
 
   self.showingAdd = function(showingItem)
   {
@@ -972,6 +997,7 @@ console.log(list);
 
     self.saveItem(itemData, true);
   };
+
 
   self.whoRemove = function()
   {

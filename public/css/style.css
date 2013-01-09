@@ -387,18 +387,18 @@ input, textarea {
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
-  -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-          border-radius: 6px;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
 }
 
 .nodeBox img {
-  -webkit-border-radius-top-left: 6px;
-     -moz-border-radius-top-left: 6px;
-          border-radius-top-left: 6px;
-  -webkit-border-radius-top-right: 6px;
-     -moz-border-radius-top-right: 6px;
-          border-radius-top-right: 6px;
+  -webkit-border-radius-top-left: 3px;
+     -moz-border-radius-top-left: 3px;
+          border-radius-top-left: 3px;
+  -webkit-border-radius-top-right: 3px;
+     -moz-border-radius-top-right: 3px;
+          border-radius-top-right: 3px;
 }
 
 .modal-backdrop {

@@ -27,6 +27,18 @@
   </div>
 </script>
 
+<script type="text/html" id="nodePersonItemTemplate">
+  <div data-bind="if: $data.id() !== false">
+    <div class="media" style="background-color: whiteSmoke; border: 1px solid #E5E5E5; padding: 5px; margin-right: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">
+      <img class="pull-left media-object" draggable="false" src="" alt="" style="width: 44px; height: 44px;" data-bind="srcNodeProfilePicture: [ $data.id(), 80, 80, 1 ]"/>
+      <div class="media-body">
+        <a class="pull-right" href="#" data-bind="click: $data.remove"><i class="icon-trash"></i></a>
+        <h4 class="media-heading" data-bind="textNodeAttribute: [ $data.id(), 'name' ]"></h4>
+      </div>
+    </div>
+  </div>
+</script>
+
 <div class="sidebar-nav" data-bind="slideVisible: nodeModel.show() && nodeModel.node() && !nodeModel.loadingNode(), if: nodeModel.node() !== false">
 
   <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
@@ -199,50 +211,48 @@
   </div>
 </div>
 
-<form class="modal" id="createAlbumModal" tabindex="-1" role="dialog" aria-labelledby="createAlbumModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
+
+
+<form class="modal" id="editAlbumModal" tabindex="-1" role="dialog" aria-labelledby="editAlbumModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.editAlbumSubmit">
   <div class="modal-header">
-    <button data-bind="disable: nodeModel.createLoading" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createAlbumModalLabel">Create an album</h3>
+    <button data-bind="disable: nodeModel.editAlbumLoading" type="editAlbumModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 data-bind="visible: nodeModel.editAlbumNode() === false">Create a album</h3>
+    <h3 data-bind="visible: nodeModel.editAlbumNode() !== false">Edit album</h3>
   </div>
   <div class="modal-body">
-    <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
-    <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
-    <input type="hidden" name="type" value="album" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+    <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editAlbumLoading, value: nodeModel.editAlbumName"/>
+    <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editAlbumLoading, value: nodeModel.editAlbumDescription"></textarea>
   </div>
   <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
+    <p class="pull-left text-error" data-bind="visible: nodeModel.editAlbumErrorText() != '', text: nodeModel.editAlbumErrorText"></p>
+    <button data-bind="disable: nodeModel.editAlbumLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.editAlbumLoading" class="btn btn-primary" type="submit">Save</button>
   </div>
 </form>
 
-<form class="modal" id="createPersonModal" tabindex="-1" role="dialog" aria-labelledby="createPersonModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
+<form class="modal" id="editPersonModal" tabindex="-1" role="dialog" aria-labelledby="editPersonModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.editPersonSubmit">
   <div class="modal-header">
-    <button data-bind="disable: nodeModel.createLoading" type="createPersonModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createAlbumModalLabel">Create a person</h3>
+    <button data-bind="disable: nodeModel.editPersonLoading" type="editPersonModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 data-bind="visible: nodeModel.editPersonNode() === false">Create a person</h3>
+    <h3 data-bind="visible: nodeModel.editPersonNode() !== false">Edit person</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
-      <input placeholder="Birthname" type="text" name="birthname" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
-      <p>
-        <label class="radio inline">
-          <input type="radio" name="gender" value="male" checked>
-          Male
-        </label>
-        <label class="radio inline">
-          <input type="radio" name="gender" value="female">
-          Female
-        </label>
-      </p>
-      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
-      <input type="hidden" name="type" value="person" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+    <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editPersonLoading, value: nodeModel.editPersonName"/>
+    <input placeholder="Birthname" type="text" style="width: 515px;" data-bind="disable: nodeModel.editPersonLoading, value: nodeModel.editPersonBirthname"/>
+    <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editPersonLoading, value: nodeModel.editPersonDescription"></textarea>
+
+    <div class="btn-group">
+      <button type="button" class="btn" data-bind="click: nodeModel.editPersonMaleClicked, css: { active: nodeModel.editPersonGender() === 'male' }, disable: nodeModel.editPersonLoading">Male</button>
+      <button type="button" class="btn" data-bind="click: nodeModel.editPersonFemaleClicked, css: { active: nodeModel.editPersonGender() === 'female' }, disable: nodeModel.editPersonLoading">Female</button>
+    </div>
   </div>
   <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
+    <p class="pull-left text-error" data-bind="visible: nodeModel.editPersonErrorText() != '', text: nodeModel.editPersonErrorText"></p>
+    <button data-bind="disable: nodeModel.editPersonLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.editPersonLoading" class="btn btn-primary" type="submit">Save</button>
   </div>
 </form>
+
 
 <form class="modal" id="createLocationModal" tabindex="-1" role="dialog" aria-labelledby="createLocationModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
@@ -263,13 +273,17 @@
 
 <form class="modal" id="editCameraModal" tabindex="-1" role="dialog" aria-labelledby="editCameraModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.editCameraSubmit">
   <div class="modal-header">
-    <button data-bind="disable: nodeModel.editCameraLoading" type="createCameraModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createAlbumModalLabel" data-bind="nodeModel.editCameraNode() === false">Create a camera</h3>
-    <h3 id="createAlbumModalLabel" data-bind="nodeModel.editCameraNode() !== false">Edit camera</h3>
+    <button data-bind="disable: nodeModel.editCameraLoading" type="editCameraModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 data-bind="visible: nodeModel.editCameraNode() === false">Create a camera</h3>
+    <h3 data-bind="visible: nodeModel.editCameraNode() !== false">Edit camera</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraName"/>
-      <textarea placeholder="Description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraDescription"></textarea>
+    <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraName"/>
+    <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraDescription"></textarea>
+
+    <input placeholder="Search for owner" type="text" id="editCameraOwnerInput" name="editCameraOwnerInput" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading" data-provide="typesearch"/>
+
+    <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: nodeModel.editCameraOwner, remove: nodeModel.editCameraClearOwner } }"></div>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.editCameraErrorText() != '', text: nodeModel.editCameraErrorText"></p>
@@ -278,20 +292,24 @@
   </div>
 </form>
 
-<form class="modal" id="createVehicleModal" tabindex="-1" role="dialog" aria-labelledby="createVehicleModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
+<form class="modal" id="editVehicleModal" tabindex="-1" role="dialog" aria-labelledby="editVehicleModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.editVehicleSubmit">
   <div class="modal-header">
-    <button data-bind="disable: nodeModel.createLoading" type="createVehicleModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createAlbumModalLabel">Create a vehicle</h3>
+    <button data-bind="disable: nodeModel.editVehicleLoading" type="editVehicleModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 data-bind="visible: nodeModel.editVehicleNode() === false">Create a vehicle</h3>
+    <h3 data-bind="visible: nodeModel.editVehicleNode() !== false">Edit vehicle</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
-      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
-      <input type="hidden" name="type" value="vechicle" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+    <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editVehicleLoading, value: nodeModel.editVehicleName"/>
+    <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editVehicleLoading, value: nodeModel.editVehicleDescription"></textarea>
+
+    <input placeholder="Search for owner" type="text" id="editVehicleOwnerInput" name="editVehicleOwnerInput" style="width: 515px;" data-bind="disable: nodeModel.editVehicleLoading" data-provide="typesearch"/>
+
+    <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: nodeModel.editVehicleOwner, remove: nodeModel.editVehicleClearOwner } }"></div>
   </div>
   <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
+    <p class="pull-left text-error" data-bind="visible: nodeModel.editVehicleErrorText() != '', text: nodeModel.editVehicleErrorText"></p>
+    <button data-bind="disable: nodeModel.editVehicleLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.editVehicleLoading" class="btn btn-primary" type="submit">Save</button>
   </div>
 </form>
 

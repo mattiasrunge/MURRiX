@@ -26,7 +26,7 @@
           </div>
 
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
-            <video class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;"  preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().exif.ImageHeight ]" src="" alt=""></video>
+            <video class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().exif.ImageHeight ]" src="" alt=""></video>
           </div>
         </div>
 
@@ -79,6 +79,11 @@
         </table>
 
         <h5>Tag someone or something</h5>
+        <div class="btn-group" style="margin-bottom: 10px;">
+          <button style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.showingCreatePerson">Create person</button>
+          <button style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.showingCreateVehicle">Create vehicle</button>
+          <button style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.showingCreateCamera">Create camera</button>
+        </div>
         <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
         <form data-bind="submit: dummySubmit" style="margin: 0px; position: relative; height: 40px;">
           <input class="overlayNodeQuery" style="left: 0px; right: 0px; position: absolute;" placeholder="Enter search query..." type="text" id="showingInput" name="showingInput" data-bind="disable: nodeModel.overlayModel.editLoading" data-provide="typesearch"/>

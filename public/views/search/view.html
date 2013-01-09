@@ -31,15 +31,15 @@
       <div style="margin-bottom: 25px;">
        <form class="form-search" data-bind="submit: searchModel.searchSubmit">
           <div class="input-append">
-            <input style="padding-left: 15px;" class="input-xxlarge search-query" type="text" data-bind="value: searchModel.queryInput"><button class="btn" type="submit">Search</button>
+            <input style="padding-left: 15px;" class="input-xxlarge search-query" type="text" data-bind="value: searchModel.queryInput, disable: searchModel.loading"><button class="btn" type="submit" data-bind="disable: searchModel.loading">Search</button>
           </div>
           <div style="margin-top: 10px;">
             <div class="btn-group">
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypeAlbumClicked, css: { active: searchModel.searchTypeAlbum }"><i style="vertical-align: center;" class="icon-book"></i> Album</button>
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypePersonClicked, css: { active: searchModel.searchTypePerson }"><i style="vertical-align: center;" class="icon-user"></i> Person</button>
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypeLocationClicked, css: { active: searchModel.searchTypeLocation }"><i style="vertical-align: center;" class="icon-flag"></i> Location</button>
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypeCameraClicked, css: { active: searchModel.searchTypeCamera }"><i style="vertical-align: center;" class="icon-camera"></i> Camera</button>
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypeVehicleClicked, css: { active: searchModel.searchTypeVehicle }"><i style="vertical-align: center;" class="icon-plane"></i> Vehicle</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypeAlbumClicked, css: { active: searchModel.searchTypeAlbum }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-book"></i> Album</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypePersonClicked, css: { active: searchModel.searchTypePerson }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-user"></i> Person</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypeLocationClicked, css: { active: searchModel.searchTypeLocation }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-flag"></i> Location</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypeCameraClicked, css: { active: searchModel.searchTypeCamera }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-camera"></i> Camera</button>
+              <button type="button" class="btn" data-bind="click: searchModel.searchTypeVehicleClicked, css: { active: searchModel.searchTypeVehicle }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-plane"></i> Vehicle</button>
             </div>
 
           </div>

@@ -24,6 +24,32 @@ var TimelineModel = function(parentModel)
   self.textItemEditId = ko.observable(false);
   self.textItemEditName = ko.observable("");
   self.textItemEditText = ko.observable("");
+  self.textItemEditType = ko.observable(false);
+
+  self.textItemEditTypeSetNone = function()
+  {
+    self.textItemEditType(false);
+  };
+
+  self.textItemEditTypeSetBirth = function()
+  {
+    self.textItemEditType("birth");
+  };
+
+  self.textItemEditTypeSetEngagement = function()
+  {
+    self.textItemEditType("engagement");
+  };
+
+  self.textItemEditTypeSetMarriage = function()
+  {
+    self.textItemEditType("marriage");
+  };
+
+  self.textItemEditTypeSetDeath = function()
+  {
+    self.textItemEditType("death");
+  };
 
   self.textItemEditSubmit = function(form)
   {
@@ -37,6 +63,7 @@ var TimelineModel = function(parentModel)
 
         itemData.text = self.textItemEditText();
         itemData.name = self.textItemEditName();
+        itemData.type = self.textItemEditType();
 
         self.textItemEditSave(itemData);
       });
@@ -50,6 +77,7 @@ var TimelineModel = function(parentModel)
     itemData.when = { timestamp: false, source: false };
     itemData.text = self.textItemEditText();
     itemData.name = self.textItemEditName();
+    itemData.type = self.textItemEditType();
 
     self.textItemEditSave(itemData);
   };
@@ -81,6 +109,7 @@ var TimelineModel = function(parentModel)
       self.textItemEditId(false);
       self.textItemEditName("");
       self.textItemEditText("");
+      self.textItemEditType(false);
 
       $(".modal").modal('hide');
     });
@@ -94,8 +123,16 @@ var TimelineModel = function(parentModel)
 //     self.textItemEditTimezone(0);
 //     self.textItemEditDaylightSavings(false);
     self.textItemEditText(data.text());
+    self.textItemEditType(data.type ? data.type() : false);
 
-    $("#textItemEditModal").modal("show");
+    $("#textItemEditModal").modal('show');
+  };
+
+  self.textItemEditOpenType = function(type)
+  {
+    self.textItemEditType(type);
+
+    $("#textItemEditModal").modal('show');
   };
 
 };
