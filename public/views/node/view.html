@@ -180,15 +180,34 @@
   </div>
 </div>
 
+<div class="modal" id="createNodeDoneModal" tabindex="-1" role="dialog" aria-labelledby="createNodeDoneModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="createNodeDoneModalLabel">Created node successfully</h3>
+  </div>
+  <div class="modal-body">
+    <p>
+      Before continuing the following things should be considered:
+      <ul>
+        <li>Make sure to check the Access rights for the node so you give access to the groups you want.</li>
+        <li>Add tags relevant to this node.</li>
+      </ul>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" type="button" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+
 <form class="modal" id="createAlbumModal" tabindex="-1" role="dialog" aria-labelledby="createAlbumModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
     <button data-bind="disable: nodeModel.createLoading" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="createAlbumModalLabel">Create an album</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
-      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
-      <input type="hidden" name="type" value="album" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+    <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+    <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
+    <input type="hidden" name="type" value="album" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
@@ -242,20 +261,20 @@
   </div>
 </form>
 
-<form class="modal" id="createCameraModal" tabindex="-1" role="dialog" aria-labelledby="createCameraModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
+<form class="modal" id="editCameraModal" tabindex="-1" role="dialog" aria-labelledby="editCameraModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.editCameraSubmit">
   <div class="modal-header">
-    <button data-bind="disable: nodeModel.createLoading" type="createCameraModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="createAlbumModalLabel">Create a camera</h3>
+    <button data-bind="disable: nodeModel.editCameraLoading" type="createCameraModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="createAlbumModalLabel" data-bind="nodeModel.editCameraNode() === false">Create a camera</h3>
+    <h3 id="createAlbumModalLabel" data-bind="nodeModel.editCameraNode() !== false">Edit camera</h3>
   </div>
   <div class="modal-body">
-      <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
-      <textarea placeholder="Description" name="description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.createLoading"></textarea>
-      <input type="hidden" name="type" value="camera" style="width: 515px;" data-bind="disable: nodeModel.createLoading"/>
+      <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraName"/>
+      <textarea placeholder="Description" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraDescription"></textarea>
   </div>
   <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>
-    <button data-bind="disable: nodeModel.createLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button data-bind="disable: nodeModel.createLoading" class="btn btn-primary" type="submit">Create</button>
+    <p class="pull-left text-error" data-bind="visible: nodeModel.editCameraErrorText() != '', text: nodeModel.editCameraErrorText"></p>
+    <button data-bind="disable: nodeModel.editCameraLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button data-bind="disable: nodeModel.editCameraLoading" class="btn btn-primary" type="submit">Save</button>
   </div>
 </form>
 

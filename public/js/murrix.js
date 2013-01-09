@@ -223,34 +223,6 @@ murrix.cache = new function()
 //     }
   }
 
-  self.addNodeData = function(nodeData)
-  {
-    if (nodeData === false)
-    {
-      return false;
-    }
-
-    if (!self.nodes[nodeData._id])
-    {
-      console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
-
-      self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData);
-      self.nodesCount++;
-
-      self.extendNode(nodeData._id);
-    }
-    else
-    {
-      console.log("Node " + nodeData._id + " already cached updating cache...");
-
-      var hassubscribed = self.nodes[nodeData._id].comments ? true : false;
-
-      ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
-    }
-
-    return self.nodes[nodeData._id];
-  };
-
   self.extendItem = function(id)
   {
     self.items[id].comments = self.items[id].comments || ko.observableArray();
@@ -478,6 +450,32 @@ murrix.cache = new function()
     });
   };
 
+  self.addNodeData = function(nodeData)
+  {
+    if (nodeData === false)
+    {
+      return false;
+    }
+
+    if (!self.nodes[nodeData._id])
+    {
+     //console.log("Could not find mapped index, node is not cached, id " + nodeData._id);
+
+      self.nodes[nodeData._id] = ko.mapping.fromJS(nodeData);
+      self.nodesCount++;
+
+      self.extendNode(nodeData._id);
+    }
+    else
+    {
+     // console.log("Node " + nodeData._id + " already cached updating cache...");
+
+      ko.mapping.fromJS(nodeData, self.nodes[nodeData._id]);
+    }
+
+    return self.nodes[nodeData._id];
+  };
+
   self.addItemData = function(itemData)
   {
     if (itemData === false)
@@ -485,11 +483,9 @@ murrix.cache = new function()
       return false;
     }
 
-    itemData.comments = itemData.comments || [];
-
     if (!self.items[itemData._id])
     {
-      console.log("Could not find mapped index, item is not cached, id " + itemData._id);
+      //console.log("Could not find mapped index, item is not cached, id " + itemData._id);
 
       self.items[itemData._id] = ko.mapping.fromJS(itemData);
       self.itemsCount++;
@@ -498,7 +494,7 @@ murrix.cache = new function()
     }
     else
     {
-      console.log("Item " + itemData._id + " already cached updating cache...");
+      //console.log("Item " + itemData._id + " already cached updating cache...");
 
       ko.mapping.fromJS(itemData, self.items[itemData._id]);
     }

@@ -303,6 +303,107 @@ var NodeModel = function(parentModel)
   };
 
 
+
+  /* Create Camera */
+  self.editCameraGoto = false;
+  self.editCameraNode = ko.observable(false);
+  self.editCameraName = ko.observable("");
+  self.editCameraDescription = ko.observable("");
+  self.editCameraOwner = ko.observable("");
+  self.editCameraLoading = ko.observable(false);
+  self.editCameraErrorText = ko.observable("");
+
+  self.editCameraNewOpen = function()
+  {
+    self.editCameraOpen();
+  };
+
+  self.editCameraOpen = function(name, callback)
+  {
+    self.editCameraGoto = false;
+    self.editCameraNode(false);
+    self.editCameraName("");
+    self.editCameraDescription("");
+    self.editCameraOwner("");
+
+    if (name)
+    {
+      self.editCameraName(name);
+    }
+
+    if (callback)
+    {
+      self.editCameraGoto = callback;
+    }
+
+    $("#editCameraModal").modal('show');
+  };
+
+  self.editCameraComplete = function(node)
+  {
+    document.location.hash = murrix.createPath(0, "node", node._id());
+
+    $("#createNodeDoneModal").modal('show');
+  };
+
+  self.editCameraSubmit = function()
+  {
+    self.editCameraErrorText("");
+
+    if (self.editCameraName() === "")
+    {
+      self.editCameraErrorText("Name is empty!");
+      return;
+    }
+
+    var nodeData = {};
+
+    if (self.editCameraNode() !== false)
+    {
+      nodeData = ko.mapping.toJS(self.editCameraNode());
+    }
+
+    nodeData.type = "camera";
+
+    nodeData.name = self.editCameraName();
+    nodeData.description = self.editCameraDescription();
+    nodeData._owner = self.editCameraOwner();
+
+    self.editCameraLoading(true);
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.editCameraLoading(false);
+
+      if (error)
+      {
+        console.log(error);
+        self.editCameraErrorText(error);
+        return;
+      }
+
+      var node = murrix.cache.addNodeData(nodeData);
+
+      $(".modal").modal('hide');
+
+      if (!self.editCameraGoto)
+      {
+        self.editCameraComplete(node);
+      }
+      else
+      {
+        self.editCameraGoto(node);
+      }
+
+      self.editCameraGoto = false;
+      self.editCameraNode(false);
+      self.editCameraName("");
+      self.editCameraDescription("");
+      self.editCameraOwner("");
+    });
+  };
+
+
   /* Creating */
   self.createLoading = ko.observable(false);
   self.createErrorText = ko.observable("");
@@ -337,6 +438,8 @@ var NodeModel = function(parentModel)
         $(".modal").modal('hide');
 
         document.location.hash = murrix.createPath(0, "node", node._id());
+
+        $("#createNodeDoneModal").modal('show');
       });
     }
   };

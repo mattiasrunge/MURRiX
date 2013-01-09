@@ -57,6 +57,13 @@ murrix.model = function()
     });
   };
 
+  $(window).unload(function()
+  {
+    console.log("Leaving page, will clear cache!");
+    murrix.cache.clear();
+    nodeModel.node(false);
+  });
+
   $("form.modal").on("show", function(form)
   {
     //murrix.resetForm(form.target);

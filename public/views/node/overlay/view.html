@@ -13,7 +13,7 @@
 </div>
 
 
-<div class="modal-backdrop" style="opacity: 1; background-color: whiteSmoke;" data-bind="fadeVisible: nodeModel.overlayModel.show"></div>
+<div style="background-color: whiteSmoke; position: fixed; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 1040;" data-bind="fadeVisible: nodeModel.overlayModel.show"></div>
 <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;"></div>
 
 <div style="position: absolute; top: 0px; left: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show">
@@ -175,12 +175,16 @@
                   Camera make
                 </td>
                 <td data-bind="text: nodeModel.overlayModel.item().exif.Make"></td>
+                <td></td>
               </tr>
               <tr>
                 <td>
                   Camera model
                 </td>
                 <td data-bind="text: nodeModel.overlayModel.item().exif.Model"></td>
+                <td>
+                  <button class="btn btn-link btn-mini" data-bind="click: nodeModel.overlayModel.withCreateFromExif">Create camera</button>
+                </td>
               </tr>
             </tbody>
           </table>

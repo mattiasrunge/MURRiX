@@ -835,7 +835,10 @@ var OverlayModel = function(parentModel)
     return ko.observableArray(list);
   });
 
-  self.withOther = ko.computed(function()
+
+  self.withOther = ko.observableArray();
+
+  self.withOther2 = ko.computed(function()
   {
     var list = [];
     var takenIds = [];
@@ -860,10 +863,43 @@ var OverlayModel = function(parentModel)
           takenIds.push(parentModel.items()[n]._with());
         }
       }
-    }
 
-    return ko.observableArray(list);
+      if (self.item().exif && self.item().exif.Model)
+      {
+        murrix.server.emit("find", { query: { name: self.item().exif.Model(), type: "camera" }, options: "nodes" }, function(error, nodeDataList)
+        {
+          if (error)
+          {
+            console.log(error);
+            return;
+          }
+
+          for (var n in nodeDataList)
+          {
+            var node = murrix.cache.addNodeData(nodeDataList[n]);
+
+            if (!murrix.inArray(node._id(), takenIds))
+            {
+              list.push(node._id());
+              takenIds.push(node._id());
+            }
+          }
+console.log(list);
+          self.withOther(list);
+        });
+      }
+    }
+console.log(list);
+    self.withOther(list);
   });
+
+  self.withCreateFromExif = function()
+  {
+    parentModel.editCameraOpen(self.item().exif.Model(), function(node)
+    {
+      self.withSet(node._id());
+    });
+  };
 
   self.whereOther = ko.computed(function()
   {

@@ -71,7 +71,7 @@
 }
 
 .typeahead {
-  z-index: 2061;
+  z-index: 4061;
 }
 
 .thumbnail-picture {
@@ -195,12 +195,12 @@
 }
 
 .main-overlay-centered-form {
-  
+
 }
 
 div.inlineEdit,
 span.inlineEdit {
-  
+
 }
 
 input.inlineEdit,
@@ -399,5 +399,17 @@ input, textarea {
   -webkit-border-radius-top-right: 6px;
      -moz-border-radius-top-right: 6px;
           border-radius-top-right: 6px;
+}
+
+.modal-backdrop {
+  z-index: 3040;
+}
+
+.modal {
+  z-index: 3050;
+}
+
+.btn-link {
+  text-align: left;
 }
 
