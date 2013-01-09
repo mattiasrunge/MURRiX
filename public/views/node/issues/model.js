@@ -27,14 +27,61 @@ var IssuesModel = function(parentModel)
   {
     self.issues.removeAll();
 
-    self.checkDuplicateFiles();
-
+    if (!parentModel.itemsLoading())
+    {
+      self.checkDuplicateFiles();
+      self.checkEmptyAlbum();
+      self.checkIfPersonHasBirth();
+    }
   });
 
 
   self.doIssueAction = function(issue)
   {
     console.log(issue);
+  };
+
+  self.checkIfPersonHasBirth = function()
+  {
+    var found = false;
+
+    if (parentModel.node() === false || parentModel.node().type() !== "person")
+    {
+      return;
+    }
+
+    for (var n = 0; n < parentModel.items().length; n++)
+    {
+      if (parentModel.items()[n].what() === "text" && parentModel.items()[n].type && parentModel.items()[n].type() === "birth")
+      {
+        found = true;
+        break;
+      }
+    }
+
+    var issue = {};
+    issue.action = ko.observable("addBirthEvent");
+    issue.actionTitle = ko.observable("Add birth event?");
+    issue.title = ko.observable("No birth event found!");
+    issue.description = ko.observable("This person has no birth event associated with it, everyone has a birth date, this should be added!");
+
+    self.issues.push(issue);
+  };
+
+  self.checkEmptyAlbum = function()
+  {
+    if (parentModel.items().length > 0 || parentModel.node() === false || parentModel.node().type() !== "album")
+    {
+      return;
+    }
+
+    var issue = {};
+    issue.action = ko.observable("removeEmptyAlbum");
+    issue.actionTitle = ko.observable("Remove album?");
+    issue.title = ko.observable("Empty album!");
+    issue.description = ko.observable("No items found for this item, it should be removed or have something added to it!");
+
+    self.issues.push(issue);
   };
 
   self.checkDuplicateFiles = function()

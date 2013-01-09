@@ -18,6 +18,7 @@ var NodeModel = function(parentModel)
 
   self.node = ko.observable(false);
   self.items = ko.observableArray();
+  self.itemsLoading = ko.observable(false);
 
   self.firstDatetime = false;
   self.lastDatetime = false;
@@ -92,8 +93,12 @@ var NodeModel = function(parentModel)
         }
       };
 
+      self.itemsLoading(true);
+
       murrix.server.emit("find", { query: query, options: "items" }, function(error, itemDataList)
       {
+        self.itemsLoading(false);
+
         if (error)
         {
           console.log(error);
