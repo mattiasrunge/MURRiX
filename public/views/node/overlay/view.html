@@ -85,9 +85,8 @@
           <button style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.showingCreateCamera">Create camera</button>
         </div>
         <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
-        <form data-bind="submit: dummySubmit" style="margin: 0px; position: relative; height: 40px;">
-          <input class="overlayNodeQuery" style="left: 0px; right: 0px; position: absolute;" placeholder="Enter search query..." type="text" id="showingInput" name="showingInput" data-bind="disable: nodeModel.overlayModel.editLoading" data-provide="typesearch"/>
-        </form>
+
+        <input placeholder="Search for someone or something..." type="text" style="width: 318px;" data-bind="disable: nodeModel.overlayModel.editLoading, typeahead: { source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.overlayModel.showingTypeaheadUpdater, nodeTypes: [ 'person', 'vehicle', 'camera' ], nodeFilter: nodeModel.overlayModel.showingTypeaheadFilter }" data-provide="typeahead"/>
 
         <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item()">
           <tbody data-bind="foreach: nodeModel.overlayModel.showingOther">
@@ -129,9 +128,8 @@
 
         <h5>Select a person</h5>
         <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
-        <form data-bind="submit: dummySubmit" style="margin: 0px; position: relative; height: 40px;">
-          <input class="overlayNodeQuery" style="left: 0px; right: 0px; position: absolute;" placeholder="Enter search query..." type="text" id="whoInput" name="whoInput" data-bind="disable: nodeModel.overlayModel.editLoading" data-provide="typesearch"/>
-        </form>
+
+        <input placeholder="Search for person..." type="text" style="width: 318px;" data-bind="disable: nodeModel.overlayModel.editLoading, typeahead: { source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.overlayModel.whoTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.overlayModel.whoTypeaheadFilter }" data-provide="typeahead"/>
 
         <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item()">
           <tbody data-bind="foreach: nodeModel.overlayModel.whoOther">
@@ -197,9 +195,8 @@
 
         <h5>Select a camera</h5>
         <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
-        <form data-bind="submit: dummySubmit" style="margin: 0px; position: relative; height: 40px;">
-          <input class="overlayNodeQuery" style="left: 0px; right: 0px; position: absolute;" placeholder="Enter search query..." type="text" id="withInput" name="withInput" data-bind="disable: nodeModel.overlayModel.editLoading" data-provide="typesearch"/>
-        </form>
+
+        <input placeholder="Search for camera..." type="text" style="width: 318px;" data-bind="disable: nodeModel.overlayModel.editLoading, typeahead: { source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.overlayModel.withTypeaheadUpdater, nodeTypes: [ 'camera' ], nodeFilter: nodeModel.overlayModel.withTypeaheadFilter }" data-provide="typeahead"/>
 
         <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item()">
           <tbody data-bind="foreach: nodeModel.overlayModel.withOther">
@@ -434,9 +431,8 @@
 
         <h5>Select a location</h5>
         <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
-        <form data-bind="submit: dummySubmit" style="margin: 0px; position: relative; height: 40px;">
-          <input class="overlayNodeQuery" style="left: 0px; right: 0px; position: absolute;" placeholder="Enter search query..." type="text" id="whereInput" name="whereInput" data-bind="disable: nodeModel.overlayModel.editLoading" data-provide="typesearch"/>
-        </form>
+
+        <input placeholder="Search for location..." type="text" style="width: 318px;" data-bind="disable: nodeModel.overlayModel.editLoading, typeahead: { source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.overlayModel.whereTypeaheadUpdater, nodeTypes: [ 'location' ], nodeFilter: nodeModel.overlayModelwhereTypeaheadFilter }" data-provide="typeahead"/>
 
         <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item()">
           <tbody data-bind="foreach: nodeModel.overlayModel.whereOther">

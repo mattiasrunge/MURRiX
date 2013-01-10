@@ -103,7 +103,7 @@
         <div class="divider-vertical pull-right"></div>
 
         <form class="navbar-search pull-right" data-bind="fadeVisible: currentUser, submit: searchModel.searchSubmit">
-          <input type="text" class="search-query navbar-search-input" placeholder="Search" data-provide="typesearch" data-bind="value: searchModel.queryInput"/>
+          <input type="text" class="search-query" placeholder="Enter search query..." data-provide="typeahead" data-bind="value: searchModel.queryInput, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: adminModel.searchTypeaheadUpdater }"/>
         </form>
 
         <a class="nav pull-right" rel="tooltip" title="Go to search page" style="padding: 10px 15px 10px;" href="#search" data-placement="bottom" data-bind="fadeVisible: currentUser">

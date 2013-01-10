@@ -115,7 +115,14 @@ $(function()
   ko.bindingHandlers.typeahead = {
     update: function(element, valueAccessor)
     {
-      $(element).typeahead(valueAccessor());
+      var options = valueAccessor();
+
+      if (!options.sorter)
+      {
+        options.sorter = function(items) { return items; };
+      }
+
+      $(element).typeahead(options);
     }
   };
 

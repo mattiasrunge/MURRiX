@@ -125,7 +125,7 @@
     <input placeholder="Name" type="text" name="userSaveName" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, value: adminModel.userSaveName"/>
     <input placeholder="Username" type="text" name="userSaveUsername" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, value: adminModel.userSaveUsername"/>
 
-    <input placeholder="Search for person" type="text" id="adminUserPersonInput" name="adminUserPersonInput" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading" data-provide="typesearch"/>
+    <input placeholder="Search for person" type="text" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: adminModel.userSaveTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: adminModel.userSaveTypeaheadNodeFilter }" data-provide="typeahead"/>
 
     <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: adminModel.userSavePerson, remove: adminModel.userSaveClearPerson } }"></div>
   </div>

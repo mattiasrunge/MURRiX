@@ -65,7 +65,6 @@ var OverlayModel = function(parentModel)
 
       self.item(item);
       self.whenUpdateTimezone();
-      self.initializeOverlayNodeQuery();
       self.initializeOverlayMap();
 
       self.videoFile('/video?id=' + self.item()._id());
@@ -513,19 +512,16 @@ var OverlayModel = function(parentModel)
   self.showingEditClicked = function()
   {
     self.editType("showing");
-    self.initializeOverlayNodeQuery();
   };
 
   self.whoEditClicked = function()
   {
     self.editType("who");
-    self.initializeOverlayNodeQuery();
   };
 
   self.withEditClicked = function()
   {
     self.editType("with");
-    self.initializeOverlayNodeQuery();
   };
 
   self.whenEditClicked = function()
@@ -536,7 +532,6 @@ var OverlayModel = function(parentModel)
   self.whereEditClicked = function()
   {
     self.editType("where");
-    self.initializeOverlayNodeQuery();
     self.initializeOverlayMap();
   };
 
@@ -605,71 +600,59 @@ var OverlayModel = function(parentModel)
     });
   };
 
-  self.initializeOverlayNodeQuery = function()
+  self.whoTypeaheadFilter = function(item)
   {
-    $(".overlayNodeQuery").val("");
-
-    $(".overlayNodeQuery").typesearch({
-      source: function(query, callback)
-      {
-        murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { collection: "nodes" } }, function(error, nodeDataList)
-        {
-          if (error)
-          {
-            console.log(error);
-            callback([]);
-          }
-
-          var resultList = [];
-
-          for (var key in nodeDataList)
-          {
-            if (self.item().showing && murrix.inArray(nodeDataList[key]._id, self.item().showing()))
-            {
-              continue;
-            }
-
-            var imgUrl = "http://placekitten.com/g/32/32";
-
-            if (nodeDataList[key]._profilePicture)
-            {
-              imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
-            }
-
-            var item = {};
-            item.name = nodeDataList[key].name;
-            item.key = nodeDataList[key]._id;
-            item.html = "<li ><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
-
-            resultList.push(item);
-          }
-
-          callback(resultList);
-        });
-      },
-      selectFn: function(key)
-      {
-        $(".overlayNodeQuery").val("");
-
-        if (self.editType() === "showing")
-        {
-          self.showingAdd({ _id: key });
-        }
-        else if (self.editType() === "who")
-        {
-          self.whoSet(key);
-        }
-        else if (self.editType() === "with")
-        {
-          self.withSet(key);
-        }
-        else if (self.editType() === "where")
-        {
-          self.whereSet(key);
-        }
-      }
-    });
+    return (!self.item()._who || !self.item()._who._id || self.item()._who._id() != item._id());
   };
+
+  self.whoTypeaheadUpdater = function(key)
+  {
+    self.whoSet(key);
+  };
+
+  self.whereTypeaheadFilter = function(item)
+  {
+    return (!self.item()._where || !self.item()._where._id || self.item()._where._id() != item._id());
+  };
+
+  self.whereTypeaheadUpdater = function(key)
+  {
+    self.whereSet(key);
+  };
+
+  self.withTypeaheadFilter = function(item)
+  {
+    return (!self.item()._with || self.item()._with() != item._id());
+  };
+
+  self.withTypeaheadUpdater = function(key)
+  {
+    self.withSet(key);
+  };
+
+  self.showingTypeaheadFilter = function(item)
+  {
+    if (!self.item().showing)
+    {
+      return true;
+    }
+
+    for (var n = 0; n < self.item().showing().length; n++)
+    {
+      if (self.item().showing()[n]._id() === item._id())
+      {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  self.showingTypeaheadUpdater = function(key)
+  {
+    self.showingAdd({ _id: key });
+  };
+
 
   self.editFinishClicked = function()
   {
@@ -1099,7 +1082,6 @@ var OverlayModel = function(parentModel)
         self.item(item);
       }
 
-      self.initializeOverlayNodeQuery();
       self.initializeOverlayMap();
       self.whenUpdateTimezone();
     });

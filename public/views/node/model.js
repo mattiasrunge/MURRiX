@@ -236,39 +236,6 @@ var NodeModel = function(parentModel)
     return list;
   });
 
-  self.typeaheadPersonSource = function(query, callback)
-  {
-    murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" }, type: "person" }, options: { collection: "nodes" } }, function(error, nodeDataList)
-    {
-      if (error)
-      {
-        console.log(error);
-        callback([]);
-      }
-
-      var resultList = [];
-
-      for (var key in nodeDataList)
-      {
-        var imgUrl = "http://placekitten.com/g/32/32";
-
-        if (nodeDataList[key]._profilePicture)
-        {
-          imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
-        }
-
-        var item = {};
-        item.name = nodeDataList[key].name;
-        item.key = nodeDataList[key]._id;
-        item.html = "<li><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
-
-        resultList.push(item);
-      }
-
-      callback(resultList);
-    });
-  };
-
   self.nodeTypeaheadSource = function(query, callback)
   {
     var inst = this;
@@ -279,7 +246,7 @@ var NodeModel = function(parentModel)
       query.type = { $in: inst.options.nodeTypes };
     }
 
-    murrix.server.emit("find", { query: query, options: { collection: "nodes" } }, function(error, nodeDataList)
+    murrix.server.emit("find", { query: query, options: { collection: "nodes", limit: inst.options.limit + 5 } }, function(error, nodeDataList)
     {
       if (error)
       {
@@ -303,11 +270,6 @@ var NodeModel = function(parentModel)
 
       callback(resultList);
     });
-  };
-
-  self.nodeTypeaheadSorter = function(items)
-  {
-    return items;
   };
 
   self.nodeTypeaheadMatcher = function(item)

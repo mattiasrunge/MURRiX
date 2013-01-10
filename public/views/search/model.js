@@ -289,44 +289,9 @@ var SearchModel = function(parentModel)
     }
   };
 
-  $(".navbar-search-input").typesearch({
-    limit: 10,
-    source: function(query, callback)
-    {
-      murrix.server.emit("find", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { collection: "nodes", limit: 10 } }, function(error, nodeDataList)
-      {
-        if (error)
-        {
-          console.log(error);
-          callback([]);
-        }
-
-        var resultList = [];
-
-        for (var key in nodeDataList)
-        {
-          var imgUrl = "http://placekitten.com/g/32/32";
-
-          if (nodeDataList[key]._profilePicture)
-          {
-            imgUrl = "/preview?id=" + nodeDataList[key]._profilePicture + "&width=32&height=32&square=1";
-          }
-
-          var item = {};
-          item.name = nodeDataList[key].name;
-          item.key = nodeDataList[key]._id;
-          item.html = "<li ><a href='#'><img src='" + imgUrl + "'><span class='typesearch-name' style='margin-left: 20px'></span></a></li>";
-
-          resultList.push(item);
-        }
-
-        callback(resultList);
-      });
-    },
-    selectFn: function(key)
-    {
-      document.location.hash = "#node:" + key;
-    }
-  });
+  self.searchTypeaheadUpdater = function(key)
+  {
+    document.location.hash = "#node:" + key;
+  };
 
 };

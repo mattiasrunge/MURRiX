@@ -138,7 +138,7 @@
   </div>
   <div class="modal-body">
     <form data-bind="submit: dummySubmit" style="margin: 0px">
-      <input placeholder="Group name" type="text" style="width: 515px;" data-bind="disable: nodeModel.groupAccessLoading, value: nodeModel.groupAccessName, typeahead: { items: 20, source: nodeModel.groupAccessTypeaheadSource, sorter: nodeModel.nodeTypeaheadSorter, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.groupAccessTypeaheadHighlighter, updater: nodeModel.groupAccessTypeaheadUpdater }" data-provide="typeahead"/>
+      <input placeholder="Group name" type="text" style="width: 515px;" data-bind="disable: nodeModel.groupAccessLoading, value: nodeModel.groupAccessName, typeahead: { items: 10, source: nodeModel.groupAccessTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.groupAccessTypeaheadHighlighter, updater: nodeModel.groupAccessTypeaheadUpdater }" data-provide="typeahead"/>
     </form>
 
     <h4>Groups with accesses</h4>
@@ -264,7 +264,7 @@
     <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraName"/>
     <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraDescription"></textarea>
 
-    <input placeholder="Search for owner" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, typeahead: { items: 20, source: nodeModel.nodeTypeaheadSource, sorter: nodeModel.nodeTypeaheadSorter, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.editCameraTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.editCameraTypeaheadNodeFilter }" data-provide="typesearch"/>
+    <input placeholder="Search for owner" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.editCameraTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.editCameraTypeaheadNodeFilter }" data-provide="typeahead"/>
 
     <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: nodeModel.editCameraOwner, remove: nodeModel.editCameraClearOwner } }"></div>
   </div>
@@ -285,7 +285,7 @@
     <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editVehicleLoading, value: nodeModel.editVehicleName"/>
     <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editVehicleLoading, value: nodeModel.editVehicleDescription"></textarea>
 
-    <input placeholder="Search for owner" type="text" style="width: 515px;" data-bind="disable: nodeModel.editVehicleLoading, typeahead: { items: 20, source: nodeModel.nodeTypeaheadSource, sorter: nodeModel.nodeTypeaheadSorter, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.editVehicleTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.editVehicleTypeaheadNodeFilter }" data-provide="typesearch"/>
+    <input placeholder="Search for owner" type="text" style="width: 515px;" data-bind="disable: nodeModel.editVehicleLoading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.editVehicleTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.editVehicleTypeaheadNodeFilter }" data-provide="typeahead"/>
 
     <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: nodeModel.editVehicleOwner, remove: nodeModel.editVehicleClearOwner } }"></div>
   </div>

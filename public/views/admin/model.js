@@ -289,15 +289,6 @@ var AdminModel = function(parentModel)
   self.userSaveUsername = ko.observable("");
   self.userSavePerson = ko.observable(false);
 
-  $("#adminUserPersonInput").typesearch({
-    source: function(query, callback) { murrix.model.nodeModel.typeaheadPersonSource(query, callback); },
-    selectFn: function(key)
-    {
-      $("#adminUserPersonInput").val("");
-      self.userSavePerson(key);
-    }
-  });
-
   self.userSaveClearPerson = function()
   {
     self.userSavePerson(false);
@@ -380,6 +371,18 @@ var AdminModel = function(parentModel)
       });
     }
   };
+
+  self.userSaveTypeaheadUpdater = function(key)
+  {
+    self.userSavePerson(key);
+  };
+
+  self.userSaveTypeaheadNodeFilter = function(item)
+  {
+    return self.userSavePerson() !== item._id();
+  };
+
+
 
   self.changePasswordId = ko.observable(false);
   self.changePasswordLoading = ko.observable(false);
