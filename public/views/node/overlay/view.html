@@ -1,5 +1,5 @@
 <script type="text/html" id="imageWithMarkingsTemplate">
-  <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="srcItemPicture: item()._id" src="" alt="">
+
 </script>
 
 
@@ -22,11 +22,11 @@
     <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;" data-bind="if: nodeModel.overlayModel.item().what() === 'file'">
         <div class="imgContainer" style="position: relative; display: inline-block;">
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
-            <div data-bind="template: { name: 'imageWithMarkingsTemplate', data: nodeModel.overlayModel, afterRender: nodeModel.overlayModel.imageRemoved }"></div>
+            <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="srcItemPicture: nodeModel.overlayModel.item()._id" src="" alt="">
           </div>
 
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
-            <video class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().exif.ImageHeight ]" src="" alt=""></video>
+            <video class="overlayVideo" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().exif.ImageHeight ]" src="" alt=""></video>
           </div>
         </div>
 
@@ -454,6 +454,8 @@
           <a class="pull-right close" data-bind="hrefSecondSecondary: '', clickKey: 'esc'" style="font-size: 30px">×</a>
           <h3 data-bind="text: nodeModel.node().name"></h3>
 
+          <p style="font-size: 10px;" class="muted" data-bind="text: nodeModel.overlayModel.item().description"></p>
+
           <div style="margin-bottom: 10px;">
             <span class="dropdown">
               <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#" style="font-size: 10px;">
@@ -691,135 +693,151 @@
 
         </div>
 
-        <div class="accordion" id="overlayAccordion" style="height: 100%;">
-          <div class="accordion-group">
-            <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseDetails">
-                Details
-              </a>
-            </div>
-            <div id="overlayCollapseDetails" class="accordion-body collapse">
-              <div class="accordion-inner" style="padding: 10px;">
+        <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;">
+          <li class="active" style="margin-left: 10px;">
+            <a href="#overlayTabComments" data-toggle="tab">Comments<span data-bind="visible: nodeModel.overlayModel.item().comments().length > 0"> (<span data-bind="text: nodeModel.overlayModel.item().comments().length"></span>)</span></a>
+          </li>
+          <li>
+            <a href="#overlayTabDetails" data-toggle="tab">Details</a>
+          </li>
+          <li data-bind="visible: nodeModel.node().hasAdminAccess">
+            <a href="#overlayTabEdit" data-toggle="tab">Edit</a>
+          </li>
+        </ul>
 
-                <table class="table table-striped table-condensed">
+        <div class="tab-content">
+          <div class="tab-pane active" id="overlayTabComments">
+
+            <div style="margin: 0px 10px 10px 10px; font-size: 10px; padding-bottom: 10px; border-bottom: 1px solid #DDDDDD;">
+              <div class="media">
+                <img class="pull-left media-object" data-src=""  data-bind="srcUserProfilePicture: [ currentUser()._id(), 60, 60, 1 ]">
+                <div class="media-body">
+                  <blockquote style="margin: 0px; margin-bottom: 10px;">
+                    <textarea style="width: 227px; height: 50px; margin: 0px;" placeholder="Write a comment..." data-bind="disable: nodeModel.overlayModel.commentLoading, value: nodeModel.overlayModel.commentText"></textarea>
+                  </blockquote>
+                </div>
+              </div>
+              <button style="width: 330px;" type="submit" class="btn btn-mini btn-primary" data-bind="click: nodeModel.overlayModel.commentSubmit">Comment</button>
+            </div>
+
+            <!-- ko foreach: nodeModel.overlayModel.item().comments -->
+              <div style="margin: 0px 10px 0px 10px; font-size: 10px;">
+                <div class="media">
+                  <img class="pull-left media-object" data-src=""  data-bind="srcUserProfilePicture: [ $data.added._by(), 60, 60, 1 ]">
+                  <div class="media-body">
+                    <blockquote>
+                      <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
+                      <small><span data-bind="htmlTimeAgo: $data.added.timestamp"></span> by <span data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></span></small>
+                    </blockquote>
+                  </div>
+                </div>
+              </div>
+            <!-- /ko -->
+
+          </div>
+          <div class="tab-pane" id="overlayTabDetails">
+
+            <div style="margin: 0px 10px 10px 10px; font-size: 10px;">
+              <table class="table table-striped table-condensed">
+                  <tr>
+                    <td>Name</td>
+                    <td data-bind="text: nodeModel.overlayModel.item().name()"></td>
+                  </tr>
+                  <!-- ko if: nodeModel.overlayModel.item().exif -->
                     <tr>
-                      <td>Name</td>
-                      <td data-bind="text: nodeModel.overlayModel.item().name()"></td>
+                      <td>File size</td>
+                      <td data-bind="htmlSize: nodeModel.overlayModel.item().exif.FileSize()"></td>
                     </tr>
-                    <!-- ko if: nodeModel.overlayModel.item().exif -->
-                      <tr>
-                        <td>File size</td>
-                        <td data-bind="htmlSize: nodeModel.overlayModel.item().exif.FileSize()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.ImageWidth && nodeModel.overlayModel.item().exif.ImageHeight">
-                        <td>Resolution</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().exif.ImageHeight()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.Model">
-                        <td>Camera model</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.Model()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.Orientation">
-                        <td>Orientation</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.Orientation()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().angle">
-                        <td>Angle</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().angle()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().mirror">
-                        <td>Mirror</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().mirror()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.MIMEType">
-                        <td>MIME type</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.MIMEType()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.ISO">
-                        <td>ISO</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.ISO()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.FocalLength">
-                        <td>Focal length</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.FocalLength()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.ResolutionUnit">
-                        <td>Resolution unit</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.ResolutionUnit()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.Compression">
-                        <td>Compression</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.Compression()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.ColorSpace">
-                        <td>Color space</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.ColorSpace()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.ColorComponents">
-                        <td>Color components</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.ColorComponents()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.BitsPerSample">
-                        <td>Bits per sample</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.BitsPerSample()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.ComponentsConfiguration">
-                        <td>Components configuration</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.ComponentsConfiguration()"></td>
-                      </tr>
-                      <tr data-bind="if: nodeModel.overlayModel.item().exif.EncodingProcess">
-                        <td>Encoding process</td>
-                        <td data-bind="text: nodeModel.overlayModel.item().exif.EncodingProcess()"></td>
-                      </tr>
-                    <!-- /ko -->
-                </table>
-
-              </div>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.ImageWidth && nodeModel.overlayModel.item().exif.ImageHeight">
+                      <td>Resolution</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.ImageWidth() + 'x' + nodeModel.overlayModel.item().exif.ImageHeight()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().type">
+                      <td>Type</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().type()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.Make">
+                      <td>Camera make</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.Make()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.Model">
+                      <td>Camera model</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.Model()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.Orientation">
+                      <td>Orientation</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.Orientation()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().angle">
+                      <td>Angle</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().angle()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().mirror">
+                      <td>Mirror</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().mirror()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.MIMEType">
+                      <td>MIME type</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.MIMEType()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.ISO">
+                      <td>ISO</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.ISO()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.FocalLength">
+                      <td>Focal length</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.FocalLength()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.ResolutionUnit">
+                      <td>Resolution unit</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.ResolutionUnit()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.Compression">
+                      <td>Compression</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.Compression()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.ColorSpace">
+                      <td>Color space</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.ColorSpace()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.ColorComponents">
+                      <td>Color components</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.ColorComponents()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.BitsPerSample">
+                      <td>Bits per sample</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.BitsPerSample()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.ComponentsConfiguration">
+                      <td>Components configuration</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.ComponentsConfiguration()"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.EncodingProcess">
+                      <td>Encoding process</td>
+                      <td data-bind="text: nodeModel.overlayModel.item().exif.EncodingProcess()"></td>
+                    </tr>
+                  <!-- /ko -->
+              </table>
             </div>
+
           </div>
+          <div class="tab-pane" id="overlayTabEdit">
 
-          <div class="accordion-group">
-            <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#overlayAccordion" href="#overlayCollapseComments">
-                Comments<span data-bind="visible: nodeModel.overlayModel.item().comments().length > 0"> (<span data-bind="text: nodeModel.overlayModel.item().comments().length"></span>)</span>
-              </a>
-            </div>
-            <div id="overlayCollapseComments" class="accordion-body collapse in">
-              <div class="accordion-inner">
-
-                <div class="row-fluid">
-                  <div class="span2">
-                    <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ currentUser()._id(), 40, 40, 1 ]"/>
-                  </div>
-                  <blockquote class="span10">
-                    <form style="margin-bottom: 0px;" data-bind="submit: nodeModel.overlayModel.commentSubmit">
-                      <textarea style="width: 230px; height: 60px;" placeholder="Write a comment..." data-bind="disable: nodeModel.overlayModel.commentLoading, value: nodeModel.overlayModel.commentText"></textarea>
-                      <span class="text-error pull-left" data-bind="disable: nodeModel.overlayModel.commentLoading, text: nodeModel.overlayModel.commentErrorText"></span>
-                      <button type="submit" class="btn btn-mini btn-primary pull-right">Comment</button>
-                    </form>
-
-                  </blockquote>
-                </div>
-
-                <!-- ko foreach: nodeModel.overlayModel.item().comments -->
-
-                <div class="row-fluid">
-                  <div class="span2">
-                    <img src="" alt="" style="width: 40px; height: 40px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 40, 40, 1 ]"/>
-                  </div>
-                  <blockquote class="span10">
-                    <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
-                    <small><span data-bind="htmlTimeAgo: $data.added.timestamp"></span> by <a data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></a></small>
-                  </blockquote>
-                </div>
-
-                <!-- /ko -->
-
+            <div style="margin: 0px 10px 10px 10px; font-size: 10px;">
+              <button style="width: 328px; margin-bottom: 10px;" class="btn btn-small" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile', click: nodeModel.overlayModel.setThumbPosition">Set thumbnail position</button>
+              <div class="btn-group" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile' || nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
+                <button title="Rotate counter clockwise" style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.rotateLeft"><i class="icon-undo"></i></button>
+                <button title="Mirror" style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.mirror">Mirror</button>
+                <button title="Rotate clockwise" style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.rotateRight"><i class="icon-repeat"></i></button>
               </div>
+              <textarea style="width: 318px; height: 100px; margin-top: 10px;" placeholder="Description" data-bind="disable: nodeModel.overlayModel.editLoading, value: nodeModel.overlayModel.description"></textarea>
+              <button style="width: 330px;" class="btn btn-mini btn-primary" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.descriptionSave">Save description</button>
+              <span class="text-error" data-bind="visible: nodeModel.overlayModel.editErrorText() !== '', text: nodeModel.overlayModel.editErrorText"></span>
             </div>
-          </div>
 
+          </div>
         </div>
+
       </div>
     </div>
   <!-- /ko -->

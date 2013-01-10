@@ -428,6 +428,17 @@ io.sockets.on("connection", function(client)
   });
 
 
+  client.on("clearCache", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for MurrixMedia.clearCache!");
+      return;
+    }
+
+    MurrixMedia.clearCache(session, data, callback);
+  });
+
   client.on("detectFaces", function(data, callback)
   {
     if (!callback)

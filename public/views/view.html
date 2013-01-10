@@ -61,7 +61,7 @@
           <i style="vertical-align: baseline;" class="icon-book icon-white" data-bind="visible: nodeModel.node().type() === 'album'"></i>
           <i style="vertical-align: baseline;" class="icon-user icon-white" data-bind="visible: nodeModel.node().type() === 'person'"></i>
           <i style="vertical-align: baseline;" class="icon-camera icon-white" data-bind="visible: nodeModel.node().type() === 'camera'"></i>
-          <i style="vertical-align: baseline;" class="icon-plane icon-white" data-bind="visible: nodeModel.node().type() === 'vehicle'"></i>
+          <i style="vertical-align: baseline;" class="icon-truck icon-white" data-bind="visible: nodeModel.node().type() === 'vehicle'"></i>
           <i style="vertical-align: baseline;" class="icon-flag icon-white" data-bind="visible: nodeModel.node().type() === 'location'"></i>
         </span>
         <span data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se'"></span>
@@ -72,9 +72,8 @@
         <ul class="nav pull-right">
           <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-              <i class="icon-user icon-white"></i>
-              <span data-bind="ifnot: currentUser">Sign In</span>
-              <span data-bind="if: currentUser, text: currentUser().name"></span>
+              <span data-bind="ifnot: currentUser"><i class="icon-signin icon-white"></i> Sign In</span>
+              <span data-bind="if: currentUser"><i class="icon-user icon-white"></i> <span data-bind="text: currentUser().name"></span></span>
               <strong class="caret"></strong>
             </a>
             <ul class="dropdown-menu">
@@ -90,10 +89,10 @@
               </form>
 
               <div data-bind="visible: currentUser">
-                <li><a href="#admin" data-bind="visible: currentUser().admin">Administration</a></li>
-                <li><a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]">Me</a></li>
-                <li><a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)">Change password</a></li>
-                <li><a href="#" data-bind="click: adminModel.signOutClicked">Sign out</a></li>
+                <li><a href="#admin" data-bind="visible: currentUser().admin"><i class="icon-lock"></i> Administration</a></li>
+                <li><a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]"><i class="icon-user"></i> Me</a></li>
+                <li><a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)"><i class="icon-key"></i> Change password</a></li>
+                <li><a href="#" data-bind="click: adminModel.signOutClicked"><i class="icon-signout"></i> Sign out</a></li>
               </div>
 
             </ul>
@@ -103,24 +102,24 @@
         <div class="divider-vertical pull-right"></div>
 
         <form class="navbar-search pull-right" data-bind="fadeVisible: currentUser, submit: searchModel.searchSubmit">
-          <input type="text" class="search-query" placeholder="Enter search query..." data-provide="typeahead" data-bind="value: searchModel.queryInput, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: adminModel.searchTypeaheadUpdater }"/>
+          <input type="text" class="search-query" placeholder="Enter search query..." data-provide="typeahead" data-bind="value: searchModel.queryInput, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: searchModel.searchTypeaheadUpdater }"/>
         </form>
 
-        <a class="nav pull-right" rel="tooltip" title="Go to search page" style="padding: 10px 15px 10px;" href="#search" data-placement="bottom" data-bind="fadeVisible: currentUser">
+        <a class="nav pull-right" rel="tooltip" title="Go to search page" style="padding: 10px 15px 10px; color: white; text-decoration: none;" href="#search" data-placement="bottom" data-bind="fadeVisible: currentUser">
           <i class="icon-search icon-white"></i>
         </a>
 
-        <a class="nav pull-right" rel="tooltip" title="Go to start page" style="padding: 10px 15px 10px;" href="#" data-placement="bottom">
+        <a class="nav pull-right" rel="tooltip" title="Go to start page" style="padding: 10px 15px 10px; color: white; text-decoration: none;" href="#" data-placement="bottom">
           <i class="icon-home icon-white"></i>
         </a>
 
-        <a class="nav pull-right" rel="tooltip" data-bind="fadeVisible: currentUser, click: randomClicked" title="Go to random node" style="padding: 10px 15px 10px;" href="#"  data-placement="bottom">
+        <a class="nav pull-right" rel="tooltip" data-bind="fadeVisible: currentUser, click: randomClicked" title="Go to random node" style="padding: 10px 15px 10px; color: white; text-decoration: none;" href="#"  data-placement="bottom">
           <i class="icon-random icon-white"></i>
         </a>
 
         <ul class="nav pull-right" data-bind="visible: currentUser">
           <li class="dropdown">
-            <a class="dropdown-toggle" rel="tooltip" data-toggle="dropdown" href="#" data-placement="bottom">
+            <a class="dropdown-toggle" rel="tooltip" data-toggle="dropdown" href="#" data-placement="bottom" style="color: white;">
               <i class="icon-plus icon-white" title="Create new node"></i>
             </a>
             <ul class="dropdown-menu">
@@ -128,7 +127,7 @@
               <li><a href="#" data-bind="click: nodeModel.editPersonNewOpen"><i style="vertical-align: center;" class="icon-user"></i> Person</a></li>
               <li><a href="#createLocationModal" data-toggle="modal"><i style="vertical-align: center;" class="icon-flag"></i> Location</a></li>
               <li><a href="#" data-bind="click: nodeModel.editCameraNewOpen"><i style="vertical-align: center;" class="icon-camera"></i> Camera</a></li>
-              <li><a href="#" data-bind="click: nodeModel.editVehicleNewOpen"><i style="vertical-align: center;" class="icon-plane"></i> Vehicle</a></li>
+              <li><a href="#" data-bind="click: nodeModel.editVehicleNewOpen"><i style="vertical-align: center;" class="icon-truck"></i> Vehicle</a></li>
             </ul>
           </li>
         </ul>
@@ -161,15 +160,13 @@
       </span>
     </div>
 
-
-
-      <select data-bind="foreach: timezones, value: nodeModel.overlayModel.whenManualTimezone" class="input-medium">
-        <option data-bind="attr: { value: $data.offset }, text: $data.name"></option>
-      </select>
-      <label class="checkbox">
-        <input type="checkbox" data-bind="checked: nodeModel.overlayModel.whenManualDaylightSavings">
-        Daylight savings
-      </label>
+    <select data-bind="foreach: timezones, value: nodeModel.overlayModel.whenManualTimezone" class="input-medium">
+      <option data-bind="attr: { value: $data.offset }, text: $data.name"></option>
+    </select>
+    <label class="checkbox">
+      <input type="checkbox" data-bind="checked: nodeModel.overlayModel.whenManualDaylightSavings">
+      Daylight savings
+    </label>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: nodeModel.createErrorText() != '', text: nodeModel.createErrorText"></p>

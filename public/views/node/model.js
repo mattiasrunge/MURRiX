@@ -1000,6 +1000,7 @@ var NodeModel = function(parentModel)
   self.tagLoading = ko.observable(false);
   self.tagErrorText = ko.observable("");
   self.tagName = ko.observable("");
+  self.tagHasFocus = ko.observable(true);
 
   self.tagSaveNode = function(nodeData)
   {
@@ -1018,6 +1019,7 @@ var NodeModel = function(parentModel)
 
       self.tagName("");
       self.tagErrorText("");
+      self.tagHasFocus(true);
 
       murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
@@ -1037,7 +1039,7 @@ var NodeModel = function(parentModel)
       return;
     }
 
-    nodeData.tags.push(self.tagName());
+    nodeData.tags.push(self.tagName().toLowerCase().replace(/ /g, "_"));
 
     self.tagSaveNode(nodeData);
   };

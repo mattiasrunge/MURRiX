@@ -66,6 +66,7 @@ var OverlayModel = function(parentModel)
       self.item(item);
       self.whenUpdateTimezone();
       self.initializeOverlayMap();
+      self.description(self.item().description());
 
       self.videoFile('/video?id=' + self.item()._id());
     });
@@ -291,6 +292,72 @@ var OverlayModel = function(parentModel)
   self.editType = ko.observable("");
   self.editLoading = ko.observable(false);
   self.editErrorText = ko.observable("");
+
+  self.description = ko.observable("");
+  self.descriptionSave = function()
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.description = self.description();
+
+    self.saveItem(itemData, true);
+  };
+
+  self.setThumbPosition = function()
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.thumbPosition = $(".overlayVideo").get(0).currentTime;
+
+    self.saveItemClearCache(itemData);
+  };
+
+  self.rotateRight = function()
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    if (!itemData.angle)
+    {
+      itemData.angle = 0;
+    }
+
+    itemData.angle -= 90;
+
+    if (itemData.angle < 0)
+    {
+      itemData.angle = 270;
+    }
+
+    self.saveItemClearCache(itemData);
+  };
+
+  self.rotateLeft = function()
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    if (!itemData.angle)
+    {
+      itemData.angle = 0;
+    }
+
+    itemData.angle += 90;
+
+    if (itemData.angle > 270)
+    {
+      itemData.angle = 0;
+    }
+
+    self.saveItemClearCache(itemData);
+  };
+
+  self.mirror = function()
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.mirror = !itemData.mirror;
+
+    self.saveItemClearCache(itemData);
+  };
 
   self.whereLatitude = ko.observable("");
   self.whereLongitude = ko.observable("");
@@ -1084,6 +1151,41 @@ var OverlayModel = function(parentModel)
 
       self.initializeOverlayMap();
       self.whenUpdateTimezone();
+    });
+  };
+
+  self.saveItemClearCache = function(itemData)
+  {
+    self.editLoading(true);
+    self.editErrorText("");
+
+    murrix.server.emit("saveItem", itemData, function(error, itemData)
+    {
+      self.editLoading(false);
+
+      if (error)
+      {
+        self.editErrorText(error);
+        return;
+      }
+
+      var item = murrix.cache.addItemData(itemData);
+
+      self.initializeOverlayMap();
+      self.whenUpdateTimezone();
+
+      self.editLoading(true);
+
+      murrix.server.emit("clearCache", item._id(), function(error)
+      {
+        self.editLoading(false);
+
+        if (error)
+        {
+          self.editErrorText(error);
+          return;
+        }
+      });
     });
   };
 

@@ -8,7 +8,7 @@
         <i style="vertical-align: center;" class="icon-book" data-bind="visible: $data.type() === 'album'"></i>
         <i style="vertical-align: center;" class="icon-user" data-bind="visible: $data.type() === 'person'"></i>
         <i style="vertical-align: center;" class="icon-camera" data-bind="visible: $data.type() === 'camera'"></i>
-        <i style="vertical-align: center;" class="icon-plane" data-bind="visible: $data.type() === 'vehicle'"></i>
+        <i style="vertical-align: center;" class="icon-truck" data-bind="visible: $data.type() === 'vehicle'"></i>
         <i style="vertical-align: center;" class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
       </span>
       <h6 class="media-heading"><a href="#" style="cursor: pointer;" data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a></h6>
@@ -96,7 +96,7 @@
       <li data-bind="if: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
 
         <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px; margin-top: 10px;">
-          <input class="input-large" placeholder="Write tag name" type="text" data-bind="disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead"/>
+          <input class="input-large" placeholder="Write tag name" type="text" data-bind="hasfocus: nodeModel.tagHasFocus, disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead"/>
         </form>
 
       </li>
