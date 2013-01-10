@@ -39,13 +39,7 @@
   </div>
 </script>
 
-<script type="text/html" id="nodeTagInputTemplate">
-  <form data-bind="submit: $data.tagSubmit" style="margin: 0px; margin-top: 10px;">
-    <input id="tagNameInput" name="tagNameInput" class="input-large" placeholder="Write tag name" type="text" data-bind="disable: $data.tagLoading, value: $data.tagName" data-provide="typeahead"/>
-  </form>
-</script>
-
-<div class="sidebar-nav" data-bind="visible: nodeModel.show()">
+<div class="sidebar-nav" data-bind="visible: nodeModel.show() && nodeModel.node() !== false">
   <!-- ko if: nodeModel.node() !== false -->
     <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
       <div draggable="false" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: (nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()) && nodeModel.node().hasAdminAccess()">
@@ -100,14 +94,18 @@
         </a>
       </li>
       <li data-bind="if: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
-        <div data-bind="template: { name: 'nodeTagInputTemplate', data: nodeModel, afterRender: nodeModel.tagInitialize }"></div>
+
+        <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px; margin-top: 10px;">
+          <input id="tagNameInput" name="tagNameInput" class="input-large" placeholder="Write tag name" type="text" data-bind="disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead"/>
+        </form>
+
       </li>
       <li data-bind="if: nodeModel.node() !== false">
         <!-- ko foreach: nodeModel.node().tags -->
           <span class="label label-success">
             <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a>
             &nbsp;
-            <a href="#" style="color: black;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
+            <a href="#" style="color: white;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
           </span>
         <!-- /ko -->
 

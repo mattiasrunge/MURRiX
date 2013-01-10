@@ -111,6 +111,14 @@ $(function()
     }
   };
 
+
+  ko.bindingHandlers.typeahead = {
+    update: function(element, valueAccessor)
+    {
+      $(element).typeahead(valueAccessor());
+    }
+  };
+
   ko.bindingHandlers.yearSlider = {
     update: function(element, valueAccessor)
     {

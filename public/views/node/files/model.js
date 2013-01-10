@@ -123,6 +123,11 @@ var FilesModel = function(parentModel)
     event.stopPropagation();
     event.preventDefault();
 
+    if (event.originalEvent.dataTransfer.files.length === 0)
+    {
+      return;
+    }
+
     for (var n = 0; n < event.originalEvent.dataTransfer.files.length; n++)
     {
       var uploadFile = {};

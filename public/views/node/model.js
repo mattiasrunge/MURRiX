@@ -48,13 +48,6 @@ var NodeModel = function(parentModel)
         return;
       }
     });
-
-    console.log("node", self.show(), $("#tagNameInput"));
-  });
-
-  self.show.subscribe(function()
-  {
-    console.log("show", self.show(), $("#tagNameInput"));
   });
 
   self.loadItems = function(callback)
@@ -1017,26 +1010,10 @@ var NodeModel = function(parentModel)
   self.tagErrorText = ko.observable("");
   self.tagName = ko.observable("");
 
-  self.tagSubmit = function()
+  self.tagSaveNode = function(nodeData)
   {
-    self.tagLoading(true);
     self.tagErrorText("");
-
-    var nodeData = ko.mapping.toJS(self.node);
-
-    if (!nodeData.tags)
-    {
-      nodeData.tags = [];
-    }
-
-    if (murrix.inArray(self.tagName(), nodeData.tags))
-    {
-      self.tagLoading(false);
-      self.tagErrorText("Can not save multiple tags with the same name");
-      return;
-    }
-
-    nodeData.tags.push(self.tagName());
+    self.tagLoading(true);
 
     murrix.server.emit("saveNode", nodeData, function(error, nodeData)
     {
@@ -1049,107 +1026,75 @@ var NodeModel = function(parentModel)
       }
 
       self.tagName("");
+      self.tagErrorText("");
 
       murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
   };
 
-  self.tagRemove = function(tagNode)
+  self.tagSubmit = function()
   {
-    self.tagLoading(true);
     self.tagErrorText("");
 
     var nodeData = ko.mapping.toJS(self.node);
 
-    if (!nodeData.tags)
+    nodeData.tags = nodeData.tags || [];
+
+    if (murrix.inArray(self.tagName(), nodeData.tags))
     {
-      nodeData.tags = [];
+      self.tagErrorText("Can not save multiple tags with the same name");
+      return;
     }
 
-    var tags = [];
+    nodeData.tags.push(self.tagName());
 
-    for (var n = 0; n < nodeData.tags.length; n++)
-    {
-      if (nodeData.tags[n] !== tagNode)
-      {
-        tags.push(nodeData.tags[n]);
-      }
-    }
-
-    nodeData.tags = tags;
-
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      self.tagLoading(false);
-
-      if (error)
-      {
-        self.tagErrorText(error);
-        return;
-      }
-
-      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
-    });
+    self.tagSaveNode(nodeData);
   };
 
-  self.tagAutocomplete = function(query, callback)
+  self.tagRemove = function(tagName)
+  {
+    var nodeData = ko.mapping.toJS(self.node);
+
+    nodeData.tags = nodeData.tags || [];
+
+    nodeData.tags = nodeData.tags.filter(function(tagNameTest)
+    {
+      return tagNameTest !== tagName;
+    });
+
+    self.tagSaveNode(nodeData);
+  };
+
+  self.tagTypeaheadSource = function(query, callback)
   {
     murrix.server.emit("distinct", { query: "tags", options: "nodes" }, function(error, tagList)
     {
       if (error)
       {
         console.log(error);
-        console.log("Failed to find tags!");
         callback([]);
         return;
       }
 
       if (self.node().tags)
       {
-        var resultList = [];
-
-        for (var n = 0; n < tagList.length; n++)
+        tagList = tagList.filter(function(tagNameTest)
         {
-          if (!murrix.inArray(tagList[n], self.node().tags()))
-          {
-            resultList.push(tagList[n]);
-          }
-        }
+          return !murrix.inArray(tagNameTest, self.node().tags());
+        });
+      }
 
-        callback(resultList);
-      }
-      else
-      {
-        callback(tagList);
-      }
+      callback(tagList);
     });
   };
 
-  self.tagInitialize = function()
+  self.tagTypeaheadUpdater= function(item)
   {
-    console.log($("#tagNameInput").is(":visible"), $("#tagNameInput"));
-    if ($("#tagNameInput").is(":visible"))
-    {
-      $("#tagNameInput").typeahead({
-        source: function(query, callback) { console.log("abc", query); self.tagAutocomplete(query, callback); },
-        updater: function(item)
-        {
-          self.tagName(item);
-          self.tagSubmit();
-        }
-      });
-    }
+    self.tagName(item);
+    self.tagSubmit();
   };
 
-  $(".modal").on('hidden', function ()
-  {
-    self.createLoading(false);
-    self.createErrorText("");
 
-    self.tagLoading(false);
-    self.tagErrorText("");
-    self.tagName("");
-  });
 
   self.dragStart = function(element, event)
   {
