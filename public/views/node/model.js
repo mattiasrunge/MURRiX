@@ -48,6 +48,13 @@ var NodeModel = function(parentModel)
         return;
       }
     });
+
+    console.log("node", self.show(), $("#tagNameInput"));
+  });
+
+  self.show.subscribe(function()
+  {
+    console.log("show", self.show(), $("#tagNameInput"));
   });
 
   self.loadItems = function(callback)
@@ -1004,6 +1011,8 @@ var NodeModel = function(parentModel)
     }
   });
 
+
+
   self.tagLoading = ko.observable(false);
   self.tagErrorText = ko.observable("");
   self.tagName = ko.observable("");
@@ -1116,8 +1125,21 @@ var NodeModel = function(parentModel)
     });
   };
 
-  $("[name=newTag]").typeahead({ source: function(query, callback) { self.tagAutocomplete(query, callback); } });
-
+  self.tagInitialize = function()
+  {
+    console.log($("#tagNameInput").is(":visible"), $("#tagNameInput"));
+    if ($("#tagNameInput").is(":visible"))
+    {
+      $("#tagNameInput").typeahead({
+        source: function(query, callback) { console.log("abc", query); self.tagAutocomplete(query, callback); },
+        updater: function(item)
+        {
+          self.tagName(item);
+          self.tagSubmit();
+        }
+      });
+    }
+  };
 
   $(".modal").on('hidden', function ()
   {

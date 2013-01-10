@@ -39,20 +39,27 @@
   </div>
 </script>
 
-<div class="sidebar-nav" data-bind="slideVisible: nodeModel.show() && nodeModel.node() && !nodeModel.loadingNode(), if: nodeModel.node() !== false">
+<script type="text/html" id="nodeTagInputTemplate">
+  <form data-bind="submit: $data.tagSubmit" style="margin: 0px; margin-top: 10px;">
+    <input id="tagNameInput" name="tagNameInput" class="input-large" placeholder="Write tag name" type="text" data-bind="disable: $data.tagLoading, value: $data.tagName" data-provide="typeahead"/>
+  </form>
+</script>
 
-  <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
-    <div draggable="false" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: (nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()) && nodeModel.node().hasAdminAccess()">
-      <br/>
-      <br/>
-      <br/>
-      Drop here
+<div class="sidebar-nav" data-bind="visible: nodeModel.show()">
+  <!-- ko if: nodeModel.node() !== false -->
+    <div style="position: relative; width: 250px; height: 250px; z-index: 100" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }">
+      <div draggable="false" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px; text-align: center; font-size: 30px; color: whiteSmoke; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" data-bind="visible: (nodeModel.showDrop() || !nodeModel.node()._profilePicture || !nodeModel.node()._profilePicture()) && nodeModel.node().hasAdminAccess()">
+        <br/>
+        <br/>
+        <br/>
+        Drop here
+      </div>
+
+      <img draggable="false" class="" src="img/profile_picture_overlay.png" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px;">
+
+      <img draggable="false" src="" alt="" style="width: 250px; height: 250px;" data-bind="srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
     </div>
-
-    <img draggable="false" class="" src="img/profile_picture_overlay.png" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px;">
-
-    <img draggable="false" src="" alt="" style="width: 250px; height: 250px;" data-bind="srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
-  </div>
+  <!-- /ko -->
 
   <div class="sidebar-nav-content">
     <ul class="nav nav-list">
@@ -75,7 +82,7 @@
         </a>
       </li>
 
-     <li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link">
+    <li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'relations'">
           <i class="icon-retweet"></i> Relations
         </a>
@@ -88,29 +95,31 @@
       </li>
 
       <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefSecondPrimary: 'comments'">
+        <a href="#" data-bind="hrefSecondPrimary: 'comments', if: nodeModel.node() !== false">
           <i class="icon-comment"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right"></span>
         </a>
       </li>
-
-      <li>
-        <br/>
+      <li data-bind="if: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
+        <div data-bind="template: { name: 'nodeTagInputTemplate', data: nodeModel, afterRender: nodeModel.tagInitialize }"></div>
+      </li>
+      <li data-bind="if: nodeModel.node() !== false">
         <!-- ko foreach: nodeModel.node().tags -->
-          <span class="label label-inverse"><a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a></span>
+          <span class="label label-success">
+            <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a>
+            &nbsp;
+            <a href="#" style="color: black;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
+          </span>
         <!-- /ko -->
 
-
       </li>
-
     </ul>
 
-    <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center;">
-<!--      <button style="margin-bottom: 10px;" data-bind="visible: nodeModel.timelineModel.showButton, text: nodeModel.timelineModel.visible() ? 'Hide timeline' : 'Show timeline', click: nodeModel.timelineModel.toggleTimeline" rel="tooltip" title="Timeline switch" class="btn btn-link btn-mini" href="#">Timeline</button>-->
+    <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center;" data-bind="if: nodeModel.node() !== false">
       <div class="modal-footer" style="text-align: center;" data-bind="visible: nodeModel.node().hasAdminAccess()">
         <button rel="tooltip" title="Edit accesses" class="btn btn-link btn-mini" href="#editAccessModal" data-toggle="modal">Accesses</button>
         <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Make public" class="btn btn-link btn-mini">Make public</button>
         <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Make private" class="btn btn-link btn-mini" style="margin: 0px;">Make private</button>
-        <button rel="tooltip" title="Edit tags" class="btn btn-link btn-mini" href="#editTagsModal" data-toggle="modal">Tags</button>
+        <button rel="tooltip" title="Edit" class="btn btn-link btn-mini" href="#" data-bind="click: nodeModel.editNode">Edit</button>
       </div>
     </div>
   </div>
@@ -122,30 +131,6 @@
   <h3>Could not access the requested node</h3>
   <p class="text-error">The node might not exist or there are insufficient rights to access it.</p>
   <p><a href="#">Back to the start page</a></p>
-</div>
-
-
-<div class="modal" id="editTagsModal" tabindex="-1" role="dialog" aria-labelledby="editTagsModalLabel" aria-hidden="true" style="display: none;">
-  <div class="modal-header">
-    <button data-bind="disable: nodeModel.tagLoading" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="editTagsModalLabel">Edit tags</h3>
-  </div>
-  <div class="modal-body">
-    <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px">
-      <input placeholder="Tag name" type="text" name="newTag" style="width: 515px;" data-bind="disable: nodeModel.tagLoading, value: nodeModel.tagName" data-provide="typeahead"/>
-    </form>
-
-    <div data-bind="foreach: nodeModel.node().tags">
-      <span class="label label-inverse" style="display: inline-block;">
-        <span data-bind="text: $data"></span>&nbsp;&nbsp;
-        <a href="#" style="color: red;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
-      </span>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.tagErrorText() != '', text: nodeModel.tagErrorText"></p>
-    <button data-bind="disable: nodeModel.tagLoading" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-  </div>
 </div>
 
 <div class="modal" id="editAccessModal" tabindex="-1" role="dialog" aria-labelledby="editAccessModalLabel" aria-hidden="true" style="display: none;">
