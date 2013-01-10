@@ -96,7 +96,7 @@
       <li data-bind="if: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
 
         <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px; margin-top: 10px;">
-          <input id="tagNameInput" name="tagNameInput" class="input-large" placeholder="Write tag name" type="text" data-bind="disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead"/>
+          <input class="input-large" placeholder="Write tag name" type="text" data-bind="disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead"/>
         </form>
 
       </li>
@@ -137,8 +137,8 @@
     <h3 id="editAccessModalLabel">Edit accesses</h3>
   </div>
   <div class="modal-body">
-    <form data-bind="submit: nodeModel.groupAccessSubmit" style="margin: 0px">
-      <input placeholder="Group name" type="text" id="groupAccessInput" name="groupAccessInput" style="width: 515px;" data-bind="disable: nodeModel.groupAccessLoading, value: nodeModel.groupAccessName" data-provide="typesearch"/>
+    <form data-bind="submit: dummySubmit" style="margin: 0px">
+      <input placeholder="Group name" type="text" style="width: 515px;" data-bind="disable: nodeModel.groupAccessLoading, value: nodeModel.groupAccessName, typeahead: { items: 20, source: nodeModel.groupAccessTypeaheadSource, sorter: nodeModel.nodeTypeaheadSorter, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.groupAccessTypeaheadHighlighter, updater: nodeModel.groupAccessTypeaheadUpdater }" data-provide="typeahead"/>
     </form>
 
     <h4>Groups with accesses</h4>
@@ -264,7 +264,7 @@
     <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraName"/>
     <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraDescription"></textarea>
 
-    <input placeholder="Search for owner" type="text" id="editCameraOwnerInput" name="editCameraOwnerInput" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading" data-provide="typesearch"/>
+    <input placeholder="Search for owner" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, typeahead: { items: 20, source: nodeModel.nodeTypeaheadSource, sorter: nodeModel.nodeTypeaheadSorter, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.editCameraTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.editCameraTypeaheadNodeFilter }" data-provide="typesearch"/>
 
     <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: nodeModel.editCameraOwner, remove: nodeModel.editCameraClearOwner } }"></div>
   </div>
@@ -285,7 +285,7 @@
     <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editVehicleLoading, value: nodeModel.editVehicleName"/>
     <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editVehicleLoading, value: nodeModel.editVehicleDescription"></textarea>
 
-    <input placeholder="Search for owner" type="text" id="editVehicleOwnerInput" name="editVehicleOwnerInput" style="width: 515px;" data-bind="disable: nodeModel.editVehicleLoading" data-provide="typesearch"/>
+    <input placeholder="Search for owner" type="text" style="width: 515px;" data-bind="disable: nodeModel.editVehicleLoading, typeahead: { items: 20, source: nodeModel.nodeTypeaheadSource, sorter: nodeModel.nodeTypeaheadSorter, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.editVehicleTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.editVehicleTypeaheadNodeFilter }" data-provide="typesearch"/>
 
     <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: nodeModel.editVehicleOwner, remove: nodeModel.editVehicleClearOwner } }"></div>
   </div>

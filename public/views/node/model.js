@@ -269,6 +269,70 @@ var NodeModel = function(parentModel)
     });
   };
 
+  self.nodeTypeaheadSource = function(query, callback)
+  {
+    var inst = this;
+    var query = { name: { $regex: ".*" + query + ".*", $options: "-i" } };
+
+    if (inst.options.nodeTypes)
+    {
+      query.type = { $in: inst.options.nodeTypes };
+    }
+
+    murrix.server.emit("find", { query: query, options: { collection: "nodes" } }, function(error, nodeDataList)
+    {
+      if (error)
+      {
+        console.log(error);
+        callback([]);
+      }
+
+      var resultList = [];
+
+      for (var key in nodeDataList)
+      {
+        var item = murrix.cache.addNodeData(nodeDataList[key]);
+
+        item.toString = function() { return this._id(); };
+
+        if (!inst.options.nodeFilter || inst.options.nodeFilter(item))
+        {
+          resultList.push(item);
+        }
+      }
+
+      callback(resultList);
+    });
+  };
+
+  self.nodeTypeaheadSorter = function(items)
+  {
+    return items;
+  };
+
+  self.nodeTypeaheadMatcher = function(item)
+  {
+    return ~item.name().toLowerCase().indexOf(this.query.toLowerCase());
+  };
+
+  self.nodeTypeaheadHighlighter = function(item)
+  {
+    var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+    var name = item.name().replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
+    {
+      return "<strong>" + match + "</strong>"
+    });
+
+    var imgUrl = "http://placekitten.com/g/32/32";
+
+    if (item._profilePicture && item._profilePicture() !== false)
+    {
+      imgUrl = "/preview?id=" + item._profilePicture() + "&width=32&height=32&square=1";
+    }
+
+    return "<img style='margin-right: 20px;' class='pull-left' src='" + imgUrl + "'/><span style='padding: 6px; display: block; width: 250px;'>" + name + "</span>";
+  };
+
   /* This function is run when the primary path is changed
    * and a new node id has been set. It tries to cache
    * the node and set the primary node id observable.
@@ -488,14 +552,15 @@ var NodeModel = function(parentModel)
     });
   };
 
-  $("#editCameraOwnerInput").typesearch({
-    source: function(query, callback) { self.typeaheadPersonSource(query, callback); },
-    selectFn: function(key)
-    {
-      $("#editCameraOwnerInput").val("");
-      self.editCameraOwner(key);
-    }
-  });
+  self.editCameraTypeaheadUpdater = function(key)
+  {
+    self.editCameraOwner(key);
+  };
+
+  self.editCameraTypeaheadNodeFilter = function(item)
+  {
+    return self.editCameraOwner() !== item._id();
+  };
 
 
 
@@ -597,14 +662,16 @@ var NodeModel = function(parentModel)
     });
   };
 
-  $("#editVehicleOwnerInput").typesearch({
-    source: function(query, callback) { self.typeaheadPersonSource(query, callback); },
-    selectFn: function(key)
-    {
-      $("#editVehicleOwnerInput").val("");
-      self.editVehicleOwner(key);
-    }
-  });
+  self.editVehicleTypeaheadUpdater = function(key)
+  {
+    self.editVehicleOwner(key);
+  };
+
+  self.editVehicleTypeaheadNodeFilter = function(item)
+  {
+    return self.editVehicleOwner() !== item._id();
+  };
+
 
 
   /* Edit Person */
@@ -847,27 +914,16 @@ var NodeModel = function(parentModel)
     }
   };
 
+
+  /* Accesses */
   self.groupAccessLoading = ko.observable(false);
   self.groupAccessErrorText = ko.observable("");
   self.groupAccessName = ko.observable("");
 
-  self.groupAccessSubmit = function()
-  {
-    // Do nothing
-  };
-
-  self.groupAccessRemove = function()
+  self.groupAccessSaveNode = function(nodeData)
   {
     self.groupAccessLoading(true);
     self.groupAccessErrorText("");
-
-    var nodeData = ko.mapping.toJS(self.node);
-
-    nodeData._readers = nodeData._readers || [];
-    nodeData._admins = nodeData._admins || [];
-
-    nodeData._readers = murrix.removeFromArray(this.toString(), nodeData._readers);
-    nodeData._admins = murrix.removeFromArray(this.toString(), nodeData._admins);
 
     murrix.server.emit("saveNode", nodeData, function(error, nodeData)
     {
@@ -883,11 +939,21 @@ var NodeModel = function(parentModel)
     });
   };
 
+  self.groupAccessRemove = function()
+  {
+    var nodeData = ko.mapping.toJS(self.node);
+
+    nodeData._readers = nodeData._readers || [];
+    nodeData._admins = nodeData._admins || [];
+
+    nodeData._readers = murrix.removeFromArray(this.toString(), nodeData._readers);
+    nodeData._admins = murrix.removeFromArray(this.toString(), nodeData._admins);
+
+    self.groupAccessSaveNode(nodeData);
+  };
+
   self.groupAccessMakeAdmin = function()
   {
-    self.groupAccessLoading(true);
-    self.groupAccessErrorText("");
-
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._readers = nodeData._readers || [];
@@ -896,25 +962,11 @@ var NodeModel = function(parentModel)
     nodeData._readers = murrix.removeFromArray(this.toString(), nodeData._readers);
     nodeData._admins = murrix.addToArray(this.toString(), nodeData._admins);
 
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      self.groupAccessLoading(false);
-
-      if (error)
-      {
-        self.groupAccessErrorText(error);
-        return;
-      }
-
-      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
-    });
+    self.groupAccessSaveNode(nodeData);
   };
 
   self.groupAccessMakeReader = function()
   {
-    self.groupAccessLoading(true);
-    self.groupAccessErrorText("");
-
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._readers = nodeData._readers || [];
@@ -923,86 +975,63 @@ var NodeModel = function(parentModel)
     nodeData._readers = murrix.addToArray(this.toString(), nodeData._readers);
     nodeData._admins = murrix.removeFromArray(this.toString(), nodeData._admins);
 
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      self.groupAccessLoading(false);
+    self.groupAccessSaveNode(nodeData);
+  };
 
+  self.groupAccessTypeaheadSource = function(query, callback)
+  {
+    murrix.server.emit("findGroups", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { limit: 20 } }, function(error, groupDataList)
+    {
       if (error)
       {
-        self.groupAccessErrorText(error);
-        return;
+        console.log(error);
+        callback([]);
       }
 
-      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+      var resultList = [];
+
+      for (var key in groupDataList)
+      {
+        var item = murrix.cache.addGroupData(groupDataList[key]);
+
+        item.toString = function() { return this._id(); };
+
+        if (!murrix.inArray(item._id(), self.node()._readers()) && !murrix.inArray(item._id(), self.node()._admins()))
+        {
+          resultList.push(item);
+        }
+      }
+
+      callback(resultList);
     });
   };
 
-  $("#groupAccessInput").typesearch({
-    limit: 20,
-    source: function(query, callback)
+  self.groupAccessTypeaheadHighlighter = function(item)
+  {
+    var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+    return item.name().replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
     {
-      murrix.server.emit("findGroups", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { limit: 20 } }, function(error, groupDataList)
-      {
-        if (error)
-        {
-          console.log(error);
-          callback([]);
-        }
+      return "<strong>" + match + "</strong>"
+    });
+  };
 
-        var resultList = [];
+  self.groupAccessTypeaheadUpdater = function(key)
+  {
+    var nodeData = ko.mapping.toJS(self.node);
 
-        for (var key in groupDataList)
-        {
-          var item = {};
-          item.name = groupDataList[key].name;
-          item.key = groupDataList[key]._id;
-          item.html = "<li><a class='typesearch-name' href='#'></a></li>";
+    nodeData._readers = nodeData._readers || [];
 
-          if (!murrix.inArray(item.key, self.node()._readers()) && !murrix.inArray(item.key, self.node()._admins()))
-          {
-            resultList.push(item);
-          }
-
-          murrix.cache.addGroupData(groupDataList[key]);
-        }
-
-        callback(resultList);
-      });
-    },
-    selectFn: function(key)
+    if (murrix.inArray(key, nodeData._readers))
     {
-      self.groupAccessLoading(true);
-      self.groupAccessErrorText("");
-
-      var nodeData = ko.mapping.toJS(self.node);
-
-      nodeData._readers = nodeData._readers || [];
-
-      if (murrix.inArray(key, nodeData._readers))
-      {
-        self.groupAccessLoading(false);
-        self.groupAccessErrorText("Group is already in readers");
-        return;
-      }
-
-      nodeData._readers = murrix.addToArray(key, nodeData._readers);
-
-      murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-      {
-        self.groupAccessLoading(false);
-
-        if (error)
-        {
-          self.groupAccessErrorText(error);
-          return;
-        }
-
-        self.groupAccessName("");
-
-        murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
-      });
+      self.groupAccessErrorText("Group is already in readers!");
+      return;
     }
-  });
+
+    nodeData._readers = murrix.addToArray(key, nodeData._readers);
+    self.groupAccessSaveNode(nodeData);
+  };
+
+
 
 
 
