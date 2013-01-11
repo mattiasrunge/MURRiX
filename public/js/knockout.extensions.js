@@ -111,6 +111,44 @@ $(function()
     }
   };
 
+   ko.bindingHandlers.popoverNode = {
+    update: function(element, valueAccessor)
+    {
+      var id = ko.utils.unwrapObservable(valueAccessor());
+
+      if (!id)
+      {
+        return;
+      }
+
+      murrix.cache.getNode(id, function(error, node)
+      {
+        if (error)
+        {
+          console.log(id, error);
+        }
+
+        var options = {};
+
+        var imgUrl = "http://placekitten.com/g/60/60";
+
+        if (node._profilePicture && node._profilePicture() !== false)
+        {
+          imgUrl = "/preview?id=" + node._profilePicture() + "&width=60&height=60&square=1";
+        }
+
+        options.html = true;
+        options.trigger = "hover";
+        options.placement = "left";
+        options.delay = { show: 200, hide: 100 };
+        options.title = node.name();
+        options.content = "<img style='width: 60px; height: 60px;' class='imgRounded' src='" + imgUrl + "'/>";
+
+        $(element).popover(options);
+      });
+    }
+  };
+
 
   ko.bindingHandlers.typeahead = {
     update: function(element, valueAccessor)
@@ -650,6 +688,9 @@ $(function()
       var width = params[1] || 0;
       var height = params[2] || 0;
       var square = params[3] || 0;
+
+      $(element).width(width);
+      $(element).height(height);
 
       if (!id || id === null || id === "")
       {

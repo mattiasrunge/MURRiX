@@ -401,6 +401,12 @@ input, textarea {
           border-radius-top-right: 3px;
 }
 
+.imgRounded {
+  -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+        border-radius: 3px;
+}
+
 .modal-backdrop {
   z-index: 3040;
 }
@@ -412,4 +418,9 @@ input, textarea {
 .btn-link {
   text-align: left;
 }
+
+.tooltip {
+  z-index: 4070;
+}
+
 
