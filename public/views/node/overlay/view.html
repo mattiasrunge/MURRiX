@@ -22,11 +22,11 @@
     <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;" data-bind="if: nodeModel.overlayModel.item().what() === 'file'">
         <div class="imgContainer" style="position: relative; display: inline-block;">
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
-            <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="srcItemPicture: nodeModel.overlayModel.item()._id" src="" alt="">
+            <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="srcItemPicture: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().modified.timestamp ]" src="" alt="">
           </div>
 
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
-            <video class="overlayVideo" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().exif.ImageHeight ]" src="" alt=""></video>
+            <video class="overlayVideo" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().exif.ImageHeight, nodeModel.overlayModel.item().modified.timestamp() ]" src="" alt=""></video>
           </div>
         </div>
 
@@ -593,7 +593,7 @@
           <li>
             <a href="#overlayTabDetails" data-toggle="tab">Details</a>
           </li>
-          <li data-bind="visible: nodeModel.node().hasAdminAccess">
+          <li data-bind="visible: nodeModel.node().hasAdminAccess()">
             <a href="#overlayTabEdit" data-toggle="tab">Edit</a>
           </li>
         </ul>
@@ -603,7 +603,12 @@
 
             <div style="margin: 0px 10px 10px 10px; font-size: 10px; padding-bottom: 10px; border-bottom: 1px solid #DDDDDD;">
               <div class="media">
-                <img class="pull-left media-object imgRounded" data-src=""  data-bind="srcUserProfilePicture: [ currentUser()._id(), 60, 60, 1 ]">
+                <span data-bind="if: currentUser() !== false">
+                  <img class="pull-left media-object imgRounded" data-src=""  data-bind="srcUserProfilePicture: [ currentUser()._id(), 60, 60, 1 ]">
+                </span>
+                <span data-bind="if: currentUser() === false">
+                  <img class="pull-left media-object imgRounded" data-src=""  data-bind="srcUserProfilePicture: [ false, 60, 60, 1 ]">
+                </span>
                 <div class="media-body">
                   <blockquote style="margin: 0px; margin-bottom: 10px;">
                     <textarea style="width: 227px; height: 50px; margin: 0px;" placeholder="Write a comment..." data-bind="disable: nodeModel.overlayModel.commentLoading, value: nodeModel.overlayModel.commentText"></textarea>
@@ -730,7 +735,7 @@
             </div>
 
           </div>
-          <div class="tab-pane" id="overlayTabEdit">
+          <div class="tab-pane" id="overlayTabEdit" data-bind="visible: nodeModel.node().hasAdminAccess()">
 
             <div style="margin: 0px 10px 10px 10px; font-size: 10px;">
               <button style="width: 328px; margin-bottom: 10px;" class="btn btn-small" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile', click: nodeModel.overlayModel.setThumbPosition">Set thumbnail position</button>

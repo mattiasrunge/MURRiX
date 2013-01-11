@@ -42,7 +42,7 @@
         <ul class="thumbnails" data-bind="foreach: $data.media">
           <li class="">
             <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id()">
-              <img data-bind="srcPicture: [ $data._id, 80, 80, 1 ], attr: { title: $data.name }" src="" alt="" style="width: 80px; height: 80px;">
+              <img data-bind="srcPicture: [ $data._id, 80, 80, 1, $data.modified.timestamp ], attr: { title: $data.name }" src="" alt="" style="width: 80px; height: 80px;">
             </a>
           </li>
         </ul>

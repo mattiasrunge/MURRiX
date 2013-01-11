@@ -126,6 +126,7 @@ $(function()
         if (error)
         {
           console.log(id, error);
+          return;
         }
 
         var options = {};
@@ -430,7 +431,7 @@ $(function()
       {
         if (error)
         {
-          $(element).text(error);
+          $(element).text("Unknown");
           return;
         }
 
@@ -465,7 +466,7 @@ $(function()
       {
         if (error)
         {
-          $(element).text(error);
+          $(element).text("Unknown");
           return;
         }
 
@@ -507,7 +508,7 @@ $(function()
       {
         if (error)
         {
-          $(element).text(error);
+          $(element).text("Unknown");
           return;
         }
 
@@ -529,9 +530,17 @@ $(function()
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
-      var id = ko.utils.unwrapObservable(value);
+      var params = ko.utils.unwrapObservable(value);
 
-      if (!id || id === null || id === "")
+      for (var n = 0; n < params.length; n++)
+      {
+        params[n] = ko.utils.unwrapObservable(params[n]);
+      }
+
+      var id = params[0] || false;
+      var timestamp = params[1] || 0;
+
+      if (!id || id === null)
       {
         $(element).attr("src", "http://placekitten.com/g/1400/1400"); // TODO: Set generic user icon image
         console.log("No id given to srcItemPicture");
@@ -540,7 +549,7 @@ $(function()
 
       $(element).attr("src", "img/120x120_spinner.gif");
 
-      var src = "/preview?id=" + id + "&width=1400";
+      var src = "/preview?id=" + id + "&width=1400&timestamp=" + timestamp+(new Date().getTime());
 
       var image = new Image();
 
@@ -572,6 +581,7 @@ $(function()
       var id = params[0] || false;
       var width = params[1] || 0;
       var height = params[2] || 0;
+      var timestamp = params[3] || 0;
 
       if (!id || id === null || id === "")
       {
@@ -580,7 +590,7 @@ $(function()
         return;
       }
 
-      $(element).attr("poster", "/preview?id=" + id + "&width=" + width + "&height=" + height);
+      $(element).attr("poster", "/preview?id=" + id + "&width=" + width + "&height=" + height + "&timestamp=" + timestamp);
     }
   };
 
@@ -599,6 +609,7 @@ $(function()
       var width = params[1] || 0;
       var height = params[2] || 0;
       var square = params[3] || 0;
+      var timestamp = params[4] || 0;
 
       if (!id || id === null || id === "")
       {
@@ -611,7 +622,7 @@ $(function()
       $(element).height(height);
       $(element).attr("src", "img/120x120_spinner.gif");
 
-      var path = "/preview?id=" + id + "&width=" + width + "&height=" + height + "&square=" + square;
+      var path = "/preview?id=" + id + "&width=" + width + "&height=" + height + "&square=" + square + "&timestamp=" + timestamp;
       var failurePath = "http://placekitten.com/g/" + width + "/" + height;
 
       murrix.cache.loadImage($(element), path, failurePath);
@@ -644,7 +655,7 @@ $(function()
 
       $(element).attr("src", "img/120x120_spinner.gif");
 
-      murrix.cache.getNodes([ id ], function(error, nodeList)
+      murrix.cache.getNode(id, function(error, node)
       {
         if (error)
         {
@@ -653,21 +664,30 @@ $(function()
           return;
         }
 
-        if (nodeList[id])
+        if (!node._profilePicture || node._profilePicture() === false)
         {
-
-          if (!nodeList[id]._profilePicture || !nodeList[id]._profilePicture())
-          {
-            $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
-            return;
-          }
-
-          murrix.loadProfilePicture(element, nodeList[id]._profilePicture(), width, height, square);
-
+          $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
           return;
         }
 
-        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+
+        var src = "/preview?id=" + node._profilePicture() + "&width=" + width + "&height=" + height + "&square=" + square + "&timestamp=" + node.modified.timestamp();
+
+        var image = new Image();
+
+        image.onload = function()
+        {
+          $(element).attr("src", src);
+        };
+
+        image.onerror = function()
+        {
+          $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height);// TODO: Set error image
+        };
+
+        image.src = src;
+
+        return;
       });
     }
   };

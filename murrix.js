@@ -102,6 +102,7 @@ function httpRequestHandler(request, response)
           return;
         }
 
+        console.log(request.url);
         request.url = "/" + path.basename(filename);
         console.log(request.url);
         videoStreamer(request, response);
@@ -120,6 +121,7 @@ function httpRequestHandler(request, response)
             return;
           }
 
+          console.log(request.url);
           request.url = "/" + path.basename(filename);
           console.log(request.url);
           videoStreamer(request, response);

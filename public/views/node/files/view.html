@@ -14,7 +14,7 @@
       <li class="">
         <a href="#" draggable="true" style="color: white;" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id(), event: { dragstart : $parent.nodeModel.dragStart, dragend: $parent.nodeModel.dragEnd }">
           <span data-bind="if: $data.whatDetailed() === 'imageFile' || $data.whatDetailed() === 'videoFile' || $data.whatDetailed() === 'audioFile'">
-            <img data-bind="srcPicture: [ $data._id, 250, 250, 1 ], attr: { title: $data.name }" src="" alt="">
+            <img data-bind="srcPicture: [ $data._id, 250, 250, 1, $data.modified.timestamp ], attr: { title: $data.name }" src="" alt="">
           </span>
          <!-- <span data-bind="if: $data.whatDetailed() === 'audioFile'">
             <div style="width: 248px; height: 248px; background-color: black; border: 1px solid whiteSmoke;">

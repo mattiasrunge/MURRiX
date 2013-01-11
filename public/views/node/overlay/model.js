@@ -1159,7 +1159,7 @@ var OverlayModel = function(parentModel)
     self.editLoading(true);
     self.editErrorText("");
 
-    murrix.server.emit("saveItem", itemData, function(error, itemData)
+    murrix.server.emit("clearCache", itemData._id, function(error)
     {
       self.editLoading(false);
 
@@ -1169,14 +1169,9 @@ var OverlayModel = function(parentModel)
         return;
       }
 
-      var item = murrix.cache.addItemData(itemData);
-
-      self.initializeOverlayMap();
-      self.whenUpdateTimezone();
-
       self.editLoading(true);
 
-      murrix.server.emit("clearCache", item._id(), function(error)
+      murrix.server.emit("saveItem", itemData, function(error, itemData)
       {
         self.editLoading(false);
 
@@ -1185,6 +1180,11 @@ var OverlayModel = function(parentModel)
           self.editErrorText(error);
           return;
         }
+
+        var item = murrix.cache.addItemData(itemData);
+
+        self.initializeOverlayMap();
+        self.whenUpdateTimezone();
       });
     });
   };

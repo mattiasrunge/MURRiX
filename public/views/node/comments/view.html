@@ -17,7 +17,12 @@
           <tr>
             <td class="media">
               <a class="pull-left" href="#">
-                <img class="media-object img-polaroid" src="" alt="" style="width: 123px; height: 123px;" data-bind="srcUserProfilePicture: [ currentUser()._id(), 123, 123, 1 ]"/>
+                <span data-bind="if: currentUser() !== false">
+                  <img class="media-object img-polaroid" src="" alt="" style="width: 123px; height: 123px;" data-bind="srcUserProfilePicture: [ currentUser()._id(), 123, 123, 1 ]"/>
+                </span>
+                <span data-bind="if: currentUser() === false">
+                  <img class="media-object img-polaroid" src="" alt="" style="width: 123px; height: 123px;" data-bind="srcUserProfilePicture: [ false, 123, 123, 1 ]"/>
+                </span>
               </a>
               <div class="media-body">
                 <blockquote style="margin-bottom: 0px; min-height: 133px;">

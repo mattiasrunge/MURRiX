@@ -1,4 +1,8 @@
 
+body {
+  font-family: proxima-nova,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 .loading-overlay {
   position: absolute;
   top: 0px;

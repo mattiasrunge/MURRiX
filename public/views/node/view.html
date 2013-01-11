@@ -76,11 +76,11 @@
         </a>
       </li>
 
-    <li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link">
+      <!--<li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'relations'">
           <i class="icon-retweet"></i> Relations
         </a>
-      </li>
+      </li>-->
 
       <li data-bind="fadeVisible: nodeModel.issuesModel.enabled, css: { 'active': nodeModel.issuesModel.show }" class="nav-link">
         <a href="#" data-bind="hrefSecondPrimary: 'issues'">
@@ -93,9 +93,9 @@
           <i class="icon-comment"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right"></span>
         </a>
       </li>
-      <li data-bind="if: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
+      <li data-bind="if: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()" style="margin-top: 10px;">
 
-        <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px; margin-top: 10px;">
+        <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px;">
           <input class="input-large" placeholder="Write tag name" type="text" data-bind="hasfocus: nodeModel.tagHasFocus, disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead"/>
         </form>
 
@@ -104,8 +104,10 @@
         <!-- ko foreach: nodeModel.node().tags -->
           <span class="label label-success">
             <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a>
-            &nbsp;
-            <a href="#" style="color: white;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
+            <span data-bind="visible: $parent.nodeModel.node().hasAdminAccess()">
+              &nbsp;
+              <a href="#" style="color: white;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
+            </span>
           </span>
         <!-- /ko -->
 
