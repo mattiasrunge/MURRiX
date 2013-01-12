@@ -427,4 +427,15 @@ input, textarea {
   z-index: 4070;
 }
 
+i.icon-fixed[class*=" icon-"] {
+  color: black;
+  width: 16px;
+  margin-right: 10px;
+  display: inline-block;
+}
+
+i.icon-fixed[class*="icon-white"] {
+  color: white;
+}
+
 

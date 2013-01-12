@@ -429,6 +429,17 @@ io.sockets.on("connection", function(client)
     nodeManager.distinct(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
+  client.on("group", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for nodeManager.group!");
+      return;
+    }
+
+    nodeManager.group(client.handshake.session, data.reduce || {}, data.options || {}, callback);
+  });
+
 
   client.on("clearCache", function(data, callback)
   {

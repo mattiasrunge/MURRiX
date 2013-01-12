@@ -900,20 +900,6 @@ var OverlayModel = function(parentModel)
         takenIds.push(self.item()._with());
       }
 
-      for (var n = 0; n < parentModel.items().length; n++)
-      {
-        if (!parentModel.items()[n]._with || parentModel.items()[n]._with() === false)
-        {
-          continue;
-        }
-
-        if (!murrix.inArray(parentModel.items()[n]._with(), takenIds))
-        {
-          list.push(parentModel.items()[n]._with());
-          takenIds.push(parentModel.items()[n]._with());
-        }
-      }
-
       if (self.item().exif && self.item().exif.Model)
       {
         murrix.server.emit("find", { query: { name: self.item().exif.Model(), type: "camera" }, options: "nodes" }, function(error, nodeDataList)
@@ -937,6 +923,22 @@ var OverlayModel = function(parentModel)
 
           self.withOther(list);
         });
+      }
+      else
+      {
+        for (var n = 0; n < parentModel.items().length; n++)
+        {
+          if (!parentModel.items()[n]._with || parentModel.items()[n]._with() === false)
+          {
+            continue;
+          }
+
+          if (!murrix.inArray(parentModel.items()[n]._with(), takenIds))
+          {
+            list.push(parentModel.items()[n]._with());
+            takenIds.push(parentModel.items()[n]._with());
+          }
+        }
       }
     }
 

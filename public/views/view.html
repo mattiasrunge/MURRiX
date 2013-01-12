@@ -11,37 +11,49 @@
 
       <li data-bind="css: { 'active': welcomeModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: welcomeModel.show() ? ' ' : 'welcome'">
-          <i class="icon-home"></i> Welcome
+          <i class="icon-home icon-fixed"></i> Welcome
         </a>
       </li>
 
       <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
-          <i class="icon-bullhorn"></i> News
+          <i class="icon-bullhorn icon-fixed"></i> News
         </a>
       </li>
 
       <li data-bind="fadeVisible: currentUser(), css: { 'active': browseModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: browseModel.show() ? ' ' : 'browse'">
-          <i class="icon-th-large"></i> Browse
+          <i class="icon-th-large icon-fixed"></i> Browse
+        </a>
+      </li>
+
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': tagsModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefFirstPrimary: tagsModel.show() ? ' ' : 'tags'">
+          <i class="icon-tags icon-fixed"></i> Tags
         </a>
       </li>
 
       <li data-bind="fadeVisible: currentUser(), css: { 'active': searchModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: searchModel.show() ? ' ' : 'search'">
-          <i class="icon-search"></i> Search
+          <i class="icon-search icon-fixed"></i> Search
+        </a>
+      </li>
+
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': todoModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefFirstPrimary: todoModel.show() ? ' ' : 'todo'">
+          <i class="icon-check icon-fixed"></i> Todo
         </a>
       </li>
 
       <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': adminModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: adminModel.show() ? ' ' : 'admin'">
-          <i class="icon-lock"></i> Administration
+          <i class="icon-lock icon-fixed"></i> Administration
         </a>
       </li>
 
       <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': configModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: configModel.show() ? ' ' : 'config'">
-          <i class="icon-wrench"></i> Configuration
+          <i class="icon-wrench icon-fixed"></i> Configuration
         </a>
       </li>
 
@@ -72,8 +84,8 @@
         <ul class="nav pull-right">
           <li class="dropdown">
             <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-              <span data-bind="ifnot: currentUser"><i class="icon-signin icon-white"></i> Sign In</span>
-              <span data-bind="if: currentUser"><i class="icon-user icon-white"></i> <span data-bind="text: currentUser().name"></span></span>
+              <span data-bind="ifnot: currentUser"><i class="icon-signin icon-fixed icon-white"></i> Sign In</span>
+              <span data-bind="if: currentUser"><i class="icon-user icon-fixed icon-white"></i> <span data-bind="text: currentUser().name"></span></span>
               <strong class="caret"></strong>
             </a>
             <ul class="dropdown-menu">
@@ -89,10 +101,10 @@
               </form>
 
               <div data-bind="visible: currentUser">
-                <li><a href="#admin" data-bind="visible: currentUser().admin"><i class="icon-lock"></i> Administration</a></li>
-                <li><a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]"><i class="icon-user"></i> Me</a></li>
-                <li><a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)"><i class="icon-key"></i> Change password</a></li>
-                <li><a href="#" data-bind="click: adminModel.signOutClicked"><i class="icon-signout"></i> Sign out</a></li>
+                <li><a href="#admin" data-bind="visible: currentUser().admin"><i class="icon-lock icon-fixed"></i> Administration</a></li>
+                <li><a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]"><i class="icon-user icon-fixed"></i> Me</a></li>
+                <li><a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)"><i class="icon-key icon-fixed"></i> Change password</a></li>
+                <li><a href="#" data-bind="click: adminModel.signOutClicked"><i class="icon-signout icon-fixed"></i> Sign out</a></li>
               </div>
 
             </ul>
@@ -123,11 +135,11 @@
               <i class="icon-plus icon-white" title="Create new node"></i>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="#" data-bind="click: nodeModel.editAlbumNewOpen"><i style="vertical-align: center;" class="icon-book"></i> Album</a></li>
-              <li><a href="#" data-bind="click: nodeModel.editPersonNewOpen"><i style="vertical-align: center;" class="icon-user"></i> Person</a></li>
-              <li><a href="#createLocationModal" data-toggle="modal"><i style="vertical-align: center;" class="icon-flag"></i> Location</a></li>
-              <li><a href="#" data-bind="click: nodeModel.editCameraNewOpen"><i style="vertical-align: center;" class="icon-camera"></i> Camera</a></li>
-              <li><a href="#" data-bind="click: nodeModel.editVehicleNewOpen"><i style="vertical-align: center;" class="icon-truck"></i> Vehicle</a></li>
+              <li><a href="#" data-bind="click: nodeModel.editAlbumNewOpen"><i style="vertical-align: center;" class="icon-book icon-fixed"></i> Album</a></li>
+              <li><a href="#" data-bind="click: nodeModel.editPersonNewOpen"><i style="vertical-align: center;" class="icon-user icon-fixed"></i> Person</a></li>
+              <li><a href="#createLocationModal" data-toggle="modal"><i style="vertical-align: center;" class="icon-flag icon-fixed"></i> Location</a></li>
+              <li><a href="#" data-bind="click: nodeModel.editCameraNewOpen"><i style="vertical-align: center;" class="icon-camera icon-fixed"></i> Camera</a></li>
+              <li><a href="#" data-bind="click: nodeModel.editVehicleNewOpen"><i style="vertical-align: center;" class="icon-truck icon-fixed"></i> Vehicle</a></li>
             </ul>
           </li>
         </ul>

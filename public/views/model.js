@@ -86,7 +86,10 @@ murrix.model = function()
   self.welcomeModel = new WelcomeModel(self);
   self.newsModel = new NewsModel(self);
   self.browseModel = new BrowseModel(self);
+  self.tagsModel = new TagsModel(self);
+  self.todoModel = new TodoModel(self);
   self.mapModel = new MapModel(self);
+  self.whenModel = new WhenModel(self);
 
 
   $("#selectDatetimeModal").on("shown", function()

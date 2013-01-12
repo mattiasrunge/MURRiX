@@ -1,0 +1,28 @@
+<div class="main-overlay" data-bind="slideVisible: tagsModel.show">
+  <div class="main-overlay-content">
+
+    <div class="navbar navbar-color navbar-inverse">
+      <div class="navbar-inner">
+        <span class="brand"><i style="vertical-align: baseline;" class="icon-tags icon-white"></i> Tags</span>
+        <ul class="nav pull-right">
+          <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="well" style="padding-bottom: 0px;">
+      <div style="margin-bottom: 20px; text-align: center; font-size: 30px;">
+
+        <!-- ko foreach: tagsModel.tags -->
+          <span class="label label-success" data-bind="style: { fontSize: $data.size + 'px' }" style="line-height: normal; margin-top: 10px;">
+            <a href="#" data-bind="text: $data.name + ' [' + $data.count + ']', attr: { href: '#search:tag=' + $data.name }" style="color: white; cursor: pointer; text-decoration: none;"></a>
+          </span>
+        <!-- /ko -->
+
+        <div class="alert alert-error" data-bind="visible: tagsModel.errorText() !== '', text: tagsModel.errorText"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-overlay-background"></div>
+</div>
