@@ -475,7 +475,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    murrixWhen.updateWhen(client.handshake.session, data.when, data.references, callback);
+    murrixWhen.updateWhen(client.handshake.session, data.when, data.references, data.mode, callback);
   });
 
   client.on("createReferenceTimeline", function(data, callback)

@@ -233,7 +233,9 @@
         <div>
           <h5>Current date and time information</h5>
           <p class="muted" style="font-size: 12px;">
-            The current, if any, time and date information associated with this item is shown here. It can be updated by the forms below.
+            <i>
+              The current, if any, time and date information associated with this item is shown here. It can be updated by the forms below.
+            </i>
           </p>
           <div class="alert alert-info">
             <span data-bind="htmlPrintWhen: { when: nodeModel.overlayModel.item().when, timezone: false }"></span>
@@ -291,7 +293,7 @@
                   </select>
                 </td>
               </tr>
-              <tr data-bind="visible: nodeModel.overlayModel.whenType() === 'camera' && nodeModel.overlayModel.item().with() !== false && nodeModel.overlayModel.item().what() === 'file'">
+              <tr data-bind="visible: nodeModel.overlayModel.whenType() === 'camera' && nodeModel.overlayModel.item().with() !== false && nodeModel.overlayModel.item().with().mode() !== 'autoDatetime' && nodeModel.overlayModel.item().what() === 'file'">
                 <td>
                   Reference
                 </td>
@@ -299,11 +301,11 @@
                   <select data-bind="value: nodeModel.overlayModel.whenReference, disable: nodeModel.overlayModel.whenReferenceDisabled, options: nodeModel.overlayModel.whenReferences, optionsText: 'name', optionsValue: 'id', event: { change: nodeModel.overlayModel.whenUpdatedValue }" style="width: 100%"></select>
                 <td>
               </tr>
-              <tr data-bind="visible: nodeModel.overlayModel.item().with() === false || !nodeModel.overlayModel.item().with().referenceTimelines || nodeModel.overlayModel.item().with().referenceTimelines.length === 0 || nodeModel.overlayModel.whenReference() === 'None' || nodeModel.overlayModel.whenType() === 'manual'">
+              <tr data-bind="visible: nodeModel.overlayModel.whenManualTimezoneAllowed">
                 <td>Timezone</td>
                 <td class="form-inline">
                   <select data-bind="options: timezones, value: nodeModel.overlayModel.whenTimezone, disable: nodeModel.overlayModel.whenTimezoneDisabled() || nodeModel.overlayModel.whenHour() === 'XX'" style="width: 100%"></select>
-                  <label class="checkbox" style="margin-top: 2px; font-size: 10px;">
+                  <label class="checkbox" style="margin-top: 2px; font-size: 10px;" data-bind="visible: nodeModel.overlayModel.whenManualDaylightSavingsAllowed">
                     <input type="checkbox" data-bind="checked: nodeModel.overlayModel.whenDaylightSavings, disable: nodeModel.overlayModel.whenDaylightSavingsDisabled() || nodeModel.overlayModel.whenHour() === 'XX'"> Daylight savings in affect
                   </label>
                 </td>
@@ -351,10 +353,14 @@
         <div data-bind="visible: nodeModel.overlayModel.whenReferenceVisible() && (nodeModel.overlayModel.whenReferenceSelf() !== false || nodeModel.overlayModel.whenReferenceCreateAllowed())">
           <h5>Reference timelines for <span data-bind="text: nodeModel.overlayModel.item().with().name"></span></h5>
           <p class="muted" style="font-size: 12px;">
-            Reference timelines can be created for a camera to adjust the date and time for each file created with that camera. The internal clock of the camera might be inaccurate and needs to be synchronized to a good quality time source.
+            <i>
+              Reference timelines can be created for a camera to adjust the date and time for each file created with that camera. The internal clock of the camera might be inaccurate and needs to be synchronized to a good quality time source.
+            </i>
           </p>
           <p class="muted" style="font-size: 12px;">
-            This file has time information (Gps or Manual), in addition to the camera information, which can be used as a reference timeline if one is created.
+            <i>
+              This file has time information (Gps or Manual), in addition to the camera information, which can be used as a reference timeline if one is created.
+            </i>
           </p>
           <table class="table table-condensed" data-bind="visible: nodeModel.overlayModel.whenReferenceSelf() !== false">
             <thead>

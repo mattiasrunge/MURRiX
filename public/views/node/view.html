@@ -266,6 +266,27 @@
     <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraName"/>
     <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editCameraLoading, value: nodeModel.editCameraDescription"></textarea>
 
+    <div style="margin-bottom: 20px;">
+      <h6>Select the timezone the camera is set to</h6>
+      <select data-bind="options: timezones, value: nodeModel.editCameraTimezone, disable: nodeModel.editCameraLoading" style="width: 515px;"></select>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <h6>How does the camera handle time</h6>
+      <label class="radio">
+        <input type="radio" name="editCameraMode" id="editCameraMode" value="manual" data-bind="disable: nodeModel.editCameraLoading, checked: nodeModel.editCameraMode">
+        This camera does <strong>not</strong> adjust it's internal clock automatically
+      </label>
+      <label class="radio">
+        <input type="radio" name="editCameraMode" id="editCameraMode" value="autoDaylightSavings" data-bind="disable: nodeModel.editCameraLoading, checked: nodeModel.editCameraMode">
+        This camera adjusts for daylight savings automatically
+      </label>
+      <label class="radio">
+        <input type="radio" name="editCameraMode" id="editCameraMode" value="autoDatetime" data-bind="disable: nodeModel.editCameraLoading, checked: nodeModel.editCameraMode">
+        This camera adjusts it's internal clock automatically (e.g. a phone)
+      </label>
+    </div>
+
     <input placeholder="Search for owner" type="text" style="width: 515px;" data-bind="disable: nodeModel.editCameraLoading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.editCameraTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.editCameraTypeaheadNodeFilter }" data-provide="typeahead"/>
 
     <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: nodeModel.editCameraOwner, remove: nodeModel.editCameraClearOwner } }"></div>

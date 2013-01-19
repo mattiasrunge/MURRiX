@@ -339,7 +339,7 @@ $(function()
 
       if (typeof when.source !== "function")
       {
-        text += "<table class='table table-condensed'>";
+        text += "<table class='table table-condensed table-striped'>";
 
         text += "<tr>";
         text += "<td>Timestamp</td><td>" + when.timestamp() + "</td>";
@@ -350,27 +350,34 @@ $(function()
         text += "</tr>";
 
         text += "<tr>";
-        text += "<td>Datestring</td><td>" + when.source.datestring() + " </td>";
+        text += "<td>Datestring</td><td>" + when.source.datestring() + "</td>";
         text += "</tr>";
+
+        if (when.source.reference && when.source.reference() !== "None")
+        {
+          text += "<tr>";
+          text += "<td>Referance</td><td>If a references exists it will be used</td>";
+          text += "</tr>";
+        }
 
         if (when.source.timezone && when.source.timezone() !== false)
         {
           text += "<tr>";
-          text += "<td>Timezone</td><td>" + when.source.timezone() + " </td>";
+          text += "<td>Timezone</td><td>" + when.source.timezone() + "</td>";
           text += "</tr>";
         }
 
         if (when.source.daylightSavings)
         {
           text += "<tr>";
-          text += "<td>Daylight savings</td><td>" + (when.source.daylightSavings() ? "Yes" : "No") + " </td>";
+          text += "<td>Daylight savings</td><td>" + (when.source.daylightSavings() ? "Yes" : "No") + "</td>";
           text += "</tr>";
         }
 
         if (when.source.comment && when.source.comment() !== "")
         {
           text += "<tr>";
-          text += "<td>Comment</td><td>" + when.source.comment() + " </td>";
+          text += "<td>Comment</td><td>" + when.source.comment() + "</td>";
           text += "</tr>";
         }
 

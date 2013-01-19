@@ -1141,6 +1141,20 @@ murrix.parseTimezone = function(string)
 
   return timezone;
 };
+
+murrix.timezoneStringToOffset = function(string)
+{
+  var string = murrix.parseTimezone(string);
+
+  var minus = string[0] === "-";
+
+  var hour = parseInt(string.substr(1, 2), 10);
+  var minutes = parseInt(string.substr(4, 2), 10);
+
+  var offset = hour * 3600 + minutes * 60;
+
+  return minus ? -offset : offset;
+}
 /*
 murrix.makeTimestamp = function(source, references, callback)
 {

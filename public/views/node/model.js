@@ -374,7 +374,19 @@ var NodeModel = function(parentModel)
       self.editCameraGoto = function() { };
       self.editCameraName(self.node().name());
       self.editCameraDescription(self.node().description());
+      self.editCameraMode(self.node().mode ? self.node().mode() : "manual");
       self.editCameraOwner(self.node()._owner());
+
+      self.editCameraTimezone("Unknown");
+
+      for (var n = 0; n < self.node().referenceTimelines().length; n++)
+      {
+        if (self.node().referenceTimelines()[n].type() === "timezone")
+        {
+          self.editCameraTimezone(self.node().referenceTimelines()[n].name());
+          break;
+        }
+      }
 
       $("#editCameraModal").modal('show');
     }
@@ -416,6 +428,8 @@ var NodeModel = function(parentModel)
   self.editCameraNode = ko.observable(false);
   self.editCameraName = ko.observable("");
   self.editCameraDescription = ko.observable("");
+  self.editCameraMode = ko.observable("manual");
+  self.editCameraTimezone = ko.observable("(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna");
   self.editCameraOwner = ko.observable(false);
   self.editCameraLoading = ko.observable(false);
   self.editCameraErrorText = ko.observable("");
@@ -430,6 +444,8 @@ var NodeModel = function(parentModel)
     self.editCameraGoto = false;
     self.editCameraNode(false);
     self.editCameraName("");
+    self.editCameraMode("manual");
+    self.editCameraTimezone("(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna");
     self.editCameraDescription("");
     self.editCameraOwner(false);
 
@@ -478,7 +494,29 @@ var NodeModel = function(parentModel)
     nodeData.type = "camera";
     nodeData.name = self.editCameraName();
     nodeData.description = self.editCameraDescription();
+    nodeData.mode = self.editCameraMode();
     nodeData._owner = self.editCameraOwner();
+
+    nodeData.referenceTimelines = nodeData.referenceTimelines || [];
+
+    nodeData.referenceTimelines = nodeData.referenceTimelines.filter(function(element)
+    {
+      return (element.type !== "timezone")
+    });
+
+
+    if (self.editCameraTimezone() !== "Unknown")
+    {
+      var reference = {};
+
+      reference._id = self.editCameraTimezone();
+      reference.type = "timezone";
+      reference.offset = -murrix.timezoneStringToOffset(self.editCameraTimezone());
+      reference.name = self.editCameraTimezone();
+
+      nodeData.referenceTimelines.push(reference);
+    }
+
 
     self.editCameraLoading(true);
 
@@ -509,6 +547,8 @@ var NodeModel = function(parentModel)
       self.editCameraGoto = false;
       self.editCameraNode(false);
       self.editCameraName("");
+      self.editCameraMode("manual");
+      self.editCameraTimezone("(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna");
       self.editCameraDescription("");
       self.editCameraOwner(false);
     });

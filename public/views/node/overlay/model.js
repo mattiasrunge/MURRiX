@@ -1250,13 +1250,78 @@ var OverlayModel = function(parentModel)
     });
   };
 
+  self.whenManualTimezoneAllowed = ko.computed(function()
+  {
+    // If we have no item it does not really matter
+    if (self.item() === false)
+    {
+      return true;
+    }
+
+    // If we have no with, only manual remains
+    if (self.item().with() === false)
+    {
+      return true;
+    }
+    else
+    {
+      // If we have no reference timelines or have selected none
+      if ((!self.item().with().referenceTimelines || self.item().with().referenceTimelines().length === 0) || self.whenReference() === 'None')
+      {
+        return true;
+      }
+    }
+
+    // If we are in manual mode
+    if (self.whenType() === 'manual')
+    {
+      return true;
+    }
+
+    return false;
+  });
+
+  self.whenManualDaylightSavingsAllowed = ko.computed(function()
+  {
+    // If we have no item it does not really matter
+    if (self.item() === false)
+    {
+      return true;
+    }
+
+    // If we have no with, only manual remains
+    if (self.item().with() === false)
+    {
+      return true;
+    }
+    // If we have a camera and are in camera mode, daylight savings will be handled by camera setting
+    else if (self.whenType() === 'camera')
+    {
+      return false
+    }
+
+    // If we have no reference timelines we or have selected none
+    if (!self.item().with().referenceTimelines || self.item().with().referenceTimelines().length === 0 || self.whenReference() === 'None')
+    {
+      return true;
+    }
+
+    // If we are in manual mode
+    if (self.whenType() === 'manual')
+    {
+      return true;
+    }
+
+    return false;
+  });
+
   self.whenUpdatedValue = function()
   {
-    if (self.whenType() === "manual" || (self.whenType() === "camera" && self.whenReference() === "None"))
+    if (self.whenType() === "manual" || (self.whenType() === "camera" && self.whenReference() === "None") || (self.whenType() === "camera" && self.item().with() !== false && (self.item().with().mode() === 'autoDatetime' || self.item().with().mode() === 'autoDaylightSavings')))
     {
       var datestring = self.whenYear() + "-" + self.whenMonth() + "-" + self.whenDay() + " " + self.whenHour() + ":" + self.whenMinute() + ":" + self.whenSecond();
 
-      nodeModel.overlayModel.whenDaylightSavings(murrix.isDaylightSavings(datestring));
+      self.whenDaylightSavings(murrix.isDaylightSavings(datestring));
     }
   };
 
@@ -1419,7 +1484,7 @@ console.log(itemData);
     self.editLoading(true);
     self.editErrorText("");
 
-    murrix.server.emit("updateWhen", { when: itemData.when, references: references }, function(error, when)
+    murrix.server.emit("updateWhen", { when: itemData.when, references: references, mode: ko.mapping.toJS(self.item().with().mode) }, function(error, when)
     {
       self.editLoading(false);
 
@@ -1448,6 +1513,8 @@ console.log(itemData);
     source.datestring = murrix.cleanDatestring(self.item().exif.GPSDateTime());
 
     self.whenInitialize(source);
+
+    self.whenUpdatedValue();
   };
 
   self.whenSetExifCamera = function(data)
@@ -1458,9 +1525,10 @@ console.log(itemData);
     source.datestring = murrix.cleanDatestring(self.item().exif.DateTimeOriginal());
     source.reference = false;
     source.timezone = false;
-    source.daylightSavings = false;
 
     self.whenInitialize(source);
+
+    self.whenUpdatedValue();
   };
 
 
