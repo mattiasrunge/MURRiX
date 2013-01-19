@@ -64,7 +64,6 @@ var OverlayModel = function(parentModel)
       }
 
       self.item(item);
-      self.whenUpdateTimezone();
       self.initializeOverlayMap();
       self.description(self.item().description());
 
@@ -362,77 +361,11 @@ var OverlayModel = function(parentModel)
   self.whereLatitude = ko.observable("");
   self.whereLongitude = ko.observable("");
 
-  // This variable should contain best guess for timezone UTC offset
-  self.whenManualTimezone = ko.observable(-(new Date()).getTimezoneOffset() * 60);
-  self.whenManualDaylightSavings = ko.observable(false);
-  self.whenManualDatetime = ko.observable("");
-  self.whenManualSource = ko.observable("manual");
 
-  self.whenManualSubmit = function()
-  {
-    if (self.whenManualDatetime() === "")
-    {
-      self.editErrorText = ko.observable("Can not set empty manual date and time!");
-      return;
-    }
 
-    var itemData = ko.mapping.toJS(self.item);
 
-    itemData.when = {};
 
-    itemData.when.timestamp = (new Date(self.whenManualDatetime() + " +00:00")).getTime() / 1000;
 
-    itemData.when.timestamp += parseInt(self.whenManualTimezone(), 10);
-
-    if (self.whenManualDaylightSavings())
-    {
-      itemData.when.timestamp += 3600;
-    }
-
-    itemData.when.source = self.whenManualSource();
-    itemData.when._syncId = false;
-
-    self.saveItem(itemData);
-  };
-
-  self.whenUpdateTimezone = function()
-  {
-    return; // TODO: Decide how to do this if it should be done
-//     if (self.item().where)
-//     {
-//       if (self.item().where.latitude && self.item().where.latitude() !== false &&
-//           self.item().where.longitude && self.item().where.longitude() !== false
-//       )
-//       {
-//         var options = {};
-//         options.location = self.item().where.latitude() + "," + self.item().where.longitude();
-//         options.timestamp = 0;
-//         options.sensor = false;
-//
-//         jQuery.getJSON("https://maps.googleapis.com/maps/api/timezone/json", options, function(data)
-//         {
-//           if (data.status !== "OK")
-//           {
-//             console.log("Lookup of timezone failed", options, data);
-//             self.whenTimezone((new Date()).getTimezoneOffset() * 60);
-//             return;
-//           }
-//
-//           console.log(options, data);
-//
-//           self.whenTimezone(data.rawOffset);
-//         });
-//
-//         return;
-//       }
-//       else if (self.item().where._id && self.item().where._id() !== false)
-//       {
-//         console.log("TODO - Location timezone lookup");
-//         // Check location and if location has coordinates use them to finde timezone
-//         self.whenTimezone((new Date()).getTimezoneOffset() * 60);
-//       }
-//     }
-  };
 
   self.showingData = ko.observable(false);
 
@@ -731,93 +664,6 @@ var OverlayModel = function(parentModel)
     self.editType("");
   };
 
-  self.whenSetExifGps = function(data)
-  {
-    var itemData = ko.mapping.toJS(self.item);
-
-    itemData.when = {};
-
-    itemData.when.timestamp = murrix.parseExifGps(self.item().exif.GPSDateTime());
-    itemData.when.source = "gps";
-
-    self.saveItem(itemData);
-  };
-
-  self.whenSetExifCamera = function(data)
-  {
-    var itemData = ko.mapping.toJS(self.item);
-
-    itemData.when = {};
-
-    itemData.when.timestamp = murrix.parseExifCamera(self.item().exif.DateTimeOriginal());
-    itemData.when.source = "exif";
-    itemData.when._syncId = false;
-
-    self.saveItem(itemData);
-  };
-
-  self.whenCreateOffsetName = ko.observable("");
-
-  self.whenSetOffset = function(data)
-  {
-    var itemData = ko.mapping.toJS(self.item);
-
-    if (itemData.when._syncId === data._id())
-    {
-      itemData.when._syncId = false;
-    }
-    else
-    {
-      itemData.when._syncId = data._id();
-    }
-
-    self.saveItem(itemData);
-  };
-
-  self.whenRemoveOffset = function(data)
-  {
-    self.whenSaveOffset(data._id());
-  };
-
-  self.whenCreateOffsetSubmit = function()
-  {
-    if (self.whenCreateOffsetName() === "")
-    {
-      self.editErrorText("Can not create offset without name!");
-      return;
-    }
-
-    self.whenSaveOffset(null);
-  };
-
-  self.whenCreateOffsetAllowed = ko.computed(function()
-  {
-    var value = true;
-
-    if (self.item() === false || !self.item().exif || !self.item().exif.DateTimeOriginal || !self.item().when.source || self.item().when.source() !== 'gps' || self.item().with() === false)
-    {
-      value = false;
-    }
-    else
-    {
-      if (self.item().with().whenOffsets)
-      {
-        var offsetValue = self.item().when.timestamp() - murrix.parseExifCamera(self.item().exif.DateTimeOriginal());
-
-        for (var n = 0; n < self.item().with().whenOffsets().length; n++)
-        {
-          if (self.item().with().whenOffsets()[n]._id() === self.item()._id() ||
-              self.item().with().whenOffsets()[n].value() === offsetValue)
-          {
-            value = false;
-            break;
-          }
-        }
-      }
-    }
-
-    return value;
-  });
 
   self.showingOther = ko.computed(function()
   {
@@ -1152,7 +998,6 @@ var OverlayModel = function(parentModel)
       }
 
       self.initializeOverlayMap();
-      self.whenUpdateTimezone();
     });
   };
 
@@ -1186,10 +1031,568 @@ var OverlayModel = function(parentModel)
         var item = murrix.cache.addItemData(itemData);
 
         self.initializeOverlayMap();
-        self.whenUpdateTimezone();
       });
     });
   };
+
+
+
+
+
+
+
+  self.whenType = ko.observable("manual");
+  self.whenYear = ko.observable("XXXX");
+  self.whenMonth = ko.observable("XX");
+  self.whenDay = ko.observable("XX");
+  self.whenHour = ko.observable("XX");
+  self.whenMinute = ko.observable("XX");
+  self.whenSecond = ko.observable("XX");
+  self.whenReference = ko.observable("X");
+  self.whenTimezone = ko.observable("Unknown");
+  self.whenDaylightSavings = ko.observable(false);
+  self.whenComment = ko.observable("");
+
+  self.whenYearDisabled = ko.observable(false);
+  self.whenMonthDisabled = ko.observable(false);
+  self.whenDayDisabled = ko.observable(false);
+  self.whenHourDisabled = ko.observable(false);
+  self.whenMinuteDisabled = ko.observable(false);
+  self.whenSecondDisabled = ko.observable(false);
+  self.whenReferenceDisabled = ko.observable(false);
+  self.whenTimezoneDisabled = ko.observable(false);
+  self.whenDaylightSavingsDisabled = ko.observable(false);
+
+  self.item.subscribe(function(value)
+  {
+    if (value === false)
+    {
+      self.whenReset();
+      return;
+    }
+
+    self.whenInitialize(ko.mapping.toJS(value.when.source));
+  });
+
+  self.whenReferenceVisible = ko.computed(function()
+  {
+    if (self.item() === false)
+    {
+      return false;
+    }
+
+    if (typeof self.item().when.source === "function")
+    {
+      return false;
+    }
+
+    if (self.item().when.source.type() !== "gps" && self.item().when.source.type() !== "manual")
+    {
+      return false;
+    }
+
+    if (self.whenType() === "manual")
+    {
+      if (self.whenSecond() === "X" || self.whenTimezone() === "Unknown")
+      {
+        return false;
+      }
+    }
+
+    if (!self.item().exif.DateTimeOriginal)
+    {
+      return false;
+    }
+
+    if (self.item().with() === false)
+    {
+      return false;
+    }
+
+    return true;
+  });
+
+  self.whenReferenceSelf = ko.computed(function()
+  {
+    if (self.whenReferenceVisible() === false)
+    {
+      return false;
+    }
+
+    if (self.item().with().referenceTimelines)
+    {
+      for (var n = 0; n < self.item().with().referenceTimelines().length; n++)
+      {
+        if (self.item().with().referenceTimelines()[n]._id() === self.item()._id())
+        {
+          return self.item().with().referenceTimelines()[n];
+        }
+      }
+    }
+
+    return false;
+  });
+
+  self.whenReferenceCreateAllowed = ko.computed(function()
+  {
+    if (self.whenReferenceVisible() === false || self.whenReferenceSelf() === true)
+    {
+      return false;
+    }
+
+    var cameraTimestamp = self.whenCreateExifCameraTimestamp();
+
+    if (cameraTimestamp === false)
+    {
+      return false;
+    }
+
+    var offset = self.item().when.timestamp() - cameraTimestamp;
+
+    if (self.item().with().referenceTimelines)
+    {
+      for (var n = 0; n < self.item().with().referenceTimelines().length; n++)
+      {
+        if (self.item().with().referenceTimelines()[n].offset() === offset)
+        {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  });
+
+  self.whenReferences = ko.computed(function()
+  {
+    var list = [];
+
+    if (self.item() === false || self.item().with() === false)
+    {
+      return false;
+    }
+
+    list.push({ id: "X", name: "Default" });
+
+    for (var n = 0; n < self.item().with().referenceTimelines().length; n++)
+    {
+      list.push({ id: self.item().with().referenceTimelines()[n]._id(), name: self.item().with().referenceTimelines()[n].name() });
+    }
+
+    list.push({ id: "None", name: "Use manual timezone" });
+
+    return list;
+  });
+
+  self.whenCreateExifCameraTimestamp = function()
+  {
+    if (self.item() === false || !self.item().exif.DateTimeOriginal)
+    {
+      return false;
+    }
+
+    return murrix.timestamp(murrix.cleanDatestring(self.item().exif.DateTimeOriginal()) + " +00:00");
+  };
+
+  self.whenCreateReference = function()
+  {
+    self.editLoading(false);
+    self.editErrorText("");
+
+    if (self.whenReferenceCreateAllowed() === false)
+    {
+       self.editErrorText("Not allowed to create reference timeline!");
+       return;
+    }
+
+    var reference = {};
+
+    reference._id = self.item()._id();
+    reference.type = "utc";
+    reference.offset = self.item().when.timestamp() - self.whenCreateExifCameraTimestamp();
+    reference.name = "(UTC " + reference.offset + "s) from " + self.item().name();
+    console.log(reference);
+
+    self.editLoading(true);
+
+    murrix.server.emit("createReferenceTimeline", { id: self.item()._with(), reference: reference}, function(error, nodeData)
+    {
+      self.editLoading(false);
+
+      if (error)
+      {
+        self.editErrorText(error);
+        return;
+      }
+
+      murrix.cache.addNodeData(nodeData);
+    });
+  };
+
+  self.whenRemoveReference = function()
+  {
+    self.editLoading(false);
+    self.editErrorText("");
+
+    self.editLoading(true);
+
+    murrix.server.emit("removeReferenceTimeline", { id: self.item()._with(), referenceId: self.whenReferenceSelf()._id()}, function(error, nodeData)
+    {
+      self.editLoading(false);
+
+      if (error)
+      {
+        self.editErrorText(error);
+        return;
+      }
+
+      murrix.cache.addNodeData(nodeData);
+    });
+  };
+
+  self.whenSetDatestring = function(datestring)
+  {
+    var dateAndTime = datestring.split(" ");
+
+    var dateParts = dateAndTime[0].split("-");
+    var timeParts = dateAndTime[1].split(":");
+
+    self.whenYear(dateParts[0]);
+    self.whenMonth(dateParts[1]);
+    self.whenDay(dateParts[2]);
+    self.whenHour(timeParts[0]);
+    self.whenMinute(timeParts[1]);
+    self.whenSecond(timeParts[2]);
+  };
+
+  self.whenReset = function()
+  {
+    self.whenType("manual");
+    self.whenYear("XXXX");
+    self.whenMonth("XX");
+    self.whenDay("XX");
+    self.whenHour("XX");
+    self.whenMinute("XX");
+    self.whenSecond("XX");
+    self.whenReference("X");
+    self.whenTimezone("Unknown");
+    self.whenDaylightSavings(false);
+    self.whenComment("");
+
+    self.whenYearDisabled(false);
+    self.whenMonthDisabled(false);
+    self.whenDayDisabled(false);
+    self.whenHourDisabled(false);
+    self.whenMinuteDisabled(false);
+    self.whenSecondDisabled(false);
+    self.whenReferenceDisabled(false);
+    self.whenTimezoneDisabled(false);
+    self.whenDaylightSavingsDisabled(false);
+  };
+
+  self.whenInitialize = function(source)
+  {
+    self.whenReset();
+
+    if (self.item() === false)
+    {
+      return;
+    }
+
+    if (source.type === "gps")
+    {
+      self.whenType("gps");
+
+      self.whenSetDatestring(source.datestring);
+
+      self.whenTimezone("(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London");
+      self.whenDaylightSavings(false);
+      self.whenReference("X");
+      self.whenComment("");
+
+      self.whenYearDisabled(true);
+      self.whenMonthDisabled(true);
+      self.whenDayDisabled(true);
+      self.whenHourDisabled(true);
+      self.whenMinuteDisabled(true);
+      self.whenReferenceDisabled(true);
+      self.whenSecondDisabled(true);
+      self.whenTimezoneDisabled(true);
+      self.whenDaylightSavingsDisabled(true);
+    }
+    else if (source.type === "camera")
+    {
+      self.whenType("camera");
+
+      self.whenSetDatestring(source.datestring);
+
+      self.whenTimezone(source.timezone);
+      self.whenDaylightSavings(source.daylightSavings);
+      console.log(source.reference);
+      self.whenReference(source.reference === false ? "X" : source.reference);
+      console.log(self.whenReference());
+      self.whenComment("");
+
+      self.whenYearDisabled(true);
+      self.whenMonthDisabled(true);
+      self.whenDayDisabled(true);
+      self.whenHourDisabled(true);
+      self.whenMinuteDisabled(true);
+      self.whenSecondDisabled(true);
+      self.whenReferenceDisabled(false);
+      self.whenTimezoneDisabled(false);
+      self.whenDaylightSavingsDisabled(false);
+
+    }
+    else if (source.type === "manual")
+    {
+      self.whenType("manual");
+
+      self.whenSetDatestring(source.datestring);
+
+      self.whenTimezone(source.timezone);
+      self.whenDaylightSavings(source.daylightSavings);
+      self.whenReference(source.reference === false ? "X" : source.reference);
+      self.whenComment(source.comment);
+
+      self.whenYearDisabled(false);
+      self.whenMonthDisabled(false);
+      self.whenDayDisabled(false);
+      self.whenHourDisabled(false);
+      self.whenMinuteDisabled(false);
+      self.whenSecondDisabled(false);
+      self.whenReferenceDisabled(false);
+      self.whenTimezoneDisabled(false);
+      self.whenDaylightSavingsDisabled(false);
+    }
+  };
+
+  self.whenSave = function()
+  {
+    var source = {};
+
+    source.type = self.whenType();
+    source.datestring = self.whenYear() + "-" + self.whenMonth() + "-" + self.whenDay() + " " + self.whenHour() + ":" + self.whenMinute() + ":" + self.whenSecond();
+
+    if (source.type === "camera")
+    {
+      source.reference = self.whenReference() === "X" ? false : self.whenReference();
+    }
+
+    if (source.type === "camera" || source.type === "manual")
+    {
+      console.log(self.whenDaylightSavings());
+      console.log(self.whenTimezone());
+      source.daylightSavings = self.whenDaylightSavings();
+      source.timezone = self.whenTimezone();
+    }
+
+    if (source.type === "manual")
+    {
+      source.comment = self.whenComment();
+    }
+
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.when = {};
+    itemData.when.source = source;
+    itemData.when.timestamp = false; // TODO
+console.log(itemData);
+    var references = [];
+
+    if (self.item().with() !== false && self.item().with().referenceTimelines)
+    {
+      references = ko.mapping.toJS(self.item().with().referenceTimelines);
+    }
+
+    self.editLoading(true);
+    self.editErrorText("");
+
+    murrix.server.emit("updateWhen", { when: itemData.when, references: references }, function(error, when)
+    {
+      self.editLoading(false);
+
+      if (error)
+      {
+        self.editErrorText(error);
+        return;
+      }
+
+      itemData.when = when;
+      console.log(itemData);
+      self.saveItem(itemData);
+    });
+  };
+
+  self.whenSetManual = function()
+  {
+     self.whenReset();
+  };
+
+  self.whenSetExifGps = function(data)
+  {
+    var source = {};
+
+    source.type = "gps";
+    source.datestring = murrix.cleanDatestring(self.item().exif.GPSDateTime());
+
+    self.whenInitialize(source);
+  };
+
+  self.whenSetExifCamera = function(data)
+  {
+    var source = {};
+
+    source.type = "camera";
+    source.datestring = murrix.cleanDatestring(self.item().exif.DateTimeOriginal());
+    source.reference = false;
+    source.timezone = false;
+    source.daylightSavings = false;
+
+    self.whenInitialize(source);
+  };
+
+
+
+
+/*
+  // This variable should contain best guess for timezone UTC offset
+  self.whenManualTimezone = ko.observable(-(new Date()).getTimezoneOffset() * 60);
+  self.whenManualDaylightSavings = ko.observable(false);
+  self.whenManualDatetime = ko.observable("");
+  self.whenManualSource = ko.observable("manual");
+
+  self.whenManualSubmit = function()
+  {
+    if (self.whenManualDatetime() === "")
+    {
+      self.editErrorText = ko.observable("Can not set empty manual date and time!");
+      return;
+    }
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.when = {};
+
+    itemData.when.timestamp = (new Date(self.whenManualDatetime() + " +00:00")).getTime() / 1000;
+
+    itemData.when.timestamp += parseInt(self.whenManualTimezone(), 10);
+
+    if (self.whenManualDaylightSavings())
+    {
+      itemData.when.timestamp += 3600;
+    }
+
+    itemData.when.source = self.whenManualSource();
+    itemData.when._syncId = false;
+
+    self.saveItem(itemData);
+  };
+
+  self.whenUpdateTimezone = function()
+  {
+    return; // TODO: Decide how to do this if it should be done
+//     if (self.item().where)
+//     {
+//       if (self.item().where.latitude && self.item().where.latitude() !== false &&
+//           self.item().where.longitude && self.item().where.longitude() !== false
+//       )
+//       {
+//         var options = {};
+//         options.location = self.item().where.latitude() + "," + self.item().where.longitude();
+//         options.timestamp = 0;
+//         options.sensor = false;
+//
+//         jQuery.getJSON("https://maps.googleapis.com/maps/api/timezone/json", options, function(data)
+//         {
+//           if (data.status !== "OK")
+//           {
+//             console.log("Lookup of timezone failed", options, data);
+//             self.whenTimezone((new Date()).getTimezoneOffset() * 60);
+//             return;
+//           }
+//
+//           console.log(options, data);
+//
+//           self.whenTimezone(data.rawOffset);
+//         });
+//
+//         return;
+//       }
+//       else if (self.item().where._id && self.item().where._id() !== false)
+//       {
+//         console.log("TODO - Location timezone lookup");
+//         // Check location and if location has coordinates use them to finde timezone
+//         self.whenTimezone((new Date()).getTimezoneOffset() * 60);
+//       }
+//     }
+  };*/
+
+
+/*
+  self.whenCreateOffsetName = ko.observable("");
+
+  self.whenSetOffset = function(data)
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    if (itemData.when._syncId === data._id())
+    {
+      itemData.when._syncId = false;
+    }
+    else
+    {
+      itemData.when._syncId = data._id();
+    }
+
+    self.saveItem(itemData);
+  };
+
+  self.whenRemoveOffset = function(data)
+  {
+    self.whenSaveOffset(data._id());
+  };
+
+  self.whenCreateOffsetSubmit = function()
+  {
+    if (self.whenCreateOffsetName() === "")
+    {
+      self.editErrorText("Can not create offset without name!");
+      return;
+    }
+
+    self.whenSaveOffset(null);
+  };
+
+  self.whenCreateOffsetAllowed = ko.computed(function()
+  {
+//     var value = true;
+//
+//     if (self.item() === false || !self.item().exif || !self.item().exif.DateTimeOriginal || !self.item().when || !self.item().when.source || self.item().when.source() !== 'gps' || self.item().with() === false)
+//     {
+//       value = false;
+//     }
+//     else
+//     {
+//       if (self.item().with().whenOffsets)
+//       {
+//         var offsetValue = self.item().when.timestamp() - murrix.parseExifCamera(self.item().exif.DateTimeOriginal());
+//
+//         for (var n = 0; n < self.item().with().whenOffsets().length; n++)
+//         {
+//           if (self.item().with().whenOffsets()[n]._id() === self.item()._id() ||
+//               self.item().with().whenOffsets()[n].value() === offsetValue)
+//           {
+//             value = false;
+//             break;
+//           }
+//         }
+//       }
+//     }
+//
+//     return value;
+  });
 
   self.whenSaveOffset = function(removeId)
   {
@@ -1241,5 +1644,5 @@ var OverlayModel = function(parentModel)
 
       murrix.cache.addNodeData(nodeData);
     });
-  };
+  };*/
 };

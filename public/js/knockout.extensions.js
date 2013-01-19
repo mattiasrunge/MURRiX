@@ -267,48 +267,131 @@ $(function()
   ko.bindingHandlers.htmlPrintWhen = {
     update: function(element, valueAccessor)
     {
-      var value = valueAccessor();
-      var param = ko.utils.unwrapObservable(value);
-
-      var when = param || false;
+      var data = ko.utils.unwrapObservable(valueAccessor()) || false;
 
       $(element).popover('destroy');
 
-      if (!when || when === null)
+      if (data === false)
       {
-        $(element).html("at an unknown date and time");
+        $(element).html("Unknown date and time");
         return;
       }
 
-      var dateItem = moment.utc(when.timestamp() * 1000);
+      var when = ko.utils.unwrapObservable(data.when);
+      var timezone = murrix.parseTimezone(ko.utils.unwrapObservable(data.timezone));
+
+      if (when.timestamp() === false)
+      {
+        $(element).html("No date and time set");
+        return;
+      }
+
+      var dateItem = moment.utc(when.timestamp() * 1000).local(); // TODO: Make date to local timezone!
 
       if (!dateItem.date())
       {
-        $(element).html("at " + ko.utils.unwrapObservable(value));
+        $(element).html("Failed to create date");
+        return;
       }
-      else
+
+      var format = "dddd, MMMM Do YYYY, HH:mm:ss";
+
+      if (typeof when.source !== "function")
       {
-        var title = dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z");
+        if (when.source.type() === "manual")
+        {
+          var parts = when.source.datestring().replace(/-/g, " ").replace(/:/g, " ").split(" ");
 
-        $(element).html("at " + title);
+          if (parts[0] === "XXXX") // Year missing
+          {
+            format = "[No date and time set]";
+          }
+          else if (parts[1] === "XX") // Month missing
+          {
+            format = "YYYY";
+          }
+          else if (parts[2] === "XX") // Day missing
+          {
+            format = "MMMM YYYY";
+          }
+          else if (parts[3] === "XX") // Hour missing
+          {
+            format = "dddd, MMMM Do YYYY";
+          }
+          else if (parts[4] === "XX") // Minute missing
+          {
+            format = "dddd, MMMM Do YYYY, HH";
+          }
+          else if (parts[5] === "XX") // Second missing
+          {
+            format = "dddd, MMMM Do YYYY, HH:mm";
+          }
 
-        var text = "";
+          // Full date exists!
+        }
+      }
 
-        text += "Timestamp: " + when.timestamp();
-        text += "<br/>";
-        text += "Source: " + when.source();
+      var title = dateItem.format(format) + " (local)";
 
-        var options = {
-          html      : true,
-          placement : "left",
-          trigger   : "hover",
-          title     : "When - " + title,
-          content   : text,
-          delay     : { show: 200, hide: 100 }
+      $(element).html(title);
+
+      var text = "";
+
+      if (typeof when.source !== "function")
+      {
+        text += "<table class='table table-condensed'>";
+
+        text += "<tr>";
+        text += "<td>Timestamp</td><td>" + when.timestamp() + "</td>";
+        text += "</tr>";
+
+        text += "<tr>";
+        text += "<td>Type</td><td>" + when.source.type() + "</td>";
+        text += "</tr>";
+
+        text += "<tr>";
+        text += "<td>Datestring</td><td>" + when.source.datestring() + " </td>";
+        text += "</tr>";
+
+        if (when.source.timezone && when.source.timezone() !== false)
+        {
+          text += "<tr>";
+          text += "<td>Timezone</td><td>" + when.source.timezone() + " </td>";
+          text += "</tr>";
         }
 
-        $(element).popover(options);
+        if (when.source.daylightSavings)
+        {
+          text += "<tr>";
+          text += "<td>Daylight savings</td><td>" + (when.source.daylightSavings() ? "Yes" : "No") + " </td>";
+          text += "</tr>";
+        }
+
+        if (when.source.comment && when.source.comment() !== "")
+        {
+          text += "<tr>";
+          text += "<td>Comment</td><td>" + when.source.comment() + " </td>";
+          text += "</tr>";
+        }
+
+        text += "</table>";
+
+        if (ko.utils.unwrapObservable(data.timezone) === false)
+        {
+          text += "<span class='muted'>No information found on in which timezone this picture was created, will display the time in your local timezone.</span>";
+        }
       }
+
+      var options = {
+        html      : true,
+        placement : "left",
+        trigger   : "hover",
+        title     : title,
+        content   : "<div style='font-size: 10px;'>" + text + "</div>",
+        delay     : { show: 200, hide: 100 }
+      }
+
+      $(element).popover(options);
     }
   };
 

@@ -89,102 +89,169 @@ murrix.model = function()
   self.tagsModel = new TagsModel(self);
   self.todoModel = new TodoModel(self);
   self.mapModel = new MapModel(self);
-  self.whenModel = new WhenModel(self);
-
-
-  $("#selectDatetimeModal").on("shown", function()
-  {
-    $(".timepicker").timepicker({
-      minuteStep  : 1,
-      showSeconds : true,
-      defaultTime : "value",
-      showMeridian: false,
-      showInputs  : false
-    });
-
-    $(".datepicker").datepicker({
-      format    : "yyyy-mm-dd",
-      weekStart : 1
-    });
-  });
 
   self.timezones = [
-    { offset: -43200, name: "(GMT-12:00) International Date Line West" },
-    { offset: -39600, name: "(GMT-11:00) Midway Island, Samoa" },
-    { offset: -36000, name: "(GMT-10:00) Hawaii" },
-    { offset: -32400, name: "(GMT-09:00) Alaska" },
-    { offset: -28800, name: "(GMT-08:00) Pacific Time (US & Canada); Tijuana" },
-    { offset: -25200, name: "(GMT-07:00) Arizona" },
-    { offset: -25200, name: "(GMT-07:00) Chihuahua, La Paz, Mazatlan" },
-    { offset: -25200, name: "(GMT-07:00) Mountain Time (US & Canada)" },
-    { offset: -21600, name: "(GMT-06:00) Central America" },
-    { offset: -21600, name: "(GMT-06:00) Central Time (US & Canada)" },
-    { offset: -21600, name: "(GMT-06:00) Guadalajara, Mexico City, Monterrey" },
-    { offset: -21600, name: "(GMT-06:00) Saskatchewan" },
-    { offset: -18000, name: "(GMT-05:00) Bogota, Lima, Quito" },
-    { offset: -18000, name: "(GMT-05:00) Eastern Time (US & Canada)" },
-    { offset: -18000, name: "(GMT-05:00) Indiana (East)" },
-    { offset: -14400, name: "(GMT-04:00) Atlantic Time (Canada)" },
-    { offset: -14400, name: "(GMT-04:00) Caracas, La Paz" },
-    { offset: -14400, name: "(GMT-04:00) Santiago" },
-    { offset: -12600, name: "(GMT-03:30) Newfoundland" },
-    { offset: -10800, name: "(GMT-03:00) Brasilia" },
-    { offset: -10800, name: "(GMT-03:00) Buenos Aires, Georgetown" },
-    { offset: -10800, name: "(GMT-03:00) Greenland" },
-    { offset: -7200, name: "(GMT-02:00) Mid-Atlantic" },
-    { offset: -3600, name: "(GMT-01:00) Azores" },
-    { offset: -3600, name: "(GMT-01:00) Cape Verde Is." },
-    { offset:  0, name: "(GMT) Casablanca, Monrovia" },
-    { offset:  0, name: "(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London" },
-    { offset:  3600, name: "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna" },
-    { offset:  3600, name: "(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague" },
-    { offset:  3600, name: "(GMT+01:00) Brussels, Copenhagen, Madrid, Paris" },
-    { offset:  3600, name: "(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb" },
-    { offset:  3600, name: "(GMT+01:00) West Central Africa" },
-    { offset:  7200, name: "(GMT+02:00) Athens, Beirut, Istanbul, Minsk" },
-    { offset:  7200, name: "(GMT+02:00) Bucharest" },
-    { offset:  7200, name: "(GMT+02:00) Cairo" },
-    { offset:  7200, name: "(GMT+02:00) Harare, Pretoria" },
-    { offset:  7200, name: "(GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius" },
-    { offset:  7200, name: "(GMT+02:00) Jerusalem" },
-    { offset:  10800, name: "(GMT+03:00) Baghdad" },
-    { offset:  10800, name: "(GMT+03:00) Kuwait, Riyadh" },
-    { offset:  10800, name: "(GMT+03:00) Moscow, St. Petersburg, Volgograd" },
-    { offset:  10800, name: "(GMT+03:00) Nairobi" },
-    { offset:  12600, name: "(GMT+03:30) Tehran" },
-    { offset:  14400, name: "(GMT+04:00) Abu Dhabi, Muscat" },
-    { offset:  14400, name: "(GMT+04:00) Baku, Tbilisi, Yerevan" },
-    { offset:  16200, name: "(GMT+04:30) Kabul" },
-    { offset:  18000, name: "(GMT+05:00) Ekaterinburg" },
-    { offset:  18000, name: "(GMT+05:00) Islamabad, Karachi, Tashkent" },
-    { offset:  19800, name: "(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi" },
-    { offset:  20700, name: "(GMT+05:45) Kathmandu" },
-    { offset:  21600, name: "(GMT+06:00) Almaty, Novosibirsk" },
-    { offset:  21600, name: "(GMT+06:00) Astana, Dhaka" },
-    { offset:  21600, name: "(GMT+06:00) Sri Jayawardenepura" },
-    { offset:  23400, name: "(GMT+06:30) Rangoon" },
-    { offset:  25200, name: "(GMT+07:00) Bangkok, Hanoi, Jakarta" },
-    { offset:  25200, name: "(GMT+07:00) Krasnoyarsk" },
-    { offset:  28800, name: "(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi" },
-    { offset:  28800, name: "(GMT+08:00) Irkutsk, Ulaan Bataar" },
-    { offset:  28800, name: "(GMT+08:00) Kuala Lumpur, Singapore" },
-    { offset:  28800, name: "(GMT+08:00) Perth" },
-    { offset:  28800, name: "(GMT+08:00) Taipei" },
-    { offset:  32400, name: "(GMT+09:00) Osaka, Sapporo, Tokyo" },
-    { offset:  32400, name: "(GMT+09:00) Seoul" },
-    { offset:  32400, name: "(GMT+09:00) Vakutsk" },
-    { offset:  34200, name: "(GMT+09:30) Adelaide" },
-    { offset:  34200, name: "(GMT+09:30) Darwin" },
-    { offset:  36000, name: "(GMT+10:00) Brisbane" },
-    { offset:  36000, name: "(GMT+10:00) Canberra, Melbourne, Sydney" },
-    { offset:  36000, name: "(GMT+10:00) Guam, Port Moresby" },
-    { offset:  36000, name: "(GMT+10:00) Hobart" },
-    { offset:  36000, name: "(GMT+10:00) Vladivostok" },
-    { offset:  39600, name: "(GMT+11:00) Magadan, Solomon Is., New Caledonia" },
-    { offset:  43200, name: "(GMT+12:00) Auckland, Wellington" },
-    { offset:  43200, name: "(GMT+12:00) Fiji, Kamchatka, Marshall Is." },
-    { offset:  46800, name: "(GMT+13:00) Nuku'alofa" }
+    "Unknown",
+    "(GMT-12:00) International Date Line West",
+    "(GMT-11:00) Midway Island, Samoa",
+    "(GMT-10:00) Hawaii",
+    "(GMT-09:00) Alaska",
+    "(GMT-08:00) Pacific Time (US & Canada); Tijuana",
+    "(GMT-07:00) Arizona",
+    "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
+    "(GMT-07:00) Mountain Time (US & Canada)",
+    "(GMT-06:00) Central America",
+    "(GMT-06:00) Central Time (US & Canada)",
+    "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
+    "(GMT-06:00) Saskatchewan",
+    "(GMT-05:00) Bogota, Lima, Quito",
+    "(GMT-05:00) Eastern Time (US & Canada)",
+    "(GMT-05:00) Indiana (East)",
+    "(GMT-04:00) Atlantic Time (Canada)",
+    "(GMT-04:00) Caracas, La Paz",
+    "(GMT-04:00) Santiago",
+    "(GMT-03:30) Newfoundland",
+    "(GMT-03:00) Brasilia",
+    "(GMT-03:00) Buenos Aires, Georgetown",
+    "(GMT-03:00) Greenland",
+    "(GMT-02:00) Mid-Atlantic",
+    "(GMT-01:00) Azores",
+    "(GMT-01:00) Cape Verde Is.",
+    "(GMT) Casablanca, Monrovia",
+    "(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London",
+    "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
+    "(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague",
+    "(GMT+01:00) Brussels, Copenhagen, Madrid, Paris",
+    "(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb",
+    "(GMT+01:00) West Central Africa",
+    "(GMT+02:00) Athens, Beirut, Istanbul, Minsk",
+    "(GMT+02:00) Bucharest",
+    "(GMT+02:00) Cairo",
+    "(GMT+02:00) Harare, Pretoria",
+    "(GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",
+    "(GMT+02:00) Jerusalem",
+    "(GMT+03:00) Baghdad",
+    "(GMT+03:00) Kuwait, Riyadh",
+    "(GMT+03:00) Moscow, St. Petersburg, Volgograd",
+    "(GMT+03:00) Nairobi",
+    "(GMT+03:30) Tehran",
+    "(GMT+04:00) Abu Dhabi, Muscat",
+    "(GMT+04:00) Baku, Tbilisi, Yerevan",
+    "(GMT+04:30) Kabul",
+    "(GMT+05:00) Ekaterinburg",
+    "(GMT+05:00) Islamabad, Karachi, Tashkent",
+    "(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi",
+    "(GMT+05:45) Kathmandu",
+    "(GMT+06:00) Almaty, Novosibirsk",
+    "(GMT+06:00) Astana, Dhaka",
+    "(GMT+06:00) Sri Jayawardenepura",
+    "(GMT+06:30) Rangoon",
+    "(GMT+07:00) Bangkok, Hanoi, Jakarta",
+    "(GMT+07:00) Krasnoyarsk",
+    "(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi",
+    "(GMT+08:00) Irkutsk, Ulaan Bataar",
+    "(GMT+08:00) Kuala Lumpur, Singapore",
+    "(GMT+08:00) Perth",
+    "(GMT+08:00) Taipei",
+    "(GMT+09:00) Osaka, Sapporo, Tokyo",
+    "(GMT+09:00) Seoul",
+    "(GMT+09:00) Vakutsk",
+    "(GMT+09:30) Adelaide",
+    "(GMT+09:30) Darwin",
+    "(GMT+10:00) Brisbane",
+    "(GMT+10:00) Canberra, Melbourne, Sydney",
+    "(GMT+10:00) Guam, Port Moresby",
+    "(GMT+10:00) Hobart",
+    "(GMT+10:00) Vladivostok",
+    "(GMT+11:00) Magadan, Solomon Is., New Caledonia",
+    "(GMT+12:00) Auckland, Wellington",
+    "(GMT+12:00) Fiji, Kamchatka, Marshall Is.",
+    "(GMT+13:00) Nuku'alofa"
   ];
+
+  self.yearList = ko.computed(function()
+  {
+    var list = [];
+
+    list.push({ value: "XXXX", name: "????" });
+
+    for (var year = (new Date()).getFullYear(); year >= 1600; year--)
+    {
+      list.push({ value: year + "", name: year + "" });
+    }
+
+    return list;
+  });
+
+  self.monthList = ko.computed(function()
+  {
+    var list = [];
+
+    list.push({ value: "XX", name: "??" });
+
+    for (var month = 1; month < 13; month++)
+    {
+      list.push({ value: murrix.pad(month, 2), name: murrix.pad(month, 2) });
+    }
+
+    return list;
+  });
+
+  self.dayList = ko.computed(function()
+  {
+    var list = [];
+
+    list.push({ value: "XX", name: "??" });
+
+    for (var day = 1; day < 32; day++)
+    {
+      list.push({ value: murrix.pad(day, 2), name: murrix.pad(day, 2) });
+    }
+
+    return list;
+  });
+
+  self.hourList = ko.computed(function()
+  {
+    var list = [];
+
+    list.push({ value: "XX", name: "??" });
+
+    for (var hour = 0; hour < 60; hour++)
+    {
+      list.push({ value: murrix.pad(hour, 2), name: murrix.pad(hour, 2) });
+    }
+
+    return list;
+  });
+
+  self.minuteList = ko.computed(function()
+  {
+    var list = [];
+
+    list.push({ value: "XX", name: "??" });
+
+    for (var minute = 0; minute < 60; minute++)
+    {
+      list.push({ value: murrix.pad(minute, 2), name: murrix.pad(minute, 2) });
+    }
+
+    return list;
+  });
+
+  self.secondList = ko.computed(function()
+  {
+    var list = [];
+
+    list.push({ value: "XX", name: "??" });
+
+    for (var second = 0; second < 60; second++)
+    {
+      list.push({ value: murrix.pad(second, 2), name: murrix.pad(second, 2) });
+    }
+
+    return list;
+  });
 
   return this;
 }();

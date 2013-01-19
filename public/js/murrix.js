@@ -1124,3 +1124,155 @@ murrix.timestamp = function(value)
 
   return Math.floor(new Date().getTime() / 1000);
 };
+
+murrix.parseTimezone = function(string)
+{
+  if (string === false)
+  {
+    return "+00:00";
+  }
+
+  var timezone = string.match(/\(GMT(.*)\)/)[1];
+
+  if (timezone === "")
+  {
+    return "+00:00";
+  }
+
+  return timezone;
+};
+/*
+murrix.makeTimestamp = function(source, references, callback)
+{
+  if (source.type === "gps")
+  {
+    // Format 2011-07-01 14:17:24Z
+    var parts = source.datestring.substr(0, source.datestring.length - 1).split(" ");
+    var datestring = parts[0].replace(/:/g, "-") + " " + parts[1] + " +00:00";
+
+    callback(null, murrix.timestamp(datestring));
+  }
+  else if (source.type === "camera")
+  {
+    // Format 2011-07-01 14:17:24
+    var parts = source.datestring.split(" ");
+    var datestring = parts[0].replace(/:/g, "-") + " " + parts[1];
+
+    if (source.reference === false)
+    {
+      // TODO: If timezone is false, maybe lookup by position and secondary if where has a timezone.
+
+      datestring += " " + murrix.parseTimezone(source.timezone);
+
+      var timestamp = murrix.timestamp(datestring);
+
+      if (source.daylightSavings)
+      {
+        timestamp += 3600;
+      }
+
+      callback(null, timestamp);
+    }
+    else
+    {
+      datestring += " +00:00";
+
+      var timestamp = murrix.timestamp(datestring);
+      var offset = false;
+
+      for (var n = 0; n < references.length; n++)
+      {
+        if (references[n]._id === source.reference)
+        {
+          offset = references[n].offset;
+          break;
+        }
+      }
+
+      if (offset === false)
+      {
+        callback("Could not find the specified reference");
+        return;
+      }
+
+      timestamp += offset;
+
+      callback(null, timestamp);
+    }
+  }
+  else if (source.type === "manual")
+  {
+    var parts = source.datestring.replace(/:/g, " ").split(" ");
+    var timezone = murrix.parseTimezone(source.timezone);
+    var datastring = "";
+
+    if (parts[0] === "XX") // No Year
+    {
+      callback(null, false);
+      return;
+    }
+    else if (parts[1] === "XX") // No Month
+    {
+      datastring = parts[0] + "-01-01 00:00:00 " + timezone;
+    }
+    else if (parts[2] === "XX") // No Day
+    {
+      datastring = parts[0] + "-" + parts[1] + "-01 00:00:00 " + timezone;
+    }
+    else if (parts[3] === "XX") // No Hour
+    {
+      datastring = parts[0] + "-" + parts[1] + "-" + parts[2] + " 00:00:00 " + timezone;
+    }
+    else if (parts[4] === "XX") // No Minute
+    {
+      datastring = parts[0] + "-" + parts[1] + "-" + parts[2] + " " + parts[3] + ":00:00 " + timezone;
+    }
+    else if (parts[5] === "XX") // No second
+    {
+      datastring = parts[0] + "-" + parts[1] + "-" + parts[2] + " " + parts[3] + ":" + parts[4] + ":00 " + timezone;
+    }
+    else // Full date and time
+    {
+      datastring = parts[0] + "-" + parts[1] + "-" + parts[2] + " " + parts[3] + ":" + parts[4] + ":" + parts[5] + " " + timezone;
+    }
+
+    var timestamp = murrix.timestamp(datastring);
+
+    if (source.daylightSavings)
+    {
+      timestamp += 3600;
+    }
+
+    callback(null, timestamp);
+  }
+  else
+  {
+    callback("Unknown source type, " + source.type);
+  }
+};*/
+
+murrix.cleanDatestring = function(datestring)
+{
+  if (datestring[datestring.length - 1] === "Z")
+  {
+    datestring = datestring.substr(0, datestring.length - 1); // Remove trailing Z
+  }
+
+  // Replace dividing : with -
+  var parts = datestring.split(" ");
+  datestring = parts[0].replace(/:/g, "-") + " " + parts[1];
+
+  return datestring;
+};
+
+murrix.pad = function(number, length)
+{
+  var str = "" + number;
+
+  while (str.length < length)
+  {
+    str = "0" + str;
+  }
+
+  return str;
+};

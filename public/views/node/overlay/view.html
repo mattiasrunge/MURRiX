@@ -213,32 +213,116 @@
         </table>
       </div>
 
+
+
+
+
       <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.editType() === 'when'">
         <a class="pull-right close" data-bind="click: nodeModel.overlayModel.editFinishClicked" style="font-size: 30px">×</a>
 
         <h3>Set date and time</h3>
         <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
         <p class="muted" style="font-size: 12px;">
-          <i>Set date and time when item was created e.g. when was this picture taken. All times are stored in UTC, be sure that timezone information is correct.</i>
+          <i>Set date and time when item was created e.g. when was this picture taken. All times are stored in UTC, be sure that timezone and daylight savings information is correct.</i>
         </p>
 
-        <div data-bind="if: nodeModel.overlayModel.item().when">
-          <h5>Current information</h5>
-          <div style="font-size: 12px; margin-bottom: 20px;">
-            <div style="font-weight: bold;" data-bind="htmlTimestamp: nodeModel.overlayModel.item().whenTimestamp"></div>
-            <div>Source: <span data-bind="text: nodeModel.overlayModel.item().when.source"></span></div>
+        <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.item().with() === false && nodeModel.overlayModel.item().what() === 'file'">
+          <strong>Warning!</strong> No camera selected for this file!
+        </div>
 
-            <div class="alert alert-warning" data-bind="visible: nodeModel.overlayModel.item().with() === false && nodeModel.overlayModel.item().what() === 'file'">
-              <strong>Warning!</strong> No camera selected for this file!
-            </div>
-
+        <div>
+          <h5>Current date and time information</h5>
+          <p class="muted" style="font-size: 12px;">
+            The current, if any, time and date information associated with this item is shown here. It can be updated by the forms below.
+          </p>
+          <div class="alert alert-info">
+            <span data-bind="htmlPrintWhen: { when: nodeModel.overlayModel.item().when, timezone: false }"></span>
           </div>
+        </div>
+
+        <div>
+          <h5>Edit date and time information</h5>
+          <table class="table table-condensed" style="font-size: 10px; margin-bottom: 5px;">
+            <tbody>
+              <tr>
+                <td>Source</td>
+                <td>
+                  <span data-bind="visible: nodeModel.overlayModel.whenType() === 'gps'">Gps</span>
+                  <span data-bind="visible: nodeModel.overlayModel.whenType() === 'camera'">Camera</span>
+                  <span data-bind="visible: nodeModel.overlayModel.whenType() === 'manual'">Manual</span>
+                  <a data-bind="click: nodeModel.overlayModel.whenSetManual, visible: nodeModel.overlayModel.whenType() === 'gps' || nodeModel.overlayModel.whenType() === 'camera'" class="pull-right" style="cursor: pointer;">Enter manual</a>
+                </td>
+              </tr>
+              <tr data-bind="visible: nodeModel.overlayModel.whenType() === 'manual'">
+                <td>Comment</td>
+                <td class="form-inline">
+                  <input type="text" class="input-large" data-bind="value: nodeModel.overlayModel.whenComment">
+                </td>
+              </tr>
+              <tr>
+                <td>Date</td>
+                <td class="form-inline">
+                  <select class="input-small" data-bind="value: nodeModel.overlayModel.whenYear, foreach: yearList, disable: nodeModel.overlayModel.whenYearDisabled">
+                    <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+                  </select>
+                  <strong>-</strong>
+                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenMonth, foreach: monthList, disable: nodeModel.overlayModel.whenMonthDisabled() || nodeModel.overlayModel.whenYear() === 'XXXX'">
+                    <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+                  </select>
+                  <strong>-</strong>
+                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenDay, foreach: dayList, disable: nodeModel.overlayModel.whenDayDisabled() || nodeModel.overlayModel.whenMonth() === 'XX'">
+                    <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Time</td>
+                <td class="form-inline">
+                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenHour, foreach: hourList, disable: nodeModel.overlayModel.whenHourDisabled() || nodeModel.overlayModel.whenDay() === 'XX'">
+                    <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+                  </select>
+                  <strong>:</strong>
+                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenMinute, foreach: minuteList, disable: nodeModel.overlayModel.whenMinuteDisabled() || nodeModel.overlayModel.whenHour() === 'XX'">
+                    <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+                  </select>
+                  <strong>:</strong>
+                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenSecond, foreach: secondList, disable: nodeModel.overlayModel.whenSecondDisabled() || nodeModel.overlayModel.whenMinute() === 'XX'">
+                    <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+                  </select>
+                </td>
+              </tr>
+              <tr data-bind="visible: nodeModel.overlayModel.whenType() === 'camera' && nodeModel.overlayModel.item().with() !== false && nodeModel.overlayModel.item().what() === 'file'">
+                <td>
+                  Reference
+                </td>
+                <td class="form-inline">
+                  <select data-bind="value: nodeModel.overlayModel.whenReference, disable: nodeModel.overlayModel.whenReferenceDisabled, options: nodeModel.overlayModel.whenReferences, optionsText: 'name', optionsValue: 'id'" style="width: 100%"></select>
+                <td>
+              </tr>
+              <tr data-bind="visible: nodeModel.overlayModel.item().with() === false || !nodeModel.overlayModel.item().with().referenceTimelines || nodeModel.overlayModel.item().with().referenceTimelines.length === 0 || nodeModel.overlayModel.whenReference() === 'None' || nodeModel.overlayModel.whenType() === 'manual'">
+                <td>Timezone</td>
+                <td class="form-inline">
+                  <select data-bind="options: timezones, value: nodeModel.overlayModel.whenTimezone, disable: nodeModel.overlayModel.whenTimezoneDisabled() || nodeModel.overlayModel.whenHour() === 'XX'" style="width: 100%"></select>
+                  <label class="checkbox" style="margin-top: 2px; font-size: 10px;">
+                    <input type="checkbox" data-bind="checked: nodeModel.overlayModel.whenDaylightSavings, disable: nodeModel.overlayModel.whenDaylightSavingsDisabled() || nodeModel.overlayModel.whenHour() === 'XX'"> Daylight savings in affect
+                  </label>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <button class="btn btn-primary btn-mini" type="button" style="width: 100%;" data-bind="click: nodeModel.overlayModel.whenSave">Save</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
 
         <div data-bind="if: nodeModel.overlayModel.item().exif && (nodeModel.overlayModel.item().exif.GPSDateTime || nodeModel.overlayModel.item().exif.DateTimeOriginal)">
           <h5>File information</h5>
           <p class="muted" style="font-size: 12px;">
-            <i>This file has metadata stored in it, all timestamps found are listed here.</i>
+            <i>This file has time metadata stored in it, all available information is listed here and can be used if needed.</i>
           </p>
           <table class="table table-condensed" style="font-size: 10px; margin-bottom: 20px;">
             <tbody>
@@ -246,115 +330,55 @@
                 <td>
                   GPS
                 </td>
-                <td data-bind="htmlTimestamp: murrix.parseExifGps(nodeModel.overlayModel.item().exif.GPSDateTime())"></td>
+                <td data-bind="text: nodeModel.overlayModel.item().exif.GPSDateTime()"></td>
                 <td>
-                  <button title="Set" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whenSetExifGps" class="btn btn-mini btn-link pull-right">Set</button>
+                  <a data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whenSetExifGps" style="cursor: pointer;" class="pull-right">Set</a>
                 </td>
               </tr>
               <tr data-bind="if: nodeModel.overlayModel.item().exif.DateTimeOriginal">
                 <td>
                   Camera
                 </td>
-                <td data-bind="htmlTimestamp: murrix.parseExifCamera(nodeModel.overlayModel.item().exif.DateTimeOriginal())"></td>
+                <td data-bind="text: nodeModel.overlayModel.item().exif.DateTimeOriginal()"></td>
                 <td>
-                  <button title="Set" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whenSetExifCamera" class="btn btn-mini btn-link pull-right">Set</button>
+                  <a data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whenSetExifCamera" style="cursor: pointer;" class="pull-right">Set</a>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div data-bind="visible: nodeModel.overlayModel.item().when && nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'exif'">
-          <h5>Select camera offset</h5>
+        <div data-bind="visible: nodeModel.overlayModel.whenReferenceVisible() && (nodeModel.overlayModel.whenReferenceSelf() !== false || nodeModel.overlayModel.whenReferenceCreateAllowed())">
+          <h5>Reference timelines for <span data-bind="text: nodeModel.overlayModel.item().with().name"></span></h5>
           <p class="muted" style="font-size: 12px;">
-            <i>This file does not have a GPS quality timestamp. Though if the camera has one or more offsets defined, the timestamp on this file can be adjusted and get the same quality. If there are any offsets please select one of them in the list below, if none is selected the first in the list will be used.</i>
+            Reference timelines can be created for a camera to adjust the date and time for each file created with that camera. The internal clock of the camera might be inaccurate and needs to be synchronized to a good quality time source.
           </p>
-
-          <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.item().with() === false">
-            <strong>Warning!</strong> No camera selected for this file!
-          </div>
-
-          <div class="alert alert-warning" data-bind="visible: nodeModel.overlayModel.item().with() !== false && (!nodeModel.overlayModel.item().with() || !nodeModel.overlayModel.item().with().whenOffsets || nodeModel.overlayModel.item().with().whenOffsets().length === 0)">
-            <strong>Warning!</strong> No camera offsets found!
-          </div>
-
-          <div data-bind="if: nodeModel.overlayModel.item().with() !== false && nodeModel.overlayModel.item().with().whenOffsets">
-            <table class="table table-condensed" style="font-size: 10px;" data-bind="foreach: nodeModel.overlayModel.item().with().whenOffsets">
-              <tbody>
-                <tr data-bind="css: { info: nodeModel.overlayModel.item().when._syncId && nodeModel.overlayModel.item().when._syncId() === $data._id() }, click: nodeModel.overlayModel.whenSetOffset" style="cursor: pointer;">
-                  <td>
-                    <input type="checkbox" data-bind="checked: nodeModel.overlayModel.item().when._syncId && nodeModel.overlayModel.item().when._syncId() === $data._id()">
-                  </td>
-                  </td>
-                  <td data-bind="text: $data.name"></td>
-                  <td>
-                    <span data-bind="text: $data.value"></span>s
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div data-bind="if: nodeModel.overlayModel.item().when.source && nodeModel.overlayModel.item().when.source() === 'gps' && nodeModel.overlayModel.item().exif && nodeModel.overlayModel.item().exif.DateTimeOriginal && nodeModel.overlayModel.item().with() !== false">
-
-          <h5>Camera offsets for <span data-bind="text: nodeModel.overlayModel.item().with().name"></span></h5>
-
           <p class="muted" style="font-size: 12px;">
-            <i>This file has a GPS quality timestamp as well as a timestamp for the camera used to create it. It can be used to create a correct offset that can be used for files created with the same camera but does not have a GPS quality timestamp.</i>
+            This file has time information (Gps or Manual), in addition to the camera information, which can be used as a reference timeline if one is created.
           </p>
-          <form data-bind="submit: nodeModel.overlayModel.whenCreateOffsetSubmit" style="">
-            <table class="table table-condensed" style="font-size: 10px; margin-bottom: 0px;">
-              <tbody>
-                <!-- ko foreach: nodeModel.overlayModel.item().with().whenOffsets -->
-                <tr>
-                  <td data-bind="text: $data.name"></td>
-                  <td>
-                    <span data-bind="text: $data.value"></span>s
-                  </td>
-                  <td>
-                    <button title="Remove" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whenRemoveOffset" class="btn btn-mini btn-link pull-right">Remove</button>
-                  </td>
-                </tr>
-                <!-- /ko -->
-
-                <tr data-bind="if: nodeModel.overlayModel.whenCreateOffsetAllowed">
-                  <td>
-                    <input style="width: 160px; margin: 0px;" id="" type="text" placeholder="Name" data-bind="value: nodeModel.overlayModel.whenCreateOffsetName, disable: nodeModel.overlayModel.editLoading">
-                  </td>
-                  <td>
-                    <span data-bind="text: nodeModel.overlayModel.item().when.timestamp() - murrix.parseExifCamera(nodeModel.overlayModel.item().exif.DateTimeOriginal())"></span>s
-                  </td>
-                  <td>
-                    <button class="btn btn-mini btn-link pull-right" type="submit" data-bind="disable: nodeModel.overlayModel.editLoading">Create</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
-
+          <table class="table table-condensed" data-bind="visible: nodeModel.overlayModel.whenReferenceSelf() !== false">
+            <thead>
+              <th>Name</th>
+              <th>Offset</th>
+              <th>Type</th>
+              <th></th>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-bind="text: nodeModel.overlayModel.whenReferenceSelf().name"></td>
+                <td data-bind="text: nodeModel.overlayModel.whenReferenceSelf().offset"></td>
+                <td data-bind="text: nodeModel.overlayModel.whenReferenceSelf().type"></td>
+                <td><button class="btn" data-bind="click: nodeModel.overlayModel.whenRemoveReference"><i class="icon icon-trash"></i></button>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-primary btn-mini" type="button" style="width: 100%;" data-bind="visible: nodeModel.overlayModel.whenReferenceCreateAllowed, click: nodeModel.overlayModel.whenCreateReference">Create reference</button>
         </div>
 
-        <div>
-          <h5>Enter manual information</h5>
-          <form data-bind="submit: nodeModel.overlayModel.whenManualSubmit">
-            <input class="input-large" style="width: 306px;" id="" type="datetime" placeholder="YYYY-MM-DD HH:mm:ss" data-bind="value: nodeModel.overlayModel.whenManualDatetime">
-            <select data-bind="foreach: timezones, value: nodeModel.overlayModel.whenManualTimezone" style="width: 320px;">
-              <option data-bind="attr: { value: $data.offset }, text: $data.name"></option>
-            </select>
-            <label class="checkbox">
-              <input type="checkbox" data-bind="checked: nodeModel.overlayModel.whenManualDaylightSavings">
-              Daylight savings
-            </label>
-
-            <select style="width: 320px;" data-bind="value: nodeModel.overlayModel.whenManualSource">
-              <option value="manual">Best guess quality</option>
-              <option value="gps">Gps quality</option>
-            </select>
-            <button type="submit" class="btn btn-primary" style="width: 320px;">Set</button>
-          </form>
-        </div>
       </div>
+
+
+
 
       <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.editType() === 'where'">
         <a class="pull-right close" data-bind="click: nodeModel.overlayModel.editFinishClicked" style="font-size: 30px">×</a>
@@ -450,21 +474,18 @@
       </div>
 
       <div data-bind="visible: nodeModel.overlayModel.editType() === '', if: nodeModel.node() !== false">
-        <div style="padding: 10px;">
+        <div style="padding: 10px; padding-bottom: 0px;">
           <a class="pull-right close" data-bind="hrefSecondSecondary: '', clickKey: 'esc'" style="font-size: 30px">×</a>
-          <h3 data-bind="text: nodeModel.node().name"></h3>
+          <h4 style="white-space: nowrap; width: 305px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0px;" data-bind="text: nodeModel.node().name"></h4>
+          <div class="muted" style="font-size: 10px; margin-bottom: 10px;">
+            &ndash; <i>Showing item <span data-bind="text: nodeModel.overlayModel.itemIndex() + 1"></span> out of <span data-bind="text: nodeModel.items().length"></span></i>
+          </div>
 
-          <p style="font-size: 10px;" class="muted" data-bind="text: nodeModel.overlayModel.item().description"></p>
+          <p style="font-size: 10px;" data-bind="text: nodeModel.overlayModel.item().description"></p>
         </div>
 
         <div style="font-size: 10px; padding: 10px; padding-top: 0px; text-align: left;">
           <table class="table table-striped table-condensed">
-            <tr>
-              <td>Index</td>
-              <td>
-                <span data-bind="text: nodeModel.overlayModel.itemIndex() + 1"></span> out of <span data-bind="text: nodeModel.items().length"></span>
-              </td>
-            </tr>
             <tr>
               <td>
                 <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whoEditClicked">Created&nbsp;by</a>
@@ -516,22 +537,6 @@
             </tr>
             <tr>
               <td>
-                <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whenEditClicked">Created&nbsp;on</a>
-                <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Created&nbsp;on</span>
-              </td>
-              <td>
-                <span data-bind="if: nodeModel.overlayModel.item().whenTimestamp() !== false">
-                  <span data-bind="htmlTimestamp: nodeModel.overlayModel.item().whenTimestamp()"></span>
-                </span>
-                <span data-bind="visible: nodeModel.overlayModel.item().whenTimestamp() === false && nodeModel.node().hasAdminAccess()">
-                  <a style="display: block;" href="#" data-bind="click: nodeModel.overlayModel.whenEditClicked">
-                    Select when this item was created.
-                  </a>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>
                 <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.withEditClicked">Created&nbsp;with</a>
                 <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Created&nbsp;with</span>
               </td>
@@ -550,6 +555,22 @@
                       Select the camera used to create this item.
                     </a>
                   </div>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whenEditClicked">Created&nbsp;on</a>
+                <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Created&nbsp;on</span>
+              </td>
+              <td>
+                <span data-bind="if: nodeModel.overlayModel.item().whenTimestamp() !== false">
+                  <span data-bind="htmlPrintWhen: { when: nodeModel.overlayModel.item().when, timezone: false }"></span>
+                </span>
+                <span data-bind="visible: nodeModel.overlayModel.item().whenTimestamp() === false && nodeModel.node().hasAdminAccess()">
+                  <a style="display: block;" href="#" data-bind="click: nodeModel.overlayModel.whenEditClicked">
+                    Select when this item was created.
+                  </a>
                 </span>
               </td>
             </tr>
@@ -625,7 +646,7 @@
                   <div class="media-body">
                     <blockquote>
                       <div style="padding-bottom: 5px;" data-bind="text: $data.text"></div>
-                      <small><span data-bind="htmlTimeAgo: $data.added.timestamp"></span> by <span data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></span></small>
+                      <small style="font-size: 10px;"><span data-bind="htmlTimeAgo: $data.added.timestamp"></span> by <span data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></span></small>
                     </blockquote>
                   </div>
                 </div>

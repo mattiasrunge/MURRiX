@@ -12,6 +12,7 @@ var ObjectID = require('mongodb').ObjectID;
 var Session = require('./lib/session').Session;
 var User = require('./lib/user').User;
 var NodeManager = require('./lib/node.js').NodeManager;
+var MurrixWhen = require('./lib/when.js').When;
 var MurrixUtils = require('./lib/utils.js');
 var MurrixMedia = require('./lib/media.js');
 var UploadManager = require('./lib/upload.js').UploadManager;
@@ -25,6 +26,7 @@ var mongoDb = new mongo.Db(configuration.databaseName, mongoServer);
 var session = new Session(mongoDb, configuration);
 var user = new User(mongoDb);
 var nodeManager = new NodeManager(mongoDb, user);
+var murrixWhen = new MurrixWhen();
 var uploadManager = new UploadManager(configuration);
 var fileServer = new nodeStatic.Server("./public", { cache: false });
 
@@ -461,6 +463,41 @@ io.sockets.on("connection", function(client)
     }
 
     MurrixUtils.detectFaces(configuration.filesPath + data, callback);
+  });
+
+
+  /* When API */
+  client.on("updateWhen", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for murrixWhen.updateWhen!");
+      return;
+    }
+
+    murrixWhen.updateWhen(client.handshake.session, data.when, data.references, callback);
+  });
+
+  client.on("createReferenceTimeline", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for murrixWhen.createReferenceTimeline!");
+      return;
+    }
+
+    murrixWhen.createReferenceTimeline(client.handshake.session, nodeManager, data.id, data.reference, callback);
+  });
+
+  client.on("removeReferenceTimeline", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for murrixWhen.removeReferenceTimeline!");
+      return;
+    }
+
+    murrixWhen.removeReferenceTimeline(client.handshake.session, nodeManager, data.id, data.referenceId, callback);
   });
 
   /* Upload file API */
