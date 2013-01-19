@@ -1250,6 +1250,16 @@ var OverlayModel = function(parentModel)
     });
   };
 
+  self.whenUpdatedValue = function()
+  {
+    if (self.whenType() === "manual" || (self.whenType() === "camera" && self.whenReference() === "None"))
+    {
+      var datestring = self.whenYear() + "-" + self.whenMonth() + "-" + self.whenDay() + " " + self.whenHour() + ":" + self.whenMinute() + ":" + self.whenSecond();
+
+      nodeModel.overlayModel.whenDaylightSavings(murrix.isDaylightSavings(datestring));
+    }
+  };
+
   self.whenSetDatestring = function(datestring)
   {
     var dateAndTime = datestring.split(" ");

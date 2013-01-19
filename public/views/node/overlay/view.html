@@ -262,15 +262,15 @@
               <tr>
                 <td>Date</td>
                 <td class="form-inline">
-                  <select class="input-small" data-bind="value: nodeModel.overlayModel.whenYear, foreach: yearList, disable: nodeModel.overlayModel.whenYearDisabled">
+                  <select class="input-small" data-bind="value: nodeModel.overlayModel.whenYear, foreach: yearList, disable: nodeModel.overlayModel.whenYearDisabled, event: { change: nodeModel.overlayModel.whenUpdatedValue }">
                     <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
                   </select>
                   <strong>-</strong>
-                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenMonth, foreach: monthList, disable: nodeModel.overlayModel.whenMonthDisabled() || nodeModel.overlayModel.whenYear() === 'XXXX'">
+                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenMonth, foreach: monthList, disable: nodeModel.overlayModel.whenMonthDisabled() || nodeModel.overlayModel.whenYear() === 'XXXX', event: { change: nodeModel.overlayModel.whenUpdatedValue }">
                     <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
                   </select>
                   <strong>-</strong>
-                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenDay, foreach: dayList, disable: nodeModel.overlayModel.whenDayDisabled() || nodeModel.overlayModel.whenMonth() === 'XX'">
+                  <select class="input-mini" data-bind="value: nodeModel.overlayModel.whenDay, foreach: dayList, disable: nodeModel.overlayModel.whenDayDisabled() || nodeModel.overlayModel.whenMonth() === 'XX', event: { change: nodeModel.overlayModel.whenUpdatedValue }">
                     <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
                   </select>
                 </td>
@@ -296,7 +296,7 @@
                   Reference
                 </td>
                 <td class="form-inline">
-                  <select data-bind="value: nodeModel.overlayModel.whenReference, disable: nodeModel.overlayModel.whenReferenceDisabled, options: nodeModel.overlayModel.whenReferences, optionsText: 'name', optionsValue: 'id'" style="width: 100%"></select>
+                  <select data-bind="value: nodeModel.overlayModel.whenReference, disable: nodeModel.overlayModel.whenReferenceDisabled, options: nodeModel.overlayModel.whenReferences, optionsText: 'name', optionsValue: 'id', event: { change: nodeModel.overlayModel.whenUpdatedValue }" style="width: 100%"></select>
                 <td>
               </tr>
               <tr data-bind="visible: nodeModel.overlayModel.item().with() === false || !nodeModel.overlayModel.item().with().referenceTimelines || nodeModel.overlayModel.item().with().referenceTimelines.length === 0 || nodeModel.overlayModel.whenReference() === 'None' || nodeModel.overlayModel.whenType() === 'manual'">

@@ -378,7 +378,7 @@ $(function()
 
         if (ko.utils.unwrapObservable(data.timezone) === false)
         {
-          text += "<span class='muted'>No information found on in which timezone this picture was created, will display the time in your local timezone.</span>";
+          text += "<span class='muted'>No information found on the timezone where this item was created, will display the time in your local timezone.</span>";
         }
       }
 
