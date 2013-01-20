@@ -379,12 +379,15 @@ var NodeModel = function(parentModel)
 
       self.editCameraTimezone("Unknown");
 
-      for (var n = 0; n < self.node().referenceTimelines().length; n++)
+      if (self.node().referenceTimelines)
       {
-        if (self.node().referenceTimelines()[n].type() === "timezone")
+        for (var n = 0; n < self.node().referenceTimelines().length; n++)
         {
-          self.editCameraTimezone(self.node().referenceTimelines()[n].name());
-          break;
+          if (self.node().referenceTimelines()[n].type() === "timezone")
+          {
+            self.editCameraTimezone(self.node().referenceTimelines()[n].name());
+            break;
+          }
         }
       }
 

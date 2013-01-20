@@ -1265,6 +1265,24 @@ murrix.makeTimestamp = function(source, references, callback)
   }
 };*/
 
+murrix.getAge = function(timestamp)
+{
+  var today = new Date();
+  var birthDate = new Date();
+
+  birthDate.setTime(timestamp * 1000);
+
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate()))
+  {
+    age--;
+  }
+
+  return age;
+}
+
 murrix.cleanDatestring = function(datestring)
 {
   if (datestring[datestring.length - 1] === "Z")

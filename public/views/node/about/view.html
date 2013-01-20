@@ -13,35 +13,96 @@
     <div class="container-fluid well">
       <div class="row-fluid">
         <div class="span6">
-          <table class="table table-bordered">
-            <tr>
-              <td>Name</td>
-              <td data-bind="text: nodeModel.node().name"></td>
-            </tr>
-            <tr>
-              <td>Description</td>
-              <td data-bind="text: nodeModel.node().description"></td>
-            </tr>
-            <tr>
-              <td>Added</td>
-              <td data-bind="htmlTimestamp: nodeModel.node().added.timestamp"></td>
-            </tr>
-            <tr>
-              <td>Modified</td>
-              <td data-bind="htmlTimestamp: nodeModel.node().modified.timestamp"></td>
-            </tr>
-            <tr data-bind="if: nodeModel.node().type() === 'person'" >
-              <td>Birthname</td>
-              <td data-bind="text: nodeModel.node().birthname"></td>
-            </tr>
-            <tr data-bind="if: nodeModel.node().type() === 'person'">
-              <td>Gender</td>
-              <td data-bind="text: nodeModel.node().gender"></td>
-            </tr>
-          </table>
+
+          <div style="margin-bottom: 20px;" data-bind="visible: nodeModel.node().description() !== ''">
+            <h4>Description</h4>
+            <p data-bind="text: nodeModel.node().description"></p>
+          </div>
+
+          <div style="margin-bottom: 20px;" data-bind="if: nodeModel.node().type() === 'person' && nodeModel.node().family">
+            <h4>Family</h4>
+            <table class="table table-striped">
+              <tr data-bind="if: nodeModel.node().family._partner && nodeModel.node().family._partner !== false">
+                <td>Partner</td>
+                <td>
+                  <a style="display: block;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.node().family._partner ], textNodeAttribute: [ nodeModel.node().family._partner, 'name' ]"></a>
+                </td>
+              </tr>
+              <tr data-bind="if: nodeModel.node().family.parents && nodeModel.node().family.parents().length > 0">
+                <td>Parents</td>
+                <td>
+                  <div data-bind="foreach: nodeModel.node().family.parents">
+                    <a style="display: block;" href="#" data-bind="hrefFirst: [ 'node', $data._id ], textNodeAttribute: [ $data._id, 'name' ]"></a>
+                  </div>
+                </td>
+              </tr>
+               <tr data-bind="if: nodeModel.aboutModel.children().length > 0">
+                <td>Children</td>
+                <td>
+                  <div data-bind="foreach: nodeModel.aboutModel.children">
+                    <a style="display: block;" href="#" data-bind="hrefFirst: [ 'node', $data._id ], textNodeAttribute: [ $data._id, 'name' ]"></a>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+
         </div>
 
         <div class="span6">
+          <div style="margin-bottom: 20px;">
+            <h4>Details</h4>
+            <table class="table table-striped">
+              <tr>
+                <td>Name</td>
+                <td data-bind="text: nodeModel.node().name()"></td>
+              </tr>
+              <tr>
+                <td>Added&nbsp;by</td>
+                <td data-bind="textUserAttribute: [ nodeModel.node().added._by(), 'name' ]"></td>
+              </tr>
+              <tr>
+                <td>Added&nbsp;on</td>
+                <td data-bind="htmlTimestamp: nodeModel.node().added.timestamp"></td>
+              </tr>
+              <tr>
+                <td>Modified&nbsp;by</td>
+                <td data-bind="textUserAttribute: [ nodeModel.node().modified._by(), 'name' ]"></td>
+              </tr>
+              <tr>
+                <td>Modified&nbsp;on</td>
+                <td data-bind="htmlTimestamp: nodeModel.node().modified.timestamp"></td>
+              </tr>
+
+              <!-- ko if nodeModel.node().type() === 'person' -->
+                <tr data-bind="visible: nodeModel.aboutModel.age() !== false">
+                  <td>Age</td>
+                  <td data-bind="text: nodeModel.aboutModel.age()"></td>
+                </tr>
+                <tr>
+                  <td>Birthname</td>
+                  <td data-bind="text: nodeModel.node().birthname"></td>
+                </tr>
+                <tr>
+                  <td>Gender</td>
+                  <td data-bind="text: nodeModel.node().gender"></td>
+                </tr>
+              <!-- /ko -->
+            </table>
+          </div>
+
+          <div data-bind="if: nodeModel.node().type() === 'person'">
+            <h4>Lives at</h4>
+            <div class="alert alert-error" data-bind="visible: nodeModel.aboutModel.homesErrorText() !== '', text: nodeModel.aboutModel.homesErrorText"></div>
+            <div class="alert alert-info" data-bind="visible: nodeModel.aboutModel.homesLoading">Loading homes...</div>
+            <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: nodeModel.aboutModel.homes }"></div>
+
+            <h4>Owner of</h4>
+            <div class="alert alert-error" data-bind="visible: nodeModel.aboutModel.ownerOfErrorText() !== '', text: nodeModel.aboutModel.ownerOfErrorText"></div>
+            <div class="alert alert-info" data-bind="visible: nodeModel.aboutModel.ownerOfLoading">Loading ownerOf...</div>
+            <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: nodeModel.aboutModel.ownerOf }"></div>
+
+          </div>
         </div>
 
       </div>

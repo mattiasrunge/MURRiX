@@ -59,6 +59,11 @@ var TodoModel = function(parentModel)
       done: false
     },
     {
+      title: "Describe how time is handled",
+      description: "Time is a complex thing and is sometimes it can be difficult to understand what all MURRiX options are and mean. Write an instruction on how things work and why.",
+      done: false
+    },
+    {
       title: "Search for location by position",
       description: "Items can be connected either directly to a location or have a position of it's own. If it has a position of it's own the location should be looked up by the position which is note done right now.",
       done: false
