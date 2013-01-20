@@ -65,7 +65,7 @@ var OverlayModel = function(parentModel)
 
       self.item(item);
       self.initializeOverlayMap();
-      self.description(self.item().description());
+      self.description(self.item().description ? self.item().description() : "");
 
       self.videoFile('/video?id=' + self.item()._id());
     });
@@ -1472,7 +1472,7 @@ var OverlayModel = function(parentModel)
 
     itemData.when = {};
     itemData.when.source = source;
-    itemData.when.timestamp = false; // TODO
+    itemData.when.timestamp = false; // TODO Move updating serverside to saveItem
 console.log(itemData);
     var references = [];
 

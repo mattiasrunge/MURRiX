@@ -1130,7 +1130,7 @@ var NodeModel = function(parentModel)
 
 
   self.dragStart = function(element, event)
-  {
+  {//console.log("dragStart");
     self.showDrop(true);
 /*    console.log(event.originalEvent.dataTransfer.getData("URL"));
     console.log(event.originalEvent.dataTransfer.getData("DownloadURL"));
@@ -1145,12 +1145,12 @@ var NodeModel = function(parentModel)
   };
 
   self.dragEnd = function(element, event)
-  {
+  {//console.log("dragEnd");
     self.showDrop(false);
   };
 
   self.dragDrop = function(element, event)
-  {
+  {//console.log("dragDrop");
     self.showDrop(false);
 
     if (event.originalEvent.dataTransfer.getData("id") === "")
@@ -1161,7 +1161,7 @@ var NodeModel = function(parentModel)
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._profilePicture = event.originalEvent.dataTransfer.getData("id");
-
+console.log(nodeData);
     murrix.server.emit("saveNode", nodeData, function(error, nodeData)
     {
       if (error)
@@ -1178,19 +1178,21 @@ var NodeModel = function(parentModel)
 
   self.dragEnter = function(element, event)
   {
+    //console.log("dragEnter");
     self.showDrop(true);
     return true;
   };
 
   self.dragLeave = function(element, event)
   {
+    //console.log("dragLeave");
     self.showDrop(false);
     return true;
   };
 
   self.dragOver = function(element, event)
   {
-
+    //console.log("dragOver");
   };
 
   self.publicLoading = ko.observable(false);
