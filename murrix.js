@@ -48,6 +48,8 @@ mongoDb.open(function(error, mongoDb)
       exit(1);
     }
   });
+
+  nodeManager.checkItemWhen();
 });
 
 /* Start to listen to HTTP */

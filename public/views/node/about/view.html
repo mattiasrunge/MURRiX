@@ -22,7 +22,7 @@
           <div style="margin-bottom: 20px;" data-bind="if: nodeModel.node().type() === 'person' && nodeModel.node().family">
             <h4>Family</h4>
             <table class="table table-striped">
-              <tr data-bind="if: nodeModel.node().family._partner && nodeModel.node().family._partner !== false">
+              <tr data-bind="if: nodeModel.node().family._partner && nodeModel.node().family._partner() !== false">
                 <td>Partner</td>
                 <td>
                   <a style="display: block;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.node().family._partner ], textNodeAttribute: [ nodeModel.node().family._partner, 'name' ]"></a>
@@ -74,7 +74,7 @@
                 <td data-bind="htmlTimestamp: nodeModel.node().modified.timestamp"></td>
               </tr>
 
-              <!-- ko if nodeModel.node().type() === 'person' -->
+              <!-- ko if: nodeModel.node().type() === 'person' -->
                 <tr data-bind="visible: nodeModel.aboutModel.age() !== false">
                   <td>Age</td>
                   <td data-bind="text: nodeModel.aboutModel.age()"></td>

@@ -1081,6 +1081,11 @@ var OverlayModel = function(parentModel)
       return false;
     }
 
+    if (self.item().what() !== "file")
+    {
+      return false;
+    }
+
     if (typeof self.item().when.source === "function")
     {
       return false;

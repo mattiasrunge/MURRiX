@@ -87,7 +87,6 @@ murrix.model = function()
   self.newsModel = new NewsModel(self);
   self.browseModel = new BrowseModel(self);
   self.tagsModel = new TagsModel(self);
-  self.todoModel = new TodoModel(self);
   self.mapModel = new MapModel(self);
 
   self.timezones = [

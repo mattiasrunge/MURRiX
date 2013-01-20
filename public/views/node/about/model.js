@@ -45,7 +45,7 @@ var AboutModel = function(parentModel)
 
     for (var n = 0; n < parentModel.items().length; n++)
     {
-      if (parentModel.items()[n].what() === "text" && parentModel.items()[n].type() === "birth")
+      if (parentModel.items()[n].what() === "text" && parentModel.items()[n].type && parentModel.items()[n].type() === "birth")
       {
         age = murrix.getAge(parentModel.items()[n].when.timestamp());
         break;
