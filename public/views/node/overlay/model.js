@@ -1472,32 +1472,11 @@ var OverlayModel = function(parentModel)
 
     itemData.when = {};
     itemData.when.source = source;
-    itemData.when.timestamp = false; // TODO Move updating serverside to saveItem
-console.log(itemData);
-    var references = [];
+    itemData.when.timestamp = false;
 
-    if (self.item().with() !== false && self.item().with().referenceTimelines)
-    {
-      references = ko.mapping.toJS(self.item().with().referenceTimelines);
-    }
+    console.log(itemData);
 
-    self.editLoading(true);
-    self.editErrorText("");
-
-    murrix.server.emit("updateWhen", { when: itemData.when, references: references, mode: ko.mapping.toJS(self.item().with().mode) }, function(error, when)
-    {
-      self.editLoading(false);
-
-      if (error)
-      {
-        self.editErrorText(error);
-        return;
-      }
-
-      itemData.when = when;
-      console.log(itemData);
-      self.saveItem(itemData);
-    });
+    self.saveItem(itemData);
   };
 
   self.whenSetManual = function()

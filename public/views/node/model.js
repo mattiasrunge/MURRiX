@@ -509,7 +509,7 @@ var NodeModel = function(parentModel)
     {
       var reference = {};
 
-      reference._id = self.editCameraTimezone();
+      reference._id = "defaultTimezone";
       reference.type = "timezone";
       reference.offset = -murrix.timezoneStringToOffset(self.editCameraTimezone());
       reference.name = self.editCameraTimezone();
