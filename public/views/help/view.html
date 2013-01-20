@@ -15,15 +15,33 @@
           <div class="span2">
             <div style="margin-top: 20px; margin-bottom: 20px;">
               <ul class="nav nav-pills nav-stacked" style="margin-bottom: 0px;">
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'overview'), css: { active: helpModel.chapter() === 'overview' }">Overview</a></li>
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'tips'), css: { active: helpModel.chapter() === 'tips' }">Tips</a></li>
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'technology'), css: { active: helpModel.chapter() === 'technology' }">Technology</a></li>
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'organization'), css: { active: helpModel.chapter() === 'organization' }">Data organization</a></li>
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'naming'), css: { active: helpModel.chapter() === 'naming' }">Naming convetions</a></li>
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'time'), css: { active: helpModel.chapter() === 'time' }">How is time handled</a></li>
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'security'), css: { active: helpModel.chapter() === 'security' }">How is security handled</a></li>
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'upload'), css: { active: helpModel.chapter() === 'upload' }">How to upload</a></li>
-                <li><a href="#" data-bind="click: helpModel.showChapter.bind($data, 'search'), css: { active: helpModel.chapter() === 'search' }">How to find things</a></li>
+                <li data-bind="css: { active: helpModel.chapter() === 'overview' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'overview')">Overview</a>
+                </li>
+                <li data-bind="css: { active: helpModel.chapter() === 'tips' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'tips')">Tips</a>
+                </li>
+                <li data-bind="css: { active: helpModel.chapter() === 'technology' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'technology')">Technology</a>
+                </li>
+                <li data-bind="css: { active: helpModel.chapter() === 'organization' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'organization')">Data organization</a>
+                </li>
+                <li data-bind="css: { active: helpModel.chapter() === 'naming' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'naming')">Naming convetions</a>
+                </li>
+                <li data-bind="css: { active: helpModel.chapter() === 'time' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'time')">How is time handled</a>
+                </li>
+                <li data-bind="css: { active: helpModel.chapter() === 'security' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'security')">How is security handled</a>
+                </li>
+                <li data-bind="css: { active: helpModel.chapter() === 'upload' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'upload')">How to upload</a>
+                </li>
+                <li data-bind="css: { active: helpModel.chapter() === 'search' }">
+                  <a href="#" data-bind="click: helpModel.showChapter.bind($data, 'search')">How to find things</a>
+                </li>
               </ul>
             </div>
           </div>

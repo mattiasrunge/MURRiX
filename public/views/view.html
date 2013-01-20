@@ -33,6 +33,12 @@
         </a>
       </li>
 
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': organizeModel.show }" class="nav-link">
+        <a href="#" data-bind="hrefFirstPrimary: organizeModel.show() ? ' ' : 'organize'">
+          <i class="icon-folder-open icon-fixed"></i> Organize
+        </a>
+      </li>
+
       <li data-bind="css: { 'active': helpModel.show }" class="nav-link">
         <a href="#" data-bind="click: helpModel.showClicked">
           <i class="icon-question-sign icon-fixed"></i> Help

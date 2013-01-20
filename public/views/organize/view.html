@@ -1,0 +1,109 @@
+
+<script type="text/html" id="organizeItemsTemplate">
+  <div data-bind="foreach: $data">
+    <div class="media itemLine" draggable="true" style="margin-top: 1px;" data-bind="style: { backgroundColor: ($index() % 2 === 0 ? 'white' : 'transparent') }, event: { dragstart : organizeModel.dragStart, dragend: organizeModel.dragEnd }">
+      <img style="width: 40px; height: 40px;" class="media-object pull-left" data-bind="srcPicture: [ $data._id, 40, 40, 1, $data.modified.timestamp ]">
+      <div class="media-body">
+        <h6 class="media-heading" style="margin: 0px;" data-bind="text: $data.name()"></h6>
+        <div class="muted" style="font-size: 10px;">
+          -
+          <span data-bind="visible: $data.added.timestamp() === $data.modified.timestamp()">
+            added
+          </span>
+          <span data-bind="visible: $data.added.timestamp() !== $data.modified.timestamp()">
+            last modified
+          </span>
+          <span data-bind="htmlTimeAgo: $data.modified.timestamp()"></span> by <span data-bind="textUserAttribute: [ $data.modified._by(), 'name' ]"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<div class="main-overlay" data-bind="slideVisible: organizeModel.show">
+  <div class="main-overlay-content">
+
+    <div class="navbar navbar-color navbar-inverse">
+      <div class="navbar-inner">
+        <span class="brand"><i style="vertical-align: baseline;" class="icon-folder-open icon-white"></i> Organize</span>
+        <ul class="nav pull-right">
+          <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="well">
+      <div class="row-fluid">
+        <div class="span6">
+          <input placeholder="Search for node" type="text" style="width: 200px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.leftPaneTypeaheadUpdater }" data-provide="typeahead"/>
+
+          <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="foreach: organizeModel.leftNodes">
+            <li data-bind="css: { active: organizeModel.leftActiveNode() !== false && organizeModel.leftActiveNode()._id() === $data._id() }">
+              <a href="#" data-bind="text: $data.name, click: organizeModel.leftSetActiveNode.bind($data, $data)"></a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active clearfix" style="min-height: 300px;" data-bind="event: { drop: organizeModel.dragDropLeft, dragover: organizeModel.dragOver }">
+
+              <div class="navbar" style="margin-bottom: 10px;" data-bind="if: organizeModel.leftActiveNode() !== false">
+                <div class="navbar-inner">
+                  <ul class="nav">
+                    <li data-bind="css: { active: organizeModel.mode() === 'move' }">
+                      <a href="#" data-bind="click: organizeModel.setMoveMode">Move mode</a>
+                    </li>
+                    <li data-bind="css: { active: organizeModel.mode() === 'link' }">
+                      <a href="#" data-bind="click: organizeModel.setLinkMode">Link mode</a>
+                    </li>
+                  </ul>
+                  <ul class="nav pull-right">
+                    <li><a href="#" data-bind="hrefFirst: [ 'node', organizeModel.leftActiveNode()._id() ]">Goto</a></li>
+                    <li><a href="#" data-bind="click: organizeModel.leftCloseActive">×</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div data-bind="template: { name: 'organizeItemsTemplate', data: organizeModel.leftNodeItems }"></div>
+            </div>
+          </div>
+        </div>
+        <div class="span6">
+         <input placeholder="Search for node" type="text" style="width: 200px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.rightPaneTypeaheadUpdater }" data-provide="typeahead"/>
+
+          <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="foreach: organizeModel.rightNodes">
+            <li data-bind="css: { active: organizeModel.rightActiveNode() !== false && organizeModel.rightActiveNode()._id() === $data._id() }">
+              <a href="#" data-bind="text: $data.name, click: organizeModel.rightSetActiveNode.bind($data, $data)"></a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active clearfix" style="min-height: 300px;" data-bind="event: { drop: organizeModel.dragDropRight, dragover: organizeModel.dragOver }">
+
+              <div class="navbar" style="margin-bottom: 10px;" data-bind="if: organizeModel.rightActiveNode() !== false">
+                <div class="navbar-inner">
+                  <ul class="nav">
+                    <li data-bind="css: { active: organizeModel.mode() === 'move' }">
+                      <a href="#" data-bind="click: organizeModel.setMoveMode">Move mode</a>
+                    </li>
+                    <li data-bind="css: { active: organizeModel.mode() === 'link' }">
+                      <a href="#" data-bind="click: organizeModel.setLinkMode">Link mode</a>
+                    </li>
+                  </ul>
+                  <ul class="nav pull-right">
+                    <li><a href="#" data-bind="hrefFirst: [ 'node', organizeModel.rightActiveNode()._id() ]">Goto</a></li>
+                    <li><a href="#" data-bind="click: organizeModel.rightCloseActive">×</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div data-bind="template: { name: 'organizeItemsTemplate', data: organizeModel.rightNodeItems }"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="main-overlay-background"></div>
+</div>

@@ -405,6 +405,21 @@ input, textarea {
           border-radius-top-right: 3px;
 }
 
+.itemLine {
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+}
+
+.itemLine img {
+  -webkit-border-radius-top-left: 3px;
+     -moz-border-radius-top-left: 3px;
+          border-radius-top-left: 3px;
+  -webkit-border-radius-top-right: 3px;
+     -moz-border-radius-top-right: 3px;
+          border-radius-top-right: 3px;
+}
+
 .imgRounded {
   -webkit-border-radius: 3px;
     -moz-border-radius: 3px;

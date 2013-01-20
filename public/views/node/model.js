@@ -246,7 +246,7 @@ var NodeModel = function(parentModel)
       query.type = { $in: inst.options.nodeTypes };
     }
 
-    murrix.server.emit("find", { query: query, options: { collection: "nodes", limit: inst.options.limit + 5 } }, function(error, nodeDataList)
+    murrix.server.emit("find", { query: query, options: { collection: "nodes", limit: inst.options.items + 5 } }, function(error, nodeDataList)
     {
       if (error)
       {
