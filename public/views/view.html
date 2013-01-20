@@ -9,12 +9,6 @@
   <div class="sidebar-nav-content">
     <ul class="nav nav-list">
 
-      <li data-bind="css: { 'active': welcomeModel.show }" class="nav-link">
-        <a href="#" data-bind="hrefFirstPrimary: welcomeModel.show() ? ' ' : 'welcome'">
-          <i class="icon-home icon-fixed"></i> Welcome
-        </a>
-      </li>
-
       <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
           <i class="icon-bullhorn icon-fixed"></i> News
@@ -36,6 +30,12 @@
       <li data-bind="fadeVisible: currentUser(), css: { 'active': searchModel.show }" class="nav-link">
         <a href="#" data-bind="hrefFirstPrimary: searchModel.show() ? ' ' : 'search'">
           <i class="icon-search icon-fixed"></i> Search
+        </a>
+      </li>
+
+      <li data-bind="css: { 'active': helpModel.show }" class="nav-link">
+        <a href="#" data-bind="click: helpModel.showClicked">
+          <i class="icon-question-sign icon-fixed"></i> Help
         </a>
       </li>
 
@@ -143,6 +143,10 @@
             </ul>
           </li>
         </ul>
+
+        <a class="nav pull-right" rel="tooltip" data-bind="click: helpModel.showClicked" title="Help" style="padding: 10px 15px 10px; color: white; text-decoration: none;" href="#"  data-placement="bottom">
+          <i class="icon-question-sign icon-white"></i>
+        </a>
 
       </div>
     </div>

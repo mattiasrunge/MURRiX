@@ -83,10 +83,10 @@ murrix.model = function()
   self.configModel = new ConfigModel(self);
   self.nodeModel = new NodeModel(self);
   self.searchModel = new SearchModel(self);
-  self.welcomeModel = new WelcomeModel(self);
   self.newsModel = new NewsModel(self);
   self.browseModel = new BrowseModel(self);
   self.tagsModel = new TagsModel(self);
+  self.helpModel = new HelpModel(self);
   self.mapModel = new MapModel(self);
 
   self.timezones = [
