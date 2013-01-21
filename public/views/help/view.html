@@ -49,12 +49,12 @@
             <div style="margin-top: 20px; margin-bottom: 30px; margin-right: 30px;">
 
               <div data-bind="visible: helpModel.chapter() === 'overview'">
-                <h4>Overview</h4>
+                <h1>Overview</h1>
                 <p>
                   This system tries to be a database over the things we record in our lives. It contains pictures, interviews, videos, written accounts of events as well as information about people, family ties, locations, things and much more.
                 </p>
 
-                <h5>Benefits</h5>
+                <h2>Benefits</h2>
                 <p>
                   Storing information in this system has a couple of benefits.
                   <ul>
@@ -67,7 +67,7 @@
               </div>
 
               <div data-bind="visible: helpModel.chapter() === 'tips'">
-                <h4>Tips</h4>
+                <h1>Tips</h1>
                 <p>
                   <div class="alert">
                     <strong>Heads up!</strong> One thing to think about is to never change the time of your camera, then an offset to a correct <a href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC timestamp</a> can be stored in this system which will automatically synchronization all photos taken with that camera.
@@ -79,7 +79,7 @@
               </div>
 
               <div data-bind="visible: helpModel.chapter() === 'technology'">
-                <h4>Technology</h4>
+                <h1>Technology</h1>
                 <p>
                   <p>
                     This sysem is called MURRiX and details about it can be found at the <a href="https://github.com/mattiasrunge/MURRiX">GitHub project</a>. MURRiX tries to leverage the latest technologies available and relies heavily on <a href="http://en.wikipedia.org/wiki/HTML5">HTML5</a> which makes a newer browser a requirement. <a href="http://en.wikipedia.org/wiki/JavaScript">Javascript</a> is used throughout the application utilizing <a href="http://www.mongodb.org/">MongoDB</a> and <a href="http://nodejs.org/">Node.js</a>.
@@ -91,66 +91,66 @@
               </div>
 
               <div data-bind="visible: helpModel.chapter() === 'organization'">
-                <h4>Data organization</h4>
+                <h1>Data organization</h1>
                 <p>
                   Any organization system requires classifying information in defined ways. This system relies on two top level classifications, nodes and items.
                 </p>
 
                 <div class="row-fluid">
                   <div class="span6">
-                    <h5>Items</h5>
+                    <h2>Items</h2>
                     <p>
                       An item is an event defined in time and place. It could be a picture, a birthday or a diary entry for instance. Preferably every item has a time and place associated with it though in reality information might have been lost or is inaccurate, the key is to do best effort.
                     </p>
                     <p>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-time"></i> Text</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-time"></i> Text</h3>
                         A text item could be a diary entry or an event in a persons life such as birth, marriage or engagement.
                       </div>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-picture"></i> Image</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-picture"></i> Image</h3>
                         A image item represent a photo file. It should have a time and place associated with it and if possible persons and things visible in the picture should be connected and marked.
                       </div>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-facetime-video"></i> Video</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-facetime-video"></i> Video</h3>
                         A video item represents a video file. It should have a time and place associated with it and if possible persons and things visible in the video clip should be connected.
                       </div>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-headphones"></i> Audio</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-headphones"></i> Audio</h3>
                         An audio item represents an audio file. It should have a time and place associated with it and if possible persons and things audiable in the audio clip should be connected.
                       </div>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-flag"></i> Position</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-flag"></i> Position</h3>
                         A position item is a simple location with an associated time. Positions like these can be connected to a node to represent where that node has been.
                       </div>
                     </p>
                   </div>
 
                   <div class="span6">
-                    <h5>Nodes</h5>
+                    <h2>Nodes</h2>
                     <p>
                       Nodes are a collection of items. A node is something real that can be touched, it could be a person, a location or a thing.
                     </p>
 
                     <p>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-user"></i> Person</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-user"></i> Person</h3>
                         A node representing a person where the events in that persons life can be recorded like, birth, marriage, engagement etc.
                       </div>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-flag"></i> Location</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-flag"></i> Location</h3>
                         A node representing a location, it should have a position and possibly a radius associated with it.
                       </div>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-book"></i> Album</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-book"></i> Album</h3>
                         A node representing an event, vacation trip or similar. An album does not have much own attributes except a description.
                       </div>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-camera"></i> Camera</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-camera"></i> Camera</h3>
                         A node representing a camera which can be connected to pictures and videos. A camera should have a person as owner.
                       </div>
                       <div>
-                        <h6><i style="vertical-align: text-bottom;" class="icon-truck"></i> Vehicle</h6>
+                        <h3><i style="vertical-align: text-bottom;" class="icon-truck"></i> Vehicle</h3>
                         A node representing a car or a boat. A vehicle should have a person as owner.
                       </div>
                     </p>
@@ -159,38 +159,69 @@
               </div>
 
               <div data-bind="visible: helpModel.chapter() === 'naming'">
-                <h4>Naming convetions</h4>
+                <h1>Naming convetions</h1>
                 <p>
-                  TODO
+                  To keep things well organized and in order with a large amount of items it is important to have a common naming scheme. It will make it easier to find things as well as make it easier to know how to name stuff. A name should be descriptive but not contain any redundant information.
+
+                  <div class="alert alert-info">
+                    <strong>Rule!</strong> Keep names simple with no extra information like dates except for the reoccuring album rule below.
+                  </div>
+                </p>
+
+                <h2>Reoccuring albums</h2>
+                <p>
+                  Sometimes there a photos taken every year at an yearly activity like a sailing vacation. To differentiate between different years, the year could be appended to the name of the album. In these cases append the year to the end of the name.
+
+                  <div class="alert alert-info">
+                    <strong>Rule!</strong> If album describes a yearly event, append the year to the end.
+                  </div>
+                </p>
+
+                <h2>Persons</h2>
+                <p>
+                  Since there is a strong possiblity that two persons might have the same name, initials should be used to differentiate them. The initials should be placed between first and last name. If initials are known they should always be added.
+
+                  <div class="alert alert-info">
+                    <strong>Rule!</strong> If a persons initials are known always include them in the name between the first and last name.
+                  </div>
+                </p>
+
+                <h2>Cameras</h2>
+                <p>
+                  The name of a camera should match the Camera model EXIF tag for images taken with that camera. This to make it easier for the system to suggest the correct camera for a file. Thus most cameras should be created from the links when setting camera for a file since it will fill in the name automatically.
+
+                  <div class="alert alert-info">
+                    <strong>Rule!</strong> The name of a camera should match the Camera model EXIF tag for images taken with that camera.
+                  </div>
                 </p>
               </div>
 
               <div data-bind="visible: helpModel.chapter() === 'time'">
-                <h4>How time is handled</h4>
+                <h1>How time is handled</h1>
                 <p>
                   TODO
                 </p>
               </div>
 
               <div data-bind="visible: helpModel.chapter() === 'security'">
-                <h4>How security is handled</h4>
+                <h1>How security is handled</h1>
                 <p>
                   TODO
                 </p>
               </div>
 
               <div data-bind="visible: helpModel.chapter() === 'upload'">
-                <h4>How to upload</h4>
+                <h1>How to upload</h1>
                 <p>
                   TODO
                 </p>
               </div>
 
               <div data-bind="visible: helpModel.chapter() === 'search'">
-                <h4>How to find things</h4>
+                <h1>How to find things</h1>
                 <div class="row-fluid">
                   <div class="span6">
-                    <h5>Searching</h5>
+                    <h2>Searching</h2>
                     <p>
                       Nodes can be found by searching for them by name. Searches can be filtered to only search for specific types of nodes. Tags can also be search for as described under the tags section. For convenience there is also a search field in the navigation bar at the top of the page. This search field gives instant results in a drop down.
                     </p>
@@ -200,7 +231,7 @@
 
                   </div>
                   <div class="span6">
-                    <h5>Tags</h5>
+                    <h2>Tags</h2>
                     <p>
                       All nodes can be tagged. These tags can be used to group nodes in some manner. For instance a group of people which went to school together could be tagged with the school name or albums describing sailing vacations might all be tagged with sailing. The purpose of this is to make it easier to find the things you are looking for. The use and creation of new tags is strongly encouraged for all users.
                     </p>
@@ -211,13 +242,13 @@
 
                 <div class="row-fluid">
                   <div class="span6">
-                    <h5>News</h5>
+                    <h2>News</h2>
                     <p>
                       The news section will show the hundred latest nodes which has been created or modified. It is the easies way to find new things or things that have changed.
                     </p>
                   </div>
                   <div class="span6">
-                    <h5>Browse</h5>
+                    <h2>Browse</h2>
                     <p>
                       In the browse section it is possible to find nodes which has items representing something that year. This means for instance that if a picture was taken 2010 the album that picture belongs to will show up when browsing 2010.
                     </p>
