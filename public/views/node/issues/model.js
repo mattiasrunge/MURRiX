@@ -33,6 +33,7 @@ var IssuesModel = function(parentModel)
       self.checkEmptyAlbum();
       self.checkIfPersonHasBirth();
       self.checkAccesses();
+      self.checkNaming();
     }
   });
 
@@ -151,6 +152,26 @@ var IssuesModel = function(parentModel)
 
       self.issues.push(issue);
     }
+  };
+
+  self.checkNaming = function()
+  {
+    var issue = {};
+
+    if (parentModel.node() === false || isNaN(parentModel.node().name()[0]))
+    {
+      return;
+    }
+
+    issue.title = ko.observable("Naming violation!");
+    issue.description = ko.observable("This node seems to have a name that starts with a number, this is not in accordance to the naming convetions, rename!");
+    issue.actionTitle = ko.observable("Rename album?");
+    issue.action = function()
+    {
+      parentModel.editNode();
+    };
+
+    self.issues.push(issue);
   };
 };
 

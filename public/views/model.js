@@ -76,7 +76,7 @@ murrix.model = function()
 
   $("form.modal").on("hidden", function(form)
   {
-    murrix.resetForm(form.target);
+    //murrix.resetForm(form.target);
   });
 
   self.adminModel = new AdminModel(self);
