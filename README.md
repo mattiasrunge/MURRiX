@@ -12,22 +12,28 @@ The main use case is for a family to share their common history and lives, a rep
 MURRiX tries to leverage the latest technologies available and relies heavily on HTML5 which makes a newer browser a requirement. Javascript is used throughout the application, MongoDB as database, Node.js as backend and in the browser.
 
 
+## Dependencies Ubuntu
+FFmpeg need to be specially compiled I think... TODO
+
+
+    $ sudo apt-add-repository http://ppa.launchpad.net/chris-lea/node.js/ubuntu
+    $ sudo aptitude update
+    $ sudo apt-get install nodejs npm git mongodb libsox-dev libpng-dev libimage-exiftool-perl imagemagick mpg123 ffmpeg
 
 ## How to install
 
-```bash
-git clone https://github.com/mattiasrunge/MURRiX.git
+    $ git clone https://github.com/mattiasrunge/MURRiX.git
+    $ cd MURRiX
+    $ npm install
 
-cd MURRiX
+## How to configure
 
-npm install
-```
+    $ cp configuration.template.js configuration.js
 
 ## How to use
 
-```bash
-node murrix
-```
+    $ node murrix
+    
 
 ## Credits
 
