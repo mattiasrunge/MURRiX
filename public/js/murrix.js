@@ -438,6 +438,7 @@ murrix.cache = new function()
               break;
             }
             case "audio/mpeg":
+            case "audio/x-wav":
             {
               type = "audioFile";
               break;

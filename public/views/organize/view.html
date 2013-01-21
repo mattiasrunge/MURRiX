@@ -35,7 +35,7 @@
     <div class="well">
       <div class="row-fluid">
         <div class="span6">
-          <input placeholder="Search for node" type="text" style="width: 200px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.leftPaneTypeaheadUpdater }" data-provide="typeahead"/>
+          <input placeholder="Search for node..." type="text" style="width: 150px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.leftPaneTypeaheadUpdater }" data-provide="typeahead"/>
 
           <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="foreach: organizeModel.leftNodes">
             <li data-bind="css: { active: organizeModel.leftActiveNode() !== false && organizeModel.leftActiveNode()._id() === $data._id() }">
@@ -68,7 +68,7 @@
           </div>
         </div>
         <div class="span6">
-         <input placeholder="Search for node" type="text" style="width: 200px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.rightPaneTypeaheadUpdater }" data-provide="typeahead"/>
+         <input placeholder="Search for node..." type="text" style="width: 150px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.rightPaneTypeaheadUpdater }" data-provide="typeahead"/>
 
           <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="foreach: organizeModel.rightNodes">
             <li data-bind="css: { active: organizeModel.rightActiveNode() !== false && organizeModel.rightActiveNode()._id() === $data._id() }">
