@@ -24,31 +24,131 @@ var TimelineModel = function(parentModel)
   self.textItemEditId = ko.observable(false);
   self.textItemEditName = ko.observable("");
   self.textItemEditText = ko.observable("");
-  self.textItemEditType = ko.observable(false);
+  self.textItemEditType = ko.observable("none");
+  self.textItemEditYear = ko.observable("XXXX");
+  self.textItemEditMonth = ko.observable("XX");
+  self.textItemEditDay = ko.observable("XX");
+  self.textItemEditHour = ko.observable("XX");
+  self.textItemEditMinute = ko.observable("XX");
+  self.textItemEditSecond = ko.observable("XX");
+  self.textItemEditTimezone = ko.observable("(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna");
+  self.textItemEditDaylightSavings = ko.observable(false);
+  self.textItemEditPeople = ko.observableArray();
 
-  self.textItemEditTypeSetNone = function()
+  self.textItemEditTimeUpdatedValue = function()
   {
-    self.textItemEditType(false);
+    if (self.textItemEditYear() === "XXXX")
+    {
+      self.textItemEditMonth("XX");
+    }
+
+    if (self.textItemEditMonth() === "XX")
+    {
+      self.textItemEditDay("XX");
+    }
+
+    if (self.textItemEditDay() === "XX")
+    {
+      self.textItemEditHour("XX");
+    }
+
+    if (self.textItemEditHour() === "XX")
+    {
+      self.textItemEditMinute("XX");
+    }
+
+    if (self.textItemEditMinute() === "XX")
+    {
+      self.textItemEditSecond("XX");
+    }
+
+    var datestring = self.textItemEditYear() + "-" + self.textItemEditMonth() + "-" + self.textItemEditDay() + " " + self.textItemEditHour() + ":" + self.textItemEditMinute() + ":" + self.textItemEditSecond();
+    self.textItemEditDaylightSavings(murrix.isDaylightSavings(datestring));
   };
 
-  self.textItemEditTypeSetBirth = function()
+  self.textItemEditPeopleRemove = function(data)
   {
-    self.textItemEditType("birth");
+    self.textItemEditErrorText("");
+
+    if (data.id === parentModel.node()._id())
+    {
+      self.textItemEditErrorText("Can not remove the parent node");
+      return;
+    }
+
+    self.textItemEditPeople(self.textItemEditPeople().filter(function(item)
+    {
+      return data.id !== item;
+    }));
   };
 
-  self.textItemEditTypeSetEngagement = function()
+  self.textItemEditTypeaheadNodeFilter = function(item)
   {
-    self.textItemEditType("engagement");
+    return !murrix.inArray(item._id(), self.textItemEditPeople());
   };
 
-  self.textItemEditTypeSetMarriage = function()
+  self.textItemEditTypeaheadUpdater = function(key)
   {
-    self.textItemEditType("marriage");
+    if (!murrix.inArray(key, self.textItemEditPeople()))
+    {
+      self.textItemEditPeople.push(key);
+    };
   };
 
-  self.textItemEditTypeSetDeath = function()
+  self.textItemEditSet = function(itemData)
   {
-    self.textItemEditType("death");
+    self.textItemEditId(itemData._id ? itemData._id : false);
+    self.textItemEditName(itemData.name ? itemData.name : "");
+    self.textItemEditText(itemData.text ? itemData.text : "");
+    self.textItemEditType(itemData.type ? itemData.type : "none");
+
+    itemData.when = itemData.when || { timestamp: false, source: false }
+
+    if (itemData.when.source !== false)
+    {
+      var data = murrix.parseDatestring(itemData.when.source.datestring);
+
+      self.textItemEditYear(data.year);
+      self.textItemEditMonth(data.month);
+      self.textItemEditDay(data.day);
+      self.textItemEditHour(data.hour);
+      self.textItemEditMinute(data.minute);
+      self.textItemEditSecond(data.second);
+
+      self.textItemEditTimezone(itemData.when.source ? itemData.when.source : "Unknown");
+      self.textItemEditDaylightSavings(itemData.when.source.daylightSavings);
+    }
+
+    self.textItemEditPeople(itemData._parents);
+  };
+
+  self.textItemEditUpdate = function(itemData)
+  {
+    if (self.textItemEditId() !== false)
+    {
+      itemData._id = self.textItemEditId();
+    }
+
+    itemData.name = self.textItemEditName();
+    itemData.text = self.textItemEditText();
+    itemData.type = self.textItemEditType() === "none" ? false : self.textItemEditType();
+    itemData.what = "text";
+    itemData.when = { timestamp: false, source: false }
+
+    if (self.textItemEditYear() !== "XXXX")
+    {
+      itemData.when.source = {};
+
+      itemData.when.source.type = "manual";
+      itemData.when.source.comment = "";
+      itemData.when.source.datestring = self.textItemEditYear() + "-" + self.textItemEditMonth() + "-" + self.textItemEditDay() + " " + self.textItemEditHour() + ":" + self.textItemEditMinute() + ":" + self.textItemEditSecond();
+      itemData.when.source.daylightSavings = self.textItemEditDaylightSavings();
+      itemData.when.source.timezone = self.textItemEditTimezone();
+    }
+
+    itemData._parents = self.textItemEditPeople();
+
+    return itemData;
   };
 
   self.textItemEditSubmit = function(form)
@@ -59,11 +159,13 @@ var TimelineModel = function(parentModel)
     {
       murrix.cache.getItem(self.textItemEditId(), function(error, item)
       {
-        itemData = ko.mapping.toJS(item);
+        if (error)
+        {
+          self.textItemEditErrorText(error);
+          return;
+        };
 
-        itemData.text = self.textItemEditText();
-        itemData.name = self.textItemEditName();
-        itemData.type = self.textItemEditType();
+        itemData = self.textItemEditUpdate(ko.mapping.toJS(item));
 
         self.textItemEditSave(itemData);
       });
@@ -71,21 +173,22 @@ var TimelineModel = function(parentModel)
       return;
     }
 
-    itemData._parents = [ parentModel.node()._id() ];
-    itemData.showing = [ { _id: parentModel.node()._id() } ];
-    itemData.what = "text";
-    itemData.when = { timestamp: false, source: false };
-    itemData.text = self.textItemEditText();
-    itemData.name = self.textItemEditName();
-    itemData.type = self.textItemEditType();
+    itemData = self.textItemEditUpdate({});
 
     self.textItemEditSave(itemData);
   };
 
   self.textItemEditSave = function(newItemData)
   {
-    self.textItemEditLoading(true);
     self.textItemEditErrorText("");
+
+    if (newItemData.name === "")
+    {
+      self.textItemEditErrorText("Text must have a name!");
+      return;
+    }
+
+    self.textItemEditLoading(true);
 
     murrix.server.emit("saveItem", newItemData, function(error, itemData)
     {
@@ -106,40 +209,55 @@ var TimelineModel = function(parentModel)
         murrix.model.nodeModel.items.push(item);
       }
 
-      self.textItemEditId(false);
-      self.textItemEditName("");
-      self.textItemEditText("");
-      self.textItemEditType(false);
+      self.textItemEditReset();
 
       $(".modal").modal('hide');
     });
   };
 
-  self.textItemEditOpenNew = function()
+  self.textItemEditReset = function()
   {
+    self.textItemEditLoading(false);
+    self.textItemEditErrorText("");
     self.textItemEditId(false);
     self.textItemEditName("");
     self.textItemEditText("");
-    self.textItemEditType(false);
+    self.textItemEditType("none");
+    self.textItemEditYear("XXXX");
+    self.textItemEditMonth("XX");
+    self.textItemEditDay("XX");
+    self.textItemEditHour("XX");
+    self.textItemEditMinute("XX");
+    self.textItemEditSecond("XX");
+    self.textItemEditTimezone("(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna");
+    self.textItemEditDaylightSavings(false);
+    self.textItemEditPeople.removeAll();
+  };
+
+  self.textItemEditOpenNew = function()
+  {
+    self.textItemEditReset();
+
+    self.textItemEditPeople.push(parentModel.node()._id());
 
     $("#textItemEditModal").modal('show');
   };
 
-  self.textItemEditOpen = function(data)
+  self.textItemEditOpen = function(item)
   {
-    self.textItemEditId(data._id());
-    self.textItemEditName(data.name());
-    self.textItemEditText(data.text());
-    self.textItemEditType(data.type ? data.type() : false);
+    self.textItemEditReset();
+
+    itemData = ko.mapping.toJS(item);
+
+    self.textItemEditSet(itemData);
 
     $("#textItemEditModal").modal('show');
   };
 
   self.textItemEditOpenType = function(type)
   {
-    self.textItemEditId(false);
-    self.textItemEditName("");
-    self.textItemEditText("");
+    self.textItemEditReset();
+
     self.textItemEditType(type);
 
     $("#textItemEditModal").modal('show');

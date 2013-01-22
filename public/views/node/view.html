@@ -28,13 +28,11 @@
 </script>
 
 <script type="text/html" id="nodePersonItemTemplate">
-  <div data-bind="if: $data.id() !== false">
-    <div class="media" style="background-color: whiteSmoke; border: 1px solid #E5E5E5; padding: 5px; margin-right: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;">
-      <img class="pull-left media-object" draggable="false" src="" alt="" style="width: 44px; height: 44px;" data-bind="srcNodeProfilePicture: [ $data.id(), 80, 80, 1 ]"/>
-      <div class="media-body">
-        <a class="pull-right" href="#" data-bind="click: $data.remove"><i class="icon-trash"></i></a>
-        <h4 class="media-heading" data-bind="textNodeAttribute: [ $data.id(), 'name' ]"></h4>
-      </div>
+  <div class="media" style="background-color: whiteSmoke; border: 1px solid #E5E5E5; padding: 5px; margin-right: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; margin-top: 10px;">
+    <img class="pull-left media-object" draggable="false" src="" alt="" style="width: 44px; height: 44px;" data-bind="srcNodeProfilePicture: [ $data.id, 80, 80, 1 ]"/>
+    <div class="media-body">
+      <a class="pull-right" href="#" data-bind="click: $data.remove"><i class="icon-trash"></i></a>
+      <h4 class="media-heading" data-bind="textNodeAttribute: [ $data.id, 'name' ]"></h4>
     </div>
   </div>
 </script>
@@ -201,7 +199,7 @@
 <form class="modal" id="editAlbumModal" tabindex="-1" role="dialog" aria-labelledby="editAlbumModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.editAlbumSubmit">
   <div class="modal-header">
     <button data-bind="disable: nodeModel.editAlbumLoading" type="editAlbumModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 data-bind="visible: nodeModel.editAlbumNode() === false">Create a album</h3>
+    <h3 data-bind="visible: nodeModel.editAlbumNode() === false">Create an album</h3>
     <h3 data-bind="visible: nodeModel.editAlbumNode() !== false">Edit album</h3>
   </div>
   <div class="modal-body">

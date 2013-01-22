@@ -71,7 +71,10 @@ murrix.model = function()
 
   $("form.modal").on("shown", function(form)
   {
-    $(form.target).find("input, textarea, select").get(0).focus();
+    if ($(form.target).find("input, textarea, select").length > 0)
+    {
+      $(form.target).find("input, textarea, select").get(0).focus();
+    }
   });
 
   $("form.modal").on("hidden", function(form)

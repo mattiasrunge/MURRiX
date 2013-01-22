@@ -56,18 +56,126 @@
 <form class="modal" id="textItemEditModal" tabindex="-1" role="dialog" aria-labelledby="textItemEditModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.timelineModel.textItemEditSubmit">
   <div class="modal-header">
     <button data-bind="disable: nodeModel.timelineModel.textItemEditLoading" type="textItemEditModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="textItemEditModalLabel">Text details</h3>
+    <h3 data-bind="visible: nodeModel.timelineModel.textItemEditId() === false">Create a text item</h3>
+    <h3 data-bind="visible: nodeModel.timelineModel.textItemEditId() !== false">Edit text item</h3>
   </div>
   <div class="modal-body">
     <input placeholder="Name" type="text" name="name" style="width: 515px;" data-bind="value: nodeModel.timelineModel.textItemEditName, disable: nodeModel.timelineModel.textItemEditLoading"/>
-    <textarea placeholder="Text" name="text" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="value: nodeModel.timelineModel.textItemEditText, disable: nodeModel.timelineModel.textItemEditLoading"></textarea>
 
-    <div class="btn-group" style="margin-top: 10px;">
-      <button type="button" class="btn" data-bind="click: nodeModel.timelineModel.textItemEditTypeSetNone, css: { active: nodeModel.timelineModel.textItemEditType() === false }, disable: nodeModel.textItemEditLoading">None</button>
-      <button type="button" class="btn" data-bind="click: nodeModel.timelineModel.textItemEditTypeSetBirth, css: { active: nodeModel.timelineModel.textItemEditType() === 'birth' }, disable: nodeModel.textItemEditLoading">Birth</button>
-      <button type="button" class="btn" data-bind="click: nodeModel.timelineModel.textItemEditTypeSetEngagement, css: { active: nodeModel.timelineModel.textItemEditType() === 'engagement' }, disable: nodeModel.textItemEditLoading">Engagement</button>
-      <button type="button" class="btn" data-bind="click: nodeModel.timelineModel.textItemEditTypeSetMarriage, css: { active: nodeModel.timelineModel.textItemEditType() === 'marriage' }, disable: nodeModel.textItemEditLoading">Marriage</button>
+     <ul class="nav nav-tabs">
+      <li class="active"">
+        <a href="#textItemEditModalText" data-toggle="tab">Text</a>
+      </li>
+      <li>
+        <a href="#textItemEditModalDateAndTime" data-toggle="tab">Date and time</a>
+      </li>
+      <li>
+        <a href="#textItemEditModalType" data-toggle="tab">Type</a>
+      </li>
+      <li>
+        <a href="#textItemEditModalPeople" data-toggle="tab">People</a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="textItemEditModalText">
+        <textarea placeholder="Text" name="text" style="width: 515px; height: 200px; margin-bottom: 0px" data-bind="value: nodeModel.timelineModel.textItemEditText, disable: nodeModel.timelineModel.textItemEditLoading"></textarea>
+      </div>
+      <div class="tab-pane" id="textItemEditModalDateAndTime">
+        <p class="muted" style="margin-bottom: 20px; font-size: 10px;">
+          <i>
+            If this item an event set the date and time when the event took place.
+          </i>
+        </p>
+        <table class="table">
+          <tr>
+            <td>Date</td>
+            <td class="form-inline">
+              <select class="input-small" data-bind="value: nodeModel.timelineModel.textItemEditYear, foreach: yearList, disable: nodeModel.timelineModel.textItemEditLoading, event: { change: nodeModel.timelineModel.textItemEditTimeUpdatedValue }">
+                <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+              </select>
+              <strong>-</strong>
+              <select class="input-mini" data-bind="value: nodeModel.timelineModel.textItemEditMonth, foreach: monthList, disable: nodeModel.timelineModel.textItemEditLoading() || nodeModel.timelineModel.textItemEditYear() === 'XXXX', event: { change: nodeModel.timelineModel.textItemEditTimeUpdatedValue }">
+                <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+              </select>
+              <strong>-</strong>
+              <select class="input-mini" data-bind="value: nodeModel.timelineModel.textItemEditDay, foreach: dayList, disable: nodeModel.timelineModel.textItemEditLoading() || nodeModel.timelineModel.textItemEditMonth() === 'XX', event: { change: nodeModel.timelineModel.textItemEditTimeUpdatedValue }">
+                <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Time</td>
+            <td class="form-inline">
+              <select class="input-mini" data-bind="value: nodeModel.timelineModel.textItemEditHour, foreach: hourList, disable: nodeModel.timelineModel.textItemEditLoading() || nodeModel.timelineModel.textItemEditDay() === 'XX', event: { change: nodeModel.timelineModel.textItemEditTimeUpdatedValue }">
+                <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+              </select>
+              <strong>:</strong>
+              <select class="input-mini" data-bind="value: nodeModel.timelineModel.textItemEditMinute, foreach: minuteList, disable: nodeModel.timelineModel.textItemEditLoading() || nodeModel.timelineModel.textItemEditHour() === 'XX', event: { change: nodeModel.timelineModel.textItemEditTimeUpdatedValue }">
+                <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+              </select>
+              <strong>:</strong>
+              <select class="input-mini" data-bind="value: nodeModel.timelineModel.textItemEditSecond, foreach: secondList, disable: nodeModel.timelineModel.textItemEditLoading() || nodeModel.timelineModel.textItemEditMinute() === 'XX', event: { change: nodeModel.timelineModel.textItemEditTimeUpdatedValue }">
+                <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Timezone</td>
+            <td class="form-inline">
+              <select data-bind="options: timezones, value: nodeModel.timelineModel.textItemEditTimezone, disable: nodeModel.timelineModel.textItemEditLoading() || nodeModel.timelineModel.textItemEditHour() === 'XX'" style="width: 100%"></select>
+              <label class="checkbox" style="margin-top: 2px; font-size: 10px;">
+                <input type="checkbox" data-bind="checked: nodeModel.timelineModel.textItemEditDaylightSavings, disable: nodeModel.timelineModel.textItemEditLoading() || nodeModel.timelineModel.textItemEditHour() === 'XX'"> Daylight savings in affect
+              </label>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="tab-pane" id="textItemEditModalType">
+        <p class="muted" style="margin-bottom: 20px; font-size: 10px;">
+          <i>
+            If this item represents a special event please select the type.
+          </i>
+        </p>
+
+        <label class="radio">
+          <input type="radio" name="textItemEditModalTypeRadios" id="textItemEditModalTypeRadios" value="none" data-bind="checked: nodeModel.timelineModel.textItemEditType(), disable: nodeModel.textItemEditLoading">
+          No special type
+        </label>
+        <label class="radio">
+          <input type="radio" name="textItemEditModalTypeRadios" id="textItemEditModalTypeRadios" value="birth" data-bind="checked: nodeModel.timelineModel.textItemEditType(), disable: nodeModel.textItemEditLoading">
+          This represents someones birth
+        </label>
+        <label class="radio">
+          <input type="radio" name="textItemEditModalTypeRadios" id="textItemEditModalTypeRadios" value="engagement" data-bind="checked: nodeModel.timelineModel.textItemEditType(), disable: nodeModel.textItemEditLoading">
+          This represents an engagement event
+        </label>
+        <label class="radio">
+          <input type="radio" name="textItemEditModalTypeRadios" id="textItemEditModalTypeRadios" value="marriage" data-bind="checked: nodeModel.timelineModel.textItemEditType(), disable: nodeModel.textItemEditLoading">
+          This represents a marriage event
+        </label>
+        <label class="radio">
+          <input type="radio" name="textItemEditModalTypeRadios" id="textItemEditModalTypeRadios" value="death" data-bind="checked: nodeModel.timelineModel.textItemEditType(), disable: nodeModel.textItemEditLoading">
+          This represents someones death
+        </label>
+      </div>
+
+      <div class="tab-pane" id="textItemEditModalPeople">
+        <p class="muted" style="margin-bottom: 20px; font-size: 10px;">
+          <i>
+            If this item belongs to more than one person select additional people.
+          </i>
+        </p>
+        <input placeholder="Search for a person" type="text" style="width: 515px;" data-bind="disable: nodeModel.textItemEditLoading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.timelineModel.textItemEditTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.timelineModel.textItemEditTypeaheadNodeFilter }" data-provide="typeahead"/>
+
+        <div data-bind="foreach: nodeModel.timelineModel.textItemEditPeople">
+          <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: $data, remove: $parent.nodeModel.timelineModel.textItemEditPeopleRemove } }"></div>
+        </div>
+      </div>
     </div>
+
+
+
 
   </div>
   <div class="modal-footer">

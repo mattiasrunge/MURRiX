@@ -1332,17 +1332,14 @@ var OverlayModel = function(parentModel)
 
   self.whenSetDatestring = function(datestring)
   {
-    var dateAndTime = datestring.split(" ");
+    var data = murrix.parseDatestring(datestring);
 
-    var dateParts = dateAndTime[0].split("-");
-    var timeParts = dateAndTime[1].split(":");
-
-    self.whenYear(dateParts[0]);
-    self.whenMonth(dateParts[1]);
-    self.whenDay(dateParts[2]);
-    self.whenHour(timeParts[0]);
-    self.whenMinute(timeParts[1]);
-    self.whenSecond(timeParts[2]);
+    self.whenYear(data.year);
+    self.whenMonth(data.month);
+    self.whenDay(data.day);
+    self.whenHour(data.hour);
+    self.whenMinute(data.minute);
+    self.whenSecond(data.second);
   };
 
   self.whenReset = function()

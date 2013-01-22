@@ -1155,7 +1155,27 @@ murrix.timezoneStringToOffset = function(string)
   var offset = hour * 3600 + minutes * 60;
 
   return minus ? -offset : offset;
-}
+};
+
+murrix.parseDatestring = function(datestring)
+{
+  var dateAndTime = datestring.split(" ");
+
+  var dateParts = dateAndTime[0].split("-");
+  var timeParts = dateAndTime[1].split(":");
+
+  var info = {};
+
+  info.year = dateParts[0];
+  info.month = dateParts[1];
+  info.day = dateParts[2];
+  info.hour = timeParts[0];
+  info.minute = timeParts[1];
+  info.second = timeParts[2];
+
+  return info;
+};
+
 /*
 murrix.makeTimestamp = function(source, references, callback)
 {
