@@ -23,6 +23,7 @@ var AdminModel = function(parentModel)
   {
     if (value)
     {
+      parentModel.title("MURRiX - Administration");
       self._loadGroups();
       self._loadUsers();
     }

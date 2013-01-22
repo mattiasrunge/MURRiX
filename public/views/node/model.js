@@ -40,6 +40,8 @@ var NodeModel = function(parentModel)
       return;
     }
 
+    parentModel.title("MURRiX - " + node.name());
+
     self.loadItems(function(error)
     {
       if (error)

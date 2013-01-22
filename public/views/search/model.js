@@ -16,6 +16,14 @@ var SearchModel = function(parentModel)
     }
   });
 
+  self.show.subscribe(function(value)
+  {
+    if (value)
+    {
+      parentModel.title("MURRiX - Search");
+    }
+  });
+
   self.searchTypeAlbum = ko.observable(true);
   self.searchTypePerson = ko.observable(true);
   self.searchTypeLocation = ko.observable(true);

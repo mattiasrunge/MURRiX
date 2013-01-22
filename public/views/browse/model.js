@@ -21,6 +21,7 @@ var BrowseModel = function(parentModel)
   {
     if (value)
     {
+      parentModel.title("MURRiX - Browse");
       self._load();
     }
   });

@@ -5,6 +5,18 @@ murrix.model = function()
 
   self.path = ko.observable({ primary: ko.observable({ action: "invalid", args: [] }), secondary: ko.observable("") });
 
+  self.title = ko.observable("MURRiX");
+
+  self.title.subscribe(function(value)
+  {
+    $("title").text(value);
+  });
+
+  self.path().primary.subscribe(function()
+  {
+    self.title("MURRiX");
+  });
+
   self.currentUser = ko.observable(false);
 
   self.setCurrentUserData = function(userData)

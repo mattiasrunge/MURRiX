@@ -22,6 +22,7 @@ var ConfigModel = function(parentModel)
   {
     if (value)
     {
+      parentModel.title("MURRiX - Configuration");
       self._load();
     }
     else
@@ -45,7 +46,7 @@ var ConfigModel = function(parentModel)
   self._load = function()
   {
     self.configuration(false);
-  
+
     murrix.server.emit("getConfiguration", {}, function(error, configurationData)
     {
       if (error)

@@ -16,6 +16,14 @@ var OrganizeModel = function(parentModel)
     }
   });
 
+  self.show.subscribe(function(value)
+  {
+    if (value)
+    {
+      parentModel.title("MURRiX - Organize");
+    }
+  });
+
   self.mode = ko.observable("move");
 
   self.setMoveMode = function()
