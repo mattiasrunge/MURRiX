@@ -115,13 +115,20 @@ var TimelineModel = function(parentModel)
     });
   };
 
+  self.textItemEditOpenNew = function()
+  {
+    self.textItemEditId(false);
+    self.textItemEditName("");
+    self.textItemEditText("");
+    self.textItemEditType(false);
+
+    $("#textItemEditModal").modal('show');
+  };
+
   self.textItemEditOpen = function(data)
   {
     self.textItemEditId(data._id());
     self.textItemEditName(data.name());
-//     self.textItemEditDatetime(moment(data.whenTimestamp()).format("YYYY-MM-dd HH:mm:ss"));
-//     self.textItemEditTimezone(0);
-//     self.textItemEditDaylightSavings(false);
     self.textItemEditText(data.text());
     self.textItemEditType(data.type ? data.type() : false);
 
@@ -130,6 +137,9 @@ var TimelineModel = function(parentModel)
 
   self.textItemEditOpenType = function(type)
   {
+    self.textItemEditId(false);
+    self.textItemEditName("");
+    self.textItemEditText("");
     self.textItemEditType(type);
 
     $("#textItemEditModal").modal('show');
