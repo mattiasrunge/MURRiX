@@ -104,7 +104,7 @@ var AboutModel = function(parentModel)
   {
     self.homes.removeAll();
 
-    if (parentModel.node() && parentModel.node().type() === 'person')
+    if (parentModel.node() && parentModel.node().type() === 'person' && parentModel.node()._homes)
     {
       var query = { $or: [] };
 
