@@ -13,10 +13,9 @@ MURRiX tries to leverage the latest technologies available and relies heavily on
 
 
 ## Dependencies Ubuntu
-FFmpeg need to be specially compiled I think... TODO
-
 
     $ sudo apt-add-repository http://ppa.launchpad.net/chris-lea/node.js/ubuntu
+    $ sudo apt-add-repository http://ppa.launchpad.net/jon-severinsson/ffmpeg/ubuntu
     $ sudo aptitude update
     $ sudo apt-get install nodejs npm git mongodb libsox-dev libpng-dev libimage-exiftool-perl imagemagick mpg123 ffmpeg
 
