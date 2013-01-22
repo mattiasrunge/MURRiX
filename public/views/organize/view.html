@@ -1,5 +1,5 @@
 
-<script type="text/html" id="organizeItemsTemplate">
+<script type="text/html" id="organizeItemsListTemplate">
   <div data-bind="foreach: $data">
     <div class="media itemLine" draggable="true" style="margin-top: 1px;" data-bind="style: { backgroundColor: ($index() % 2 === 0 ? 'white' : 'transparent') }, event: { dragstart : organizeModel.dragStart, dragend: organizeModel.dragEnd }">
       <img style="width: 40px; height: 40px;" class="media-object pull-left" data-bind="srcPicture: [ $data._id, 40, 40, 1, $data.modified.timestamp ]">
@@ -16,6 +16,15 @@
           <span data-bind="htmlTimeAgo: $data.modified.timestamp()"></span> by <span data-bind="textUserAttribute: [ $data.modified._by(), 'name' ]"></span>
         </div>
       </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/html" id="organizeItemsIconsTemplate">
+  <div data-bind="foreach: $data">
+    <div class="thumbnail pull-left" style="margin-right: 10px; margin-bottom: 10px; background-color: white;" draggable="true" data-bind="event: { dragstart : organizeModel.dragStart, dragend: organizeModel.dragEnd }">
+      <img draggable="false" style="width: 80px; height: 80px; margin-top: 10px;" class="imgRounded" data-bind="srcPicture: [ $data._id, 80, 80, 1, $data.modified.timestamp ]">
+      <div class="caption" style="text-align: center; font-size: 10px; font-weight: bold; white-space: nowrap; width: 80px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name(), attr: { title: $data.name() }"></div>
     </div>
   </div>
 </script>
@@ -50,20 +59,27 @@
                 <div class="navbar-inner">
                   <ul class="nav">
                     <li data-bind="css: { active: organizeModel.mode() === 'move' }">
-                      <a href="#" data-bind="click: organizeModel.setMoveMode">Move mode</a>
+                      <a href="#" title="Move mode" data-bind="click: organizeModel.setMoveMode"><i class="icon-move"></i></a>
                     </li>
                     <li data-bind="css: { active: organizeModel.mode() === 'link' }">
-                      <a href="#" data-bind="click: organizeModel.setLinkMode">Link mode</a>
+                      <a href="#" title="Link mode" data-bind="click: organizeModel.setLinkMode"><i class="icon-link"></i></a>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li data-bind="css: { active: organizeModel.display() === 'organizeItemsListTemplate' }">
+                      <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayList"><i class="icon-th-list"></i></a>
+                    </li>
+                    <li data-bind="css: { active: organizeModel.display() === 'organizeItemsIconsTemplate' }">
+                      <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayIcons"><i class="icon-th-large"></i></a>
                     </li>
                   </ul>
                   <ul class="nav pull-right">
-                    <li><a href="#" data-bind="hrefFirst: [ 'node', organizeModel.leftActiveNode()._id() ]">Goto</a></li>
-                    <li><a href="#" data-bind="click: organizeModel.leftCloseActive">×</a></li>
+                    <li><a href="#" title="Goto" data-bind="hrefFirst: [ 'node', organizeModel.leftActiveNode()._id() ]"><i class="icon-share-alt"></i></a></li>
+                    <li><a href="#" title="Close" data-bind="click: organizeModel.leftCloseActive">×</a></li>
                   </ul>
                 </div>
               </div>
 
-              <div data-bind="template: { name: 'organizeItemsTemplate', data: organizeModel.leftNodeItems }"></div>
+              <div data-bind="template: { name: organizeModel.display(), data: organizeModel.leftNodeItems }"></div>
             </div>
           </div>
         </div>
@@ -83,20 +99,27 @@
                 <div class="navbar-inner">
                   <ul class="nav">
                     <li data-bind="css: { active: organizeModel.mode() === 'move' }">
-                      <a href="#" data-bind="click: organizeModel.setMoveMode">Move mode</a>
+                      <a href="#" title="Move mode" data-bind="click: organizeModel.setMoveMode"><i class="icon-move"></i></a>
                     </li>
                     <li data-bind="css: { active: organizeModel.mode() === 'link' }">
-                      <a href="#" data-bind="click: organizeModel.setLinkMode">Link mode</a>
+                      <a href="#" title="Link mode" data-bind="click: organizeModel.setLinkMode"><i class="icon-link"></i></a>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li data-bind="css: { active: organizeModel.display() === 'organizeItemsListTemplate' }">
+                      <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayList"><i class="icon-th-list"></i></a>
+                    </li>
+                    <li data-bind="css: { active: organizeModel.display() === 'organizeItemsIconsTemplate' }">
+                      <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayIcons"><i class="icon-th-large"></i></a>
                     </li>
                   </ul>
                   <ul class="nav pull-right">
-                    <li><a href="#" data-bind="hrefFirst: [ 'node', organizeModel.rightActiveNode()._id() ]">Goto</a></li>
-                    <li><a href="#" data-bind="click: organizeModel.rightCloseActive">×</a></li>
+                    <li><a href="#" title="Goto" data-bind="hrefFirst: [ 'node', organizeModel.rightActiveNode()._id() ]"><i class="icon-share-alt"></i></a></li>
+                    <li><a href="#" title="Close" data-bind="click: organizeModel.rightCloseActive">×</a></li>
                   </ul>
                 </div>
               </div>
 
-              <div data-bind="template: { name: 'organizeItemsTemplate', data: organizeModel.rightNodeItems }"></div>
+              <div data-bind="template: { name: organizeModel.display(), data: organizeModel.rightNodeItems }"></div>
             </div>
           </div>
         </div>

@@ -411,7 +411,7 @@ input, textarea {
           border-radius: 3px;
 }
 
-.itemLine img {
+.itemLine img, imgRounded {
   -webkit-border-radius-top-left: 3px;
      -moz-border-radius-top-left: 3px;
           border-radius-top-left: 3px;

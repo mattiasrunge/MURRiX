@@ -36,6 +36,18 @@ var OrganizeModel = function(parentModel)
     self.mode("link");
   };
 
+  self.display = ko.observable("organizeItemsIconsTemplate");
+
+  self.setDisplayList = function()
+  {
+    self.display("organizeItemsListTemplate");
+  };
+
+  self.setDisplayIcons = function()
+  {
+    self.display("organizeItemsIconsTemplate");
+  };
+
   self.loading = ko.observable(false);
   self.errorText = ko.observable("");
 
