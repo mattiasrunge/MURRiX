@@ -11,7 +11,9 @@
         <i style="vertical-align: center;" class="icon-truck" data-bind="visible: $data.type() === 'vehicle'"></i>
         <i style="vertical-align: center;" class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
       </span>
-      <h6 class="media-heading"><a href="#" style="cursor: pointer;" data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a></h6>
+      <h6 class="media-heading" style="white-space: nowrap; width: 210px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0px;">
+        <a href="#" style="cursor: pointer;" data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a>
+      </h6>
       <div class="muted" style="font-size: 10px;">
         -
         <span data-bind="visible: $data.added.timestamp() === $data.modified.timestamp()">
@@ -20,7 +22,13 @@
         <span data-bind="visible: $data.added.timestamp() !== $data.modified.timestamp()">
           last modified
         </span>
-        <span data-bind="htmlTimeAgo: $data.modified.timestamp()"></span> by <span data-bind="textUserAttribute: [ $data.modified._by(), 'name' ]"></span></div>
+        <span data-bind="htmlTimeAgo: $data.modified.timestamp()"></span> by <span data-bind="textUserAttribute: [ $data.modified._by(), 'name' ]"></span>
+      </div>
+      <div data-bind="foreach: $data.tags" style="white-space: nowrap; width: 240px; overflow: hidden; text-overflow: ellipsis;">
+        <span class="label label-success" style="font-size: 9px;">
+          <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a>
+        </span>
+      </div>
 <!--                       <i data-bind="visible: $data.hasAdminAccess()" title="Administration access" class="icon-edit pull-right"></i>-->
 <!--               <i data-bind="visible: !$data.hasAdminAccess()" title="Read access" class="icon-eye-open pull-right"></i>-->
     </div>
