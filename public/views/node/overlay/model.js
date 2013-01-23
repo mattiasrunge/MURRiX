@@ -308,6 +308,8 @@ var OverlayModel = function(parentModel)
 
     itemData.thumbPosition = $(".overlayVideo").get(0).currentTime;
 
+    itemData.previewTimestamp = murrix.timestamp();
+
     self.saveItemClearCache(itemData);
   };
 
@@ -326,6 +328,8 @@ var OverlayModel = function(parentModel)
     {
       itemData.angle = 270;
     }
+
+    itemData.previewTimestamp = murrix.timestamp();
 
     self.saveItemClearCache(itemData);
   };
@@ -346,6 +350,8 @@ var OverlayModel = function(parentModel)
       itemData.angle = 0;
     }
 
+    itemData.previewTimestamp = murrix.timestamp();
+
     self.saveItemClearCache(itemData);
   };
 
@@ -354,6 +360,8 @@ var OverlayModel = function(parentModel)
     var itemData = ko.mapping.toJS(self.item);
 
     itemData.mirror = !itemData.mirror;
+
+    itemData.previewTimestamp = murrix.timestamp();
 
     self.saveItemClearCache(itemData);
   };
