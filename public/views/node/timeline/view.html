@@ -1,7 +1,7 @@
 <div class="main-overlay" data-bind="slideVisible: nodeModel.timelineModel.show() && nodeModel.node() !== false">
   <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false">
 
-    <div class="navbar navbar-inverse navbar-color">
+<!--    <div class="navbar navbar-inverse navbar-color">
       <div class="navbar-inner">
         <span class="brand"><i style="vertical-align: baseline;" class="icon-time icon-white"></i> Timeline</span>
 
@@ -11,7 +11,9 @@
         </ul>
 
       </div>
-    </div>
+    </div>-->
+
+    <a class="btn" rel="tooltip" title="Create text" href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">Create text</a>
 
     <div data-bind="foreach: nodeModel.logItems" style="margin: 10px;">
       <div class="" style="padding-bottom: 0px; padding-top: 0px; color: white;">
