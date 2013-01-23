@@ -453,4 +453,45 @@ i.icon-fixed[class*="icon-white"] {
   color: white;
 }
 
+.sidebar-nav {
+  z-index: 5;
+  position: absolute;
+  top: 40px;
+  bottom: 0px;
+  left: 20px;
+  width: 250px;
+  margin-bottom: 0px;
+  border-left: 1px solid #252525;
+  border-right: 1px solid #252525;
+}
 
+.sidebar-nav-background {
+  z-index: -1;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin-bottom: 0px;
+  background-color: whiteSmoke;
+  border-left: 1px solid #E3E3E3;
+  border-right: 1px solid #E3E3E3;
+}
+
+.sidebar-nav-content {
+  position: absolute;
+  top: 230px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  overflow: auto;
+  z-index: 100;
+}
+
+.sidebar-nav-profilepicture {
+  float: left;
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+}

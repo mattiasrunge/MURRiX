@@ -1,6 +1,6 @@
 # About
 
-MURRiX is a specialized Content Management System. The intention is to have a tool where lives can be documented. MURRiX enables storing and organizing of photos, written tests, events etc.
+MURRiX is a specialized Content Management System. The intention is to have a tool where lives can be documented. MURRiX enables storing and organizing of photos, written texts, events etc.
 All items in the database can be connected to people, things and should be positioned geographically as well as in time.
 
 The aim is to visualize all this information in a way that is easy to understand and use. Photos and other content should always be accessible and not just stored away in a box somewhere where they are never looked at. By recording content from lives in a family a repository with the family history will be created where everyone in the family can view and add to the content.
