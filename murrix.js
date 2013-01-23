@@ -9,7 +9,9 @@ var fs = require('fs');
 var path = require('path');
 var mongo = require('mongodb');
 var ObjectID = require('mongodb').ObjectID;
-var Session = require('./lib/session').Session;
+
+var SessionManager = require('msession.js').Manager;
+
 var User = require('./lib/user').User;
 var NodeManager = require('./lib/node.js').NodeManager;
 var MurrixUtils = require('./lib/utils.js');
@@ -22,7 +24,9 @@ var configuration = MurrixUtils.getConfiguration(path.resolve("./config.json"));
 /* Instances */
 var mongoServer = new mongo.Server(configuration.databaseHost, configuration.databasePort, { auto_reconnect: true });
 var mongoDb = new mongo.Db(configuration.databaseName, mongoServer);
-var session = new Session(mongoDb, configuration);
+
+var sessionManager = new SessionManager();
+
 var user = new User(mongoDb);
 var nodeManager = new NodeManager(mongoDb, user);
 var uploadManager = new UploadManager(configuration);
@@ -68,12 +72,12 @@ var videoStreamer = vidStreamer.settings({
 
 function httpRequestHandler(request, response)
 {
-  session.start(request, response, function(error, session)
+  sessionManager.start(request, response, function(error, session)
   {
     if (error)
     {
-      response.statusCode = 500;
-      return response.end("Error starting session");
+      response.writeHead(500);
+      return response.end(error);
     }
 
     var requestParams = url.parse(request.url, true);
@@ -85,8 +89,7 @@ function httpRequestHandler(request, response)
         if (error)
         {
           response.writeHead(404);
-          response.end(error);
-          return;
+          return response.end(error);
         }
 
         response.writeHead(200, { "Content-Type": "text/html" });
@@ -100,8 +103,7 @@ function httpRequestHandler(request, response)
         if (error)
         {
           response.writeHead(404);
-          response.end(error);
-          return;
+          return response.end(error);
         }
 
         console.log(request.url);
@@ -119,8 +121,7 @@ function httpRequestHandler(request, response)
           if (error)
           {
             response.writeHead(404);
-            response.end(error);
-            return;
+            return response.end(error);
           }
 
           console.log(request.url);
@@ -157,40 +158,39 @@ io.configure(function()
     if (handshakeData.xdomain)
     {
       callback("Cross domain access is not allowed!", false);
+      return;
     }
-    else
+
+    sessionManager.findByCookieString(handshakeData.headers.cookie, function(error, session, cookies)
     {
-      var sessionId = session.getIdFromCookieString(handshakeData.headers.cookie);
-
-      session.find(sessionId, function(error, session)
+      if (error)
       {
-        if (error)
-        {
-          console.log("Failed to find session for session id " + sessionId);
-          callback("Failed to find session for session id " + sessionId, false);
-          return;
-        }
+        callback(error, false);
+        return;
+      }
 
-        handshakeData.session = session;
+      if (session === false)
+      {
+        callback("No session found!", false);
+        return;
+      }
 
+      handshakeData.session = session;
 
-        var cookies = MurrixUtils.parseCookieString(handshakeData.headers.cookie);
+      if (cookies.userinfo)
+      {
+        var userinfo = JSON.parse(unescape(cookies.userinfo));
 
-        if (cookies.userinfo)
-        {
-          var userinfo = JSON.parse(unescape(cookies.userinfo));
-
-          user.login(session, userinfo.username, userinfo.password, function(error)
-          {
-            callback(null, true);
-          });
-        }
-        else
+        user.login(session, userinfo.username, userinfo.password, function(error)
         {
           callback(null, true);
-        }
-      });
-    }
+        });
+      }
+      else
+      {
+        callback(null, true);
+      }
+    });
   });
 });
 
