@@ -623,6 +623,9 @@
           <li data-bind="visible: nodeModel.node().hasAdminAccess()">
             <a href="#overlayTabEdit" data-toggle="tab">Edit</a>
           </li>
+          <li data-bind="visible: nodeModel.overlayModel.item().what() === 'file'">
+            <a href="#overlayTabDownload" data-toggle="tab">Download</a>
+          </li>
         </ul>
 
         <div class="tab-content">
@@ -776,6 +779,32 @@
               <span class="text-error" data-bind="visible: nodeModel.overlayModel.editErrorText() !== '', text: nodeModel.overlayModel.editErrorText"></span>
             </div>
 
+          </div>
+
+          <div class="tab-pane" id="overlayTabDownload" data-bind="visible: nodeModel.overlayModel.item().what() === 'file'">
+            <div style="margin: 0px 10px 10px 10px;">
+
+              <table class="table table-condensed table-striped" style="font-size: 10px;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <a href="#" data-bind="attr: { href: '/file?id=' +  nodeModel.overlayModel.item()._id() }"><i class="icon-file"></i> <span data-bind="text: nodeModel.overlayModel.item().name()"></span></a>
+                    </td>
+                    <td class="muted" data-bind="htmlSize: nodeModel.overlayModel.item().exif.FileSize()"></td>
+                  </tr>
+
+                  <!-- ko foreach: nodeModel.overlayModel.item().versions -->
+                    <tr>
+                      <td>
+                        <a href="#" data-bind="attr: { href: '/file?id=' +  $parent.nodeModel.overlayModel.item()._id() + '&version=' + $data._id() }"><i class="icon-file-alt"></i> <span data-bind="text: $data.name()"></span></a>
+                      </td>
+                      <td class="muted" data-bind="htmlSize: $data.size()"></td>
+                    </tr>
+                  <!-- /ko -->
+                </tbody>
+              </table>
+
+            </div>
           </div>
         </div>
 

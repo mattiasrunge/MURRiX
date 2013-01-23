@@ -31,7 +31,7 @@ var user = new User(mongoDb);
 var nodeManager = new NodeManager(mongoDb, user);
 var uploadManager = new UploadManager(configuration);
 var fileServer = new nodeStatic.Server("./public", { cache: false });
-
+var fileServer2 = new nodeStatic.Server("./files", { cache: false });
 
 /* Connect to database */
 mongoDb.open(function(error, mongoDb)
@@ -94,6 +94,76 @@ function httpRequestHandler(request, response)
 
         response.writeHead(200, { "Content-Type": "text/html" });
         response.end(data);
+      });
+    }
+    else if (requestParams.pathname === "/file")
+    {
+      nodeManager.find(session, { _id: requestParams.query.id }, "items", function(error, itemDataList)
+      {
+        if (error)
+        {
+          response.writeHead(404);
+          return response.end(error);
+        }
+
+        if (!itemDataList[requestParams.query.id])
+        {
+          response.writeHead(404);
+          return response.end("Could not find the requested item");
+        }
+
+        var itemData = itemDataList[requestParams.query.id];
+
+        if (itemData.what !== "file")
+        {
+          response.writeHead(404);
+          return response.end("The requested item is not a file");
+        }
+
+        var filename = false;
+        var name = false;
+        var size = false;
+
+        if (requestParams.query.version)
+        {
+          if (!itemData.versions)
+          {
+            response.writeHead(404);
+            return response.end("Could not find the requested version");
+          }
+
+          for (var n = 0; n < itemData.versions.length; n++)
+          {
+            filename = itemData.versions[n]._id;
+            name = itemData.versions[n].name;
+            size = itemData.versions[n].size;
+          }
+        }
+        else
+        {
+          filename = itemData._id;
+          name = itemData.name;
+          size = itemData.exif.FileSize;
+        }
+
+        if (filename === false)
+        {
+          response.writeHead(404);
+          return response.end("Could not find the requested version");
+        }
+
+        console.log("Serving file " + filename);
+
+        var headers = {};
+
+        headers["Expires"] = 0;
+        headers["Cache-Control"] = "must-revalidate, post-check=0, pre-check=0";
+        headers["Content-Type"] = "application/force-download";
+        headers["Content-Disposition"] = "attachment; filename=" + name + ";";
+        headers["Content-Transfer-Encoding"] = "binary";
+        headers["Content-Length"] = size;
+
+        fileServer2.serveFile(requestParams.query.id, 200, headers, request, response);
       });
     }
     else if (requestParams.pathname === "/preview")
