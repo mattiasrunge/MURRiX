@@ -521,7 +521,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    MurrixMedia.clearCache(session, data, callback);
+    MurrixMedia.clearCache(client.handshake.session, data, callback);
   });
 
   client.on("detectFaces", function(data, callback)
