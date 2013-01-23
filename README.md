@@ -27,7 +27,10 @@ MURRiX tries to leverage the latest technologies available and relies heavily on
 
 ## How to configure
 
-    $ cp configuration.template.js configuration.js
+In general no configuration options are needed but if something needs to be changed, the wanted options can be overridden by defining a config.json file and adding the paramters that needs to be changed. config.sample.json contains all available options, but a config.json should only contain the changed parameters.
+
+    $ cp config.sample.json config.json
+    $ emacs config.json
 
 ## How to use
 

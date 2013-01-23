@@ -1,0 +1,9 @@
+{
+  "databaseHost"    : "localhost",
+  "databasePort"    : 27017,
+  "databaseName"    : "murrix",
+  "httpPort"        : 8080,
+  "filesPath"       : "./files/",
+  "mediaCachePath"  : "./cache/",
+  "sessionName"     : "murrix"
+}

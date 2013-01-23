@@ -17,7 +17,7 @@ var MurrixMedia = require('./lib/media.js');
 var UploadManager = require('./lib/upload.js').UploadManager;
 
 /* Configuration options */
-var configuration = require('./configuration.js').Configuration;
+var configuration = MurrixUtils.getConfiguration(path.resolve("./config.json"));
 
 /* Instances */
 var mongoServer = new mongo.Server(configuration.databaseHost, configuration.databasePort, { auto_reconnect: true });
