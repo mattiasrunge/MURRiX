@@ -82,7 +82,7 @@
           <i style="vertical-align: baseline;" class="icon-truck icon-white" data-bind="visible: nodeModel.node().type() === 'vehicle'"></i>
           <i style="vertical-align: baseline;" class="icon-flag icon-white" data-bind="visible: nodeModel.node().type() === 'location'"></i>
         </span>
-        <span data-bind="text: nodeModel.node() ? nodeModel.node().name : 'www.runge.se'"></span>
+        <span data-bind="text: nodeModel.node() ? nodeModel.node().name : document.location.hostname"></span>
       </div>
 
       <div class="pull-right">
