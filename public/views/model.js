@@ -105,6 +105,8 @@ murrix.model = function()
   self.helpModel = new HelpModel(self);
   self.mapModel = new MapModel(self);
 
+  self.dialogModel = new DialogModel();
+
   self.timezones = [
     "Unknown",
     "(GMT-12:00) International Date Line West",

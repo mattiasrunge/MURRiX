@@ -25,7 +25,7 @@ var configuration = MurrixUtils.getConfiguration(path.resolve("./config.json"));
 var mongoServer = new mongo.Server(configuration.databaseHost, configuration.databasePort, { auto_reconnect: true });
 var mongoDb = new mongo.Db(configuration.databaseName, mongoServer);
 
-var sessionManager = new SessionManager();
+var sessionManager = new SessionManager({ name: configuration.sessionName });
 
 var user = new User(mongoDb);
 var nodeManager = new NodeManager(mongoDb, user);
