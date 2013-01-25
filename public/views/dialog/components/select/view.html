@@ -1,0 +1,82 @@
+<style type="text/css">
+  .dialogComponentSelectOption {
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .dialogComponentSelectOption:hover, .dialogComponentSelectOptionActive{
+
+  }
+
+  .dialogComponentSelectOptionCenter {
+    text-align: center;
+    padding: 20px;
+    margin: 0px 30px 0px 30px;
+    border: 1px solid transparent;
+  }
+
+  .dialogComponentSelectOptionActive .dialogComponentSelectOptionCenter {
+  }
+
+  .dialogComponentSelectOptionLeft {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+  }
+
+  .dialogComponentSelectOptionRight {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+
+  .dialogComponentSelectOptionChevronOuter {
+    display: table;
+    height: 100%;
+  }
+
+  .dialogComponentSelectOptionChevronInner {
+    display: none;
+    vertical-align: middle;
+    font-size: 30px;
+  }
+
+  .dialogComponentSelectOption:hover, .dialogComponentSelectOptionActive .dialogComponentSelectOptionChevronInner {
+    display: table-cell;
+  }
+
+</style>
+
+<script type="text/html" id="dialogComponentSelect">
+  <div data-bind="foreach: $data.options">
+    <div class="dialogComponentSelectOption" data-bind="css: { dialogComponentSelectOptionActive: $parent.value() === $data.value }, click: $parent.selectHandler.bind($data, $data)">
+      <div class="dialogComponentSelectOptionLeft">
+        <div class="dialogComponentSelectOptionChevronOuter">
+          <div class="dialogComponentSelectOptionChevronInner">
+            <i class="icon-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialogComponentSelectOptionRight">
+        <div class="dialogComponentSelectOptionChevronOuter">
+          <div class="dialogComponentSelectOptionChevronInner">
+            <i class="icon-chevron-left"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialogComponentSelectOptionCenter alert" data-bind="css: { 'alert-success': $parent.value() === $data.value }, click: $parent.selectHandler.bind($data, $data)">
+        <div>
+          <strong data-bind="text: $data.value"></strong>
+        </div>
+        <div data-bind="visible: $data.description !== ''" class="muted" style="font-size: 10px;">
+          <div style="margin-top: 20px;" data-bind="html: $data.description"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>

@@ -1,0 +1,50 @@
+
+<script type="text/html" id="dialogComponentNodeListItemTempalte2">
+  <div class="media nodeBox" style="border: 1px solid #ddd; background-color: whiteSmoke; margin-top: 10px;">
+    <img style="width: 80px; height: 80px;" class="media-object pull-left" data-bind="srcNodeProfilePicture: [ $data._id, 80, 80, 1 ]">
+    <div class="media-body" style="margin-top: 5px; padding: 5px;">
+      <a class="pull-right" style="margin-right: 5px; text-decoration: none;" href="#" data-bind="click: $parent.removeHandler, visible: !$parent.disabledRemove()"><i class="icon-trash"></i></a>
+      <span class="pull-left">
+        <i style="vertical-align: center;" class="icon-book" data-bind="visible: $data.type() === 'album'"></i>
+        <i style="vertical-align: center;" class="icon-user" data-bind="visible: $data.type() === 'person'"></i>
+        <i style="vertical-align: center;" class="icon-camera" data-bind="visible: $data.type() === 'camera'"></i>
+        <i style="vertical-align: center;" class="icon-truck" data-bind="visible: $data.type() === 'vehicle'"></i>
+        <i style="vertical-align: center;" class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
+      </span>
+      <h6 class="media-heading" style="white-space: nowrap; width: 210px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0px;" data-bind="text: $data.name()"></h6>
+      <div class="muted" style="font-size: 10px;">
+        -
+        <span data-bind="visible: $data.added.timestamp() === $data.modified.timestamp()">
+          added
+          </span>
+        <span data-bind="visible: $data.added.timestamp() !== $data.modified.timestamp()">
+          last modified
+          </span>
+        <span data-bind="htmlTimeAgo: $data.modified.timestamp()"></span> by <span data-bind="textUserAttribute: [ $data.modified._by, 'name' ]"></span>
+      </div>
+      <div data-bind="foreach: $data.tags" style="white-space: nowrap; width: 240px; overflow: hidden; text-overflow: ellipsis;">
+        <span class="label label-success" style="font-size: 9px;" data-bind="text: $data"></span>
+      </div>
+    </div>
+  </div>
+</script>
+
+
+<script type="text/html" id="dialogComponentNodeListItemTemplate">
+  <div class="media" style="background-color: whiteSmoke; border: 1px solid #E5E5E5; padding: 5px; margin-right: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; marg\
+in-top: 10px;">
+    <img class="pull-left media-object" draggable="false" src="" alt="" style="width: 44px; height: 44px;" data-bind="srcNodeProfilePicture: [ $data.id, 80, 80, 1 ]"/>
+    <div class="media-body">
+      <a class="pull-right" href="#" data-bind="click: $data.remove"><i class="icon-trash"></i></a>
+      <h4 class="media-heading" data-bind="textNodeAttribute: [ $data.id, 'name' ]"></h4>
+    </div>
+  </div>
+</script>
+
+
+<script type="text/html" id="dialogComponentNodeList">
+  <div style="margin-right: 10px;">
+    <input placeholder="Search..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: $data.disabledSearch, typeahead: { items: 10, source: $data.typeaheadSource, matcher: $data.typeaheadMatcher, highlighter: $data.typeaheadHighlighter, updater: $data.typeaheadUpdater }" data-provide="typeahead"/>
+  </div>
+  <div data-bind="template: { name: 'dialogComponentNodeListItemTempalte2', foreach: $data.nodes }"></div>
+</script>

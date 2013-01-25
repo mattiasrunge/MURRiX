@@ -1,38 +1,25 @@
 
-function DialogBaseModel(self, name)
-{
-  self.name = name;
-  self.visible = ko.observable(false);
-
-  $(self.name).on("shown", function()
-  {
-    self.visible(true);
-  });
-
-  $(self.name).on("hidden", function()
-  {
-    self.visible(false);
-  });
-
-  self.show = function()
-  {
-    $(self.name).modal("show");
-  };
-
-  self.hide = function()
-  {
-    $(self.name).modal("hide");
-  };
-};
-
 function DialogExampleModel()
 {
   var self = this;
 
   DialogBaseModel(self, "#dialogExample");
 
+  self.nodeListModel = new DialogComponentNodeListModel(self);
   self.positionModel = new DialogComponentPositionModel(self);
   self.datetimeModel = new DialogComponentDatetimeModel(self);
+  self.textModel = new DialogComponentTextModel(self);
+  self.selectModel = new DialogComponentSelectModel(self);
+  self.selectModel.options([
+    { name: "Option #1", value: "option1", description: "This is the first option!" },
+    { name: "Option #2", value: "option2", description: "" },
+    { name: "Option #3", value: "option3", description: "This is the third option!" }
+  ]);
+
+  self.textModel.value.subscribe(function(value)
+  {
+    console.log("value", value);
+  });
 
   self.datetimeModel.value.subscribe(function(value)
   {
@@ -40,6 +27,16 @@ function DialogExampleModel()
   });
 
   self.positionModel.value.subscribe(function(value)
+  {
+    console.log("value", value);
+  });
+
+  self.nodeListModel.value.subscribe(function(value)
+  {
+    console.log("value", value);
+  });
+
+  self.selectModel.value.subscribe(function(value)
   {
     console.log("value", value);
   });

@@ -52,8 +52,11 @@
     {{views/help/view.html}}
     {{views/map/view.html}}
 
+    {{views/dialog/components/select/view.html}}
+    {{views/dialog/components/text/view.html}}
     {{views/dialog/components/position/view.html}}
     {{views/dialog/components/datetime/view.html}}
+    {{views/dialog/components/nodelist/view.html}}
     {{views/dialog/example/view.html}}
 
     <!-- Third-party script files -->
@@ -68,7 +71,7 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
-    <script src="js/knockout-2.1.0.js"></script>
+    <script src="js/knockout-2.2.1.js"></script>
     <script src="js/knockout.mapping-latest.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/moment.min.js"></script>
@@ -82,9 +85,11 @@
     <script src="js/murrix.js"></script>
     <script src="js/knockout.extensions.js"></script>
 
-
+    <script src="views/dialog/components/select/model.js"></script>
+    <script src="views/dialog/components/text/model.js"></script>
     <script src="views/dialog/components/position/model.js"></script>
     <script src="views/dialog/components/datetime/model.js"></script>
+    <script src="views/dialog/components/nodelist/model.js"></script>
     <script src="views/dialog/example/model.js"></script>
     <script src="views/dialog/model.js"></script>
 

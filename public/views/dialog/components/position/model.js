@@ -71,9 +71,23 @@ function DialogComponentPositionModel(dialogModel)
         }
       });
 
+      var visible = false;
+
       google.maps.event.addListener(self.marker, "dragend", function(data)
       {
         self.value({ latitude: data.latLng.lat(), longitude: data.latLng.lng() });
+
+        if (visible)
+        {
+          self.infowindow.open(self.map, self.marker);
+        }
+      });
+
+      google.maps.event.addListener(self.marker, "dragstart", function(data)
+      {
+        visible = self.infowindow.map;
+
+        self.infowindow.close();
       });
 
       google.maps.event.addListener(self.marker, "click", function()

@@ -8,15 +8,27 @@
 
     <div class="tabbable">
       <ul class="nav nav-tabs">
+        <li><a href="#dialogExampleTabText" data-toggle="tab">Text</a></li>
         <li><a href="#dialogExampleTabDatetime" data-toggle="tab">Datetime</a></li>
-        <li class="active"><a href="#dialogExampleTabPosition" data-toggle="tab">Position</a></li>
+        <li><a href="#dialogExampleTabPosition" data-toggle="tab">Position</a></li>
+        <li><a href="#dialogExampleTabNodeList" data-toggle="tab">Node List</a></li>
+        <li class="active"><a href="#dialogExampleTabSelect" data-toggle="tab">Select</a></li>
       </ul>
       <div class="tab-content">
+        <div class="tab-pane" id="dialogExampleTabText">
+          <div data-bind="template: { name: 'dialogComponentText', data: dialogModel.exampleModel.textModel }"></div>
+        </div>
         <div class="tab-pane" id="dialogExampleTabDatetime">
           <div data-bind="template: { name: 'dialogComponentDatetime', data: dialogModel.exampleModel.datetimeModel }"></div>
         </div>
-        <div class="tab-pane active" id="dialogExampleTabPosition">
+        <div class="tab-pane" id="dialogExampleTabPosition">
           <div data-bind="template: { name: 'dialogComponentPosition', data: dialogModel.exampleModel.positionModel }"></div>
+        </div>
+        <div class="tab-pane" id="dialogExampleTabNodeList">
+          <div data-bind="template: { name: 'dialogComponentNodeList', data: dialogModel.exampleModel.nodeListModel }"></div>
+        </div>
+        <div class="tab-pane active" id="dialogExampleTabSelect">
+          <div data-bind="template: { name: 'dialogComponentSelect', data: dialogModel.exampleModel.selectModel }"></div>
         </div>
       </div>
     </div>
