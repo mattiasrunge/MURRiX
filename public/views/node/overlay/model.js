@@ -840,7 +840,7 @@ var OverlayModel = function(parentModel)
 
   self.showingCreatePerson = function()
   {
-    parentModel.editPersonOpen(function(node)
+    murrix.model.dialogModel.personNodeModel.showCreate(function(node)
     {
       self.showingAdd({ _id: node._id() });
     });

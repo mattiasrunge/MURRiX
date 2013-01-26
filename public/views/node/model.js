@@ -675,114 +675,11 @@ var NodeModel = function(parentModel)
 
 
   /* Edit Person */
-  self.editPersonGoto = false;
-  self.editPersonNode = ko.observable(false);
-  self.editPersonName = ko.observable("");
-  self.editPersonBirthname = ko.observable("");
-  self.editPersonDescription = ko.observable("");
-  self.editPersonGender = ko.observable("male");
-  self.editPersonLoading = ko.observable(false);
-  self.editPersonErrorText = ko.observable("");
-
   self.editPersonNewOpen = function()
   {
     murrix.model.dialogModel.personNodeModel.showCreate(function(node)
     {
-      console.log(node);
       document.location.hash = murrix.createPath(0, "node", node._id());
-    });
-    //self.editPersonOpen();
-  };
-
-  self.editPersonOpen = function(callback)
-  {
-    self.editPersonGoto = false;
-    self.editPersonNode(false);
-    self.editPersonName("");
-    self.editPersonBirthname("");
-    self.editPersonDescription("");
-    self.editPersonGender("male");
-
-    if (callback)
-    {
-      self.editPersonGoto = callback;
-    }
-
-    $("#editPersonModal").modal('show');
-  };
-
-  self.editPersonComplete = function(node)
-  {
-    document.location.hash = murrix.createPath(0, "node", node._id());
-
-    $("#createNodeDoneModal").modal('show');
-  };
-
-  self.editPersonMaleClicked = function()
-  {
-    self.editPersonGender("male");
-  };
-
-  self.editPersonFemaleClicked = function()
-  {
-    self.editPersonGender("female");
-  };
-
-  self.editPersonSubmit = function()
-  {
-    self.editPersonErrorText("");
-
-    if (self.editPersonName() === "")
-    {
-      self.editPersonErrorText("Name is empty!");
-      return;
-    }
-
-    var nodeData = {};
-
-    if (self.editPersonNode() !== false)
-    {
-      nodeData = ko.mapping.toJS(self.editPersonNode());
-    }
-
-    nodeData.type = "person";
-    nodeData.name = self.editPersonName();
-    nodeData.birthname = self.editPersonBirthname();
-    nodeData.description = self.editPersonDescription();
-    nodeData.gender = self.editPersonGender();
-
-    self.editPersonLoading(true);
-
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      self.editPersonLoading(false);
-
-      if (error)
-      {
-        console.log(error);
-        self.editPersonErrorText(error);
-        return;
-      }
-
-      var node = murrix.cache.addNodeData(nodeData);
-
-      $(".modal").modal('hide');
-
-      if (!self.editPersonGoto)
-      {
-        self.editPersonComplete(node);
-      }
-      else
-      {
-        self.editPersonGoto(node);
-      }
-
-      self.editPersonGoto = false;
-      self.editPersonNode(false);
-      self.editPersonName("");
-      self.editPersonBirthname("");
-      self.editPersonDescription("");
-      self.editPersonGender("male");
     });
   };
 

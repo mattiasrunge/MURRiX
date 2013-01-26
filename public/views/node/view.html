@@ -221,29 +221,6 @@
   </div>
 </form>
 
-<form class="modal" id="editPersonModal" tabindex="-1" role="dialog" aria-labelledby="editPersonModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.editPersonSubmit">
-  <div class="modal-header">
-    <button data-bind="disable: nodeModel.editPersonLoading" type="editPersonModalLabel" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 data-bind="visible: nodeModel.editPersonNode() === false">Create a person</h3>
-    <h3 data-bind="visible: nodeModel.editPersonNode() !== false">Edit person</h3>
-  </div>
-  <div class="modal-body">
-    <input placeholder="Name" type="text" style="width: 515px;" data-bind="disable: nodeModel.editPersonLoading, value: nodeModel.editPersonName"/>
-    <input placeholder="Birthname" type="text" style="width: 515px;" data-bind="disable: nodeModel.editPersonLoading, value: nodeModel.editPersonBirthname"/>
-    <textarea placeholder="Description" style="width: 515px; height: 100px;" data-bind="disable: nodeModel.editPersonLoading, value: nodeModel.editPersonDescription"></textarea>
-
-    <div class="btn-group">
-      <button type="button" class="btn" data-bind="click: nodeModel.editPersonMaleClicked, css: { active: nodeModel.editPersonGender() === 'male' }, disable: nodeModel.editPersonLoading">Male</button>
-      <button type="button" class="btn" data-bind="click: nodeModel.editPersonFemaleClicked, css: { active: nodeModel.editPersonGender() === 'female' }, disable: nodeModel.editPersonLoading">Female</button>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.editPersonErrorText() != '', text: nodeModel.editPersonErrorText"></p>
-    <button data-bind="disable: nodeModel.editPersonLoading" class="btn" type="button" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button data-bind="disable: nodeModel.editPersonLoading" class="btn btn-primary" type="submit">Save</button>
-  </div>
-</form>
-
 
 <form class="modal" id="createLocationModal" tabindex="-1" role="dialog" aria-labelledby="createLocationModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: nodeModel.createSubmit">
   <div class="modal-header">
