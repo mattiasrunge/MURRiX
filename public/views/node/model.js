@@ -79,6 +79,7 @@ var NodeModel = function(parentModel)
         {
           query.$or.push({ "showing._id": self.node()._id()});
           query.$or.push({ "where._id": self.node()._id()});
+          query.what.$in.push("position");
           // TODO: Search on coordinates
           break;
         }
@@ -413,6 +414,10 @@ var NodeModel = function(parentModel)
     {
       murrix.model.dialogModel.albumNodeModel.showEdit(self.node()._id());
     }
+    else if (self.node().type() === "location")
+    {
+      murrix.model.dialogModel.locationNodeModel.showEdit(self.node()._id());
+    }
   };
 
 
@@ -688,6 +693,17 @@ var NodeModel = function(parentModel)
       document.location.hash = murrix.createPath(0, "node", node._id());
     });
   };
+
+
+  /* Edit Location */
+  self.editLocationNewOpen = function()
+  {
+    murrix.model.dialogModel.locationNodeModel.showCreate(function(node)
+    {
+      document.location.hash = murrix.createPath(0, "node", node._id());
+    });
+  };
+
 
 
   /* Creating */

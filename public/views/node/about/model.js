@@ -149,7 +149,7 @@ var AboutModel = function(parentModel)
     {
       var query = { $or: [] };
 
-      query._owner = parentModel.node()._id();
+      query._owners = { $in: [ parentModel.node()._id() ] };
 
       self.ownerOfErrorText("");
       self.ownerOfLoading(true);

@@ -38,7 +38,7 @@ function DialogTextItemModel()
     else
     {
       self.hideLocation(true);
-      self.locationModel.value([]);
+      self.locationModel.reset();
     }
   });
 
@@ -54,7 +54,7 @@ function DialogTextItemModel()
     else
     {
       self.hidePosition(true);
-      self.positionModel.value({ latitude: false, longitude: false });
+      self.positionModel.reset();
     }
   });
 
@@ -177,7 +177,7 @@ function DialogTextItemModel()
        itemData.when.source.comment = "";
     }
 
-    itemData.where = { latitude: self.positionModel.value().latitude, longitude: self.positionModel.value().longitude, _id: false };
+    itemData.where = { latitude: self.positionModel.value().latitude, longitude: self.positionModel.value().longitude, _id: false, source: self.positionModel.value().latitude !== false ? "manual" : false };
 
     if (self.locationModel.value().length > 0)
     {

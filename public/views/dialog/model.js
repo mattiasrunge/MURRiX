@@ -39,4 +39,5 @@ function DialogModel()
   self.textItemModel = new DialogTextItemModel();
   self.personNodeModel = new DialogPersonNodeModel();
   self.albumNodeModel = new DialogAlbumNodeModel();
+  self.locationNodeModel = new DialogLocationNodeModel();
 };
