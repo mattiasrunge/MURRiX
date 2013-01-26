@@ -37,4 +37,5 @@ function DialogModel()
 
   self.exampleModel = new DialogExampleModel();
   self.textItemModel = new DialogTextItemModel();
+  self.personNodeModel = new DialogPersonNodeModel();
 };

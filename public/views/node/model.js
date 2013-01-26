@@ -60,7 +60,7 @@ var NodeModel = function(parentModel)
     {
       var query = { $or: [] };
 
-      query.what = { $in : ["file", "text" ] };
+      query.what = { $in : [ "file", "text" ] };
       query.$or.push({ _parents: self.node()._id()});
 
 
@@ -407,14 +407,7 @@ var NodeModel = function(parentModel)
     }
     else if (self.node().type() === "person")
     {
-      self.editPersonNode(self.node());
-      self.editPersonGoto = function() { };
-      self.editPersonName(self.node().name());
-      self.editPersonBirthname(self.node().birthname());
-      self.editPersonDescription(self.node().description());
-      self.editPersonGender(self.node().gender());
-
-      $("#editPersonModal").modal('show');
+      murrix.model.dialogModel.personNodeModel.showEdit(self.node()._id());
     }
     else if (self.node().type() === "album")
     {
@@ -693,7 +686,12 @@ var NodeModel = function(parentModel)
 
   self.editPersonNewOpen = function()
   {
-    self.editPersonOpen();
+    murrix.model.dialogModel.personNodeModel.showCreate(function(node)
+    {
+      console.log(node);
+      document.location.hash = murrix.createPath(0, "node", node._id());
+    });
+    //self.editPersonOpen();
   };
 
   self.editPersonOpen = function(callback)
