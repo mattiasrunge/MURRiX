@@ -3,8 +3,9 @@ function DialogComponentDatetimeModel()
 {
   var self = this;
 
+  DialogComponentBaseModel(self, "dialogComponentDatetimeTemplate");
+
   /* Public observables, disables the component or part of it */
-  self.disabled = ko.observable(false); // Disables the whole component, while loading for instance
   self.disabledDateTime = ko.observable(false); // Disables date time inputs, only timezone and daylight savings enabled
 
 
@@ -135,6 +136,11 @@ function DialogComponentDatetimeModel()
       self.updateValue(true);
     }
   });
+
+  self.reset = function()
+  {
+    self.value(null);
+  };
 
 
   /* Private computed, updates internal value only if it has changed */

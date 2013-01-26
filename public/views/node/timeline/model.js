@@ -236,6 +236,9 @@ var TimelineModel = function(parentModel)
 
   self.textItemEditOpenNew = function()
   {
+    murrix.model.dialogModel.textItemModel.showCreate(parentModel.node()._id());
+    return;
+
     self.textItemEditReset();
 
     self.textItemEditPeople.push(parentModel.node()._id());
@@ -245,6 +248,9 @@ var TimelineModel = function(parentModel)
 
   self.textItemEditOpen = function(item)
   {
+    murrix.model.dialogModel.textItemModel.showEdit(item._id());
+    return;
+
     self.textItemEditReset();
 
     itemData = ko.mapping.toJS(item);
@@ -256,6 +262,9 @@ var TimelineModel = function(parentModel)
 
   self.textItemEditOpenType = function(type)
   {
+    murrix.model.dialogModel.textItemModel.showCreate(parentModel.node()._id(), type);
+    return;
+
     self.textItemEditReset();
 
     self.textItemEditType(type);

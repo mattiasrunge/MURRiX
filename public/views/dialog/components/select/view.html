@@ -50,7 +50,7 @@
 
 </style>
 
-<script type="text/html" id="dialogComponentSelect">
+<script type="text/html" id="dialogComponentSelectTemplate">
   <div data-bind="foreach: $data.options">
     <div class="dialogComponentSelectOption" data-bind="css: { dialogComponentSelectOptionActive: $parent.value() === $data.value }, click: $parent.selectHandler.bind($data, $data)">
       <div class="dialogComponentSelectOptionLeft">
@@ -69,9 +69,9 @@
         </div>
       </div>
 
-      <div class="dialogComponentSelectOptionCenter alert" data-bind="css: { 'alert-success': $parent.value() === $data.value }, click: $parent.selectHandler.bind($data, $data)">
+      <div class="dialogComponentSelectOptionCenter alert" data-bind="css: { 'alert-info': $parent.value() === $data.value }, click: $parent.selectHandler.bind($data, $data)">
         <div>
-          <strong data-bind="text: $data.value"></strong>
+          <strong data-bind="html: $data.name"></strong>
         </div>
         <div data-bind="visible: $data.description !== ''" class="muted" style="font-size: 10px;">
           <div style="margin-top: 20px;" data-bind="html: $data.description"></div>

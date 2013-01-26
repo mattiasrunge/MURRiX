@@ -3,10 +3,16 @@ function DialogComponentPositionModel(dialogModel)
 {
   var self = this;
 
+  DialogComponentBaseModel(self, "dialogComponentPositionTemplate");
+
   /* Public observables */
-  self.disabled = ko.observable(false); // Disables the whole component, while loading for instance
   self.address = ko.observable("");
   self.value = ko.observable({ latitude: false, longitude: false });
+
+  self.reset = function()
+  {
+    self.value({ latitude: false, longitude: false });
+  };
 
 
   /* Private stuff */
@@ -26,6 +32,7 @@ function DialogComponentPositionModel(dialogModel)
     },
   };
 
+  self.mapElementId = ko.observable("mapElementId_" + (new Date().getTime()));
   self.map = null;
   self.marker = null;
   self.timer = null;
@@ -51,10 +58,10 @@ function DialogComponentPositionModel(dialogModel)
       self.clearTimer();
     }
 
-    if ($(".dialogComponentPositionMap").is(":visible"))
+    if ($("#" + self.mapElementId()).is(":visible"))
     {
       self.clearTimer();
-      self.map = new google.maps.Map($(".dialogComponentPositionMap").get(0), options);
+      self.map = new google.maps.Map($("#" + self.mapElementId()).get(0), options);
 
       self.marker = new google.maps.Marker({
         position: new google.maps.LatLng(0, 0),
@@ -80,6 +87,8 @@ function DialogComponentPositionModel(dialogModel)
         if (visible)
         {
           self.infowindow.open(self.map, self.marker);
+
+          self.initClearPosition();
         }
       });
 
@@ -93,9 +102,13 @@ function DialogComponentPositionModel(dialogModel)
       google.maps.event.addListener(self.marker, "click", function()
       {
         self.infowindow.open(self.map, self.marker);
+
+        self.initClearPosition();
       });
+
+      self.value.valueHasMutated();
     }
-  }
+  };
 
   dialogModel.visible.subscribe(function(value)
   {
@@ -188,9 +201,15 @@ function DialogComponentPositionModel(dialogModel)
       if (value.latitude === false || value.longitude === false)
       {
         self.marker.setVisible(false);
+        self.infowindow.close();
       }
       else
       {
+        if (!self.map)
+        {
+          return;
+        }
+
         var position = new google.maps.LatLng(value.latitude, value.longitude);
 
         self.marker.setPosition(position);
@@ -225,10 +244,12 @@ function DialogComponentPositionModel(dialogModel)
 
     if (self.address() !== "")
     {
-      content += "<h6 style='margin-bottom: 10px;'>" + self.address() + "</h6>";
+      content += "<h6 style='margin-bottom: 0px; margin-top: 15px;'>" + self.address() + "</h6>";
     }
 
-    content += "<table class='table table-condensed table-striped' style='font-size: 10px; margin-bottom: 0px;'>";
+    content += "<a class='btn btn-mini btn-link dialogComponentPositionResetButton' style='padding: 0px; position: absolute; top: -6px; left: -1px;'>Clear position</a>";
+
+    content += "<table class='table table-condensed table-striped' style='font-size: 10px; margin-bottom: 0px; margin-top: 15px;'>";
     content += "<tr>";
     content += "<td>Latitude</td>";
     content += "<td>" + self.value().latitude + "</td>";
@@ -245,7 +266,18 @@ function DialogComponentPositionModel(dialogModel)
   self.content.subscribe(function(value)
   {
     self.infowindow.setContent(value);
+
+    self.initClearPosition();
   });
+
+  self.initClearPosition = function()
+  {
+    $("#" + self.mapElementId()).find(".dialogComponentPositionResetButton").on("click", function(event)
+    {
+      self.value({ latitude: false, longitude: false });
+      event.preventDefault();
+    });
+  };
 
   self.fullscreenToggle = function()
   {

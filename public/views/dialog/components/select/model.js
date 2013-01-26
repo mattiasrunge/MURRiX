@@ -3,10 +3,23 @@ function DialogComponentSelectModel()
 {
   var self = this;
 
+  DialogComponentBaseModel(self, "dialogComponentSelectTemplate");
+
   /* Public observables, disables the component or part of it */
-  self.disabled = ko.observable(false); // Disables the whole component, while loading for instance
   self.options = ko.observableArray();
   self.value = ko.observable("");
+
+  self.reset = function()
+  {
+    if (self.options().length > 0)
+    {
+      self.value(self.options()[0].value);
+    }
+    else
+    {
+      self.value("");
+    }
+  };
 
   /* Private stuff */
   self.selectHandler = function(data)

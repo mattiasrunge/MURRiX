@@ -1,5 +1,5 @@
 
-<script type="text/html" id="dialogComponentNodeListItemTempalte2">
+<script type="text/html" id="dialogComponentNodeListItemTempalte">
   <div class="media nodeBox" style="border: 1px solid #ddd; background-color: whiteSmoke; margin-top: 10px;">
     <img style="width: 80px; height: 80px;" class="media-object pull-left" data-bind="srcNodeProfilePicture: [ $data._id, 80, 80, 1 ]">
     <div class="media-body" style="margin-top: 5px; padding: 5px;">
@@ -29,22 +29,9 @@
   </div>
 </script>
 
-
-<script type="text/html" id="dialogComponentNodeListItemTemplate">
-  <div class="media" style="background-color: whiteSmoke; border: 1px solid #E5E5E5; padding: 5px; margin-right: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; marg\
-in-top: 10px;">
-    <img class="pull-left media-object" draggable="false" src="" alt="" style="width: 44px; height: 44px;" data-bind="srcNodeProfilePicture: [ $data.id, 80, 80, 1 ]"/>
-    <div class="media-body">
-      <a class="pull-right" href="#" data-bind="click: $data.remove"><i class="icon-trash"></i></a>
-      <h4 class="media-heading" data-bind="textNodeAttribute: [ $data.id, 'name' ]"></h4>
-    </div>
-  </div>
-</script>
-
-
-<script type="text/html" id="dialogComponentNodeList">
+<script type="text/html" id="dialogComponentNodeListTemplate">
   <div style="margin-right: 10px;">
     <input placeholder="Search..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: $data.disabledSearch, typeahead: { items: 10, source: $data.typeaheadSource, matcher: $data.typeaheadMatcher, highlighter: $data.typeaheadHighlighter, updater: $data.typeaheadUpdater }" data-provide="typeahead"/>
   </div>
-  <div data-bind="template: { name: 'dialogComponentNodeListItemTempalte2', foreach: $data.nodes }"></div>
+  <div data-bind="template: { name: 'dialogComponentNodeListItemTempalte', foreach: $data.nodes }"></div>
 </script>

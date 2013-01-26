@@ -10,14 +10,14 @@
   }
 </style>
 
-<script type="text/html" id="dialogComponentPosition">
-  <div style="width: 530px; height: 300px; position: relative;">
+<script type="text/html" id="dialogComponentPositionTemplate">
+  <div style="height: 280px; position: relative;">
     <button class="btn" data-bind="click: $data.fullscreenToggle, style: { position: $data.fullscreen() ? 'fixed' : 'absolute' }, css: { active: $data.fullscreen }" style="top: 10px; right: 10px; width: 30px; height: 30px; padding: 0px; z-index: 2;">
       <i class="icon-fullscreen"></i>
     </button>
     <form data-bind="submit: $data.searchSubmit, style: { position: $data.fullscreen() ? 'fixed' : 'absolute' }" style="top: 10px; right: 50px; z-index: 2;">
-      <input class="input-large" placeholder="Search..." type="text" data-bind="disable: $data.disabled, value: $data.query, typeahead: { items: 20, source: $data.searchTypeaheadSource, updater: $data.searchTypeaheadUpdater, matcher: $data.searchTypeaheadMatcher, highlighter: $data.searchTypeaheadHighlighter }, css: { 'input-xxlarge': $data.fullscreen }" data-provide="typeahead"/>
+      <input class="input-large" placeholder="Search address..." type="text" data-bind="disable: $data.disabled, value: $data.query, typeahead: { items: 20, source: $data.searchTypeaheadSource, updater: $data.searchTypeaheadUpdater, matcher: $data.searchTypeaheadMatcher, highlighter: $data.searchTypeaheadHighlighter }, css: { 'input-xxlarge': $data.fullscreen }" data-provide="typeahead"/>
     </form>
-    <div class="dialogComponentPositionMap" style="top: 0px; left: 0px; bottom: 0px; right: 0px;" data-bind="style: { position: $data.fullscreen() ? 'fixed' : 'absolute' }"></div>
+    <div class="dialogComponentPositionMap" style="top: 0px; left: 0px; bottom: 0px; right: 0px;" data-bind="style: { position: $data.fullscreen() ? 'fixed' : 'absolute' }, attr: { id: $data.mapElementId }"></div>
   </div>
 </script>

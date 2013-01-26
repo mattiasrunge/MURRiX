@@ -3,16 +3,22 @@ function DialogComponentNodeListModel()
 {
   var self = this;
 
+  DialogComponentBaseModel(self, "dialogComponentNodeListTemplate");
+
   /* Public observables, disables the component or part of it */
-  self.disabled = ko.observable(false); // Disables the whole component, while loading for instance
   self.types = ko.observableArray();
   self.value = ko.observableArray();
   self.min = ko.observable(false);
   self.max = ko.observable(false);
 
+  self.reset = function()
+  {
+    self.value([]);
+  };
+
   /* Private stuff */
   self.nodes = ko.observableArray();
-  
+
   self.disabledSearch = ko.computed(function()
   {
     return self.disabled() || (self.max() !== false && self.value().length >= self.max() && self.max() !== self.min());
@@ -66,13 +72,13 @@ function DialogComponentNodeListModel()
         console.log(error);
         callback([]);
       }
-      
+
       var resultList = [];
-      
+
       for (var key in nodeDataList)
       {
         var item = murrix.cache.addNodeData(nodeDataList[key]);
-        
+
         item.toString = function() { return this._id(); };
 
         if (!murrix.inArray(item._id(), self.value()))
@@ -80,7 +86,7 @@ function DialogComponentNodeListModel()
           resultList.push(item);
         }
       }
-      
+
       callback(resultList);
     });
   };
