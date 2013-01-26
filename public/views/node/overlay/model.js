@@ -801,10 +801,12 @@ var OverlayModel = function(parentModel)
 
   self.withCreateFromExif = function()
   {
-    parentModel.editCameraOpen(function(node)
+    murrix.model.dialogModel.cameraNodeModel.showCreate(function(node)
     {
       self.withSet(node._id());
-    }, self.item().exif.Model());
+    });
+
+    murrix.model.dialogModel.cameraNodeModel.name(self.item().exif.Model());
   };
 
   self.whereOther = ko.computed(function()
@@ -848,7 +850,7 @@ var OverlayModel = function(parentModel)
 
   self.showingCreateVehicle = function()
   {
-    parentModel.editVehicleOpen(function(node)
+     murrix.model.dialogModel.vechicleNodeModel.showCreate(function(node)
     {
       self.showingAdd({ _id: node._id() });
     });

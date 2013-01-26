@@ -40,4 +40,6 @@ function DialogModel()
   self.personNodeModel = new DialogPersonNodeModel();
   self.albumNodeModel = new DialogAlbumNodeModel();
   self.locationNodeModel = new DialogLocationNodeModel();
+  self.cameraNodeModel = new DialogCameraNodeModel();
+  self.vehicleNodeModel = new DialogVehicleNodeModel();
 };

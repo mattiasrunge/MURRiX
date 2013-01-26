@@ -1,0 +1,34 @@
+
+<div id="dialogVehicleNode" class="modal hide fade" data-keyboard="false">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 data-bind="visible: dialogModel.vehicleNodeModel.id() === false">Create a vehicle</h3>
+    <h3 data-bind="visible: dialogModel.vehicleNodeModel.id() !== false">Edit vehicle</h3>
+  </div>
+  <div class="modal-body">
+
+    <div style="margin-right: 10px;">
+      <input placeholder="Write a name..." type="text" style="width: 100%; margin-bottom: 20px;" data-bind="disable: dialogModel.vehicleNodeModel.disabled, value: dialogModel.vehicleNodeModel.name"/>
+    </div>
+
+    <div class="tabbable">
+      <ul class="nav nav-tabs" style="font-size: 10px;">
+        <li class="active"><a href="#dialogVehicleNodeTabDescription" data-toggle="tab">About</a></li>
+        <li><a href="#dialogVehicleNodeTabOwners" data-toggle="tab">Owners</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="dialogVehicleNodeTabDescription">
+          <div data-bind="template: { name: dialogModel.vehicleNodeModel.descriptionModel.template(), data: dialogModel.vehicleNodeModel.descriptionModel }"></div>
+        </div>
+        <div class="tab-pane" id="dialogVehicleNodeTabOwners">
+          <div data-bind="template: { name: dialogModel.vehicleNodeModel.ownersModel.template(), data: dialogModel.vehicleNodeModel.ownersModel }"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: dialogModel.vehicleNodeModel.errorText() != '', text: dialogModel.vehicleNodeModel.errorText"></p>
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+    <a href="#" class="btn btn-primary" data-bind="click: dialogModel.vehicleNodeModel.saveHandler">Save</a>
+  </div>
+</div>

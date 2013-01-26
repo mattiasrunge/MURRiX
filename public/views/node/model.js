@@ -373,38 +373,11 @@ var NodeModel = function(parentModel)
 
     if (self.node().type() === "camera")
     {
-      self.editCameraNode(self.node());
-      self.editCameraGoto = function() { };
-      self.editCameraName(self.node().name());
-      self.editCameraDescription(self.node().description());
-      self.editCameraMode(self.node().mode ? self.node().mode() : "manual");
-      self.editCameraOwner(self.node()._owner());
-
-      self.editCameraTimezone("Unknown");
-
-      if (self.node().referenceTimelines)
-      {
-        for (var n = 0; n < self.node().referenceTimelines().length; n++)
-        {
-          if (self.node().referenceTimelines()[n].type() === "timezone")
-          {
-            self.editCameraTimezone(self.node().referenceTimelines()[n].name());
-            break;
-          }
-        }
-      }
-
-      $("#editCameraModal").modal('show');
+      murrix.model.dialogModel.cameraNodeModel.showEdit(self.node()._id());
     }
     else if (self.node().type() === "vehicle")
     {
-      self.editVehicleNode(self.node());
-      self.editVehicleGoto = function() { };
-      self.editVehicleName(self.node().name());
-      self.editVehicleDescription(self.node().description());
-      self.editVehicleOwner(self.node()._owner());
-
-      $("#editVehicleModal").modal('show');
+      murrix.model.dialogModel.vehicleNodeModel.showEdit(self.node()._id());
     }
     else if (self.node().type() === "person")
     {
@@ -422,256 +395,23 @@ var NodeModel = function(parentModel)
 
 
   /* Edit Camera */
-  self.editCameraGoto = false;
-  self.editCameraNode = ko.observable(false);
-  self.editCameraName = ko.observable("");
-  self.editCameraDescription = ko.observable("");
-  self.editCameraMode = ko.observable("manual");
-  self.editCameraTimezone = ko.observable("(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna");
-  self.editCameraOwner = ko.observable(false);
-  self.editCameraLoading = ko.observable(false);
-  self.editCameraErrorText = ko.observable("");
-
   self.editCameraNewOpen = function()
   {
-    self.editCameraOpen();
-  };
-
-  self.editCameraOpen = function(callback, name)
-  {
-    self.editCameraGoto = false;
-    self.editCameraNode(false);
-    self.editCameraName("");
-    self.editCameraMode("manual");
-    self.editCameraTimezone("(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna");
-    self.editCameraDescription("");
-    self.editCameraOwner(false);
-
-    if (name)
+    murrix.model.dialogModel.cameraNodeModel.showCreate(function(node)
     {
-      self.editCameraName(name);
-    }
-
-    if (callback)
-    {
-      self.editCameraGoto = callback;
-    }
-
-    $("#editCameraModal").modal('show');
-  };
-
-  self.editCameraComplete = function(node)
-  {
-    document.location.hash = murrix.createPath(0, "node", node._id());
-
-    $("#createNodeDoneModal").modal('show');
-  };
-
-  self.editCameraClearOwner = function()
-  {
-    self.editCameraOwner(false);
-  };
-
-  self.editCameraSubmit = function()
-  {
-    self.editCameraErrorText("");
-
-    if (self.editCameraName() === "")
-    {
-      self.editCameraErrorText("Name is empty!");
-      return;
-    }
-
-    var nodeData = {};
-
-    if (self.editCameraNode() !== false)
-    {
-      nodeData = ko.mapping.toJS(self.editCameraNode());
-    }
-
-    nodeData.type = "camera";
-    nodeData.name = self.editCameraName();
-    nodeData.description = self.editCameraDescription();
-    nodeData.mode = self.editCameraMode();
-    nodeData._owner = self.editCameraOwner();
-
-    nodeData.referenceTimelines = nodeData.referenceTimelines || [];
-
-    nodeData.referenceTimelines = nodeData.referenceTimelines.filter(function(element)
-    {
-      return (element.type !== "timezone")
-    });
-
-
-    if (self.editCameraTimezone() !== "Unknown")
-    {
-      var reference = {};
-
-      reference._id = "defaultTimezone";
-      reference.type = "timezone";
-      reference.offset = -murrix.timezoneStringToOffset(self.editCameraTimezone());
-      reference.name = self.editCameraTimezone();
-
-      nodeData.referenceTimelines.push(reference);
-    }
-
-
-    self.editCameraLoading(true);
-
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      self.editCameraLoading(false);
-
-      if (error)
-      {
-        console.log(error);
-        self.editCameraErrorText(error);
-        return;
-      }
-
-      var node = murrix.cache.addNodeData(nodeData);
-
-      $(".modal").modal('hide');
-
-      if (!self.editCameraGoto)
-      {
-        self.editCameraComplete(node);
-      }
-      else
-      {
-        self.editCameraGoto(node);
-      }
-
-      self.editCameraGoto = false;
-      self.editCameraNode(false);
-      self.editCameraName("");
-      self.editCameraMode("manual");
-      self.editCameraTimezone("(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna");
-      self.editCameraDescription("");
-      self.editCameraOwner(false);
+      document.location.hash = murrix.createPath(0, "node", node._id());
     });
   };
-
-  self.editCameraTypeaheadUpdater = function(key)
-  {
-    self.editCameraOwner(key);
-  };
-
-  self.editCameraTypeaheadNodeFilter = function(item)
-  {
-    return self.editCameraOwner() !== item._id();
-  };
-
 
 
   /* Edit Vehicle */
-  self.editVehicleGoto = false;
-  self.editVehicleNode = ko.observable(false);
-  self.editVehicleName = ko.observable("");
-  self.editVehicleDescription = ko.observable("");
-  self.editVehicleOwner = ko.observable(false);
-  self.editVehicleLoading = ko.observable(false);
-  self.editVehicleErrorText = ko.observable("");
-
   self.editVehicleNewOpen = function()
   {
-    self.editVehicleOpen();
-  };
-
-  self.editVehicleOpen = function(callback)
-  {
-    self.editVehicleGoto = false;
-    self.editVehicleNode(false);
-    self.editVehicleName("");
-    self.editVehicleDescription("");
-    self.editVehicleOwner(false);
-
-    if (callback)
+    murrix.model.dialogModel.vehicleNodeModel.showCreate(function(node)
     {
-      self.editVehicleGoto = callback;
-    }
-
-    $("#editVehicleModal").modal('show');
-  };
-
-  self.editVehicleComplete = function(node)
-  {
-    document.location.hash = murrix.createPath(0, "node", node._id());
-
-    $("#createNodeDoneModal").modal('show');
-  };
-
-  self.editVehicleClearOwner = function()
-  {
-    self.editVehicleOwner(false);
-  };
-
-  self.editVehicleSubmit = function()
-  {
-    self.editVehicleErrorText("");
-
-    if (self.editVehicleName() === "")
-    {
-      self.editVehicleErrorText("Name is empty!");
-      return;
-    }
-
-    var nodeData = {};
-
-    if (self.editVehicleNode() !== false)
-    {
-      nodeData = ko.mapping.toJS(self.editVehicleNode());
-    }
-
-    nodeData.type = "vehicle";
-    nodeData.name = self.editVehicleName();
-    nodeData.description = self.editVehicleDescription();
-    nodeData._owner = self.editVehicleOwner();
-
-    self.editVehicleLoading(true);
-
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      self.editVehicleLoading(false);
-
-      if (error)
-      {
-        console.log(error);
-        self.editVehicleErrorText(error);
-        return;
-      }
-
-      var node = murrix.cache.addNodeData(nodeData);
-
-      $(".modal").modal('hide');
-
-      if (!self.editVehicleGoto)
-      {
-        self.editVehicleComplete(node);
-      }
-      else
-      {
-        self.editVehicleGoto(node);
-      }
-
-      self.editVehicleGoto = false;
-      self.editVehicleNode(false);
-      self.editVehicleName("");
-      self.editVehicleDescription("");
-      self.editVehicleOwner(false);
+      document.location.hash = murrix.createPath(0, "node", node._id());
     });
   };
-
-  self.editVehicleTypeaheadUpdater = function(key)
-  {
-    self.editVehicleOwner(key);
-  };
-
-  self.editVehicleTypeaheadNodeFilter = function(item)
-  {
-    return self.editVehicleOwner() !== item._id();
-  };
-
 
 
   /* Edit Person */
@@ -682,7 +422,6 @@ var NodeModel = function(parentModel)
       document.location.hash = murrix.createPath(0, "node", node._id());
     });
   };
-
 
 
   /* Edit Album */
@@ -705,46 +444,6 @@ var NodeModel = function(parentModel)
   };
 
 
-
-  /* Creating */
-  self.createLoading = ko.observable(false);
-  self.createErrorText = ko.observable("");
-
-  self.createSubmit = function(form)
-  {
-    var nodeData = murrix.getFormData(form);
-
-    self.createErrorText("");
-
-    if (nodeData.name === "")
-    {
-      self.createErrorText("Name is empty!");
-    }
-    else
-    {
-      self.createLoading(true);
-
-      murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-      {
-        self.createLoading(false);
-
-        if (error)
-        {
-          console.log(error);
-          self.createErrorText(error);
-          return;
-        }
-
-        var node = murrix.cache.addNodeData(nodeData);
-
-        $(".modal").modal('hide');
-
-        document.location.hash = murrix.createPath(0, "node", node._id());
-
-        $("#createNodeDoneModal").modal('show');
-      });
-    }
-  };
 
 
   /* Accesses */
