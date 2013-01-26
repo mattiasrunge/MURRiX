@@ -5,9 +5,6 @@ function DialogPersonNodeModel()
 
   DialogBaseModel(self, "#dialogPersonNode");
 
-  self.hideLocation = ko.observable(false);
-  self.hidePosition = ko.observable(false);
-
   self.errorText = ko.observable("");
   self.disabled = ko.observable(false);
 

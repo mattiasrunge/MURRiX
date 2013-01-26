@@ -411,12 +411,7 @@ var NodeModel = function(parentModel)
     }
     else if (self.node().type() === "album")
     {
-      self.editAlbumNode(self.node());
-      self.editAlbumGoto = function() { };
-      self.editAlbumName(self.node().name());
-      self.editAlbumDescription(self.node().description());
-
-      $("#editAlbumModal").modal('show');
+      murrix.model.dialogModel.albumNodeModel.showEdit(self.node()._id());
     }
   };
 
@@ -686,94 +681,13 @@ var NodeModel = function(parentModel)
 
 
   /* Edit Album */
-  self.editAlbumGoto = false;
-  self.editAlbumNode = ko.observable(false);
-  self.editAlbumName = ko.observable("");
-  self.editAlbumDescription = ko.observable("");
-  self.editAlbumLoading = ko.observable(false);
-  self.editAlbumErrorText = ko.observable("");
-
   self.editAlbumNewOpen = function()
   {
-    self.editAlbumOpen();
-  };
-
-  self.editAlbumOpen = function(callback)
-  {
-    self.editAlbumGoto = false;
-    self.editAlbumNode(false);
-    self.editAlbumName("");
-    self.editAlbumDescription("");
-
-    if (callback)
+    murrix.model.dialogModel.albumNodeModel.showCreate(function(node)
     {
-      self.editAlbumGoto = callback;
-    }
-
-    $("#editAlbumModal").modal('show');
-  };
-
-  self.editAlbumComplete = function(node)
-  {
-    document.location.hash = murrix.createPath(0, "node", node._id());
-
-    $("#createNodeDoneModal").modal('show');
-  };
-
-  self.editAlbumSubmit = function()
-  {
-    self.editAlbumErrorText("");
-
-    if (self.editAlbumName() === "")
-    {
-      self.editAlbumErrorText("Name is empty!");
-      return;
-    }
-
-    var nodeData = {};
-
-    if (self.editAlbumNode() !== false)
-    {
-      nodeData = ko.mapping.toJS(self.editAlbumNode());
-    }
-
-    nodeData.type = "album";
-    nodeData.name = self.editAlbumName();
-    nodeData.description = self.editAlbumDescription();
-
-    self.editAlbumLoading(true);
-
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      self.editAlbumLoading(false);
-
-      if (error)
-      {
-        console.log(error);
-        self.editAlbumErrorText(error);
-        return;
-      }
-
-      var node = murrix.cache.addNodeData(nodeData);
-
-      $(".modal").modal('hide');
-
-      if (!self.editAlbumGoto)
-      {
-        self.editAlbumComplete(node);
-      }
-      else
-      {
-        self.editAlbumGoto(node);
-      }
-
-      self.editAlbumGoto = false;
-      self.editAlbumNode(false);
-      self.editAlbumName("");
-      self.editAlbumDescription("");
+      document.location.hash = murrix.createPath(0, "node", node._id());
     });
   };
-
 
 
   /* Creating */
