@@ -64,6 +64,7 @@ var OverlayModel = function(parentModel)
       }
 
       self.item(item);
+      self.whoInitialize();
       self.initializeOverlayMap();
       self.description(self.item().description ? self.item().description() : "");
 
@@ -72,6 +73,14 @@ var OverlayModel = function(parentModel)
   });
 
   self.videoFile = ko.observable("");
+
+
+
+
+
+
+
+
 
 //   self.timeout = null;
 //
@@ -608,15 +617,7 @@ var OverlayModel = function(parentModel)
     });
   };
 
-  self.whoTypeaheadFilter = function(item)
-  {
-    return (!self.item()._who || !self.item()._who._id || self.item()._who._id() != item._id());
-  };
 
-  self.whoTypeaheadUpdater = function(key)
-  {
-    self.whoSet(key);
-  };
 
   self.whereTypeaheadFilter = function(item)
   {
@@ -709,7 +710,56 @@ var OverlayModel = function(parentModel)
     return ko.observableArray(list);
   });
 
-  self.whoOther = ko.computed(function()
+
+
+
+
+  self.whoModel = new DialogComponentNodeListModel(self);
+  self.whoModel.max(1);
+  self.whoModel.types([ "person" ]);
+  self.whoInitializing = false;
+
+  self.whoInitialize = function()
+  {
+    self.whoInitializing = true;
+
+    self.whoModel.reset();
+
+    if (self.item() !== false)
+    {
+      if (self.item()._who() !== false)
+      {
+        self.whoModel.value.push(self.item()._who());
+      }
+
+      self.whoLoadSuggestions();
+    }
+
+    self.whoInitializing = false;
+  }
+
+  self.whoModel.value.subscribe(function(value)
+  {
+    if (self.whoInitializing)
+    {
+      return;
+    }
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    if (value.length === 0)
+    {
+      itemData._who = false;
+    }
+    else
+    {
+      itemData._who = value[0];
+    }
+
+    self.saveItem(itemData);
+  });
+
+  self.whoLoadSuggestions = function()
   {
     var list = [];
     var takenIds = [];
@@ -734,10 +784,23 @@ var OverlayModel = function(parentModel)
           takenIds.push(parentModel.items()[n]._who());
         }
       }
-    }
 
-    return ko.observableArray(list);
+      self.whoModel.suggestions(list);
+    }
+  };
+
+  parentModel.items.subscribe(function()
+  {
+    self.whoLoadSuggestions();
   });
+
+
+
+
+
+
+
+
 
 
   self.withOther = ko.observableArray();
@@ -907,21 +970,7 @@ var OverlayModel = function(parentModel)
   };
 
 
-  self.whoRemove = function()
-  {
-    self.whoSet(false);
-  };
 
-  self.whoSet = function(id)
-  {
-    id = id ? ko.mapping.toJS(id) : false;
-
-    var itemData = ko.mapping.toJS(self.item);
-
-    itemData._who = id ? ko.mapping.toJS(id) : false;
-
-    self.saveItem(itemData);
-  };
 
 
 
@@ -985,7 +1034,7 @@ var OverlayModel = function(parentModel)
     self.saveItem(itemData);
   };
 
-  self.saveItem = function(itemData, noreload)
+  self.saveItem = function(itemData, noreload, callback)
   {
     self.editLoading(true);
     self.editErrorText("");
@@ -1008,6 +1057,12 @@ var OverlayModel = function(parentModel)
       }
 
       self.initializeOverlayMap();
+      self.whoInitialize();
+
+      if (callback)
+      {
+        callback();
+      }
     });
   };
 

@@ -13,7 +13,7 @@
 </div>
 
 
-<div style="background-color: whiteSmoke; position: fixed; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 1040;" data-bind="fadeVisible: nodeModel.overlayModel.show"></div>
+<div style="background-color: white; position: fixed; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 1040;" data-bind="fadeVisible: nodeModel.overlayModel.show"></div>
 <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;"></div>
 
 <div style="position: absolute; top: 0px; left: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show">
@@ -50,7 +50,7 @@
 <div style="position: absolute; top: 0px; width: 350px; right: 0px; z-index: 2070; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show">
   <!-- ko if: nodeModel.overlayModel.item() !== false -->
 
-    <div style="position: absolute; top: 0px; width: 350px; right: 0px; margin: 0px; padding: 0px; background-color: whiteSmoke;">
+    <div style="position: absolute; top: 0px; width: 350px; right: 0px; margin: 0px; padding: 0px; background-color: white;">
       <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.editType() === 'showing'">
         <a class="pull-right close" data-bind="click: nodeModel.overlayModel.editFinishClicked" style="font-size: 30px">×</a>
 
@@ -111,39 +111,7 @@
           <i>Select the person who created this item e.g. who took this picture.</i>
         </p>
 
-        <h5>Currently selected person</h5>
-        <table class="table table-condensed">
-          <tbody data-bind="if: nodeModel.overlayModel.item()._who">
-            <tr>
-              <td>
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._who, 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._who, 'name' ]" style="margin: 0px;"></h5>
-              </td>
-              <td>
-                <button title="Remove" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whoRemove" class="btn pull-right"><i class="icon-trash"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h5>Select a person</h5>
-        <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
-
-        <input placeholder="Search for person..." type="text" style="width: 318px;" data-bind="disable: nodeModel.overlayModel.editLoading, typeahead: { source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.overlayModel.whoTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: nodeModel.overlayModel.whoTypeaheadFilter }" data-provide="typeahead"/>
-
-        <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item()">
-          <tbody data-bind="foreach: nodeModel.overlayModel.whoOther">
-            <tr>
-              <td>
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
-              </td>
-              <td>
-                <button title="Set" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whoSet" class="btn pull-right"><i class="icon-plus"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div data-bind="template: { name: nodeModel.overlayModel.whoModel.template(), data: nodeModel.overlayModel.whoModel }"></div>
       </div>
 
       <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.editType() === 'with'">

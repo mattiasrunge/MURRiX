@@ -8,16 +8,19 @@ function DialogComponentNodeListModel()
   /* Public observables, disables the component or part of it */
   self.types = ko.observableArray();
   self.value = ko.observableArray();
+  self.suggestions = ko.observableArray();
   self.min = ko.observable(false);
   self.max = ko.observable(false);
 
   self.reset = function()
   {
     self.value([]);
+    self.suggestions([]);
   };
 
   /* Private stuff */
   self.nodes = ko.observableArray();
+  self.suggestionsNodes = ko.observableArray();
 
   self.disabledSearch = ko.computed(function()
   {
@@ -29,7 +32,6 @@ function DialogComponentNodeListModel()
     return self.disabled() || (self.min() !== false && self.value().length <= self.min());
   });
 
-
   self.removeHandler = function(data)
   {
     var index = self.value.indexOf(data._id());
@@ -37,6 +39,21 @@ function DialogComponentNodeListModel()
     if (index !== -1)
     {
       self.value.splice(index, 1);
+    }
+  };
+
+  self.addHandler = function(data)
+  {
+    if (self.value.indexOf(data._id()) === -1)
+    {
+      self.value.push(data._id());
+    }
+
+    var index = self.suggestions.indexOf(data._id());
+
+    if (index !== -1)
+    {
+      self.suggestions.splice(index, 1);
     }
   };
 
@@ -139,6 +156,34 @@ function DialogComponentNodeListModel()
       }
 
       self.nodes(list);
+    });
+  });
+
+  self.suggestions.subscribe(function(value)
+  {
+    if (value.length === 0)
+    {
+      self.suggestionsNodes.removeAll();
+      return;
+    }
+
+    murrix.cache.getNodes(value, function(error, nodeList)
+    {
+      if (error)
+      {
+        console.log(error);
+        self.suggestionsNodes.removeAll();
+        return;
+      }
+
+      var list = [];
+
+      for (var n in nodeList)
+      {
+        list.push(nodeList[n]);
+      }
+
+      self.suggestionsNodes(list);
     });
   });
 };
