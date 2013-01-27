@@ -59,48 +59,14 @@
           <i>Tag people or things on this item e.g. who is visible on this picture.</i>
         </p>
 
-        <h5>Current tags</h5>
-        <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item() !== false">
-          <tbody data-bind="foreach: nodeModel.overlayModel.item().showing">
-            <tr data-bind="css: { info: nodeModel.overlayModel.showingData() !== false && nodeModel.overlayModel.showingData()._id() === $data._id() }, event: { mouseover: nodeModel.overlayModel.showingItemOver, mouseout: nodeModel.overlayModel.showingItemOut }">
-              <td data-bind="click: nodeModel.overlayModel.showingItemClicked, style: { cursor: nodeModel.overlayModel.item().whatDetailed() === 'imageFile' ? 'pointer' : 'auto' }">
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data._id(), 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ $data._id(), 'name' ]" style="margin: 0px;"></h5>
-                <span data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
-                  <small data-bind="visible: !$data.x">Not marked on the picture</small>
-                  <small data-bind="visible: $data.x">Marked on the picture</small>
-                </span>
-              </td>
-              <td>
-                <button title="Remove" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.showingRemove" class="btn pull-right"><i class="icon-trash"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h5>Tag someone or something</h5>
         <div class="btn-group" style="margin-bottom: 10px;">
           <button style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.showingCreatePerson">Create person</button>
           <button style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.showingCreateVehicle">Create vehicle</button>
           <button style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.showingCreateCamera">Create camera</button>
         </div>
-        <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
 
-        <input placeholder="Search for someone or something..." type="text" style="width: 318px;" data-bind="disable: nodeModel.overlayModel.editLoading, typeahead: { source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.overlayModel.showingTypeaheadUpdater, nodeTypes: [ 'person', 'vehicle', 'camera' ], nodeFilter: nodeModel.overlayModel.showingTypeaheadFilter }" data-provide="typeahead"/>
+        <div data-bind="template: { name: nodeModel.overlayModel.showingModel.template(), data: nodeModel.overlayModel.showingModel }"></div>
 
-        <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item()">
-          <tbody data-bind="foreach: nodeModel.overlayModel.showingOther">
-            <tr>
-              <td>
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data._id(), 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ $data._id(), 'name' ]"></h5>
-              </td>
-              <td>
-                <button title="Add" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.showingAdd" class="btn pull-right"><i class="icon-plus"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
       <div style="padding: 10px;" data-bind="visible: nodeModel.overlayModel.editType() === 'who'">
@@ -110,6 +76,8 @@
         <p class="muted" style="font-size: 12px;">
           <i>Select the person who created this item e.g. who took this picture.</i>
         </p>
+
+        <button class="btn btn-small" style="width: 330px; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.whoCreatePerson">Create new person</button>
 
         <div data-bind="template: { name: nodeModel.overlayModel.whoModel.template(), data: nodeModel.overlayModel.whoModel }"></div>
       </div>
@@ -122,11 +90,12 @@
           <i>Select which camera this item was created with e.g. what camera was used to take this picture.</i>
         </p>
 
+        <button class="btn btn-small" style="width: 330px; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.withCreateFromExif">Create new camera</button>
+
         <div data-bind="template: { name: nodeModel.overlayModel.withModel.template(), data: nodeModel.overlayModel.withModel }"></div>
 
         <div data-bind="if: nodeModel.overlayModel.item().exif">
           <h5>File information</h5>
-          <button class="btn btn-small" style="width: 330px; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.withCreateFromExif">Create new camera</button>
 
           <table class="table table-condensed table-striped" style="font-size: 12px;">
             <tbody>
@@ -369,6 +338,8 @@
 
           </div>
           <div class="tab-pane" id="overlayTabWhereLocation" data-bind="visible: !nodeModel.overlayModel.whereHideLocation()">
+            <button class="btn btn-small" style="width: 330px; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.whereCreateLocation">Create new location</button>
+
             <div data-bind="template: { name: nodeModel.overlayModel.whereLocationModel.template(), data: nodeModel.overlayModel.whereLocationModel }"></div>
           </div>
         </div>

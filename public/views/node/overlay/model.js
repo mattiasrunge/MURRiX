@@ -67,6 +67,7 @@ var OverlayModel = function(parentModel)
       self.whoInitialize();
       self.whereInitialize();
       self.withInitialize();
+      self.showingInitialize();
       self.description(self.item().description ? self.item().description() : "");
 
       self.videoFile('/video?id=' + self.item()._id());
@@ -130,7 +131,7 @@ var OverlayModel = function(parentModel)
 
   self.carouselLeft = function()
   {
-    self.showingData(false);
+    self.showingModel.selected(false);
     self.showingItemOut();
 
     if (self.itemIndex() === -1)
@@ -153,7 +154,7 @@ var OverlayModel = function(parentModel)
 
   self.carouselRight = function()
   {
-    self.showingData(false);
+    self.showingModel.selected(false);
     self.showingItemOut();
 
     if (self.itemIndex() === -1)
@@ -327,19 +328,310 @@ var OverlayModel = function(parentModel)
     self.saveItemClearCache(itemData);
   };
 
+  self.showingEditClicked = function()
+  {
+    self.editType("showing");
+  };
+
+  self.whoEditClicked = function()
+  {
+    self.editType("who");
+  };
+
+  self.withEditClicked = function()
+  {
+    self.editType("with");
+  };
+
+  self.whenEditClicked = function()
+  {
+    self.editType("when");
+  };
+
+  self.whereEditClicked = function()
+  {
+    self.editType("where");
+  };
 
 
 
 
 
+  /****************************************************************************
+   * Showing: Stuff for selecting what is shown on a file
+   ***************************************************************************/
+  self.showingModel = new DialogComponentNodeListModel(self);
+  self.showingInitializing = false;
+
+  self.showingInitialize = function()
+  {
+    self.showingInitializing = true;
+
+    self.showingModel.reset();
+
+    if (self.item() !== false)
+    {
+      self.showingModel.selectable(self.item().whatDetailed() === "imageFile");
+
+      if (self.item().showing && self.item().showing() !== false)
+      {
+        for (var n = 0; n < self.item().showing().length; n++)
+        {
+          self.showingModel.value.push(self.item().showing()[n]._id());
+        }
+      }
+
+      self.showingLoadSuggestions();
+    }
+
+    self.showingInitializing = false;
+  }
+
+  self.showingModel.value.subscribe(function(value)
+  {
+    if (!self.showingInitializing)
+    {
+      var itemData = ko.mapping.toJS(self.item);
+
+      var showing = [];
+
+      for (var n = 0; n < value.length; n++)
+      {
+        var show = { _id: value[n] };
+
+        for (var i = 0; i < itemData.showing.length; i++)
+        {
+          if (itemData.showing[i]._id === show._id)
+          {
+            show = itemData.showing[i];
+            break;
+          }
+        }
+
+        showing.push(show);
+      }
+
+      itemData.showing = showing;
+
+      self.saveItem(itemData);
+    }
+  });
+
+  self.showingLoadSuggestions = function()
+  {
+    var list = [];
+    var takenIds = [];
+
+    if (self.item() !== false)
+    {
+      if (self.item().showing)
+      {
+        for (var n = 0; n < self.item().showing().length; n++)
+        {
+          takenIds.push(self.item().showing()[n]._id());
+        }
+      }
+
+      for (var n = 0; n < parentModel.items().length; n++)
+      {
+        if (parentModel.items()[n].showing && parentModel.items()[n].showing() !== false)
+        {
+          for (var i = 0; i < parentModel.items()[n].showing().length; i++)
+          {
+            if (!murrix.inArray(parentModel.items()[n].showing()[i]._id(), takenIds))
+            {
+              list.push(parentModel.items()[n].showing()[i]._id());
+              takenIds.push(parentModel.items()[n].showing()[i]._id());
+            }
+          }
+        }
+      }
+    }
+
+    self.showingModel.suggestions(list);
+  };
+
+  parentModel.items.subscribe(function()
+  {
+    self.showingLoadSuggestions();
+  });
+
+  self.showingCurrent = ko.computed(function()
+  {
+    if (self.showingModel.selected() === false)
+    {
+      return false;
+    }
+
+    var itemData = ko.mapping.toJS(self.item.peek());
+
+    for (var n = 0; n < itemData.showing.length; n++)
+    {
+      if (itemData.showing[n]._id === self.showingModel.selected())
+      {
+        return itemData.showing[n];
+      }
+    }
+
+    return false;
+  });
+
+  self.showingSelectionEnd = function(img, selection)
+  {
+    var show = { _id: self.showingCurrent()._id };
+
+    if (selection.width > 0 && selection.height > 0)
+    {
+      var pos_x = selection.x1 + (selection.width / 2);
+      var pos_y = selection.y1 + (selection.height / 2);
+
+      show.x = pos_x / $(".imgContainer").width();
+      show.y = pos_y / $(".imgContainer").height();
+
+      show.width = selection.width / $(".imgContainer").width();
+      show.height = selection.height / $(".imgContainer").height();
+    }
+
+    for (var i = 0; i < self.item().showing().length; i++)
+    {
+      if (self.item().showing()[i]._id() === show._id)
+      {
+        if (self.item().showing()[i].x)
+        {
+          self.item().showing()[i].width(show.width);
+          self.item().showing()[i].height(show.height);
+          self.item().showing()[i].x(show.x);
+          self.item().showing()[i].y(show.y);
+        }
+        else
+        {
+          self.item().showing()[i].width = ko.observable(show.width);
+          self.item().showing()[i].height = ko.observable(show.height);
+          self.item().showing()[i].x = ko.observable(show.x);
+          self.item().showing()[i].y = ko.observable(show.y);
+        }
+        break;
+      }
+    }
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    self.saveItem(itemData, true);
+  };
+
+  self.showingCurrent.subscribe(function(value)
+  {
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+
+    if (value === false)
+    {
+      return;
+    }
+
+    var options = {
+      minWidth      : 32,
+      minHeight     : 32,
+      instance      : true,
+      movable       : true,
+      resizable     : true,
+      handles       : true,
+      keys          : false,
+      onSelectEnd   : function(img, selection) { self.showingSelectionEnd(img, selection); }
+    };
+
+    if (value.x)
+    {
+      options.show = true;
+
+      options.x1 = $(".imgContainer").width() * (value.x - value.width / 2);
+      options.x2 = $(".imgContainer").width() * (value.x + value.width / 2);
+
+      options.y1 = $(".imgContainer").height() * (value.y - value.height / 2);
+      options.y2 = $(".imgContainer").height() * (value.y + value.height / 2);
+    }
+
+    $(".imgContainer").imgAreaSelect(options);
+  });
+
+  self.showingCreatePerson = function()
+  {
+    murrix.model.dialogModel.personNodeModel.showCreate(function(node)
+    {
+      self.showingModel.value.push({ _id: node._id() });
+    });
+  };
+
+  self.showingCreateVehicle = function()
+  {
+    murrix.model.dialogModel.vehicleNodeModel.showCreate(function(node)
+    {
+      self.showingModel.value.push({ _id: node._id() });
+    });
+  };
+
+  self.showingCreateCamera = function()
+  {
+    murrix.model.dialogModel.cameraNodeModel.showCreate(function(node)
+    {
+      self.showingModel.value.push({ _id: node._id() });
+    });
+  };
 
 
 
+/*
+
+
+  self.showingAdd = function(showingItem)
+  {
+    showingItem = ko.mapping.toJS(showingItem);
+
+    showingItem = { _id: showingItem._id };
+
+    self.showingUpdate(showingItem, showingItem);
+  };
+
+  self.showingRemove = function(showingItem)
+  {
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+    self.showingData(false);
+
+    self.showingUpdate(showingItem, null);
+  };
+
+  self.showingUpdate = function(oldShowingItem, newShowingItem)
+  {
+    oldShowingItem = oldShowingItem ? ko.mapping.toJS(oldShowingItem) : null;
+    newShowingItem = newShowingItem ? ko.mapping.toJS(newShowingItem) : null;
+
+    var itemData = ko.mapping.toJS(self.item);
+
+    itemData.showing = itemData.showing || [];
+
+    if (oldShowingItem)
+    {
+      itemData.showing = itemData.showing.filter(function(showingItemTest)
+      {
+        return showingItemTest._id !== oldShowingItem._id;
+      });
+    }
+
+    if (newShowingItem)
+    {
+      itemData.showing.push(newShowingItem);
+    }
+
+    self.saveItem(itemData, true);
+  };
+*/
+
+
+/*
   self.showingData = ko.observable(false);
-
+*/
   self.showingItemOver = function(showingItem)
   {
-    if (self.showingData() !== false)
+    if (self.showingCurrent() !== false)
     {
       return;
     }
@@ -391,7 +683,7 @@ var OverlayModel = function(parentModel)
       self.showingTimer = null;
     }
 
-    if (self.showingData() !== false)
+    if (self.showingCurrent() !== false)
     {
       return;
     }
@@ -401,7 +693,7 @@ var OverlayModel = function(parentModel)
 
   self.showingUnmark = function()
   {
-    if (self.showingData() !== false)
+    if (self.showingCurrent() !== false)
     {
       return;
     }
@@ -410,7 +702,7 @@ var OverlayModel = function(parentModel)
 
     self.showingTimer = null;
   };
-
+/*
   self.showingonSelectEnd = function(img, selection)
   {
     var showingItem = { _id: self.showingData()._id() };
@@ -470,35 +762,11 @@ var OverlayModel = function(parentModel)
     }
 
     $(".imgContainer").imgAreaSelect(options);
-  };
-
-  self.showingEditClicked = function()
-  {
-    self.editType("showing");
-  };
-
-  self.whoEditClicked = function()
-  {
-    self.editType("who");
-  };
-
-  self.withEditClicked = function()
-  {
-    self.editType("with");
-  };
-
-  self.whenEditClicked = function()
-  {
-    self.editType("when");
-  };
-
-  self.whereEditClicked = function()
-  {
-    self.editType("where");
-  };
+  };*/
 
 
 
+/*
 
   self.showingTypeaheadFilter = function(item)
   {
@@ -521,19 +789,18 @@ var OverlayModel = function(parentModel)
   self.showingTypeaheadUpdater = function(key)
   {
     self.showingAdd({ _id: key });
-  };
+  };*/
 
 
   self.editFinishClicked = function()
   {
-    self.showingData(false);
-    self.showingItemOut();
+    self.showingModel.selected(false);
 
     $(".imgContainer").imgAreaSelect({ "remove" : true });
 
     self.editType("");
   };
-
+/*
 
   self.showingOther = ko.computed(function()
   {
@@ -549,14 +816,14 @@ var OverlayModel = function(parentModel)
           takenIds.push(self.item().showing()[n]._id());
         }
       }
-console.log("a");
+
       for (var n = 0; n < parentModel.items().length; n++)
       {
         if (!parentModel.items()[n].showing)
         {
           continue;
         }
-console.log("b");
+
         for (var i = 0; i < parentModel.items()[n].showing().length; i++)
         {
           if (!murrix.inArray(parentModel.items()[n].showing()[i]._id(), takenIds))
@@ -567,9 +834,9 @@ console.log("b");
         }
       }
     }
-console.log("c",list);
+
     return list;
-  });
+  });*/
 
 
 
@@ -645,7 +912,13 @@ console.log("c",list);
     self.whoLoadSuggestions();
   });
 
-
+  self.whoCreatePerson = function()
+  {
+    murrix.model.dialogModel.personNodeModel.showCreate(function(node)
+    {
+      self.whoModel.value([ node._id() ]);
+    });
+  };
 
 
 
@@ -765,78 +1038,6 @@ console.log("c",list);
     self.withLoadSuggestions();
   });
 
-/*
-
-  self.withTypeaheadFilter = function(item)
-  {
-    return (!self.item()._with || self.item()._with() != item._id());
-  };
-
-  self.withTypeaheadUpdater = function(key)
-  {
-    self.withSet(key);
-  };
-
-
-  self.withOther = ko.observableArray();
-
-  self.withOther2 = ko.computed(function()
-  {
-    var list = [];
-    var takenIds = [];
-
-    if (self.item() !== false)
-    {
-      if (self.item()._with)
-      {
-        takenIds.push(self.item()._with());
-      }
-
-      if (self.item().exif && self.item().exif.Model)
-      {
-        murrix.server.emit("find", { query: { name: self.item().exif.Model(), type: "camera" }, options: "nodes" }, function(error, nodeDataList)
-        {
-          if (error)
-          {
-            console.log(error);
-            return;
-          }
-
-          for (var n in nodeDataList)
-          {
-            var node = murrix.cache.addNodeData(nodeDataList[n]);
-
-            if (!murrix.inArray(node._id(), takenIds))
-            {
-              list.push(node._id());
-              takenIds.push(node._id());
-            }
-          }
-
-          self.withOther(list);
-        });
-      }
-      else
-      {
-        for (var n = 0; n < parentModel.items().length; n++)
-        {
-          if (!parentModel.items()[n]._with || parentModel.items()[n]._with() === false)
-          {
-            continue;
-          }
-
-          if (!murrix.inArray(parentModel.items()[n]._with(), takenIds))
-          {
-            list.push(parentModel.items()[n]._with());
-            takenIds.push(parentModel.items()[n]._with());
-          }
-        }
-      }
-    }
-
-    self.withOther(list);
-  });*/
-
   self.withCreateFromExif = function()
   {
     murrix.model.dialogModel.cameraNodeModel.showCreate(function(node)
@@ -855,97 +1056,10 @@ console.log("c",list);
     }
   };
 
-//   self.withRemove = function()
-//   {
-//     self.withSet(false);
-//   };
-//
-//   self.withSet = function(id)
-//   {
-//     id = id ? ko.mapping.toJS(id) : false;
-//
-//     var itemData = ko.mapping.toJS(self.item);
-//
-//     itemData._with = id ? ko.mapping.toJS(id) : false;
-//
-//     self.saveItem(itemData);
-//   };
 
 
 
 
-
-
-
-
-
-
-
-  self.showingCreatePerson = function()
-  {
-    murrix.model.dialogModel.personNodeModel.showCreate(function(node)
-    {
-      self.showingAdd({ _id: node._id() });
-    });
-  };
-
-  self.showingCreateVehicle = function()
-  {
-     murrix.model.dialogModel.vechicleNodeModel.showCreate(function(node)
-    {
-      self.showingAdd({ _id: node._id() });
-    });
-  };
-
-  self.showingCreateCamera = function()
-  {
-    parentModel.editCameraOpen(function(node)
-    {
-      self.showingAdd({ _id: node._id() });
-    });
-  };
-
-  self.showingAdd = function(showingItem)
-  {
-    showingItem = ko.mapping.toJS(showingItem);
-
-    showingItem = { _id: showingItem._id };
-
-    self.showingUpdate(showingItem, showingItem);
-  };
-
-  self.showingRemove = function(showingItem)
-  {
-    $(".imgContainer").imgAreaSelect({ "remove" : true });
-    self.showingData(false);
-
-    self.showingUpdate(showingItem, null);
-  };
-
-  self.showingUpdate = function(oldShowingItem, newShowingItem)
-  {
-    oldShowingItem = oldShowingItem ? ko.mapping.toJS(oldShowingItem) : null;
-    newShowingItem = newShowingItem ? ko.mapping.toJS(newShowingItem) : null;
-
-    var itemData = ko.mapping.toJS(self.item);
-
-    itemData.showing = itemData.showing || [];
-
-    if (oldShowingItem)
-    {
-      itemData.showing = itemData.showing.filter(function(showingItemTest)
-      {
-        return showingItemTest._id !== oldShowingItem._id;
-      });
-    }
-
-    if (newShowingItem)
-    {
-      itemData.showing.push(newShowingItem);
-    }
-
-    self.saveItem(itemData, true);
-  };
 
 
 
@@ -1096,7 +1210,13 @@ console.log("c",list);
     self.wherePositionModel.value({ latitude: self.item().exif.GPSLatitude(), longitude: self.item().exif.GPSLongitude(), source: "gps" });
   };
 
-
+  self.whereCreateLocation = function()
+  {
+    murrix.model.dialogModel.locationNodeModel.showCreate(function(node)
+    {
+      self.whereLocationModel.value([ node._id() ]);
+    });
+  };
 
 
 
@@ -1122,11 +1242,13 @@ console.log("c",list);
       if (!noreload)
       {
         self.item(item);
+        self.showingInitialize();
       }
 
       self.whereInitialize();
       self.whoInitialize();
       self.withInitialize();
+
 
       if (callback)
       {
@@ -1167,6 +1289,7 @@ console.log("c",list);
         self.whereInitialize();
         self.whoInitialize();
         self.withInitialize();
+        self.showingInitialize();
       });
     });
   };

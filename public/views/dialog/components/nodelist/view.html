@@ -1,7 +1,21 @@
 
+<style tyoe="text/css">
+  .dialogComponentNodeListBox {
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    background-color: whiteSmoke;
+  }
+
+  .dialogComponentNodeListBoxSelected {
+    background-color: #D9EDF7;
+    border-color: #BCE8F1;
+  }
+</style>
+
+
 <script type="text/html" id="dialogComponentNodeListItemTemplate">
   <div data-bind="foreach: $data.nodes">
-    <div class="media nodeBox" style="border: 1px solid #ddd; background-color: whiteSmoke; margin-top: 10px;">
+    <div class="media nodeBox dialogComponentNodeListBox" style="margin-top: 10px;" data-bind="click: $parent.model.selectHandler, css: { dialogComponentNodeListBoxSelected: $parent.model.selected() === $data._id() }, style: { cursor: $parent.model.selectable() ? 'pointer' : 'auto' }">
       <img style="width: 80px; height: 80px;" class="media-object pull-left" data-bind="srcNodeProfilePicture: [ $data._id, 80, 80, 1 ]">
       <div class="media-body" style="margin-top: 5px; padding: 5px;">
         <a class="pull-right" style="margin-right: 5px; text-decoration: none;" href="#" data-bind="click: $parent.model.removeHandler, visible: !$parent.model.disabledRemove() && $parent.type === 'main'"><i class="icon-trash"></i></a>

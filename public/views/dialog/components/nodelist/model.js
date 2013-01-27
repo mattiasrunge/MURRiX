@@ -11,11 +11,14 @@ function DialogComponentNodeListModel()
   self.suggestions = ko.observableArray();
   self.min = ko.observable(false);
   self.max = ko.observable(false);
+  self.selectable = ko.observable(false);
+  self.selected = ko.observable(false);
 
   self.reset = function()
   {
     self.value([]);
     self.suggestions([]);
+    self.selected(false);
   };
 
   /* Private stuff */
@@ -31,6 +34,23 @@ function DialogComponentNodeListModel()
   {
     return self.disabled() || (self.min() !== false && self.value().length <= self.min());
   });
+
+  self.selectHandler = function(data)
+  {
+    if (self.selectable() === false)
+    {
+      return;
+    }
+
+    if (self.selected() === data._id())
+    {
+      self.selected(false);
+    }
+    else
+    {
+      self.selected(data._id());
+    }
+  };
 
   self.removeHandler = function(data)
   {
