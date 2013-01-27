@@ -130,6 +130,11 @@ var FilesModel = function(parentModel)
 
     for (var n = 0; n < event.originalEvent.dataTransfer.files.length; n++)
     {
+      if (event.originalEvent.dataTransfer.files[n].type === "")
+      {
+        continue;
+      }
+
       var uploadFile = {};
 
       uploadFile.progress = ko.observable(0);
@@ -143,8 +148,11 @@ var FilesModel = function(parentModel)
       self.uploadFiles.push(uploadFile);
     }
 
-    $("#itemUploadModal").modal({ keyboard: false, backdrop: "static" });
+    if (self.uploadFiles.length > 0)
+    {
+      $("#itemUploadModal").modal({ keyboard: false, backdrop: "static" });
 
-    self._startUpload(null, true);
+      self._startUpload(null, true);
+    }
   };
 };
