@@ -16,8 +16,10 @@ MURRiX tries to leverage the latest technologies available and relies heavily on
 
     $ sudo apt-add-repository http://ppa.launchpad.net/chris-lea/node.js/ubuntu
     $ sudo apt-add-repository http://ppa.launchpad.net/jon-severinsson/ffmpeg/ubuntu
+    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+    $ echo "echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' > /etc/apt/sources.list.d/10gen.list" | sudo bash
     $ sudo aptitude update
-    $ sudo apt-get install nodejs npm git mongodb libsox-dev libpng-dev libimage-exiftool-perl imagemagick mpg123 ffmpeg ufraw-batch
+    $ sudo apt-get install nodejs npm git mongodb20-10gen libsox-dev libpng-dev libimage-exiftool-perl imagemagick mpg123 ffmpeg ufraw-batch
 
 ## How to install
 
