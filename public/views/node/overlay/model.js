@@ -549,14 +549,14 @@ var OverlayModel = function(parentModel)
           takenIds.push(self.item().showing()[n]._id());
         }
       }
-
+console.log("a");
       for (var n = 0; n < parentModel.items().length; n++)
       {
         if (!parentModel.items()[n].showing)
         {
           continue;
         }
-
+console.log("b");
         for (var i = 0; i < parentModel.items()[n].showing().length; i++)
         {
           if (!murrix.inArray(parentModel.items()[n].showing()[i]._id(), takenIds))
@@ -567,8 +567,8 @@ var OverlayModel = function(parentModel)
         }
       }
     }
-
-    return ko.observableArray(list);
+console.log("c",list);
+    return list;
   });
 
 
