@@ -106,7 +106,7 @@ function DialogComponentPositionModel(dialogModel)
         self.initClearPosition();
       });
 
-      self.value.valueHasMutated();
+      self.loadMarker();
     }
   };
 
@@ -196,9 +196,14 @@ function DialogComponentPositionModel(dialogModel)
 
   self.value.subscribe(function(value)
   {
+    self.loadMarker();
+  });
+
+  self.loadMarker = function()
+  {
     if (self.marker)
     {
-      if (value.latitude === false || value.longitude === false)
+      if (self.value().latitude === false || self.value().longitude === false)
       {
         self.marker.setVisible(false);
         self.infowindow.close();
@@ -210,13 +215,13 @@ function DialogComponentPositionModel(dialogModel)
           return;
         }
 
-        var position = new google.maps.LatLng(value.latitude, value.longitude);
+        var position = new google.maps.LatLng(self.value().latitude, self.value().longitude);
 
         self.marker.setPosition(position);
         self.marker.setVisible(true);
         self.map.panTo(position);
 
-        jQuery.getJSON(url, { latlng: value.latitude + "," + value.longitude, sensor: false }, function(data)
+        jQuery.getJSON(url, { latlng: self.value().latitude + "," + self.value().longitude, sensor: false }, function(data)
         {
           var content = "";
 
@@ -236,7 +241,7 @@ function DialogComponentPositionModel(dialogModel)
         });
       }
     }
-  });
+  };
 
   self.content = ko.computed(function()
   {

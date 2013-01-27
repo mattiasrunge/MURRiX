@@ -65,7 +65,7 @@ var OverlayModel = function(parentModel)
 
       self.item(item);
       self.whoInitialize();
-      self.initializeOverlayMap();
+      self.whereInitialize();
       self.description(self.item().description ? self.item().description() : "");
 
       self.videoFile('/video?id=' + self.item()._id());
@@ -375,8 +375,7 @@ var OverlayModel = function(parentModel)
     self.saveItemClearCache(itemData);
   };
 
-  self.whereLatitude = ko.observable("");
-  self.whereLongitude = ko.observable("");
+
 
 
 
@@ -549,85 +548,9 @@ var OverlayModel = function(parentModel)
   self.whereEditClicked = function()
   {
     self.editType("where");
-    self.initializeOverlayMap();
-  };
-
-  self.initializeOverlayMap = function()
-  {
-    if (self.editType() !== "where" || (self.item().where && self.item().where._id && self.item().where._id() !== false))
-    {
-      console.log("Not where or have location!");
-      self.whereMap = null;
-      return;
-    }
-
-    var position = new google.maps.LatLng(57.6706907666667, 11.9375348333333);
-
-    self.whereLatitude("");
-    self.whereLongitude("");
-
-    if (self.item().where && self.item().where.latitude && self.item().where.latitude() !== false && self.item().where.longitude && self.item().where.longitude() !== false)
-    {
-      position = new google.maps.LatLng(self.item().where.latitude(), self.item().where.longitude());
-      self.whereLatitude(self.item().where.latitude());
-      self.whereLongitude(self.item().where.longitude());
-    }
-
-    var options = {
-      zoom: 13,
-      center: position,
-      mapTypeId: google.maps.MapTypeId.HYBRID,
-      streetViewControl: false,
-      panControl: false,
-      mapTypeControl: false,
-      zoomControl: true,
-    };
-
-    self.whereMap = new google.maps.Map($(".overlayWhereMap").get(0), options);
-
-    var marker = new google.maps.Marker({
-      position: position,
-      map: self.whereMap,
-      draggable: true,
-      visible: false
-    });
-
-    google.maps.event.addListener(marker, "dragend", function(data)
-    {
-      self.whereLatitude(marker.getPosition().lat());
-      self.whereLongitude(marker.getPosition().lng());
-
-      self.whereSavePosition("manual");
-    });
-
-    if (self.item().where && self.item().where.latitude && self.item().where.latitude() !== false && self.item().where.longitude && self.item().where.longitude() !== false)
-    {
-      marker.setVisible(true);
-    }
-
-    google.maps.event.addListener(self.whereMap, "click", function(data)
-    {
-      marker.setPosition(data.latLng);
-      marker.setVisible(true);
-
-      self.whereLatitude(marker.getPosition().lat());
-      self.whereLongitude(marker.getPosition().lng());
-
-      self.whereSavePosition("manual");
-    });
   };
 
 
-
-  self.whereTypeaheadFilter = function(item)
-  {
-    return (!self.item()._where || !self.item()._where._id || self.item()._where._id() != item._id());
-  };
-
-  self.whereTypeaheadUpdater = function(key)
-  {
-    self.whereSet(key);
-  };
 
   self.withTypeaheadFilter = function(item)
   {
@@ -872,35 +795,7 @@ var OverlayModel = function(parentModel)
     murrix.model.dialogModel.cameraNodeModel.name(self.item().exif.Model());
   };
 
-  self.whereOther = ko.computed(function()
-  {
-    var list = [];
-    var takenIds = [];
 
-    if (self.item() !== false)
-    {
-      if (self.item().where && self.item().where._id)
-      {
-        takenIds.push(self.item().where._id());
-      }
-
-      for (var n = 0; n < parentModel.items().length; n++)
-      {
-        if (!parentModel.items()[n].where || !parentModel.items()[n].where._id || parentModel.items()[n].where._id() === false)
-        {
-          continue;
-        }
-
-        if (!murrix.inArray(parentModel.items()[n].where._id(), takenIds))
-        {
-          list.push(parentModel.items()[n].where._id());
-          takenIds.push(parentModel.items()[n].where._id());
-        }
-      }
-    }
-
-    return ko.observableArray(list);
-  });
 
 
   self.showingCreatePerson = function()
@@ -980,10 +875,7 @@ var OverlayModel = function(parentModel)
     self.withSet(false);
   };
 
-  self.whereRemove = function()
-  {
-    self.whereSet(false);
-  };
+
 
   self.withSet = function(id)
   {
@@ -996,43 +888,157 @@ var OverlayModel = function(parentModel)
     self.saveItem(itemData);
   };
 
-  self.whereSet = function(id)
+
+
+
+
+
+
+
+  self.where = {};
+  self.where.visible = ko.observable(false);
+
+  self.editType.subscribe(function(value)
   {
-    id = id ? ko.mapping.toJS(id) : false;
+    self.where.visible(value === "where");
+  });
+
+  self.whereHideLocation = ko.observable(false);
+  self.whereHidePosition = ko.observable(false);
+
+  self.wherePositionModel = new DialogComponentPositionModel(self.where);
+  self.wherePositionModel.value.subscribe(function(value)
+  {
+    if (value.latitude === false)
+    {
+      self.whereHideLocation(false);
+    }
+    else
+    {
+      self.whereHideLocation(true);
+      self.whereLocationModel.reset();
+    }
+
+    self.whereSave();
+  });
+
+  self.whereLocationModel = new DialogComponentNodeListModel(self);
+  self.whereLocationModel.types([ "location" ]);
+  self.whereLocationModel.max(1);
+  self.whereLocationModel.value.subscribe(function(value)
+  {
+    if (value.length === 0)
+    {
+      self.whereHidePosition(false);
+    }
+    else
+    {
+      self.whereHidePosition(true);
+      self.wherePositionModel.reset();
+    }
+
+    self.whereSave();
+  });
+
+
+  self.whereInitializing = false;
+
+  self.whereInitialize = function()
+  {
+    self.whereInitializing = true;
+
+    self.whereLocationModel.reset();
+    self.wherePositionModel.reset();
+
+    if (self.item() !== false)
+    {
+      if (self.item().where && self.item().where !== false)
+      {
+        if (self.item().where._id && self.item().where._id() !== false)
+        {
+          self.whereLocationModel.value.push(self.item().where._id());
+        }
+        else if (self.item().where.latitude && self.item().where.latitude() !== false)
+        {
+          self.wherePositionModel.value(ko.mapping.toJS(self.item().where));
+        }
+      }
+
+      self.whereLoadSuggestions();
+    }
+
+    self.whereInitializing = false;
+  };
+
+  self.whereSave = function()
+  {
+    if (self.whereInitializing)
+    {
+      return;
+    }
 
     var itemData = ko.mapping.toJS(self.item);
 
-    itemData.where = {};
+    itemData.where = { latitude: self.wherePositionModel.value().latitude, longitude: self.wherePositionModel.value().longitude, _id: false, source: self.wherePositionModel.value().latitude !== false ? "manual" : false };
 
-    itemData.where._id = id;
-    itemData.where.latitude = false;
-    itemData.where.longitude = false;
-    itemData.where.source = false;
+    if (self.wherePositionModel.value().source)
+    {
+      itemData.where.source = self.wherePositionModel.value().source;
+    }
+
+    if (self.whereLocationModel.value().length > 0)
+    {
+      itemData.where._id = self.whereLocationModel.value()[0];
+    }
 
     self.saveItem(itemData);
   };
+
+  self.whereLoadSuggestions = function()
+  {
+    var list = [];
+    var takenIds = [];
+
+    if (self.item() !== false)
+    {
+      if (self.item().where && self.item().where._id && self.item().where._id() !== false)
+      {
+        takenIds.push(self.item().where._id());
+      }
+
+      for (var n = 0; n < parentModel.items().length; n++)
+      {
+        if (!parentModel.items()[n].where || !parentModel.items()[n].where._id || parentModel.items()[n].where._id() === false)
+        {
+          continue;
+        }
+
+        if (!murrix.inArray(parentModel.items()[n].where._id(), takenIds))
+        {
+          list.push(parentModel.items()[n].where._id());
+          takenIds.push(parentModel.items()[n].where._id());
+        }
+      }
+
+      self.whereLocationModel.suggestions(list);
+    }
+  };
+
+  parentModel.items.subscribe(function()
+  {
+    self.whereLoadSuggestions();
+  });
 
   self.whereFileSet = function()
   {
-    self.whereLatitude(self.item().exif.GPSLatitude());
-    self.whereLongitude(self.item().exif.GPSLongitude());
-
-    self.whereSavePosition("gps");
+    self.wherePositionModel.value({ latitude: self.item().exif.GPSLatitude(), longitude: self.item().exif.GPSLongitude(), source: "gps" });
   };
 
-  self.whereSavePosition = function(source)
-  {
-    var itemData = ko.mapping.toJS(self.item);
 
-    itemData.where = {};
 
-    itemData.where._id = false;
-    itemData.where.latitude = self.whereLatitude();
-    itemData.where.longitude = self.whereLongitude();
-    itemData.where.source = source;
 
-    self.saveItem(itemData);
-  };
+
+
 
   self.saveItem = function(itemData, noreload, callback)
   {
@@ -1056,7 +1062,7 @@ var OverlayModel = function(parentModel)
         self.item(item);
       }
 
-      self.initializeOverlayMap();
+      self.whereInitialize();
       self.whoInitialize();
 
       if (callback)
@@ -1094,8 +1100,6 @@ var OverlayModel = function(parentModel)
         }
 
         var item = murrix.cache.addItemData(itemData);
-
-        self.initializeOverlayMap();
       });
     });
   };

@@ -362,89 +362,46 @@
           <i>Select a position or location where this item was created e.g. where this picture was taken. Setting a position is the preferred way since it is more accurate, but a location can be selected directly if the exact position is uncertain.</i>
         </p>
 
-        <div data-bind="if: nodeModel.overlayModel.item().where && nodeModel.overlayModel.item().where._id && nodeModel.overlayModel.item().where._id() !== false">
-          <h5>Currently selected location</h5>
-          <table class="table table-condensed">
-            <tbody>
-              <tr>
-                <td>
-                  <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item().where._id, 44, 44, 1 ]"/>
-                  <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item().where._id, 'name' ]" style="margin: 0px;"></h5>
-                </td>
-                <td>
-                  <button title="Remove" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whereRemove" class="btn pull-right"><i class="icon-trash"></i></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="visible: !nodeModel.overlayModel.whereHidePosition() && !nodeModel.overlayModel.whereHideLocation()">
+          <li class="active"><a href="#overlayTabWherePosition" data-toggle="tab">Position</a></li>
+          <li><a href="#overlayTabWhereLocation" data-toggle="tab">Location</a></li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane active" id="overlayTabWherePosition" data-bind="visible: !nodeModel.overlayModel.whereHidePosition()">
+            <div data-bind="template: { name: nodeModel.overlayModel.wherePositionModel.template(), data: nodeModel.overlayModel.wherePositionModel }"></div>
+
+            <div data-bind="if: nodeModel.overlayModel.item().exif && nodeModel.overlayModel.item().exif.GPSLatitude">
+              <h5>
+                File information
+                <button title="Set" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whereFileSet" class="btn btn-mini btn-link pull-right">Set file position</button>
+              </h5>
+              <table class="table table-condensed" style="font-size: 12px;">
+                <tbody>
+                  <tr>
+                    <td>
+                      Latitude
+                    </td>
+                    <td data-bind="text: nodeModel.overlayModel.item().exif.GPSLatitude"></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Longitude
+                    </td>
+                    <td data-bind="text: nodeModel.overlayModel.item().exif.GPSLongitude"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="tab-pane" id="overlayTabWhereLocation" data-bind="visible: !nodeModel.overlayModel.whereHideLocation()">
+            <div data-bind="template: { name: nodeModel.overlayModel.whereLocationModel.template(), data: nodeModel.overlayModel.whereLocationModel }"></div>
+          </div>
         </div>
 
-        <div data-bind="if: !nodeModel.overlayModel.item().where || !nodeModel.overlayModel.item().where._id || nodeModel.overlayModel.item().where._id() === false">
-          <h5>Currently selected position</h5>
-          <div class="overlayWhereMap" style="width: 330px; height: 200px; position: relative;"></div>
-          <table class="table table-condensed" style="font-size: 12px;">
-            <tbody>
-              <tr>
-                <td>
-                  Latitude
-                </td>
-                <td>
-                  <input type="text" style="margin: 0px; font-size: 11px; padding: 0px 5px 0px 5px;" placeholder="Latitude" data-bind="value: nodeModel.overlayModel.whereLatitude">
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Longitude
-                </td>
-                <td>
-                  <input type="text" style="margin: 0px; font-size: 11px; padding: 0px 5px 0px 5px;" placeholder="Longitude" data-bind="value: nodeModel.overlayModel.whereLongitude">
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
-        <div data-bind="if: nodeModel.overlayModel.item().exif && nodeModel.overlayModel.item().exif.GPSLatitude">
-          <h5>
-            File information
-            <button title="Set" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whereFileSet" class="btn btn-mini btn-link pull-right">Set file position</button>
-          </h5>
-          <table class="table table-condensed" style="font-size: 12px;">
-            <tbody>
-              <tr>
-                <td>
-                  Latitude
-                </td>
-                <td data-bind="text: nodeModel.overlayModel.item().exif.GPSLatitude"></td>
-              </tr>
-              <tr>
-                <td>
-                  Longitude
-                </td>
-                <td data-bind="text: nodeModel.overlayModel.item().exif.GPSLongitude"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
-        <h5>Select a location</h5>
-        <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
-
-        <input placeholder="Search for location..." type="text" style="width: 318px;" data-bind="disable: nodeModel.overlayModel.editLoading, typeahead: { source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.overlayModel.whereTypeaheadUpdater, nodeTypes: [ 'location' ], nodeFilter: nodeModel.overlayModelwhereTypeaheadFilter }" data-provide="typeahead"/>
-
-        <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item()">
-          <tbody data-bind="foreach: nodeModel.overlayModel.whereOther">
-            <tr>
-              <td>
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
-              </td>
-              <td>
-                <button title="Set" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whereSet" class="btn pull-right"><i class="icon-plus"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
       <div data-bind="visible: nodeModel.overlayModel.editType() === '', if: nodeModel.node() !== false">
