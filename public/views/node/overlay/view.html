@@ -122,63 +122,36 @@
           <i>Select which camera this item was created with e.g. what camera was used to take this picture.</i>
         </p>
 
-        <h5>Currently selected camera</h5>
-        <table class="table table-condensed">
-          <tbody data-bind="if: nodeModel.overlayModel.item()._with">
-            <tr>
-              <td>
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ nodeModel.overlayModel.item()._with, 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ nodeModel.overlayModel.item()._with, 'name' ]" style="margin: 0px;"></h5>
-              </td>
-              <td>
-                <button title="Remove" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.withRemove" class="btn pull-right"><i class="icon-trash"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div data-bind="template: { name: nodeModel.overlayModel.withModel.template(), data: nodeModel.overlayModel.withModel }"></div>
 
         <div data-bind="if: nodeModel.overlayModel.item().exif">
           <h5>File information</h5>
-          <table class="table table-condensed" style="font-size: 12px;">
+          <button class="btn btn-small" style="width: 330px; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.withCreateFromExif">Create new camera</button>
+
+          <table class="table table-condensed table-striped" style="font-size: 12px;">
             <tbody>
-              <tr>
+              <tr data-bind="visible: nodeModel.overlayModel.item().exif.Make">
                 <td>
                   Camera make
                 </td>
                 <td data-bind="text: nodeModel.overlayModel.item().exif.Make"></td>
-                <td></td>
               </tr>
-              <tr>
+              <tr data-bind="visible: nodeModel.overlayModel.item().exif.Model">
                 <td>
                   Camera model
                 </td>
                 <td data-bind="text: nodeModel.overlayModel.item().exif.Model"></td>
+              </tr>
+              <tr data-bind="visible: nodeModel.overlayModel.item().exif.SerialNumber">
                 <td>
-                  <button class="btn btn-link btn-mini" data-bind="click: nodeModel.overlayModel.withCreateFromExif">Create camera</button>
+                  Camera serial number
                 </td>
+                <td data-bind="text: nodeModel.overlayModel.item().exif.SerialNumber"></td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h5>Select a camera</h5>
-        <div class="alert alert-error" data-bind="visible: nodeModel.overlayModel.editErrorText() != '', text: nodeModel.overlayModel.editErrorText"></div>
-
-        <input placeholder="Search for camera..." type="text" style="width: 318px;" data-bind="disable: nodeModel.overlayModel.editLoading, typeahead: { source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: nodeModel.overlayModel.withTypeaheadUpdater, nodeTypes: [ 'camera' ], nodeFilter: nodeModel.overlayModel.withTypeaheadFilter }" data-provide="typeahead"/>
-
-        <table class="table table-condensed table-hover" data-bind="if: nodeModel.overlayModel.item()">
-          <tbody data-bind="foreach: nodeModel.overlayModel.withOther">
-            <tr>
-              <td>
-                <img class="pull-left" draggable="false" src="" alt="" style="width: 44px; height: 44px; margin-right: 10px;" data-bind="srcNodeProfilePicture: [ $data, 44, 44, 1 ]"/>
-                <h5 data-bind="textNodeAttribute: [ $data, 'name' ]"></h5>
-              </td>
-              <td>
-                <button title="Set" style="margin-top: 7px;" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.withSet" class="btn pull-right"><i class="icon-plus"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
 
@@ -376,7 +349,7 @@
                 File information
                 <button title="Set" style="margin-top: 7px;" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.whereFileSet" class="btn btn-mini btn-link pull-right">Set file position</button>
               </h5>
-              <table class="table table-condensed" style="font-size: 12px;">
+              <table class="table table-condensed table-striped" style="font-size: 12px;">
                 <tbody>
                   <tr>
                     <td>
@@ -417,7 +390,7 @@
 
         <div style="font-size: 10px; padding: 10px; padding-top: 0px; text-align: left;">
           <table class="table table-striped table-condensed">
-            <tr>
+            <tr data-bind="visible: !nodeModel.overlayModel.item().type || nodeModel.overlayModel.item().type() === 'none'">
               <td>
                 <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whoEditClicked">Created&nbsp;by</a>
                 <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Created&nbsp;by</span>
@@ -428,9 +401,9 @@
                 </span>
                 <span data-bind="visible: nodeModel.overlayModel.item().who() === false">
                   <div class="muted" data-bind="visible: nodeModel.node().hasAdminAccess()">
-                    <div data-bind="foreach: nodeModel.overlayModel.whoOther">
-                      <a style="display: block;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whoSet">
-                        Did <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> create this item?
+                    <div data-bind="foreach: nodeModel.overlayModel.whoModel.suggestionsNodes">
+                      <a style="display: block;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whoModel.addHandler">
+                        Did <span data-bind="text: $data.name"></span> create this item?
                       </a>
                     </div>
                     <a style="display: block;" href="#" data-bind="click: nodeModel.overlayModel.whoEditClicked">
@@ -442,8 +415,8 @@
             </tr>
             <tr>
               <td>
-                <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whereEditClicked">Created&nbsp;where</a>
-                <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Created&nbsp;where</span>
+                <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whereEditClicked">Location</a>
+                <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Location</span>
               </td>
               <td>
                 <span data-bind="if: nodeModel.overlayModel.item().whereNode() !== false">
@@ -454,9 +427,9 @@
                 </span>
                 <span data-bind="visible: nodeModel.overlayModel.item().whereNode() === false && nodeModel.overlayModel.item().whereString() === false">
                   <div class="muted" data-bind="visible: nodeModel.node().hasAdminAccess()">
-                    <div data-bind="foreach: nodeModel.overlayModel.whereOther">
-                      <a style="display: block;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whereSet">
-                        Was this item created at <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span>?
+                    <div data-bind="foreach: nodeModel.overlayModel.whereLocationModel.suggestionsNodes">
+                      <a style="display: block;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.whereLocationModel.addHandler">
+                        Was this item created at <span data-bind="text: $data.name"></span>?
                       </a>
                     </div>
                     <a style="display: block;" href="#" data-bind="click: nodeModel.overlayModel.whoEditClicked">
@@ -466,10 +439,10 @@
                 </span>
               </td>
             </tr>
-            <tr>
+            <tr data-bind="visible: nodeModel.overlayModel.item().what() === 'file'">
               <td>
-                <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.withEditClicked">Created&nbsp;with</a>
-                <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Created&nbsp;with</span>
+                <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.withEditClicked">Camera</a>
+                <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Camera</span>
               </td>
               <td>
                 <span data-bind="if: nodeModel.overlayModel.item().with() !== false">
@@ -477,9 +450,9 @@
                 </span>
                 <span data-bind="visible: nodeModel.overlayModel.item().with() === false">
                   <div class="muted" data-bind="visible: nodeModel.node().hasAdminAccess()">
-                    <div data-bind="foreach: nodeModel.overlayModel.withOther">
-                      <a style="display: block;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.withSet">
-                        Was <span data-bind="textNodeAttribute: [ $data, 'name' ]"></span> used to create this item?
+                    <div data-bind="foreach: nodeModel.overlayModel.withModel.suggestionsNodes">
+                      <a style="display: block;" href="#" data-bind="disable: $parent.nodeModel.overlayModel.editLoading, click: $parent.nodeModel.overlayModel.withModel.addHandler">
+                        Was <span data-bind="text: $data.name"></span> used to create this item?
                       </a>
                     </div>
                     <a style="display: block;" href="#" data-bind="click: nodeModel.overlayModel.withEditClicked">
@@ -491,8 +464,8 @@
             </tr>
             <tr>
               <td>
-                <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whenEditClicked">Created&nbsp;on</a>
-                <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Created&nbsp;on</span>
+                <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whenEditClicked">Date and Time</a>
+                <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Date and Time</span>
               </td>
               <td>
                 <span data-bind="if: nodeModel.overlayModel.item().whenTimestamp() !== false">
@@ -538,8 +511,8 @@
           </table>
         </div>
 
-        <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;">
-          <li class="active" style="margin-left: 10px;">
+        <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px; margin-left: 10px; margin-right: 10px;">
+          <li class="active">
             <a href="#overlayTabComments" data-toggle="tab">Comments<span data-bind="visible: nodeModel.overlayModel.item().comments().length > 0"> (<span data-bind="text: nodeModel.overlayModel.item().comments().length"></span>)</span></a>
           </li>
           <li>

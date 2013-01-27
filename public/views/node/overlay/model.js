@@ -66,6 +66,7 @@ var OverlayModel = function(parentModel)
       self.item(item);
       self.whoInitialize();
       self.whereInitialize();
+      self.withInitialize();
       self.description(self.item().description ? self.item().description() : "");
 
       self.videoFile('/video?id=' + self.item()._id());
@@ -78,92 +79,6 @@ var OverlayModel = function(parentModel)
 
 
 
-
-
-
-
-//   self.timeout = null;
-//
-//   $(window).on("resize", function()
-//   {
-//     if (self.timeout === null)
-//     {
-//       self.timeout = setTimeout(function()
-//       {
-//         self.detectFaces();
-//       }, 500);
-//     }
-//   });
-
-  self.detectFaces = function()
-  {
-    $(".face").remove();
-
-//     murrix.server.emit("detectFaces", self.item()._id(), function(error, coords)
-//     {
-//       if (error)
-//       {
-//         console.log(error);
-//         self.timeout = null;
-//         return;
-//       }
-//
-//       console.log("coords", coords);
-// /*
-//     coords.push({ x: 2047, y: 160, w: 116, h: 116 });
-//     coords.push({ x: 1467, y: 2511, w: 105, h: 105 });
-//     coords.push({ x: 2908, y: 2420, w: 117, h: 117 });
-//     coords.push({ x: 1547, y: 679, w: 267, h: 267 });
-//     coords.push({ x: 2043, y: 783, w: 246, h: 246 });
-//     coords.push({ x: 2446, y: 804, w: 267, h: 267 });
-//     coords.push({ x: 2956, y: 710, w: 292, h: 292 });
-//     coords.push({ x: 1881, y: 1684, w: 286, h: 286 });*/
-//
-//
-//     var imgHeight = murrix.intval(self.item().exif.ImageHeight());
-//     var imgWidth = murrix.intval(self.item().exif.ImageWidth());
-//
-//
-//     if (self.item().angle && self.item()..angle === 90 || self.item().angle === 270)
-//     {
-//       var t = imgHeight;
-//       imgHeight = imgWidth;
-//       imgWidth = t;
-//     }
-//
-//  console.log(imgHeight, imgWidth);
-//     var scaleHeight = $(".imgContainer:visible").height();
-//     var scaleWidth = $(".imgContainer:visible").width();
-//  console.log(scaleHeight, scaleWidth);
-//     var ratioHeight = scaleHeight / imgHeight;
-//     var ratioWidth = scaleWidth / imgWidth;
-//  console.log(ratioHeight, ratioWidth);
-//     for (var i = 0; i < coords.length; i++) {
-//       console.log(coords[i].h, coords[i].w);
-//        console.log(coords[i].y, coords[i].x);
-//
-//        console.log(coords[i].h * ratioHeight, coords[i].w * ratioWidth);
-//        console.log(coords[i].y * ratioHeight, coords[i].x * ratioWidth);
-//
-//        console.log("==================");
-//
-//       $('<div>', {
-//         'class':'face',
-//         'css': {
-//           'position': 'absolute',
-//           'left':   Math.floor(coords[i].x * ratioWidth) +'px',
-//           'top':    Math.floor(coords[i].y * ratioHeight) +'px',
-//           'width':  Math.floor(coords[i].w * ratioWidth)   +'px',
-//           'height':   Math.floor(coords[i].h * ratioHeight)  +'px',
-//           'border': '1px solid red'
-//         }
-//       })
-//       .appendTo('.imgContainer:visible');
-//     }
-//
-//     self.timeout = null;
-//     });
-  };
 
 /*
   self.detectFaces = function()
@@ -478,11 +393,6 @@ var OverlayModel = function(parentModel)
     self.showingUpdate(showingItem, showingItem);
   };
 
-  self.imageRemoved = function(elements)
-  {
-    console.log("imageRemoved", elements);
-  };
-
   self.showingItemClicked = function(data)
   {
     if (self.item() === false || self.item().whatDetailed() !== "imageFile")
@@ -552,15 +462,6 @@ var OverlayModel = function(parentModel)
 
 
 
-  self.withTypeaheadFilter = function(item)
-  {
-    return (!self.item()._with || self.item()._with() != item._id());
-  };
-
-  self.withTypeaheadUpdater = function(key)
-  {
-    self.withSet(key);
-  };
 
   self.showingTypeaheadFilter = function(item)
   {
@@ -635,8 +536,9 @@ var OverlayModel = function(parentModel)
 
 
 
-
-
+  /****************************************************************************
+   * Who: Stuff for selecting who created this item
+   ***************************************************************************/
   self.whoModel = new DialogComponentNodeListModel(self);
   self.whoModel.max(1);
   self.whoModel.types([ "person" ]);
@@ -650,7 +552,7 @@ var OverlayModel = function(parentModel)
 
     if (self.item() !== false)
     {
-      if (self.item()._who() !== false)
+      if (self.item()._who && self.item()._who() !== false)
       {
         self.whoModel.value.push(self.item()._who());
       }
@@ -663,23 +565,14 @@ var OverlayModel = function(parentModel)
 
   self.whoModel.value.subscribe(function(value)
   {
-    if (self.whoInitializing)
+    if (!self.whoInitializing)
     {
-      return;
-    }
+      var itemData = ko.mapping.toJS(self.item);
 
-    var itemData = ko.mapping.toJS(self.item);
+      itemData._who = value.length === 0 ? false : value[0];
 
-    if (value.length === 0)
-    {
-      itemData._who = false;
+      self.saveItem(itemData);
     }
-    else
-    {
-      itemData._who = value[0];
-    }
-
-    self.saveItem(itemData);
   });
 
   self.whoLoadSuggestions = function()
@@ -689,22 +582,20 @@ var OverlayModel = function(parentModel)
 
     if (self.item() !== false)
     {
-      if (self.item()._who)
+      if (self.item()._who && self.item()._who() !== false)
       {
         takenIds.push(self.item()._who());
       }
 
       for (var n = 0; n < parentModel.items().length; n++)
       {
-        if (!parentModel.items()[n]._who || parentModel.items()[n]._who() === false)
+        if (parentModel.items()[n]._who && parentModel.items()[n]._who() !== false)
         {
-          continue;
-        }
-
-        if (!murrix.inArray(parentModel.items()[n]._who(), takenIds))
-        {
-          list.push(parentModel.items()[n]._who());
-          takenIds.push(parentModel.items()[n]._who());
+          if (!murrix.inArray(parentModel.items()[n]._who(), takenIds))
+          {
+            list.push(parentModel.items()[n]._who());
+            takenIds.push(parentModel.items()[n]._who());
+          }
         }
       }
 
@@ -723,7 +614,131 @@ var OverlayModel = function(parentModel)
 
 
 
+  /****************************************************************************
+   * With: Stuff for selecting what device this item was created with
+   ***************************************************************************/
+  self.withModel = new DialogComponentNodeListModel(self);
+  self.withModel.max(1);
+  self.withModel.types([ "camera" ]);
+  self.withInitializing = false;
 
+  self.withInitialize = function()
+  {
+    self.withInitializing = true;
+
+    self.withModel.reset();
+
+    if (self.item() !== false)
+    {
+      if (self.item()._with && self.item()._with() !== false)
+      {
+        self.withModel.value.push(self.item()._with());
+      }
+
+      self.withLoadSuggestions();
+    }
+
+    self.withInitializing = false;
+  }
+
+  self.withModel.value.subscribe(function(value)
+  {
+    if (!self.withInitializing)
+    {
+      var itemData = ko.mapping.toJS(self.item);
+
+      itemData._with = value.length === 0 ? false : value[0];
+
+      self.saveItem(itemData);
+    }
+  });
+
+  self.withLoadSuggestions = function()
+  {
+    var list = [];
+    var takenIds = [];
+
+    if (self.item() !== false)
+    {
+      if (self.item()._with && self.item()._with() !== false)
+      {
+        takenIds.push(self.item()._with());
+      }
+
+      if (self.item().exif && (self.item().exif.Model || self.item().exif.SerialNumber))
+      {
+        var query = {};
+
+        query.type = "camera";
+        query.$or = [];
+
+        if (self.item().exif.SerialNumber)
+        {
+          query.$or.push({ serial: self.item().exif.SerialNumber() });
+        }
+
+        if (self.item().exif.Model)
+        {
+          query.$or.push({ name: self.item().exif.Model() });
+        }
+
+        murrix.server.emit("find", { query: query, options: "nodes" }, function(error, nodeDataList)
+        {
+          if (error)
+          {
+            console.log(error);
+            return;
+          }
+
+          for (var n in nodeDataList)
+          {
+            var node = murrix.cache.addNodeData(nodeDataList[n]);
+
+            if (!murrix.inArray(node._id(), takenIds))
+            {
+              list.push(node._id());
+              takenIds.push(node._id());
+            }
+          }
+
+          self.withModel.suggestions(list);
+        });
+      }
+      else
+      {
+        for (var n = 0; n < parentModel.items().length; n++)
+        {
+          if (parentModel.items()[n]._with && parentModel.items()[n]._with() !== false)
+          {
+            if (!murrix.inArray(parentModel.items()[n]._with(), takenIds))
+            {console.log(parentModel.items()[n]._with());
+              list.push(parentModel.items()[n]._with());
+              takenIds.push(parentModel.items()[n]._with());
+            }
+          }
+        }
+      }
+
+      self.withModel.suggestions(list);
+    }
+  };
+
+  parentModel.items.subscribe(function()
+  {
+    self.withLoadSuggestions();
+  });
+
+/*
+
+  self.withTypeaheadFilter = function(item)
+  {
+    return (!self.item()._with || self.item()._with() != item._id());
+  };
+
+  self.withTypeaheadUpdater = function(key)
+  {
+    self.withSet(key);
+  };
 
 
   self.withOther = ko.observableArray();
@@ -783,17 +798,48 @@ var OverlayModel = function(parentModel)
     }
 
     self.withOther(list);
-  });
+  });*/
 
   self.withCreateFromExif = function()
   {
     murrix.model.dialogModel.cameraNodeModel.showCreate(function(node)
     {
-      self.withSet(node._id());
+      self.withModel.value([ node._id() ]);
     });
 
-    murrix.model.dialogModel.cameraNodeModel.name(self.item().exif.Model());
+    if (self.item().exif && self.item().exif.Model)
+    {
+      murrix.model.dialogModel.cameraNodeModel.name(self.item().exif.Model());
+    }
+
+    if (self.item().exif && self.item().exif.SerialNumber)
+    {
+      murrix.model.dialogModel.cameraNodeModel.serial(self.item().exif.SerialNumber());
+    }
   };
+
+//   self.withRemove = function()
+//   {
+//     self.withSet(false);
+//   };
+//
+//   self.withSet = function(id)
+//   {
+//     id = id ? ko.mapping.toJS(id) : false;
+//
+//     var itemData = ko.mapping.toJS(self.item);
+//
+//     itemData._with = id ? ko.mapping.toJS(id) : false;
+//
+//     self.saveItem(itemData);
+//   };
+
+
+
+
+
+
+
 
 
 
@@ -870,37 +916,16 @@ var OverlayModel = function(parentModel)
 
 
 
-  self.withRemove = function()
-  {
-    self.withSet(false);
-  };
 
 
 
-  self.withSet = function(id)
-  {
-    id = id ? ko.mapping.toJS(id) : false;
-
-    var itemData = ko.mapping.toJS(self.item);
-
-    itemData._with = id ? ko.mapping.toJS(id) : false;
-
-    self.saveItem(itemData);
-  };
-
-
-
-
-
-
-
-
+  /****************************************************************************
+   * Where: Stuff for selecting where this item was created
+   ***************************************************************************/
   self.where = {};
-  self.where.visible = ko.observable(false);
-
-  self.editType.subscribe(function(value)
+  self.where.visible = ko.computed(function()
   {
-    self.where.visible(value === "where");
+    return self.editType() == "where";
   });
 
   self.whereHideLocation = ko.observable(false);
@@ -1064,6 +1089,7 @@ var OverlayModel = function(parentModel)
 
       self.whereInitialize();
       self.whoInitialize();
+      self.withInitialize();
 
       if (callback)
       {
@@ -1100,6 +1126,10 @@ var OverlayModel = function(parentModel)
         }
 
         var item = murrix.cache.addItemData(itemData);
+
+        self.whereInitialize();
+        self.whoInitialize();
+        self.withInitialize();
       });
     });
   };
@@ -1581,196 +1611,4 @@ var OverlayModel = function(parentModel)
     self.whenUpdatedValue();
   };
 
-
-
-
-/*
-  // This variable should contain best guess for timezone UTC offset
-  self.whenManualTimezone = ko.observable(-(new Date()).getTimezoneOffset() * 60);
-  self.whenManualDaylightSavings = ko.observable(false);
-  self.whenManualDatetime = ko.observable("");
-  self.whenManualSource = ko.observable("manual");
-
-  self.whenManualSubmit = function()
-  {
-    if (self.whenManualDatetime() === "")
-    {
-      self.editErrorText = ko.observable("Can not set empty manual date and time!");
-      return;
-    }
-
-    var itemData = ko.mapping.toJS(self.item);
-
-    itemData.when = {};
-
-    itemData.when.timestamp = (new Date(self.whenManualDatetime() + " +00:00")).getTime() / 1000;
-
-    itemData.when.timestamp += parseInt(self.whenManualTimezone(), 10);
-
-    if (self.whenManualDaylightSavings())
-    {
-      itemData.when.timestamp += 3600;
-    }
-
-    itemData.when.source = self.whenManualSource();
-    itemData.when._syncId = false;
-
-    self.saveItem(itemData);
-  };
-
-  self.whenUpdateTimezone = function()
-  {
-    return; // TODO: Decide how to do this if it should be done
-//     if (self.item().where)
-//     {
-//       if (self.item().where.latitude && self.item().where.latitude() !== false &&
-//           self.item().where.longitude && self.item().where.longitude() !== false
-//       )
-//       {
-//         var options = {};
-//         options.location = self.item().where.latitude() + "," + self.item().where.longitude();
-//         options.timestamp = 0;
-//         options.sensor = false;
-//
-//         jQuery.getJSON("https://maps.googleapis.com/maps/api/timezone/json", options, function(data)
-//         {
-//           if (data.status !== "OK")
-//           {
-//             console.log("Lookup of timezone failed", options, data);
-//             self.whenTimezone((new Date()).getTimezoneOffset() * 60);
-//             return;
-//           }
-//
-//           console.log(options, data);
-//
-//           self.whenTimezone(data.rawOffset);
-//         });
-//
-//         return;
-//       }
-//       else if (self.item().where._id && self.item().where._id() !== false)
-//       {
-//         console.log("TODO - Location timezone lookup");
-//         // Check location and if location has coordinates use them to finde timezone
-//         self.whenTimezone((new Date()).getTimezoneOffset() * 60);
-//       }
-//     }
-  };*/
-
-
-/*
-  self.whenCreateOffsetName = ko.observable("");
-
-  self.whenSetOffset = function(data)
-  {
-    var itemData = ko.mapping.toJS(self.item);
-
-    if (itemData.when._syncId === data._id())
-    {
-      itemData.when._syncId = false;
-    }
-    else
-    {
-      itemData.when._syncId = data._id();
-    }
-
-    self.saveItem(itemData);
-  };
-
-  self.whenRemoveOffset = function(data)
-  {
-    self.whenSaveOffset(data._id());
-  };
-
-  self.whenCreateOffsetSubmit = function()
-  {
-    if (self.whenCreateOffsetName() === "")
-    {
-      self.editErrorText("Can not create offset without name!");
-      return;
-    }
-
-    self.whenSaveOffset(null);
-  };
-
-  self.whenCreateOffsetAllowed = ko.computed(function()
-  {
-//     var value = true;
-//
-//     if (self.item() === false || !self.item().exif || !self.item().exif.DateTimeOriginal || !self.item().when || !self.item().when.source || self.item().when.source() !== 'gps' || self.item().with() === false)
-//     {
-//       value = false;
-//     }
-//     else
-//     {
-//       if (self.item().with().whenOffsets)
-//       {
-//         var offsetValue = self.item().when.timestamp() - murrix.parseExifCamera(self.item().exif.DateTimeOriginal());
-//
-//         for (var n = 0; n < self.item().with().whenOffsets().length; n++)
-//         {
-//           if (self.item().with().whenOffsets()[n]._id() === self.item()._id() ||
-//               self.item().with().whenOffsets()[n].value() === offsetValue)
-//           {
-//             value = false;
-//             break;
-//           }
-//         }
-//       }
-//     }
-//
-//     return value;
-  });
-
-  self.whenSaveOffset = function(removeId)
-  {
-    if (self.item() === false || self.item().with() === false)
-    {
-      self.editErrorText("Can not save with no item or with nodes!");
-      return;
-    }
-
-    if (!removeId && !self.whenCreateOffsetAllowed())
-    {
-      self.editErrorText("Not allowed to create offsets with equal value, one is enough!");
-      return;
-    }
-
-    var nodeData = ko.mapping.toJS(self.item().with());
-
-    nodeData.whenOffsets = nodeData.whenOffsets || [];
-
-    if (!removeId) // Add offset
-    {
-      var newOffset = {};
-      newOffset._id = self.item()._id();
-      newOffset.name = self.whenCreateOffsetName();
-      newOffset.value = self.item().when.timestamp() - murrix.parseExifCamera(self.item().exif.DateTimeOriginal());
-
-      nodeData.whenOffsets.push(newOffset);
-    }
-    else
-    {
-      nodeData.whenOffsets = nodeData.whenOffsets.filter(function(offset)
-      {
-        return offset._id !== removeId;
-      });
-    }
-
-    self.editLoading(true);
-    self.editErrorText("");
-
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      self.editLoading(false);
-
-      if (error)
-      {
-        self.editErrorText(error);
-        return;
-      }
-
-      murrix.cache.addNodeData(nodeData);
-    });
-  };*/
 };
