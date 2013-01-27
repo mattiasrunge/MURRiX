@@ -424,6 +424,17 @@ io.sockets.on("connection", function(client)
     nodeManager.createFileItem(client.handshake.session, uploadManager, data.name, data.uploadId, data.parentId, callback);
   });
 
+  client.on("hideRaw", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for nodeManager.hideRaw!");
+      return;
+    }
+
+    nodeManager.hideRaw(client.handshake.session, data, callback);
+  });
+
   client.on("commentNode", function(data, callback)
   {
     if (!callback)

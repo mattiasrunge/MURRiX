@@ -666,6 +666,7 @@
           <div class="tab-pane" id="overlayTabEdit" data-bind="visible: nodeModel.node().hasAdminAccess()">
 
             <div style="margin: 0px 10px 10px 10px; font-size: 10px;">
+              <button style="width: 328px; margin-bottom: 10px;" class="btn btn-small" data-bind="visible: nodeModel.overlayModel.item().exif && nodeModel.overlayModel.item().exif.MIMEType() === 'image/x-canon-cr2', click: nodeModel.overlayModel.hideRaw">Hide raw image</button>
               <button style="width: 328px; margin-bottom: 10px;" class="btn btn-small" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile', click: nodeModel.overlayModel.setThumbPosition">Set thumbnail position</button>
               <div class="btn-group" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile' || nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
                 <button title="Rotate counter clockwise" style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.rotateLeft"><i class="icon-undo"></i></button>
@@ -694,9 +695,9 @@
                   <!-- ko foreach: nodeModel.overlayModel.item().versions -->
                     <tr>
                       <td>
-                        <a href="#" data-bind="attr: { href: '/file?id=' +  $parent.nodeModel.overlayModel.item()._id() + '&version=' + $data._id() }"><i class="icon-file-alt"></i> <span data-bind="text: $data.name()"></span></a>
+                        <a href="#" data-bind="attr: { href: '/file?id=' +  nodeModel.overlayModel.item()._id() + '&version=' + $data._id }"><i class="icon-file-alt"></i> <span data-bind="text: $data.name"></span></a>
                       </td>
-                      <td class="muted" data-bind="htmlSize: $data.size()"></td>
+                      <td class="muted" data-bind="htmlSize: $data.size"></td>
                     </tr>
                   <!-- /ko -->
                 </tbody>

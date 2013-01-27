@@ -237,6 +237,43 @@ var OverlayModel = function(parentModel)
     self.saveItemClearCache(itemData);
   };
 
+  self.hideRaw = function()
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    self.editLoading(true);
+
+    murrix.server.emit("hideRaw", itemData, function(error, hidden, newItemData)
+    {
+      self.editLoading(false);
+
+      if (error)
+      {
+        self.editErrorText(error);
+        return;
+      }
+
+      if (hidden)
+      {
+        var item = murrix.cache.addItemData(newItemData);
+
+        for (var n = 0; n < parentModel.items().length; n++)
+        {
+          if (parentModel.items()[n]._id() === itemData._id)
+          {
+            parentModel.items.splice(n, 1);
+          }
+        }
+
+        document.location.hash = murrix.createPath(1, null, item._id());
+      }
+      else
+      {
+        self.editErrorText("Could not hide file!");
+      }
+    });
+  };
+
   self.rotateRight = function()
   {
     var itemData = ko.mapping.toJS(self.item);

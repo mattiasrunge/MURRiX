@@ -21,6 +21,8 @@ var FilesModel = function(parentModel)
   self.uploadFiles = ko.observableArray();
   self.uploadComplete = ko.observable(false);
 
+  self.itemDataList = [];
+
   self._saveFile = function(fileItem, callback)
   {
     murrix.server.emit("createFileItem", { name: fileItem.name(), uploadId: fileItem.uploadId(), parentId: murrix.model.nodeModel.node()._id() }, function(error, itemData)
@@ -31,11 +33,9 @@ var FilesModel = function(parentModel)
         return;
       }
 
-      console.log("Saved item!");
-      var item = murrix.cache.addItemData(itemData);
+      console.log("Saved item!", itemData);
 
-      // TODO: this may be a hack...
-      murrix.model.nodeModel.items.push(item);
+      self.itemDataList.push(itemData);
 
       callback(null);
     });
@@ -97,6 +97,37 @@ var FilesModel = function(parentModel)
     });
   };
 
+  self._checkHideRaw = function(rawItemDataList, index)
+  {
+    if (index >= rawItemDataList.length)
+    {
+      self.uploadComplete(true);
+      return;
+    }
+
+    murrix.server.emit("hideRaw", rawItemDataList[index], function(error, hidden, itemData)
+    {
+      console.log(error, hidden, itemData);
+
+      if (error)
+      {
+        console.log(error);
+        return;
+      }
+
+      if (hidden)
+      {
+        var item = murrix.cache.addItemData(itemData);
+      }
+      else
+      {
+        var item = murrix.cache.addItemData(rawItemDataList[index]);
+        rawItemDataList.push(rawItemDataList[index]);
+      }
+
+      self._checkHideRaw(rawItemDataList, index + 1);
+    });
+  };
 
   self._startUpload = function(error, notDone)
   {
@@ -111,7 +142,29 @@ var FilesModel = function(parentModel)
       return;
     }
 
-    self.uploadComplete(true);
+    var rawItemDataList = [];
+
+    for (var n = 0; n < self.itemDataList.length; n++)
+    {
+      if (self.itemDataList[n].exif.MIMEType === "image/x-canon-cr2")
+      {
+        rawItemDataList.push(self.itemDataList[n]);
+      }
+      else
+      {
+        var item = murrix.cache.addItemData(self.itemDataList[n]);
+
+        murrix.model.nodeModel.items.push(item);
+      }
+    }
+
+    if (rawItemDataList.length === 0)
+    {
+      self.uploadComplete(true);
+      return;
+    }
+
+    self._checkHideRaw(rawItemDataList, 0);
   };
 
   self.dragDropHandler = function(element, event)
@@ -119,6 +172,7 @@ var FilesModel = function(parentModel)
     self.uploadFiles.removeAll();
     self.uploadErrorText("");
     self.uploadComplete(false);
+    self.itemDataList = [];
 
     event.stopPropagation();
     event.preventDefault();
@@ -127,6 +181,8 @@ var FilesModel = function(parentModel)
     {
       return;
     }
+
+    var uploadFilesRaw = [];
 
     for (var n = 0; n < event.originalEvent.dataTransfer.files.length; n++)
     {
@@ -145,10 +201,22 @@ var FilesModel = function(parentModel)
       uploadFile.statusText = ko.observable("");
       uploadFile.failed = ko.observable(false);
 
-      self.uploadFiles.push(uploadFile);
+      if (event.originalEvent.dataTransfer.files[n].type === "image/x-canon-cr2")
+      {
+        uploadFilesRaw.push(uploadFile);
+      }
+      else
+      {
+        self.uploadFiles.push(uploadFile);
+      }
     }
 
-    if (self.uploadFiles.length > 0)
+    for (var n = 0; n < uploadFilesRaw.length; n++)
+    {
+      self.uploadFiles.push(uploadFilesRaw[n]);
+    }
+
+    if (self.uploadFiles().length > 0)
     {
       $("#itemUploadModal").modal({ keyboard: false, backdrop: "static" });
 
