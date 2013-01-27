@@ -13,12 +13,13 @@ function DialogComponentNodeListModel()
   self.max = ko.observable(false);
   self.selectable = ko.observable(false);
   self.selected = ko.observable(false);
+  self.selectLast = ko.observable(false);
 
   self.reset = function()
   {
     self.value([]);
     self.suggestions([]);
-    self.selected(false);
+    //self.selected(false);
   };
 
   /* Private stuff */
@@ -42,13 +43,16 @@ function DialogComponentNodeListModel()
       return;
     }
 
-    if (self.selected() === data._id())
+    if (murrix.inArray(data._id(), self.value()))
     {
-      self.selected(false);
-    }
-    else
-    {
-      self.selected(data._id());
+      if (self.selected() === data._id())
+      {
+        self.selected(false);
+      }
+      else
+      {
+        self.selected(data._id());
+      }
     }
   };
 
@@ -60,6 +64,11 @@ function DialogComponentNodeListModel()
     {
       self.value.splice(index, 1);
     }
+
+    if (self.selected() === data._id())
+    {
+      self.selected(false);
+    }
   };
 
   self.addHandler = function(data)
@@ -67,6 +76,11 @@ function DialogComponentNodeListModel()
     if (self.value.indexOf(data._id()) === -1)
     {
       self.value.push(data._id());
+
+      if (self.selectable() && self.selectLast())
+      {
+        self.selected(data._id());
+      }
     }
 
     var index = self.suggestions.indexOf(data._id());
@@ -83,12 +97,37 @@ function DialogComponentNodeListModel()
     {
       self.value.splice(0, 1);
       self.value.push(key);
+
+      if (self.selectable() && self.selectLast())
+      {
+        self.selected(key);
+      }
+
+      var index = self.suggestions.indexOf(key);
+
+      if (index !== -1)
+      {
+        self.suggestions.splice(index, 1);
+      }
+
       return;
     }
 
     if (!murrix.inArray(key, self.value()))
     {
       self.value.push(key);
+
+      if (self.selectable() && self.selectLast())
+      {
+        self.selected(key);
+      }
+
+      var index = self.suggestions.indexOf(key);
+
+      if (index !== -1)
+      {
+        self.suggestions.splice(index, 1);
+      }
     };
   };
 

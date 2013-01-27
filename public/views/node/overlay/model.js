@@ -353,7 +353,14 @@ var OverlayModel = function(parentModel)
     self.editType("where");
   };
 
+  self.editFinishClicked = function()
+  {
+    self.showingModel.selected(false);
 
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+
+    self.editType("");
+  };
 
 
 
@@ -361,6 +368,7 @@ var OverlayModel = function(parentModel)
    * Showing: Stuff for selecting what is shown on a file
    ***************************************************************************/
   self.showingModel = new DialogComponentNodeListModel(self);
+  self.showingModel.selectLast(true);
   self.showingInitializing = false;
 
   self.showingInitialize = function()
@@ -557,7 +565,12 @@ var OverlayModel = function(parentModel)
   {
     murrix.model.dialogModel.personNodeModel.showCreate(function(node)
     {
-      self.showingModel.value.push({ _id: node._id() });
+      self.showingModel.value.push(node._id());
+
+      if (self.showingModel.selectable() && self.showingModel.selectLast())
+      {
+        self.showingModel.selected(node._id());
+      }
     });
   };
 
@@ -565,7 +578,12 @@ var OverlayModel = function(parentModel)
   {
     murrix.model.dialogModel.vehicleNodeModel.showCreate(function(node)
     {
-      self.showingModel.value.push({ _id: node._id() });
+      self.showingModel.value.push(node._id());
+
+      if (self.showingModel.selectable() && self.showingModel.selectLast())
+      {
+        self.showingModel.selected(node._id());
+      }
     });
   };
 
@@ -573,62 +591,15 @@ var OverlayModel = function(parentModel)
   {
     murrix.model.dialogModel.cameraNodeModel.showCreate(function(node)
     {
-      self.showingModel.value.push({ _id: node._id() });
+      self.showingModel.value.push(node._id());
+
+      if (self.showingModel.selectable() && self.showingModel.selectLast())
+      {
+        self.showingModel.selected(node._id());
+      }
     });
   };
 
-
-
-/*
-
-
-  self.showingAdd = function(showingItem)
-  {
-    showingItem = ko.mapping.toJS(showingItem);
-
-    showingItem = { _id: showingItem._id };
-
-    self.showingUpdate(showingItem, showingItem);
-  };
-
-  self.showingRemove = function(showingItem)
-  {
-    $(".imgContainer").imgAreaSelect({ "remove" : true });
-    self.showingData(false);
-
-    self.showingUpdate(showingItem, null);
-  };
-
-  self.showingUpdate = function(oldShowingItem, newShowingItem)
-  {
-    oldShowingItem = oldShowingItem ? ko.mapping.toJS(oldShowingItem) : null;
-    newShowingItem = newShowingItem ? ko.mapping.toJS(newShowingItem) : null;
-
-    var itemData = ko.mapping.toJS(self.item);
-
-    itemData.showing = itemData.showing || [];
-
-    if (oldShowingItem)
-    {
-      itemData.showing = itemData.showing.filter(function(showingItemTest)
-      {
-        return showingItemTest._id !== oldShowingItem._id;
-      });
-    }
-
-    if (newShowingItem)
-    {
-      itemData.showing.push(newShowingItem);
-    }
-
-    self.saveItem(itemData, true);
-  };
-*/
-
-
-/*
-  self.showingData = ko.observable(false);
-*/
   self.showingItemOver = function(showingItem)
   {
     if (self.showingCurrent() !== false)
@@ -702,141 +673,9 @@ var OverlayModel = function(parentModel)
 
     self.showingTimer = null;
   };
-/*
-  self.showingonSelectEnd = function(img, selection)
-  {
-    var showingItem = { _id: self.showingData()._id() };
-
-    if (selection.width > 0 && selection.height > 0)
-    {
-      var pos_x = selection.x1 + (selection.width / 2);
-      var pos_y = selection.y1 + (selection.height / 2);
-
-      showingItem.x = pos_x / $(".imgContainer").width();
-      showingItem.y = pos_y / $(".imgContainer").height();
-
-      showingItem.width = selection.width / $(".imgContainer").width();
-      showingItem.height = selection.height / $(".imgContainer").height();
-    }
-
-    self.showingUpdate(showingItem, showingItem);
-  };
-
-  self.showingItemClicked = function(data)
-  {
-    if (self.item() === false || self.item().whatDetailed() !== "imageFile")
-    {
-      return;
-    }
-
-    $(".imgContainer").imgAreaSelect({ "remove" : true });
-
-    if (self.showingData() !== false && self.showingData()._id() === data._id())
-    {
-      self.showingData(false);
-      return;
-    }
-
-    self.showingData(data);
-
-    var options = {
-      minWidth      : 32,
-      minHeight     : 32,
-      instance      : true,
-      movable       : true,
-      resizable     : true,
-      handles       : true,
-      keys          : false,
-      onSelectEnd   : function(img, selection) { self.showingonSelectEnd(img, selection); }
-    };
-
-    if (data.x)
-    {
-      options.show = true;
-
-      options.x1 = $(".imgContainer").width() * (data.x() - data.width() / 2);
-      options.x2 = $(".imgContainer").width() * (data.x() + data.width() / 2);
-
-      options.y1 = $(".imgContainer").height() * (data.y() - data.height() / 2);
-      options.y2 = $(".imgContainer").height() * (data.y() + data.height() / 2);
-    }
-
-    $(".imgContainer").imgAreaSelect(options);
-  };*/
 
 
 
-/*
-
-  self.showingTypeaheadFilter = function(item)
-  {
-    if (!self.item().showing)
-    {
-      return true;
-    }
-
-    for (var n = 0; n < self.item().showing().length; n++)
-    {
-      if (self.item().showing()[n]._id() === item._id())
-      {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  self.showingTypeaheadUpdater = function(key)
-  {
-    self.showingAdd({ _id: key });
-  };*/
-
-
-  self.editFinishClicked = function()
-  {
-    self.showingModel.selected(false);
-
-    $(".imgContainer").imgAreaSelect({ "remove" : true });
-
-    self.editType("");
-  };
-/*
-
-  self.showingOther = ko.computed(function()
-  {
-    var list = [];
-    var takenIds = [];
-
-    if (self.item() !== false)
-    {
-      if (self.item().showing)
-      {
-        for (var n = 0; n < self.item().showing().length; n++)
-        {
-          takenIds.push(self.item().showing()[n]._id());
-        }
-      }
-
-      for (var n = 0; n < parentModel.items().length; n++)
-      {
-        if (!parentModel.items()[n].showing)
-        {
-          continue;
-        }
-
-        for (var i = 0; i < parentModel.items()[n].showing().length; i++)
-        {
-          if (!murrix.inArray(parentModel.items()[n].showing()[i]._id(), takenIds))
-          {
-            list.push(parentModel.items()[n].showing()[i]);
-            takenIds.push(parentModel.items()[n].showing()[i]._id());
-          }
-        }
-      }
-    }
-
-    return list;
-  });*/
 
 
 
