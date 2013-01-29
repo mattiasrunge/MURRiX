@@ -44,5 +44,4 @@ function DialogModel()
   self.vehicleNodeModel = new DialogVehicleNodeModel();
   self.groupModel = new DialogGroupModel();
   self.userModel = new DialogUserModel();
-  self.triggerModel = new DialogTriggerModel();
 };
