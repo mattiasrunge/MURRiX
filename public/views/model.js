@@ -81,11 +81,11 @@ murrix.model = function()
     //murrix.resetForm(form.target);
   });
 
-  $("form.modal").on("shown", function(form)
+  $(".modal").on("shown", function(element)
   {
-    if ($(form.target).find("input, textarea, select").length > 0)
+    if ($(element.target).find("input, textarea, select").length > 0)
     {
-      $(form.target).find("input, textarea, select").get(0).focus();
+      $(element.target).find("input, textarea, select").get(0).focus();
     }
   });
 

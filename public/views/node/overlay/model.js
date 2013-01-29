@@ -419,9 +419,11 @@ var OverlayModel = function(parentModel)
         showing.push(show);
       }
 
+      self.item().showing = ko.mapping.fromJS(showing);
+
       itemData.showing = showing;
 
-      self.saveItem(itemData);
+      self.saveItem(itemData, true);
     }
   });
 

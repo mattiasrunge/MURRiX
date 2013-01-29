@@ -215,12 +215,20 @@ var AdminModel = function(parentModel)
   self.groupSaveName = ko.observable("");
   self.groupSaveDescription = ko.observable("");
 
+  self.groupCreateClicked = function(element)
+  {
+    murrix.model.dialogModel.groupModel.showCreate(function()
+    {
+      self._loadGroups();
+    });
+  };
+
   self.groupEditClicked = function(element)
   {
-    self.groupSaveId(element._id());
-    self.groupSaveName(element.name());
-    self.groupSaveDescription(element.description());
-    return true;
+    murrix.model.dialogModel.groupModel.showEdit(element._id(), function()
+    {
+      self._loadGroups();
+    });
   };
 
   self.groupRemoveClicked = function(element)

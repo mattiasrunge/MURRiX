@@ -42,4 +42,5 @@ function DialogModel()
   self.locationNodeModel = new DialogLocationNodeModel();
   self.cameraNodeModel = new DialogCameraNodeModel();
   self.vehicleNodeModel = new DialogVehicleNodeModel();
+  self.groupModel = new DialogGroupModel();
 };

@@ -710,6 +710,27 @@ murrix.cache = new function()
     });
   };
 
+  self.getGroup = function(id, callback)
+  {
+    murrix.cache.getGroups([ id ], function(error, groupList)
+    {
+      if (error)
+      {
+        callback(error);
+        return;
+      }
+
+      if (groupList.length === 0 || !groupList[id])
+      {
+        callback("No results returned, you probably do not have rights to this group!");
+        return;
+      }
+
+      callback(null, groupList[id]);
+    });
+  };
+
+
   self.getUsers = function(idList, callback)
   {
     var userList = {};
@@ -747,6 +768,26 @@ murrix.cache = new function()
       }
 
       callback(null, userList);
+    });
+  };
+
+  self.getUser = function(id, callback)
+  {
+    murrix.cache.getUsers([ id ], function(error, userList)
+    {
+      if (error)
+      {
+        callback(error);
+        return;
+      }
+
+      if (userList.length === 0 || !userList[id])
+      {
+        callback("No results returned, you probably do not have rights to this user!");
+        return;
+      }
+
+      callback(null, userList[id]);
     });
   };
 };
