@@ -4,4 +4,5 @@ cache/*
 files/*
 !files/.htaccess
 node_modules
-configuration.js
+config.json
+triggers.json

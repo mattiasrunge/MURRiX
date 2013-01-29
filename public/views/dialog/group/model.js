@@ -86,7 +86,6 @@ function DialogGroupModel()
       groupData._id = self.id();
     }
 
-    groupData.type = "camera";
     groupData.name = self.name();
     groupData.description = self.descriptionModel.value();
 

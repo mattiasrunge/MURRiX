@@ -1,0 +1,154 @@
+[
+  {
+    "_id"       : "1",
+    "name"      : "Add group users to readers of persons",
+    "event"     : "createNode",
+    "criterias" : [
+      {
+        "match"   : "eq",
+        "key"     : "type",
+        "value"   : "person"
+      }
+    ],
+    "actions"   : [
+      {
+        "action"  : "push",
+        "key"     : "_readers",
+        "value"   : "50fbb6983ac1a15473000016"
+      }
+    ]
+  },
+  {
+    "_id"       : "2",
+    "name"      : "Add group person admins to admins of persons",
+    "event"     : "createNode",
+    "criterias" : [
+      {
+        "match"   : "eq",
+        "key"     : "type",
+        "value"   : "person"
+      }
+    ],
+    "actions"   : [
+      {
+        "action"  : "push",
+        "key"     : "_admins",
+        "value"   : "50fbb6983ac1a15473000006"
+      }
+    ]
+  },
+  {
+    "_id"       : "3",
+    "name"      : "Add group users to readers of locations",
+    "event"     : "createNode",
+    "criterias" : [
+      {
+        "match"   : "eq",
+        "key"     : "type",
+        "value"   : "location"
+      }
+    ],
+    "actions"   : [
+      {
+        "action"  : "push",
+        "key"     : "_readers",
+        "value"   : "50fbb6983ac1a15473000016"
+      }
+    ]
+  },
+  {
+    "_id"       : "4",
+    "name"      : "Add group location admins to admins of locations",
+    "event"     : "createNode",
+    "criterias" : [
+      {
+        "match"   : "eq",
+        "key"     : "type",
+        "value"   : "location"
+      }
+    ],
+    "actions"   : [
+      {
+        "action"  : "push",
+        "key"     : "_admins",
+        "value"   : "50fbb6983ac1a15473000008"
+      }
+    ]
+  },
+  {
+    "_id"       : "5",
+    "name"      : "Add group users to readers of cameras",
+    "event"     : "createNode",
+    "criterias" : [
+      {
+        "match"   : "eq",
+        "key"     : "type",
+        "value"   : "camera"
+      }
+    ],
+    "actions"   : [
+      {
+        "action"  : "push",
+        "key"     : "_readers",
+        "value"   : "50fbb6983ac1a15473000016"
+      }
+    ]
+  },
+  {
+    "_id"       : "6",
+    "name"      : "Add group camera admins to admins of cameras",
+    "event"     : "createNode",
+    "criterias" : [
+      {
+        "match"   : "eq",
+        "key"     : "type",
+        "value"   : "camera"
+      }
+    ],
+    "actions"   : [
+      {
+        "action"  : "push",
+        "key"     : "_admins",
+        "value"   : "5108383544d84ed61d000002"
+      }
+    ]
+  },
+  {
+    "_id"       : "7",
+    "name"      : "Add group users to readers of vehicles",
+    "event"     : "createNode",
+    "criterias" : [
+      {
+        "match"   : "eq",
+        "key"     : "type",
+        "value"   : "vehicle"
+      }
+    ],
+    "actions"   : [
+      {
+        "action"  : "push",
+        "key"     : "_readers",
+        "value"   : "50fbb6983ac1a15473000016"
+      }
+    ]
+  },
+  {
+    "_id"       : "8",
+    "name"      : "Add group vehicle admins to admins of vehicles",
+    "event"     : "createNode",
+    "criterias" : [
+      {
+        "match"   : "eq",
+        "key"     : "type",
+        "value"   : "vehicle"
+      }
+    ],
+    "actions"   : [
+      {
+        "action"  : "push",
+        "key"     : "_admins",
+        "value"   : "51083cd444d84ed61d000009"
+      }
+    ]
+  }
+]
