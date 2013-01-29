@@ -1,0 +1,25 @@
+
+<div id="dialogUser" class="modal hide fade" data-keyboard="false">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 data-bind="visible: dialogModel.userModel.id() === false">Create a user</h3>
+    <h3 data-bind="visible: dialogModel.userModel.id() !== false">Edit user</h3>
+  </div>
+  <div class="modal-body">
+
+    <div style="margin-right: 10px;">
+      <input placeholder="Write a name..." type="text" style="width: 100%;" data-bind="disable: dialogModel.userModel.disabled, value: dialogModel.userModel.name"/>
+    </div>
+
+    <div style="margin-right: 10px;">
+      <input placeholder="Write a username..." type="text" style="width: 100%;" data-bind="disable: dialogModel.userModel.disabled, value: dialogModel.userModel.username"/>
+    </div>
+
+    <div data-bind="template: { name: dialogModel.userModel.personModel.template(), data: dialogModel.userModel.personModel }"></div>
+  </div>
+  <div class="modal-footer">
+    <p class="pull-left text-error" data-bind="visible: dialogModel.userModel.errorText() != '', text: dialogModel.userModel.errorText"></p>
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+    <a href="#" class="btn btn-primary" data-bind="click: dialogModel.userModel.saveHandler">Save</a>
+  </div>
+</div>

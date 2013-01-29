@@ -239,27 +239,20 @@ var AdminModel = function(parentModel)
     });
   };
 
-
-
-  self.userSaveLoading = ko.observable(false);
-  self.userSaveErrorText = ko.observable("");
-  self.userSaveId = ko.observable(false);
-  self.userSaveName = ko.observable("");
-  self.userSaveUsername = ko.observable("");
-  self.userSavePerson = ko.observable(false);
-
-  self.userSaveClearPerson = function()
+  self.userCreateClicked = function(element)
   {
-    self.userSavePerson(false);
+    murrix.model.dialogModel.userModel.showCreate(function()
+    {
+      self._loadUsers();
+    });
   };
 
   self.userEditClicked = function(element)
   {
-    self.userSaveId(element._id());
-    self.userSaveName(element.name());
-    self.userSaveUsername(element.username());
-    self.userSavePerson(element._person());
-    return true;
+    murrix.model.dialogModel.userModel.showEdit(element._id(), function()
+    {
+      self._loadUsers();
+    });
   };
 
   self.userRemoveClicked = function(element)
@@ -274,71 +267,6 @@ var AdminModel = function(parentModel)
 
       self._loadUsers();
     });
-  };
-
-  self.userSaveSubmit = function()
-  {
-    var userData = {};
-
-    if (self.userSaveId() !== false)
-    {
-      userData._id = self.userSaveId();
-
-      for (var n = 0; n < self.users().length; n++)
-      {
-        if (self.users()[n]._id() === self.userSaveId())
-        {
-          userData = ko.mapping.toJS(self.users()[n]);
-        }
-      }
-    }
-
-    userData.name = self.userSaveName();
-    userData.username = self.userSaveUsername();
-    userData._person = self.userSavePerson();
-
-    self.userSaveErrorText("");
-
-    if (userData.name === "")
-    {
-      self.userSaveErrorText("Name is empty!");
-    }
-    else
-    {
-      self.userSaveLoading(true);
-
-      murrix.server.emit("saveUser", userData, function(error, userData)
-      {
-        self.userSaveLoading(false);
-
-        if (error)
-        {
-          console.log("AdminModel: Failed to create user: " + error);
-          self.userSaveErrorText("Failed to create user, maybe you don't have rights");
-          return;
-        }
-
-        self.userSaveId(false);
-        self.userSaveName("");
-        self.userSaveUsername("");
-        self.userSavePerson(false);
-        self.userSaveErrorText("");
-
-        self._loadUsers();
-
-        $(".modal").modal('hide');
-      });
-    }
-  };
-
-  self.userSaveTypeaheadUpdater = function(key)
-  {
-    self.userSavePerson(key);
-  };
-
-  self.userSaveTypeaheadNodeFilter = function(item)
-  {
-    return self.userSavePerson() !== item._id();
   };
 
 

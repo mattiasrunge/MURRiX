@@ -51,7 +51,7 @@
       </div>
 
       <div style="overflow-y: scroll; position: absolute; top: 20px; right: 20px; bottom: 20px; width: 500px;">
-        <h4>Users <button title="Create user" class="btn btn-link btn-mini" href="#saveUserModal" data-toggle="modal">Create</button></h4>
+        <h4>Users <button title="Create user" class="btn btn-link btn-mini" href="#" data-bind="click: adminModel.userCreateClicked">Create</button></h4>
 
         <table class="table table-condensed table-striped table-hover">
           <tbody>
@@ -64,8 +64,8 @@
                   <p>
                     <span data-bind="text: $data.name"></span>
                     <button title="Change password" class="btn btn-mini btn-link pull-right" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Password</button>
-                    <button title="Edit" class="btn btn-mini btn-link pull-right" href="#saveUserModal" data-toggle="modal" data-bind="click: adminModel.userEditClicked"">Edit</button>
-                    <button title="Edit" class="btn btn-mini btn-link pull-right" data-bind="click: adminModel.userRemoveClicked">Remove</button>
+                    <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.userEditClicked">Edit</button>
+                    <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.userRemoveClicked">Remove</button>
                   </p>
                   <p style="color: #999; font-size: 11px; padding-right: 8px;" class="pull-right" data-bind="visible: !$data.lastLogin()">User has never logged in<p>
                   <p style="color: #999; font-size: 11px; padding-right: 8px;" class="pull-right" data-bind="visible: $data.lastLogin()">User logged in <span data-bind="htmlTimeAgo: $data.lastLogin()"></span></p>
@@ -100,22 +100,3 @@
   </div>
 </form>
 
-<form class="modal" id="saveUserModal" tabindex="-1" role="dialog" aria-labelledby="saveUserModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: adminModel.userSaveSubmit">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="saveUserModalLabel" data-bind="text: adminModel.userSaveId() === false ? 'Create user' : 'Edit user'"></h3>
-  </div>
-  <div class="modal-body">
-    <input placeholder="Name" type="text" name="userSaveName" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, value: adminModel.userSaveName"/>
-    <input placeholder="Username" type="text" name="userSaveUsername" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, value: adminModel.userSaveUsername"/>
-
-    <input placeholder="Search for person" type="text" style="width: 515px;" data-bind="disable: adminModel.userSaveLoading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: adminModel.userSaveTypeaheadUpdater, nodeTypes: [ 'person' ], nodeFilter: adminModel.userSaveTypeaheadNodeFilter }" data-provide="typeahead"/>
-
-    <div data-bind="template: { name: 'nodePersonItemTemplate', data: { id: adminModel.userSavePerson, remove: adminModel.userSaveClearPerson } }"></div>
-  </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: adminModel.userSaveErrorText() != '', text: adminModel.userSaveErrorText"></p>
-    <button data-bind="disable: adminModel.userSaveLoading" class="btn" data-dismiss="modal" type="button" aria-hidden="true">Cancel</button>
-    <button data-bind="disable: adminModel.userSaveLoading" class="btn btn-primary" type="submit">Save</button>
-  </div>
-</form>
