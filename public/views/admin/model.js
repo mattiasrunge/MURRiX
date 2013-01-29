@@ -209,12 +209,6 @@ var AdminModel = function(parentModel)
     self.groupMarkDropZone(false);
   };
 
-  self.groupSaveLoading = ko.observable(false);
-  self.groupSaveErrorText = ko.observable("");
-  self.groupSaveId = ko.observable(false);
-  self.groupSaveName = ko.observable("");
-  self.groupSaveDescription = ko.observable("");
-
   self.groupCreateClicked = function(element)
   {
     murrix.model.dialogModel.groupModel.showCreate(function()
@@ -245,50 +239,6 @@ var AdminModel = function(parentModel)
     });
   };
 
-  self.groupSaveSubmit = function()
-  {
-    var groupData = {};
-
-    if (self.groupSaveId() !== false)
-    {
-      groupData._id = self.groupSaveId();
-    }
-
-    groupData.name        = self.groupSaveName();
-    groupData.description = self.groupSaveDescription();
-
-    self.groupSaveErrorText("");
-
-    if (groupData.name === "")
-    {
-      self.groupSaveErrorText("Name is empty!");
-    }
-    else
-    {
-      self.groupSaveLoading(true);
-
-      murrix.server.emit("saveGroup", groupData, function(error, groupData)
-      {
-        self.groupSaveLoading(false);
-
-        if (error)
-        {
-          console.log("AdminModel: Failed to create group: " + error);
-          self.groupSaveErrorText("Failed to create group, maybe you don't have rights");
-          return;
-        }
-
-        self.groupSaveName("");
-        self.groupSaveDescription("");
-        self.groupSaveId(false);
-        self.groupSaveErrorText("");
-
-        self._loadGroups();
-
-        $(".modal").modal('hide');
-      });
-    }
-  };
 
 
   self.userSaveLoading = ko.observable(false);
