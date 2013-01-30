@@ -332,10 +332,34 @@ var AdminModel = function(parentModel)
   self.inputUsername = ko.observable("");
   self.inputPassword = ko.observable("");
   self.inputRemember = ko.observable(false);
-  self.usernameFocused = ko.observable(true);
   self.errorText = ko.observable("");
   self.loading = ko.observable(false);
 
+  // TODO: This is ugly, it works, but there must be a better way like an dropdown event
+  self.inputUsernameFocusTimer = null;
+
+  self.userMenuClicked = function()
+  {
+    if (self.inputUsernameFocusTimer)
+    {
+      clearInterval(self.inputUsernameFocusTimer);
+      self.inputUsernameFocusTimer = null;
+    }
+
+    if (parentModel.currentUser() === false && !$(".userMenu").is(":visible"))
+    {
+      self.inputUsernameFocusTimer = setInterval(function()
+      {
+        if ($(".signInUsername").is(":visible"))
+        {
+          clearInterval(self.inputUsernameFocusTimer);
+          self.inputUsernameFocusTimer = null;
+
+          $(".signInUsername").focus();
+        }
+      }, 100);
+    }
+  };
 
   self.signOutClicked = function()
   {
@@ -374,7 +398,6 @@ var AdminModel = function(parentModel)
 
       if (error || userData === false)
       {
-        self.usernameFocused(true);
         console.log("AdminModel: Failed to login!");
         self.errorText("Failed to sign in, try again");
         return;

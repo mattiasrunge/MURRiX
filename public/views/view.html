@@ -89,15 +89,15 @@
 
         <ul class="nav pull-right">
           <li class="dropdown">
-            <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown" data-bind="click: adminModel.userMenuClicked">
               <span data-bind="ifnot: currentUser"><i class="icon-signin icon-fixed icon-white"></i> Sign In</span>
               <span data-bind="if: currentUser"><i class="icon-user icon-fixed icon-white"></i> <span data-bind="text: currentUser().name"></span></span>
               <strong class="caret"></strong>
             </a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu userMenu">
 
               <form class="" data-bind="submit: adminModel.loginSubmit, visible: !currentUser()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
-                <input tabindex="1" placeholder="Username" style="margin-bottom: 15px;" type="text" size="30" data-bind="hasfocus: adminModel.usernameFocused, disable: adminModel.loading, value: adminModel.inputUsername"/>
+                <input class="signInUsername" tabindex="1" placeholder="Username" style="margin-bottom: 15px;" type="text" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputUsername"/>
                 <input tabindex="2" placeholder="Password" style="margin-bottom: 15px;" type="password" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputPassword"/>
                 <input tabindex="3" style="float: left; margin-right: 10px;" type="checkbox" value="1" data-bind="disable: adminModel.loading, checked: adminModel.inputRemember"/>
                 <label class="string optional" for="inputRemember"> Remember me</label>
