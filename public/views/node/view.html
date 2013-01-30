@@ -62,23 +62,23 @@
 
 
   <div class="sidebar-nav-content">
-    <ul class="nav nav-list">
+    <ul class="nav nav-list" style="font-size: 16px;">
 
-      <li data-bind="fadeVisible: nodeModel.aboutModel.enabled, css: { 'active': nodeModel.aboutModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: nodeModel.aboutModel.enabled, css: { 'active': nodeModel.aboutModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'about'">
           <i class="icon-list-alt icon-fixed"></i> About
         </a>
       </li>
 
-      <li data-bind="fadeVisible: nodeModel.filesModel.enabled, css: { 'active': nodeModel.filesModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: nodeModel.filesModel.enabled, css: { 'active': nodeModel.filesModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'files'">
-          <i class="icon-th icon-fixed"></i> Files <span data-bind="fadeVisible: nodeModel.files().length > 0, text: nodeModel.files().length" class="badge pull-right"></span>
+          <i class="icon-th icon-fixed"></i> Files <span data-bind="fadeVisible: nodeModel.files().length > 0, text: nodeModel.files().length" class="badge pull-right" style="margin-top: 7px;"></span>
         </a>
       </li>
 
-      <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'timeline'">
-          <i class="icon-time icon-fixed"></i> Timeline <span data-bind="fadeVisible: nodeModel.items().length > 0, text: nodeModel.items().length" class="badge pull-right"></span>
+          <i class="icon-time icon-fixed"></i> Timeline <span data-bind="fadeVisible: nodeModel.items().length > 0, text: nodeModel.items().length" class="badge pull-right" style="margin-top: 7px;"></span>
         </a>
       </li>
 
@@ -88,21 +88,21 @@
         </a>
       </li>-->
 
-      <li data-bind="fadeVisible: nodeModel.issuesModel.enabled, css: { 'active': nodeModel.issuesModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: nodeModel.issuesModel.enabled, css: { 'active': nodeModel.issuesModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'issues'">
-          <i class="icon-warning-sign icon-fixed"></i> Issues <span data-bind="fadeVisible: nodeModel.issuesModel.issues().length > 0, text: nodeModel.issuesModel.issues().length" class="badge badge-important pull-right"></span>
+          <i class="icon-warning-sign icon-fixed"></i> Issues <span data-bind="fadeVisible: nodeModel.issuesModel.issues().length > 0, text: nodeModel.issuesModel.issues().length" class="badge badge-important pull-right" style="margin-top: 7px;"></span>
         </a>
       </li>
 
-      <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'comments', if: nodeModel.node() !== false">
-          <i class="icon-comment icon-fixed"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right"></span>
+          <i class="icon-comment icon-fixed"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right" style="margin-top: 7px;"></span>
         </a>
       </li>
       <li data-bind="if: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()" style="margin-top: 10px;">
 
-        <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px;">
-          <input class="input-large" placeholder="Write tag name" type="text" data-bind="hasfocus: nodeModel.tagHasFocus, disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead"/>
+        <form data-bind="submit: nodeModel.tagSubmit" style="margin: 0px; margin-right: 10px;">
+          <input class="input-large" placeholder="Write tag name..." type="text" data-bind="hasfocus: nodeModel.tagHasFocus, disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead" style="width: 100%;"/>
         </form>
 
       </li>

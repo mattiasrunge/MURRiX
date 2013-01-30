@@ -17,6 +17,7 @@ var ConfigModel = function(parentModel)
   });
 
   self.configuration = ko.observable();
+  self.triggers = ko.observableArray();
 
   self.show.subscribe(function(value)
   {
@@ -27,6 +28,7 @@ var ConfigModel = function(parentModel)
     }
     else
     {
+      self.triggers.removeAll();
       self.configuration(false);
     }
   });
@@ -39,15 +41,17 @@ var ConfigModel = function(parentModel)
     }
     else
     {
+      self.triggers.removeAll();
       self.configuration(false);
     }
   });
 
   self._load = function()
   {
+    self.triggers.removeAll();
     self.configuration(false);
 
-    murrix.server.emit("getConfiguration", {}, function(error, configurationData)
+/*    murrix.server.emit("getConfiguration", {}, function(error, configurationData)
     {
       if (error)
       {
@@ -56,6 +60,23 @@ var ConfigModel = function(parentModel)
       }
 
       self.configuration(ko.mapping.fromJS(configurationData));
+    });
+*/
+
+    murrix.server.emit("find", { options: "triggers" }, function(error, triggerList)
+    {
+      if (error)
+      {
+        console.log(error);
+        return;
+      }
+
+      self.triggers.removeAll();
+
+      for (var id in triggerList)
+      {
+        self.triggers.push(triggerList[id]);
+      }
     });
   };
 };

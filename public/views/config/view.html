@@ -1,15 +1,46 @@
 <div class="main-overlay" data-bind="slideVisible: configModel.show">
   <div class="main-overlay-content">
 
-<!--    <div class="navbar navbar-color navbar-inverse">
-      <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-wrench icon-white"></i> Configuration</span>
-        <ul class="nav pull-right">
-          <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
-        </ul>
-      </div>
-    </div>-->
+    <div class="well">
+      <h1>Triggers</h1>
 
+      <table class="table table-striped">
+        <thead>
+          <th>Description</th>
+          <th>Event</th>
+          <th>Criterias</th>
+          <th>Actions</th>
+        </thead>
+        <tbody data-bind="foreach: configModel.triggers">
+          <tr>
+            <td data-bind="text: $data.name"></td>
+            <td data-bind="text: $data.event"></td>
+            <td data-bind="foreach: $data.criterias">
+              <div data-bind="visible: $data.match === 'eq'">
+                $data.<span data-bind="text: $data.key"></span>&nbsp;=&nbsp;"<strong data-bind="text: $data.value"></strong>"
+              </div>
+              <div data-bind="visible: $data.match === 'ne'">
+                $data.<span data-bind="text: $data.key"></span>&nbsp;!=&nbsp;"<strong data-bind="text: $data.value"></strong>"
+              </div>
+              <div data-bind="visible: $data.match === 'in'">
+                inArray("<strong data-bind="text: $data.value"></strong>",&nbsp;$data.<span data-bind="text: $data.key"></span>)
+              </div>
+              <div data-bind="visible: $data.match === 'nin'">
+                !inArray("<strong data-bind="text: $data.value"></strong>",&nbsp;$data.<span data-bind="text: $data.key"></span>)
+              </div>
+            </td>
+            <td data-bind="foreach: $data.actions">
+              <div data-bind="visible: $data.action === 'set'">
+                $data.<span data-bind="text: $data.key"></span>&nbsp;=&nbsp;"<strong data-bind="text: $data.value"></strong>"
+              </div>
+              <div data-bind="visible: $data.action === 'push'">
+                $data.<span data-bind="text: $data.key"></span>.push("<strong data-bind="text: $data.value"></strong>")
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <div class="main-overlay-background"></div>
 </div>

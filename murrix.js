@@ -10,7 +10,39 @@ var path = require('path');
 var mongo = require('mongodb');
 var ObjectID = require('mongodb').ObjectID;
 
-var SessionManager = require('msession.js').Manager;
+
+/* NEW */
+/*
+var MurrixUtils = require('./lib/utils');
+var MurrixDbManager = require('./lib/db').Manager;
+var MurrixTriggerManager = require('./lib/trigger').Manager;
+var MurrixUserManager = require('./lib/user').Manager;
+var MurrixNodeManager = require('./lib/node').Manager;
+var MurrixMediaManager = require('./lib/media').Manager;
+var MurrixUploadManager = require('./lib/upload').Manager;
+var MurrixFileServerManager = require('./fileServer').Manager;
+var MurrixCommandServerManager = require('./commandServer').Manager;
+var SessionManager = require('msession').Manager;
+
+
+function Murrix()
+{
+  var self = this;
+
+  self.config = MurrixUtils.getConfiguration(path.resolve("./config.json"));
+
+  self.dbMan = new MurrixDbManager(self);
+  self.sessionMan = new SessionManager(self);
+  self.fileServerMan = new MurrixFileServerManager(self);
+  self.commandServerMan = new MurrixCommandServerManager(self);
+  self.userMan = new MurrixUserManager(self);
+  self.nodeMan = new MurrixNodeManager(self);
+  self.mediaMan = new MurrixMediaManager(self);
+  self.uploadMan = new MurrixUploadManager(self);
+
+};
+*/
+/* OLD */
 
 var User = require('./lib/user').User;
 var NodeManager = require('./lib/node.js').NodeManager;

@@ -7,57 +7,57 @@
   </div>
 
   <div class="sidebar-nav-content">
-    <ul class="nav nav-list">
+    <ul class="nav nav-list" style="font-size: 16px;">
 
-      <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
           <i class="icon-bullhorn icon-fixed"></i> News
         </a>
       </li>
 
-      <li data-bind="fadeVisible: currentUser(), css: { 'active': browseModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': browseModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefFirstPrimary: browseModel.show() ? ' ' : 'browse'">
           <i class="icon-th-large icon-fixed"></i> Browse
         </a>
       </li>
 
-      <li data-bind="fadeVisible: currentUser(), css: { 'active': tagsModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': tagsModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefFirstPrimary: tagsModel.show() ? ' ' : 'tags'">
           <i class="icon-tags icon-fixed"></i> Tags
         </a>
       </li>
 
-      <li data-bind="fadeVisible: currentUser(), css: { 'active': searchModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': searchModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefFirstPrimary: searchModel.show() ? ' ' : 'search'">
           <i class="icon-search icon-fixed"></i> Search
         </a>
       </li>
 
-      <li data-bind="fadeVisible: currentUser(), css: { 'active': organizeModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser(), css: { 'active': organizeModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefFirstPrimary: organizeModel.show() ? ' ' : 'organize'">
           <i class="icon-folder-open icon-fixed"></i> Organize
         </a>
       </li>
 
-      <li data-bind="css: { 'active': helpModel.show }" class="nav-link">
+      <li data-bind="css: { 'active': helpModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="click: helpModel.showClicked">
           <i class="icon-question-sign icon-fixed"></i> Help
         </a>
       </li>
 
-      <li class="nav-link">
+      <li class="nav-link" style="line-height: 30px;">
         <a href="https://github.com/mattiasrunge/MURRiX/issues?state=open">
           <i class="icon-check icon-fixed"></i> Todo
         </a>
       </li>
 
-      <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': adminModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': adminModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefFirstPrimary: adminModel.show() ? ' ' : 'admin'">
           <i class="icon-lock icon-fixed"></i> Administration
         </a>
       </li>
 
-      <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': configModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': configModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefFirstPrimary: configModel.show() ? ' ' : 'config'">
           <i class="icon-wrench icon-fixed"></i> Configuration
         </a>
