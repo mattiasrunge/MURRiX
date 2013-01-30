@@ -310,7 +310,7 @@
         </ul>
 
         <div class="tab-content">
-          <div class="tab-pane active" id="overlayTabWherePosition" data-bind="visible: !nodeModel.overlayModel.whereHidePosition()">
+          <div class="active" id="overlayTabWherePosition" data-bind="visible: !nodeModel.overlayModel.whereHidePosition(), css: { 'tab-pane': !nodeModel.overlayModel.whereHidePosition() && !nodeModel.overlayModel.whereHideLocation() }">
             <div data-bind="template: { name: nodeModel.overlayModel.wherePositionModel.template(), data: nodeModel.overlayModel.wherePositionModel }"></div>
 
             <div data-bind="if: nodeModel.overlayModel.item().exif && nodeModel.overlayModel.item().exif.GPSLatitude">
@@ -337,7 +337,7 @@
             </div>
 
           </div>
-          <div class="tab-pane" id="overlayTabWhereLocation" data-bind="visible: !nodeModel.overlayModel.whereHideLocation()">
+          <div class="" id="overlayTabWhereLocation" data-bind="visible: !nodeModel.overlayModel.whereHideLocation(), css: { 'tab-pane': !nodeModel.overlayModel.whereHidePosition() && !nodeModel.overlayModel.whereHideLocation() }">
             <button class="btn btn-small" style="width: 330px; margin-bottom: 10px;" data-bind="click: nodeModel.overlayModel.whereCreateLocation">Create new location</button>
 
             <div data-bind="template: { name: nodeModel.overlayModel.whereLocationModel.template(), data: nodeModel.overlayModel.whereLocationModel }"></div>
