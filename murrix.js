@@ -49,6 +49,7 @@ var NodeManager = require('./lib/node.js').NodeManager;
 var MurrixUtils = require('./lib/utils.js');
 var MurrixMedia = require('./lib/media.js');
 var UploadManager = require('./lib/upload.js').UploadManager;
+var SessionManager = require('msession.js').Manager;
 
 /* Configuration options */
 var configuration = MurrixUtils.getConfiguration(path.resolve("./config.json"));
