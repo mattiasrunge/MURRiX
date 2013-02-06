@@ -424,6 +424,8 @@ var OverlayModel = function(parentModel)
       itemData.showing = showing;
 
       self.saveItem(itemData, true);
+
+      self.showingLoadSuggestions();
     }
   });
 

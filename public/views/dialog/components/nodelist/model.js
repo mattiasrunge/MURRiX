@@ -38,6 +38,16 @@ function DialogComponentNodeListModel()
 
   self.selectHandler = function(data)
   {
+    if (murrix.inArray(data, self.suggestionsNodes()))
+    {
+      if (!self.disabledSearch())
+      {
+        self.addHandler(data);
+      }
+
+      return;
+    }
+
     if (self.selectable() === false)
     {
       return;
