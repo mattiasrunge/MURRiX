@@ -233,9 +233,7 @@ var OverlayModel = function(parentModel)
 
     itemData.thumbPosition = $(".overlayVideo").get(0).currentTime;
 
-    itemData.previewTimestamp = murrix.timestamp();
-
-    self.saveItemClearCache(itemData);
+    self.saveItem(itemData);
   };
 
   self.hideRaw = function()
@@ -291,9 +289,7 @@ var OverlayModel = function(parentModel)
       itemData.angle = 270;
     }
 
-    itemData.previewTimestamp = murrix.timestamp();
-
-    self.saveItemClearCache(itemData);
+    self.saveItem(itemData);
   };
 
   self.rotateLeft = function()
@@ -312,9 +308,7 @@ var OverlayModel = function(parentModel)
       itemData.angle = 0;
     }
 
-    itemData.previewTimestamp = murrix.timestamp();
-
-    self.saveItemClearCache(itemData);
+    self.saveItem(itemData);
   };
 
   self.mirror = function()
@@ -323,9 +317,7 @@ var OverlayModel = function(parentModel)
 
     itemData.mirror = !itemData.mirror;
 
-    itemData.previewTimestamp = murrix.timestamp();
-
-    self.saveItemClearCache(itemData);
+    self.saveItem(itemData);
   };
 
   self.showingEditClicked = function()
@@ -1100,42 +1092,6 @@ var OverlayModel = function(parentModel)
     });
   };
 
-  self.saveItemClearCache = function(itemData)
-  {
-    self.editLoading(true);
-    self.editErrorText("");
-
-    murrix.server.emit("clearCache", itemData._id, function(error)
-    {
-      self.editLoading(false);
-
-      if (error)
-      {
-        self.editErrorText(error);
-        return;
-      }
-
-      self.editLoading(true);
-
-      murrix.server.emit("saveItem", itemData, function(error, itemData)
-      {
-        self.editLoading(false);
-
-        if (error)
-        {
-          self.editErrorText(error);
-          return;
-        }
-
-        var item = murrix.cache.addItemData(itemData);
-
-        self.whereInitialize();
-        self.whoInitialize();
-        self.withInitialize();
-        self.showingInitialize();
-      });
-    });
-  };
 
 
 
@@ -1312,6 +1268,8 @@ var OverlayModel = function(parentModel)
        return;
     }
 
+    var nodeData = ko.mapping.toJS(self.item()._with);
+
     var reference = {};
 
     reference._id = self.item()._id();
@@ -1320,9 +1278,12 @@ var OverlayModel = function(parentModel)
     reference.name = "(UTC " + reference.offset + "s) from " + self.item().name();
     console.log(reference);
 
+    nodeData.referenceTimelines = nodeData.referenceTimelines || [];
+    nodeData.referenceTimelines.push(reference);
+
     self.editLoading(true);
 
-    murrix.server.emit("createReferenceTimeline", { id: self.item()._with(), reference: reference}, function(error, nodeData)
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
     {
       self.editLoading(false);
 
@@ -1341,9 +1302,19 @@ var OverlayModel = function(parentModel)
     self.editLoading(false);
     self.editErrorText("");
 
+    var nodeData = ko.mapping.toJS(self.item()._with);
+
+    nodeData.referenceTimelines = nodeData.referenceTimelines || [];
+
+    nodeData.referenceTimelines = nodeData.referenceTimelines.filter(function(element)
+    {
+      return element._id !== self.whenReferenceSelf()._id();
+    });
+
+
     self.editLoading(true);
 
-    murrix.server.emit("removeReferenceTimeline", { id: self.item()._with(), referenceId: self.whenReferenceSelf()._id()}, function(error, nodeData)
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
     {
       self.editLoading(false);
 

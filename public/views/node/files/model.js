@@ -122,7 +122,7 @@ var FilesModel = function(parentModel)
       else
       {
         var item = murrix.cache.addItemData(rawItemDataList[index]);
-        rawItemDataList.push(rawItemDataList[index]);
+        murrix.model.nodeModel.items.push(rawItemDataList[index]);
       }
 
       self._checkHideRaw(rawItemDataList, index + 1);

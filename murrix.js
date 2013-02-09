@@ -1,113 +1,89 @@
 
 /* Includes, TODO: Sanitize case */
-var nodeStatic = require('node-static');
-var httpServer = require('http').createServer(httpRequestHandler);
-var vidStreamer = require('vid-streamer');
-var url = require('url');
-var io = require('socket.io').listen(httpServer, { log: false });
-var fs = require('fs');
-var path = require('path');
-var mongo = require('mongodb');
-var ObjectID = require('mongodb').ObjectID;
+var nodeStatic = require("node-static");
+var httpServer = require("http").createServer(httpRequestHandler);
+var vidStreamer = require("vid-streamer");
+var url = require("url");
+var io = require("socket.io").listen(httpServer, { log: false });
+var path = require("path");
+var events = require("events");
+var util = require("util");
 
 
-/* NEW */
-/*
-var MurrixUtils = require('./lib/utils');
-var MurrixDbManager = require('./lib/db').Manager;
-var MurrixTriggerManager = require('./lib/trigger').Manager;
-var MurrixUserManager = require('./lib/user').Manager;
-var MurrixNodeManager = require('./lib/node').Manager;
-var MurrixMediaManager = require('./lib/media').Manager;
-var MurrixUploadManager = require('./lib/upload').Manager;
-var MurrixFileServerManager = require('./fileServer').Manager;
-var MurrixCommandServerManager = require('./commandServer').Manager;
-var SessionManager = require('msession').Manager;
-
-
-function Murrix()
-{
-  var self = this;
-
-  self.config = MurrixUtils.getConfiguration(path.resolve("./config.json"));
-
-  self.dbMan = new MurrixDbManager(self);
-  self.sessionMan = new SessionManager(self);
-  self.fileServerMan = new MurrixFileServerManager(self);
-  self.commandServerMan = new MurrixCommandServerManager(self);
-  self.userMan = new MurrixUserManager(self);
-  self.nodeMan = new MurrixNodeManager(self);
-  self.mediaMan = new MurrixMediaManager(self);
-  self.uploadMan = new MurrixUploadManager(self);
-
-};
-*/
-/* OLD */
-
-var User = require('./lib/user').User;
-var NodeManager = require('./lib/node.js').NodeManager;
-var MurrixUtils = require('./lib/utils.js');
-var MurrixMedia = require('./lib/media.js');
-var UploadManager = require('./lib/upload.js').UploadManager;
-var SessionManager = require('msession.js').Manager;
-
-/* Configuration options */
-var configuration = MurrixUtils.getConfiguration(path.resolve("./config.json"));
-
-/* Instances */
-var mongoServer = new mongo.Server(configuration.databaseHost, configuration.databasePort, { auto_reconnect: true });
-var mongoDb = new mongo.Db(configuration.databaseName, mongoServer, { safe: true });
-
-var sessionManager = new SessionManager({ name: configuration.sessionName });
-
-var user = new User(mongoDb);
-var nodeManager = new NodeManager(mongoDb, user);
-var uploadManager = new UploadManager(configuration);
+// TODO: This is a hack!
 var fileServer = new nodeStatic.Server("./public", { cache: false });
 var fileServer2 = new nodeStatic.Server("./files", { cache: false });
 
-/* Connect to database */
-mongoDb.open(function(error, mongoDb)
+
+var SessionManager = require("msession.js").Manager;
+
+var MurrixLoggerManager = require("./lib/logger.js").Manager;
+var MurrixConfigurationManager = require("./lib/config.js").Manager;
+var MurrixDatabaseManager = require("./lib/db.js").Manager;
+var MurrixCacheManager = require("./lib/cache.js").Manager;
+var MurrixUploadManager = require("./lib/upload.js").Manager;
+var MurrixUtilsManager = require("./lib/utils.js").Manager;
+var MurrixUserManager = require("./lib/user.js").Manager;
+var MurrixTriggersManager = require("./lib/triggers.js").Manager;
+
+
+var Murrix = function()
 {
-  if (error)
-  {
-    console.log("Failed to connect to mongoDB");
-    return;
-  }
+  events.EventEmitter.call(this);
 
-  console.log("We are connected to mongo DB");
+  var self = this;
 
-  user.checkAdminUser(function(error)
-  {
-    if (error)
-    {
-      console.log(error);
-      exit(1);
-    }
+  self.name = "murrix";
+
+  self.utils = new MurrixUtilsManager(self);
+  self.config = new MurrixConfigurationManager(self, path.resolve("./config.json"));
+  self.logger = new MurrixLoggerManager(self);
+  self.db = new MurrixDatabaseManager(self);
+  self.session = new SessionManager({ name: self.config.sessionName });
+  self.user = new MurrixUserManager(self);
+  self.cache = new MurrixCacheManager(self);
+  self.upload = new MurrixUploadManager(self);
+  self.triggers = new MurrixTriggersManager(self, path.resolve("./triggers.json"));
+
+  self.logger.info(self.name, "Initializing MURRiX...");
+  self.emit("init");
+};
+
+util.inherits(Murrix, events.EventEmitter);
+
+var murrix = new Murrix();
+
+var videoStreamer = null;
+
+murrix.on("configurationLoaded", function()
+{
+//   user.checkAdminUser(function(error)
+//   {
+//     if (error)
+//     {
+//       console.log(error);
+//       exit(1);
+//     }
+//   });
+
+  /* Start to listen to HTTP */
+  httpServer.listen(murrix.config.httpPort);
+
+
+
+  videoStreamer = vidStreamer.settings({
+    "mode": "production",
+    "forceDownload": false,
+    "random": false,
+    "rootFolder": path.resolve(__dirname, murrix.config.cachePath) + "/",
+    "rootPath": "",
+    "server": "MURRiX"
   });
-
-  nodeManager.checkItemWhen();
-
-  nodeManager.updateTriggers(path.resolve("./triggers.json"));
-});
-
-/* Start to listen to HTTP */
-httpServer.listen(configuration.httpPort);
-
-
-
-var videoStreamer = vidStreamer.settings({
-  "mode": "production",
-  "forceDownload": false,
-  "random": false,
-  "rootFolder": configuration.mediaCachePath,
-  "rootPath": "",
-  "server": "MURRiX"
 });
 
 function httpRequestHandler(request, response)
 {
-  sessionManager.start(request, response, function(error, session)
+  murrix.session.start(request, response, function(error, session)
   {
     if (error)
     {
@@ -119,7 +95,7 @@ function httpRequestHandler(request, response)
 
     if (requestParams.pathname === "/" || requestParams.pathname === "/index.html" || requestParams.pathname === "/index.htm")
     {
-      MurrixUtils.getTemplateFile("./public/index.html", function(error, data)
+      murrix.utils.getTemplateFile("./public/index.html", function(error, data)
       {
         if (error)
         {
@@ -203,40 +179,71 @@ function httpRequestHandler(request, response)
     }
     else if (requestParams.pathname === "/preview")
     {
-      MurrixMedia.getPreview(session, nodeManager, requestParams.query.id, requestParams.query.width, requestParams.query.height, requestParams.query.square, function(error, filename)
+      var options = {};
+
+      options.width = requestParams.query.width;
+      options.height = requestParams.query.height;
+      options.square = requestParams.query.square;
+
+      murrix.cache.getImage(requestParams.query.id, options, function(error, filename)
       {
         if (error)
         {
-          response.writeHead(404);
+          response.writeHead(500);
           return response.end(error);
         }
 
-        console.log(request.url);
+        if (filename === false)
+        {
+          response.writeHead(404);
+          return response.end("Image not ready, queued");
+        }
+
+        //console.log(request.url);
         request.url = "/" + path.basename(filename);
-        console.log(request.url);
-        videoStreamer(request, response);
-      });
-    }
-    else if (requestParams.pathname === "/video")
-    {
-      MurrixMedia.getVideo(session, nodeManager, requestParams.query.id, function(error, filename)
-      {
+        //console.log(request.url);
+
         try
         {
-          if (error)
-          {
-            response.writeHead(404);
-            return response.end(error);
-          }
-
-          console.log(request.url);
-          request.url = "/" + path.basename(filename);
-          console.log(request.url);
           videoStreamer(request, response);
         }
         catch (e)
         {
-          console.log(e.toString());
+          console.error(e);
+          return response.end(e);
+        }
+      });
+    }
+    else if (requestParams.pathname === "/video")
+    {
+      var options = {};
+
+      murrix.cache.getVideo(requestParams.query.id, options, function(error, filename)
+      {
+        if (error)
+        {
+          response.writeHead(500);
+          return response.end(error);
+        }
+
+        if (filename === false)
+        {
+          response.writeHead(404);
+          return response.end("Video not ready, queued");
+        }
+
+        //console.log(request.url);
+        request.url = "/" + path.basename(filename);
+        //console.log(request.url);
+
+        try
+        {
+          videoStreamer(request, response);
+        }
+        catch (e)
+        {
+          console.error(e);
+          return response.end(e);
         }
       });
     }
@@ -266,7 +273,7 @@ io.configure(function()
       return;
     }
 
-    sessionManager.findByCookieString(handshakeData.headers.cookie, function(error, session, cookies)
+    murrix.session.findByCookieString(handshakeData.headers.cookie, function(error, session, cookies)
     {
       if (error)
       {
@@ -286,7 +293,7 @@ io.configure(function()
       {
         var userinfo = JSON.parse(unescape(cookies.userinfo));
 
-        user.login(session, userinfo.username, userinfo.password, function(error)
+        murrix.user.login(session, userinfo.username, userinfo.password, function(error)
         {
           callback(null, true);
         });
@@ -311,7 +318,7 @@ io.sockets.on("connection", function(client)
 
 
   /* Emit connection established event to client and supply the current user if any */
-  user.getUser(client.handshake.session, function(error, userData)
+  murrix.user.getUser(client.handshake.session, function(error, userData)
   {
     if (error)
     {
@@ -333,7 +340,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.login(client.handshake.session, data.username, data.password, callback);
+    murrix.user.login(client.handshake.session, data.username, data.password, callback);
   });
 
   client.on("logout", function(data, callback)
@@ -344,7 +351,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.logout(client.handshake.session, callback);
+    murrix.user.logout(client.handshake.session, callback);
   });
 
   client.on("changePassword", function(data, callback)
@@ -355,7 +362,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.changePassword(client.handshake.session, data.id, data.password, callback);
+    murrix.user.changePassword(client.handshake.session, data.id, data.password, callback);
   });
 
   client.on("findGroups", function(data, callback)
@@ -366,7 +373,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.findGroups(client.handshake.session, data.query || {}, data.options || {}, callback);
+    murrix.user.findGroups(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
   client.on("findUsers", function(data, callback)
@@ -377,7 +384,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.findUsers(client.handshake.session, data.query || {}, data.options || {}, callback);
+    murrix.user.findUsers(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
   client.on("saveGroup", function(data, callback)
@@ -388,7 +395,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.saveGroup(client.handshake.session, data, callback);
+    murrix.user.saveGroup(client.handshake.session, data, callback);
   });
 
   client.on("saveUser", function(data, callback)
@@ -399,7 +406,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.saveUser(client.handshake.session, data, callback);
+    murrix.user.saveUser(client.handshake.session, data, callback);
   });
 
   client.on("removeGroup", function(data, callback)
@@ -410,7 +417,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.removeGroup(client.handshake.session, data, callback);
+    murrix.user.removeGroup(client.handshake.session, data, callback);
   });
 
   client.on("removeUser", function(data, callback)
@@ -421,7 +428,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    user.removeUser(client.handshake.session, data, callback);
+    murrix.user.removeUser(client.handshake.session, data, callback);
   });
 
 
@@ -430,160 +437,153 @@ io.sockets.on("connection", function(client)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.saveNode!");
+      console.log("No callback supplied for saveNode!");
       return;
     }
 
-    nodeManager.saveNode(client.handshake.session, data, callback);
+    murrix.db.nodes.save(client.handshake.session, data, callback);
   });
 
   client.on("saveItem", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.saveItem!");
+      console.log("No callback supplied for saveItem!");
       return;
     }
 
-    nodeManager.saveItem(client.handshake.session, data, callback);
+    murrix.db.items.save(client.handshake.session, data, callback);
   });
 
   client.on("createFileItem", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.createFileItem!");
+      console.log("No callback supplied for createFileItem!");
       return;
     }
 
-    nodeManager.createFileItem(client.handshake.session, uploadManager, data.name, data.uploadId, data.parentId, callback);
+    murrix.db.items.importFile(client.handshake.session, data.name, data.uploadId, data.parentId, callback);
   });
 
   client.on("hideRaw", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.hideRaw!");
+      console.log("No callback supplied for hideRaw!");
       return;
     }
 
-    nodeManager.hideRaw(client.handshake.session, data, callback);
+    murrix.db.items.hideRaw(client.handshake.session, data, callback);
   });
 
   client.on("commentNode", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.commentNode!");
+      console.log("No callback supplied for commentNode!");
       return;
     }
 
-    nodeManager.commentNode(client.handshake.session, data.id, data.text, callback);
+    murrix.db.nodes.comment(client.handshake.session, data.id, data.text, callback);
   });
 
   client.on("commentItem", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.commentItem!");
+      console.log("No callback supplied for commentItem!");
       return;
     }
 
-    nodeManager.commentItem(client.handshake.session, data.id, data.text, callback);
-  });
-
-  client.on("findRandom", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for nodeManager.findRandom!");
-      return;
-    }
-
-    nodeManager.findRandom(client.handshake.session, data, callback);
+    murrix.db.items.comment(client.handshake.session, data.id, data.text, callback);
   });
 
   client.on("findNodesByYear", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.findNodesByYear!");
+      console.log("No callback supplied for findByYear!");
       return;
     }
 
-    nodeManager.findNodesByYear(client.handshake.session, data, callback);
+    murrix.db.findNodesByYear(client.handshake.session, data, callback);
+  });
+
+  client.on("findRandom", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for findRandom!");
+      return;
+    }
+
+    murrix.db.nodes.findRandom(client.handshake.session, data, callback);
   });
 
   client.on("find", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.find!");
+      console.log("No callback supplied for find!");
       return;
     }
 
-    nodeManager.find(client.handshake.session, data.query || {}, data.options || {}, callback);
+    murrix.db.findWithRights(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
   client.on("count", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.count!");
+      console.log("No callback supplied for count!");
       return;
     }
 
-    nodeManager.count(client.handshake.session, data.query || {}, data.options || {}, callback);
+    murrix.db.countWithRights(client.handshake.session, data.query || {}, data.options || {}, callback);
   });
 
   client.on("distinct", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.distinct!");
+      console.log("No callback supplied for distinct!");
       return;
     }
 
-    nodeManager.distinct(client.handshake.session, data.query || {}, data.options || {}, callback);
+    murrix.db.distinct(data.query || {}, data.options || {}, callback); // TODO: Check rights
   });
 
   client.on("group", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for nodeManager.group!");
+      console.log("No callback supplied for group!");
       return;
     }
 
-    nodeManager.group(client.handshake.session, data.reduce || {}, data.options || {}, callback);
+    data.options = data.options || {};
+    data.options.reduceFunction = data.reduce;
+
+    murrix.db.group(data.reduce || {}, data.options || {}, callback); // TODO: Check rights
   });
 
 
-  client.on("clearCache", function(data, callback)
+
+  client.on("getCacheStatus", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for MurrixMedia.clearCache!");
+      console.log("No callback supplied for getCacheStatus!");
       return;
     }
 
-    MurrixMedia.clearCache(client.handshake.session, data, callback);
-  });
-
-  client.on("detectFaces", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for MurrixUtils.detectFaces!");
-      return;
-    }
-
-    MurrixUtils.detectFaces(configuration.filesPath + data, callback);
+    murrix.cache.getStatus(data, callback);
   });
 
 
   /* When API */
-  client.on("createReferenceTimeline", function(data, callback)
+/*  client.on("createReferenceTimeline", function(data, callback)
   {
     if (!callback)
     {
@@ -603,28 +603,28 @@ io.sockets.on("connection", function(client)
     }
 
     nodeManager.removeReferenceTimeline(client.handshake.session, data.id, data.referenceId, callback);
-  });
+  })*/;
 
   /* Upload file API */
   client.on("fileStart", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for uploadManager.start!");
+      console.log("No callback supplied for start!");
       return;
     }
 
-    uploadManager.start(client.handshake.session, data.size, data.filename, callback);
+    murrix.upload.start(client.handshake.session, data.size, data.filename, callback);
   });
 
   client.on("fileChunk", function(data, callback)
   {
     if (!callback)
     {
-      console.log("No callback supplied for uploadManager.chunk!");
+      console.log("No callback supplied for chunk!");
       return;
     }
 
-    uploadManager.chunk(client.handshake.session, data.id, data.data, callback);
+    murrix.upload.chunk(client.handshake.session, data.id, data.data, callback);
   });
 });

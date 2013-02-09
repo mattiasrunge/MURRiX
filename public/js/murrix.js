@@ -39,29 +39,82 @@ murrix.cache = new function()
     self.nodes = {};
   }
 
-  self.loadImage = function(element, path, failurePath)
+  self.loadImage = function(element, options)
   {
     var obj = {};
 
     obj.element = element;
     obj.width = element.width();
     obj.height = element.height();
+    obj.remove = false;
+    obj.none = false;
     obj.load = function()
     {
-      var image = new Image();
+      options.type = "image";
 
-      image.onload = function()
+      murrix.server.emit("getCacheStatus", options, function(error, status)
       {
-        element.attr("src", path);
-      };
+        if (error)
+        {
+          console.log("Error while getting cache status for id " + id + ", reason: " + error);
+          status = "none";
+        }
 
-      image.onerror = function()
-      {
-        element.attr("src", failurePath);
-      };
+        console.log(status, options);
 
-      image.src = path;
-      console.log("Start loading " + path);
+        if (status === "none")
+        {
+          if (!obj.none)
+          {
+            var path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
+
+            var image = new Image();
+            image.src = path;
+            none = true;
+          }
+          else
+          {
+            var path = "http://placekitten.com/g/" + options.width + "/" + options.height;
+
+            var image = new Image();
+            image.onload = function() { element.attr("src", path); };
+            image.onerror = function() { element.attr("src", path); };
+            image.src = path;
+
+            if (image.complete)
+            {
+              element.attr("src", path);
+            }
+          }
+        }
+        else if (status === "available")
+        {
+          obj.remove = true;
+
+          var path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
+
+          if (element.attr("src") !== path)
+          {
+            var image = new Image();
+            image.onload = function() { element.attr("src", path); };
+            image.onerror = function() { element.attr("src", path); };
+            image.src = path;
+
+            if (image.complete)
+            {
+              element.attr("src", path);
+            }
+          }
+        }
+        else if (status === "queued")
+        {
+          console.log("Image is queued", options);
+        }
+        else if (status === "ongoing")
+        {
+          console.log("Image generation is ongoing", options);
+        }
+      });
     };
 
     self.images.push(obj);
@@ -77,12 +130,17 @@ murrix.cache = new function()
 
     for (var n = 0; n < self.images.length; n++)
     {
+      if (self.images[n].remove)
+      {
+        continue;
+      }
+
       if (self.images[n].element.closest('html').length === 0)
       {
         continue;
       }
 
-      if (count < 20 && self.images[n].element.is(":visible"))
+      if (/*count < 20 && */self.images[n].element.is(":visible"))
       {
         var offset = self.images[n].element.offset();
 
@@ -91,15 +149,9 @@ murrix.cache = new function()
           self.images[n].load();
           count++;
         }
-        else
-        {
-          images.push(self.images[n]);
-        }
       }
-      else
-      {
-        images.push(self.images[n]);
-      }
+
+      images.push(self.images[n]);
     }
 
     self.images = images;
@@ -119,6 +171,35 @@ murrix.cache = new function()
 
     self.nodes[id].comments.valueHasMutated(); // Force sort!
 
+    if (self.nodes[id].referenceTimelines)
+    {
+      self.nodes[id].referenceTimelines.sort(function(a, b)
+      {
+        /* Less than 0: Sort "a" to be a lower index than "b"
+         * Zero: "a" and "b" should be considered equal, and no sorting performed.
+         * Greater than 0: Sort "b" to be a lower index than "a".
+         *
+         * type === 'utc' should be at top, type === 'timezone' at the bottom
+         * if type is the same preserve order to not mess things up, new we pushed to the end should not become the default unless it is the only one!
+         */
+
+        if (a.type === b.type)
+        {
+          return 0;
+        }
+        else if (a.type === "utc" && b.type === "timezone")
+        {
+          return -1;
+        }
+        else if (a.type === "timezone" && b.type === "utc")
+        {
+          return 1;
+        }
+
+        console.log("Found unknown type combination in sort of reference timelines", a, b);
+        return 0;
+      });
+    }
 
     self.nodes[id].hasAdminAccess = function()
     {
@@ -580,9 +661,9 @@ murrix.cache = new function()
         return;
       }
 
-      for (var id in nodeDataList)
+      for (var n = 0; n < nodeDataList.length; n++)
       {
-        nodeList[id] = self.addNodeData(nodeDataList[id]);
+        nodeList[nodeDataList[n]._id] = self.addNodeData(nodeDataList[n]);
       }
 
       callback(null, nodeList);
@@ -640,9 +721,9 @@ murrix.cache = new function()
         return;
       }
 
-      for (var id in itemDataList)
+      for (var n = 0; n < itemDataList.length; n++)
       {
-        itemList[id] = self.addItemData(itemDataList[id]);
+        itemList[itemDataList[n]._id] = self.addItemData(itemDataList[n]);
       }
 
       callback(null, itemList);

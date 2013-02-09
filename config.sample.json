@@ -4,6 +4,7 @@
   "databaseName"    : "murrix",
   "httpPort"        : 8080,
   "filesPath"       : "./files/",
-  "mediaCachePath"  : "./cache/",
+  "cachePath"       : "./cache/",
+  "cacheSlots"      : 2,
   "sessionName"     : "murrix"
 }
