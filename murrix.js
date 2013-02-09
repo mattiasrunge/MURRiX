@@ -507,7 +507,7 @@ io.sockets.on("connection", function(client)
       return;
     }
 
-    murrix.db.findNodesByYear(client.handshake.session, data, callback);
+    murrix.db.nodes.findByYear(client.handshake.session, data, callback);
   });
 
   client.on("findRandom", function(data, callback)
