@@ -210,7 +210,9 @@ function httpRequestHandler(request, response)
         catch (e)
         {
           console.error(e);
-          return response.end(e);
+          console.log(requestParams.query);
+          console.log(error, filename);
+          return response.end(e.toString());
         }
       });
     }
@@ -243,7 +245,9 @@ function httpRequestHandler(request, response)
         catch (e)
         {
           console.error(e);
-          return response.end(e);
+          console.log(requestParams.query);
+          console.log(error, filename);
+          return response.end(e.toString());
         }
       });
     }

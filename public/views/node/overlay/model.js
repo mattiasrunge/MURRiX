@@ -361,6 +361,7 @@ var OverlayModel = function(parentModel)
    ***************************************************************************/
   self.showingModel = new DialogComponentNodeListModel(self);
   self.showingModel.selectLast(true);
+  self.showingModel.types([ "person", "camera", "vehicle" ]);
   self.showingInitializing = false;
 
   self.showingInitialize = function()
