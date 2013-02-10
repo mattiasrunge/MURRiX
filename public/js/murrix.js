@@ -52,6 +52,7 @@ murrix.cache = new function()
     {
       options.type = "image";
 
+      // TODO: Maybe we should try to load once first!
       murrix.server.emit("getCacheStatus", options, function(error, status)
       {
         if (error)
