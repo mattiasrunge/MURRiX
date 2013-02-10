@@ -35,15 +35,17 @@ var Murrix = function()
 
   self.name = "murrix";
 
+  self.basePath = function() { return __dirname + "/"; };
+
   self.utils = new MurrixUtilsManager(self);
-  self.config = new MurrixConfigurationManager(self, path.resolve("./config.json"));
+  self.config = new MurrixConfigurationManager(self, path.resolve(self.basePath(), "./config.json"));
   self.logger = new MurrixLoggerManager(self);
   self.db = new MurrixDatabaseManager(self);
   self.session = new SessionManager({ name: self.config.sessionName });
   self.user = new MurrixUserManager(self);
   self.cache = new MurrixCacheManager(self);
   self.upload = new MurrixUploadManager(self);
-  self.triggers = new MurrixTriggersManager(self, path.resolve("./triggers.json"));
+  self.triggers = new MurrixTriggersManager(self, path.resolve(self.basePath(), "./triggers.json"));
 
   self.logger.info(self.name, "Initializing MURRiX...");
   self.emit("init");
