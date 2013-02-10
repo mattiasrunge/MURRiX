@@ -61,7 +61,7 @@ murrix.cache = new function()
           status = "none";
         }
 
-        console.log(status, options);
+        //console.log(status, options);
 
         if (status === "none")
         {

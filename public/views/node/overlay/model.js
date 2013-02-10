@@ -1479,9 +1479,9 @@ var OverlayModel = function(parentModel)
 
       self.whenTimezone(source.timezone);
       self.whenDaylightSavings(source.daylightSavings);
-      console.log(source.reference);
+      //console.log(source.reference);
       self.whenReference(source.reference === false ? "X" : source.reference);
-      console.log(self.whenReference());
+      //console.log(self.whenReference());
       self.whenComment("");
 
       self.whenYearDisabled(true);
