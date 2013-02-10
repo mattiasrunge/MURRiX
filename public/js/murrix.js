@@ -56,7 +56,7 @@ murrix.cache = new function()
       {
         if (error)
         {
-          console.log("Error while getting cache status for id " + id + ", reason: " + error);
+          console.log("Error while getting cache status for id " + options.id + ", reason: " + error);
           status = "none";
         }
 
