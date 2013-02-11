@@ -84,7 +84,6 @@
     <script src="js/knockout.mapping-latest.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/moment.min.js"></script>
-    <script src="js/jquery.history.min.js"></script>
     <script src="js/jquery.cookie.js"></script>
     <script src="js/jquery.imgareaselect.min.js"></script>
     <script src="js/jquery.hotkeys.js"></script>
@@ -176,24 +175,25 @@
           e.stopPropagation();
         });
 
-
-        /* Bind function to change content based on path */
-        jQuery.History.bind(function(state)
+        function hashChangeHandler()
         {
+          var state = "";
+
+          if (document.location.hash.length > 0)
+          {
+            state = document.location.hash.slice(1);
+          }
+
           /* HACK: Close open dropdowns */
           $(".dropdown.open .dropdown-toggle").dropdown("toggle");
 
           /* Update the current path of the base model */
           murrix.updatePath(state, murrix.model.path);
-        });
-
-
-        /* HACK?: Trigger loading if no path is set */
-        if (document.location.hash.length === 0)
-        {
-          jQuery.History.trigger("");
         }
 
+        $(window).on("hashchange", hashChangeHandler);
+
+        hashChangeHandler();
 
         /* Clear loading overlay */
         $(".loading-overlay").fadeOut();
