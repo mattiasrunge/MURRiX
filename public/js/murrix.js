@@ -52,70 +52,94 @@ murrix.cache = new function()
     {
       options.type = "image";
 
-      // TODO: Maybe we should try to load once first!
-      murrix.server.emit("getCacheStatus", options, function(error, status)
+      var path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
+
+      if (element.attr("src") !== path)
       {
-        if (error)
-        {
-          console.log("Error while getting cache status for id " + options.id + ", reason: " + error);
-          status = "none";
-        }
+        var image = new Image();
 
-        //console.log(status, options);
-
-        if (status === "none")
-        {
-          if (!obj.none)
-          {
-            var path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
-
-            var image = new Image();
-            image.src = path;
-            none = true;
-          }
-          else
-          {
-            var path = "http://placekitten.com/g/" + options.width + "/" + options.height;
-
-            var image = new Image();
-            image.onload = function() { element.attr("src", path); };
-            image.onerror = function() { element.attr("src", path); };
-            image.src = path;
-
-            if (image.complete)
-            {
-              element.attr("src", path);
-            }
-          }
-        }
-        else if (status === "available")
+        image.onload = function()
         {
           obj.remove = true;
+          element.attr("src", path);
+        };
 
-          var path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
-
-          if (element.attr("src") !== path)
+        image.onerror = function()
+        {
+          murrix.server.emit("getCacheStatus", options, function(error, status)
           {
-            var image = new Image();
-            image.onload = function() { element.attr("src", path); };
-            image.onerror = function() { element.attr("src", path); };
-            image.src = path;
-
-            if (image.complete)
+            if (error)
             {
-              element.attr("src", path);
+              console.log("Error while getting cache status for id " + options.id + ", reason: " + error);
+              status = "none";
             }
-          }
-        }
-        else if (status === "queued")
+
+            //console.log(status, options);
+
+            if (status === "none")
+            {
+//               if (!obj.none)
+//               {
+//                 var path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
+//
+//                 var image = new Image();
+//                 image.src = path;
+//                 none = true;
+//               }
+//               else
+//               {
+                var path = "http://placekitten.com/g/" + options.width + "/" + options.height;
+
+                var image = new Image();
+                image.onload = function() { element.attr("src", path); };
+                image.onerror = function() { element.attr("src", path); };
+                image.src = path;
+
+                if (image.complete)
+                {
+                  element.attr("src", path);
+                }
+//               }
+            }
+//             else if (status === "available")
+//             {
+//               obj.remove = true;
+//
+//               var path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
+//
+//               if (element.attr("src") !== path)
+//               {
+//                 var image = new Image();
+//                 image.onload = function() { element.attr("src", path); };
+//                 image.onerror = function() { element.attr("src", path); };
+//                 image.src = path;
+//
+//                 if (image.complete)
+//                 {
+//                   element.attr("src", path);
+//                 }
+//               }
+//             }
+            else if (status === "queued")
+            {
+              console.log("Image is queued", options);
+            }
+            else if (status === "ongoing")
+            {
+              console.log("Image generation is ongoing", options);
+            }
+          });
+
+        };
+
+        image.src = path;
+
+        if (image.complete)
         {
-          console.log("Image is queued", options);
+          obj.remove = true;
+          element.attr("src", path);
         }
-        else if (status === "ongoing")
-        {
-          console.log("Image generation is ongoing", options);
-        }
-      });
+      }
     };
 
     self.images.push(obj);

@@ -111,7 +111,7 @@ function httpRequestHandler(request, response)
     }
     else if (requestParams.pathname === "/file")
     {
-      nodeManager.find(session, { _id: requestParams.query.id }, "items", function(error, itemDataList)
+      murrix.db.findWithRights(session, { _id: requestParams.query.id }, "items", function(error, itemDataList)
       {
         if (error)
         {
@@ -119,13 +119,13 @@ function httpRequestHandler(request, response)
           return response.end(error);
         }
 
-        if (!itemDataList[requestParams.query.id])
+        if (itemDataList.length === 0)
         {
           response.writeHead(404);
           return response.end("Could not find the requested item");
         }
 
-        var itemData = itemDataList[requestParams.query.id];
+        var itemData = itemDataList[0];
 
         if (itemData.what !== "file")
         {
