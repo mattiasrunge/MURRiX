@@ -587,6 +587,11 @@ io.sockets.on("connection", function(client)
     murrix.cache.getStatus(data, callback);
   });
 
+  murrix.on("cacheJobDone", function(data)
+  {
+    client.emit("cacheJobDone", data);
+  });
+
 
   /* When API */
 /*  client.on("createReferenceTimeline", function(data, callback)

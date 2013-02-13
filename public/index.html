@@ -162,6 +162,22 @@
       });
 
 
+      // TODO: this code should be in the cache object, but server is not initalized yet, fix that somehow
+      murrix.server.on("cacheJobDone", function(data)
+      {
+        if (data.error)
+        {
+          console.log("Error while running caching job, reason: " + data.error);
+          return;
+        }
+
+        if (murrix.cache.queuedImages[data.id])
+        {
+          murrix.cache.queuedImages[data.id].load();
+          delete murrix.cache.queuedImages[data.id];
+        }
+      });
+
 
       $(function()
       {
