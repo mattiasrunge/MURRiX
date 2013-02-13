@@ -17,6 +17,8 @@ function DialogAlbumNodeModel()
   self.reset = function()
   {
     self.id(false);
+    self.errorText("");
+    self.disabled(false);
     self.name("");
     self.descriptionModel.reset();
 

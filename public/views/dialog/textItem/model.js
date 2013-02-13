@@ -74,6 +74,8 @@ function DialogTextItemModel()
     $(tabPanes[0]).addClass("active");
 
     self.id(false);
+    self.errorText("");
+    self.disabled(false);
     self.name("");
     self.textModel.reset();
     self.typeModel.reset();
