@@ -120,8 +120,8 @@
       </li>
     </ul>
 
-    <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center;" data-bind="if: nodeModel.node() !== false">
-      <div class="modal-footer" style="text-align: center;" data-bind="visible: nodeModel.node().hasAdminAccess()">
+    <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center; height: 50px;" data-bind="if: nodeModel.node() !== false">
+      <div class="modal-footer" style="text-align: center; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
         <button rel="tooltip" title="Edit accesses" class="btn btn-link btn-mini" href="#editAccessModal" data-toggle="modal">Accesses</button>
         <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Make public" class="btn btn-link btn-mini">Make public</button>
         <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Make private" class="btn btn-link btn-mini" style="margin: 0px;">Make private</button>
