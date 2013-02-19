@@ -236,6 +236,33 @@ var OverlayModel = function(parentModel)
     self.saveItem(itemData);
   };
 
+  self.remove = function()
+  {
+    var itemData = ko.mapping.toJS(self.item);
+
+    self.editLoading(true);
+
+    murrix.server.emit("removeItem", itemData._id, function(error)
+    {
+      self.editLoading(false);
+
+      if (error)
+      {
+        self.editErrorText(error);
+        return;
+      }
+
+      self.editLoading(true);
+
+      parentModel.loadItems(function()
+      {
+        self.editLoading(false);
+
+        document.location.hash = murrix.createPath(1, null, '');
+      });
+    });
+  };
+
   self.hideRaw = function()
   {
     var itemData = ko.mapping.toJS(self.item);
