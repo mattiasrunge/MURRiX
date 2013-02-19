@@ -129,6 +129,23 @@ var OverlayModel = function(parentModel)
     return index;
   });
 
+  self.setItemByIndex = function(index)
+  {
+    if (index < 0)
+    {
+      index = parentModel.items().length - 1;
+    }
+
+    if (index >= parentModel.items().length)
+    {
+      index = 0;
+    }
+
+    $(".imgContainer").imgAreaSelect({ "remove" : true });
+
+    document.location.hash = murrix.createPath(1, null, parentModel.items()[index]._id());
+  };
+
   self.carouselLeft = function()
   {
     self.showingModel.selected(false);
@@ -140,16 +157,7 @@ var OverlayModel = function(parentModel)
       return;
     }
 
-    var newIndex = self.itemIndex() - 1;
-
-    if (newIndex < 0)
-    {
-      newIndex = parentModel.items().length - 1;
-    }
-
-    $(".imgContainer").imgAreaSelect({ "remove" : true });
-
-    document.location.hash = murrix.createPath(1, null, parentModel.items()[newIndex]._id());
+    self.setItemByIndex(self.itemIndex() - 1);
   };
 
   self.carouselRight = function()
@@ -163,16 +171,7 @@ var OverlayModel = function(parentModel)
       return;
     }
 
-    var newIndex = self.itemIndex() + 1;
-
-    if (newIndex >= parentModel.items().length)
-    {
-      newIndex = 0;
-    }
-
-    $(".imgContainer").imgAreaSelect({ "remove" : true });
-
-    document.location.hash = murrix.createPath(1, null, parentModel.items()[newIndex]._id());
+    self.setItemByIndex(self.itemIndex() + 1);
   };
 
   self.commentText = ko.observable("");
@@ -254,11 +253,20 @@ var OverlayModel = function(parentModel)
 
       self.editLoading(true);
 
+      var index = self.itemIndex();
+
       parentModel.loadItems(function()
       {
         self.editLoading(false);
 
-        document.location.hash = murrix.createPath(1, null, '');
+        if (parentModel.items().length === 0)
+        {
+          document.location.hash = murrix.createPath(1, null, '');
+        }
+        else
+        {
+          self.setItemByIndex(index);
+        }
       });
     });
   };
