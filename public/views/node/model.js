@@ -444,6 +444,23 @@ var NodeModel = function(parentModel)
   };
 
 
+  /* Remove Node */
+  self.removeNode = function()
+  {
+    if (window.confirm("Are you sure you want to remove " + self.node().name() + "?"))
+    {
+      murrix.server.emit("removeNode", self.node()._id(), function(error)
+      {
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        document.location.hash = "";
+      });
+    }
+  };
 
 
   /* Accesses */

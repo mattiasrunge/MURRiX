@@ -122,10 +122,17 @@
 
     <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center; height: 50px;" data-bind="if: nodeModel.node() !== false">
       <div class="modal-footer" style="text-align: center; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
-        <button rel="tooltip" title="Edit accesses" class="btn btn-link btn-mini" href="#editAccessModal" data-toggle="modal">Accesses</button>
-        <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Make public" class="btn btn-link btn-mini">Make public</button>
-        <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Make private" class="btn btn-link btn-mini" style="margin: 0px;">Make private</button>
-        <button rel="tooltip" title="Edit" class="btn btn-link btn-mini" href="#" data-bind="click: nodeModel.editNode">Edit</button>
+      
+
+      
+        <button rel="tooltip" title="Edit accesses" class="btn btn-link" href="#editAccessModal" data-toggle="modal"><i class="icon-key"></i></button>
+        
+        <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Click to make public" class="btn btn-link"><i class="icon-lock"></i></button>
+        <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Click to make private" class="btn btn-link" style="margin: 0px;"><i class="icon-unlock"></i></button>
+        
+        <button rel="tooltip" title="Edit" class="btn btn-link" href="#" data-bind="click: nodeModel.editNode"><i class="icon-pencil"></i></button>
+        
+        <button rel="tooltip" title="Remove" class="btn btn-link" href="#" data-bind="click: nodeModel.removeNode"><i class="icon-trash"></i></button>
       </div>
     </div>
   </div>

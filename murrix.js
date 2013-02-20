@@ -494,6 +494,17 @@ io.sockets.on("connection", function(client)
     murrix.db.items.remove(client.handshake.session, data, callback);
   });
 
+  client.on("removeNode", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for removeNode!");
+      return;
+    }
+
+    murrix.db.nodes.remove(client.handshake.session, data, callback);
+  });
+
   client.on("commentNode", function(data, callback)
   {
     if (!callback)
