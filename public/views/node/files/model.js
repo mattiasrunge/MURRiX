@@ -125,7 +125,7 @@ var FilesModel = function(parentModel)
       {
         console.log("Found nowhere to hide " + rawItemDataList[index].name);
         var item = murrix.cache.addItemData(rawItemDataList[index]);
-        murrix.model.nodeModel.items.push(rawItemDataList[index]);
+        murrix.model.nodeModel.items.push(item);
       }
 
       self._checkHideRaw(rawItemDataList, index + 1);
