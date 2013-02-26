@@ -105,6 +105,7 @@ var FilesModel = function(parentModel)
       return;
     }
 
+    console.log("Will try to hide " + rawItemDataList[index].name);
     murrix.server.emit("hideRaw", rawItemDataList[index], function(error, hidden, itemData)
     {
       console.log(error, hidden, itemData);
@@ -117,10 +118,12 @@ var FilesModel = function(parentModel)
 
       if (hidden)
       {
+        console.log(rawItemDataList[index].name + " hidden behind " + itemData.name);
         var item = murrix.cache.addItemData(itemData);
       }
       else
       {
+        console.log("Found nowhere to hide " + rawItemDataList[index].name);
         var item = murrix.cache.addItemData(rawItemDataList[index]);
         murrix.model.nodeModel.items.push(rawItemDataList[index]);
       }
