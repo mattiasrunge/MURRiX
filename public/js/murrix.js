@@ -489,6 +489,7 @@ murrix.cache = new function()
           switch (self.items[id].exif.MIMEType())
           {
             case "image/x-canon-cr2":
+            case "image/x-canon-crw":
             case "image/jpeg":
             case "image/gif":
             case "image/tiff":

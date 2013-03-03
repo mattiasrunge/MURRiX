@@ -639,7 +639,7 @@
 
             <div style="margin: 0px 10px 10px 10px; font-size: 10px;">
               <button style="width: 328px; margin-bottom: 10px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.remove">Remove</button>
-              <button style="width: 328px; margin-bottom: 10px;" class="btn btn-small" data-bind="visible: nodeModel.overlayModel.item().exif && nodeModel.overlayModel.item().exif.MIMEType() === 'image/x-canon-cr2', click: nodeModel.overlayModel.hideRaw">Hide raw image</button>
+              <button style="width: 328px; margin-bottom: 10px;" class="btn btn-small" data-bind="visible: nodeModel.overlayModel.item().exif && (nodeModel.overlayModel.item().exif.MIMEType() === 'image/x-canon-cr2' || nodeModel.overlayModel.item().exif.MIMEType() === 'image/x-canon-crw'), click: nodeModel.overlayModel.hideRaw">Hide raw image</button>
               <button style="width: 328px; margin-bottom: 10px;" class="btn btn-small" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile', click: nodeModel.overlayModel.setThumbPosition">Set thumbnail position</button>
               <div class="btn-group" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile' || nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
                 <button title="Rotate counter clockwise" style="width: 110px;" class="btn btn-small" data-bind="click: nodeModel.overlayModel.rotateLeft"><i class="icon-undo"></i></button>

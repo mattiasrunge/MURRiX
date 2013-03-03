@@ -149,7 +149,7 @@ var FilesModel = function(parentModel)
 
     for (var n = 0; n < self.itemDataList.length; n++)
     {
-      if (self.itemDataList[n].exif.MIMEType === "image/x-canon-cr2")
+      if (self.itemDataList[n].exif.MIMEType === "image/x-canon-cr2" || self.itemDataList[n].exif.MIMEType === "image/x-canon-crw")
       {
         rawItemDataList.push(self.itemDataList[n]);
       }
@@ -204,7 +204,7 @@ var FilesModel = function(parentModel)
       uploadFile.statusText = ko.observable("");
       uploadFile.failed = ko.observable(false);
 
-      if (event.originalEvent.dataTransfer.files[n].type === "image/x-canon-cr2")
+      if (event.originalEvent.dataTransfer.files[n].type === "image/x-canon-cr2" || event.originalEvent.dataTransfer.files[n].type === "image/x-canon-crw")
       {
         uploadFilesRaw.push(uploadFile);
       }
