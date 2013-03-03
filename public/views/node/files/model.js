@@ -47,7 +47,7 @@ var FilesModel = function(parentModel)
 
     for (var n = 0; n < self.uploadFiles().length; n++)
     {
-      console.log(self.uploadFiles()[n].progress() === 0);
+      console.log(self.uploadFiles()[n].failed(), self.uploadFiles()[n].progress() === 0, n);
       if (!self.uploadFiles()[n].failed() && self.uploadFiles()[n].progress() === 0)
       {
         index = n;
@@ -57,7 +57,7 @@ var FilesModel = function(parentModel)
 
     if (index === false)
     {
-      console.log("All files done!");
+      console.log("All files done!", self.uploadFiles().length);
       callback(null, false);
       return;
     }
@@ -66,6 +66,7 @@ var FilesModel = function(parentModel)
     {
       if (error)
       {
+        console.log(error);
         self.uploadFiles()[index].statusText(error);
         self.uploadFiles()[index].failed(true);
         callback(error, true);
@@ -84,12 +85,14 @@ var FilesModel = function(parentModel)
         {
           if (error)
           {
+            console.log("File item failed!", self.uploadFiles()[index].name(), error);
             self.uploadFiles()[index].statusText(error);
             self.uploadFiles()[index].failed(true);
             callback(error, true);
             return;
           }
 
+          console.log("File item created!", self.uploadFiles()[index].name());
           self.uploadFiles()[index].statusText("File item created!");
           callback(null, true);
         });
@@ -101,6 +104,7 @@ var FilesModel = function(parentModel)
   {
     if (index >= rawItemDataList.length)
     {
+      console.log("All raw files handled, index = " + index);
       self.uploadComplete(true);
       return;
     }
@@ -136,6 +140,7 @@ var FilesModel = function(parentModel)
   {
     if (error)
     {
+      console.log("Something broke:" + error);
       // TODO: Should we continue?
     }
 
@@ -146,6 +151,8 @@ var FilesModel = function(parentModel)
     }
 
     var rawItemDataList = [];
+
+    console.log("Will go through saved items and find raw files, itemDataList.length is " + itemDataList.length);
 
     for (var n = 0; n < self.itemDataList.length; n++)
     {
@@ -160,6 +167,8 @@ var FilesModel = function(parentModel)
         murrix.model.nodeModel.items.push(item);
       }
     }
+
+    console.log("Upload is done, raw queue length is " + rawItemDataList.length);
 
     if (rawItemDataList.length === 0)
     {
