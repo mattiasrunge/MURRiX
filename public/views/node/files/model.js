@@ -152,7 +152,7 @@ var FilesModel = function(parentModel)
 
     var rawItemDataList = [];
 
-    console.log("Will go through saved items and find raw files, itemDataList.length is " + itemDataList.length);
+    console.log("Will go through saved items and find raw files, itemDataList.length is " + self.itemDataList.length);
 
     for (var n = 0; n < self.itemDataList.length; n++)
     {
