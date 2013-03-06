@@ -935,7 +935,7 @@ $(function()
           i++;
       } while (fileSizeInBytes > 1024);
 
-      $(element).html(Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i]);
+      $(element).html(fileSizeInBytes.toFixed(1) + byteUnits[i]);
     }
   };
 

@@ -25,7 +25,7 @@ var MurrixUploadManager = require("./lib/upload.js").Manager;
 var MurrixUtilsManager = require("./lib/utils.js").Manager;
 var MurrixUserManager = require("./lib/user.js").Manager;
 var MurrixTriggersManager = require("./lib/triggers.js").Manager;
-
+var MurrixImportManager = require("./lib/import.js").Manager;
 
 var Murrix = function()
 {
@@ -45,6 +45,7 @@ var Murrix = function()
   self.user = new MurrixUserManager(self);
   self.cache = new MurrixCacheManager(self);
   self.upload = new MurrixUploadManager(self);
+  self.import = new MurrixImportManager(self);
   self.triggers = new MurrixTriggersManager(self, path.resolve(self.basePath(), "./triggers.json"));
 
   self.logger.info(self.name, "Initializing MURRiX...");
@@ -659,5 +660,29 @@ io.sockets.on("connection", function(client)
     }
 
     murrix.upload.chunk(client.handshake.session, data.id, data.data, callback);
+  });
+
+
+  /* Import file API */
+  client.on("importUploadedFile", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for importUploadedFile!");
+      return;
+    }
+
+    murrix.import.importUploadedFile(client.handshake.session, data.uploadId, data.parentId, callback);
+  });
+
+  client.on("importUploadedFileVersion", function(data, callback)
+  {
+    if (!callback)
+    {
+      console.log("No callback supplied for importUploadedFileVersion!");
+      return;
+    }
+
+    murrix.import.importUploadedFileVersion(client.handshake.session, data.uploadId, data.itemId, callback);
   });
 });

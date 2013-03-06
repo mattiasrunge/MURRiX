@@ -900,10 +900,13 @@ murrix.file = new function()
 
   self.upload = function(file, callback)
   {
+    var size = 0;
+
     file.reader = new FileReader();
 
     file.reader.onload = function(event)
     {
+      var startTime = murrix.timestamp();
       var data = window.btoa(event.target.result); // base64 encode
 
       murrix.server.emit("fileChunk", { id: file.uploadId, data: data }, function(error, id, progress, offset, chunkSize)
@@ -916,7 +919,13 @@ murrix.file = new function()
           return;
         }
 
-        callback(null, id, progress);
+        var duration = murrix.timestamp() - startTime;
+        var speed = size / (duration === 0 ? 1 : duration);
+//console.log("::", speed, size, duration);
+
+        callback(null, id, progress, speed);
+
+        size = chunkSize;
 
         if (progress < 100)
         {
@@ -932,6 +941,7 @@ murrix.file = new function()
 
     murrix.server.emit("fileStart", { filename: file.name, size: file.size }, function(error, id, offset, chunkSize)
     {
+      size = chunkSize;
       file.uploadId = id;
       murrix.file._readChunk(file, offset, chunkSize);
     });
@@ -990,6 +1000,17 @@ murrix.getFormData = function(element)
   return data;
 };
 
+murrix.basename = function(str)
+{
+  var base = new String(str).substring(str.lastIndexOf('/') + 1);
+
+  if (base.lastIndexOf(".") != -1)
+  {
+    base = base.substring(0, base.lastIndexOf("."));
+  }
+
+  return base;
+}
 
 // Taken from http://my.opera.com/GreyWyvern/blog/show.dml/1671288
 murrix.natcasecmp = function(a, b) {
@@ -1172,6 +1193,32 @@ murrix.createPath = function(partIndex, primary, secondary)
 
   return newPath;
 };
+
+var rawImageMimeTypes = [ "image/x-canon-cr2", "image/x-raw", "image/x-canon-crw" ];
+var imageMimeTypes = [ "image/jpeg", "image/gif", "image/tiff", "image/png", "image/bmp" ].concat(rawImageMimeTypes);
+var videoMimeTypes = [ "video/mpeg", "video/avi", "video/quicktime", "video/x-ms-wmv", "video/mp4", "video/3gpp", "video/x-msvideo" ];
+var audioMimeTypes = [ "audio/mpeg", "audio/x-wav" ];
+
+murrix.mimeIsImage = function(mimeType)
+{
+  return murrix.inArray(mimeType, imageMimeTypes);
+};
+
+murrix.mimeIsRawImage = function(mimeType)
+{
+  return murrix.inArray(mimeType, rawImageMimeTypes);
+};
+
+murrix.mimeIsVideo = function(mimeType)
+{
+  return murrix.inArray(mimeType, videoMimeTypes);
+};
+
+murrix.mimeIsAudio = function(mimeType)
+{
+  return murrix.inArray(mimeType, audioMimeTypes);
+};
+
 
 murrix.updatePath = function(pathString, pathObservable)
 {
