@@ -60,37 +60,3 @@
   </div>
   <div class="main-overlay-background"></div>
 </div>
-
-<div class="modal" id="itemUploadModal" tabindex="-1" role="dialog" aria-labelledby="itemUploadModalLabel" aria-hidden="true" style="display: none;">
-  <div class="modal-header">
-    <button data-bind="fadeVisible: nodeModel.filesModel.uploadComplete" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="itemUploadModalLabel">Upload</h3>
-  </div>
-  <div class="modal-body">
-    <table class="table table-condensed table-striped">
-      <thead>
-        <th>Filename</th>
-        <th>Filesize</th>
-        <th>Progress</th>
-      </thead>
-      <tbody>
-
-      <!-- ko foreach: nodeModel.filesModel.uploadFiles -->
-        <tr>
-          <td data-bind="text: $data.name"></td>
-          <td data-bind="htmlSize: $data.size"></td>
-          <td class="progress" style="width: 300px" data-bind="css: { 'progress-success': $data.progress() === 100 && !$data.failed(), 'progress-striped': $data.progress() !== 100 && !$data.failed(), 'progress-danger': $data.failed(), active: $data.progress() !== 100 && !$data.failed() }">
-            <div class="bar" data-bind="style: { width: $data.progress() + '%' }, text: $data.statusText() === '' ? $data.progress() + '%' : $data.statusText()" style="width: 0%;"></div>
-          </td>
-        </tr>
-      <!-- /ko -->
-
-      </tbody>
-    </table>
-
-  </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: nodeModel.filesModel.uploadErrorText() != '', text: nodeModel.filesModel.uploadErrorText"></p>
-    <button data-bind="enable: nodeModel.filesModel.uploadComplete" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-  </div>
-</div>
