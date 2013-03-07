@@ -36,7 +36,7 @@ var TagsModel = function(parentModel)
     self.errorText("");
     self.tags.removeAll();
 
-    murrix.server.emit("group", { reduce: reduce, options: { collection: "nodes"} }, function(error, result)
+    murrix.server.emit("group", { options: { collection: "nodes", reduceFunction: reduce } }, function(error, result)
     {
       self.loading(false);
 

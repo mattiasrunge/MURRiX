@@ -26,6 +26,7 @@ var MurrixUtilsManager = require("./lib/utils.js").Manager;
 var MurrixUserManager = require("./lib/user.js").Manager;
 var MurrixTriggersManager = require("./lib/triggers.js").Manager;
 var MurrixImportManager = require("./lib/import.js").Manager;
+var MurrixClientManager = require("./lib/client.js").Manager;
 
 var Murrix = function()
 {
@@ -40,6 +41,7 @@ var Murrix = function()
   self.utils = new MurrixUtilsManager(self);
   self.config = new MurrixConfigurationManager(self, path.resolve(self.basePath(), "./config.json"));
   self.logger = new MurrixLoggerManager(self);
+  self.client = new MurrixClientManager(self);
   self.db = new MurrixDatabaseManager(self);
   self.session = new SessionManager({ name: self.config.sessionName });
   self.user = new MurrixUserManager(self);
@@ -276,20 +278,24 @@ io.configure(function()
   {
     if (handshakeData.xdomain)
     {
+      murrix.logger.error("io", "Cross domain access is not allowed!");
       callback("Cross domain access is not allowed!", false);
       return;
     }
 
+    murrix.logger.info("io", "Find session by cookie!");
     murrix.session.findByCookieString(handshakeData.headers.cookie, function(error, session, cookies)
     {
       if (error)
       {
+        murrix.logger.error("io", error);
         callback(error, false);
         return;
       }
 
       if (session === false)
       {
+        murrix.logger.error("io", "No session found!");
         callback("No session found!", false);
         return;
       }
@@ -300,13 +306,22 @@ io.configure(function()
       {
         var userinfo = JSON.parse(unescape(cookies.userinfo));
 
+        murrix.logger.info("io", "Will try to auto login " + userinfo.username + " from cookie!");
+
         murrix.user.login(session, userinfo.username, userinfo.password, function(error)
         {
+          if (error)
+          {
+            murrix.logger.error(error);
+          }
+
+          murrix.logger.debug("io", "Authorizing...");
           callback(null, true);
         });
       }
       else
       {
+        murrix.logger.debug("io", "Authorizing...");
         callback(null, true);
       }
     });
@@ -319,10 +334,11 @@ io.sockets.on("connection", function(client)
   if (!client.handshake.session)
   {
     console.log("Could not find session!");
-    client.emit("connection_established", { error: error, text: "Could not find session" });
+    client.emit("connection_established", { error: "Could not find session" });
     return;
   }
 
+  murrix.client.add(client);
 
   /* Emit connection established event to client and supply the current user if any */
   murrix.user.getUser(client.handshake.session, function(error, userData)
@@ -330,291 +346,12 @@ io.sockets.on("connection", function(client)
     if (error)
     {
       console.log("Could not get user information");
-      client.emit("connection_established", { error: error, text: "Could not get user information" });
+      client.emit("connection_established", { error: "Could not get user information, reason: " + error });
       return;
     }
 
     client.emit("connection_established", { userData: userData });
   });
-
-
-  /* User API */
-  client.on("login", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.login!");
-      return;
-    }
-
-    murrix.user.login(client.handshake.session, data.username, data.password, callback);
-  });
-
-  client.on("logout", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.logout!");
-      return;
-    }
-
-    murrix.user.logout(client.handshake.session, callback);
-  });
-
-  client.on("changePassword", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.changePassword!");
-      return;
-    }
-
-    murrix.user.changePassword(client.handshake.session, data.id, data.password, callback);
-  });
-
-  client.on("findGroups", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.findGroups!");
-      return;
-    }
-
-    murrix.user.findGroups(client.handshake.session, data.query || {}, data.options || {}, callback);
-  });
-
-  client.on("findUsers", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.findUsers!");
-      return;
-    }
-
-    murrix.user.findUsers(client.handshake.session, data.query || {}, data.options || {}, callback);
-  });
-
-  client.on("saveGroup", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.saveGroup!");
-      return;
-    }
-
-    murrix.user.saveGroup(client.handshake.session, data, callback);
-  });
-
-  client.on("saveUser", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.saveUser!");
-      return;
-    }
-
-    murrix.user.saveUser(client.handshake.session, data, callback);
-  });
-
-  client.on("removeGroup", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.removeGroup!");
-      return;
-    }
-
-    murrix.user.removeGroup(client.handshake.session, data, callback);
-  });
-
-  client.on("removeUser", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for user.removeUser!");
-      return;
-    }
-
-    murrix.user.removeUser(client.handshake.session, data, callback);
-  });
-
-
-  /* Node API */
-  client.on("saveNode", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for saveNode!");
-      return;
-    }
-
-    murrix.db.nodes.save(client.handshake.session, data, callback);
-  });
-
-  client.on("saveItem", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for saveItem!");
-      return;
-    }
-
-    murrix.db.items.save(client.handshake.session, data, callback);
-  });
-
-  client.on("createFileItem", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for createFileItem!");
-      return;
-    }
-
-    murrix.db.items.importFile(client.handshake.session, data.name, data.uploadId, data.parentId, callback);
-  });
-
-  client.on("hideRaw", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for hideRaw!");
-      return;
-    }
-
-    murrix.db.items.hideRaw(client.handshake.session, data, callback);
-  });
-
-  client.on("removeItem", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for removeItem!");
-      return;
-    }
-
-    murrix.db.items.remove(client.handshake.session, data, callback);
-  });
-
-  client.on("removeNode", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for removeNode!");
-      return;
-    }
-
-    murrix.db.nodes.remove(client.handshake.session, data, callback);
-  });
-
-  client.on("commentNode", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for commentNode!");
-      return;
-    }
-
-    murrix.db.nodes.comment(client.handshake.session, data.id, data.text, callback);
-  });
-
-  client.on("commentItem", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for commentItem!");
-      return;
-    }
-
-    murrix.db.items.comment(client.handshake.session, data.id, data.text, callback);
-  });
-
-  client.on("findNodesByYear", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for findByYear!");
-      return;
-    }
-
-    murrix.db.nodes.findByYear(client.handshake.session, data, callback);
-  });
-
-  client.on("findRandom", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for findRandom!");
-      return;
-    }
-
-    murrix.db.nodes.findRandom(client.handshake.session, data, callback);
-  });
-
-  client.on("find", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for find!");
-      return;
-    }
-
-    murrix.db.findWithRights(client.handshake.session, data.query || {}, data.options || {}, callback);
-  });
-
-  client.on("count", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for count!");
-      return;
-    }
-
-    murrix.db.countWithRights(client.handshake.session, data.query || {}, data.options || {}, callback);
-  });
-
-  client.on("distinct", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for distinct!");
-      return;
-    }
-
-    murrix.db.distinct(data.query || {}, data.options || {}, callback); // TODO: Check rights
-  });
-
-  client.on("group", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for group!");
-      return;
-    }
-
-    data.options = data.options || {};
-    data.options.reduceFunction = data.reduce;
-
-    murrix.db.group(data.reduce || {}, data.options || {}, callback); // TODO: Check rights
-  });
-
-
-
-  client.on("getCacheStatus", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for getCacheStatus!");
-      return;
-    }
-
-    murrix.cache.getStatus(data, callback);
-  });
-
-  murrix.on("cacheJobDone", function(data)
-  {
-    client.emit("cacheJobDone", data);
-  });
-
 
   /* When API */
 /*  client.on("createReferenceTimeline", function(data, callback)
@@ -638,51 +375,4 @@ io.sockets.on("connection", function(client)
 
     nodeManager.removeReferenceTimeline(client.handshake.session, data.id, data.referenceId, callback);
   })*/;
-
-  /* Upload file API */
-  client.on("fileStart", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for start!");
-      return;
-    }
-
-    murrix.upload.start(client.handshake.session, data.size, data.filename, callback);
-  });
-
-  client.on("fileChunk", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for chunk!");
-      return;
-    }
-
-    murrix.upload.chunk(client.handshake.session, data.id, data.data, callback);
-  });
-
-
-  /* Import file API */
-  client.on("importUploadedFile", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for importUploadedFile!");
-      return;
-    }
-
-    murrix.import.importUploadedFile(client.handshake.session, data.uploadId, data.parentId, callback);
-  });
-
-  client.on("importUploadedFileVersion", function(data, callback)
-  {
-    if (!callback)
-    {
-      console.log("No callback supplied for importUploadedFileVersion!");
-      return;
-    }
-
-    murrix.import.importUploadedFileVersion(client.handshake.session, data.uploadId, data.itemId, callback);
-  });
 });

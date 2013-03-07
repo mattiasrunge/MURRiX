@@ -144,7 +144,7 @@
 
       murrix.server.socket.on("error", function(reason)
       {
-        console.error("Unable to connect Socket.IO", reason);
+        console.error("Unable to connect Socket.IO, reason: " + reason);
       });
 
       murrix.server.on("connect", function()
@@ -156,7 +156,7 @@
       {
         if (data.error)
         {
-          console.log("Error while established connection to MURRiX: " + data.text);
+          console.log("Error while established connection to MURRiX, reason: " + data.error);
           return;
         }
 
