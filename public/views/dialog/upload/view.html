@@ -4,7 +4,7 @@
     <button type="button" class="close" aria-hidden="true" data-bind="disable: dialogModel.uploadModel.status() === 'uploading', click: dialogModel.uploadModel.hide">&times;</button>
     <h3>Upload</h3>
   </div>
-  <div class="modal-body modal-body-side">
+  <div class="modal-body modal-body-side" data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
     <table class="table table-condensed table-striped">
       <thead>
         <tr>
@@ -75,6 +75,10 @@
     </table>
     <div style="text-align: center" data-bind="visible: dialogModel.uploadModel.status() === 'queued'">
       <button class="btn btn-large btn-primary" data-bind="click: dialogModel.uploadModel.doUpload">Start upload</button>
+    </div>
+    <div style="text-align: center" data-bind="visible: dialogModel.uploadModel.status() !== 'queued'">
+      <button class="btn btn-large btn-warning" data-bind="visible: !dialogModel.uploadModel.pause(), click: dialogModel.uploadModel.doPause">Pause</button>
+      <button class="btn btn-large btn-warning" data-bind="visible: dialogModel.uploadModel.pause()" disabled>Pausing...</button>
     </div>
   </div>
   <div class="modal-footer">

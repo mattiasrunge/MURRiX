@@ -5,6 +5,7 @@ function DialogUploadModel()
 
   DialogBaseModel(self, "#dialogUpload");
 
+  self.pause = ko.observable(false);
   self.files = ko.observableArray();
   self.speed = ko.observable(0);
 
@@ -97,9 +98,6 @@ function DialogUploadModel()
     event.stopPropagation();
     event.preventDefault();
 
-    self.files.removeAll();
-    self.speed(0);
-
     for (var n = 0; n < event.originalEvent.dataTransfer.files.length; n++)
     {
       var fileItem = event.originalEvent.dataTransfer.files[n];
@@ -147,40 +145,49 @@ function DialogUploadModel()
     self.show();
   };
 
+  self.doPause = function()
+  {
+    self.pause(true);
+  }
+
   self.doUpload = function()
   {
-    if (self.index() >= self.files().length)
+    var index = self.index();
+
+    self.pause(false);
+
+    if (index >= self.files().length)
     {
       console.log("All files are done!");
       return;
     }
 
     self.speed(0);
-    self.files()[self.index()].status("uploading");
-    self.files()[self.index()].progress(0);
+    self.files()[index].status("uploading");
+    self.files()[index].progress(0);
 
-    murrix.file.upload(self.files()[self.index()].file, function(error, id, progress, speed)
+    murrix.file.upload(self.files()[index].file, function(error, id, progress, speed)
     {
       if (error)
       {
-        console.log("Upload failed, reason: " + error, self.files()[self.index()].file);
-        self.files()[self.index()].status("upload_failed");
+        console.log("Upload failed, reason: " + error, self.files()[index].file);
+        self.files()[index].status("upload_failed");
         return;
       }
 
       self.speed(speed);
-      self.files()[self.index()].id = id;
-      self.files()[self.index()].progress(progress);
+      self.files()[index].id = id;
+      self.files()[index].progress(progress);
 
       if (progress === 100)
       {
-        if (self.files()[self.index()].isRaw)
+        if (self.files()[index].isRaw)
         {
-          self._doHide(self.files()[self.index()]);
+          self._doHide(self.files()[index]);
         }
         else
         {
-          self._doImport(self.files()[self.index()]);
+          self._doImport(self.files()[index]);
         }
       }
     });
@@ -225,7 +232,10 @@ function DialogUploadModel()
         murrix.cache.addItemData(itemDataNew);
         file.status("hide_success");
 
-        self.doUpload();
+        if (!self.pause())
+        {
+          self.doUpload();
+        }
       });
     });
   };
@@ -247,7 +257,16 @@ function DialogUploadModel()
       murrix.model.nodeModel.items.push(murrix.cache.addItemData(itemDataNew));
       file.status("import_success");
 
-      self.doUpload();
+      if (!self.pause())
+      {
+        self.doUpload();
+      }
     });
   };
+
+  $(self.elementId).on("hidden", function()
+  {
+    self.files.removeAll();
+    self.speed(0);
+  });
 };
