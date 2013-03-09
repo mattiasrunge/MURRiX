@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var program = require("commander");
+var path = require("path");
 var Murrix = require("./murrix.js").Murrix;
 
 program.version("0.0.1");
@@ -53,7 +54,7 @@ program
           return;
         }
 
-        murrix.import.importDirectory(session, directory, options, function(error)
+        murrix.import.importDirectory(session, path.resolve(process.cwd(), directory), options, function(error)
         {
           if (error)
           {
