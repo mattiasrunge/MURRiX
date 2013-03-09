@@ -76,7 +76,7 @@
     <div style="text-align: center" data-bind="visible: dialogModel.uploadModel.status() === 'queued'">
       <button class="btn btn-large btn-primary" data-bind="click: dialogModel.uploadModel.doUpload">Start upload</button>
     </div>
-    <div style="text-align: center" data-bind="visible: dialogModel.uploadModel.status() !== 'queued'">
+    <div style="text-align: center" data-bind="visible: dialogModel.uploadModel.status() === 'uploading'">
       <button class="btn btn-large btn-warning" data-bind="visible: !dialogModel.uploadModel.pause(), click: dialogModel.uploadModel.doPause">Pause</button>
       <button class="btn btn-large btn-warning" data-bind="visible: dialogModel.uploadModel.pause()" disabled>Pausing...</button>
     </div>

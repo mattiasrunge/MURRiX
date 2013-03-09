@@ -34,9 +34,9 @@ In general no configuration options are needed but if something needs to be chan
     $ cp config.sample.json config.json
     $ emacs config.json
 
-## How to use
+## How to start a server
 
-    $ node murrix
+    $ ./murrix.bin.js server
 
 Now you can start your brower and access MURRiX at port 8080 if the configuration was not changed. The default admin username and password are: admin/password
 
