@@ -394,7 +394,7 @@
                   <a href="#" data-bind="hrefFirst: [ 'node', nodeModel.overlayModel.item().whereNode()._id ], popoverNode: nodeModel.overlayModel.item().whereNode()._id, text: nodeModel.overlayModel.item().whereNode().name"></a>
                 </span>
                 <span data-bind="if: nodeModel.overlayModel.item().whereString() !== false && nodeModel.overlayModel.item().whereNode() === false">
-                  <span data-bind="text: nodeModel.overlayModel.item().whereString"></a>
+                  <span data-bind="text: nodeModel.overlayModel.item().whereString"></span>
                 </span>
                 <span data-bind="visible: nodeModel.overlayModel.item().whereNode() === false && nodeModel.overlayModel.item().whereString() === false">
                   <div class="muted" data-bind="visible: nodeModel.node().hasAdminAccess()">

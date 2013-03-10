@@ -1,53 +1,104 @@
 <div class="main-overlay" data-bind="slideVisible: nodeModel.timelineModel.show() && nodeModel.node() !== false">
   <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false">
 
-<!--    <div class="navbar navbar-inverse navbar-color">
+
+    <div class="navbar navbar-inverse navbar-color" style="position: fixed; top: 81px; left: 319px; right: 64px; z-index: 20;">
       <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-time icon-white"></i> Timeline</span>
-
         <ul class="nav pull-right">
-          <li><a class="pull-right" rel="tooltip" title="Create text" href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">Create text</a></li>
-          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
-        </ul>
-
-      </div>
-    </div>-->
-
-    <a class="btn" rel="tooltip" title="Create text" href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">Create text</a>
-
-    <div data-bind="foreach: nodeModel.logItems" style="margin: 10px;">
-      <div class="" style="padding-bottom: 0px; padding-top: 0px; color: white;">
-        <h4 data-bind="htmlTimestampToDate: $data.datestamp" style="border-bottom: 1px solid white;"></h4>
-
-        <div data-bind="foreach: $data.texts">
-          <div style="font-weight: bold; margin-bottom: 5px;">
-            <a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()">
-              <i class="icon-time icon-white"></i>
-              <span data-bind="htmlTimestampToTime: $data.whenTimestamp"></span>
-              -
-              <span data-bind="text: $data.name"></span>
-            </a>
-            <a style="color: white; text-decoration: none;" href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.timelineModel.textItemEditOpen"><i class="icon-pencil icon-white"></i></a>
-          </div>
-          <p data-bind="html: $data.text"></p>
-        </div>
-
-        <div data-bind="foreach: $data.audio">
-          <div style="font-weight: bold; margin-bottom: 5px;">
-            <a style="color: white;" href="#" data-bind="hrefSecondSecondary: $data._id()">
-              <i class="icon-headphones icon-white"></i>
-              <span data-bind="text: $data.name"></span>
-            </a>
-          </div>
-        </div>
-
-        <ul class="thumbnails" data-bind="foreach: $data.media">
-          <li class="">
-            <a href="#" draggable="true" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id()">
-              <img data-bind="srcPicture: [ $data._id, 80, 80, 1, $data.modified.timestamp ], attr: { title: $data.name }" src="" alt="" style="width: 80px; height: 80px;">
+          <li>
+            <a class="pull-right" rel="tooltip" title="Create text" href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">
+              <i class="icon-plus icon-white"></i>
+              Create text
             </a>
           </li>
         </ul>
+
+      </div>
+    </div>
+
+    <div class="timeline-container" data-bind="foreach: nodeModel.logItems" >
+
+      <div class="timeline-day clearfix">
+        <div class="timeline-day-date">
+          <div data-bind="visible: $data.datestamp === false">
+            <div class="timeline-day-date-year">?</div>
+          </div>
+          <div data-bind="visible: $data.datestamp !== false">
+            <div class="timeline-day-date-year" data-bind="htmlTimestampToYear: $data.datestamp"></div>
+            <div class="timeline-day-date-day" data-bind="htmlTimestampToDay: $data.datestamp"></div>
+          </div>
+        </div>
+        <div class="timeline-day-content">
+          <!-- ko foreach: $data.texts -->
+            <div class="timeline-day-content-item">
+              <div data-bind="visible: $data.type() === 'birth'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Birth</a>
+              </div>
+
+              <div data-bind="visible: $data.type() === 'engagement'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Engagement</a>
+              </div>
+
+              <div data-bind="visible: $data.type() === 'marriage'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Marriage</a>
+              </div>
+
+              <div data-bind="visible: $data.type() === 'death'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Death</a>
+              </div>
+
+              <div data-bind="visible: $data.type() === 'none'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id(), html: $data.text().replace('\n', '<br>')"></a>
+              </div>
+
+              <div class="timeline-day-content-item-information">
+
+                <span data-bind="visible: $data.whenTimestamp() !== false" class="timeline-day-content-item-information-item">
+                  <i class="icon-time icon-white"></i>
+                  <span data-bind="htmlPrintWhen: { when: $data.when, timezone: false }"></span>
+                </span>
+
+                <span data-bind="visible: $data.whereNode() !== false, if: $data.whereNode() !== false" class="timeline-day-content-item-information-item">
+                  <i class="icon-flag icon-white"></i>
+                  <a href="#" data-bind="hrefFirst: [ 'node', $data.whereNode()._id ], popoverNode: $data.whereNode()._id, text: $data.whereNode().name"></a>
+                </span>
+                <span data-bind="visible: $data.whereString() !== false && $data.whereNode() === false, if: $data.whereString() !== false && $data.whereNode() === false" class="timeline-day-content-item-information-item">
+                  <i class="icon-flag icon-white"></i>
+                  <span data-bind="text: $data.whereString"></span>
+                </span>
+
+                <span data-bind="visible: $data.who() !== false, if: $data.who() !== false" class="timeline-day-content-item-information-item">
+                  <i class="icon-user icon-white"></i>
+                  <a href="#" data-bind="hrefFirst: [ 'node', $data.who()._id ], popoverNode: $data.who()._id, text: $data.who().name"></a>
+                </span>
+
+                <span class="timeline-day-content-item-information-item" style="text-decoration: none;" href="#" data-bind="visible: nodeModel.node().hasAdminAccess()">
+                  <i class="icon-pencil icon-white"></i>
+                  <a href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpen">Edit</a>
+                </span>
+
+              </div>
+            </div>
+          <!-- /ko -->
+
+          <!-- ko if: $data.audio.length > 0 -->
+            <div class="timeline-day-content-item" data-bind="foreach: $data.audio">
+              <a style="display: block; margin-bottom: 5px;" href="#" data-bind="hrefSecondSecondary: $data._id()">
+                <i class="icon-headphones icon-white"></i>
+                <span data-bind="text: $data.name"></span>
+              </a>
+            </div>
+          <!-- /ko -->
+
+          <!-- ko if: $data.media.length > 0 -->
+            <div class="timeline-day-content-item clearfix" data-bind="foreach: $data.media">
+              <a href="#" draggable="true" class="timeline-day-content-item-picture" data-bind="hrefSecondSecondary: $data._id()" style="float: left;">
+                <img data-bind="srcPicture: [ $data._id, 80, 80, 1, $data.modified.timestamp ], attr: { title: $data.name }" src="" alt="" style="width: 80px; height: 80px;">
+              </a>
+            </div>
+          <!-- /ko -->
+        </div>
+
       </div>
     </div>
 

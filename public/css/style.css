@@ -538,3 +538,95 @@ i.icon-fixed[class*="icon-white"] {
   border-left: 1px solid #ddd;
   box-shadow: inset 1px 0 0 #ffffff;
 }
+
+.timeline-container {
+  padding: 30px;
+  margin-top: 80px;
+}
+
+.timeline-day {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.timeline-day-date {
+  width: 340px;
+  color: #ddd;
+  line-height: normal;
+}
+
+.timeline-day:nth-child(odd) .timeline-day-date {
+  float: left;
+  margin: 30px;
+  text-align: right;
+}
+
+.timeline-day:nth-child(even) .timeline-day-date {
+  float: right;
+  margin: 30px;
+  text-align: left;
+}
+
+.timeline-day-date-day {
+  font-size: 30px;
+}
+
+.timeline-day-date-year {
+  font-weight: bold;
+  font-size: 60px;
+}
+
+.timeline-day-content {
+  padding: 30px;
+  background-color: #f5f5f5;
+  border-left: 1px solid #ddd;
+  box-shadow: inset 1px 0 0 #ffffff;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+}
+
+.timeline-day:nth-child(odd) .timeline-day-content {
+  margin-left: 400px;
+}
+
+.timeline-day:nth-child(even) .timeline-day-content {
+  margin-right: 400px;
+}
+
+.timeline-day-content-item {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+}
+
+.timeline-day-content-item:last-child {
+ padding-bottom: 0px;
+ border-bottom-width: 0px;
+ margin-bottom: 0px;
+}
+
+.timeline-day-content-item-picture {
+  display: block;
+  margin: 0px 1px 1px 0px;
+}
+
+.timeline-day-content-item-information {
+  color: #999;
+  font-size: 10px;
+  padding: 20px 10px 0px 0px;
+}
+
+.timeline-day-content-item-information-item {
+  margin-right: 10px;
+}
+
+.timeline-day-content-item-text {
+  color: #333333;
+}
+
+.timeline-day-content-item-text:hover {
+  text-decoration: none;
+}
+
+

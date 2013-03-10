@@ -1035,6 +1035,56 @@ $(function()
     }
   };
 
+    ko.bindingHandlers.htmlTimestampToYear = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var rawValue = ko.utils.unwrapObservable(value);
+
+      if (!rawValue)
+      {
+        $(element).text("unknown date");
+        return;
+      }
+
+      var dateItem = moment.utc(rawValue * 1000).local();
+
+      if (!dateItem.date())
+      {
+        $(element).html(rawValue);
+      }
+      else
+      {
+        $(element).html(dateItem.format("YYYY"));
+      }
+    }
+  };
+
+  ko.bindingHandlers.htmlTimestampToDay = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var rawValue = ko.utils.unwrapObservable(value);
+
+      if (!rawValue)
+      {
+        $(element).text("unknown date");
+        return;
+      }
+
+      var dateItem = moment.utc(rawValue * 1000).local();
+
+      if (!dateItem.date())
+      {
+        $(element).html(rawValue);
+      }
+      else
+      {
+        $(element).html(dateItem.format("dddd, MMMM Do"));
+      }
+    }
+  };
+
 
 
   /* Knockout HTML time ago formater */

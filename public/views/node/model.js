@@ -170,7 +170,7 @@ var NodeModel = function(parentModel)
 
       if (item.whenTimestamp() === false)
       {
-        datestamp = "Missing date information";
+        datestamp = false;
       }
       else
       {
