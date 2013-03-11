@@ -48,7 +48,7 @@
                 <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Death</a>
               </div>
 
-              <div data-bind="visible: !$data.type || $data.type() === 'none' || $data.type() === ''">
+              <div data-bind="visible: !$data.type || $data.type() === false || $data.type() === 'none' || $data.type() === ''">
                 <h6 data-bind="text: $data.name"></h6>
                 <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id(), html: $data.text().replace('\n', '<br>')"></a>
               </div>
