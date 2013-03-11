@@ -167,68 +167,64 @@ var NodeModel = function(parentModel)
       var item = self.items()[n];
 
       var datestamp = false;
+      var datestampCompare = 0;
 
-      if (item.whenTimestamp() === false)
+      if (item.whenTimestamp() === false || item.whenTimestamp() === null)
       {
         datestamp = false;
       }
       else
       {
-        datestamp = Math.floor(item.whenTimestamp() / 86400) * 86400;
+        var timestamp = moment.utc(item.whenTimestamp() * 1000).local();
+        datestamp = [ timestamp.year(), timestamp.month(), timestamp.date() ];
+
+        var datestampString = murrix.pad(datestamp[0], 4);
+        datestampString += murrix.pad(datestamp[1], 2);
+        datestampString += murrix.pad(datestamp[2], 2);
+        datestampCompare = parseInt(datestampString);
       }
 
-      if (!results[datestamp])
+      if (!results[datestampCompare])
       {
-        results[datestamp] = {};
-        results[datestamp].datestamp = datestamp;
-        results[datestamp]["texts"] = [];
-        results[datestamp]["media"] = [];
-        results[datestamp]["audio"] = [];
+        results[datestampCompare] = {};
+        results[datestampCompare].datestamp = datestamp;
+        results[datestampCompare]["texts"] = [];
+        results[datestampCompare]["media"] = [];
+        results[datestampCompare]["audio"] = [];
       }
 
       if (item.whatDetailed() === "audioFile")
       {
-        results[datestamp]["audio"].push(item);
+        results[datestampCompare]["audio"].push(item);
       }
       if (item.whatDetailed() === "imageFile" || item.whatDetailed() === "videoFile")
       {
-        results[datestamp]["media"].push(item);
+        results[datestampCompare]["media"].push(item);
       }
       else if (item.whatDetailed() === "text")
       {
-        results[datestamp]["texts"].push(item);
+        results[datestampCompare]["texts"].push(item);
       }
     }
 
     var list = [];
 
-    for (var datestamp in results)
+    for (var datestampCompare in results)
     {
       var item = {};
 
-      item.datestamp = results[datestamp].datestamp;
-      item.texts = results[datestamp].texts;
-      item.media = results[datestamp].media;
-      item.audio = results[datestamp].audio;
+      item.datestampCompare = datestampCompare;
+      item.datestamp = results[datestampCompare].datestamp;
+      item.texts = results[datestampCompare].texts;
+      item.media = results[datestampCompare].media;
+      item.audio = results[datestampCompare].audio;
 
       list.push(item);
     }
 
     list.sort(function(a, b)
     {
-      if (typeof b.datestamp === 'string' || typeof a.datestamp === 'string')
-      {
-        return 0;
-      }
-
-      var offset = 0;
-
-      if (a.datestamp < 0 || b.datestamp < 0)
-      {
-        offset = Math.abs(Math.min(a.datestamp, b.datestamp));
-      }
-
-      return (a.datestamp + offset) - (b.datestamp + offset);
+      return a.datestampCompare - b.datestampCompare;
     });
 
 //     for (var n = 0; n < list.length; n++)

@@ -31,33 +31,47 @@
         <div class="timeline-day-content">
           <!-- ko foreach: $data.texts -->
             <div class="timeline-day-content-item">
-            
+
               <div data-bind="visible: $data.type && $data.type() === 'birth'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Birth</a>
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">
+                  <i class="icon-quote-left icon-white"></i>
+                  Birth
+                </a>
               </div>
 
               <div data-bind="visible: $data.type && $data.type() === 'engagement'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Engagement</a>
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">
+                  <i class="icon-heart-empty icon-white"></i>
+                  Engagement
+                </a>
               </div>
 
               <div data-bind="visible: $data.type && $data.type() === 'marriage'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Marriage</a>
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">
+                  <i class="icon-heart icon-white"></i>
+                  Marriage
+                </a>
               </div>
 
               <div data-bind="visible: $data.type && $data.type() === 'death'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">Death</a>
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">
+                  <i class="icon-quote-right icon-white"></i>
+                  Death
+                </a>
               </div>
 
               <div data-bind="visible: !$data.type || $data.type() === false || $data.type() === 'none' || $data.type() === ''">
-                <h6 data-bind="text: $data.name"></h6>
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id(), html: $data.text().replace('\n', '<br>')"></a>
+                <a class="timeline-day-content-item-text" href="#" data-bind="hrefSecondSecondary: $data._id()">
+                  <h6 data-bind="text: $data.name"></h6>
+                </a>
+                <a class="timeline-day-content-item-text" href="#" data-bind="hrefSecondSecondary: $data._id(), html: $data.text().replace('\n', '<br>')"></a>
               </div>
 
               <div class="timeline-day-content-item-information">
 
                 <span data-bind="visible: $data.whenTimestamp() !== false" class="timeline-day-content-item-information-item">
                   <i class="icon-time icon-white"></i>
-                  <span data-bind="htmlPrintWhen: { when: $data.when, timezone: false }"></span>
+                  <span data-bind="htmlPrintWhen: { when: $data.when, timezone: false, format: 'HH:mm:ss' }"></span>
                 </span>
 
                 <span data-bind="visible: $data.whereNode() !== false, if: $data.whereNode() !== false" class="timeline-day-content-item-information-item">
@@ -85,7 +99,7 @@
 
           <!-- ko if: $data.audio.length > 0 -->
             <div class="timeline-day-content-item" data-bind="foreach: $data.audio">
-              <a style="display: block; margin-bottom: 5px;" href="#" data-bind="hrefSecondSecondary: $data._id()">
+              <a style="display: block;" href="#" data-bind="hrefSecondSecondary: $data._id()">
                 <i class="icon-headphones icon-white"></i>
                 <span data-bind="text: $data.name"></span>
               </a>

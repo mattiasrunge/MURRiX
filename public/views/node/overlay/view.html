@@ -148,7 +148,7 @@
             </i>
           </p>
           <div class="alert alert-info">
-            <span data-bind="htmlPrintWhen: { when: nodeModel.overlayModel.item().when, timezone: false }"></span>
+            <span data-bind="htmlPrintWhen: { when: nodeModel.overlayModel.item().when, timezone: false, popover: true }"></span>
           </div>
         </div>
 
@@ -440,7 +440,7 @@
               </td>
               <td>
                 <span data-bind="if: nodeModel.overlayModel.item().whenTimestamp() !== false">
-                  <span data-bind="htmlPrintWhen: { when: nodeModel.overlayModel.item().when, timezone: false }"></span>
+                  <span data-bind="htmlPrintWhen: { when: nodeModel.overlayModel.item().when, timezone: false, popover: true }"></span>
                 </span>
                 <span data-bind="visible: nodeModel.overlayModel.item().whenTimestamp() === false && nodeModel.node().hasAdminAccess()">
                   <a style="display: block;" href="#" data-bind="click: nodeModel.overlayModel.whenEditClicked">

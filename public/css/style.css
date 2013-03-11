@@ -546,29 +546,29 @@ i.icon-fixed[class*="icon-white"] {
 
 .timeline-day {
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: 45px;
 }
 
 .timeline-day-date {
-  width: 340px;
+  width: 260px;
   color: #ddd;
   line-height: normal;
 }
 
 .timeline-day:nth-child(odd) .timeline-day-date {
   float: left;
-  margin: 30px;
+  margin: 20px 20px 0px 0px;
   text-align: right;
 }
 
 .timeline-day:nth-child(even) .timeline-day-date {
   float: right;
-  margin: 30px;
+  margin: 20px 0px 0px 20px;
   text-align: left;
 }
 
 .timeline-day-date-day {
-  font-size: 30px;
+  font-size: 20px;
 }
 
 .timeline-day-date-year {
@@ -587,11 +587,11 @@ i.icon-fixed[class*="icon-white"] {
 }
 
 .timeline-day:nth-child(odd) .timeline-day-content {
-  margin-left: 400px;
+  margin-left: 300px;
 }
 
 .timeline-day:nth-child(even) .timeline-day-content {
-  margin-right: 400px;
+  margin-right: 300px;
 }
 
 .timeline-day-content-item {
@@ -628,5 +628,3 @@ i.icon-fixed[class*="icon-white"] {
 .timeline-day-content-item-text:hover {
   text-decoration: none;
 }
-
-

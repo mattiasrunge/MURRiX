@@ -294,40 +294,43 @@ $(function()
         return;
       }
 
-      var format = "dddd, MMMM Do YYYY, HH:mm:ss";
+      var format = data.format || "dddd, MMMM Do YYYY, HH:mm:ss";
 
-      if (typeof when.source !== "function")
+      if (!data.format)
       {
-        if (when.source.type() === "manual")
+        if (typeof when.source !== "function")
         {
-          var parts = when.source.datestring().replace(/-/g, " ").replace(/:/g, " ").split(" ");
+          if (when.source.type() === "manual")
+          {
+            var parts = when.source.datestring().replace(/-/g, " ").replace(/:/g, " ").split(" ");
 
-          if (parts[0] === "XXXX") // Year missing
-          {
-            format = "[No date and time set]";
-          }
-          else if (parts[1] === "XX") // Month missing
-          {
-            format = "YYYY";
-          }
-          else if (parts[2] === "XX") // Day missing
-          {
-            format = "MMMM YYYY";
-          }
-          else if (parts[3] === "XX") // Hour missing
-          {
-            format = "dddd, MMMM Do YYYY";
-          }
-          else if (parts[4] === "XX") // Minute missing
-          {
-            format = "dddd, MMMM Do YYYY, HH";
-          }
-          else if (parts[5] === "XX") // Second missing
-          {
-            format = "dddd, MMMM Do YYYY, HH:mm";
-          }
+            if (parts[0] === "XXXX") // Year missing
+            {
+              format = "[No date and time set]";
+            }
+            else if (parts[1] === "XX") // Month missing
+            {
+              format = "YYYY";
+            }
+            else if (parts[2] === "XX") // Day missing
+            {
+              format = "MMMM YYYY";
+            }
+            else if (parts[3] === "XX") // Hour missing
+            {
+              format = "dddd, MMMM Do YYYY";
+            }
+            else if (parts[4] === "XX") // Minute missing
+            {
+              format = "dddd, MMMM Do YYYY, HH";
+            }
+            else if (parts[5] === "XX") // Second missing
+            {
+              format = "dddd, MMMM Do YYYY, HH:mm";
+            }
 
-          // Full date exists!
+            // Full date exists!
+          }
         }
       }
 
@@ -335,70 +338,73 @@ $(function()
 
       $(element).html(title);
 
-      var text = "";
-
-      if (typeof when.source !== "function")
+      if (data.popover)
       {
-        text += "<table class='table table-condensed table-striped'>";
+        var text = "";
 
-        text += "<tr>";
-        text += "<td>Timestamp</td><td>" + when.timestamp() + "</td>";
-        text += "</tr>";
-
-        text += "<tr>";
-        text += "<td>Type</td><td>" + when.source.type() + "</td>";
-        text += "</tr>";
-
-        text += "<tr>";
-        text += "<td>Datestring</td><td>" + when.source.datestring() + "</td>";
-        text += "</tr>";
-
-        if (when.source.reference && when.source.reference() !== "None")
+        if (typeof when.source !== "function")
         {
+          text += "<table class='table table-condensed table-striped'>";
+
           text += "<tr>";
-          text += "<td>Referance</td><td>If a references exists it will be used</td>";
+          text += "<td>Timestamp</td><td>" + when.timestamp() + "</td>";
           text += "</tr>";
-        }
 
-        if (when.source.timezone && when.source.timezone() !== false)
-        {
           text += "<tr>";
-          text += "<td>Timezone</td><td>" + when.source.timezone() + "</td>";
+          text += "<td>Type</td><td>" + when.source.type() + "</td>";
           text += "</tr>";
-        }
 
-        if (when.source.daylightSavings)
-        {
           text += "<tr>";
-          text += "<td>Daylight savings</td><td>" + (when.source.daylightSavings() ? "Yes" : "No") + "</td>";
+          text += "<td>Datestring</td><td>" + when.source.datestring() + "</td>";
           text += "</tr>";
+
+          if (when.source.reference && when.source.reference() !== "None")
+          {
+            text += "<tr>";
+            text += "<td>Referance</td><td>If a references exists it will be used</td>";
+            text += "</tr>";
+          }
+
+          if (when.source.timezone && when.source.timezone() !== false)
+          {
+            text += "<tr>";
+            text += "<td>Timezone</td><td>" + when.source.timezone() + "</td>";
+            text += "</tr>";
+          }
+
+          if (when.source.daylightSavings)
+          {
+            text += "<tr>";
+            text += "<td>Daylight savings</td><td>" + (when.source.daylightSavings() ? "Yes" : "No") + "</td>";
+            text += "</tr>";
+          }
+
+          if (when.source.comment && when.source.comment() !== "")
+          {
+            text += "<tr>";
+            text += "<td>Comment</td><td>" + when.source.comment() + "</td>";
+            text += "</tr>";
+          }
+
+          text += "</table>";
+
+          if (ko.utils.unwrapObservable(data.timezone) === false)
+          {
+            text += "<span class='muted'>No information found on the timezone where this item was created, will display the time in your local timezone.</span>";
+          }
         }
 
-        if (when.source.comment && when.source.comment() !== "")
-        {
-          text += "<tr>";
-          text += "<td>Comment</td><td>" + when.source.comment() + "</td>";
-          text += "</tr>";
+        var options = {
+          html      : true,
+          placement : "left",
+          trigger   : "hover",
+          title     : title,
+          content   : "<div style='font-size: 10px;'>" + text + "</div>",
+          delay     : { show: 200, hide: 100 }
         }
 
-        text += "</table>";
-
-        if (ko.utils.unwrapObservable(data.timezone) === false)
-        {
-          text += "<span class='muted'>No information found on the timezone where this item was created, will display the time in your local timezone.</span>";
-        }
+        $(element).popover(options);
       }
-
-      var options = {
-        html      : true,
-        placement : "left",
-        trigger   : "hover",
-        title     : title,
-        content   : "<div style='font-size: 10px;'>" + text + "</div>",
-        delay     : { show: 200, hide: 100 }
-      }
-
-      $(element).popover(options);
     }
   };
 
@@ -997,7 +1003,7 @@ $(function()
         return;
       }
 
-      var dateItem = moment.utc(rawValue * 1000).local();
+      var dateItem = moment(rawValue * 1000);
 
       if (!dateItem.date())
       {
@@ -1010,7 +1016,32 @@ $(function()
     }
   };
 
-  ko.bindingHandlers.htmlTimestampToDate = {
+//   ko.bindingHandlers.htmlTimestampToDate = {
+//     update: function(element, valueAccessor)
+//     {
+//       var value = valueAccessor();
+//       var rawValue = ko.utils.unwrapObservable(value);
+//
+//       if (!rawValue)
+//       {
+//         $(element).text("unknown date");
+//         return;
+//       }
+//
+//       var dateItem = moment(rawValue * 1000).local();
+//
+//       if (!dateItem.date())
+//       {
+//         $(element).html(rawValue);
+//       }
+//       else
+//       {
+//         $(element).html(dateItem.format("dddd, MMMM Do YYYY"));
+//       }
+//     }
+//   };
+
+  ko.bindingHandlers.htmlTimestampToYear = {
     update: function(element, valueAccessor)
     {
       var value = valueAccessor();
@@ -1018,36 +1049,11 @@ $(function()
 
       if (!rawValue)
       {
-        $(element).text("unknown date");
+        $(element).text("unknown year");
         return;
       }
 
-      var dateItem = moment.utc(rawValue * 1000).local();
-
-      if (!dateItem.date())
-      {
-        $(element).html(rawValue);
-      }
-      else
-      {
-        $(element).html(dateItem.format("dddd, MMMM Do YYYY"));
-      }
-    }
-  };
-
-    ko.bindingHandlers.htmlTimestampToYear = {
-    update: function(element, valueAccessor)
-    {
-      var value = valueAccessor();
-      var rawValue = ko.utils.unwrapObservable(value);
-
-      if (!rawValue)
-      {
-        $(element).text("unknown date");
-        return;
-      }
-
-      var dateItem = moment.utc(rawValue * 1000).local();
+      var dateItem = moment(rawValue);
 
       if (!dateItem.date())
       {
@@ -1072,7 +1078,7 @@ $(function()
         return;
       }
 
-      var dateItem = moment.utc(rawValue * 1000).local();
+      var dateItem = moment(rawValue);
 
       if (!dateItem.date())
       {
@@ -1081,6 +1087,31 @@ $(function()
       else
       {
         $(element).html(dateItem.format("dddd, MMMM Do"));
+      }
+    }
+  };
+
+  ko.bindingHandlers.htmlTimestampToTime = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var rawValue = ko.utils.unwrapObservable(value);
+
+      if (!rawValue)
+      {
+        $(element).text("unknown time");
+        return;
+      }
+
+      var dateItem = moment.utc(rawValue * 1000);
+
+      if (!dateItem.date())
+      {
+        $(element).html(rawValue);
+      }
+      else
+      {
+        $(element).html(dateItem.format("HH:mm:ss"));
       }
     }
   };
