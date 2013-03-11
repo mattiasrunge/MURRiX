@@ -541,7 +541,6 @@ i.icon-fixed[class*="icon-white"] {
 
 .timeline-container {
   padding: 30px;
-  margin-top: 80px;
 }
 
 .timeline-day {
@@ -627,4 +626,51 @@ i.icon-fixed[class*="icon-white"] {
 
 .timeline-day-content-item-text:hover {
   text-decoration: none;
+}
+
+.timeline-slideout {
+  z-index: 2;
+  position: fixed;
+  top: 86px;
+  left: 90px;
+  width: 200px;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-border-top-right-radius: 5px;
+    -moz-border-top-right-radius: 5px;
+        border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+    -moz-border-bottom-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+  background-color: whiteSmoke;
+  border: 1px solid #E3E3E3;
+}
+
+.timeline-slideout:hover {
+  left: 272px;
+}
+
+.timeline-slideout-handle {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 20px;
+  background-color: #E3E3E3;
+  -webkit-border-top-right-radius: 5px;
+    -moz-border-top-right-radius: 5px;
+        border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+    -moz-border-bottom-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+}
+
+.rotate {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
