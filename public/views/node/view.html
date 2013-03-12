@@ -45,6 +45,54 @@
   </div>
 </script>
 
+<div class="toolbox" data-bind="visible: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
+  <div class="toolbox-handle">
+    <div class="toolbox-handle-icon">
+      <i class="icon-cog"></i>
+    </div>
+  </div>
+  <div class="toolbox-content">
+    <div class="toolbox-content-inner">
+      <div class="toolbox-title">Toolbox</div>
+
+      <button class="btn btn-inverse" style="width: 100%; margin-bottom: 15px;" data-bind="click: nodeModel.editNode">
+        <i class="icon-pencil icon-white"></i>
+        Edit
+      </button>
+
+      <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px;" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">
+        <i class="icon-plus icon-white"></i>
+        Create text
+      </button>
+
+      <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px;" data-bind="click: dialogModel.uploadModel.show">
+        <i class="icon-exchange icon-white"></i>
+        Upload
+      </button>
+
+      <button class="btn btn-primary" style="width: 100%; margin-bottom: 15px;" href="#editAccessModal" data-toggle="modal">
+        <i class="icon-key icon-white"></i>
+        Accesses
+      </button>
+
+      <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)"  class="btn btn-warning" style="width: 100%; margin-bottom: 15px;">
+        <i class="icon-unlock"></i>
+        Make public
+      </button>
+
+      <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" class="btn btn-success" style="width: 100%; margin-bottom: 15px;">
+        <i class="icon-lock"></i>
+        Make private
+      </button>
+
+      <button class="btn btn-danger" style="width: 100%; margin-bottom: 15px;" data-bind="click: nodeModel.removeNode">
+        <i class="icon-trash icon-white"></i>
+        Remove
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="sidebar-nav" data-bind="visible: nodeModel.show() && nodeModel.node() !== false">
 
   <div style="position: relative; width: 250px; height: 250px" data-bind="event: { drop: nodeModel.dragDrop, dragover: nodeModel.dragOver }, if: nodeModel.node()">
@@ -120,7 +168,7 @@
       </li>
     </ul>
 
-    <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center; height: 50px;" data-bind="if: nodeModel.node() !== false">
+    <!--<div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center; height: 50px;" data-bind="if: nodeModel.node() !== false">
       <div class="modal-footer" style="text-align: center; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
 
 
@@ -134,7 +182,7 @@
 
         <button rel="tooltip" title="Remove" class="btn btn-link" href="#" data-bind="click: nodeModel.removeNode"><i class="icon-trash"></i></button>
       </div>
-    </div>
+    </div>-->
   </div>
 
   <div class="sidebar-nav-background"></div>

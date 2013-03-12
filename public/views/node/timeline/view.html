@@ -1,19 +1,6 @@
 <div class="main-overlay" data-bind="slideVisible: nodeModel.timelineModel.show() && nodeModel.node() !== false">
   <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false">
 
-    <div class="timeline-slideout" data-bind="visible: nodeModel.node().hasAdminAccess()">
-      <div class="timeline-slideout-handle">
-        <i class="icon-double-angle-right" style="margin-left: 6px;"></i>
-      </div>
-      <div style="margin: 15px; margin-right: 35px; text-align: center;">
-        <h6 class="muted">Toolbox</h6>
-        <a class="btn btn-primary" style="width: 125px;" href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">
-          <i class="icon-plus icon-white"></i>
-          Create text
-        </a>
-      </div>
-    </div>
-
     <div class="timeline-container" data-bind="foreach: nodeModel.logItems" >
 
       <div class="timeline-day clearfix">

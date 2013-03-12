@@ -461,8 +461,8 @@ i.icon-fixed[class*="icon-white"] {
   left: 20px;
   width: 250px;
   margin-bottom: 0px;
-  border-left: 1px solid #252525;
-  border-right: 1px solid #252525;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
 
 .sidebar-nav-background {
@@ -474,8 +474,6 @@ i.icon-fixed[class*="icon-white"] {
   right: 0px;
   margin-bottom: 0px;
   background-color: whiteSmoke;
-  border-left: 1px solid #E3E3E3;
-  border-right: 1px solid #E3E3E3;
 }
 
 .sidebar-nav-content {
@@ -628,43 +626,89 @@ i.icon-fixed[class*="icon-white"] {
   text-decoration: none;
 }
 
-.timeline-slideout {
-  z-index: 2;
+
+
+.toolbox {
+  z-index: 3;
   position: fixed;
-  top: 86px;
-  left: 90px;
+  top: 41px;
+  bottom: 0px;
+  left: 70px;
   width: 200px;
-  -webkit-transition-duration: 0.3s;
-  -moz-transition-duration: 0.3s;
-  -o-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-border-top-right-radius: 5px;
-    -moz-border-top-right-radius: 5px;
-        border-top-right-radius: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-    -moz-border-bottom-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-  background-color: whiteSmoke;
-  border: 1px solid #E3E3E3;
+  -webkit-transition-duration: 0.5s;
+  -moz-transition-duration: 0.5s;
+  -o-transition-duration: 0.5s;
+  transition-duration: 0.5s;
+/*  -webkit-border-top-right-radius: 3px;
+    -moz-border-top-right-radius: 3px;
+        border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+    -moz-border-bottom-right-radius: 3px;
+        border-bottom-right-radius: 3px;*/
 }
 
-.timeline-slideout:hover {
+.toolbox:hover {
   left: 272px;
 }
 
-.timeline-slideout-handle {
+.toolbox-title {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  text-align: center;
+  color: #999999;
+  font-weight: bold;
+  font-size: 28px;
+  padding: 20px 0px 20px 0px;
+}
+
+.toolbox-handle {
+  z-index: 2;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: -35px;
+  height: 35px;
+  width: 35px;
+  background-color: white;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  -webkit-border-top-right-radius: 3px;
+    -moz-border-top-right-radius: 3px;
+        border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+    -moz-border-bottom-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+  opacity: 0.8;
+}
+
+.toolbox:hover .toolbox-handle, .toolbox-handle:hover {
+  opacity: 1.0;
+}
+
+.toolbox-handle-icon {
+  margin-left: 13px;
+  margin-top: 8px;
+  position: absolute;
+}
+
+.toolbox-content {
   position: absolute;
   top: 0px;
   right: 0px;
   bottom: 0px;
-  width: 20px;
-  background-color: #E3E3E3;
-  -webkit-border-top-right-radius: 5px;
-    -moz-border-top-right-radius: 5px;
-        border-top-right-radius: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-    -moz-border-bottom-right-radius: 5px;
-        border-bottom-right-radius: 5px;
+  left: 0px;
+  overflow: auto;
+  background-color: white;
+  border-right: 1px solid #ccc;
+}
+
+.toolbox-content-inner {
+  position: absolute;
+  top: 0px;
+  right: 15px;
+  bottom: 0px;
+  left: 15px;
 }
 
 .rotate {
