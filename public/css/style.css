@@ -639,6 +639,14 @@ i.icon-fixed[class*="icon-white"] {
   -moz-transition-duration: 0.5s;
   -o-transition-duration: 0.5s;
   transition-duration: 0.5s;
+  -webkit-transition-timing-function: ease-in-out;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+  -moz-transition-delay: 0.5s;
+  -webkit-transition-delay: 0.5s;
+  -o-transition-delay: 0.5s;
+  transition-delay: 0.5s;
 /*  -webkit-border-top-right-radius: 3px;
     -moz-border-top-right-radius: 3px;
         border-top-right-radius: 3px;
@@ -649,6 +657,10 @@ i.icon-fixed[class*="icon-white"] {
 
 .toolbox:hover {
   left: 272px;
+  -moz-transition-delay: 0s;
+  -webkit-transition-delay: 0s;
+  -o-transition-delay: 0s;
+  transition-delay: 0s;
 }
 
 .toolbox-title {
