@@ -1,10 +1,18 @@
 
 <div class="sidebar-nav" data-bind="slideVisible: !nodeModel.show()">
 
-  <div style="position: relative; width: 250px; height: 250px; z-index: 100">
-    <img draggable="false" class="" src="img/profile_picture_overlay.png" style="width: 250px; height: 250px; position: absolute; top: 0px; left: 0px;">
+  <div class="sidebar-nav-picture">
+    <!-- Icon from http://cemagraphics.deviantart.com/ -->
+    <img draggable="false" src="img/news_paper_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: newsModel.show"/>
 
-    <img draggable="false" src="img/search-engine-optimization.jpg" alt="" style="width: 250px; height: 250px;"/>
+    <!-- Icon from http://www.visualpharm.com/ -->
+    <img draggable="false" src="img/calendar_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: searchModel.show"/>
+
+    <!-- Icon from http://www.visualpharm.com/ -->
+    <img draggable="false" src="img/folder_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: browseModel.show"/>
+
+    <!-- Icon from http://www.iconshock.com/ -->
+    <img draggable="false" src="img/postage_stamp_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: tagsModel.show"/>
   </div>
 
   <div class="sidebar-nav-content">

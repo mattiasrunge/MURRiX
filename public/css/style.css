@@ -503,6 +503,14 @@ i.icon-fixed[class*="icon-white"] {
           box-shadow: 3px 3px 15px 3px black;
 }
 
+.sidebar-nav-picture {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin-top: -20px;
+  margin-left: -20px;
+}
+
 .sidebar-nav-droptarget {
   width: 250px;
   height: 250px;
