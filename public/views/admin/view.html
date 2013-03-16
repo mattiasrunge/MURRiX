@@ -1,4 +1,4 @@
-<div class="main-overlay" data-bind="slideVisible: adminModel.show() && currentUser() && currentUser().admin()">
+<div class="main-overlay" data-bind="fadeVisible: adminModel.show() && currentUser() && currentUser().admin()">
   <div class="main-overlay-content" style="overflow: hidden;">
 
 <!--    <div class="navbar navbar-color navbar-inverse">
@@ -10,7 +10,7 @@
       </div>
     </div>-->
 
-    <div class="well" style="position: absolute; top: 78px; left: 20px; bottom: 0px; right: 20px;">
+    <div class="well" style="position: absolute; top: 20px; left: 272px; bottom: 0px; right: 20px;">
 
       <div style="overflow-y: scroll; position: absolute; top: 20px; left: 20px; bottom: 20px; right: 540px;">
         <h4>Groups <button title="Create group" class="btn btn-link btn-mini" href="#" data-bind="click: adminModel.groupCreateClicked">Create</button></h4>
