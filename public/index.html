@@ -163,6 +163,26 @@
         console.log("Successfully connected to MURRiX backend");
 
         murrix.model.setCurrentUserData(data.userData);
+
+        function hashChangeHandler()
+        {
+          var state = "";
+
+          if (document.location.hash.length > 0)
+          {
+            state = document.location.hash.slice(1);
+          }
+
+          /* HACK: Close open dropdowns */
+          $(".dropdown.open .dropdown-toggle").dropdown("toggle");
+
+          /* Update the current path of the base model */
+          murrix.updatePath(state, murrix.model.path);
+        }
+
+        $(window).on("hashchange", hashChangeHandler);
+
+        hashChangeHandler();
       });
 
 
@@ -195,25 +215,7 @@
           e.stopPropagation();
         });
 
-        function hashChangeHandler()
-        {
-          var state = "";
 
-          if (document.location.hash.length > 0)
-          {
-            state = document.location.hash.slice(1);
-          }
-
-          /* HACK: Close open dropdowns */
-          $(".dropdown.open .dropdown-toggle").dropdown("toggle");
-
-          /* Update the current path of the base model */
-          murrix.updatePath(state, murrix.model.path);
-        }
-
-        $(window).on("hashchange", hashChangeHandler);
-
-        hashChangeHandler();
 
         /* Clear loading overlay */
         $(".loading-overlay").fadeOut();

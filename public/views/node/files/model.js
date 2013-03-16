@@ -8,6 +8,9 @@ var FilesModel = function(parentModel)
 
   self.show = ko.observable(false);
   self.enabled = ko.observable(true);
+  self.files = ko.observableArray();
+  self.loading = ko.observable(false);
+  self.loaded = ko.observable(false);
 
   parentModel.path().primary.subscribe(function(value)
   {
@@ -16,4 +19,46 @@ var FilesModel = function(parentModel)
       self.show(value.action === "files");
     }
   });
+
+  parentModel.node.subscribe(function(value)
+  {
+    self.files.removeAll();
+    self.loaded(false);
+
+    if (value !== false)
+    {
+      self.load();
+    }
+  });
+
+  self.show.subscribe(function(value)
+  {
+    if (value)
+    {
+      self.load();
+    }
+  });
+
+  self.load = function()
+  {
+    if (self.show() && !self.loaded() && parentModel.node() !== false)
+    {
+      self.loading(true);
+
+      murrix.server.emit("helper_nodeGetFilesList", { nodeId: parentModel.node()._id() }, function(error, fileList)
+      {
+        self.loading(false);
+
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        console.log("FilesModel: Loaded " + fileList.length + " files!");
+        self.loaded(true);
+        self.files(fileList);
+      });
+    }
+  };
 };

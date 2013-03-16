@@ -178,7 +178,6 @@ function DialogPersonNodeModel()
 
     if (self.partnerModel.value().length > 0)
     {
-      // TODO: Should change _partner on the partner person node as well
       nodeData.family._partner = self.partnerModel.value()[0];
     }
 

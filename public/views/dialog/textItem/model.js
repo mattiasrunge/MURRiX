@@ -202,13 +202,8 @@ function DialogTextItemModel()
       }
 
       console.log("Saved item!", itemDataNew);
-      var item = murrix.cache.addItemData(itemDataNew);
-
-      if (!itemData._id)
-      {
-        // TODO: Solve this in a nicer way!
-        murrix.model.nodeModel.items.push(item);
-      }
+      murrix.cache.addItemData(itemDataNew);
+      murrix.model.nodeModel.loadNode();
 
       self.reset();
       self.hide();

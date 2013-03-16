@@ -1,7 +1,7 @@
-<div class="main-overlay" data-bind="slideVisible: nodeModel.timelineModel.show() && nodeModel.node() !== false">
-  <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false">
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.timelineModel.show() && nodeModel.node() !== false">
+  <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false && nodeModel.timelineModel.timeline() !== false, event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
 
-    <div class="timeline-container" data-bind="foreach: nodeModel.logItems" >
+    <div class="timeline-container" data-bind="foreach: nodeModel.timelineModel.timeline" >
 
       <div class="timeline-day clearfix">
         <div class="timeline-day-date">
@@ -17,60 +17,56 @@
           <!-- ko foreach: $data.texts -->
             <div class="timeline-day-content-item">
 
-              <div data-bind="visible: $data.type && $data.type() === 'birth'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">
+              <div data-bind="visible: $data.type === 'birth'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
                   <i class="icon-quote-left icon-white"></i>
                   Birth
                 </a>
               </div>
 
-              <div data-bind="visible: $data.type && $data.type() === 'engagement'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">
+              <div data-bind="visible: $data.type === 'engagement'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
                   <i class="icon-heart-empty icon-white"></i>
                   Engagement
                 </a>
               </div>
 
-              <div data-bind="visible: $data.type && $data.type() === 'marriage'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">
+              <div data-bind="visible: $data.type === 'marriage'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
                   <i class="icon-heart icon-white"></i>
                   Marriage
                 </a>
               </div>
 
-              <div data-bind="visible: $data.type && $data.type() === 'death'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id()" style="font-size: 20px; font-weight: bold;">
+              <div data-bind="visible: $data.type === 'death'">
+                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
                   <i class="icon-quote-right icon-white"></i>
                   Death
                 </a>
               </div>
 
-              <div data-bind="visible: !$data.type || $data.type() === false || $data.type() === 'none' || $data.type() === ''">
-                <a class="timeline-day-content-item-text" href="#" data-bind="hrefSecondSecondary: $data._id()">
+              <div data-bind="visible: !$data.type || $data.type === false || $data.type === 'none' || $data.type === ''">
+                <a class="timeline-day-content-item-text" href="#" data-bind="hrefSecondSecondary: $data._id">
                   <h6 data-bind="text: $data.name"></h6>
                 </a>
-                <a class="timeline-day-content-item-text" href="#" data-bind="hrefSecondSecondary: $data._id(), html: $data.text().replace('\n', '<br>')"></a>
+                <div data-bind="html: $data.text.replace('\n', '<br>')"></div>
               </div>
 
               <div class="timeline-day-content-item-information">
 
-                <span data-bind="visible: $data.whenTimestamp() !== false" class="timeline-day-content-item-information-item">
+                <span data-bind="visible: $data.when !== false && $data.when.timeline !== false" class="timeline-day-content-item-information-item">
                   <i class="icon-time icon-white"></i>
                   <span data-bind="htmlPrintWhen: { when: $data.when, timezone: false, format: 'HH:mm:ss' }"></span>
                 </span>
 
-                <span data-bind="visible: $data.whereNode() !== false, if: $data.whereNode() !== false" class="timeline-day-content-item-information-item">
+                <span data-bind="visible: $data.where !== false, if: $data.where !== false" class="timeline-day-content-item-information-item">
                   <i class="icon-flag icon-white"></i>
-                  <a href="#" data-bind="hrefFirst: [ 'node', $data.whereNode()._id ], popoverNode: $data.whereNode()._id, text: $data.whereNode().name"></a>
-                </span>
-                <span data-bind="visible: $data.whereString() !== false && $data.whereNode() === false, if: $data.whereString() !== false && $data.whereNode() === false" class="timeline-day-content-item-information-item">
-                  <i class="icon-flag icon-white"></i>
-                  <span data-bind="text: $data.whereString"></span>
+                  <span data-bind="htmlPrintWhere: $data.where"></span>
                 </span>
 
-                <span data-bind="visible: $data.who() !== false, if: $data.who() !== false" class="timeline-day-content-item-information-item">
+                <span data-bind="visible: $data._who !== false, if: $data._who !== false" class="timeline-day-content-item-information-item">
                   <i class="icon-user icon-white"></i>
-                  <a href="#" data-bind="hrefFirst: [ 'node', $data.who()._id ], popoverNode: $data.who()._id, text: $data.who().name"></a>
+                  <a href="#" data-bind="hrefFirst: [ 'node', $data._who ], textNodeAttribute: [ $data._who, 'name' ]"></a>
                 </span>
 
                 <span class="timeline-day-content-item-information-item" style="text-decoration: none;" href="#" data-bind="visible: nodeModel.node().hasAdminAccess()">
@@ -84,17 +80,17 @@
 
           <!-- ko if: $data.audio.length > 0 -->
             <div class="timeline-day-content-item" data-bind="foreach: $data.audio">
-              <a style="display: block;" href="#" data-bind="hrefSecondSecondary: $data._id()">
+              <a style="display: block;" href="#" data-bind="hrefSecondSecondary: $data._id">
                 <i class="icon-headphones icon-white"></i>
                 <span data-bind="text: $data.name"></span>
               </a>
             </div>
           <!-- /ko -->
 
-          <!-- ko if: $data.media.length > 0 -->
-            <div class="timeline-day-content-item clearfix" data-bind="foreach: $data.media">
-              <a href="#" draggable="true" class="timeline-day-content-item-picture" data-bind="hrefSecondSecondary: $data._id()" style="float: left;">
-                <img data-bind="srcPicture: [ $data._id, 80, 80, 1, $data.modified.timestamp ], attr: { title: $data.name }" src="" alt="" style="width: 80px; height: 80px;">
+          <!-- ko if: $data.images.length > 0 -->
+            <div class="timeline-day-content-item clearfix" data-bind="foreach: $data.images">
+              <a href="#" draggable="true" class="timeline-day-content-item-picture" data-bind="hrefSecondSecondary: $data._id" style="float: left;">
+                <img data-bind="srcPicture: [ $data._id, 80, 80, 1, $data.cacheId ], attr: { title: $data.name }, draggable: { id: $data._id, type: $data.type }" src="" alt="" style="width: 80px; height: 80px;">
               </a>
             </div>
           <!-- /ko -->

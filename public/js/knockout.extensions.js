@@ -18,8 +18,115 @@ $(function()
   };
 
 
+  ko.bindingHandlers.draggable = {
+    init: function(element, valueAccessor)
+    {
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      value.id = ko.utils.unwrapObservable(value.id);
+      value.type = ko.utils.unwrapObservable(value.type);
+
+      if (!value.id || !value.type)
+      {
+        return;
+      }
+
+      $(element).prop("draggable", true);
+
+      $(element).on("dragstart", function(event)
+      {
+        murrix.dnd.start(value.id, value.type);
+      });
+
+      $(element).on("dragend", function(event)
+      {
+        murrix.dnd.end();
+      });
+    }
+  };
+
+  ko.bindingHandlers.target = {
+    init: function(element, valueAccessor)
+    {
+      var value = ko.utils.unwrapObservable(valueAccessor());
+      value.handler = ko.utils.unwrapObservable(value.handler);
+      value.types = ko.utils.unwrapObservable(value.types);
+
+      if (!value.handler)
+      {
+        return;
+      }
+
+      $(element).addClass("drop-target");
+
+      var subscription = murrix.dnd.type.subscribe(function(type)
+      {
+        if ($(element).is(":visible"))
+        {
+          if (type === false)
+          {
+            $(element).removeClass("drop-target-highlight");
+          }
+          else
+          {
+            if (!value.types || murrix.inArray(type, value.types))
+            {
+              $(element).addClass("drop-target-highlight");
+            }
+          }
+        }
+        else
+        {
+          subscription.dispose();
+        }
+      });
+
+      $(element).on("drop", function(event)
+      {
+        if (!value.types || murrix.inArray(murrix.dnd.type(), value.types))
+        {
+          event.preventDefault();
+          event.stopPropagation();
+
+          $(element).removeClass("drop-target-active");
+          value.handler(murrix.dnd.id(), murrix.dnd.type());
+        }
+      });
+
+      $(element).on("dragenter", function(event)
+      {
+        if (!value.types || murrix.inArray(murrix.dnd.type(), value.types))
+        {
+          $(element).addClass("drop-target-active");
+          return true;
+        }
+
+        return false;
+      });
+
+      $(element).on("dragover", function(event)
+      {
+        if (!value.types || murrix.inArray(murrix.dnd.type(), value.types))
+        {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      });
+
+      $(element).on("dragleave", function(event)
+      {
+        if (!value.types || murrix.inArray(murrix.dnd.type(), value.types))
+        {
+          $(element).removeClass("drop-target-active");
+          return true;
+        }
+
+        return false;
+      });
+    }
+  };
+
   ko.bindingHandlers.clickKey = {
-    update: function(element, valueAccessor)
+    init: function(element, valueAccessor)
     {
       var value = ko.utils.unwrapObservable(valueAccessor());
 
@@ -198,9 +305,11 @@ $(function()
 
       $(element).text("...loading...");
 
-      if (where._id && where._id() !== false)
+      var whereId = ko.utils.unwrapObservable(where._id);
+
+      if (whereId)
       {
-        murrix.cache.getNodes([ where._id() ], function(error, nodeList)
+        murrix.cache.getNodes([ whereId ], function(error, nodeList)
         {
           if (error)
           {
@@ -208,9 +317,9 @@ $(function()
             return;
           }
 
-          if (nodeList[where._id()])
+          if (nodeList[whereId])
           {
-            $(element).html("<a href='#node:" + where._id() + "'>" + nodeList[where._id()].name() + "</a>");
+            $(element).html("<a href='#node:" + whereId + "'>" + nodeList[whereId].name() + "</a>");
           }
           else
           {
@@ -222,10 +331,12 @@ $(function()
       {
         // TODO: Look in our own database first
 
+        var longitude = ko.utils.unwrapObservable(where.longitude);
+        var latitude = ko.utils.unwrapObservable(where.latitude);
         var options = {};
 
         options.sensor = false;
-        options.latlng = where.latitude() + "," + where.longitude();
+        options.latlng = longitude + "," + latitude;
 
         jQuery.getJSON("http://maps.googleapis.com/maps/api/geocode/json", options, function(data)
         {
@@ -279,14 +390,15 @@ $(function()
 
       var when = ko.utils.unwrapObservable(data.when);
       var timezone = murrix.parseTimezone(ko.utils.unwrapObservable(data.timezone));
+      var timestamp = ko.utils.unwrapObservable(when.timestamp);
 
-      if (when.timestamp() === false)
+      if (!timestamp)
       {
         $(element).html("No date and time set");
         return;
       }
 
-      var dateItem = moment.utc(when.timestamp() * 1000).local(); // TODO: Make date to local timezone!
+      var dateItem = moment.utc(timestamp * 1000).local(); // TODO: Make date to local timezone!
 
       if (!dateItem.date())
       {
@@ -300,9 +412,12 @@ $(function()
       {
         if (typeof when.source !== "function")
         {
-          if (when.source.type() === "manual")
+          var type = ko.utils.unwrapObservable(when.source.type);
+
+          if (type === "manual")
           {
-            var parts = when.source.datestring().replace(/-/g, " ").replace(/:/g, " ").split(" ");
+            var datestring = ko.utils.unwrapObservable(when.source.datestring);
+            var parts = datestring.replace(/-/g, " ").replace(/:/g, " ").split(" ");
 
             if (parts[0] === "XXXX") // Year missing
             {

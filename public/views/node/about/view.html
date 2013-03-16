@@ -1,4 +1,4 @@
-<div class="main-overlay" data-bind="slideVisible: nodeModel.aboutModel.show() && nodeModel.node()">
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.aboutModel.show() && nodeModel.node()">
   <div class="main-overlay-content" data-bind="if: nodeModel.node">
 
 <!--    <div class="navbar navbar-color navbar-inverse">
@@ -75,9 +75,13 @@
               </tr>
 
               <!-- ko if: nodeModel.node().type() === 'person' -->
-                <tr data-bind="visible: nodeModel.aboutModel.age() !== false">
-                  <td>Age</td>
-                  <td data-bind="text: nodeModel.aboutModel.age()"></td>
+                <tr data-bind="visible: nodeModel.aboutModel.ageNow() !== false">
+                  <td>Age now</td>
+                  <td data-bind="text: nodeModel.aboutModel.ageNow()"></td>
+                </tr>
+                <tr data-bind="visible: nodeModel.aboutModel.ageAtDeath() !== false">
+                  <td>Age at death</td>
+                  <td data-bind="text: nodeModel.aboutModel.ageAtDeath()"></td>
                 </tr>
                 <tr>
                   <td>Birthname</td>

@@ -60,7 +60,7 @@ murrix.cache = new function()
 
       image.onload = function()
       {
-        console.log("onload", path);
+        //console.log("onload", path);
         element.attr("src", path);
       };
 
@@ -107,11 +107,11 @@ murrix.cache = new function()
         });
       };
 
-      console.log(path);
+      //console.log(path);
       image.src = path;
 
       if (image.complete)
-      {console.log("complete", path);
+      {//console.log("complete", path);
         image.onload();
       }
     };
@@ -866,7 +866,25 @@ murrix.cache = new function()
   };
 };
 
+murrix.dnd = new function()
+{
+  var self = this;
 
+  self.id = ko.observable(false);
+  self.type = ko.observable(false);
+
+  self.start = function(id, type)
+  {
+    self.id(id);
+    self.type(type);
+  };
+
+  self.end = function()
+  {
+    self.id(false);
+    self.type(false);
+  };
+}();
 
 
 murrix.file = new function()
@@ -1194,7 +1212,7 @@ murrix.createPath = function(partIndex, primary, secondary)
   return newPath;
 };
 
-var rawImageMimeTypes = [ "image/x-canon-cr2", "image/x-raw", "image/x-canon-crw" ];
+var rawImageMimeTypes = [ "image/x-canon-cr2", "image/x-raw", "image/x-canon-crw", "image/x-nikon-nef" ];
 var imageMimeTypes = [ "image/jpeg", "image/gif", "image/tiff", "image/png", "image/bmp" ].concat(rawImageMimeTypes);
 var videoMimeTypes = [ "video/mpeg", "video/avi", "video/quicktime", "video/x-ms-wmv", "video/mp4", "video/3gpp", "video/x-msvideo" ];
 var audioMimeTypes = [ "audio/mpeg", "audio/x-wav" ];

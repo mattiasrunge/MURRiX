@@ -27,7 +27,7 @@ program
 program
   .command("import <directory>")
   .description("Import a directory")
-/*  .option("-i, --id <parent id>", "Id of node to import files into, default is to create a new album for every folder")*/
+  .option("-i, --id [parent id]", "Id of node to import files into, default is to create a new album for every folder", false)
   .option("-t, --type [type]", "Type of node to create as parent, default is album", "album")
   .option("-u, --user [username]", "Username which is used to import, default is admin", "admin")
 /*  .option("-r, --recursive", "Import folders recursive")

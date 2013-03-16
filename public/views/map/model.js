@@ -1,3 +1,4 @@
+
 var MapModel = function(parentModel)
 {
   var self = this;
@@ -23,37 +24,70 @@ var MapModel = function(parentModel)
 
   self.map = new google.maps.Map($(".background-map").get(0), options);
 
-  self.markers = [];
+  self.markers = ko.observableArray();
+  self.loading = ko.observable(false);
+  self.loaded = ko.observable(false);
 
-  parentModel.nodeModel.items.subscribe(function(value)
+  parentModel.nodeModel.node.subscribe(function(value)
   {
-    for (var n = 0; n < self.markers.length; n++)
+    for (var n = 0; n < self.markers().length; n++)
     {
-      self.markers[n].setMap(null);
+      self.markers()[n].setMap(null);
     }
 
-    self.markers = [];
+    self.markers.removeAll();
+    self.loaded(false);
 
-    for (n = 0; n < value.length; n++)
+    if (value !== false)
     {
-      if (value[n].where && value[n].where.source && value[n].where.source() !== false)
-      {
-        console.log("marker", value[n].name(), value[n].where);
-        var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(value[n].where.latitude(), value[n].where.longitude()),
-          map: self.map,
-          title: value[n].name()
-        });
-
-        marker._id = value[n]._id();
-
-        google.maps.event.addListener(marker, 'click', function()
-        {
-          document.location.hash += "/:" + this._id;
-        });
-
-        self.markers.push(marker);
-      }
+      self.load();
     }
   });
+
+
+  self.load = function()
+  {
+    if (!self.loaded() && parentModel.nodeModel.node() !== false)
+    {
+      self.loading(true);
+
+      murrix.server.emit("helper_nodeGetMapMarkers", { nodeId: parentModel.nodeModel.node()._id() }, function(error, markerList)
+      {
+        self.loading(false);
+
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        console.log("MapModel: Loaded " + markerList.length + " markers!");
+
+        for (n = 0; n < markerList.length; n++)
+        {
+          var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(markerList[n].where.latitude, markerList[n].where.longitude),
+            map: self.map,
+            title: markerList[n].name
+          });
+
+          marker._id = markerList[n]._id;
+
+          google.maps.event.addListener(marker, 'click', function()
+          {
+            document.location.hash += "/:" + this._id;
+          });
+
+          self.markers.push(marker);
+        }
+
+        self.loaded(true);
+
+        if (self.markers().length > 0)
+        {
+          self.map.panTo(self.markers()[0].getPosition());
+        }
+      });
+    }
+  };
 };

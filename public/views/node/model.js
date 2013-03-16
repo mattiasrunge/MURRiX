@@ -15,25 +15,11 @@ var NodeModel = function(parentModel)
     }
   });
 
-
   self.node = ko.observable(false);
-  self.items = ko.observableArray();
-  self.itemsLoading = ko.observable(false);
+  self.loadingNode = ko.observable(false);
 
-  self.firstDatetime = false;
-  self.lastDatetime = false;
-
-  /* This function is called every time the node changes and tries to
-   * set up variables for required sub nodes and also try to fetch
-   * the nodes to make sure the get cached.
-   */
   self.node.subscribe(function(node)
   {
-    var requiredNodeIdList = [];
-
-    console.log("NodeModel: Clearing items");
-    self.items.removeAll();
-
     if (!node)
     {
       console.log("NodeModel: Node is false, do nothing more!");
@@ -41,275 +27,19 @@ var NodeModel = function(parentModel)
     }
 
     parentModel.title("MURRiX - " + node.name());
-
-    self.loadItems(function(error)
-    {
-      if (error)
-      {
-        console.log(error);
-        return;
-      }
-    });
   });
 
-  self.loadItems = function(callback)
-  {
-    self.items.removeAll();
-
-    if (self.node())
-    {
-      var query = { $or: [] };
-
-      query.what = { $in : [ "file", "text" ] };
-      query.$or.push({ _parents: self.node()._id()});
-
-
-      switch (self.node().type())
-      {
-        case "album":
-        {
-          break;
-        }
-        case "person":
-        {
-          query.$or.push({ "showing._id": self.node()._id()});
-          break;
-        }
-        case "location":
-        {
-          query.$or.push({ "showing._id": self.node()._id()});
-          query.$or.push({ "where._id": self.node()._id()});
-          query.what.$in.push("position");
-          // TODO: Search on coordinates
-          break;
-        }
-        case "camera":
-        {
-          query.$or.push({ "showing._id": self.node()._id()});
-          query.$or.push({ "_with": self.node()._id()});
-          break;
-        }
-        case "vehicle":
-        {
-          query.$or.push({ "showing._id": self.node()._id()});
-          break;
-        }
-      };
-
-      self.itemsLoading(true);
-
-      murrix.server.emit("find", { query: query, options: "items" }, function(error, itemDataList)
-      {
-        self.itemsLoading(false);
-
-        if (error)
-        {
-          console.log(error);
-          console.log("NodeModel: Failed to get items!");
-          callback(error);
-          return;
-        }
-
-        var count = 0;
-        var itemList = [];
-
-        for (var id in itemDataList)
-        {
-          itemList.push(murrix.cache.addItemData(itemDataList[id]));
-          count++;
-        }
-
-        itemList.sort(murrix.compareItemFunction);
-
-//         for (var n = 0; n < itemList.length; n++)
-//         {
-//           console.log(n, itemList[n].whenTimestamp(), itemList[n].name());
-//         }
-
-        self.items(itemList);
-
-        console.log("NodeModel: Found " + count + " items!");
-
-        callback(null);
-      });
-
-      return;
-    }
-
-    callback(null);
-  };
-
-  self.files = ko.computed(function()
-  {
-    var results = [];
-
-    for (var n = 0; n < self.items().length; n++)
-    {
-      var item = self.items()[n];
-
-      if (item.what() === "file")
-      {
-        results.push(item);
-      }
-    }
-
-    results.sort(murrix.compareItemFunction);
-
-    return results;
-  });
-
-  self.logItems = ko.computed(function()
-  {
-    var results = {};
-
-    for (var n = 0; n < self.items().length; n++)
-    {
-      var item = self.items()[n];
-
-      var datestamp = false;
-      var datestampCompare = 0;
-
-      if (item.whenTimestamp() === false || item.whenTimestamp() === null)
-      {
-        datestamp = false;
-      }
-      else
-      {
-        var timestamp = moment.utc(item.whenTimestamp() * 1000).local();
-        datestamp = [ timestamp.year(), timestamp.month(), timestamp.date() ];
-
-        var datestampString = murrix.pad(datestamp[0], 4);
-        datestampString += murrix.pad(datestamp[1], 2);
-        datestampString += murrix.pad(datestamp[2], 2);
-        datestampCompare = parseInt(datestampString);
-      }
-
-      if (!results[datestampCompare])
-      {
-        results[datestampCompare] = {};
-        results[datestampCompare].datestamp = datestamp;
-        results[datestampCompare]["texts"] = [];
-        results[datestampCompare]["media"] = [];
-        results[datestampCompare]["audio"] = [];
-      }
-
-      if (item.whatDetailed() === "audioFile")
-      {
-        results[datestampCompare]["audio"].push(item);
-      }
-      if (item.whatDetailed() === "imageFile" || item.whatDetailed() === "videoFile")
-      {
-        results[datestampCompare]["media"].push(item);
-      }
-      else if (item.whatDetailed() === "text")
-      {
-        results[datestampCompare]["texts"].push(item);
-      }
-    }
-
-    var list = [];
-
-    for (var datestampCompare in results)
-    {
-      var item = {};
-
-      item.datestampCompare = datestampCompare;
-      item.datestamp = results[datestampCompare].datestamp;
-      item.texts = results[datestampCompare].texts;
-      item.media = results[datestampCompare].media;
-      item.audio = results[datestampCompare].audio;
-
-      list.push(item);
-    }
-
-    list.sort(function(a, b)
-    {
-      return a.datestampCompare - b.datestampCompare;
-    });
-
-//     for (var n = 0; n < list.length; n++)
-//     {
-//       console.log(list[n].datestamp);
-//     }
-
-    return list;
-  });
-
-  self.nodeTypeaheadSource = function(query, callback)
-  {
-    var inst = this;
-    var query = { name: { $regex: ".*" + query + ".*", $options: "-i" } };
-
-    if (inst.options.nodeTypes)
-    {
-      query.type = { $in: inst.options.nodeTypes };
-    }
-
-    murrix.server.emit("find", { query: query, options: { collection: "nodes", limit: inst.options.items + 5 } }, function(error, nodeDataList)
-    {
-      if (error)
-      {
-        console.log(error);
-        callback([]);
-      }
-
-      var resultList = [];
-
-      for (var key in nodeDataList)
-      {
-        var item = murrix.cache.addNodeData(nodeDataList[key]);
-
-        item.toString = function() { return this._id(); };
-
-        if (!inst.options.nodeFilter || inst.options.nodeFilter(item))
-        {
-          resultList.push(item);
-        }
-      }
-
-      callback(resultList);
-    });
-  };
-
-  self.nodeTypeaheadMatcher = function(item)
-  {
-    return ~item.name().toLowerCase().indexOf(this.query.toLowerCase());
-  };
-
-  self.nodeTypeaheadHighlighter = function(item)
-  {
-    var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
-    var name = item.name().replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
-    {
-      return "<strong>" + match + "</strong>"
-    });
-
-    var imgUrl = "http://placekitten.com/g/32/32";
-
-    if (item._profilePicture && item._profilePicture() !== false)
-    {
-      imgUrl = "/preview?id=" + item._profilePicture() + "&width=32&height=32&square=1";
-    }
-
-    return "<img style='margin-right: 20px;' class='pull-left' src='" + imgUrl + "'/><span style='padding: 6px; display: block; width: 250px;'>" + name + "</span>";
-  };
-
-  /* This function is run when the primary path is changed
-   * and a new node id has been set. It tries to cache
-   * the node and set the primary node id observable.
-   */
   parentModel.path().primary.subscribe(function(value)
   {
+    console.log("path load node");
     self.loadNode();
   });
 
   parentModel.currentUser.subscribe(function(value)
   {
-    self.node(false);
+    console.log("currentUser load node");
     self.loadNode();
   });
-
-  self.loadingNode = ko.observable(false);
 
   self.loadNode = function()
   {
@@ -333,15 +63,14 @@ var NodeModel = function(parentModel)
       self.loadingNode(false);
       return;
     }
-    else if (self.node() && nodeId === self.node()._id())
-    {
-      console.log("NodeModel: Node id is the same as before, will not update!");
-      self.loadingNode(false);
-      return;
-    }
+//     else if (self.node() && nodeId === self.node()._id())
+//     {
+//       console.log("NodeModel: Node id is the same as before, will not update!");
+//       self.loadingNode(false);
+//       return;
+//     }
 
     self.loadingNode(true);
-    murrix.cache.clearItems();
 
     murrix.cache.getNode(nodeId, function(error, node)
     {
@@ -354,6 +83,7 @@ var NodeModel = function(parentModel)
         return;
       }
 
+      console.log("Node loaded!");
       self.node(node);
       self.loadingNode(false);
     });
@@ -640,10 +370,11 @@ var NodeModel = function(parentModel)
     self.tagSaveNode(nodeData);
   };
 
+
   self.tagTypeaheadSource = function(query, callback)
-  {
+  {console.log("tagTypeaheadSource");
     murrix.server.emit("distinct", { query: "tags", options: "nodes" }, function(error, tagList)
-    {
+    {console.log(tagList);
       if (error)
       {
         console.log(error);
@@ -671,71 +402,28 @@ var NodeModel = function(parentModel)
 
 
 
-  self.dragStart = function(element, event)
-  {//console.log("dragStart");
-    self.showDrop(true);
-/*    console.log(event.originalEvent.dataTransfer.getData("URL"));
-    console.log(event.originalEvent.dataTransfer.getData("DownloadURL"));
-    console.log(event.originalEvent.dataTransfer.getData("text/plain"));
-    console.log(event.originalEvent.dataTransfer.getData("text/uri-list"));
-
-    console.log(event.originalEvent.dataTransfer.setData("DownloadURL", "/preview?id=" + element._id() + "&width=1024&height=1024"));
-    console.log("dragStart", "application/octet-stream:" + element.name() + ":/preview?id=" + element._id() + "&width=1024&height=1024");
-*/
-    event.originalEvent.dataTransfer.setData("id", element._id());
-    return true;
-  };
-
-  self.dragEnd = function(element, event)
-  {//console.log("dragEnd");
-    self.showDrop(false);
-  };
-
-  self.dragDrop = function(element, event)
-  {//console.log("dragDrop");
-    self.showDrop(false);
-
-    if (event.originalEvent.dataTransfer.getData("id") === "")
+  self.profilePictureDropHandler = function(id)
+  {
+    if (nodeModel.node().hasAdminAccess())
     {
-      return;
-    }
+      var nodeData = ko.mapping.toJS(self.node);
 
-    var nodeData = ko.mapping.toJS(self.node);
+      nodeData._profilePicture = id;
 
-    nodeData._profilePicture = event.originalEvent.dataTransfer.getData("id");
-console.log(nodeData);
-    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
-    {
-      if (error)
+      murrix.server.emit("saveNode", nodeData, function(error, nodeData)
       {
-        console.log(error);
-        return;
-      }
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
 
-      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
-    });
-  };
+        murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+      });
+    }
+  }
 
-  self.showDrop = ko.observable(false);
 
-  self.dragEnter = function(element, event)
-  {
-    //console.log("dragEnter");
-    self.showDrop(true);
-    return true;
-  };
-
-  self.dragLeave = function(element, event)
-  {
-    //console.log("dragLeave");
-    self.showDrop(false);
-    return true;
-  };
-
-  self.dragOver = function(element, event)
-  {
-    //console.log("dragOver");
-  };
 
   self.publicLoading = ko.observable(false);
 
@@ -767,6 +455,66 @@ console.log(nodeData);
 
       murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
     });
+  };
+
+
+  self.nodeTypeaheadSource = function(query, callback)
+  {
+    var inst = this;
+    var query = { name: { $regex: ".*" + query + ".*", $options: "-i" } };
+
+    if (inst.options.nodeTypes)
+    {
+      query.type = { $in: inst.options.nodeTypes };
+    }
+
+    murrix.server.emit("find", { query: query, options: { collection: "nodes", limit: inst.options.items + 5 } }, function(error, nodeDataList)
+    {
+      if (error)
+      {
+        console.log(error);
+        callback([]);
+      }
+
+      var resultList = [];
+
+      for (var key in nodeDataList)
+      {
+        var item = murrix.cache.addNodeData(nodeDataList[key]);
+
+        item.toString = function() { return this._id(); };
+
+        if (!inst.options.nodeFilter || inst.options.nodeFilter(item))
+        {
+          resultList.push(item);
+        }
+      }
+
+      callback(resultList);
+    });
+  };
+
+  self.nodeTypeaheadMatcher = function(item)
+  {
+    return ~item.name().toLowerCase().indexOf(this.query.toLowerCase());
+  };
+
+  self.nodeTypeaheadHighlighter = function(item)
+  {
+    var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+    var name = item.name().replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
+    {
+      return "<strong>" + match + "</strong>"
+    });
+
+    var imgUrl = "http://placekitten.com/g/32/32";
+
+    if (item._profilePicture && item._profilePicture() !== false)
+    {
+      imgUrl = "/preview?id=" + item._profilePicture() + "&width=32&height=32&square=1";
+    }
+
+    return "<img style='margin-right: 20px;' class='pull-left' src='" + imgUrl + "'/><span style='padding: 6px; display: block; width: 250px;'>" + name + "</span>";
   };
 
 

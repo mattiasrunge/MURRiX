@@ -22,7 +22,7 @@ var IssuesModel = function(parentModel)
   {
     return self.issues().length > 0;
   });
-
+/*
   parentModel.items.subscribe(function(value)
   {
     self.issues.removeAll();
@@ -35,7 +35,7 @@ var IssuesModel = function(parentModel)
       self.checkAccesses();
       self.checkNaming();
     }
-  });
+  });*/
 
 
   self.checkAccesses = function()

@@ -1,3 +1,4 @@
+
 <div class="sidebar-nav" data-bind="slideVisible: !nodeModel.show()">
 
   <div style="position: relative; width: 250px; height: 250px; z-index: 100">
@@ -74,7 +75,7 @@
   <div class="navbar-inner">
     <div class="container-fluid">
 
-      <div class="brand" style="margin-left: -5px; color: white;">
+      <div class="brand" style="margin-left: -25px; color: white;">
         <span data-bind="if: nodeModel.node() !== false">
           <i style="vertical-align: baseline;" class="icon-book icon-white" data-bind="visible: nodeModel.node().type() === 'album'"></i>
           <i style="vertical-align: baseline;" class="icon-user icon-white" data-bind="visible: nodeModel.node().type() === 'person'"></i>
@@ -84,6 +85,59 @@
         </span>
         <span data-bind="text: nodeModel.node() ? nodeModel.node().name : document.location.hostname"></span>
       </div>
+
+      <ul class="nav" data-bind="visible: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
+        <li class="dropdown">
+          <a class="dropdown-toggle" rel="tooltip" data-toggle="dropdown" href="#" data-placement="bottom" style="color: white;">
+            <i class="icon-cog icon-white" title="Node toolbox"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="#" data-bind="click: nodeModel.editNode">
+                <i style="vertical-align: center;" class="icon-pencil icon-fixed"></i>
+                Edit
+              </a>
+            </li>
+            <li>
+              <a href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">
+                <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
+                Create Text
+              </a>
+            </li>
+            <li>
+              <a href="#" data-bind="click: dialogModel.uploadModel.show">
+                <i style="vertical-align: center;" class="icon-exchange icon-fixed"></i>
+                Upload
+              </a>
+            </li>
+            <li>
+              <a href="#editAccessModal" data-toggle="modal">
+                <i style="vertical-align: center;" class="icon-key icon-fixed"></i>
+                Accesses
+              </a>
+            </li>
+            <li data-bind="ifnotset: nodeModel.node().public">
+              <a href="#" data-bind="click: nodeModel.changePublic.bind($data, true)">
+                <i style="vertical-align: center;" class="icon-unlock icon-fixed"></i>
+                Make public
+              </a>
+            </li>
+            <li data-bind="ifset: nodeModel.node().public">
+              <a href="#" data-bind="click: nodeModel.changePublic.bind($data, false)">
+                <i style="vertical-align: center;" class="icon-lock icon-fixed"></i>
+                Make private
+              </a>
+            </li>
+            <li>
+              <a href="#" data-bind="click: nodeModel.removeNode">
+                <i style="vertical-align: center;" class="icon-trash icon-fixed"></i>
+                Remove
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
 
       <div class="pull-right">
 

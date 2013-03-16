@@ -5,10 +5,10 @@
 
 <div data-bind="fadeVisible: nodeModel.overlayModel.show">
   <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; width: 75px; z-index: 2060;">
-    <a class="carousel-control left" href="#" data-bind="click: nodeModel.overlayModel.carouselLeft, clickKey: 'left'">&lsaquo;</a>
+    <a class="carousel-control left" href="#" data-bind="hrefSecondSecondary: nodeModel.overlayModel.prevId, clickKey: 'left'">&lsaquo;</a>
   </div>
   <div style="position: fixed; top: 0px; bottom: 0px; right: 350px; width: 75px; z-index: 2060;">
-    <a class="carousel-control right" href="#" data-bind="click: nodeModel.overlayModel.carouselRight, clickKey: 'right'">&rsaquo;</a>
+    <a class="carousel-control right" href="#" data-bind="hrefSecondSecondary: nodeModel.overlayModel.nextId, clickKey: 'right'">&rsaquo;</a>
   </div>
 </div>
 
@@ -353,7 +353,7 @@
           <a class="pull-right close" data-bind="hrefSecondSecondary: '', clickKey: 'esc'" style="font-size: 30px">×</a>
           <h4 style="white-space: nowrap; width: 305px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0px;" data-bind="text: nodeModel.node().name"></h4>
           <div class="muted" style="font-size: 10px; margin-bottom: 10px; margin-left: 5px;">
-            &ndash; <i>Showing item <span data-bind="text: nodeModel.overlayModel.itemIndex() + 1"></span> of <span data-bind="text: nodeModel.items().length"></span></i>
+            &ndash; <i>Showing item <span data-bind="text: nodeModel.overlayModel.index"></span> of <span data-bind="text: nodeModel.overlayModel.count"></span></i>
           </div>
 
           <p style="font-size: 10px;" data-bind="text: nodeModel.overlayModel.item().description"></p>

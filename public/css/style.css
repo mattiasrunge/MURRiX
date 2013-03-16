@@ -132,7 +132,7 @@ body {
   position: absolute;
   top: 40px;
   bottom: 0px;
-  left: 270px;
+  left: 0px;
   right: 0px;
   margin-bottom: 0px;
 }
@@ -172,7 +172,7 @@ body {
   overflow: auto;
   padding-top: 20px;
   padding-right: 20px;
-  padding-left: 20px;
+  padding-left: 272px;
 }
 
 .main-overlay-centered-form {
@@ -456,13 +456,16 @@ i.icon-fixed[class*="icon-white"] {
 .sidebar-nav {
   z-index: 5;
   position: absolute;
-  top: 40px;
+  top: 71px;
   bottom: 0px;
-  left: 20px;
-  width: 250px;
+  left: 30px;
+  width: 200px;
   margin-bottom: 0px;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  border: 1px solid black;
+  border-bottom-width: 0px;
+  -webkit-box-shadow: 3px 3px 15px 3px black;
+    -moz-box-shadow: 3px 3px 15px 3px black;
+          box-shadow: 3px 3px 15px 3px black;
 }
 
 .sidebar-nav-background {
@@ -473,25 +476,49 @@ i.icon-fixed[class*="icon-white"] {
   left: 0px;
   right: 0px;
   margin-bottom: 0px;
-  background-color: whiteSmoke;
+  background-color: white;
 }
 
 .sidebar-nav-content {
   position: absolute;
-  top: 230px;
+  top: 240px;
   bottom: 0px;
   left: 0px;
   right: 0px;
   overflow: auto;
   z-index: 100;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .sidebar-nav-profilepicture {
-  float: left;
-  margin-right: 10px;
-  width: 16px;
-  height: 16px;
-  background-color: white;
+  position: relative;
+  width: 238px;
+  height: 238px;
+  margin-top: -20px;
+  margin-left: -20px;
+  border: 1px solid #555;
+  -webkit-box-shadow: 3px 3px 15px 3px black;
+    -moz-box-shadow: 3px 3px 15px 3px black;
+          box-shadow: 3px 3px 15px 3px black;
+}
+
+.sidebar-nav-droptarget {
+  width: 250px;
+  height: 250px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  text-align: center;
+  font-size: 30px;
+  padding-top: 90px;
+  color: whiteSmoke;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  display: none;
+}
+
+.drop-target-active .sidebar-nav-droptarget, .drop-target-highlight .sidebar-nav-droptarget {
+  display: block;
 }
 
 .modal-big {
@@ -626,107 +653,3 @@ i.icon-fixed[class*="icon-white"] {
   text-decoration: none;
 }
 
-
-
-.toolbox {
-  z-index: 3;
-  position: fixed;
-  top: 41px;
-  bottom: 0px;
-  left: 70px;
-  width: 200px;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-duration: 0.5s;
-  -o-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: ease-in-out;
-  -moz-transition-timing-function: ease-in-out;
-  -o-transition-timing-function: ease-in-out;
-  transition-timing-function: ease-in-out;
-  -moz-transition-delay: 0.5s;
-  -webkit-transition-delay: 0.5s;
-  -o-transition-delay: 0.5s;
-  transition-delay: 0.5s;
-/*  -webkit-border-top-right-radius: 3px;
-    -moz-border-top-right-radius: 3px;
-        border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-    -moz-border-bottom-right-radius: 3px;
-        border-bottom-right-radius: 3px;*/
-}
-
-.toolbox:hover {
-  left: 272px;
-  -moz-transition-delay: 0s;
-  -webkit-transition-delay: 0s;
-  -o-transition-delay: 0s;
-  transition-delay: 0s;
-}
-
-.toolbox-title {
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  text-align: center;
-  color: #999999;
-  font-weight: bold;
-  font-size: 28px;
-  padding: 20px 0px 20px 0px;
-}
-
-.toolbox-handle {
-  z-index: 2;
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: -35px;
-  height: 35px;
-  width: 35px;
-  background-color: white;
-  border-top: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  -webkit-border-top-right-radius: 3px;
-    -moz-border-top-right-radius: 3px;
-        border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-    -moz-border-bottom-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-  opacity: 0.8;
-}
-
-.toolbox:hover .toolbox-handle, .toolbox-handle:hover {
-  opacity: 1.0;
-}
-
-.toolbox-handle-icon {
-  margin-left: 13px;
-  margin-top: 8px;
-  position: absolute;
-}
-
-.toolbox-content {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
-  overflow: auto;
-  background-color: white;
-  border-right: 1px solid #ccc;
-}
-
-.toolbox-content-inner {
-  position: absolute;
-  top: 0px;
-  right: 15px;
-  bottom: 0px;
-  left: 15px;
-}
-
-.rotate {
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-}

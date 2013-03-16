@@ -40,13 +40,7 @@ var OverlayModel = function(parentModel)
 
     console.log("OverlayModel: Got itemId = " + itemId);
 
-    /*if (primary.action !== "node")
-    {
-      console.log("OverlayModel: Node not shown, setting node to false");
-      self.node(false);
-      return;
-    }
-    else */if (self.item() && itemId === self.item()._id())
+    if (self.item() && itemId === self.item()._id())
     {
       console.log("OverlayModel: Item id is the same as before, will not update!");
       return;
@@ -76,103 +70,46 @@ var OverlayModel = function(parentModel)
 
   self.videoFile = ko.observable("");
 
+  self.count = ko.observable(0);
+  self.index = ko.observable(0);
+  self.nextId = ko.observable(false);
+  self.prevId = ko.observable(false);
+  self.loading = ko.observable(false);
 
-
-
-
-
-/*
-  self.detectFaces = function()
+  self.item.subscribe(function(value)
   {
-    var coords = $('.imgContainer img:visible').faceDetection({
-      complete:function(img, coords) {
-        console.log('Done!');
-        console.log(coords);
-      },
-      error:function(img, code, message) {
-        console.log('Error: '+message);
-      }
-    });
-
-    console.log(coords);
-
-    for (var i = 0; i < coords.length; i++) {
-      $('<div>', {
-        'class':'face',
-        'css': {
-          'position': 'absolute',
-          'left':   coords[i].positionX +'px',
-          'top':    coords[i].positionY +'px',
-          'width':  coords[i].width   +'px',
-          'height':   coords[i].height  +'px',
-          'border': '1px solid red'
-        }
-      })
-      .appendTo('.imgContainer');
-    }
-  };
-*/
-
-  self.itemIndex = ko.computed(function()
-  {
-    var index = -1;
-
-    for (var n = 0; n < parentModel.items().length; n++)
-    {
-      if (parentModel.items()[n] === self.item())
-      {
-        index = n;
-        break;
-      }
-    }
-
-    return index;
+    self.loadItemEnvironment();
   });
 
-  self.setItemByIndex = function(index)
+  self.loadItemEnvironment = function()
   {
-    if (index < 0)
+    if (self.item() !== false)
     {
-      index = parentModel.items().length - 1;
-    }
+      murrix.server.emit("helper_itemGetEnvironment", { nodeId: parentModel.node()._id(), itemId: self.item()._id() }, function(error, environment)
+      {
+        self.loading(false);
 
-    if (index >= parentModel.items().length)
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        self.count(environment.count);
+        self.index(environment.index);
+        self.nextId(environment.nextId);
+        self.prevId(environment.prevId);
+      });
+    }
+    else
     {
-      index = 0;
+      self.count(0);
+      self.index(0);
+      self.nextId(false);
+      self.prevId(false);
     }
-
-    $(".imgContainer").imgAreaSelect({ "remove" : true });
-
-    document.location.hash = murrix.createPath(1, null, parentModel.items()[index]._id());
   };
 
-  self.carouselLeft = function()
-  {
-    self.showingModel.selected(false);
-    self.showingItemOut();
-
-    if (self.itemIndex() === -1)
-    {
-      console.log("Invalid index!");
-      return;
-    }
-
-    self.setItemByIndex(self.itemIndex() - 1);
-  };
-
-  self.carouselRight = function()
-  {
-    self.showingModel.selected(false);
-    self.showingItemOut();
-
-    if (self.itemIndex() === -1)
-    {
-      console.log("Invalid index!");
-      return;
-    }
-
-    self.setItemByIndex(self.itemIndex() + 1);
-  };
 
   self.commentText = ko.observable("");
   self.commentLoading = ko.observable(false);
@@ -251,23 +188,16 @@ var OverlayModel = function(parentModel)
         return;
       }
 
-      self.editLoading(true);
-
-      var index = self.itemIndex();
-
-      parentModel.loadItems(function()
+      if (self.nextId() === itemData._id)
       {
-        self.editLoading(false);
+        document.location.hash = murrix.createPath(1, null, '');
+      }
+      else
+      {
+        document.location.hash = murrix.createPath(1, null, self.nextId());
+      }
 
-        if (parentModel.items().length === 0)
-        {
-          document.location.hash = murrix.createPath(1, null, '');
-        }
-        else
-        {
-          self.setItemByIndex(index);
-        }
-      });
+      murrix.model.nodeModel.loadNode();
     });
   };
 
@@ -291,15 +221,9 @@ var OverlayModel = function(parentModel)
       {
         var item = murrix.cache.addItemData(newItemData);
 
-        for (var n = 0; n < parentModel.items().length; n++)
-        {
-          if (parentModel.items()[n]._id() === itemData._id)
-          {
-            parentModel.items.splice(n, 1);
-          }
-        }
-
         document.location.hash = murrix.createPath(1, null, item._id());
+
+        murrix.model.nodeModel.loadNode();
       }
       else
       {
@@ -461,40 +385,40 @@ var OverlayModel = function(parentModel)
   {
     var list = [];
     var takenIds = [];
-
-    if (self.item() !== false)
-    {
-      if (self.item().showing)
-      {
-        for (var n = 0; n < self.item().showing().length; n++)
-        {
-          takenIds.push(self.item().showing()[n]._id());
-        }
-      }
-
-      for (var n = 0; n < parentModel.items().length; n++)
-      {
-        if (parentModel.items()[n].showing && parentModel.items()[n].showing() !== false)
-        {
-          for (var i = 0; i < parentModel.items()[n].showing().length; i++)
-          {
-            if (!murrix.inArray(parentModel.items()[n].showing()[i]._id(), takenIds))
-            {
-              list.push(parentModel.items()[n].showing()[i]._id());
-              takenIds.push(parentModel.items()[n].showing()[i]._id());
-            }
-          }
-        }
-      }
-    }
+// TODO
+//     if (self.item() !== false)
+//     {
+//       if (self.item().showing)
+//       {
+//         for (var n = 0; n < self.item().showing().length; n++)
+//         {
+//           takenIds.push(self.item().showing()[n]._id());
+//         }
+//       }
+//
+//       for (var n = 0; n < parentModel.items().length; n++)
+//       {
+//         if (parentModel.items()[n].showing && parentModel.items()[n].showing() !== false)
+//         {
+//           for (var i = 0; i < parentModel.items()[n].showing().length; i++)
+//           {
+//             if (!murrix.inArray(parentModel.items()[n].showing()[i]._id(), takenIds))
+//             {
+//               list.push(parentModel.items()[n].showing()[i]._id());
+//               takenIds.push(parentModel.items()[n].showing()[i]._id());
+//             }
+//           }
+//         }
+//       }
+//     }
 
     self.showingModel.suggestions(list);
   };
-
-  parentModel.items.subscribe(function()
-  {
-    self.showingLoadSuggestions();
-  });
+// TODO
+//   parentModel.items.subscribe(function()
+//   {
+//     self.showingLoadSuggestions();
+//   });
 
   self.showingCurrent = ko.computed(function()
   {
@@ -754,34 +678,34 @@ var OverlayModel = function(parentModel)
   {
     var list = [];
     var takenIds = [];
-
-    if (self.item() !== false)
-    {
-      if (self.item()._who && self.item()._who() !== false)
-      {
-        takenIds.push(self.item()._who());
-      }
-
-      for (var n = 0; n < parentModel.items().length; n++)
-      {
-        if (parentModel.items()[n]._who && parentModel.items()[n]._who() !== false)
-        {
-          if (!murrix.inArray(parentModel.items()[n]._who(), takenIds))
-          {
-            list.push(parentModel.items()[n]._who());
-            takenIds.push(parentModel.items()[n]._who());
-          }
-        }
-      }
-
-      self.whoModel.suggestions(list);
-    }
+// TODO
+//     if (self.item() !== false)
+//     {
+//       if (self.item()._who && self.item()._who() !== false)
+//       {
+//         takenIds.push(self.item()._who());
+//       }
+//
+//       for (var n = 0; n < parentModel.items().length; n++)
+//       {
+//         if (parentModel.items()[n]._who && parentModel.items()[n]._who() !== false)
+//         {
+//           if (!murrix.inArray(parentModel.items()[n]._who(), takenIds))
+//           {
+//             list.push(parentModel.items()[n]._who());
+//             takenIds.push(parentModel.items()[n]._who());
+//           }
+//         }
+//       }
+//
+//       self.whoModel.suggestions(list);
+//     }
   };
-
-  parentModel.items.subscribe(function()
-  {
-    self.whoLoadSuggestions();
-  });
+// TODO
+//   parentModel.items.subscribe(function()
+//   {
+//     self.whoLoadSuggestions();
+//   });
 
   self.whoCreatePerson = function()
   {
@@ -886,28 +810,28 @@ var OverlayModel = function(parentModel)
         });
       }
       else
-      {
-        for (var n = 0; n < parentModel.items().length; n++)
-        {
-          if (parentModel.items()[n]._with && parentModel.items()[n]._with() !== false)
-          {
-            if (!murrix.inArray(parentModel.items()[n]._with(), takenIds))
-            {console.log(parentModel.items()[n]._with());
-              list.push(parentModel.items()[n]._with());
-              takenIds.push(parentModel.items()[n]._with());
-            }
-          }
-        }
+      {// TODO
+//         for (var n = 0; n < parentModel.items().length; n++)
+//         {
+//           if (parentModel.items()[n]._with && parentModel.items()[n]._with() !== false)
+//           {
+//             if (!murrix.inArray(parentModel.items()[n]._with(), takenIds))
+//             {console.log(parentModel.items()[n]._with());
+//               list.push(parentModel.items()[n]._with());
+//               takenIds.push(parentModel.items()[n]._with());
+//             }
+//           }
+//         }
       }
 
       self.withModel.suggestions(list);
     }
   };
-
-  parentModel.items.subscribe(function()
-  {
-    self.withLoadSuggestions();
-  });
+// TODO
+//   parentModel.items.subscribe(function()
+//   {
+//     self.withLoadSuggestions();
+//   });
 
   self.withCreateFromExif = function()
   {
@@ -1052,29 +976,29 @@ var OverlayModel = function(parentModel)
       {
         takenIds.push(self.item().where._id());
       }
-
-      for (var n = 0; n < parentModel.items().length; n++)
-      {
-        if (!parentModel.items()[n].where || !parentModel.items()[n].where._id || parentModel.items()[n].where._id() === false)
-        {
-          continue;
-        }
-
-        if (!murrix.inArray(parentModel.items()[n].where._id(), takenIds))
-        {
-          list.push(parentModel.items()[n].where._id());
-          takenIds.push(parentModel.items()[n].where._id());
-        }
-      }
+// TODO
+//       for (var n = 0; n < parentModel.items().length; n++)
+//       {
+//         if (!parentModel.items()[n].where || !parentModel.items()[n].where._id || parentModel.items()[n].where._id() === false)
+//         {
+//           continue;
+//         }
+//
+//         if (!murrix.inArray(parentModel.items()[n].where._id(), takenIds))
+//         {
+//           list.push(parentModel.items()[n].where._id());
+//           takenIds.push(parentModel.items()[n].where._id());
+//         }
+//       }
 
       self.whereLocationModel.suggestions(list);
     }
   };
-
-  parentModel.items.subscribe(function()
-  {
-    self.whereLoadSuggestions();
-  });
+// TODO
+//   parentModel.items.subscribe(function()
+//   {
+//     self.whereLoadSuggestions();
+//   });
 
   self.whereFileSet = function()
   {

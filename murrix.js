@@ -15,6 +15,7 @@ var MurrixUploadManager = require("./lib/upload.js").Manager;
 var MurrixUtilsManager = require("./lib/utils.js").Manager;
 var MurrixUserManager = require("./lib/user.js").Manager;
 var MurrixTriggersManager = require("./lib/triggers.js").Manager;
+var MurrixHelpersManager = require("./lib/helpers.js").Manager;
 var MurrixImportManager = require("./lib/import.js").Manager;
 var MurrixClientManager = require("./lib/client.js").Manager;
 var MurrixServerManager = require("./lib/server.js").Manager;
@@ -68,6 +69,9 @@ function Murrix(options)
 
   self.import = new MurrixImportManager(self);
   modules.push(self.import);
+
+  self.helpers = new MurrixHelpersManager(self);
+  modules.push(self.helpers);
 
   self.triggers = new MurrixTriggersManager(self, path.resolve(self.basePath(), "./triggers.json"));
   modules.push(self.triggers);

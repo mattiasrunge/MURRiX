@@ -8,6 +8,7 @@ function DialogUploadModel()
   self.pause = ko.observable(false);
   self.files = ko.observableArray();
   self.speed = ko.observable(0);
+  self.hasChanged = ko.observable(false);
 
   self.progress = ko.computed(function()
   {
@@ -230,6 +231,7 @@ function DialogUploadModel()
 
         console.log(file.name() + " hidden successfully behind " + itemDataNew.name + "!");
         murrix.cache.addItemData(itemDataNew);
+        self.hasChanged(true);
         file.status("hide_success");
 
         if (!self.pause())
@@ -254,7 +256,8 @@ function DialogUploadModel()
       }
 
       console.log(file.name() + " imported successfully!");
-      murrix.model.nodeModel.items.push(murrix.cache.addItemData(itemDataNew));
+      murrix.cache.addItemData(itemDataNew);
+      self.hasChanged(true);
       file.status("import_success");
 
       if (!self.pause())
@@ -268,5 +271,11 @@ function DialogUploadModel()
   {
     self.files.removeAll();
     self.speed(0);
+
+    if (self.hasChanged())
+    {
+      murrix.model.nodeModel.loadNode();
+      self.hasChanged(false);
+    }
   });
 };

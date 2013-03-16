@@ -22,6 +22,7 @@ var AboutModel = function(parentModel)
   {
     if (value && parentModel.node() !== false)
     {
+      self.loadAge();
       self.loadHomes();
       self.loadOwnerOf();
       self.loadChildren();
@@ -32,6 +33,7 @@ var AboutModel = function(parentModel)
   {
     if (self.show() && value !== false)
     {
+      self.loadAge();
       self.loadHomes();
       self.loadOwnerOf();
       self.loadChildren();
@@ -39,21 +41,31 @@ var AboutModel = function(parentModel)
   });
 
 
-  self.age = ko.computed(function()
+  self.ageNow = ko.observable(false);
+  self.ageAtDeath = ko.observable(false);
+
+  self.loadAge = function()
   {
-    var age = false;
-
-    for (var n = 0; n < parentModel.items().length; n++)
+    if (parentModel.node() !== false)
     {
-      if (parentModel.items()[n].what() === "text" && parentModel.items()[n].type && parentModel.items()[n].type() === "birth")
+      murrix.server.emit("helper_nodeGetAge", { nodeId: parentModel.node()._id() }, function(error, age)
       {
-        age = murrix.getAge(parentModel.items()[n].when.timestamp());
-        break;
-      }
-    }
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
 
-    return age;
-  });
+        self.ageNow(age.ageNow);
+        self.ageAtDeath(age.ageAtDeath);
+      });
+    }
+    else
+    {
+      self.ageNow(false);
+      self.ageAtDeath(false);
+    }
+  };
 
 
   self.childrenLoading = ko.observable(false);
@@ -104,9 +116,9 @@ var AboutModel = function(parentModel)
   {
     self.homes.removeAll();
 
-    if (parentModel.node() && parentModel.node().type() === 'person' && parentModel.node()._homes)
+    if (parentModel.node() && parentModel.node().type() === 'person' && parentModel.node()._homes && parentModel.node()._homes().length > 0)
     {
-      var query = { $or: [] };
+      var query = { };
 
       query.type = { $in : [ "location" ] };
       query._id = { $in: parentModel.node()._homes() };
@@ -147,7 +159,7 @@ var AboutModel = function(parentModel)
 
     if (parentModel.node() && parentModel.node().type() === 'person')
     {
-      var query = { $or: [] };
+      var query = { };
 
       query._owners = { $in: [ parentModel.node()._id() ] };
 
