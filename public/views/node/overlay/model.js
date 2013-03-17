@@ -322,6 +322,7 @@ var OverlayModel = function(parentModel)
   self.showingModel.selectLast(true);
   self.showingModel.types([ "person", "camera", "vehicle" ]);
   self.showingInitializing = false;
+  self.showingLoading = ko.observable(false);
 
   self.showingInitialize = function()
   {
@@ -383,42 +384,48 @@ var OverlayModel = function(parentModel)
 
   self.showingLoadSuggestions = function()
   {
-    var list = [];
-    var takenIds = [];
-// TODO
-//     if (self.item() !== false)
-//     {
-//       if (self.item().showing)
-//       {
-//         for (var n = 0; n < self.item().showing().length; n++)
-//         {
-//           takenIds.push(self.item().showing()[n]._id());
-//         }
-//       }
-//
-//       for (var n = 0; n < parentModel.items().length; n++)
-//       {
-//         if (parentModel.items()[n].showing && parentModel.items()[n].showing() !== false)
-//         {
-//           for (var i = 0; i < parentModel.items()[n].showing().length; i++)
-//           {
-//             if (!murrix.inArray(parentModel.items()[n].showing()[i]._id(), takenIds))
-//             {
-//               list.push(parentModel.items()[n].showing()[i]._id());
-//               takenIds.push(parentModel.items()[n].showing()[i]._id());
-//             }
-//           }
-//         }
-//       }
-//     }
+    var suggestions = [];
 
-    self.showingModel.suggestions(list);
+    if (self.item() !== false)
+    {
+      self.showingLoading(true);
+
+      murrix.server.emit("helper_nodeGetShowing", { nodeId: parentModel.node()._id() }, function(error, list)
+      {
+        self.showingLoading(false);
+
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        var takenIds = [];
+
+        if (self.item().showing)
+        {
+          for (var n = 0; n < self.item().showing().length; n++)
+          {
+            takenIds.push(self.item().showing()[n]._id());
+          }
+        }
+
+        for (var n = 0; n < list.length; n++)
+        {
+          if (!murrix.inArray(list[n], takenIds))
+          {
+            suggestions.push(list[n]);
+          }
+        }
+
+        self.showingModel.suggestions(suggestions);
+      });
+
+      return;
+    }
+
+    self.showingModel.suggestions(suggestions);
   };
-// TODO
-//   parentModel.items.subscribe(function()
-//   {
-//     self.showingLoadSuggestions();
-//   });
 
   self.showingCurrent = ko.computed(function()
   {

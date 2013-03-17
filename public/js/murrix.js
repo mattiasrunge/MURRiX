@@ -1583,3 +1583,49 @@ murrix.pad = function(number, length)
 
   return str;
 };
+
+murrix.floatval = function(value)
+{
+  var floatvalue = value;
+
+  if (typeof value !== "number")
+  {
+    try
+    {
+      floatvalue = parseFloat(value);
+    }
+    catch (e)
+    {
+    }
+  }
+
+  if (typeof floatvalue !== "number" || isNaN(floatvalue))
+  {
+    console.log("Could not convert value to float: \"" + value + "\" (" + (typeof value) + ") -> \"" + floatvalue + "\" (" + typeof floatvalue + ")");
+    floatvalue = 0;
+  }
+
+  return floatvalue;
+};
+
+murrix.round = function(value, precision)
+{
+  return Math.round(value * Math.pow(10, precision)) / Math.pow(10, precision);
+}
+
+murrix.makeDecimalPretty = function(num)
+{
+  num = murrix.floatval(num);
+
+  if (num === 0)
+  {
+    return "0";
+  }
+
+  if (num > 1)
+  {
+    return murrix.round(num, 2) + "";
+  }
+
+  return "1/" + Math.round(1/num);
+};

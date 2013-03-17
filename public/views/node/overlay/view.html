@@ -596,11 +596,19 @@
                     </tr>
                     <tr data-bind="if: nodeModel.overlayModel.item().exif.ISO">
                       <td>ISO</td>
-                      <td data-bind="text: nodeModel.overlayModel.item().exif.ISO()"></td>
+                      <td data-bind="text: murrix.makeDecimalPretty(nodeModel.overlayModel.item().exif.ISO())"></td>
                     </tr>
                     <tr data-bind="if: nodeModel.overlayModel.item().exif.FocalLength">
                       <td>Focal&nbsp;length</td>
-                      <td data-bind="text: nodeModel.overlayModel.item().exif.FocalLength()"></td>
+                      <td data-bind="text: murrix.makeDecimalPretty(nodeModel.overlayModel.item().exif.FocalLength())"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.FocalLength">
+                      <td>Shutter&nbsp;speed&nbsp;value</td>
+                      <td data-bind="text: murrix.makeDecimalPretty(nodeModel.overlayModel.item().exif.ShutterSpeedValue())"></td>
+                    </tr>
+                    <tr data-bind="if: nodeModel.overlayModel.item().exif.FocalLength">
+                      <td>Aperture&nbsp;value</td>
+                      <td data-bind="text: murrix.makeDecimalPretty(nodeModel.overlayModel.item().exif.ApertureValue())"></td>
                     </tr>
                     <tr data-bind="if: nodeModel.overlayModel.item().exif.ResolutionUnit">
                       <td>Resolution&nbsp;unit</td>
