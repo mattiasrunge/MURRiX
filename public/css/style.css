@@ -457,7 +457,7 @@ i.icon-fixed[class*="icon-white"] {
   z-index: 5;
   position: absolute;
   top: 71px;
-  bottom: 0px;
+  bottom: 30px;
   left: 30px;
   width: 200px;
   margin-bottom: 0px;
@@ -466,6 +466,8 @@ i.icon-fixed[class*="icon-white"] {
   -webkit-box-shadow: 3px 3px 15px 3px black;
     -moz-box-shadow: 3px 3px 15px 3px black;
           box-shadow: 3px 3px 15px 3px black;
+  border-radius: 3px 3px 3px 3px;
+  background-color: white;
 }
 
 .sidebar-nav-background {
@@ -476,7 +478,7 @@ i.icon-fixed[class*="icon-white"] {
   left: 0px;
   right: 0px;
   margin-bottom: 0px;
-  background-color: white;
+
 }
 
 .sidebar-nav-content {
