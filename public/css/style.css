@@ -493,6 +493,10 @@ i.icon-fixed[class*="icon-white"] {
   padding-right: 10px;
 }
 
+.sidebar-nav-content-main {
+  top: 230px;
+}
+
 .sidebar-nav-profilepicture {
   position: relative;
   width: 238px;
@@ -503,6 +507,13 @@ i.icon-fixed[class*="icon-white"] {
   -webkit-box-shadow: 3px 3px 15px 3px black;
     -moz-box-shadow: 3px 3px 15px 3px black;
           box-shadow: 3px 3px 15px 3px black;
+  border-radius: 3px 3px 3px 3px;
+}
+
+.sidebar-nav-profilepicture img {
+  width: 238px;
+  height: 238px;
+  border-radius: 3px 3px 3px 3px;
 }
 
 .sidebar-nav-picture {
@@ -511,6 +522,11 @@ i.icon-fixed[class*="icon-white"] {
   height: 240px;
   margin-top: -20px;
   margin-left: -20px;
+}
+
+.sidebar-nav-picture img {
+  width: 240px;
+  height: 240px;
 }
 
 .sidebar-nav-droptarget {
@@ -663,3 +679,14 @@ i.icon-fixed[class*="icon-white"] {
   text-decoration: none;
 }
 
+
+
+.nodeGroupAccesItem {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 20px;
+  color: #333333;
+  white-space: nowrap;
+}

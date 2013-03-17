@@ -33,12 +33,20 @@ var NodeModel = function(parentModel)
   {
     console.log("path load node");
     self.loadNode();
+    self.loadGroups();
+  });
+
+  self.node.subscribe(function(value)
+  {
+    console.log("node load");
+    self.loadGroups();
   });
 
   parentModel.currentUser.subscribe(function(value)
   {
     console.log("currentUser load node");
     self.loadNode();
+    self.loadGroups();
   });
 
   self.loadNode = function()
@@ -194,6 +202,56 @@ var NodeModel = function(parentModel)
   self.groupAccessErrorText = ko.observable("");
   self.groupAccessName = ko.observable("");
 
+  self.groupAccessListAdmins = ko.observableArray();
+  self.groupAccessListReaders = ko.observableArray();
+  self.groupAccessListOthers = ko.observableArray();
+
+  self.loadGroups = function()
+  {
+    self.groupAccessListAdmins.removeAll();
+    self.groupAccessListReaders.removeAll();
+    self.groupAccessListOthers.removeAll();
+
+    if (self.node() !== false && parentModel.currentUser() !== false)
+    {
+      var groupIdList = parentModel.currentUser()._groups();
+      groupIdList.concat(self.node()._readers(), self.node()._admins());
+
+      murrix.cache.getGroups(groupIdList, function(error, groupList)
+      {
+        if (error)
+        {
+          console.log("NodeModel: " + error);
+          return;
+        }
+
+        var listAdmins = [];
+        var listReaders = [];
+        var listOthers = [];
+
+        for (var n in groupList)
+        {
+          if (murrix.inArray(groupList[n]._id(), self.node()._admins()))
+          {
+            listAdmins.push(groupList[n]);
+          }
+          else if (murrix.inArray(groupList[n]._id(), self.node()._readers()))
+          {
+            listReaders.push(groupList[n]);
+          }
+          else
+          {
+            listOthers.push(groupList[n]);
+          }
+        }
+
+        self.groupAccessListAdmins(listAdmins);
+        self.groupAccessListReaders(listReaders);
+        self.groupAccessListOthers(listOthers);
+      });
+    }
+  };
+
   self.groupAccessSaveNode = function(nodeData)
   {
     self.groupAccessLoading(true);
@@ -210,99 +268,56 @@ var NodeModel = function(parentModel)
       }
 
       murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+      self.loadGroups();
     });
   };
 
-  self.groupAccessRemove = function()
+  self.groupAccessRemove = function(data)
   {
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._readers = nodeData._readers || [];
     nodeData._admins = nodeData._admins || [];
 
-    nodeData._readers = murrix.removeFromArray(this.toString(), nodeData._readers);
-    nodeData._admins = murrix.removeFromArray(this.toString(), nodeData._admins);
+    nodeData._readers = murrix.removeFromArray(data._id(), nodeData._readers);
+    nodeData._admins = murrix.removeFromArray(data._id(), nodeData._admins);
 
     self.groupAccessSaveNode(nodeData);
+
+    event.preventDefault();
+    event.stopPropagation();
   };
 
-  self.groupAccessMakeAdmin = function()
+  self.groupAccessMakeAdmin = function(data)
   {
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._readers = nodeData._readers || [];
     nodeData._admins = nodeData._admins || [];
 
-    nodeData._readers = murrix.removeFromArray(this.toString(), nodeData._readers);
-    nodeData._admins = murrix.addToArray(this.toString(), nodeData._admins);
+    nodeData._readers = murrix.removeFromArray(data._id(), nodeData._readers);
+    nodeData._admins = murrix.addToArray(data._id(), nodeData._admins);
 
     self.groupAccessSaveNode(nodeData);
+
+    event.preventDefault();
+    event.stopPropagation();
   };
 
-  self.groupAccessMakeReader = function()
+  self.groupAccessMakeReader = function(data)
   {
     var nodeData = ko.mapping.toJS(self.node);
 
     nodeData._readers = nodeData._readers || [];
     nodeData._admins = nodeData._admins || [];
 
-    nodeData._readers = murrix.addToArray(this.toString(), nodeData._readers);
-    nodeData._admins = murrix.removeFromArray(this.toString(), nodeData._admins);
+    nodeData._readers = murrix.addToArray(data._id(), nodeData._readers);
+    nodeData._admins = murrix.removeFromArray(data._id(), nodeData._admins);
 
     self.groupAccessSaveNode(nodeData);
-  };
 
-  self.groupAccessTypeaheadSource = function(query, callback)
-  {
-    murrix.server.emit("findGroups", { query: { name: { $regex: ".*" + query + ".*", $options: "-i" } }, options: { limit: 20 } }, function(error, groupDataList)
-    {
-      if (error)
-      {
-        console.log(error);
-        callback([]);
-      }
-
-      var resultList = [];
-
-      for (var key in groupDataList)
-      {
-        var item = murrix.cache.addGroupData(groupDataList[key]);
-
-        item.toString = function() { return this._id(); };
-
-        if (!murrix.inArray(item._id(), self.node()._readers()) && !murrix.inArray(item._id(), self.node()._admins()))
-        {
-          resultList.push(item);
-        }
-      }
-
-      callback(resultList);
-    });
-  };
-
-  self.groupAccessTypeaheadHighlighter = function(item)
-  {
-    var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
-    return item.name().replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
-    {
-      return "<strong>" + match + "</strong>"
-    });
-  };
-
-  self.groupAccessTypeaheadUpdater = function(key)
-  {
-    var nodeData = ko.mapping.toJS(self.node);
-
-    nodeData._readers = nodeData._readers || [];
-
-    if (murrix.inArray(key, nodeData._readers))
-    {
-      self.groupAccessErrorText("Group is already in readers!");
-      return;
-    }
-
-    nodeData._readers = murrix.addToArray(key, nodeData._readers);
-    self.groupAccessSaveNode(nodeData);
+    event.preventDefault();
+    event.stopPropagation();
   };
 
 

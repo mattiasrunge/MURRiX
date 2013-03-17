@@ -1,31 +1,31 @@
 
-<div class="sidebar-nav" data-bind="slideVisible: !nodeModel.show()">
+<div class="sidebar-nav" data-bind="fadeVisible: !nodeModel.show()">
 
   <div class="sidebar-nav-picture">
     <!-- Icon from http://simiographics.deviantart.com/ -->
-    <img draggable="false" src="img/book_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: !newsModel.show() && !searchModel.show() && !browseModel.show() && !tagsModel.show() && !adminModel.show() && !configModel.show()"/>
+    <img draggable="false" src="img/book_256.png" alt="" data-bind="visible: !newsModel.show() && !searchModel.show() && !browseModel.show() && !tagsModel.show() && !adminModel.show() && !configModel.show()"/>
 
     <!-- Icon from http://cemagraphics.deviantart.com/ -->
-    <img draggable="false" src="img/news_paper_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: newsModel.show"/>
+    <img draggable="false" src="img/news_paper_256.png" alt="" data-bind="visible: newsModel.show"/>
 
     <!-- Icon from http://www.visualpharm.com/ -->
-    <img draggable="false" src="img/calendar_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: searchModel.show"/>
+    <img draggable="false" src="img/calendar_256.png" alt="" data-bind="visible: searchModel.show"/>
 
     <!-- Icon from http://www.visualpharm.com/ -->
-    <img draggable="false" src="img/folder_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: browseModel.show"/>
+    <img draggable="false" src="img/folder_256.png" alt="" data-bind="visible: browseModel.show"/>
 
     <!-- Icon from http://www.iconshock.com/ -->
-    <img draggable="false" src="img/postage_stamp_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: tagsModel.show"/>
+    <img draggable="false" src="img/postage_stamp_256.png" alt="" data-bind="visible: tagsModel.show"/>
 
     <!-- Icon from http://www.visualpharm.com/ -->
-    <img draggable="false" src="img/user_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: adminModel.show"/>
+    <img draggable="false" src="img/user_256.png" alt="" data-bind="visible: adminModel.show"/>
 
     <!-- Icon from http://www.visualpharm.com/ -->
-    <img draggable="false" src="img/settings_256.png" alt="" style="width: 240px; height: 240px;" data-bind="visible: configModel.show"/>
+    <img draggable="false" src="img/settings_256.png" alt="" data-bind="visible: configModel.show"/>
 
   </div>
 
-  <div class="sidebar-nav-content">
+  <div class="sidebar-nav-content sidebar-nav-content-main">
     <ul class="nav nav-stacked nav-pills" style="font-size: 16px;">
 
       <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link" style="line-height: 30px;">
@@ -58,18 +58,6 @@
         </a>
       </li>
 
-      <li data-bind="css: { 'active': helpModel.show }" class="nav-link" style="line-height: 30px;">
-        <a href="#" data-bind="click: helpModel.showClicked">
-          <i class="icon-question-sign icon-fixed"></i> Help
-        </a>
-      </li>
-
-      <li class="nav-link" style="line-height: 30px;">
-        <a href="https://github.com/mattiasrunge/MURRiX/issues?state=open">
-          <i class="icon-check icon-fixed"></i> Todo
-        </a>
-      </li>
-
       <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': adminModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefFirstPrimary: adminModel.show() ? ' ' : 'admin'">
           <i class="icon-lock icon-fixed"></i> Administration
@@ -82,6 +70,17 @@
         </a>
       </li>
 
+      <li data-bind="css: { 'active': helpModel.show }" class="nav-link" style="line-height: 30px;">
+        <a href="#" data-bind="click: helpModel.showClicked">
+          <i class="icon-question-sign icon-fixed"></i> Help
+        </a>
+      </li>
+
+      <li class="nav-link" style="line-height: 30px;">
+        <a target="top" href="https://github.com/mattiasrunge/MURRiX/issues?state=open">
+          <i class="icon-check icon-fixed"></i> Todo
+        </a>
+      </li>
     </ul>
 
   </div>
@@ -119,7 +118,7 @@
             <li>
               <a href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">
                 <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
-                Create Text
+                Create text
               </a>
             </li>
             <li>
@@ -129,11 +128,22 @@
               </a>
             </li>
             <li>
-              <a href="#editAccessModal" data-toggle="modal">
-                <i style="vertical-align: center;" class="icon-key icon-fixed"></i>
-                Accesses
+              <a href="#" data-bind="click: nodeModel.removeNode">
+                <i style="vertical-align: center;" class="icon-trash icon-fixed"></i>
+                Remove
               </a>
             </li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav" data-bind="visible: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
+        <li class="dropdown">
+          <a class="dropdown-toggle" rel="tooltip" data-toggle="dropdown" href="#" data-placement="bottom" style="color: white;">
+            <i data-bind="ifnotset: nodeModel.node().public" class="icon-lock icon-white"></i>
+            <i data-bind="ifset: nodeModel.node().public" class="icon-unlock icon-white"></i>
+          </a>
+          <ul class="dropdown-menu">
             <li data-bind="ifnotset: nodeModel.node().public">
               <a href="#" data-bind="click: nodeModel.changePublic.bind($data, true)">
                 <i style="vertical-align: center;" class="icon-unlock icon-fixed"></i>
@@ -146,12 +156,87 @@
                 Make private
               </a>
             </li>
+            <li class="divider"></li>
             <li>
-              <a href="#" data-bind="click: nodeModel.removeNode">
-                <i style="vertical-align: center;" class="icon-trash icon-fixed"></i>
-                Remove
-              </a>
+              <div class="nodeGroupAccesItem" style="font-weight: bold; font-size: 10px;">Administrators</div>
             </li>
+            <!-- ko foreach: nodeModel.groupAccessListAdmins -->
+              <li class="dropdown-submenu">
+                <a tabindex="-1" href="#" data-bind="click: noClick">
+                  <i style="vertical-align: center;" class="icon-eye-open icon-fixed"></i>
+                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
+                </a>
+
+                <ul class="dropdown-menu">
+                  <li>
+                     <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeReader">
+                      <i style="vertical-align: center;" class="icon-minus icon-fixed"></i>
+                      Revoke admin access
+                    </a>
+                  </li>
+                  <li>
+                     <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessRemove">
+                      <i style="vertical-align: center;" class="icon-remove icon-fixed"></i>
+                      Revoke read access
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            <!-- /ko -->
+            <li class="divider"></li>
+            <li>
+              <div class="nodeGroupAccesItem" style="font-weight: bold; font-size: 10px;">Readers</div>
+            </li>
+            <!-- ko foreach: nodeModel.groupAccessListReaders -->
+              <li class="dropdown-submenu">
+                <a tabindex="-1" href="#" data-bind="click: noClick">
+                  <i style="vertical-align: center;" class="icon-eye-close icon-fixed"></i>
+                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
+                </a>
+
+                <ul class="dropdown-menu">
+                  <li>
+                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">
+                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
+                      Grant admin access
+                    </a>
+                  </li>
+                  <li>
+                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessRemove">
+                      <i style="vertical-align: center;" class="icon-remove icon-fixed"></i>
+                      Revoke read access
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            <!-- /ko -->
+            <li class="divider"></li>
+            <li>
+              <div class="nodeGroupAccesItem" style="font-weight: bold; font-size: 10px;">Others</div>
+            </li>
+            <!-- ko foreach: nodeModel.groupAccessListOthers -->
+              <li class="dropdown-submenu">
+                <a tabindex="-1" href="#" data-bind="click: noClick">
+                  <i style="vertical-align: center;" class="icon-group icon-fixed"></i>
+                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
+                </a>
+
+                <ul class="dropdown-menu">
+                  <li>
+                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">
+                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
+                      Grant admin access
+                    </a>
+                  </li>
+                  <li>
+                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeReader">
+                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
+                      Grant read access
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            <!-- /ko -->
           </ul>
         </li>
       </ul>

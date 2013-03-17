@@ -69,6 +69,13 @@ murrix.model = function()
     });
   };
 
+  self.noClick = function(data, event)
+  {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  };
+
   $(window).unload(function()
   {
     console.log("Leaving page, will clear cache!");
