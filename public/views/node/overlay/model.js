@@ -1043,7 +1043,7 @@ var OverlayModel = function(parentModel)
       self.whereInitialize();
       self.whoInitialize();
       self.withInitialize();
-
+      parentModel.loadNode();
 
       if (callback)
       {

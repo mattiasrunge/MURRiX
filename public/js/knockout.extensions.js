@@ -935,26 +935,17 @@ $(function()
           return;
         }
 
+        murrix.cache.getItem(node._profilePicture(), function(error, item)
+        {
+          if (error)
+          {
+            $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+            console.log("error received from the server: " + error);
+            return;
+          }
 
-        murrix.cache.loadImage($(element), { id: node._profilePicture(), width: width, height: height, square: square, cacheId: node.modified.timestamp() });
-
-//         var src = "/preview?id=" + node._profilePicture() + "&width=" + width + "&height=" + height + "&square=" + square + "&timestamp=" + node.modified.timestamp();
-//
-//         var image = new Image();
-//
-//         image.onload = function()
-//         {
-//           $(element).attr("src", src);
-//         };
-//
-//         image.onerror = function()
-//         {
-//           $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height);// TODO: Set error image
-//         };
-//
-//         image.src = src;
-//
-//         return;
+          murrix.cache.loadImage($(element), { id: item._id(), width: width, height: height, square: square, cacheId: item.cacheId() });
+        });
       });
     }
   };
