@@ -390,7 +390,7 @@ var OverlayModel = function(parentModel)
     {
       self.showingLoading(true);
 
-      murrix.server.emit("helper_nodeGetShowing", { nodeId: parentModel.node()._id() }, function(error, list)
+      murrix.server.emit("helper_nodeGetShowingSuggestions", { nodeId: parentModel.node()._id() }, function(error, list)
       {
         self.showingLoading(false);
 
@@ -649,6 +649,7 @@ var OverlayModel = function(parentModel)
   self.whoModel.max(1);
   self.whoModel.types([ "person" ]);
   self.whoInitializing = false;
+  self.whoLoading = ko.observable(false);
 
   self.whoInitialize = function()
   {
@@ -683,36 +684,38 @@ var OverlayModel = function(parentModel)
 
   self.whoLoadSuggestions = function()
   {
-    var list = [];
-    var takenIds = [];
-// TODO
-//     if (self.item() !== false)
-//     {
-//       if (self.item()._who && self.item()._who() !== false)
-//       {
-//         takenIds.push(self.item()._who());
-//       }
-//
-//       for (var n = 0; n < parentModel.items().length; n++)
-//       {
-//         if (parentModel.items()[n]._who && parentModel.items()[n]._who() !== false)
-//         {
-//           if (!murrix.inArray(parentModel.items()[n]._who(), takenIds))
-//           {
-//             list.push(parentModel.items()[n]._who());
-//             takenIds.push(parentModel.items()[n]._who());
-//           }
-//         }
-//       }
-//
-//       self.whoModel.suggestions(list);
-//     }
+    var suggestions = [];
+
+    if (self.item() !== false)
+    {
+      self.whoLoading(true);
+
+      murrix.server.emit("helper_nodeGetWhoSuggestions", { nodeId: parentModel.node()._id() }, function(error, list)
+      {
+        self.whoLoading(false);
+
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        for (var n = 0; n < list.length; n++)
+        {
+          if (self.item()._who === false || list[n] !== self.item()._who())
+          {
+            suggestions.push(list[n]);
+          }
+        }
+
+        self.whoModel.suggestions(suggestions);
+      });
+
+      return;
+    }
+
+    self.whoModel.suggestions(suggestions);
   };
-// TODO
-//   parentModel.items.subscribe(function()
-//   {
-//     self.whoLoadSuggestions();
-//   });
 
   self.whoCreatePerson = function()
   {
