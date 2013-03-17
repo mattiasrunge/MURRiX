@@ -736,6 +736,7 @@ var OverlayModel = function(parentModel)
   self.withModel.max(1);
   self.withModel.types([ "camera" ]);
   self.withInitializing = false;
+  self.withLoading = ko.observable(false);
 
   self.withInitialize = function()
   {
@@ -770,7 +771,7 @@ var OverlayModel = function(parentModel)
 
   self.withLoadSuggestions = function()
   {
-    var list = [];
+    var suggestions = [];
     var takenIds = [];
 
     if (self.item() !== false)
@@ -797,8 +798,12 @@ var OverlayModel = function(parentModel)
           query.$or.push({ name: self.item().exif.Model() });
         }
 
+         self.withLoading(true);
+
         murrix.server.emit("find", { query: query, options: "nodes" }, function(error, nodeDataList)
         {
+          self.withLoading(false);
+
           if (error)
           {
             console.log(error);
@@ -811,37 +816,45 @@ var OverlayModel = function(parentModel)
 
             if (!murrix.inArray(node._id(), takenIds))
             {
-              list.push(node._id());
+              suggestions.push(node._id());
               takenIds.push(node._id());
             }
           }
 
-          self.withModel.suggestions(list);
+          self.withModel.suggestions(suggestions);
         });
       }
       else
-      {// TODO
-//         for (var n = 0; n < parentModel.items().length; n++)
-//         {
-//           if (parentModel.items()[n]._with && parentModel.items()[n]._with() !== false)
-//           {
-//             if (!murrix.inArray(parentModel.items()[n]._with(), takenIds))
-//             {console.log(parentModel.items()[n]._with());
-//               list.push(parentModel.items()[n]._with());
-//               takenIds.push(parentModel.items()[n]._with());
-//             }
-//           }
-//         }
+      {
+        self.withLoading(true);
+
+        murrix.server.emit("helper_nodeGetWithSuggestions", { nodeId: parentModel.node()._id() }, function(error, list)
+        {
+          self.withLoading(false);
+
+          if (error)
+          {
+            console.log(error);
+            return;
+          }
+
+          for (var n = 0; n < list.length; n++)
+          {
+            if (self.item()._with === false || list[n] !== self.item()._with())
+            {
+              suggestions.push(list[n]);
+            }
+          }
+
+          self.withModel.suggestions(suggestions);
+        });
+
+        return;
       }
 
-      self.withModel.suggestions(list);
+      self.withModel.suggestions(suggestions);
     }
   };
-// TODO
-//   parentModel.items.subscribe(function()
-//   {
-//     self.withLoadSuggestions();
-//   });
 
   self.withCreateFromExif = function()
   {
