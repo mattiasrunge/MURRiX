@@ -942,9 +942,11 @@ $(function()
             $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
             console.log("error received from the server: " + error);
             return;
-          }
+          }console.log(item);
 
-          murrix.cache.loadImage($(element), { id: item._id(), width: width, height: height, square: square, cacheId: item.cacheId() });
+          var cacheId = item.cacheId ? item.cacheId() : item.modified.timestamp();
+
+          murrix.cache.loadImage($(element), { id: item._id(), width: width, height: height, square: square, cacheId: cacheId });
         });
       });
     }
