@@ -823,6 +823,8 @@ var OverlayModel = function(parentModel)
 
           self.withModel.suggestions(suggestions);
         });
+
+        return;
       }
       else
       {
@@ -851,9 +853,9 @@ var OverlayModel = function(parentModel)
 
         return;
       }
-
-      self.withModel.suggestions(suggestions);
     }
+
+    self.withModel.suggestions(suggestions);
   };
 
   self.withCreateFromExif = function()
@@ -936,6 +938,7 @@ var OverlayModel = function(parentModel)
 
 
   self.whereInitializing = false;
+  self.whereLoading = ko.observable(false);
 
   self.whereInitialize = function()
   {
@@ -990,38 +993,38 @@ var OverlayModel = function(parentModel)
 
   self.whereLoadSuggestions = function()
   {
-    var list = [];
-    var takenIds = [];
+    var suggestions = [];
 
     if (self.item() !== false)
     {
-      if (self.item().where && self.item().where._id && self.item().where._id() !== false)
-      {
-        takenIds.push(self.item().where._id());
-      }
-// TODO
-//       for (var n = 0; n < parentModel.items().length; n++)
-//       {
-//         if (!parentModel.items()[n].where || !parentModel.items()[n].where._id || parentModel.items()[n].where._id() === false)
-//         {
-//           continue;
-//         }
-//
-//         if (!murrix.inArray(parentModel.items()[n].where._id(), takenIds))
-//         {
-//           list.push(parentModel.items()[n].where._id());
-//           takenIds.push(parentModel.items()[n].where._id());
-//         }
-//       }
+      self.whereLoading(true);
 
-      self.whereLocationModel.suggestions(list);
+      murrix.server.emit("helper_nodeGetWhereSuggestions", { nodeId: parentModel.node()._id() }, function(error, list)
+      {
+        self.whereLoading(false);
+
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        for (var n = 0; n < list.length; n++)
+        {
+          if (!self.item().where || !self.item().where._id || list[n] !== self.item().where._id())
+          {
+            suggestions.push(list[n]);
+          }
+        }
+
+        self.whereLocationModel.suggestions(suggestions);
+      });
+
+      return;
     }
+
+    self.whereLocationModel.suggestions(suggestions);
   };
-// TODO
-//   parentModel.items.subscribe(function()
-//   {
-//     self.whereLoadSuggestions();
-//   });
 
   self.whereFileSet = function()
   {
