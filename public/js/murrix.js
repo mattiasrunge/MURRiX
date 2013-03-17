@@ -61,7 +61,7 @@ murrix.cache = new function()
       image.onload = function()
       {
         //console.log("onload", path);
-        element.attr("src", path);
+        element.prop("src", path);
       };
 
 
@@ -80,16 +80,16 @@ murrix.cache = new function()
 
           if (status === "none")
           {
-            var path = "http://placekitten.com/g/" + options.width + "/" + options.height;
+            var path2 = "http://placekitten.com/g/" + options.width + "/" + options.height;
 
             var image2 = new Image();
-            image2.onload = function() { element.attr("src", path); };
-            image2.onerror = function() { element.attr("src", path); };
+            image2.onload = function() { element.prop("src", path2); };
+            image2.onerror = function() { element.prop("src", path2); };
             image2.src = path;
 
             if (image2.complete)
             {
-              element.attr("src", path);
+              element.prop("src", path2);
             }
 
             return;

@@ -1,5 +1,5 @@
-<script type="text/html" id="imageWithMarkingsTemplate">
-
+<script type="text/html" id="imageTemplate">
+  <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="srcPicture: [ $data._id, 1400, 0, 0, $data.cacheId ]" src="" alt="">
 </script>
 
 
@@ -22,7 +22,7 @@
     <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;" data-bind="if: nodeModel.overlayModel.item().what() === 'file'">
         <div class="imgContainer" style="position: relative; display: inline-block;">
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
-            <img class="" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" data-bind="srcPicture: [ nodeModel.overlayModel.item()._id, 1400, 0, 0, nodeModel.overlayModel.item().cacheId ]" src="" alt="">
+            <div data-bind="template: { name: 'imageTemplate', data: nodeModel.overlayModel.item() }"></div>
           </div>
 
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
