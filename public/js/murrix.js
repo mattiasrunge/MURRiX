@@ -486,37 +486,17 @@ murrix.cache = new function()
 
         if (self.items[id].exif && self.items[id].exif.MIMEType)
         {
-          switch (self.items[id].exif.MIMEType())
+          if (murrix.mimeIsImage(self.items[id].exif.MIMEType()))
           {
-            case "image/x-canon-cr2":
-            case "image/x-canon-crw":
-            case "image/jpeg":
-            case "image/gif":
-            case "image/tiff":
-            case "image/png":
-            case "image/bmp":
-            case "image/x-raw":
-            {
-              type = "imageFile";
-              break;
-            }
-            case "video/mpeg":
-            case "video/avi":
-            case "video/quicktime":
-            case "video/x-ms-wmv":
-            case "video/mp4":
-            case "video/3gpp":
-            case "video/x-msvideo":
-            {
-              type = "videoFile";
-              break;
-            }
-            case "audio/mpeg":
-            case "audio/x-wav":
-            {
-              type = "audioFile";
-              break;
-            }
+            type = "imageFile";
+          }
+          else if (murrix.mimeIsVideo(self.items[id].exif.MIMEType()))
+          {
+            type = "videoFile";
+          }
+          else if (murrix.mimeIsAudio(self.items[id].exif.MIMEType()))
+          {
+            type = "audioFile";
           }
         }
       }

@@ -23,6 +23,7 @@ var OverlayModel = function(parentModel)
   {
     if (!value)
     {
+      self.autoplay(false);
       self.editFinishClicked();
     }
   });
@@ -75,6 +76,47 @@ var OverlayModel = function(parentModel)
   self.nextId = ko.observable(false);
   self.prevId = ko.observable(false);
   self.loading = ko.observable(false);
+  self.autoplay = ko.observable(false);
+  self.autoplayTimer = null;
+
+  self.next = function()
+  {
+    self.pause();
+    document.location.hash = murrix.createPath(1, null, self.nextId());
+  };
+
+  self.previous = function()
+  {
+    self.pause();
+    document.location.hash = murrix.createPath(1, null, self.prevId());
+  };
+
+  self.play = function()
+  {
+    self.autoplay(true);
+  };
+
+  self.pause = function()
+  {
+    self.autoplay(false);
+  };
+
+  self.autoplay.subscribe(function(value)
+  {
+    if (self.autoplayTimer)
+    {
+      clearInterval(self.autoplayTimer);
+      self.autoplayTimer = null;
+    }
+
+    if (value)
+    {
+      self.autoplayTimer = setInterval(function()
+      {
+        document.location.hash = murrix.createPath(1, null, self.nextId());
+      }, 3000);
+    }
+  });
 
   self.item.subscribe(function(value)
   {
