@@ -1,8 +1,10 @@
 *~
 cache/*
-!cache/.htaccess
+!cache/.murrix
 files/*
-!files/.htaccess
+!files/.murrix
+dumps/*
+!dumps/.murrix
 node_modules
 config.json
 triggers.json

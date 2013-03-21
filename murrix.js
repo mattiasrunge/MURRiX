@@ -19,6 +19,7 @@ var MurrixHelpersManager = require("./lib/helpers.js").Manager;
 var MurrixImportManager = require("./lib/import.js").Manager;
 var MurrixClientManager = require("./lib/client.js").Manager;
 var MurrixServerManager = require("./lib/server.js").Manager;
+var MurrixBackupManager = require("./lib/backup.js").Manager;
 
 function Murrix(options)
 {
@@ -79,6 +80,8 @@ function Murrix(options)
   self.server = new MurrixServerManager(self);
   modules.push(self.server);
 
+  self.backup = new MurrixBackupManager(self);
+  modules.push(self.backup);
 
   var wait = new ewait.WaitForAll();
 

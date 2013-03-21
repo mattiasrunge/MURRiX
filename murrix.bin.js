@@ -78,6 +78,37 @@ program
   });
 
 program
+  .command("dumpdb")
+  .description("Do a database dump")
+  .action(function(directory, options)
+  {
+    var murrix = new Murrix(program);
+
+    murrix.on("done", function()
+    {
+      murrix.backup.dumpDatabase(function(error)
+      {
+        if (error)
+        {
+          murrix.logger.error("cmd", error);
+          process.exit(1);
+          return;
+        }
+
+
+        process.exit(0);
+      });
+    });
+
+    murrix.emit("init");
+  }).on("--help", function() {
+    console.log("  Examples:");
+    console.log();
+    console.log("    $ dumpdb");
+    console.log();
+  });
+
+program
   .command("*")
   .action(function(env){
     console.error("Unknown command");
