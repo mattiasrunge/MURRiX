@@ -11,7 +11,7 @@
     </div>-->
 
 
-    <div class="well" style="padding-bottom: 0px; text-align: center;">
+    <div class="box box-content" style="text-align: center;">
       <div style="margin-bottom: 30px; font-size: 20px;">
 
         <div data-bind="visible: searchModel.queryInput() === '' && !searchModel.loading()">
@@ -28,55 +28,55 @@
 
       </div>
 
-      <div style="margin-bottom: 25px;">
-       <form class="form-search" data-bind="submit: searchModel.searchSubmit">
-          <div class="input-append">
-            <input style="padding-left: 15px;" class="input-xxlarge search-query" type="text" data-bind="value: searchModel.queryInput, disable: searchModel.loading"><button class="btn" type="submit" data-bind="disable: searchModel.loading">Search</button>
+      <form class="form-search" data-bind="submit: searchModel.searchSubmit" style="margin: 0px;">
+        <div class="input-append">
+          <input style="padding-left: 15px;" class="input-xxlarge search-query" type="text" data-bind="value: searchModel.queryInput, disable: searchModel.loading"><button class="btn" type="submit" data-bind="disable: searchModel.loading">Search</button>
+        </div>
+        <div style="margin-top: 10px;">
+          <div class="btn-group">
+            <button type="button" class="btn" data-bind="click: searchModel.searchTypeAlbumClicked, css: { active: searchModel.searchTypeAlbum }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-book"></i> Album</button>
+            <button type="button" class="btn" data-bind="click: searchModel.searchTypePersonClicked, css: { active: searchModel.searchTypePerson }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-user"></i> Person</button>
+            <button type="button" class="btn" data-bind="click: searchModel.searchTypeLocationClicked, css: { active: searchModel.searchTypeLocation }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-flag"></i> Location</button>
+            <button type="button" class="btn" data-bind="click: searchModel.searchTypeCameraClicked, css: { active: searchModel.searchTypeCamera }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-camera"></i> Camera</button>
+            <button type="button" class="btn" data-bind="click: searchModel.searchTypeVehicleClicked, css: { active: searchModel.searchTypeVehicle }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-truck"></i> Vehicle</button>
           </div>
-          <div style="margin-top: 10px;">
-            <div class="btn-group">
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypeAlbumClicked, css: { active: searchModel.searchTypeAlbum }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-book"></i> Album</button>
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypePersonClicked, css: { active: searchModel.searchTypePerson }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-user"></i> Person</button>
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypeLocationClicked, css: { active: searchModel.searchTypeLocation }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-flag"></i> Location</button>
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypeCameraClicked, css: { active: searchModel.searchTypeCamera }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-camera"></i> Camera</button>
-              <button type="button" class="btn" data-bind="click: searchModel.searchTypeVehicleClicked, css: { active: searchModel.searchTypeVehicle }, disable: searchModel.loading"><i style="vertical-align: center;" class="icon-truck"></i> Vehicle</button>
-            </div>
 
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
 
       <div class="alert alert-error" data-bind="visible: searchModel.errorText() !== '', text: searchModel.errorText"></div>
     </div>
 
-    <div class="pagination pagination-centered" data-bind="visible: searchModel.pages().length > 1" style="margin-top: 0px;">
-      <ul>
+    <div style="margin-top: 30px;">
+      <div class="pagination pagination-centered" data-bind="visible: searchModel.pages().length > 1">
+        <ul>
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
+          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
-        <!-- ko foreach: searchModel.pages -->
-          <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
-        <!-- /ko -->
+          <!-- ko foreach: searchModel.pages -->
+            <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
+          <!-- /ko -->
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
 
-      </ul>
-    </div>
+        </ul>
+      </div>
 
-    <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: searchModel.results }"></div>
+      <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: searchModel.results }"></div>
 
-    <div class="pagination pagination-centered" data-bind="visible: searchModel.pages().length > 1" style="margin-top: 0px;">
-      <ul>
+      <div class="pagination pagination-centered" data-bind="visible: searchModel.pages().length > 1" style="margin-top: 0px;">
+        <ul>
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
+          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
-        <!-- ko foreach: searchModel.pages -->
-          <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
-        <!-- /ko -->
+          <!-- ko foreach: searchModel.pages -->
+            <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
+          <!-- /ko -->
 
-        <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+          <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
 
-      </ul>
+        </ul>
+      </div>
     </div>
 
   </div>
