@@ -27,11 +27,11 @@ program
 program
   .command("import <directory>")
   .description("Import a directory")
+  .option("-r, --recursive <boolean>", "Import folders recursive", false)
   .option("-i, --id [parent id]", "Id of node to import files into, default is to create a new album for every folder", false)
   .option("-t, --type [type]", "Type of node to create as parent, default is album", "album")
   .option("-u, --user [username]", "Username which is used to import, default is admin", "admin")
-/*  .option("-r, --recursive", "Import folders recursive")
-  .option("-e, --empty", "Import empty albums")*/
+/*  .option("-e, --empty", "Import empty albums")*/
   .action(function(directory, options)
   {
     var murrix = new Murrix(program);
@@ -73,7 +73,7 @@ program
     console.log("  Examples:");
     console.log();
     console.log("    $ import ./my_pictures");
-    console.log("    $ import -r ./my_pictures");
+    console.log("    $ import -u username -r 1 ./my_pictures");
     console.log();
   });
 
