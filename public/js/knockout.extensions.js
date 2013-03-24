@@ -160,7 +160,14 @@ $(function()
 
       if ($(element).is(":visible") !== ko.utils.unwrapObservable(value))
       {
-        ko.utils.unwrapObservable(value) ? $(element).fadeIn() : $(element).fadeOut();
+        if (ko.utils.unwrapObservable(value))
+        {
+          $(element).fadeIn();
+        }
+        else
+        {
+          $(element).fadeOut();
+        }
       }
     }
   };
@@ -516,7 +523,7 @@ $(function()
           title     : title,
           content   : "<div style='font-size: 10px;'>" + text + "</div>",
           delay     : { show: 200, hide: 100 }
-        }
+        };
 
         $(element).popover(options);
       }
@@ -576,7 +583,7 @@ $(function()
           title     : "With - " + nodeList[withId].name(),
           content   : text,
           delay     : { show: 200, hide: 100 }
-        }
+        };
 
         $(element).popover(options);
       });

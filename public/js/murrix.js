@@ -31,13 +31,13 @@ murrix.cache = new function()
   {
     self.itemsCount = 0;
     self.items = {};
-  }
+  };
 
   self.clearNodes = function()
   {
     self.nodesCount = 0;
     self.nodes = {};
-  }
+  };
 
 
   // TODO: Clean up this image loading code!
@@ -231,7 +231,7 @@ murrix.cache = new function()
 
     self.nodes[id].hasReadAccess = function()
     {
-      if (this.public() === true)
+      if (this["public"]() === true)
       {
         console.log("Node is public, read access");
         return true;
@@ -294,7 +294,7 @@ murrix.cache = new function()
 //         });
 //       });
 //     }
-  }
+  };
 
   self.extendItem = function(id)
   {
@@ -389,12 +389,12 @@ murrix.cache = new function()
             if (error)
             {
               console.log(error);
-              self.items[id].whereString(false)
+              self.items[id].whereString(false);
               self.items[id].whereNode(false);
               return;
             }
 
-            self.items[id].whereString(false)
+            self.items[id].whereString(false);
             self.items[id].whereNode(node);
           });
 
@@ -844,7 +844,7 @@ murrix.cache = new function()
       callback(null, userList[id]);
     });
   };
-};
+}();
 
 murrix.dnd = new function()
 {
@@ -944,7 +944,7 @@ murrix.file = new function()
       murrix.file._readChunk(file, offset, chunkSize);
     });
   };
-};
+}();
 
 murrix.loadProfilePicture = function(element, pictureId, width, height, square)
 {
@@ -991,7 +991,7 @@ murrix.getFormData = function(element)
 
   jQuery.each($(element).find("input, select, textarea"), function(n, input)
   {
-    $input = $(input)
+    $input = $(input);
     data[$input.attr("name")] = $input.val();
   });
 
@@ -1000,7 +1000,7 @@ murrix.getFormData = function(element)
 
 murrix.basename = function(str)
 {
-  var base = new String(str).substring(str.lastIndexOf('/') + 1);
+  var base = str.substring(str.lastIndexOf('/') + 1);
 
   if (base.lastIndexOf(".") != -1)
   {
@@ -1008,14 +1008,14 @@ murrix.basename = function(str)
   }
 
   return base;
-}
+};
 
 // Taken from http://my.opera.com/GreyWyvern/blog/show.dml/1671288
 murrix.natcasecmp = function(a, b) {
   function chunkify(t) {
     var tz = [], x = 0, y = -1, n = 0, i, j;
 
-    while (i = (j = t.charAt(x++)).charCodeAt(0)) {
+    while ((i = (j = t.charAt(x++)).charCodeAt(0))) {
       var m = (i == 46 || (i >=48 && i <= 57));
       if (m !== n) {
         tz[++y] = "";
@@ -1256,8 +1256,8 @@ murrix.updatePath = function(pathString, pathObservable)
 
 murrix.parseExifGps = function(data)
 {
-  parts = data.split(" ")
-  parts[0] = parts[0].replace(/:/g, "-")
+  parts = data.split(" ");
+  parts[0] = parts[0].replace(/:/g, "-");
   parts.push("+00:00");
 
   var datetime = parts.join(" ");
@@ -1267,8 +1267,8 @@ murrix.parseExifGps = function(data)
 
 murrix.parseExifCamera = function(data)
 {
-  parts = data.split(" ")
-  parts[0] = parts[0].replace(/:/g, "-")
+  parts = data.split(" ");
+  parts[0] = parts[0].replace(/:/g, "-");
   parts.push("+00:00");
 
   var datetime = parts.join(" ");
@@ -1303,9 +1303,9 @@ murrix.parseTimezone = function(string)
   return timezone;
 };
 
-murrix.timezoneStringToOffset = function(string)
+murrix.timezoneStringToOffset = function(timezoneString)
 {
-  var string = murrix.parseTimezone(string);
+  var string = murrix.parseTimezone(timezoneString);
 
   var minus = string[0] === "-";
 
@@ -1462,7 +1462,7 @@ murrix.getAge = function(timestamp)
   }
 
   return age;
-}
+};
 
 murrix.cleanDatestring = function(datestring)
 {
@@ -1539,7 +1539,7 @@ murrix.isDaylightSavings = function(datestring)
 
   for (var n = 0; n < ranges.length; n++)
   {
-    var check = new Date(check);
+    check = new Date(check);
     var start = new Date(ranges[n].start);
     var end = new Date(ranges[n].end);
 
@@ -1591,7 +1591,7 @@ murrix.floatval = function(value)
 murrix.round = function(value, precision)
 {
   return Math.round(value * Math.pow(10, precision)) / Math.pow(10, precision);
-}
+};
 
 murrix.makeDecimalPretty = function(num)
 {

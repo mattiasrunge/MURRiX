@@ -232,6 +232,8 @@ var OverlayModel = function(parentModel)
         return;
       }
 
+      console.log("OverlayModel: Successfully removed " + itemData._id + " will move to the next one " + nextId);
+
       if (nextId === itemData._id)
       {
         document.location.hash = murrix.createPath(1, null, '');
