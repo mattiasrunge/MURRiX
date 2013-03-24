@@ -24,6 +24,45 @@ program
     murrix.emit("init");
   });
 
+// program
+//   .command("test")
+//   .description("Run unit tests")
+//   .action(function(options)
+//   {
+//     var murrix = new Murrix(program);
+//
+//     murrix.on("done", function()
+//     {
+//       var MurrixQueue = require("./lib/queue.js").MurrixQueue;
+//       var queue = new MurrixQueue(murrix, "test", [ "type" ]);
+//
+//       queue.push("123", { type: "video", atr2: 2 }, function(error)
+//       {
+//         queue.exists("123", function(error, exists)
+//         {
+//           console.log("EXISTS(123): " + exists);
+//
+//           queue.push("abc", { type: "image", atr2: "b" }, function(error)
+//           {
+//             queue.exists("abc", function(error, exists)
+//             {
+//               console.log("EXISTS(abc): " + exists);
+//
+//               queue.shift(function(error, id, item)
+//               {
+//                 console.log("SHIFT(123): " + id + "," + JSON.stringify(item));
+//                 process.exit(0);
+//               });
+//             });
+//           });
+//         });
+//       });
+//     });
+//
+//     murrix.emit("init");
+//   });
+
+
 program
   .command("import <directory>")
   .description("Import a directory")

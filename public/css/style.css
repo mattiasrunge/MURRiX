@@ -537,6 +537,34 @@ i.icon-fixed[class*="icon-white"] {
   height: 240px;
 }
 
+.sidebar-nav-issues {
+  width: 228px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  text-align: center;
+  padding: 5px;
+  border-radius: 3px 3px 0px 0px;
+  background-color: #b94a48;
+  color: #eed3d7;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.9;
+/*  -webkit-animation: pulsate 1s ease-out;
+  -webkit-animation-iteration-count: infinite;
+  opacity: 0.3*/
+}
+
+/*@-webkit-keyframes pulsate {
+    0% {-webkit-transform: opacity: 0.3;}
+    50% {opacity: 1.0;}
+    100% {-webkit-transform: opacity: 0.3;}
+}*/
+
+.sidebar-nav-issues:hover {
+ opacity: 1.0;
+}
+
 .sidebar-nav-droptarget {
   width: 250px;
   height: 250px;

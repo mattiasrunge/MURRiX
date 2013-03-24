@@ -48,8 +48,8 @@ murrix.cache = new function()
     var obj = {};
 
     obj.element = element;
-    obj.width = element.width();
-    obj.height = element.height();
+    obj.width = options.width;
+    obj.height = options.height;
     obj.load = function()
     {
       /* Try to load image */

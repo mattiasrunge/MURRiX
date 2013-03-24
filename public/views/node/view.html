@@ -48,6 +48,10 @@
 <div class="sidebar-nav box" data-bind="fadeVisible: nodeModel.show() && nodeModel.node() !== false">
 
   <div class="sidebar-nav-profilepicture" data-bind="target: { handler: nodeModel.profilePictureDropHandler }, if: nodeModel.node()">
+    <div class="sidebar-nav-issues" style="display: none;">
+      <i class="icon-warning-sign"></i>
+      Issues found!
+    </div>
     <div class="sidebar-nav-droptarget">Drop here</div>
     <img draggable="false" src="" alt="" data-bind="srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
   </div>

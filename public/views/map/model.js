@@ -4,7 +4,7 @@ var MapModel = function(parentModel)
   var self = this;
 
   var options = {
-    zoom: 13,
+    zoom: 10,
     center: new google.maps.LatLng(57.6706907666667, 11.9375348333333),
     mapTypeId: google.maps.MapTypeId.HYBRID,
 
