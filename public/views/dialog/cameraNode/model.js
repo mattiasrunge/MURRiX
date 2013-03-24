@@ -134,7 +134,7 @@ function DialogCameraNodeModel()
 
     nodeData.referenceTimelines = nodeData.referenceTimelines.filter(function(element)
     {
-      return (element.type !== "timezone")
+      return (element.type !== "timezone");
     });
 
     if (self.timezone() !== "Unknown")
@@ -235,4 +235,4 @@ function DialogCameraNodeModel()
       }
     });
   };
-};
+}

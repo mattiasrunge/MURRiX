@@ -151,4 +151,4 @@ function DialogComponentDatetimeModel()
       self.internalValue({ datestring: self.datestring(), timezone: self.timezone(), daylightSavings: self.daylightSavings() });
     }
   });
-};
+}

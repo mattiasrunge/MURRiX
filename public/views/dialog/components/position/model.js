@@ -29,7 +29,7 @@ function DialogComponentPositionModel(dialogModel)
     zoomControlOptions: {
       style: google.maps.ZoomControlStyle.LARGE,
       position: google.maps.ControlPosition.TOP_LEFT
-    },
+    }
   };
 
   self.mapElementId = ko.observable("mapElementId_" + (new Date().getTime()));
@@ -163,10 +163,12 @@ function DialogComponentPositionModel(dialogModel)
 
       //console.log(data);
 
+      var toString = function() { return this.index; };
+
       for (var n = 0; n < data.results.length; n++)
       {
         data.results[n].index = n;
-        data.results[n].toString = function() { return this.index; };
+        data.results[n].toString = toString;
       }
 
       self.results = data.results;
@@ -185,7 +187,7 @@ function DialogComponentPositionModel(dialogModel)
     var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
     return item.formatted_address.replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
     {
-      return "<strong>" + match + "</strong>"
+      return "<strong>" + match + "</strong>";
     });
   };
 
@@ -294,4 +296,4 @@ function DialogComponentPositionModel(dialogModel)
       self.map.setCenter(self.marker.getPosition());
     }
   };
-};
+}

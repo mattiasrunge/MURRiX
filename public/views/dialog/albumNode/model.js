@@ -142,4 +142,4 @@ function DialogAlbumNodeModel()
       self.saveNode({});
     }
   };
-};
+}

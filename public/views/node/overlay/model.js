@@ -220,6 +220,8 @@ var OverlayModel = function(parentModel)
 
     self.editLoading(true);
 
+    var nextId = self.nextId();
+
     murrix.server.emit("removeItem", itemData._id, function(error)
     {
       self.editLoading(false);
@@ -230,13 +232,13 @@ var OverlayModel = function(parentModel)
         return;
       }
 
-      if (self.nextId() === itemData._id)
+      if (nextId === itemData._id)
       {
         document.location.hash = murrix.createPath(1, null, '');
       }
       else
       {
-        document.location.hash = murrix.createPath(1, null, self.nextId());
+        document.location.hash = murrix.createPath(1, null, nextId);
       }
 
       murrix.model.nodeModel.loadNode();
@@ -1404,7 +1406,7 @@ var OverlayModel = function(parentModel)
     // If we have a camera and are in camera mode, daylight savings will be handled by camera setting
     else if (self.whenType() === 'camera')
     {
-      return false
+      return false;
     }
 
     // If we have no reference timelines we or have selected none

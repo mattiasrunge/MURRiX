@@ -103,6 +103,8 @@ function DialogComponentNodeListModel()
 
   self.typeaheadUpdater = function(key)
   {
+    var index = 0;
+
     if (self.max() !== false && self.max() === self.min())
     {
       self.value.splice(0, 1);
@@ -113,7 +115,7 @@ function DialogComponentNodeListModel()
         self.selected(key);
       }
 
-      var index = self.suggestions.indexOf(key);
+      index = self.suggestions.indexOf(key);
 
       if (index !== -1)
       {
@@ -132,19 +134,19 @@ function DialogComponentNodeListModel()
         self.selected(key);
       }
 
-      var index = self.suggestions.indexOf(key);
+      index = self.suggestions.indexOf(key);
 
       if (index !== -1)
       {
         self.suggestions.splice(index, 1);
       }
-    };
+    }
   };
 
-  self.typeaheadSource = function(query, callback)
+  self.typeaheadSource = function(queryString, callback)
   {
     var inst = this;
-    var query = { name: { $regex: ".*" + query + ".*", $options: "-i" } };
+    var query = { name: { $regex: ".*" + queryString + ".*", $options: "-i" } };
 
     if (self.types().length > 0)
     {
@@ -160,12 +162,13 @@ function DialogComponentNodeListModel()
       }
 
       var resultList = [];
+      var toString = function() { return this._id(); };
 
       for (var key in nodeDataList)
       {
         var item = murrix.cache.addNodeData(nodeDataList[key]);
 
-        item.toString = function() { return this._id(); };
+        item.toString = toString;
 
         if (!murrix.inArray(item._id(), self.value()))
         {
@@ -187,7 +190,7 @@ function DialogComponentNodeListModel()
     var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
     var name = item.name().replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
     {
-      return "<strong>" + match + "</strong>"
+      return "<strong>" + match + "</strong>";
     });
 
     var imgUrl = "http://placekitten.com/g/32/32";
@@ -255,4 +258,4 @@ function DialogComponentNodeListModel()
       self.suggestionsNodes(list);
     });
   });
-};
+}
