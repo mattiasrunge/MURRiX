@@ -150,4 +150,4 @@ function DialogGroupModel()
       self.saveGroup({});
     }
   };
-};
+}

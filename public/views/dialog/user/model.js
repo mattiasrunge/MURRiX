@@ -172,4 +172,4 @@ function DialogUserModel()
       self.saveNode({});
     }
   };
-};
+}

@@ -158,4 +158,4 @@ function DialogVehicleNodeModel()
       self.saveNode({});
     }
   };
-};
+}

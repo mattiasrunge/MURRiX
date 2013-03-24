@@ -436,7 +436,7 @@ var NodeModel = function(parentModel)
         murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
       });
     }
-  }
+  };
 
 
 
@@ -450,11 +450,11 @@ var NodeModel = function(parentModel)
 
     if (publicFlag)
     {
-      nodeData.public = true;
+      nodeData["public"] = true;
     }
     else
     {
-      nodeData.public = false;
+      nodeData["public"] = false;
     }
 
     murrix.server.emit("saveNode", nodeData, function(error, nodeData)
@@ -473,10 +473,10 @@ var NodeModel = function(parentModel)
   };
 
 
-  self.nodeTypeaheadSource = function(query, callback)
+  self.nodeTypeaheadSource = function(queryString, callback)
   {
     var inst = this;
-    var query = { name: { $regex: ".*" + query + ".*", $options: "-i" } };
+    var query = { name: { $regex: ".*" + queryString + ".*", $options: "-i" } };
 
     if (inst.options.nodeTypes)
     {
@@ -493,11 +493,13 @@ var NodeModel = function(parentModel)
 
       var resultList = [];
 
+      var toString = function() { return this._id(); };
+
       for (var key in nodeDataList)
       {
         var item = murrix.cache.addNodeData(nodeDataList[key]);
 
-        item.toString = function() { return this._id(); };
+        item.toString = toString;
 
         if (!inst.options.nodeFilter || inst.options.nodeFilter(item))
         {
@@ -519,7 +521,7 @@ var NodeModel = function(parentModel)
     var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
     var name = item.name().replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
     {
-      return "<strong>" + match + "</strong>"
+      return "<strong>" + match + "</strong>";
     });
 
     var imgUrl = "http://placekitten.com/g/32/32";

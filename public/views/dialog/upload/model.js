@@ -149,7 +149,7 @@ function DialogUploadModel()
   self.doPause = function()
   {
     self.pause(true);
-  }
+  };
 
   self.doUpload = function()
   {
@@ -278,4 +278,4 @@ function DialogUploadModel()
       self.hasChanged(false);
     }
   });
-};
+}

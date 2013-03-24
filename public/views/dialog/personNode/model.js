@@ -320,4 +320,4 @@ function DialogPersonNodeModel()
       }
     });
   };
-};
+}

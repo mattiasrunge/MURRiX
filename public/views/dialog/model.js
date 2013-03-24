@@ -23,13 +23,13 @@ function DialogBaseModel(self, elementId)
   {
     $(self.elementId).modal("hide");
   };
-};
+}
 
 function DialogComponentBaseModel(self, template)
 {
   self.template = ko.observable(template);
   self.disabled = ko.observable(false);
-};
+}
 
 function DialogModel()
 {
@@ -45,4 +45,4 @@ function DialogModel()
   self.groupModel = new DialogGroupModel();
   self.userModel = new DialogUserModel();
   self.uploadModel = new DialogUploadModel();
-};
+}

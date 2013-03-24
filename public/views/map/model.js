@@ -63,6 +63,11 @@ var MapModel = function(parentModel)
 
         console.log("MapModel: Loaded " + markerList.length + " markers!");
 
+        var clickHandler = function()
+        {
+          document.location.hash += "/:" + this._id;
+        };
+
         for (n = 0; n < markerList.length; n++)
         {
           var marker = new google.maps.Marker({
@@ -73,10 +78,7 @@ var MapModel = function(parentModel)
 
           marker._id = markerList[n]._id;
 
-          google.maps.event.addListener(marker, 'click', function()
-          {
-            document.location.hash += "/:" + this._id;
-          });
+          google.maps.event.addListener(marker, 'click', clickHandler);
 
           self.markers.push(marker);
         }

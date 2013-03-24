@@ -388,7 +388,7 @@ var OverlayModel = function(parentModel)
     }
 
     self.showingInitializing = false;
-  }
+  };
 
   self.showingModel.value.subscribe(function(value)
   {
@@ -443,16 +443,17 @@ var OverlayModel = function(parentModel)
         }
 
         var takenIds = [];
+        var n = 0;
 
         if (self.item().showing)
         {
-          for (var n = 0; n < self.item().showing().length; n++)
+          for (n = 0; n < self.item().showing().length; n++)
           {
             takenIds.push(self.item().showing()[n]._id());
           }
         }
 
-        for (var n = 0; n < list.length; n++)
+        for (n = 0; n < list.length; n++)
         {
           if (!murrix.inArray(list[n], takenIds))
           {
@@ -710,7 +711,7 @@ var OverlayModel = function(parentModel)
     }
 
     self.whoInitializing = false;
-  }
+  };
 
   self.whoModel.value.subscribe(function(value)
   {
@@ -797,7 +798,7 @@ var OverlayModel = function(parentModel)
     }
 
     self.withInitializing = false;
-  }
+  };
 
   self.withModel.value.subscribe(function(value)
   {

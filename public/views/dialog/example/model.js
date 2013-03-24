@@ -40,4 +40,4 @@ function DialogExampleModel()
   {
     console.log("value", value);
   });
-};
+}

@@ -243,4 +243,4 @@ function DialogTextItemModel()
       self.saveItem({});
     }
   };
-};
+}

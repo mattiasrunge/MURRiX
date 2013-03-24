@@ -13,4 +13,4 @@ function DialogComponentTextModel()
   {
     self.value("");
   };
-};
+}

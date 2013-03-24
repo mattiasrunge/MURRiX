@@ -80,7 +80,7 @@ var TagsModel = function(parentModel)
 
       var tags = [];
 
-      for (var tag in result[0])
+      for (tag in result[0])
       {
         var size = minFontSize + (result[0][tag] / max) * (maxFontSize - minFontSize);
 

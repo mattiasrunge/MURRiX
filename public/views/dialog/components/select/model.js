@@ -43,4 +43,4 @@ function DialogComponentSelectModel()
 
     self.value(defaultValue);
   });
-};
+}
