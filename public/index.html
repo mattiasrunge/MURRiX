@@ -35,41 +35,41 @@
   <body>
     <div class="loading-overlay"></div>
 
-    {{views/view.html}}
-    {{views/node/view.html}}
-    {{views/node/about/view.html}}
-    {{views/node/files/view.html}}
-    {{views/node/relations/view.html}}
-    {{views/node/comments/view.html}}
-    {{views/node/overlay/view.html}}
-    {{views/node/timeline/view.html}}
-    {{views/node/issues/view.html}}
-    {{views/search/view.html}}
-    {{views/admin/view.html}}
-    {{views/config/view.html}}
-    {{views/news/view.html}}
-    {{views/browse/view.html}}
-    {{views/tags/view.html}}
-    {{views/organize/view.html}}
-    {{views/help/view.html}}
-    {{views/map/view.html}}
+    {{include:views/view.html}}
+    {{include:views/node/view.html}}
+    {{include:views/node/about/view.html}}
+    {{include:views/node/files/view.html}}
+    {{include:views/node/relations/view.html}}
+    {{include:views/node/comments/view.html}}
+    {{include:views/node/overlay/view.html}}
+    {{include:views/node/timeline/view.html}}
+    {{include:views/node/issues/view.html}}
+    {{include:views/search/view.html}}
+    {{include:views/admin/view.html}}
+    {{include:views/config/view.html}}
+    {{include:views/news/view.html}}
+    {{include:views/browse/view.html}}
+    {{include:views/tags/view.html}}
+    {{include:views/organize/view.html}}
+    {{include:views/help/view.html}}
+    {{include:views/map/view.html}}
 
-    {{views/dialog/components/select/view.html}}
-    {{views/dialog/components/text/view.html}}
-    {{views/dialog/components/position/view.html}}
-    {{views/dialog/components/datetime/view.html}}
-    {{views/dialog/components/nodelist/view.html}}
+    {{include:views/dialog/components/select/view.html}}
+    {{include:views/dialog/components/text/view.html}}
+    {{include:views/dialog/components/position/view.html}}
+    {{include:views/dialog/components/datetime/view.html}}
+    {{include:views/dialog/components/nodelist/view.html}}
 
-    {{views/dialog/example/view.html}}
-    {{views/dialog/group/view.html}}
-    {{views/dialog/user/view.html}}
-    {{views/dialog/textItem/view.html}}
-    {{views/dialog/vehicleNode/view.html}}
-    {{views/dialog/cameraNode/view.html}}
-    {{views/dialog/locationNode/view.html}}
-    {{views/dialog/personNode/view.html}}
-    {{views/dialog/albumNode/view.html}}
-    {{views/dialog/upload/view.html}}
+    {{include:views/dialog/example/view.html}}
+    {{include:views/dialog/group/view.html}}
+    {{include:views/dialog/user/view.html}}
+    {{include:views/dialog/textItem/view.html}}
+    {{include:views/dialog/vehicleNode/view.html}}
+    {{include:views/dialog/cameraNode/view.html}}
+    {{include:views/dialog/locationNode/view.html}}
+    {{include:views/dialog/personNode/view.html}}
+    {{include:views/dialog/albumNode/view.html}}
+    {{include:views/dialog/upload/view.html}}
 
 
  <!-- Third-party script files -->
@@ -94,47 +94,47 @@
 
 
     <!-- MURRiX base library script files -->
-    <script src="js/murrix.js"></script>
-    <script src="js/knockout.extensions.js"></script>
+    <script src="{{link:js/murrix.js}}"></script>
+    <script src="{{link:js/knockout.extensions.js}}"></script>
 
-    <script src="views/dialog/components/select/model.js"></script>
-    <script src="views/dialog/components/text/model.js"></script>
-    <script src="views/dialog/components/position/model.js"></script>
-    <script src="views/dialog/components/datetime/model.js"></script>
-    <script src="views/dialog/components/nodelist/model.js"></script>
+    <script src="{{link:views/dialog/components/select/model.js}}"></script>
+    <script src="{{link:views/dialog/components/text/model.js}}"></script>
+    <script src="{{link:views/dialog/components/position/model.js}}"></script>
+    <script src="{{link:views/dialog/components/datetime/model.js}}"></script>
+    <script src="{{link:views/dialog/components/nodelist/model.js}}"></script>
 
-    <script src="views/dialog/example/model.js"></script>
-    <script src="views/dialog/group/model.js"></script>
-    <script src="views/dialog/user/model.js"></script>
-    <script src="views/dialog/vehicleNode/model.js"></script>
-    <script src="views/dialog/cameraNode/model.js"></script>
-    <script src="views/dialog/locationNode/model.js"></script>
-    <script src="views/dialog/personNode/model.js"></script>
-    <script src="views/dialog/albumNode/model.js"></script>
-    <script src="views/dialog/textItem/model.js"></script>
-    <script src="views/dialog/upload/model.js"></script>
-    <script src="views/dialog/model.js"></script>
+    <script src="{{link:views/dialog/example/model.js}}"></script>
+    <script src="{{link:views/dialog/group/model.js}}"></script>
+    <script src="{{link:views/dialog/user/model.js}}"></script>
+    <script src="{{link:views/dialog/vehicleNode/model.js}}"></script>
+    <script src="{{link:views/dialog/cameraNode/model.js}}"></script>
+    <script src="{{link:views/dialog/locationNode/model.js}}"></script>
+    <script src="{{link:views/dialog/personNode/model.js}}"></script>
+    <script src="{{link:views/dialog/albumNode/model.js}}"></script>
+    <script src="{{link:views/dialog/textItem/model.js}}"></script>
+    <script src="{{link:views/dialog/upload/model.js}}"></script>
+    <script src="{{link:views/dialog/model.js}}"></script>
 
 
     <!-- MURRiX view script files -->
-    <script src="views/node/about/model.js"></script>
-    <script src="views/node/files/model.js"></script>
-    <script src="views/node/relations/model.js"></script>
-    <script src="views/node/comments/model.js"></script>
-    <script src="views/node/overlay/model.js"></script>
-    <script src="views/node/timeline/model.js"></script>
-    <script src="views/node/issues/model.js"></script>
-    <script src="views/node/model.js"></script>
-    <script src="views/search/model.js"></script>
-    <script src="views/admin/model.js"></script>
-    <script src="views/config/model.js"></script>
-    <script src="views/news/model.js"></script>
-    <script src="views/browse/model.js"></script>
-    <script src="views/tags/model.js"></script>
-    <script src="views/organize/model.js"></script>
-    <script src="views/help/model.js"></script>
-    <script src="views/map/model.js"></script>
-    <script src="views/model.js"></script>
+    <script src="{{link:views/node/about/model.js}}"></script>
+    <script src="{{link:views/node/files/model.js}}"></script>
+    <script src="{{link:views/node/relations/model.js}}"></script>
+    <script src="{{link:views/node/comments/model.js}}"></script>
+    <script src="{{link:views/node/overlay/model.js}}"></script>
+    <script src="{{link:views/node/timeline/model.js}}"></script>
+    <script src="{{link:views/node/issues/model.js}}"></script>
+    <script src="{{link:views/node/model.js}}"></script>
+    <script src="{{link:views/search/model.js}}"></script>
+    <script src="{{link:views/admin/model.js}}"></script>
+    <script src="{{link:views/config/model.js}}"></script>
+    <script src="{{link:views/news/model.js}}"></script>
+    <script src="{{link:views/browse/model.js}}"></script>
+    <script src="{{link:views/tags/model.js}}"></script>
+    <script src="{{link:views/organize/model.js}}"></script>
+    <script src="{{link:views/help/model.js}}"></script>
+    <script src="{{link:views/map/model.js}}"></script>
+    <script src="{{link:views/model.js}}"></script>
 
     <!-- Initialization scripts and definitions -->
     <script>
@@ -183,23 +183,22 @@
         $(window).on("hashchange", hashChangeHandler);
 
         hashChangeHandler();
-      });
 
-
-      // TODO: this code should be in the cache object, but server is not initalized yet, fix that somehow
-      murrix.server.on("cacheJobDone", function(data)
-      {
-        if (data.error)
+        // TODO: this code should be in the cache object, but server is not initalized yet, fix that somehow
+        murrix.server.on("cacheJobDone", function(data)
         {
-          console.log("Error while running caching job, reason: " + data.error);
-          return;
-        }
+          if (data.error)
+          {
+            console.log("Error while running caching job, reason: " + data.error);
+            return;
+          }
 
-        if (murrix.cache.queuedImages[data.id])
-        {
-          murrix.cache.queuedImages[data.id].load();
-          delete murrix.cache.queuedImages[data.id];
-        }
+          if (murrix.cache.queuedImages[data.id])
+          {
+            murrix.cache.queuedImages[data.id].load();
+            delete murrix.cache.queuedImages[data.id];
+          }
+        });
       });
 
 
