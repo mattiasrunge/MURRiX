@@ -197,21 +197,25 @@ var RelationsModel = function(parentModel)
           return;
         }
 
-        var traverseTree = function(node, depth)
+        var traverseTree = function(node, first, last, depth)
         {
+          first = first || false;
+          last = last || false;
           depth = depth || 0;
 
           node.showParents = ko.observable(depth < 1);
           node.showChildren = ko.observable(depth < 1);
+          node.first = first;
+          node.last = last;
 
           for (var n = 0; n < node.children.length; n++)
           {
-            traverseTree(node.children[n], depth + 1);
+            traverseTree(node.children[n], n === 0, n + 1 === node.children.length, depth + 1);
           }
 
           for (var n = 0; n < node.parents.length; n++)
           {
-            traverseTree(node.parents[n], depth + 1);
+            traverseTree(node.parents[n], n === 0, n + 1 === node.parents.length, depth + 1);
           }
         }
 

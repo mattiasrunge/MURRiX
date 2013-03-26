@@ -472,6 +472,25 @@ i.icon-fixed[class*="icon-white"] {
   text-align: left;
 }
 
+.relationHLineLeft {
+  height: 2px;
+  background-color: white;
+  display: inline-block;
+  width: 50%;
+}
+
+
+.relationHLineRight {
+  height: 2px;
+  background-color: white;
+  display: inline-block;
+  width: 50%;
+}
+
+.relationHLineHide {
+  background-color: transparent;
+}
+
 .relation-person-image {
   position: absolute;
   width: 80px;
@@ -483,6 +502,7 @@ i.icon-fixed[class*="icon-white"] {
     -moz-box-shadow: 3px 3px 15px 3px black;
           box-shadow: 3px 3px 15px 3px black;
   border-radius: 3px 3px 3px 3px;
+  z-index: 3;
 }
 
 .relation-person-image img {
@@ -504,6 +524,7 @@ i.icon-fixed[class*="icon-white"] {
 .relation-person-title a {
   color: white;
   cursor: pointer;
+  margin-left: 80px;
 }
 
 .relation-person-partner {
@@ -519,7 +540,7 @@ i.icon-fixed[class*="icon-white"] {
   bottom: 0px;
   opacity: 0.7;
   background-color: #0088CC;
-  border-radius: 3px 3px 0px 3px;
+  border-radius: 3px 3px 0px 0px;
 }
 
 .relation-expand {
@@ -528,7 +549,7 @@ i.icon-fixed[class*="icon-white"] {
   padding: 0px;
   margin: 0;
   margin-left: -9px;
-  z-index: 10;
+  z-index: 1;
   position: relative;
   border-radius: 3px;
   border: 1px solid #555;
@@ -785,7 +806,15 @@ i.icon-fixed[class*="icon-white"] {
   text-decoration: none;
 }
 
-
+.dropdown-title {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 20px;
+  color: #333333;
+  white-space: nowrap;
+}
 
 .nodeGroupAccesItem {
   display: block;
@@ -799,22 +828,5 @@ i.icon-fixed[class*="icon-white"] {
 
 
 
-.relationHLineLeft {
-  height: 2px;
-  background-color: white;
-  display: inline-block;
-  width: 50%;
-}
 
-
-.relationHLineRight {
-  height: 2px;
-  background-color: white;
-  display: inline-block;
-  width: 50%;
-}
-
-.relationHLineHide {
-  background-color: transparent;
-}
 

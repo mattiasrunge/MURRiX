@@ -31,9 +31,28 @@
               </div>
 
               <div class="relation-person-title">
+                <a class="dropdown-toggle pull-right hide" data-toggle="dropdown" href="#">
+                  <i class="icon-cog icon-white" title="Person toolbox"></i>
+                </a>
+                <ul class="dropdown-menu pull-right" style="z-index: 3">
+                  <li>
+                    <a href="#" data-bind="">
+                      <i style="vertical-align: center;" class="icon-user icon-fixed"></i>
+                      Add parent
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" data-bind="">
+                      <i style="vertical-align: center;" class="icon-user icon-fixed"></i>
+                      Add child
+                    </a>
+                  </li>
+                </ul>
                 <div class="relation-person-title-background"></div>
-                <i class="icon-user"></i>
-                <a src="#" data-bind="text: $data.name, click: nodeModel.relationsModel.personClickHandler"></a>
+                <a src="#" data-bind="click: nodeModel.relationsModel.personClickHandler">
+                  <i class="icon-user"></i>
+                  <span data-bind="text: $data.name"></span>
+                </a>
               </div>
 
               <div style="padding-left: 90px;">
