@@ -48,7 +48,7 @@
                     </a>
                   </li>
                 </ul>
-                <div class="relation-person-title-background"></div>
+                <div class="relation-person-title-background" data-bind="css: { 'relation-person-title-male': $data.gender === 'm', 'relation-person-title-female': $data.gender === 'f' }"></div>
                 <a src="#" data-bind="click: nodeModel.relationsModel.personClickHandler">
                   <i class="icon-user"></i>
                   <span data-bind="text: $data.name"></span>

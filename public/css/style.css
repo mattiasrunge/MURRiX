@@ -539,8 +539,16 @@ i.icon-fixed[class*="icon-white"] {
   right: 0px;
   bottom: 0px;
   opacity: 0.7;
-  background-color: #0088CC;
+  background-color: white;
   border-radius: 3px 3px 0px 0px;
+}
+
+.relation-person-title-male {
+  background-color: #0088CC;
+}
+
+.relation-person-title-female {
+  background-color: #FF9999;
 }
 
 .relation-expand {
