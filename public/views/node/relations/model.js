@@ -41,52 +41,9 @@ var RelationsModel = function(parentModel)
       {
         self.renderTimer = setInterval(function()
         {
-          if ($("#relationContainer").is(":visible"))
+          if ($(".relation-container").is(":visible"))
           {
-            $("#relationContainer").overscroll({ captureWheel: false });
-
-            self._center();
-
-            $("#relationContainer").on("mousewheel DOMMouseScroll", function(event)
-            {
-              var wheelData = event.originalEvent.detail ? event.originalEvent.detail * -1 : event.originalEvent.wheelDelta / 40;
-
-              wheelData /= 50;
-
-              event.preventDefault();
-              event.stopPropagation();
-
-//               var zoomBefore = self.zoom();
-//               var scrollLeftBefore = $("#relationContainer").scrollLeft();
-//               var scrollTopBefore = $("#relationContainer").scrollTop();
-// console.log("before", scrollLeftBefore, scrollTopBefore, zoomBefore);
-
-
-
-              self.zoom(murrix.round(self.zoom() + wheelData, 1));
-//               var width = $(".relationZoom").outerWidth() * self.zoom();
-//               var height = $(".relationZoom").outerHeight() * self.zoom();
-//               var diffWidth = $(".relationZoom").outerWidth() - width;
-//               var diffHeight = $(".relationZoom").outerHeight() - height;
-//
-//               $(".relationMarginContainer").css("padding-left", (diffWidth) + "px");
-// //               $(".relationMarginContainer").css("padding-right", (diffWidth) + "px");
-//
-//               $(".relationMarginContainer").css("padding-top", (diffHeight) + "px");
-//               $(".relationMarginContainer").css("padding-bottom", (diffHeight / 2) + "px");
-
-//               var scrollLeftAfter = $("#relationContainer").scrollLeft();
-//               var scrollTopAfter = $("#relationContainer").scrollTop();
-// console.log("after", scrollLeftAfter, scrollTopAfter, self.zoom());
-//
-//               var ratio = wheelData / self.zoom();
-// console.log("ratio", ratio);
-//
-//               $("#relationContainer").scrollLeft(scrollLeftBefore * self.zoom());
-//               $("#relationContainer").scrollTop(scrollLeftBefore * self.zoom());
-
-              //self._center();
-            });
+            $(".relation-container").on("mousewheel DOMMouseScroll", function(event) { self.scrollHandler(null, event); });
 
             clearInterval(self.renderTimer);
             self.renderTimer = null;
@@ -95,6 +52,51 @@ var RelationsModel = function(parentModel)
       }
     }
   });
+
+  self.dragging = false;
+  self.canvasElement = false;
+
+  self.startDragHandler = function(data, event)
+  {
+    self.dragging = { top: event.clientY, left: event.clientX };
+    self.canvasElement = $("#relation-canvas");
+  };
+
+  self.dragHandler = function(data, event)
+  {
+    if (self.dragging)
+    {
+      var diffTop = event.clientY - self.dragging.top;
+      var diffLeft = event.clientX - self.dragging.left;
+
+      var position = self.canvasElement.position();
+
+      self.canvasElement.css("top", position.top + diffTop);
+      self.canvasElement.css("left", position.left + diffLeft);
+
+      self.dragging = { top: event.clientY, left: event.clientX };
+      self._storePosition();
+    }
+  };
+
+  self.stopDragHandler = function(data, event)
+  {
+    self.dragging = false;
+    self.canvasElement = false;
+  };
+
+  self.scrollHandler = function(data, event)
+  {
+    var wheelData = event.originalEvent.detail ? event.originalEvent.detail * -1 : event.originalEvent.wheelDelta / 40;
+
+    wheelData /= 50;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    self.zoom(murrix.round(self.zoom() + wheelData, 1));
+    self._adjustCanvasPosition();
+  };
 
   self.personClickHandler = function(data)
   {
@@ -113,34 +115,69 @@ var RelationsModel = function(parentModel)
   self.expandParentsClicked = function(data, element)
   {
     data.showParents(!data.showParents());
-    self._center($(event.currentTarget));
+    self._adjustPosition();
   };
 
   self.expandChildrenClicked = function(data, event)
   {
     data.showChildren(!data.showChildren());
-    self._center($(event.currentTarget));
+    self._adjustPosition();
   };
 
-  self._center = function(element)
+
+  self.meOffset = { top: 0, left: 0 };
+  self.canvasSize = { width: 0, height: 0 };
+
+  self._storePosition = function()
   {
-    if (self.tree() === false)
-    {
-      return;
-    }
+    self.meOffset = $(".relationMe").offset();
+    self.canvasSize = { width: $("#relation-canvas").width(), height: $("#relation-canvas").height() };
+  };
 
-    element = element || $(".relationMe");
+  self._adjustCanvasPosition = function()
+  {
+    var size = { width: $("#relation-canvas").width(), height: $("#relation-canvas").height() };
 
-    $("#relationContainer").scrollLeft(0);
-    $("#relationContainer").scrollTop(0);
+    var diffHeight = (self.canvasSize.height - size.height) / 2;
+    var diffWidth = (self.canvasSize.width - size.width) / 2;
 
-    var position = element.offset();
-    position.top -= $("#relationContainer").offset().top;
-    position.left -= ($(window).width() - element.width()) / 2;
-    position.top -= ($(window).height() - element.height()) / 2;
+    var position = $("#relation-canvas").position();
 
-    $("#relationContainer").scrollLeft(position.left);
-    $("#relationContainer").scrollTop(position.top);
+    $("#relation-canvas").css("top", position.top + diffHeight);
+    $("#relation-canvas").css("left", position.left + diffWidth);
+
+    self._storePosition();
+  };
+
+  self._adjustPosition = function()
+  {
+    var offset = $(".relationMe").offset();
+
+    var diffTop = self.meOffset.top - offset.top;
+    var diffLeft = self.meOffset.left - offset.left;
+
+    var position = $("#relation-canvas").position();
+
+    $("#relation-canvas").css("top", position.top + diffTop);
+    $("#relation-canvas").css("left", position.left + diffLeft);
+
+    self._storePosition();
+  };
+
+  self._center = function()
+  {
+    var meElement = $(".relationMe");
+
+    var position = meElement.offset();
+
+     position.top -= $("#relation-canvas").offset().top;
+     position.left -= ($(window).width() - meElement.width()) / 2;
+     position.top -= ($(window).height() - meElement.height()) / 2;
+
+    $("#relation-canvas").css("top", -position.top);
+    $("#relation-canvas").css("left", -position.left);
+
+    self._storePosition();
   };
 
 //   self._generatePerson = function(type, depth, positions)
@@ -224,6 +261,7 @@ var RelationsModel = function(parentModel)
         console.log("RelationsModel: Loaded!");
         self.loaded(true);
         self.tree(person);
+        self._storePosition();
         self._center();
       });
     }

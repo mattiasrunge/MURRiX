@@ -468,6 +468,17 @@ i.icon-fixed[class*="icon-white"] {
   margin-bottom: 30px;
 }
 
+.relation-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 100%;
+  padding: 0px 0px 0px 230px;
+  overflow: hidden;
+  cursor: move;
+}
+
 .relation-person-box {
   text-align: left;
 }

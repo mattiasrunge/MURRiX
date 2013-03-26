@@ -23,7 +23,7 @@
             </div>
           <!-- /ko -->
 
-          <div style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 92px;" data-bind="css: { relationMe: $data.type === 'me' }">
+          <div data-bind="style: { zoom: nodeModel.relationsModel.zoom }, css: { relationMe: $data.type === 'me' }" style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 92px;">
             <div class="box box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;">
 
               <div class="relation-person-image">
@@ -94,12 +94,14 @@
 </script>
 
 <div class="main-overlay" data-bind="fadeVisible: nodeModel.relationsModel.show() && nodeModel.relationsModel.enabled()">
-  <div id="relationContainer" style="position: absolute; top: 0px; left: 0px; right: 0px; height: 100%; padding: 0px 0px 0px 230px;">
+  <div class="relation-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragHandler, mousemove: nodeModel.relationsModel.dragHandler, mouseup: nodeModel.relationsModel.stopDragHandler }">
 
-    <div style="padding: 30px;">
-      <div class="relationMarginContainer">
-        <div data-bind="style: { zoom: nodeModel.relationsModel.zoom }" class="relationZoom">
-          <div class="relationMain" data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.relationsModel.tree, if: nodeModel.relationsModel.tree }"></div>
+    <div id="relation-canvas" style="position: absolute; top: 0px; left: 0px;">
+      <div style="padding: 30px;">
+        <div class="relationMarginContainer">
+          <div class="relationZoom">
+            <div class="relationMain" data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.relationsModel.tree, if: nodeModel.relationsModel.tree }"></div>
+          </div>
         </div>
       </div>
     </div>
