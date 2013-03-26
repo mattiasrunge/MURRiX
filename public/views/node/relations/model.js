@@ -1,4 +1,4 @@
-
+var temp = null;
 var RelationsModel = function(parentModel)
 {
   var self = this;
@@ -110,20 +110,34 @@ var RelationsModel = function(parentModel)
     event.stopPropagation();
   };
 
-  self._center = function()
+  self.expandParentsClicked = function(data, element)
+  {
+    data.showParents(!data.showParents());
+    self._center($(event.currentTarget));
+  };
+
+  self.expandChildrenClicked = function(data, event)
+  {
+    data.showChildren(!data.showChildren());
+    self._center($(event.currentTarget));
+  };
+
+  self._center = function(element)
   {
     if (self.tree() === false)
     {
       return;
     }
 
+    element = element || $(".relationMe");
+
     $("#relationContainer").scrollLeft(0);
     $("#relationContainer").scrollTop(0);
 
-    var position = $(".relationMe").offset();
+    var position = element.offset();
     position.top -= $("#relationContainer").offset().top;
-    position.left -= ($(window).width() - $(".relationMe").width()) / 2;
-    position.top -= ($(window).height() - $(".relationMe").height()) / 2;
+    position.left -= ($(window).width() - element.width()) / 2;
+    position.top -= ($(window).height() - element.height()) / 2;
 
     $("#relationContainer").scrollLeft(position.left);
     $("#relationContainer").scrollTop(position.top);
@@ -182,6 +196,26 @@ var RelationsModel = function(parentModel)
           console.log(error);
           return;
         }
+
+        var traverseTree = function(node, depth)
+        {
+          depth = depth || 0;
+
+          node.showParents = ko.observable(depth < 1);
+          node.showChildren = ko.observable(depth < 1);
+
+          for (var n = 0; n < node.children.length; n++)
+          {
+            traverseTree(node.children[n], depth + 1);
+          }
+
+          for (var n = 0; n < node.parents.length; n++)
+          {
+            traverseTree(node.parents[n], depth + 1);
+          }
+        }
+
+        traverseTree(person);
 
         console.log("RelationsModel: Loaded!");
         self.loaded(true);

@@ -522,6 +522,29 @@ i.icon-fixed[class*="icon-white"] {
   border-radius: 3px 3px 0px 3px;
 }
 
+.relation-expand {
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+  margin: 0;
+  margin-left: -9px;
+  z-index: 10;
+  position: relative;
+  border-radius: 3px;
+  border: 1px solid #555;
+  color: #0088CC;
+  background-color: white;
+  font-size: 10px;
+}
+
+.relation-child-expand {
+  margin-top: 19px;
+}
+
+.relation-parent-expand {
+  margin-top: -19px;
+}
+
 .sidebar-nav {
   z-index: 5;
   position: absolute;
