@@ -468,6 +468,60 @@ i.icon-fixed[class*="icon-white"] {
   margin-bottom: 30px;
 }
 
+.relation-person-box {
+  text-align: left;
+}
+
+.relation-person-image {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top: -6px;
+  left: -6px;
+  border: 1px solid #555;
+  -webkit-box-shadow: 3px 3px 15px 3px black;
+    -moz-box-shadow: 3px 3px 15px 3px black;
+          box-shadow: 3px 3px 15px 3px black;
+  border-radius: 3px 3px 3px 3px;
+}
+
+.relation-person-image img {
+  width: 80px;
+  height: 80px;
+  border-radius: 3px 3px 3px 3px;
+  background-color: #555;
+}
+
+.relation-person-title {
+  padding: 5px 10px;
+  z-index: 2;
+  position: relative;
+  color: white;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.relation-person-title a {
+  color: white;
+  cursor: pointer;
+}
+
+.relation-person-partner {
+  cursor: pointer;
+}
+
+.relation-person-title-background {
+  z-index: -1;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  opacity: 0.7;
+  background-color: #0088CC;
+  border-radius: 3px 3px 0px 3px;
+}
+
 .sidebar-nav {
   z-index: 5;
   position: absolute;
@@ -719,3 +773,25 @@ i.icon-fixed[class*="icon-white"] {
   color: #333333;
   white-space: nowrap;
 }
+
+
+
+.relationHLineLeft {
+  height: 2px;
+  background-color: white;
+  display: inline-block;
+  width: 50%;
+}
+
+
+.relationHLineRight {
+  height: 2px;
+  background-color: white;
+  display: inline-block;
+  width: 50%;
+}
+
+.relationHLineHide {
+  background-color: transparent;
+}
+

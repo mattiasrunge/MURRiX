@@ -87,11 +87,14 @@
         </a>
       </li>
 
-      <!--<li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link">
+      <li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'relations'">
-          <i class="icon-retweet icon-fixed"></i> Relations
+          <i class="icon-leaf icon-fixed"></i>Relations
+          <span data-bind="fadeVisible: nodeModel.relationsModel.loading()" class="badge pull-right" style="margin-top: -2px;">
+            <i class="icon-spinner icon-spin"></i>
+          </span>
         </a>
-      </li>-->
+      </li>
 
       <li data-bind="fadeVisible: nodeModel.issuesModel.enabled, css: { 'active': nodeModel.issuesModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'issues'">

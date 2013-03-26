@@ -1,32 +1,79 @@
 <script type="text/html" id="personRelationsTemplate">
-  <div style="display: table-row">
-    <!-- ko foreach: $data.family.parentList -->
-      <div style="text-align: center; display: table-cell;">
-        <div data-bind="template: { name: 'personRelationsTemplate', data: $data }"></div>
-      </div>
-    <!-- /ko -->
-  </div>
 
-  <div style="display: table-row">
-    <div class="well" style="width: 25px; height: 25px; margin: auto; margin-bottom: 10px; display-table: cell;" data-bind="textNodeAttribute: [ $data._id(), 'name' ]"></div>
-  </div>
+  <table style="text-align: center;">
+    <tbody>
+      <!-- ko if: $data.parents.length > 0 -->
+        <tr>
+          <td data-bind="foreach: $data.parents" style="white-space: nowrap; line-height: normal; padding: 0px; margin: 0px; padding-left: 15px; padding-right: 15px;"><div style="display: inline-block; vertical-align: bottom;" data-bind="template: { name: 'personRelationsTemplate', data: $data }"></div></td>
+        </tr>
+      <!-- /ko -->
+      <tr>
+        <td style="line-height: normal; padding: 0px;">
+          <!-- ko if: $data.type === 'child' -->
+            <div class="relationHLineLeft" data-bind="css: { relationHLineHide: $data.first }"></div><!--
+            --><div class="relationHLineRight" data-bind="css: { relationHLineHide: $data.last }"></div>
+          <!-- /ko -->
+
+          <!-- ko if: $data.parents.length > 0 || $data.type === 'child' -->
+            <div style="height: 30px; width: 2px; background-color: white; margin-left: auto; margin-right: auto; margin-top: -5px;"></div>
+          <!-- /ko -->
+
+          <div style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 92px;" data-bind="css: { relationMe: $data.type === 'me' }">
+            <div class="box box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;">
+
+              <div class="relation-person-image">
+                <img data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 80, 80, 1, $data.profilePicture ? $data.profilePicture.cacheId : false ]">
+              </div>
+
+              <div class="relation-person-title">
+                <div class="relation-person-title-background"></div>
+                <i class="icon-user"></i>
+                <a src="#" data-bind="text: $data.name, click: nodeModel.relationsModel.personClickHandler"></a>
+              </div>
+
+              <div style="padding-left: 90px;">
+                <div data-bind="visible: $data.birth || $data.death" style="margin-bottom: 10px;">
+                  <i class="icon-calendar"></i>
+                  <span class="relation-person-birth" data-bind="visible: $data.birth, text: $data.birth"></span>
+                  <span class="relation-person-death" data-bind="visible: $data.death">&mdash; <span data-bind="text: $data.death"></span></span>
+                </div>
+                <div data-bind="if: $data.partner">
+                  <i class="icon-heart"></i>
+                  <a class="relation-person-partner" data-bind="text: $data.partner.name, click: nodeModel.relationsModel.personPartnerClickHandler">Abc</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ko if: $data.children.length > 0 || $data.type === 'parent' -->
+            <div style="height: 30px; width: 2px; background-color: white; margin-left: auto; margin-right: auto; margin-bottom: -13px;"></div>
+          <!-- /ko -->
+
+          <!-- ko if: $data.type === 'parent' -->
+            <div class="relationHLineLeft" data-bind="css: { relationHLineHide: $data.first }"></div><!--
+            --><div class="relationHLineRight" data-bind="css: { relationHLineHide: $data.last }"></div>
+          <!-- /ko -->
+        </td>
+      </tr>
+      <!-- ko if: $data.children.length > 0 -->
+        <tr>
+          <td data-bind="foreach: $data.children" style="white-space: nowrap; line-height: normal; padding: 0px; margin: 0px; padding-left: 15px; padding-right: 15px;"><div style="display: inline-block; vertical-align: top;" data-bind="template: { name: 'personRelationsTemplate', data: $data }"></div></td>
+        </tr>
+      <!-- /ko -->
+    </tbody>
+  </table>
 </script>
 
-<div class="main-overlay" data-bind="slideVisible: nodeModel.relationsModel.show">
-  <div class="main-overlay-content" data-bind="if: nodeModel.node">
+<div class="main-overlay" data-bind="fadeVisible: nodeModel.relationsModel.show() && nodeModel.relationsModel.enabled()">
+  <div id="relationContainer" style="position: absolute; top: 0px; left: 0px; right: 0px; height: 100%; padding: 0px 0px 0px 230px;">
 
-    <div class="navbar navbar-color navbar-inverse">
-      <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-retweet icon-white"></i> Relations</span>
-        <ul class="nav pull-right">
-          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
-        </ul>
+    <div style="padding: 30px;">
+      <div class="relationMarginContainer">
+        <div data-bind="style: { zoom: nodeModel.relationsModel.zoom }" class="relationZoom">
+          <div class="relationMain" data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.relationsModel.tree, if: nodeModel.relationsModel.tree }"></div>
+        </div>
       </div>
     </div>
-
-   <!-- <div data-bind="if: nodeModel.node().type() === 'person'" style="display: table;">
-      <div data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.node }" style="text-align: center;"></div>
-    </div>-->
 
   </div>
   <div class="main-overlay-background"></div>
