@@ -96,7 +96,7 @@ var RelationsModel = function(parentModel)
 
     var zoom = murrix.round(self.zoom() + wheelData, 1);
 
-    zoom = zoom < 0.1 ? 0.1 : zoom;
+    zoom = zoom < 0.5 ? 0.5 : zoom;
 
     self.zoom(zoom);
     self._adjustCanvasPosition();

@@ -23,47 +23,49 @@
             </div>
           <!-- /ko -->
 
-          <div data-bind="style: { zoom: nodeModel.relationsModel.zoom }, css: { relationMe: $data.type === 'me' }" style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 92px;">
-            <div class="box box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;">
+          <div data-bind="css: { relationMe: $data.type === 'me' }" style="display: inline-block;">
+            <div data-bind="style: { zoom: nodeModel.relationsModel.zoom }" style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 92px;">
+              <div class="box box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;">
 
-              <div class="relation-person-image">
-                <img data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 80, 80, 1, $data.profilePicture ? $data.profilePicture.cacheId : false ]">
-              </div>
-
-              <div class="relation-person-title">
-                <a class="dropdown-toggle pull-right hide" data-toggle="dropdown" href="#">
-                  <i class="icon-cog icon-white" title="Person toolbox"></i>
-                </a>
-                <ul class="dropdown-menu pull-right" style="z-index: 3">
-                  <li>
-                    <a href="#" data-bind="">
-                      <i style="vertical-align: center;" class="icon-user icon-fixed"></i>
-                      Add parent
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" data-bind="">
-                      <i style="vertical-align: center;" class="icon-user icon-fixed"></i>
-                      Add child
-                    </a>
-                  </li>
-                </ul>
-                <div class="relation-person-title-background" data-bind="css: { 'relation-person-title-male': $data.gender === 'm', 'relation-person-title-female': $data.gender === 'f' }"></div>
-                <a src="#" data-bind="click: nodeModel.relationsModel.personClickHandler">
-                  <i class="icon-user"></i>
-                  <span data-bind="text: $data.name"></span>
-                </a>
-              </div>
-
-              <div style="padding-left: 90px;">
-                <div data-bind="visible: $data.birth || $data.death" style="margin-bottom: 10px;">
-                  <i class="icon-calendar"></i>
-                  <span class="relation-person-birth" data-bind="visible: $data.birth, text: $data.birth"></span>
-                  <span class="relation-person-death" data-bind="visible: $data.death">&mdash; <span data-bind="text: $data.death"></span></span>
+                <div class="relation-person-image">
+                  <img data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 80, 80, 1, $data.profilePicture ? $data.profilePicture.cacheId : false ]">
                 </div>
-                <div data-bind="if: $data.partner">
-                  <i class="icon-heart"></i>
-                  <a class="relation-person-partner" data-bind="text: $data.partner.name, click: nodeModel.relationsModel.personPartnerClickHandler">Abc</a>
+
+                <div class="relation-person-title">
+                  <a class="dropdown-toggle pull-right hide" data-toggle="dropdown" href="#">
+                    <i class="icon-cog icon-white" title="Person toolbox"></i>
+                  </a>
+                  <ul class="dropdown-menu pull-right" style="z-index: 3">
+                    <li>
+                      <a href="#" data-bind="">
+                        <i style="vertical-align: center;" class="icon-user icon-fixed"></i>
+                        Add parent
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" data-bind="">
+                        <i style="vertical-align: center;" class="icon-user icon-fixed"></i>
+                        Add child
+                      </a>
+                    </li>
+                  </ul>
+                  <div class="relation-person-title-background" data-bind="css: { 'relation-person-title-male': $data.gender === 'm', 'relation-person-title-female': $data.gender === 'f' }"></div>
+                  <a src="#" data-bind="click: nodeModel.relationsModel.personClickHandler">
+                    <i class="icon-user"></i>
+                    <span data-bind="text: $data.name"></span>
+                  </a>
+                </div>
+
+                <div style="padding-left: 90px;">
+                  <div data-bind="visible: $data.birth || $data.death" style="margin-bottom: 10px;">
+                    <i class="icon-calendar"></i>
+                    <span class="relation-person-birth" data-bind="visible: $data.birth, text: $data.birth"></span>
+                    <span class="relation-person-death" data-bind="visible: $data.death">&mdash; <span data-bind="text: $data.death"></span></span>
+                  </div>
+                  <div data-bind="if: $data.partner">
+                    <i class="icon-heart"></i>
+                    <a class="relation-person-partner" data-bind="text: $data.partner.name, click: nodeModel.relationsModel.personPartnerClickHandler">Abc</a>
+                  </div>
                 </div>
               </div>
             </div>
