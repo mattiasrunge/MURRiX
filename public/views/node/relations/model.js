@@ -94,7 +94,11 @@ var RelationsModel = function(parentModel)
     event.preventDefault();
     event.stopPropagation();
 
-    self.zoom(murrix.round(self.zoom() + wheelData, 1));
+    var zoom = murrix.round(self.zoom() + wheelData, 1);
+
+    zoom = zoom < 0.1 ? 0.1 : zoom;
+
+    self.zoom(zoom);
     self._adjustCanvasPosition();
   };
 

@@ -481,6 +481,7 @@ i.icon-fixed[class*="icon-white"] {
 
 .relation-person-box {
   text-align: left;
+  overflow: hidden;
 }
 
 .relationHLineLeft {

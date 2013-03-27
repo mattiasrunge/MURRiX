@@ -949,7 +949,7 @@ $(function()
             $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
             console.log("error received from the server: " + error);
             return;
-          }console.log(item);
+          }
 
           var cacheId = item.cacheId ? item.cacheId() : item.modified.timestamp();
 

@@ -72,6 +72,7 @@ murrix.cache = new function()
 
         murrix.server.emit("getCacheStatus", options, function(error, status, id)
         {
+          //console.log("getCacheStatus", options, status, id);
           if (error)
           {
             console.log("Error while getting cache status for id " + options.id + ", reason: " + error);
@@ -102,12 +103,16 @@ murrix.cache = new function()
           {
             console.log("Image generation is ongoing", options);
           }
+          else
+          {
+            console.log("Unknown status: " + status, options);
+          }
 
           self.queuedImages[id] = obj;
         });
       };
 
-      //console.log(path);
+      //console.log("setpath", path);
       image.src = path;
 
       if (image.complete)
@@ -134,7 +139,7 @@ murrix.cache = new function()
 
       if (self.images[n].element.is(":visible"))
       {
-        var offset = self.images[n].element.offset();
+        var offset = self.images[n].element.position();
 
         if (offset.left + self.images[n].width >= 0 && offset.left <= windowWidth && offset.top + self.images[n].height >= 0 && offset.top <= windowHeight)
         {
