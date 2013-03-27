@@ -43,6 +43,7 @@ var RelationsModel = function(parentModel)
         {
           if ($(".relation-container").is(":visible"))
           {
+            $(".relation-container").off("mousewheel DOMMouseScroll");
             $(".relation-container").on("mousewheel DOMMouseScroll", function(event) { self.scrollHandler(null, event); });
 
             clearInterval(self.renderTimer);
@@ -172,16 +173,18 @@ var RelationsModel = function(parentModel)
   {
     var meElement = $(".relationMe");
 
-    var position = meElement.offset();
+    if (meElement.length > 0)
+    {
+      var position = meElement.position();
 
-     position.top -= $("#relation-canvas").offset().top;
-     position.left -= ($(window).width() - meElement.width()) / 2;
-     position.top -= ($(window).height() - meElement.height()) / 2;
+      position.left -= ($(window).width() - meElement.width()) / 2;
+      position.top -= ($(window).height() - meElement.height()) / 2;
+console.log(position);
+      $("#relation-canvas").css("top", -position.top);
+      $("#relation-canvas").css("left", -position.left);
 
-    $("#relation-canvas").css("top", -position.top);
-    $("#relation-canvas").css("left", -position.left);
-
-    self._storePosition();
+      self._storePosition();
+    }
   };
 
 //   self._generatePerson = function(type, depth, positions)
@@ -265,9 +268,23 @@ var RelationsModel = function(parentModel)
         console.log("RelationsModel: Loaded!");
         self.loaded(true);
         self.tree(person);
-        self._storePosition();
+
+        console.log("load center");
         self._center();
+//         setTimeout(function()
+//         {
+//           console.log("timeout center");
+//           self._center();
+//         }, 1000);
       });
     }
+
+    console.log("load center2");
+    self._center();
+//     setTimeout(function()
+//     {
+//       console.log("timeout center2");
+//       self._center();
+//     }, 1000);
   };
 }

@@ -170,13 +170,8 @@ function DialogLocationNodeModel()
           }
 
           console.log("Saved item!", itemDataNew);
-          var item = murrix.cache.addItemData(itemDataNew);
-
-          if (!positionItemData._id && murrix.model.nodeModel.node() !== false && murrix.model.nodeModel.node()._id() === nodeDataNew._id)
-          {
-            // TODO: Solve this in a nicer way!
-            murrix.model.nodeModel.items.push(item);
-          }
+          murrix.cache.addItemData(itemDataNew);
+          murrix.model.nodeModel.loadNode();
 
           if (self.finishCallback)
           {
