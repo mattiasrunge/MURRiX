@@ -15,11 +15,20 @@
           <!-- /ko -->
 
           <!-- ko if: $data.parents.length > 0 || $data.type === 'child' -->
-            <div style="height: 30px; width: 2px; background-color: white; margin-left: auto; margin-right: auto; margin-top: -5px; overflow: visible;">
+            <div style="height: 40px; width: 2px; background-color: white; margin-left: auto; margin-right: auto; margin-top: -5px; overflow: visible;">
               <button data-bind="visible: $data.type !== 'child', click: nodeModel.relationsModel.expandParentsClicked" class="relation-expand relation-parent-expand">
                 <i data-bind="visible: !$data.showParents()" class="icon-plus"></i>
                 <i data-bind="visible: $data.showParents()" class="icon-minus"></i>
               </button>
+
+              <!--<button data-bind="visible: $data.type === 'parent', click: nodeModel.relationsModel.expandChildrenClicked" class="btn btn-primary relation-add relation-child-add">
+                <i class="icon-plus"></i>
+              </button>-->
+
+              <!--<button data-bind="visible: $data.type === 'child', click: nodeModel.relationsModel.expandChildrenClicked" class="btn btn-danger relation-cut relation-child-cut">
+                <i class="icon-remove"></i>
+              </button>-->
+
             </div>
           <!-- /ko -->
 
@@ -33,22 +42,10 @@
 
                 <div class="relation-person-title">
                   <a class="dropdown-toggle pull-right hide" data-toggle="dropdown" href="#">
-                    <i class="icon-cog icon-white" title="Person toolbox"></i>
+                    <i data-bind="visible: $data.type === 'parent' || $data.type === 'me'" class="icon-plus icon-white" title="Add parent"></i>
+                    <i data-bind="visible: $data.type === 'child' || $data.type === 'me'" class="icon-plus icon-white" title="Add child"></i>
                   </a>
-                  <ul class="dropdown-menu pull-right" style="z-index: 3">
-                    <li>
-                      <a href="#" data-bind="">
-                        <i style="vertical-align: center;" class="icon-user icon-fixed"></i>
-                        Add parent
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" data-bind="">
-                        <i style="vertical-align: center;" class="icon-user icon-fixed"></i>
-                        Add child
-                      </a>
-                    </li>
-                  </ul>
+
                   <div class="relation-person-title-background" data-bind="css: { 'relation-person-title-male': $data.gender === 'm', 'relation-person-title-female': $data.gender === 'f' }"></div>
                   <a src="#" data-bind="click: nodeModel.relationsModel.personClickHandler">
                     <i class="icon-user"></i>
@@ -72,11 +69,19 @@
           </div>
 
           <!-- ko if: $data.children.length > 0 || $data.type === 'parent' -->
-            <div style="height: 30px; width: 2px; background-color: white; margin-left: auto; margin-right: auto; margin-bottom: -13px; overflow: visible;">
+            <div style="height: 40px; width: 2px; background-color: white; margin-left: auto; margin-right: auto; margin-bottom: -13px; overflow: visible;">
               <button data-bind="visible: $data.type !== 'parent', click: nodeModel.relationsModel.expandChildrenClicked" class="relation-expand relation-child-expand">
                 <i data-bind="visible: !$data.showChildren()" class="icon-plus"></i>
                 <i data-bind="visible: $data.showChildren()" class="icon-minus"></i>
               </button>
+
+               <!--<button data-bind="visible: $data.type === 'parent', click: nodeModel.relationsModel.expandChildrenClicked" class="btn btn-danger relation-cut relation-parent-cut">
+                <i class="icon-remove"></i>
+              </button>-->
+
+               <!--<button data-bind="visible: $data.type === 'child', click: nodeModel.relationsModel.expandChildrenClicked" class="btn btn-primary relation-add relation-parent-add">
+                 <i class="icon-plus"></i>
+               </button>-->
             </div>
           <!-- /ko -->
 

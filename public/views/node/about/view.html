@@ -19,32 +19,17 @@
             <p data-bind="text: nodeModel.node().description"></p>
           </div>
 
-          <div style="margin-bottom: 20px;" data-bind="if: nodeModel.node().type() === 'person' && nodeModel.node().family">
-            <h4>Family</h4>
-            <table class="table table-striped">
-              <tr data-bind="if: nodeModel.node().family._partner && nodeModel.node().family._partner() !== false">
-                <td>Partner</td>
-                <td>
-                  <a style="display: block;" href="#" data-bind="hrefFirst: [ 'node', nodeModel.node().family._partner ], textNodeAttribute: [ nodeModel.node().family._partner, 'name' ]"></a>
-                </td>
-              </tr>
-              <tr data-bind="if: nodeModel.node().family.parents && nodeModel.node().family.parents().length > 0">
-                <td>Parents</td>
-                <td>
-                  <div data-bind="foreach: nodeModel.node().family.parents">
-                    <a style="display: block;" href="#" data-bind="hrefFirst: [ 'node', $data._id ], textNodeAttribute: [ $data._id, 'name' ]"></a>
-                  </div>
-                </td>
-              </tr>
-               <tr data-bind="if: nodeModel.aboutModel.children().length > 0">
-                <td>Children</td>
-                <td>
-                  <div data-bind="foreach: nodeModel.aboutModel.children">
-                    <a style="display: block;" href="#" data-bind="hrefFirst: [ 'node', $data._id ], textNodeAttribute: [ $data._id, 'name' ]"></a>
-                  </div>
-                </td>
-              </tr>
-            </table>
+          <div data-bind="if: nodeModel.node().type() === 'person'">
+            <h4>Lives at</h4>
+            <div class="alert alert-error" data-bind="visible: nodeModel.aboutModel.homesErrorText() !== '', text: nodeModel.aboutModel.homesErrorText"></div>
+            <div class="alert alert-info" data-bind="visible: nodeModel.aboutModel.homesLoading">Loading homes...</div>
+            <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: nodeModel.aboutModel.homes }"></div>
+
+            <h4>Owner of</h4>
+            <div class="alert alert-error" data-bind="visible: nodeModel.aboutModel.ownerOfErrorText() !== '', text: nodeModel.aboutModel.ownerOfErrorText"></div>
+            <div class="alert alert-info" data-bind="visible: nodeModel.aboutModel.ownerOfLoading">Loading ownerOf...</div>
+            <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: nodeModel.aboutModel.ownerOf }"></div>
+
           </div>
 
         </div>
@@ -95,18 +80,7 @@
             </table>
           </div>
 
-          <div data-bind="if: nodeModel.node().type() === 'person'">
-            <h4>Lives at</h4>
-            <div class="alert alert-error" data-bind="visible: nodeModel.aboutModel.homesErrorText() !== '', text: nodeModel.aboutModel.homesErrorText"></div>
-            <div class="alert alert-info" data-bind="visible: nodeModel.aboutModel.homesLoading">Loading homes...</div>
-            <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: nodeModel.aboutModel.homes }"></div>
 
-            <h4>Owner of</h4>
-            <div class="alert alert-error" data-bind="visible: nodeModel.aboutModel.ownerOfErrorText() !== '', text: nodeModel.aboutModel.ownerOfErrorText"></div>
-            <div class="alert alert-info" data-bind="visible: nodeModel.aboutModel.ownerOfLoading">Loading ownerOf...</div>
-            <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: nodeModel.aboutModel.ownerOf }"></div>
-
-          </div>
         </div>
 
       </div>

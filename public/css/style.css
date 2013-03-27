@@ -578,11 +578,67 @@ i.icon-fixed[class*="icon-white"] {
 }
 
 .relation-child-expand {
-  margin-top: 19px;
+  margin-top: 30px;
 }
 
 .relation-parent-expand {
   margin-top: -19px;
+}
+
+
+
+.relation-cut {
+  width: 16px;
+  height: 16px;
+  padding: 0px;
+  margin: 0;
+  margin-left: -7px;
+  z-index: 1;
+  position: relative;
+  font-size: 8px;
+  border-radius: 16px;
+}
+
+.relation-cut i {
+  line-height: normal !important;
+  display: block !important;
+}
+
+.relation-parent-cut {
+  margin-top: 2px;
+}
+
+.relation-child-cut {
+  margin-bottom: -42px;
+}
+
+
+
+.relation-add {
+  width: 16px;
+  height: 16px;
+  padding: 0px;
+  margin: 0;
+  margin-left: -7px;
+  z-index: 1;
+  position: relative;
+  font-size: 8px;
+  border-radius: 16px;
+}
+
+.relation-add i {
+  line-height: normal !important;
+  display: block !important;
+}
+
+.relation-parent-add {
+  margin-top: -28px;
+  margin-left: -22px;
+}
+
+.relation-child-add {
+  margin-bottom: -42px;
+  margin-left: -22px;
 }
 
 .sidebar-nav {

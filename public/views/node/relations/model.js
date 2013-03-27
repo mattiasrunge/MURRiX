@@ -177,9 +177,10 @@ var RelationsModel = function(parentModel)
     {
       var position = meElement.position();
 
+      position.left -= 130; // Half of the sidebar
       position.left -= ($(window).width() - meElement.width()) / 2;
       position.top -= ($(window).height() - meElement.height()) / 2;
-console.log(position);
+
       $("#relation-canvas").css("top", -position.top);
       $("#relation-canvas").css("left", -position.left);
 

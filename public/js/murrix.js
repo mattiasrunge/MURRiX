@@ -139,7 +139,7 @@ murrix.cache = new function()
 
       if (self.images[n].element.is(":visible"))
       {
-        var offset = self.images[n].element.position();
+        var offset = self.images[n].element.offset();
 
         if (offset.left + self.images[n].width >= 0 && offset.left <= windowWidth && offset.top + self.images[n].height >= 0 && offset.top <= windowHeight)
         {
