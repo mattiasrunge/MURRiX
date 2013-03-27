@@ -475,7 +475,6 @@ i.icon-fixed[class*="icon-white"] {
   right: 0px;
   height: 100%;
   padding: 0px 0px 0px 230px;
-  overflow: hidden;
   cursor: move;
 }
 
