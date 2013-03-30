@@ -9,10 +9,10 @@ var RelationsModel = function(parentModel)
   self.show = ko.observable(false);
   self.enabled = ko.observable(true);
   self.tree = ko.observable(false);
+  self.count = ko.observable(0);
   self.loading = ko.observable(false);
   self.loaded = ko.observable(false);
   self.zoom = ko.observable(1);
-  self.renderTimer = null;
 
   parentModel.path().primary.subscribe(function(value)
   {
@@ -25,33 +25,14 @@ var RelationsModel = function(parentModel)
   parentModel.node.subscribe(function(value)
   {
     self.enabled(value !== false && value.type() === "person")
-    self.tree(false);
-    self.zoom(1);
+
     self.loaded(false);
     self.load();
   });
 
   self.show.subscribe(function(value)
   {
-    if (value)
-    {
-      self.load();
-
-      if (!self.renderTimer)
-      {
-        self.renderTimer = setInterval(function()
-        {
-          if ($(".relation-container").is(":visible"))
-          {
-            $(".relation-container").off("mousewheel DOMMouseScroll");
-            $(".relation-container").on("mousewheel DOMMouseScroll", function(event) { self.scrollHandler(null, event); });
-
-            clearInterval(self.renderTimer);
-            self.renderTimer = null;
-          }
-        }, 500);
-      }
-    }
+    self.load();
   });
 
   self.dragging = false;
@@ -65,6 +46,9 @@ var RelationsModel = function(parentModel)
 
   self.dragHandler = function(data, event)
   {
+    event.preventDefault();
+    event.stopPropagation();
+
     if (self.dragging)
     {
       var diffTop = event.clientY - self.dragging.top;
@@ -78,12 +62,33 @@ var RelationsModel = function(parentModel)
       self.dragging = { top: event.clientY, left: event.clientX };
       self._storePosition();
     }
+    else if (self.markDragging)
+    {
+      var top = event.clientY - self.markElement.offset().top;
+
+      self.setZoomByPosition(top, true);
+    }
   };
 
   self.stopDragHandler = function(data, event)
   {
-    self.dragging = false;
-    self.canvasElement = false;
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (self.dragging)
+    {
+      self.dragging = false;
+      self.canvasElement = false;
+    }
+
+    if (self.markDragging)
+    {
+      var top = event.clientY - self.markElement.offset().top;
+
+      self.setZoomByPosition(top);
+
+      self.markDragging = false;
+    }
   };
 
   self.scrollHandler = function(data, event)
@@ -95,12 +100,86 @@ var RelationsModel = function(parentModel)
     event.preventDefault();
     event.stopPropagation();
 
-    var zoom = murrix.round(self.zoom() + wheelData, 1);
+    self.zoomSet(murrix.round(self.zoom() + wheelData, 1));
+  };
 
-    zoom = zoom < 0.5 ? 0.5 : zoom;
+  self.zoomSet = function(value, noanimation)
+  {
+    value = value < 0.2 ? 0.2 : value;
+    value = value > 1.6 ? 1.6 : value;
 
-    self.zoom(zoom);
+    self.zoom(value);
     self._adjustCanvasPosition();
+
+    var markElement = $(".mark-container .mark");
+
+    var containerHeight = $(".mark-container").innerHeight();
+    var markHeight = markElement.outerHeight();
+
+    containerHeight -= markHeight;
+    value -= 0.1;
+
+    var step = containerHeight / 14;
+    var top = (containerHeight - step * ((value - 0.1) * 10));
+
+    markElement.stop();
+
+    if (noanimation)
+    {
+      markElement.css("top", top);
+    }
+    else
+    {
+      markElement.animate({ top: top }, 50);
+    }
+  };
+
+  self.zoomInc = function()
+  {
+    self.zoomSet(self.zoom() + 0.1);
+  };
+
+  self.zoomDec = function()
+  {
+    self.zoomSet(self.zoom() - 0.1);
+  };
+
+  self.markContainerClickHandler = function(data, event)
+  {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (event.srcElement !== $(".mark-container")[0])
+    {
+      return;
+    }
+
+    self.setZoomByPosition(event.offsetY);
+  };
+
+  self.setZoomByPosition = function(top, noanimation)
+  {
+    var containerHeight = $(".mark-container").innerHeight();
+    var markHeight = $(".mark-container .mark").outerHeight();
+
+    top -= markHeight;
+    containerHeight -= markHeight;
+
+    var step = containerHeight / 14;
+
+    self.zoomSet(murrix.round((containerHeight - top) / (step * 10), 1) + 0.1, noanimation);
+  };
+
+  self.markDragging = false;
+  self.markElement = false;
+
+  self.startDragMarkHandler = function(data, event)
+  {
+    event.preventDefault();
+    event.stopPropagation();
+
+    self.markElement = $(".mark-container");
+    self.markDragging = true;
   };
 
   self.personClickHandler = function(data)
@@ -135,43 +214,50 @@ var RelationsModel = function(parentModel)
 
   self._storePosition = function()
   {
-    self.meOffset = $(".relationMe").offset();
-    self.canvasSize = { width: $("#relation-canvas").width(), height: $("#relation-canvas").height() };
+    var canvasElement = $("#relation-canvas");
+    var meElement = $(".relation-me");
+
+    self.meOffset = meElement.offset();
+    self.canvasSize = { width: canvasElement.width(), height: canvasElement.height() };
   };
 
   self._adjustCanvasPosition = function()
   {
-    var size = { width: $("#relation-canvas").width(), height: $("#relation-canvas").height() };
+    var canvasElement = $("#relation-canvas");
+    var size = { width: canvasElement.width(), height: canvasElement.height() };
 
     var diffHeight = (self.canvasSize.height - size.height) / 2;
     var diffWidth = (self.canvasSize.width - size.width) / 2;
 
-    var position = $("#relation-canvas").position();
+    var position = canvasElement.position();
 
-    $("#relation-canvas").css("top", position.top + diffHeight);
-    $("#relation-canvas").css("left", position.left + diffWidth);
+    canvasElement.css("top", position.top + diffHeight);
+    canvasElement.css("left", position.left + diffWidth);
 
     self._storePosition();
   };
 
   self._adjustPosition = function()
   {
-    var offset = $(".relationMe").offset();
+    var canvasElement = $("#relation-canvas");
+    var meElement = $(".relation-me");
+    var offset = meElement.offset();
 
     var diffTop = self.meOffset.top - offset.top;
     var diffLeft = self.meOffset.left - offset.left;
 
-    var position = $("#relation-canvas").position();
+    var position = canvasElement.position();
 
-    $("#relation-canvas").css("top", position.top + diffTop);
-    $("#relation-canvas").css("left", position.left + diffLeft);
+    canvasElement.css("top", position.top + diffTop);
+    canvasElement.css("left", position.left + diffLeft);
 
     self._storePosition();
   };
 
   self._center = function()
   {
-    var meElement = $(".relationMe");
+    var canvasElement = $("#relation-canvas");
+    var meElement = $(".relation-me");
 
     if (meElement.length > 0)
     {
@@ -181,58 +267,22 @@ var RelationsModel = function(parentModel)
       position.left -= ($(window).width() - meElement.width()) / 2;
       position.top -= ($(window).height() - meElement.height()) / 2;
 
-      $("#relation-canvas").css("top", -position.top);
-      $("#relation-canvas").css("left", -position.left);
+      canvasElement.css("top", -position.top);
+      canvasElement.css("left", -position.left);
 
       self._storePosition();
     }
   };
 
-//   self._generatePerson = function(type, depth, positions)
-//   {
-//     type = type || "me";
-//     depth = depth || 0;
-//     positions = positions || { first: false, last: false };
-//
-//     var person = {};
-//     person.name = "Person:" + type + ":" + depth;
-//     person.parents = [];
-//     person.type = type;
-//     person.birth = "1999-01-01";
-//     person.death = "2100-08-08";
-//     person.partner = { name: "Name partner" };
-//     person.first = positions.first;
-//     person.last = positions.last;
-//     person.children = [];
-//
-//     if (depth < 3)
-//     {
-//       if (type === "me" || type === "parent")
-//       {
-//         person.parents.push(self._generatePerson("parent", depth + 1, { first: true, last: false}));
-//         person.parents.push(self._generatePerson("parent", depth + 1, { first: false, last: true}));
-//       }
-//
-//       if (type === "me" || type === "child")
-//       {
-//         var count = 3;//Math.floor(Math.random() * (5 - 0 + 1)) + 0;
-//         for (var n = 0; n < count; n++)
-//         {
-//           person.children.push(self._generatePerson("child", depth + 1, { first: (0 === n), last: (n + 1 === count) }));
-//         }
-//       }
-//     }
-//
-//     return person;
-//   }
-
   self.load = function()
   {
     if (self.show() && !self.loaded() && parentModel.node() !== false)
     {
+      self.tree(false);
+      self.zoomSet(1);
       self.loading(true);
 
-      murrix.server.emit("helper_nodeGetRelations", { nodeId: parentModel.node()._id() }, function(error, person)
+      murrix.server.emit("helper_nodeGetRelations", { nodeId: parentModel.node()._id() }, function(error, data)
       {
         self.loading(false);
 
@@ -264,28 +314,19 @@ var RelationsModel = function(parentModel)
           }
         }
 
-        traverseTree(person);
+        traverseTree(data.tree);
 
         console.log("RelationsModel: Loaded!");
         self.loaded(true);
-        self.tree(person);
+        self.count(data.count);
+        self.tree(data.tree);
 
-        console.log("load center");
         self._center();
-//         setTimeout(function()
-//         {
-//           console.log("timeout center");
-//           self._center();
-//         }, 1000);
+        self.zoomSet(1);
       });
-    }
 
-    console.log("load center2");
-    self._center();
-//     setTimeout(function()
-//     {
-//       console.log("timeout center2");
-//       self._center();
-//     }, 1000);
+      self._center();
+      self.zoomSet(self.zoom());
+    }
   };
 }

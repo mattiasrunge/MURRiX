@@ -13,8 +13,10 @@ murrix.cache = new function()
   self.groups = {};
   self.users = {};
 
-  self.images = [];
-  self.imageTimer = setInterval(function() { self.imageTimeout(); }, 1000);
+  self.imageTimer = null;
+  self.$window = $(window);
+  self.windowWidth = self.$window.width();
+  self.windowHeight = self.$window.height();
 
   self.clear = function()
   {
@@ -39,7 +41,7 @@ murrix.cache = new function()
     self.nodes = {};
   };
 
-
+/*
   // TODO: Clean up this image loading code!
   self.queuedImages = {};
 
@@ -50,9 +52,14 @@ murrix.cache = new function()
     obj.element = element;
     obj.width = options.width;
     obj.height = options.height;
+    obj.canceled = false;
+
     obj.load = function()
     {
-      /* Try to load image */
+      if (obj.canceled)
+      {
+        return;
+      }
 
       var path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
 
@@ -60,18 +67,32 @@ murrix.cache = new function()
 
       image.onload = function()
       {
+        if (obj.canceled)
+        {
+          return;
+        }
+
         //console.log("onload", path);
         element.prop("src", path);
       };
 
 
-      /* If image load failed */
       image.onerror = function()
       {
+        if (obj.canceled)
+        {
+          return;
+        }
+
         options.type = "image";
 
         murrix.server.emit("getCacheStatus", options, function(error, status, id)
         {
+          if (obj.canceled)
+          {
+            return;
+          }
+
           //console.log("getCacheStatus", options, status, id);
           if (error)
           {
@@ -84,8 +105,27 @@ murrix.cache = new function()
             var path2 = "http://placekitten.com/g/" + options.width + "/" + options.height;
 
             var image2 = new Image();
-            image2.onload = function() { element.prop("src", path2); };
-            image2.onerror = function() { element.prop("src", path2); };
+
+            image2.onload = function()
+            {
+              if (obj.canceled)
+              {
+                return;
+              }
+
+              element.prop("src", path2);
+            };
+
+            image2.onerror = function()
+            {
+              if (obj.canceled)
+              {
+                return;
+              }
+
+              element.prop("src", path2);
+            };
+
             image2.src = path;
 
             if (image2.complete)
@@ -152,7 +192,205 @@ murrix.cache = new function()
     }
 
     self.images = images;
+  };*/
+
+
+
+  self.queuedImages = {};
+
+  self.queuedImageDone = function(error, id)
+  {
+    if (error)
+    {
+      console.log("Error while running caching job, reason: " + error);
+      return;
+    }
+
+    if (murrix.cache.queuedImages[id])
+    {
+      self.loadImage(murrix.cache.queuedImages[id]);
+      delete murrix.cache.queuedImages[id];
+    }
   };
+
+  self.loadImage = function(img)
+  {
+    var image = new Image();
+
+    image.onload = function()
+    {
+      if (img.$element.data("initImagePath") !== img.path)
+      {
+        return;
+      }
+
+//       img.$element.width("auto");
+//       img.$element.height("auto");
+      img.$element.prop("src", img.path);
+    };
+
+    image.onerror = function()
+    {
+      if (img.$element.data("initImagePath") !== img.path)
+      {
+        return;
+      }
+
+      murrix.server.emit("getCacheStatus", img.options, function(error, status, id)
+      {
+        //console.log(error, status, id);
+        if (img.$element.data("initImagePath") !== img.path)
+        {
+          return;
+        }
+
+        if (error)
+        {
+          console.log("Error while getting cache status for id " + img.options.id + ", reason: " + error);
+          status = "none";
+        }
+
+        if (status === "none")
+        {
+          var width = img.options.width > 0 ? img.options.width : 250;
+          var height = img.options.height > 0 ? img.options.height : 250;
+
+//           img.$element.width(width);
+//           img.$element.height(height);
+          img.$element.prop("src", "http://placekitten.com/g/" + width + "/" + height);
+          return;
+        }
+        else if (status === "queued")
+        {
+          console.log("Image is queued", img);
+        }
+        else if (status === "ongoing")
+        {
+          console.log("Image generation is ongoing", img);
+        }
+        else if (status === "available")
+        {
+          console.log("Image is available", img);
+          image.onload();
+        }
+        else
+        {
+          console.log("Unknown status: " + status, img);
+        }
+/*
+        img.$element.width(250);
+        img.$element.height(250);*/
+        img.$element.prop("src", "img/120x120_spinner.gif");
+
+        self.queuedImages[id] = img;
+      });
+    };
+
+    //console.log("setpath", img.path);
+    image.src = img.path;
+
+
+    if (image.complete)
+    {
+      image.onload();
+    }
+  };
+
+
+  self.initImageList = [];
+
+  self.initImageTimeout = function()
+  {
+    var list = [];
+
+    self.windowWidth = self.$window.width();
+    self.windowHeight = self.$window.height();
+
+    for (var n = 0; n < self.initImageList.length; n++)
+    {
+      var img = self.initImageList[n];
+
+      if (!jQuery.contains(document, img.$element[0]))
+      {
+        continue;
+      }
+
+      if (self.isElementVisible(img.$element, img.options.width, img.options.height))
+      {
+        self.loadImage(img);
+        continue;
+      }
+
+      list.push(img);
+    }
+
+    self.initImageList = list;
+
+    if (self.initImageList.length === 0 && self.imageTimer)
+    {
+      clearInterval(self.imageTimer);
+      self.imageTimer = null;
+    }
+  };
+
+  self.initImage = function($element, options)
+  {
+    options.type = "image";
+
+    var img = {};
+
+    img.$element = $element;
+    img.options = options;
+    img.path = "/preview?id=" +  options.id + "&cacheId=" + options.cacheId + "&width=" + options.width + "&height=" + options.height + "&square=" + options.square;
+
+    $element.data("initImagePath", img.path);
+    //$element.width(options.width > 0 ? options.width : 250);
+    //$element.height(options.height > 0 ? options.height : 250);
+    $element.prop("src", "img/black.jpg");
+
+    if (!self.isElementVisible($element, options.width, options.height) && options.delayedLoad)
+    {
+      self.initImageList.push(img);
+    }
+    else
+    {
+      self.loadImage(img);
+    }
+
+    if (!self.imageTimer)
+    {
+      self.imageTimer = setInterval(function()
+      {
+        self.initImageTimeout();
+      }, 500);
+    }
+  };
+
+  self.isElementVisible = function($element, elementWidth, elementHeight)
+  {
+    if ($element.is(":visible"))
+    {
+      var offset = $element.offset();
+
+      if (elementWidth === 0 || elementHeight === 0)
+      {
+        return true;
+      }
+
+      if (offset.left + elementWidth >= 0 &&
+          offset.left <= self.windowWidth &&
+          offset.top + elementHeight >= 0 &&
+          offset.top <= self.windowHeight)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+
+
 
   self.extendNode = function(id)
   {

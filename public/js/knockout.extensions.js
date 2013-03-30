@@ -876,28 +876,30 @@ $(function()
         params[n] = ko.utils.unwrapObservable(params[n]);
       }
 
+      var $element = $(element);
       var id = params[0] || false;
       var width = params[1] || 0;
       var height = params[2] || 0;
       var square = params[3] || 0;
       var cacheId = params[4] || 0;
+      var delayedLoad = params[5] === false ? false : true;
 
       if (!id || id === null || id === "")
       {
-        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+        $element.prop("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
         console.log("No id given to srcPicture");
         return;
       }
 
-      if (width > 0 && height > 0)
-      {
-        $(element).width(width);
-        $(element).height(height);
-      }
+//       if (width > 0 && height > 0)
+//       {
+//         $element.width(width);
+//         $element.height(height);
+//       }
 
-      $(element).attr("src", "img/120x120_spinner.gif");
+      //$(element).attr("src", "img/120x120_spinner.gif");
 
-      murrix.cache.loadImage($(element), { id: id, width: width, height: height, square: square, cacheId: cacheId });
+      murrix.cache.initImage($element, { id: id, width: width, height: height, square: square, cacheId: cacheId, delayedLoad: delayedLoad });
     }
   };
 
@@ -913,32 +915,32 @@ $(function()
         params[n] = ko.utils.unwrapObservable(params[n]);
       }
 
+      var $element = $(element);
       var id = params[0] || false;
       var width = params[1] || 0;
       var height = params[2] || 0;
       var square = params[3] || 0;
+      var delayedLoad = params[4] === false ? false : true;
 
       if (!id || id === null || id === "")
       {
-        $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+        $element.prop("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
         console.log("No id given to srcNodeProfilePicture");
         return;
       }
-
-      $(element).attr("src", "img/120x120_spinner.gif");
 
       murrix.cache.getNode(id, function(error, node)
       {
         if (error)
         {
-          $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+          $element.prop("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
           console.log("error received from the server: " + error);
           return;
         }
 
         if (!node._profilePicture || node._profilePicture() === false)
         {
-          $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+          $element.prop("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
           return;
         }
 
@@ -946,14 +948,14 @@ $(function()
         {
           if (error)
           {
-            $(element).attr("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
+            $element.prop("src", "http://placekitten.com/g/" + width + "/" + height); // TODO: Set generic user icon image
             console.log("error received from the server: " + error);
             return;
           }
 
           var cacheId = item.cacheId ? item.cacheId() : item.modified.timestamp();
 
-          murrix.cache.loadImage($(element), { id: item._id(), width: width, height: height, square: square, cacheId: cacheId });
+          murrix.cache.initImage($element, { id: item._id(), width: width, height: height, square: square, cacheId: cacheId, delayedLoad: delayedLoad });
         });
       });
     }
@@ -976,8 +978,8 @@ $(function()
       var height = params[2] || 0;
       var square = params[3] || 0;
 
-      $(element).width(width);
-      $(element).height(height);
+//       $(element).width(width);
+//       $(element).height(height);
 
       if (!id || id === null || id === "")
       {

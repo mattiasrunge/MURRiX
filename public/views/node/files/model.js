@@ -55,9 +55,30 @@ var FilesModel = function(parentModel)
           return;
         }
 
+        var addFiles = function()
+        {
+          var list = fileList.splice(0, 50);
+
+          ko.utils.arrayPushAll(self.files, list)
+
+//           for (var n = 0; n < list.length; n++)
+//           {
+//             self.files.push(list[n]);
+//           }
+
+          if (fileList.length > 0)
+          {
+            setTimeout(function()
+            {
+              addFiles();
+            }, 100);
+          }
+        };
+
         console.log("FilesModel: Loaded " + fileList.length + " files!");
         self.loaded(true);
-        self.files(fileList);
+
+        addFiles();
       });
     }
   };

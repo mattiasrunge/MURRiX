@@ -61,7 +61,8 @@
 
       <li data-bind="fadeVisible: nodeModel.aboutModel.enabled, css: { 'active': nodeModel.aboutModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'about'">
-          <i class="icon-list-alt icon-fixed"></i> About
+          <i class="icon-list-alt icon-fixed"></i>
+          About
         </a>
       </li>
 
@@ -89,9 +90,11 @@
 
       <li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'relations'">
-          <i class="icon-sitemap icon-fixed"></i>Relations
-          <span data-bind="fadeVisible: nodeModel.relationsModel.loading()" class="badge pull-right" style="margin-top: -2px;">
-            <i class="icon-spinner icon-spin"></i>
+          <i class="icon-sitemap icon-fixed"></i>
+          Relations
+          <span data-bind="fadeVisible: nodeModel.relationsModel.loaded() || nodeModel.relationsModel.loading()" class="badge pull-right" style="margin-top: -2px;">
+            <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.relationsModel.loading"></i>
+            <span data-bind="visible: !nodeModel.relationsModel.loading(), text: nodeModel.relationsModel.count"></span>
           </span>
         </a>
       </li>
@@ -104,7 +107,9 @@
 
       <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link" style="line-height: 30px;">
         <a href="#" data-bind="hrefSecondPrimary: 'comments', if: nodeModel.node() !== false">
-          <i class="icon-comment icon-fixed"></i> Comments <span data-bind="fadeVisible: nodeModel.node().comments().length > 0, text: nodeModel.node().comments().length" class="badge pull-right" style="margin-top: -2px;"></span>
+          <i class="icon-comment icon-fixed"></i>
+          Comments
+          <span data-bind="text: nodeModel.node().comments().length" class="badge pull-right" style="margin-top: -2px;"></span>
         </a>
       </li>
     </ul>

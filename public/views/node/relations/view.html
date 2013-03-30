@@ -10,8 +10,8 @@
       <tr>
         <td style="line-height: normal; padding: 0px;">
           <!-- ko if: $data.type === 'child' -->
-            <div class="relationHLineLeft" data-bind="css: { relationHLineHide: $data.first }"></div><!--
-            --><div class="relationHLineRight" data-bind="css: { relationHLineHide: $data.last }"></div>
+            <div class="relation-horizontal-line-left" data-bind="css: { 'relation-horizontal-line-hide': $data.first }"></div><!--
+            --><div class="relation-horizontal-line-right" data-bind="css: { 'relation-horizontal-line-hide': $data.last }"></div>
           <!-- /ko -->
 
           <!-- ko if: $data.parents.length > 0 || $data.type === 'child' -->
@@ -32,12 +32,27 @@
             </div>
           <!-- /ko -->
 
-          <div data-bind="css: { relationMe: $data.type === 'me' }" style="display: inline-block;">
+          <div data-bind="css: { 'relation-me': $data.type === 'me' }" style="display: inline-block; position: relative;">
+
             <div data-bind="style: { zoom: nodeModel.relationsModel.zoom }" style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 92px;">
-              <div class="box box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;">
+
+              <div class="box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: nodeModel.relationsModel.zoom() <= 0.7">
+
+                <div class="relation-person-image-small">
+                  <img data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 80, 80, 1, $data.profilePicture ? $data.profilePicture.cacheId : false, false ], attr: { title: $data.name }">
+                </div>
+
+                <div class="box relation-person-image-small-title" data-bind="css: { 'relation-person-title-male': $data.gender === 'm', 'relation-person-title-female': $data.gender === 'f' }">
+                  <a src="#" data-bind="click: nodeModel.relationsModel.personClickHandler">
+                    <span data-bind="text: $data.name"></span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="box box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: nodeModel.relationsModel.zoom() > 0.7">
 
                 <div class="relation-person-image">
-                  <img data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 80, 80, 1, $data.profilePicture ? $data.profilePicture.cacheId : false ]">
+                  <img data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 80, 80, 1, $data.profilePicture ? $data.profilePicture.cacheId : false, false ]">
                 </div>
 
                 <div class="relation-person-title">
@@ -86,8 +101,8 @@
           <!-- /ko -->
 
           <!-- ko if: $data.type === 'parent' -->
-            <div class="relationHLineLeft" data-bind="css: { relationHLineHide: $data.first }"></div><!--
-            --><div class="relationHLineRight" data-bind="css: { relationHLineHide: $data.last }"></div>
+            <div class="relation-horizontal-line-left" data-bind="css: { 'relation-horizontal-line-hide': $data.first }"></div><!--
+            --><div class="relation-horizontal-line-right" data-bind="css: { 'relation-horizontal-line-hide': $data.last }"></div>
           <!-- /ko -->
         </td>
       </tr>
@@ -101,16 +116,25 @@
 </script>
 
 <div class="main-overlay" data-bind="fadeVisible: nodeModel.relationsModel.show() && nodeModel.relationsModel.enabled()">
-  <div class="relation-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragHandler, mousemove: nodeModel.relationsModel.dragHandler, mouseup: nodeModel.relationsModel.stopDragHandler }">
+  <div class="relation-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragHandler, mousemove: nodeModel.relationsModel.dragHandler, mouseup: nodeModel.relationsModel.stopDragHandler, mousewheel: nodeModel.relationsModel.scrollHandler, DOMMouseScroll: nodeModel.relationsModel.scrollHandler }">
 
-    <div id="relation-canvas" style="position: absolute; top: 0px; left: 0px;">
-      <div style="padding: 30px;">
-        <div class="relationMarginContainer">
-          <div class="relationZoom">
-            <div class="relationMain" data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.relationsModel.tree, if: nodeModel.relationsModel.tree }"></div>
-          </div>
+    <div class="relation-zoom-control">
+      <div class="line"></div>
+      <div class="inc" data-bind="click: nodeModel.relationsModel.zoomInc">
+        <div style="margin-left: 5px;"><i class="icon-plus"></i></div>
+      </div>
+      <div class="mark-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragMarkHandler }">
+        <div class="mark">
+          <div style="margin-left: 5px; margin-top: -4px;"><i class="icon-minus"></i></div>
         </div>
       </div>
+      <div class="dec" data-bind="click: nodeModel.relationsModel.zoomDec">
+        <div style="margin-left: 5px;"><i class="icon-minus"></i></div>
+      </div>
+    </div>
+
+    <div id="relation-canvas" style="position: absolute; top: 0px; left: 0px;">
+      <div data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.relationsModel.tree, if: nodeModel.relationsModel.tree }"></div>
     </div>
 
   </div>
