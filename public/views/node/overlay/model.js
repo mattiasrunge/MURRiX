@@ -66,7 +66,15 @@ var OverlayModel = function(parentModel)
       self.description(self.item().description ? self.item().description() : "");
 
       self.videoFile('/video?id=' + self.item()._id());
+
     });
+  });
+
+  $(window).resize(function()
+  {
+    var h = $(".overlay-image-container").innerHeight();
+    var w = $(".overlay-image-container").innerWidth();
+    console.log(w, h);
   });
 
   self.videoFile = ko.observable("");
@@ -123,9 +131,14 @@ var OverlayModel = function(parentModel)
     self.loadItemEnvironment();
   });
 
+  parentModel.node.subscribe(function(value)
+  {
+    self.loadItemEnvironment();
+  });
+
   self.loadItemEnvironment = function()
   {
-    if (self.item() !== false)
+    if (self.item() !== false && parentModel.node() !== false)
     {
       murrix.server.emit("helper_itemGetEnvironment", { nodeId: parentModel.node()._id(), itemId: self.item()._id() }, function(error, environment)
       {
@@ -432,7 +445,7 @@ var OverlayModel = function(parentModel)
   {
     var suggestions = [];
 
-    if (self.item() !== false)
+    if (self.item() !== false && parentModel.node() !== false)
     {
       self.showingLoading(true);
 
@@ -733,7 +746,7 @@ var OverlayModel = function(parentModel)
   {
     var suggestions = [];
 
-    if (self.item() !== false)
+    if (self.item() !== false && parentModel.node() !== false)
     {
       self.whoLoading(true);
 
@@ -821,7 +834,7 @@ var OverlayModel = function(parentModel)
     var suggestions = [];
     var takenIds = [];
 
-    if (self.item() !== false)
+    if (self.item() !== false && parentModel.node() !== false)
     {
       if (self.item()._with && self.item()._with() !== false)
       {
@@ -1042,7 +1055,7 @@ var OverlayModel = function(parentModel)
   {
     var suggestions = [];
 
-    if (self.item() !== false)
+    if (self.item() !== false && parentModel.node() !== false)
     {
       self.whereLoading(true);
 

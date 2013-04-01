@@ -208,8 +208,10 @@ murrix.cache = new function()
 
     if (murrix.cache.queuedImages[id])
     {
-      self.loadImage(murrix.cache.queuedImages[id]);
+      var img = murrix.cache.queuedImages[id];
       delete murrix.cache.queuedImages[id];
+
+      self.loadImage(murrix.cache.queuedImages[id]);
     }
   };
 
