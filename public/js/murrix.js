@@ -211,7 +211,7 @@ murrix.cache = new function()
       var img = murrix.cache.queuedImages[id];
       delete murrix.cache.queuedImages[id];
 
-      self.loadImage(murrix.cache.queuedImages[id]);
+      self.loadImage(img);
     }
   };
 

@@ -65,6 +65,9 @@ var OverlayModel = function(parentModel)
       self.showingInitialize();
       self.description(self.item().description ? self.item().description() : "");
 
+
+
+
       self.videoFile('/video?id=' + self.item()._id());
 
     });
