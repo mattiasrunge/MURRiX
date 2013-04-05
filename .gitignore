@@ -8,3 +8,4 @@ dumps/*
 node_modules
 config.json
 triggers.json
+public/index.html

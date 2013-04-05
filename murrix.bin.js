@@ -116,6 +116,57 @@ program
     console.log();
   });
 
+
+program
+  .command("importged <file>")
+  .description("Import a Gedcom file")
+  .option("-u, --user [username]", "Username which is used to import, default is admin", "admin")
+  .action(function(file, options)
+  {
+    var murrix = new Murrix(program);
+
+    murrix.on("done", function()
+    {
+      // TODO: Solve this in a nicer way
+      var session = {};
+      session.document = {};
+      session.document._id = 1;
+      session.getId = function() { return session.document._id; };
+      session.save = function(callback) { callback(); };
+
+      murrix.user.becomeUser(session, options.user, function(error)
+      {
+        if (error)
+        {
+          murrix.logger.error("cmd", error);
+          process.exit(1);
+          return;
+        }
+
+        murrix.import.importGedcom(session, path.resolve(process.cwd(), file), options, function(error)
+        {
+          if (error)
+          {
+            murrix.logger.error("cmd", error);
+            process.exit(1);
+            return;
+          }
+
+          process.exit(0);
+        });
+      });
+    });
+
+    murrix.emit("init");
+  }).on("--help", function() {
+    console.log("  Examples:");
+    console.log();
+    console.log("    $ import ./file.ged");
+    console.log("    $ import -u username ./file.ged");
+    console.log();
+  });
+
+
 program
   .command("dumpdb")
   .description("Do a database dump")
