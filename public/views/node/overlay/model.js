@@ -11,6 +11,14 @@ var OverlayModel = function(parentModel)
 
   self.show = ko.observable(false);
 
+  $(document).on("click", function()
+  {
+    if (self.autoplay())
+    {
+      self.autoplay(false);
+    }
+  });
+
   self.item.subscribe(function(value)
   {
     if (self.show() !== (value !== false))
@@ -102,14 +110,26 @@ var OverlayModel = function(parentModel)
     document.location.hash = murrix.createPath(1, null, self.prevId());
   };
 
-  self.play = function()
+  self.play = function(data, event)
   {
     self.autoplay(true);
+
+    if (event)
+    {
+      event.preventDefault();
+      event.stopPropagation();
+    }
   };
 
-  self.pause = function()
+  self.pause = function(data, event)
   {
     self.autoplay(false);
+
+    if (event)
+    {
+      event.preventDefault();
+      event.stopPropagation();
+    }
   };
 
   self.autoplay.subscribe(function(value)
@@ -125,7 +145,7 @@ var OverlayModel = function(parentModel)
       self.autoplayTimer = setInterval(function()
       {
         document.location.hash = murrix.createPath(1, null, self.nextId());
-      }, 3000);
+      }, 5000);
     }
   });
 

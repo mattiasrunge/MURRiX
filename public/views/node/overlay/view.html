@@ -4,22 +4,25 @@
 
 
 <div data-bind="fadeVisible: nodeModel.overlayModel.show">
-  <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; width: 75px; z-index: 2060;">
+  <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; width: 75px; z-index: 2060;" data-bind="fadeVisible: !nodeModel.overlayModel.autoplay()">
     <a class="carousel-control left" href="#" data-bind="click: nodeModel.overlayModel.previous, clickKey: 'left'">&lsaquo;</a>
   </div>
-  <div style="position: fixed; top: 0px; bottom: 0px; right: 350px; width: 75px; z-index: 2060;">
+  <div style="position: fixed; top: 0px; bottom: 0px; right: 350px; width: 75px; z-index: 2060;" data-bind="fadeVisible: !nodeModel.overlayModel.autoplay()">
     <a class="carousel-control right" href="#" data-bind="click: nodeModel.overlayModel.next, clickKey: 'right'">&rsaquo;</a>
   </div>
 </div>
 
 
 <div style="background-color: white; position: fixed; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 1040;" data-bind="fadeVisible: nodeModel.overlayModel.show"></div>
-<div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;"></div>
+<div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 0px; text-align: center; background-color: black;"></div>
 
 <div style="position: absolute; top: 0px; left: 0px; right: 0px; z-index: 2050; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show">
   <!-- ko if: nodeModel.overlayModel.item() !== false -->
 
-    <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;" data-bind="if: nodeModel.overlayModel.item().what() === 'file'">
+    <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;" data-bind="if: nodeModel.overlayModel.item().what() === 'file', style: { right: nodeModel.overlayModel.autoplay() ? '0px' : '350px' }">
+
+
+
         <div class="imgContainer" style="position: relative; display: inline-block;">
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
             <div data-bind="template: { name: 'imageTemplate', data: nodeModel.overlayModel.item() }"></div>
@@ -38,16 +41,16 @@
         </div>
     </div>
 
-    <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center;" data-bind="if: nodeModel.overlayModel.item().what() === 'text'">
+    <div style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center;" data-bind="if: nodeModel.overlayModel.item().what() === 'text', style: { right: nodeModel.overlayModel.autoplay() ? '0px' : '350px' }">
       <div style="padding: 20px 100px 20px 100px; text-align: left; color: white">
         <h3 style="text-align: center;" data-bind="text: nodeModel.overlayModel.item().name"></h3>
-        <p data-bind="html: nodeModel.overlayModel.item().text"></p>
+        <p data-bind="html: nodeModel.overlayModel.item().text().replace(/\n/g, '<br>')"></p>
       </div>
     </div>
   <!-- /ko -->
 </div>
 
-<div style="position: absolute; top: 0px; width: 350px; right: 0px; z-index: 2070; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show">
+<div style="position: absolute; top: 0px; width: 350px; right: 0px; z-index: 2070; background-color: black;" data-bind="fadeVisible: nodeModel.overlayModel.show() && !nodeModel.overlayModel.autoplay()">
   <!-- ko if: nodeModel.overlayModel.item() !== false -->
 
     <div style="position: absolute; top: 0px; width: 350px; right: 0px; margin: 0px; padding: 0px; background-color: white;">

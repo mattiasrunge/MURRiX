@@ -49,7 +49,7 @@
                 <a class="timeline-day-content-item-text" href="#" data-bind="hrefSecondSecondary: $data._id">
                   <h6 data-bind="text: $data.name"></h6>
                 </a>
-                <div data-bind="html: $data.text.replace('\n', '<br>')"></div>
+                <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
               </div>
 
               <div class="timeline-day-content-item-information">
