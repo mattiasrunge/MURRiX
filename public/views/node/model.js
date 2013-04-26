@@ -125,6 +125,10 @@ var NodeModel = function(parentModel)
     {
       murrix.model.dialogModel.locationNodeModel.showEdit(self.node()._id());
     }
+    else if (self.node().type() === "tags")
+    {
+      murrix.model.dialogModel.tagsNodeModel.showEdit(self.node()._id());
+    }
   };
 
 
@@ -142,6 +146,15 @@ var NodeModel = function(parentModel)
   self.editVehicleNewOpen = function()
   {
     murrix.model.dialogModel.vehicleNodeModel.showCreate(function(node)
+    {
+      document.location.hash = murrix.createPath(0, "node", node._id());
+    });
+  };
+
+  /* Edit Tag Collection */
+  self.editTagsNewOpen = function()
+  {
+    murrix.model.dialogModel.tagsNodeModel.showCreate(function(node)
     {
       document.location.hash = murrix.createPath(0, "node", node._id());
     });

@@ -39,6 +39,7 @@ function DialogModel()
   self.textItemModel = new DialogTextItemModel();
   self.personNodeModel = new DialogPersonNodeModel();
   self.albumNodeModel = new DialogAlbumNodeModel();
+  self.tagsNodeModel = new DialogTagsNodeModel();
   self.locationNodeModel = new DialogLocationNodeModel();
   self.cameraNodeModel = new DialogCameraNodeModel();
   self.vehicleNodeModel = new DialogVehicleNodeModel();
