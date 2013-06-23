@@ -683,7 +683,7 @@
                   <!-- ko foreach: nodeModel.overlayModel.item().versions -->
                     <tr>
                       <td>
-                        <a href="#" data-bind="attr: { href: '/file?id=' +  nodeModel.overlayModel.item()._id() + '&version=' + $data._id }"><i class="icon-file-alt"></i> <span data-bind="text: $data.name"></span></a>
+                        <a href="#" data-bind="attr: { href: '/file?id=' +  nodeModel.overlayModel.item()._id() + '&version=' + $data.id() }"><i class="icon-file-alt"></i> <span data-bind="text: $data.name"></span></a>
                       </td>
                       <td class="muted" data-bind="htmlSize: $data.size"></td>
                     </tr>

@@ -1025,3 +1025,30 @@ i.icon-fixed[class*="icon-white"] {
 
 
 
+.mm, .bar {
+  fill: #0088CC;
+  opacity: 0.6;
+}
+
+path, line {
+  fill: none;
+  stroke: black;
+  stroke-width: 1px;
+}
+
+path.axis {
+  stroke: black;
+  stroke-width: 1px;
+}
+
+.tick text {
+  fill: black;
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+      stroke-width: 0;
+}

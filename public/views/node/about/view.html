@@ -79,8 +79,11 @@
               <!-- /ko -->
             </table>
           </div>
+        </div>
 
-
+        <div class="span12" data-bind="visible: nodeModel.node().type() === 'person'" style="margin: 0px;">
+          <h4>Weight</h4>
+          <div id="weight-container"></div>
         </div>
 
       </div>
