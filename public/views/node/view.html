@@ -113,6 +113,13 @@
           <span data-bind="text: nodeModel.node().comments().length" class="badge pull-right" style="margin-top: -2px;"></span>
         </a>
       </li>
+
+      <li data-bind="fadeVisible: nodeModel.metricsModel.enabled, css: { 'active': nodeModel.metricsModel.show }" class="nav-link" style="line-height: 30px;">
+        <a href="#" data-bind="hrefSecondPrimary: 'metrics', if: nodeModel.node() !== false">
+          <i class="icon-signal icon-fixed"></i>
+          Metrics
+        </a>
+      </li>
     </ul>
 
     <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; padding: 0px 10px 0px 10px;" data-bind="if: nodeModel.node() !== false">

@@ -556,4 +556,5 @@ var NodeModel = function(parentModel)
   self.overlayModel = new OverlayModel(self);
   self.timelineModel = new TimelineModel(self);
   self.issuesModel = new IssuesModel(self);
+  self.metricsModel = new MetricsModel(self);
 };
