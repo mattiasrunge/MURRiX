@@ -14,7 +14,8 @@
     "stewardess": ">= 0.1.0",
     "commander": ">= 1.1.1",
     "ewait": ">= 0.1.4",
-    "gedcom-stream": "0.3.0"
+    "gedcom-stream": "0.3.0",
+    "xml2js": ">= 0.2.8"
   },
   "devDependencies": {
     "jshint": "~1.1.0"

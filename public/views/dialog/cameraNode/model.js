@@ -14,6 +14,8 @@ function DialogCameraNodeModel()
 
   self.serial = ko.observable("");
 
+  self.trackerId = ko.observable("");
+
   self.timezone = ko.observable("Unknown");
 
   self.descriptionModel = new DialogComponentTextModel(self);
@@ -44,6 +46,7 @@ function DialogCameraNodeModel()
     self.disabled(false);
     self.name("");
     self.serial("");
+    self.trackerId("");
     self.timezone("Unknown");
     self.descriptionModel.reset();
     self.typeModel.reset();
@@ -98,6 +101,7 @@ function DialogCameraNodeModel()
       self.id(nodeData._id);
       self.name(nodeData.name);
       self.serial(nodeData.serial);
+      self.trackerId(nodeData.tracker_id);
       self.descriptionModel.value(nodeData.description);
       self.ownersModel.value(nodeData._owners ? nodeData._owners : []);
       self.typeModel.value(nodeData.mode ? nodeData.mode : "manual");
@@ -126,6 +130,7 @@ function DialogCameraNodeModel()
     nodeData.type = "camera";
     nodeData.name = self.name();
     nodeData.serial = self.serial();
+    nodeData.tracker_id = self.trackerId();
     nodeData.description = self.descriptionModel.value();
     nodeData._owners = self.ownersModel.value();
     nodeData.mode = self.typeModel.value();

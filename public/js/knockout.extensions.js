@@ -570,11 +570,11 @@ $(function()
 
         text += "Type: " + nodeList[withId].type();
 
-        if (nodeList[withId]._owner)
-        {
-          text += "<br/>";
-          text += "Owner: " + nodeList[withId]._owner();
-        }
+//         if (nodeList[withId]._owners)
+//         {
+//           text += "<br/>";
+//           text += "Owner: " + nodeList[withId]._owner();
+//         }
 
         var options = {
           html      : true,
@@ -586,6 +586,70 @@ $(function()
         };
 
         $(element).popover(options);
+      });
+    }
+  };
+
+  ko.bindingHandlers.htmlPrintOwner = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var param = ko.utils.unwrapObservable(value);
+
+      var withId = param || false;
+
+      $(element).popover('destroy');
+
+      if (!withId || withId === null)
+      {
+        $(element).text("unknown");
+        return;
+      }
+
+      $(element).text("...loading...");
+
+      murrix.cache.getNodes([ withId ], function(error, nodeList)
+      {
+        if (error)
+        {
+          $(element).text(error);
+          return;
+        }
+
+        if (!nodeList[withId])
+        {
+          $(element).text("unknown");
+          return;
+        }
+
+        murrix.cache.getNodes(nodeList[withId]._owners(), function(error, ownerNodeList)
+        {
+          if (error)
+          {
+            $(element).text(error);
+            return;
+          }
+
+          var owners = [];
+
+          for (var n = 0; n < nodeList[withId]._owners().length; n++)
+          {
+            if (ownerNodeList[nodeList[withId]._owners()[n]])
+            {
+              var href = "<a href='#node:" + nodeList[withId]._owners()[n] + "'>" + ownerNodeList[nodeList[withId]._owners()[n]].name() + "</a>";
+              owners.push(href)
+            }
+          }
+
+          if (owners.length === 0)
+          {
+            $(element).html("none");
+          }
+          else
+          {
+            $(element).html(owners.join(", "));
+          }
+        });
       });
     }
   };

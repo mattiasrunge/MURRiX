@@ -35,6 +35,10 @@
             <input placeholder="Write serial number..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: dialogModel.cameraNodeModel.disabled, value: dialogModel.cameraNodeModel.serial"/>
           </div>
 
+          <h5>Tracker Id</h5>
+          <div style="margin-right: 10px; margin-button: 10px;">
+            <input placeholder="Write a tracker id..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: dialogModel.cameraNodeModel.disabled, value: dialogModel.cameraNodeModel.trackerId"/>
+          </div>
         </div>
         <div class="tab-pane" id="dialogCameraNodeTabOwners">
           <div data-bind="template: { name: dialogModel.cameraNodeModel.ownersModel.template(), data: dialogModel.cameraNodeModel.ownersModel }"></div>

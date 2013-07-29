@@ -14,13 +14,26 @@ function DialogAlbumNodeModel()
 
   self.descriptionModel = new DialogComponentTextModel(self);
 
+  self.trackedByModel = new DialogComponentNodeListModel(self);
+  self.trackedByModel.types([ "camera" ]);
+
   self.reset = function()
   {
+    var tabElements = $(self.elementId).find("ul.nav-tabs li");
+    var tabPanes = $(self.elementId).find("div.tab-pane");
+
+    tabElements.removeClass("active");
+    tabPanes.removeClass("active");
+
+    $(tabElements[0]).addClass("active");
+    $(tabPanes[0]).addClass("active");
+
     self.id(false);
     self.errorText("");
     self.disabled(false);
     self.name("");
     self.descriptionModel.reset();
+    self.trackedByModel.reset();
 
     self.finishCallback = null;
   };
@@ -28,6 +41,7 @@ function DialogAlbumNodeModel()
   self.disabled.subscribe(function(value)
   {
     self.descriptionModel.disabled(value);
+    self.trackedByModel.disabled(value);
   });
 
   self.finishCallback = null;
@@ -69,6 +83,11 @@ function DialogAlbumNodeModel()
       self.id(nodeData._id);
       self.name(nodeData.name);
       self.descriptionModel.value(nodeData.description);
+
+      if (nodeData._tracked_by)
+      {
+        self.trackedByModel.value(nodeData._tracked_by);
+      }
     });
   };
 
@@ -82,6 +101,7 @@ function DialogAlbumNodeModel()
     nodeData.type = "album";
     nodeData.name = self.name();
     nodeData.description = self.descriptionModel.value();
+    nodeData._tracked_by = self.trackedByModel.value();
 
     self.errorText("");
     self.disabled(true);

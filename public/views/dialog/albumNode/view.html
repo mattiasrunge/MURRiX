@@ -11,7 +11,20 @@
       <input placeholder="Write a name..." type="text" style="width: 100%; margin-bottom: 20px;" data-bind="disable: dialogModel.albumNodeModel.disabled, value: dialogModel.albumNodeModel.name"/>
     </div>
 
-    <div data-bind="template: { name: dialogModel.albumNodeModel.descriptionModel.template(), data: dialogModel.albumNodeModel.descriptionModel }"></div>
+    <div class="tabbable">
+      <ul class="nav nav-tabs" style="font-size: 10px;">
+        <li class="active"><a href="#dialogAlbumNodeTabDescription" data-toggle="tab">About</a></li>
+        <li><a href="#dialogAlbumNodeTabTrackedBy" data-toggle="tab">Tracked By</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="dialogAlbumNodeTabDescription">
+          <div data-bind="template: { name: dialogModel.albumNodeModel.descriptionModel.template(), data: dialogModel.albumNodeModel.descriptionModel }"></div>
+        </div>
+        <div class="tab-pane active" id="dialogAlbumNodeTabTrackedBy">
+          <div data-bind="template: { name: dialogModel.albumNodeModel.trackedByModel.template(), data: dialogModel.albumNodeModel.trackedByModel }"></div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <p class="pull-left text-error" data-bind="visible: dialogModel.albumNodeModel.errorText() != '', text: dialogModel.albumNodeModel.errorText"></p>
