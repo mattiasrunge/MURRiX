@@ -61,7 +61,7 @@
         <div class="panel" data-bind="css: { 'panel-danger': $data.admin }">
           <div class="panel-heading">
             <form class="pull-right">
-              <input class="form-control input-small" type="text" style="width: 150px" placeholder="Add group">
+              <input placeholder="Add group..." class="form-control input-small" type="text" style="width: 150px" data-bind="typeahead: { data: $data , items: 10, source: $root.adminModel.userTypeaheadSource, matcher: $root.adminModel.userTypeaheadMatcher, highlighter: $root.adminModel.userTypeaheadHighlighter, updater: $root.adminModel.userTypeaheadUpdater }" data-provide="typeahead"/>
             </form>
 
             <h3 class="panel-title" style="line-height: 27px;">
@@ -87,7 +87,7 @@
             <span class="label label-info pull-left" style="margin-right: 5px; margin-bottom: 5px; font-size: 16px;">
               <i class="icon-group"></i>
               <span data-bind="textGroupAttribute: [ $data, 'name' ]"></span>
-              <i style="cursor: pointer;" title="Remove group from user" data-bind="" class="icon-remove"></i>
+              <i style="cursor: pointer;" title="Remove group from user" data-bind="click: adminModel.userRemoveGroupHandler.bind($data, $parent)" class="icon-remove"></i>
             </span>
           </div>
 

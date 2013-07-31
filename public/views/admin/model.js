@@ -291,18 +291,11 @@ var AdminModel = function(parentModel)
     }
   };
 
-
-
-
-
-
-
   self.groupRemoveUserHandler = function(group, user)
   {
     userData = ko.mapping.toJS(user);
 
     userData._groups = userData._groups || [];
-
     userData._groups = murrix.removeFromArray(group._id(), userData._groups);
 
     murrix.server.emit("saveUser", userData, function(error, userData)
@@ -317,12 +310,76 @@ var AdminModel = function(parentModel)
     });
   };
 
-  self.userCreateClicked = function(element)
+
+  self.userTypeaheadUpdater = function(id)
   {
-    murrix.model.dialogModel.userModel.showCreate(function()
+    var userId = this.options.data._id();
+    var userData = {};
+
+    for (var n = 0; n < self.users().length; n++)
     {
+      if (self.users()[n]._id() === userId)
+      {
+        userData = ko.mapping.toJS(self.users()[n]);
+      }
+    }
+
+    if (!userData)
+    {
+      console.log("No user with id " + userId + " found!");
+      return;
+    }
+
+    userData._groups = userData._groups || [];
+
+    userData._groups = murrix.addToArray(id, userData._groups);
+
+    murrix.server.emit("saveUser", userData, function(error, userData)
+    {
+      if (error)
+      {
+        console.log("AdminModel: Failed to add group to user: " + error);
+        return;
+      }
+
       self._loadUsers();
     });
+  };
+
+  self.userTypeaheadSource = function(queryString, callback)
+  {
+    var resultList = [];
+    var toString = function() { return this._id(); };
+    var currentGroupIds = this.options.data._groups();
+
+    for (var n in self.groups())
+    {
+      var item = self.groups()[n];
+      item.toString = toString;
+
+      if (!murrix.inArray(item._id(), currentGroupIds))
+      {
+        resultList.push(item);
+      }
+    }
+
+    return resultList;
+  };
+
+  self.userTypeaheadMatcher = function(item)
+  {
+    return ~item.name().toLowerCase().indexOf(this.query.toLowerCase());
+  };
+
+  self.userTypeaheadHighlighter = function(item)
+  {
+    var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+    var name = item.name().replace(new RegExp('(' + query + ')', 'ig'), function($1, match)
+    {
+      return "<strong>" + match + "</strong>";
+    });
+
+    return "<div>" + name + "</div>";
   };
 
   self.userEditClicked = function(element)
@@ -335,11 +392,33 @@ var AdminModel = function(parentModel)
 
   self.userRemoveClicked = function(element)
   {
-    murrix.server.emit("removeUser", element._id(), function(error)
+    if (confirm("Are you sure you want to remove the user!"))
+    {
+      murrix.server.emit("removeUser", element._id(), function(error)
+      {
+        if (error)
+        {
+          console.log("AdminModel: Failed to remove user: " + error);
+          return;
+        }
+
+        self.users.remove(element);
+      });
+    }
+  };
+
+  self.userRemoveGroupHandler = function(user, groupId)
+  {
+    userData = ko.mapping.toJS(user);
+
+    userData._groups = userData._groups || [];
+    userData._groups = murrix.removeFromArray(groupId, userData._groups);
+
+    murrix.server.emit("saveUser", userData, function(error, userData)
     {
       if (error)
       {
-        console.log("AdminModel: Failed to remove user: " + error);
+        console.log("AdminModel: Failed to remove group from user: " + error);
         return;
       }
 
