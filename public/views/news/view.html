@@ -1,17 +1,11 @@
-<div class="main-overlay" data-bind="fadeVisible: newsModel.show">
-  <div class="main-overlay-content">
+<div data-bind="fadeVisible: newsModel.show">
+  <div class="abs-max content">
+    <div class="page-header">
+      <h1>Recent changes <small>Shows everything that has recently changed</small></h1>
+    </div>
 
-<!--    <div class="navbar navbar-color navbar-inverse">
-      <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-bullhorn icon-white"></i> News</span>
-        <ul class="nav pull-right">
-          <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
-        </ul>
-      </div>
-    </div>-->
-
-    <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: newsModel.nodes }"></div>
+    <div class="clearfix" data-bind="template: { name: 'nodeSearchTemplate', foreach: newsModel.nodes }" style="margin-top: 50px;"></div>
 
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>

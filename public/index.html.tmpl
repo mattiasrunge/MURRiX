@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>MURRiX</title>
-    <link id="favicon" rel="shortcut icon" href="img/favicon.png" type="image/png">
+    <link id="favicon" rel="shortcut icon" href="img/murrix_icon.png" type="image/png">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="description" content="">
@@ -33,28 +33,345 @@
   </head>
 
   <body>
+<form class="modal fade" id="adminChangePasswordModal" tabindex="-1" role="dialog" aria-labelledby="adminChangePasswordModalLabel" aria-hidden="true"  data-bind="submit: adminModel.changePasswordSubmit">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="adminChangePasswordModalLabel">Change password</h3>
+      </div>
+      <div class="modal-body">
+          <input placeholder="Password" type="password" name="password1" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword1"/>
+          <input placeholder="Repeat password" type="password" name="password2" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword2"/>
+      </div>
+      <div class="modal-footer">
+        <p class="pull-left text-error" data-bind="visible: adminModel.changePasswordErrorText() != '', text: adminModel.changePasswordErrorText"></p>
+        <button data-bind="disable: adminModel.changePasswordLoading" type="button" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button data-bind="disable: adminModel.changePasswordLoading" type="submit" class="btn btn-primary">Change</button>
+      </div>
+    </div>
+  </div>
+</form>
+    <div class="navbar-shadow"></div>
+
+    <div class="navbar navbar-fixed-top navbar-inverse">
+      <div class="navbar-brand" style="max-width: none;">
+        <span data-bind="if: nodeModel.node() !== false">
+          <i style="vertical-align: baseline;" class="icon-book icon-white" data-bind="visible: nodeModel.node().type() === 'album'"></i>
+          <i style="vertical-align: baseline;" class="icon-user icon-white" data-bind="visible: nodeModel.node().type() === 'person'"></i>
+          <i style="vertical-align: baseline;" class="icon-camera icon-white" data-bind="visible: nodeModel.node().type() === 'camera'"></i>
+          <i style="vertical-align: baseline;" class="icon-truck icon-white" data-bind="visible: nodeModel.node().type() === 'vehicle'"></i>
+          <i style="vertical-align: baseline;" class="icon-flag icon-white" data-bind="visible: nodeModel.node().type() === 'location'"></i>
+        </span>
+        <span data-bind="text: nodeModel.node() ? nodeModel.node().name : document.location.hostname"></span>
+      </div>
+
+      <ul class="nav navbar-nav" data-bind="visible: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
+        <li class="dropdown">
+          <a class="dropdown-toggle" rel="tooltip" data-toggle="dropdown" href="#" data-placement="bottom">
+            <i class="icon-cog icon-white" title="Node toolbox"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="#" data-bind="click: nodeModel.editNode">
+                <i style="vertical-align: center;" class="icon-pencil icon-fixed"></i>
+                Edit
+              </a>
+            </li>
+            <li>
+              <a href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpenNew">
+                <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
+                Create text
+              </a>
+            </li>
+            <li>
+              <a href="#" data-bind="click: dialogModel.uploadModel.show">
+                <i style="vertical-align: center;" class="icon-exchange icon-fixed"></i>
+                Upload
+              </a>
+            </li>
+            <li>
+              <a href="#" data-bind="click: nodeModel.removeNode">
+                <i style="vertical-align: center;" class="icon-trash icon-fixed"></i>
+                Remove
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav" data-bind="visible: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
+        <li class="dropdown">
+          <a class="dropdown-toggle" rel="tooltip" data-toggle="dropdown" href="#" data-placement="bottom">
+            <i data-bind="ifnotset: nodeModel.node().public" class="icon-lock icon-white"></i>
+            <i data-bind="ifset: nodeModel.node().public" class="icon-unlock icon-white"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li data-bind="ifnotset: nodeModel.node().public">
+              <a href="#" data-bind="click: nodeModel.changePublic.bind($data, true)">
+                <i style="vertical-align: center;" class="icon-unlock icon-fixed"></i>
+                Make public
+              </a>
+            </li>
+            <li data-bind="ifset: nodeModel.node().public">
+              <a href="#" data-bind="click: nodeModel.changePublic.bind($data, false)">
+                <i style="vertical-align: center;" class="icon-lock icon-fixed"></i>
+                Make private
+              </a>
+            </li>
+            <li class="divider"></li>
+            <li class="dropdown-header">
+              Administrators
+            </li>
+            <!-- ko foreach: nodeModel.groupAccessListAdmins -->
+              <li class="dropdown-submenu">
+                <a tabindex="-1" href="#" data-bind="click: noClick">
+                  <i style="vertical-align: center;" class="icon-eye-open icon-fixed"></i>
+                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
+                </a>
+
+                <ul class="dropdown-menu">
+                  <li>
+                      <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeReader">
+                      <i style="vertical-align: center;" class="icon-minus icon-fixed"></i>
+                      Revoke admin access
+                    </a>
+                  </li>
+                  <li>
+                      <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessRemove">
+                      <i style="vertical-align: center;" class="icon-remove icon-fixed"></i>
+                      Revoke read access
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            <!-- /ko -->
+            <li class="divider"></li>
+            <li class="dropdown-header">
+              Readers
+            </li>
+            <!-- ko foreach: nodeModel.groupAccessListReaders -->
+              <li class="dropdown-submenu">
+                <a tabindex="-1" href="#" data-bind="click: noClick">
+                  <i style="vertical-align: center;" class="icon-eye-close icon-fixed"></i>
+                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
+                </a>
+
+                <ul class="dropdown-menu">
+                  <li>
+                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">
+                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
+                      Grant admin access
+                    </a>
+                  </li>
+                  <li>
+                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessRemove">
+                      <i style="vertical-align: center;" class="icon-remove icon-fixed"></i>
+                      Revoke read access
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            <!-- /ko -->
+            <li class="divider"></li>
+            <li class="dropdown-header">
+              Others
+            </li>
+            <!-- ko foreach: nodeModel.groupAccessListOthers -->
+              <li class="dropdown-submenu">
+                <a tabindex="-1" href="#" data-bind="click: noClick">
+                  <i style="vertical-align: center;" class="icon-group icon-fixed"></i>
+                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
+                </a>
+
+                <ul class="dropdown-menu">
+                  <li>
+                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">
+                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
+                      Grant admin access
+                    </a>
+                  </li>
+                  <li>
+                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeReader">
+                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
+                      Grant read access
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            <!-- /ko -->
+          </ul>
+        </li>
+      </ul>
+
+
+      <ul class="nav navbar-nav pull-right">
+        <li class="dropdown">
+          <a class="dropdown-toggle" href="#" data-toggle="dropdown" data-bind="click: adminModel.userMenuClicked">
+            <span data-bind="ifnot: currentUser"><i class="icon-signin icon-fixed icon-white"></i> Sign In</span>
+            <span data-bind="if: currentUser"><i class="icon-user icon-fixed icon-white"></i> <span data-bind="text: currentUser().name"></span></span>
+            <strong class="caret"></strong>
+          </a>
+          <ul class="dropdown-menu">
+
+            <form class="" data-bind="submit: adminModel.loginSubmit, visible: !currentUser()" style="padding: 15px; padding-bottom: 0px; margin-bottom: 0px;">
+              <input class="signInUsername" tabindex="1" placeholder="Username" style="margin-bottom: 15px;" type="text" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputUsername"/>
+              <input tabindex="2" placeholder="Password" style="margin-bottom: 10px;" type="password" size="30" data-bind="disable: adminModel.loading, value: adminModel.inputPassword"/>
+              <input tabindex="3" style="float: left; margin-right: 10px; margin-bottom: 10px;" type="checkbox" value="1" data-bind="disable: adminModel.loading, checked: adminModel.inputRemember"/>
+              <label class="string optional" for="inputRemember"> Remember me</label>
+
+              <input tabindex="4" data-bind="disable: adminModel.loading" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px; margin-bottom: 15px;" type="submit" name="signin" value="Sign In" />
+              <div data-bind="visible: adminModel.errorText() != '', text: adminModel.errorText" style="margin-bottom: 15px;"></div>
+            </form>
+
+            <!-- ko if: currentUser -->
+              <li><a href="#admin" data-bind="visible: currentUser().admin"><i class="icon-lock icon-fixed"></i> Administration</a></li>
+              <li><a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]"><i class="icon-user icon-fixed"></i> Me</a></li>
+              <li><a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)"><i class="icon-key icon-fixed"></i> Change password</a></li>
+              <li><a href="#" data-bind="click: adminModel.signOutClicked"><i class="icon-signout icon-fixed"></i> Sign out</a></li>
+            <!-- /ko -->
+
+          </ul>
+        </li>
+      </ul>
+
+      <form class="navbar-form pull-right" data-bind="fadeVisible: currentUser, submit: searchModel.searchSubmit">
+        <input type="text" class="form-control" style="width: 200px;" placeholder="Search" data-provide="typeahead" data-bind="value: searchModel.queryInput, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: searchModel.searchTypeaheadUpdater }"/>
+      </form>
+
+      <ul class="nav navbar-nav pull-right">
+
+        <li>
+          <a class="" rel="tooltip" title="Go to start page" href="#" data-placement="bottom">
+            <i class="icon-home icon-white"></i>
+          </a>
+        </li>
+        <li>
+          <a class=""  rel="tooltip" data-bind="fadeVisible: currentUser, click: randomClicked" title="Go to random node" href="#"  data-placement="bottom">
+            <i class="icon-random icon-white"></i>
+          </a>
+        </li>
+        <li class="dropdown" data-bind="visible: currentUser">
+          <a class="dropdown-toggle" rel="tooltip" data-toggle="dropdown" href="#" data-placement="bottom">
+            <i class="icon-plus icon-white" title="Create new node"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#" data-bind="click: nodeModel.editAlbumNewOpen"><i style="vertical-align: center;" class="icon-book icon-fixed"></i> Album</a></li>
+            <li><a href="#" data-bind="click: nodeModel.editPersonNewOpen"><i style="vertical-align: center;" class="icon-user icon-fixed"></i> Person</a></li>
+            <li><a href="#" data-bind="click: nodeModel.editLocationNewOpen"><i style="vertical-align: center;" class="icon-flag icon-fixed"></i> Location</a></li>
+            <!--<li><a href="#" data-bind="click: nodeModel.editCameraNewOpen"><i style="vertical-align: center;" class="icon-camera icon-fixed"></i> Camera</a></li>-->
+            <li><a href="#" data-bind="click: nodeModel.editVehicleNewOpen"><i style="vertical-align: center;" class="icon-truck icon-fixed"></i> Vehicle</a></li>
+            <li><a href="#" data-bind="click: nodeModel.editTagsNewOpen"><i style="vertical-align: center;" class="icon-cloud icon-fixed"></i> Tag Collection</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#help" rel="tooltip" title="Help" data-placement="bottom">
+            <i class="icon-question-sign icon-white"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+
+    <div class="sidebar-shadow"></div>
+
+    <div class="fix-max sidebar">
+      <div class="sidebar-image" style="background:url('img/murrix_logo_sidebar.png') no-repeat;"></div>
+
+      <div class="sidebar-fade"></div>
+
+      <ul class="nav nav-pills nav-stacked" style="margin-top: 250px;">
+
+        <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
+            <i class="icon-bullhorn icon-fixed"></i> Recent changes
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: currentUser(), css: { 'active': browseModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefFirstPrimary: browseModel.show() ? ' ' : 'browse'">
+            <i class="icon-calendar icon-fixed"></i> Browse material by year
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: currentUser(), css: { 'active': tagsModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefFirstPrimary: tagsModel.show() ? ' ' : 'tags'">
+            <i class="icon-tags icon-fixed"></i> Browse tags
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: currentUser(), css: { 'active': searchModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefFirstPrimary: searchModel.show() ? ' ' : 'search'">
+            <i class="icon-search icon-fixed"></i> Search by name
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: currentUser(), css: { 'active': organizeModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefFirstPrimary: organizeModel.show() ? ' ' : 'organize'">
+            <i class="icon-folder-open icon-fixed"></i> Organize
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': adminModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefFirstPrimary: adminModel.show() ? ' ' : 'admin'">
+            <i class="icon-lock icon-fixed"></i> Administration
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': configModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefFirstPrimary: configModel.show() ? ' ' : 'config'">
+            <i class="icon-wrench icon-fixed"></i> Configuration
+          </a>
+        </li>
+
+        <li data-bind="css: { 'active': helpModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefFirstPrimary: helpModel.show() ? ' ' : 'help'">
+            <i class="icon-question-sign icon-fixed"></i> Help
+          </a>
+        </li>
+
+        <li class="nav-link">
+          <a target="top" href="https://github.com/mattiasrunge/MURRiX/issues?state=open">
+            <i class="icon-check icon-fixed"></i> Todo
+          </a>
+        </li>
+
+      </ul>
+    </div>
+    <div class="fix-max" style="top: 50px; left: 250px; right: none;">
+
+      <div class="abs-max background-map"></div>
+
+      {{include:views/view.html}}
+      {{include:views/news/view.html}}
+      {{include:views/browse/view.html}}
+      {{include:views/tags/view.html}}
+      {{include:views/search/view.html}}
+      {{include:views/organize/view.html}}
+      {{include:views/help/view.html}}
+      {{include:views/admin/view.html}}
+      {{include:views/config/view.html}}
+
+    </div>
+
+
+
+
     <div class="loading-overlay"></div>
+<div class="hide">
 
-    {{include:views/view.html}}
-    {{include:views/node/view.html}}
-    {{include:views/node/about/view.html}}
-    {{include:views/node/files/view.html}}
-    {{include:views/node/relations/view.html}}
-    {{include:views/node/comments/view.html}}
-    {{include:views/node/overlay/view.html}}
-    {{include:views/node/timeline/view.html}}
-    {{include:views/node/issues/view.html}}
-    {{include:views/node/metrics/view.html}}
-    {{include:views/search/view.html}}
-    {{include:views/admin/view.html}}
-    {{include:views/config/view.html}}
-    {{include:views/news/view.html}}
-    {{include:views/browse/view.html}}
-    {{include:views/tags/view.html}}
-    {{include:views/organize/view.html}}
-    {{include:views/help/view.html}}
-    {{include:views/map/view.html}}
+          {{include:views/node/view.html}}
+          {{include:views/node/about/view.html}}
+          {{include:views/node/files/view.html}}
+          {{include:views/node/relations/view.html}}
+          {{include:views/node/comments/view.html}}
+          {{include:views/node/overlay/view.html}}
+          {{include:views/node/timeline/view.html}}
+          {{include:views/node/issues/view.html}}
+          {{include:views/node/metrics/view.html}}
 
+          {{include:views/map/view.html}}
+</div>
     {{include:views/dialog/components/select/view.html}}
     {{include:views/dialog/components/text/view.html}}
     {{include:views/dialog/components/position/view.html}}
@@ -76,8 +393,7 @@
 
 
  <!-- Third-party script files -->
-    <script src="http://code.jquery.com/jquery-1.9.0.js"></script>
-    <script src="http://code.jquery.com/jquery-migrate-1.0.0.js"></script>
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 
 <!--     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> -->
 <!--     <script>window.jQuery || document.write('<script src="js/jquery-1.8.2.min.js"><\/script>')</script> -->
@@ -90,6 +406,7 @@
     <script src="js/knockout-2.2.1.js"></script>
     <script src="js/knockout.mapping-latest.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/typeahead.min.js"></script>
     <script src="js/moment.min.js"></script>
     <script src="js/jquery.cookie.js"></script>
     <script src="js/jquery.imgareaselect.min.js"></script>

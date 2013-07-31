@@ -1,103 +1,179 @@
-<div class="main-overlay" data-bind="fadeVisible: adminModel.show() && currentUser() && currentUser().admin()">
-  <div class="main-overlay-content" style="overflow: hidden;">
+<div data-bind="fadeVisible: adminModel.show">
+  <div class="abs-max content">
+    <div class="page-header">
+      <h1>Administration <small>Handle users and groups</small></h1>
+    </div>
 
-<!--    <div class="navbar navbar-color navbar-inverse">
-      <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-lock icon-white"></i> Administration</span>
-        <ul class="nav pull-right">
-          <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
-        </ul>
-      </div>
-    </div>-->
+    <ul class="nav nav-tabs">
+      <li data-bind="css: { active: adminModel.type() === 'groups' }">
+        <a href="#" data-bind="hrefFirstSecondary: 'groups'">Groups</a>
+      </li>
+      <li data-bind="css: { active: adminModel.type() === 'users' }">
+        <a href="#" data-bind="hrefFirstSecondary: 'users'">Users</a>
+      </li>
+      <li class="pull-right">
+        <a href="#" data-bind="click: adminModel.createHandle"><i class="icon-plus"></i></a>
+      </li>
+    </ul>
 
-    <div class="box box-content" style="position: absolute; top: 30px; left: 262px; bottom: 30px; right: 30px;">
 
-      <div style="overflow-y: scroll; position: absolute; top: 20px; left: 20px; bottom: 20px; right: 540px;">
-        <h4>Groups <button title="Create group" class="btn btn-link btn-mini" href="#" data-bind="click: adminModel.groupCreateClicked">Create</button></h4>
+    <div style="margin-bottom: 50px; margin-top: 20px;" data-bind="visible: adminModel.type() === 'groups'">
 
-        <table class="table table-condensed table-hover table-striped">
-          <tbody>
+      <!-- ko foreach: adminModel.groups -->
 
-          <!-- ko foreach: adminModel.groups -->
-            <tr>
-              <td>
-                <blockquote style="margin-bottom: 0px;">
-                  <p>
-                    <span data-bind="text: $data.name"></span>
-                    <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.groupEditClicked">Edit</button>
-                    <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.groupRemoveClicked">Remove</button>
-                  </p>
-                  <small data-bind="text: $data.description"></small>
-                </blockquote>
-              </td>
-              <td data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: adminModel.groupDropUserHandler }" style="width: 250px;">
+        <div class="panel">
+          <div class="panel-heading">
+            <form class="pull-right">
+              <input placeholder="Add user..." class="form-control input-small" type="text" style="width: 150px" data-bind="typeahead: { data: $data , items: 10, source: $root.adminModel.groupTypeaheadSource, matcher: $root.adminModel.groupTypeaheadMatcher, highlighter: $root.adminModel.groupTypeaheadHighlighter, updater: $root.adminModel.groupTypeaheadUpdater }" data-provide="typeahead"/>
+            </form>
 
-                <div class="well" style="margin-bottom: 0px; overflow: auto; max-height: 200px; background-color: #F9F9F9">
-                  <!-- ko if: adminModel.groupUsers($data)().length === 0 -->
-                    <div class="text-warning" style="text-align: center;"><strong>Drop user here!</strong></div>
-                  <!-- /ko -->
+            <h3 class="panel-title" style="line-height: 27px;">
+              <i class="icon-group"></i>
+              <span data-bind="text: $data.name"></span>
 
-                  <!-- ko foreach: adminModel.groupUsers($data) -->
-                    <div><i style="cursor: pointer;" title="Remove user from group" data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-trash"></i>&nbsp;<span data-bind="text: $data.name"></span></div>
-                  <!-- /ko -->
-                </div>
+              <a title="Edit" class="" href="#" data-bind="click: adminModel.groupEditClicked">
+                <i class="icon-cog"></i>
+              </a>
+              <a title="Remove" class="" href="#" data-bind="click: adminModel.groupRemoveClicked">
+                <i class="icon-trash"></i>
+              </a>
+            </h3>
 
-              </td>
-            </tr>
-          <!-- /ko -->
+          </div>
+          <p class="text-muted" data-bind="text: $data.description"></p>
 
-          </tbody>
-        </table>
-      </div>
+          <div data-bind="foreach: adminModel.groupUsers($data)" class="clearfix" style="margin-bottom: -5px;">
+            <span class="label label-info pull-left" style="margin-right: 5px; margin-bottom: 5px; font-size: 16px;">
+              <i class="icon-user"></i>
+              <span data-bind="text: $data.name"></span>
+              <i style="cursor: pointer;" title="Remove user from group" data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-remove"></i>
+            </span>
+          </div>
 
-      <div style="overflow-y: scroll; position: absolute; top: 20px; right: 20px; bottom: 20px; width: 500px;">
-        <h4>Users <button title="Create user" class="btn btn-link btn-mini" href="#" data-bind="click: adminModel.userCreateClicked">Create</button></h4>
+        </div>
 
-        <table class="table table-condensed table-striped table-hover">
-          <tbody>
+      <!-- /ko -->
+    </div>
 
-          <!-- ko foreach: adminModel.users -->
-            <tr data-bind="css: { info: $data.admin }">
-              <td>
-                <img draggable="false" src="" alt="" style="width: 44px; height: 44px;" class="pull-left" data-bind="srcUserProfilePicture: [ $data._id(), 44, 44, 1 ]"/>
-                <blockquote style="margin-left: 52px; margin-bottom: 0px;" draggable="true" data-bind="event: { dragstart : $parent.adminModel.userDragStart, dragend: $parent.adminModel.userDragEnd }">
-                  <p>
-                    <span data-bind="text: $data.name"></span>
-                    <button title="Change password" class="btn btn-mini btn-link pull-right" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Password</button>
-                    <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.userEditClicked">Edit</button>
-                    <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.userRemoveClicked">Remove</button>
-                  </p>
-                  <p style="color: #999; font-size: 11px; padding-right: 8px;" class="pull-right" data-bind="visible: !$data.lastLogin()">User has never logged in<p>
-                  <p style="color: #999; font-size: 11px; padding-right: 8px;" class="pull-right" data-bind="visible: $data.lastLogin()">User logged in <span data-bind="htmlTimeAgo: $data.lastLogin()"></span></p>
-                  <small data-bind="text: $data.username"></small>
-                </blockquote>
-              </td>
-            </tr>
-          <!-- /ko -->
+    <div style="margin-bottom: 50px; margin-top: 20px;" data-bind="visible: adminModel.type() === 'users'">
 
-          </tbody>
-        </table>
+       <!-- ko foreach: adminModel.users -->
+        <div class="panel" data-bind="css: { 'panel-danger': $data.admin }">
+          <div class="panel-heading">
+            <form class="pull-right">
+              <input class="form-control input-small" type="text" style="width: 150px" placeholder="Add group">
+            </form>
 
-      </div>
+            <h3 class="panel-title" style="line-height: 27px;">
+              <i class="icon-user"></i>
+              <span data-bind="text: $data.name"></span>
+
+              <a title="Edit" href="#" data-bind="click: adminModel.userEditClicked">
+                <i class="icon-cog"></i>
+              </a>
+              <a title="Remove" href="#" data-bind="click: adminModel.userRemoveClicked">
+                <i class="icon-trash"></i>
+              </a>
+              <a title="Change password" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">
+                <i class="icon-key"></i>
+              </a>
+            </h3>
+
+          </div>
+
+          <img class="img-thumbnail pull-left" src="" style="width: 125px; height: 125px; margin-right: 15px; margin-bottom: 5px;" data-bind="srcUserProfilePicture: [ $data, 250, 250, 1 ]">
+
+          <div data-bind="foreach: $data._groups" class="clearfix" style="margin-bottom: -5px;">
+            <span class="label label-info pull-left" style="margin-right: 5px; margin-bottom: 5px; font-size: 16px;">
+              <i class="icon-group"></i>
+              <span data-bind="textGroupAttribute: [ $data, 'name' ]"></span>
+              <i style="cursor: pointer;" title="Remove group from user" data-bind="" class="icon-remove"></i>
+            </span>
+          </div>
+
+          <div class="panel-footer">
+           <span data-bind="visible: !$data.lastLogin()">User has never logged in.</span>
+           <span data-bind="visible: $data.lastLogin()">User logged in <span data-bind="htmlTimeAgo: $data.lastLogin()"></span>.</span>
+          </div>
+
+        </div>
+
+        <!-- /ko -->
+    </div>
+
+
+    <div style="overflow-y: scroll; position: absolute; top: 20px; left: 20px; bottom: 20px; right: 540px; display: none;">
+      <h4>Groups <button title="Create group" class="btn btn-link btn-mini" href="#" data-bind="click: adminModel.groupCreateClicked">Create</button></h4>
+
+      <table class="table table-condensed table-hover table-striped">
+        <tbody>
+
+        <!-- ko foreach: adminModel.groups -->
+          <tr>
+            <td>
+              <blockquote style="margin-bottom: 0px;">
+                <p>
+                  <span data-bind="text: $data.name"></span>
+                  <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.groupEditClicked">Edit</button>
+                  <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.groupRemoveClicked">Remove</button>
+
+                </p>
+                <small data-bind="text: $data.description"></small>
+              </blockquote>
+            </td>
+            <td data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: adminModel.groupDropUserHandler }" style="width: 250px;">
+
+              <div class="well" style="margin-bottom: 0px; overflow: auto; max-height: 200px; background-color: #F9F9F9">
+                <!-- ko if: adminModel.groupUsers($data)().length === 0 -->
+                  <div class="text-warning" style="text-align: center;"><strong>Drop user here!</strong></div>
+                <!-- /ko -->
+
+                <!-- ko foreach: adminModel.groupUsers($data) -->
+                  <div><i style="cursor: pointer;" title="Remove user from group" data-bind="click: adminModel.groupRemoveUserHandler.bind($data, $parent)" class="icon-trash"></i>&nbsp;<span data-bind="text: $data.name"></span></div>
+                <!-- /ko -->
+              </div>
+
+            </td>
+          </tr>
+        <!-- /ko -->
+
+        </tbody>
+      </table>
+    </div>
+
+    <div style="overflow-y: scroll; position: absolute; top: 20px; right: 20px; bottom: 20px; width: 500px; display: none;">
+      <h4>Users <button title="Create user" class="btn btn-link btn-mini" href="#" data-bind="click: adminModel.userCreateClicked">Create</button></h4>
+
+      <table class="table table-condensed table-striped table-hover">
+        <tbody>
+
+        <!-- ko foreach: adminModel.users -->
+          <tr data-bind="css: { info: $data.admin }">
+            <td>
+              <img draggable="false" src="" alt="" style="width: 44px; height: 44px;" class="pull-left" data-bind="srcUserProfilePicture: [ $data._id(), 44, 44, 1 ]"/>
+              <blockquote style="margin-left: 52px; margin-bottom: 0px;" draggable="true" data-bind="event: { dragstart : $parent.adminModel.userDragStart, dragend: $parent.adminModel.userDragEnd }">
+                <p>
+                  <span data-bind="text: $data.name"></span>
+                  <button title="Change password" class="btn btn-mini btn-link pull-right" href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, $data._id)">Password</button>
+                  <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.userEditClicked">Edit</button>
+                  <button title="Edit" class="btn btn-mini btn-link pull-right" href="#" data-bind="click: adminModel.userRemoveClicked">Remove</button>
+                </p>
+                <p style="color: #999; font-size: 11px; padding-right: 8px;" class="pull-right" data-bind="visible: !$data.lastLogin()">User has never logged in<p>
+                <p style="color: #999; font-size: 11px; padding-right: 8px;" class="pull-right" data-bind="visible: $data.lastLogin()">User logged in <span data-bind="htmlTimeAgo: $data.lastLogin()"></span></p>
+                <small data-bind="text: $data.username"></small>
+              </blockquote>
+            </td>
+          </tr>
+        <!-- /ko -->
+
+        </tbody>
+      </table>
+
     </div>
 
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>
 
-<form class="modal" id="adminChangePasswordModal" tabindex="-1" role="dialog" aria-labelledby="adminChangePasswordModalLabel" aria-hidden="true" style="display: none;" data-bind="submit: adminModel.changePasswordSubmit">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="adminChangePasswordModalLabel">Change password</h3>
-  </div>
-  <div class="modal-body">
-      <input placeholder="Password" type="password" name="password1" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword1"/>
-      <input placeholder="Repeat password" type="password" name="password2" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword2"/>
-  </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: adminModel.changePasswordErrorText() != '', text: adminModel.changePasswordErrorText"></p>
-    <button data-bind="disable: adminModel.changePasswordLoading" type="button" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    <button data-bind="disable: adminModel.changePasswordLoading" type="submit" class="btn btn-primary">Change</button>
-  </div>
-</form>
+
 

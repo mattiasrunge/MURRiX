@@ -47,9 +47,8 @@
 </script>
 
 <script type="text/html" id="dialogComponentNodeListTemplate">
-  <div style="margin-right: 10px;">
-    <input placeholder="Search..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: $data.disabledSearch, typeahead: { items: 10, source: $data.typeaheadSource, matcher: $data.typeaheadMatcher, highlighter: $data.typeaheadHighlighter, updater: $data.typeaheadUpdater }" data-provide="typeahead"/>
-  </div>
+  <input placeholder="Search..." class="form-control" type="text" data-bind="disable: $data.disabledSearch, typeahead: { items: 10, source: $data.typeaheadSource, matcher: $data.typeaheadMatcher, highlighter: $data.typeaheadHighlighter, updater: $data.typeaheadUpdater }" data-provide="typeahead"/>
+
   <div data-bind="template: { name: 'dialogComponentNodeListItemTemplate', data: { nodes: $data.nodes, model: $data, type: 'main' } }"></div>
 
   <div data-bind="visible: $data.suggestionsNodes().length > 0">

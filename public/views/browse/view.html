@@ -1,49 +1,29 @@
-<div class="main-overlay" data-bind="fadeVisible: browseModel.show">
-  <div class="main-overlay-content">
-
-<!--    <div class="navbar navbar-color navbar-inverse">
-      <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-th-large icon-white"></i> Browse</span>
-        <ul class="nav pull-right">
-          <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
-        </ul>
-      </div>
-    </div>-->
-
-    <div class="box box-content">
-      <div style="margin-bottom: 40px; text-align: center; font-size: 30px;">
-
-        <div data-bind="visible: browseModel.year() !== browseModel.lastSearchedYear() && !browseModel.loading()">
-          Select material from <span data-bind="text: browseModel.year"></span>.
-        </div>
-
-        <div data-bind="visible: browseModel.year() === browseModel.lastSearchedYear() && !browseModel.loading()">
-          Showing material from <span data-bind="text: browseModel.year"></span>.
-        </div>
-
-        <div data-bind="visible: browseModel.loading">
-          Loading material from <span data-bind="text: browseModel.year"></span>...
-        </div>
-
-      </div>
-
-      <div style="margin-bottom: 25px;">
-        <a class="pull-right btn" data-bind="click: browseModel.yearIncClicked, clickKey: 'right'"><i class="icon-plus"></i></a>
-        <a class="pull-left btn" data-bind="click: browseModel.yearDecClicked, clickKey: 'left'"><i class="icon-minus"></i></a>
-        <div style="margin-left: 50px; margin-right: 50px; padding-top: 10px;">
-          <div data-bind="yearSlider: [ browseModel.year, browseModel.yearSliderChanged ]"></div>
-        </div>
-      </div>
-
-      <div class="alert alert-error" data-bind="visible: browseModel.errorText() !== '', text: browseModel.errorText"></div>
+<div data-bind="fadeVisible: browseModel.show">
+  <div class="abs-max content">
+    <div class="page-header">
+      <h1>Browse material <small>Show nodes based on the date of the content</small></h1>
     </div>
 
-    <div style="margin-top: 30px;">
-      <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: browseModel.nodes }"></div>
+    <div style="margin-bottom: 25px;">
+      <div style="text-align: center;">
+        <span data-bind="visible: !browseModel.loading()">
+          Showing <span data-bind="text: browseModel.year"></span>
+        </span>
+
+        <span data-bind="visible: browseModel.loading">
+          Loading <span data-bind="text: browseModel.year"></span>...
+        </span>
+      </div>
+
+      <a class="pull-right btn btn-primary" data-bind="click: browseModel.yearIncClicked, clickKey: 'right'"><i class="icon-plus"></i></a>
+      <a class="pull-left btn btn-primary" data-bind="click: browseModel.yearDecClicked, clickKey: 'left'"><i class="icon-minus"></i></a>
+      <div style="margin-left: 50px; margin-right: 50px; padding-top: 15px;">
+        <div data-bind="yearSlider: [ browseModel.year, browseModel.yearSliderChanged ]"></div>
+      </div>
     </div>
 
+    <div class="alert alert-error" data-bind="visible: browseModel.errorText() !== '', text: browseModel.errorText"></div>
+    <div class="clearfix" data-bind="template: { name: 'nodeSearchTemplate', foreach: browseModel.nodes }" style="margin-top: 50px;"></div>
   </div>
-  <div class="main-overlay-background">
-
-  </div>
+  <div class="abs-max background"></div>
 </div>

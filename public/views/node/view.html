@@ -1,3 +1,50 @@
+<script type="text/html" id="nodeSearchTemplate">
+
+  <div class="media" style="margin-bottom: 50px;">
+    <div class="media-body">
+      <h4 class="media-heading" style="border-bottom: 1px solid #999; padding-bottom: 10px; margin-bottom: 10px;">
+        <a href="#" data-bind="hrefFirst: ['node', $data._id()]" style="color: #222">
+          <span>
+            <i class="icon-book" data-bind="visible: $data.type() === 'album'"></i>
+            <i class="icon-user" data-bind="visible: $data.type() === 'person'"></i>
+            <i class="icon-camera" data-bind="visible: $data.type() === 'camera'"></i>
+            <i class="icon-truck" data-bind="visible: $data.type() === 'vehicle'"></i>
+            <i class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
+            <i class="icon-cloud" data-bind="visible: $data.type() === 'tags'"></i>
+          </span>
+          <span data-bind="text: $data.name"></span>
+        </a>
+        <div class="text-muted pull-right" style="font-size: 12px; padding-top: 5px;">
+          <span data-bind="visible: $data.added.timestamp() === $data.modified.timestamp()">
+            Added
+          </span>
+          <span data-bind="visible: $data.added.timestamp() !== $data.modified.timestamp()">
+            Last modified
+          </span>
+          <span data-bind="htmlTimeAgo: $data.modified.timestamp()"></span> by <span data-bind="textUserAttribute: [ $data.modified._by(), 'name' ]"></span>
+        </div>
+      </h4>
+
+      <div class="clearfix">
+        <a class="pull-left" href="#" data-bind="hrefFirst: ['node', $data._id()]" style="margin-right: 10px;">
+          <img class="media-object img-thumbnail" src="" style="width: 125px; height: 125px;" data-bind="srcNodeProfilePicture: [ $data._id(), 250, 250, 1 ]">
+        </a>
+
+        <div data-bind="foreach: $data.tags" style="white-space: nowrap; text-overflow: ellipsis; margin-bottom: 10px;">
+          <span class="label label-success" style="margin-right: 10px;">
+            <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white;"></a>
+          </span>
+        </div>
+
+        <p data-bind="html: $data.description"></p>
+      </div>
+
+    </div>
+  </div>
+
+
+</script>
+
 <script type="text/html" id="nodeBoxTemplate">
   <div class="media pull-left nodeBox" style="border: 1px solid black; width: 350px; background-color: whiteSmoke; margin: 0px 20px 20px 0px;">
     <a class="pull-left" href="#" data-bind="hrefFirst: ['node', $data._id()]">
