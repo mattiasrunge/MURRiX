@@ -45,5 +45,6 @@ function DialogModel()
   self.vehicleNodeModel = new DialogVehicleNodeModel();
   self.groupModel = new DialogGroupModel();
   self.userModel = new DialogUserModel();
+  self.passwordModel = new DialogPasswordModel();
   self.uploadModel = new DialogUploadModel();
 }

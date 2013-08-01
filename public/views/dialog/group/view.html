@@ -23,7 +23,7 @@
       <div class="modal-footer">
         <p class="pull-left text-error" data-bind="visible: dialogModel.groupModel.errorText() != '', text: dialogModel.groupModel.errorText"></p>
         <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
-        <a href="#" class="btn btn-primary" data-bind="click: dialogModel.groupModel.saveHandler">Save</a>
+        <a href="#" class="btn btn-primary" data-bind="disable: dialogModel.groupModel.disabled, click: dialogModel.groupModel.saveHandler">Save</a>
       </div>
 
     </div>

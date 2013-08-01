@@ -390,6 +390,20 @@ var AdminModel = function(parentModel)
     });
   };
 
+  self.userPasswordClicked = function(element)
+  {
+    if (typeof element._id === "undefined")
+    {
+      element = murrix.model.currentUser();
+    }
+
+    murrix.model.dialogModel.passwordModel.showEdit(element._id(), function()
+    {
+      self._loadUsers();
+    });
+  };
+
+
   self.userRemoveClicked = function(element)
   {
     if (confirm("Are you sure you want to remove the user!"))
@@ -423,65 +437,6 @@ var AdminModel = function(parentModel)
       }
 
       self._loadUsers();
-    });
-  };
-
-
-
-  self.changePasswordId = ko.observable(false);
-  self.changePasswordLoading = ko.observable(false);
-  self.changePasswordErrorText = ko.observable("");
-  self.changePasswordPassword1 = ko.observable("");
-  self.changePasswordPassword2 = ko.observable("");
-
-  self.changePasswordClicked = function(id)
-  {
-    self.changePasswordId(ko.utils.unwrapObservable(id));
-    return true;
-  };
-
-  self.changePasswordSubmit = function(form)
-  {
-    if (self.changePasswordPassword1() === "")
-    {
-      self.changePasswordErrorText("Password can not be empty");
-      return;
-    }
-
-    if (self.changePasswordPassword1() !== self.changePasswordPassword2())
-    {
-      self.changePasswordErrorText("Password do not match");
-      return;
-    }
-
-    self.changePasswordLoading(true);
-    self.changePasswordErrorText("");
-
-    var id = murrix.model.currentUser()._id();
-
-    if (self.changePasswordId() !== false)
-    {
-      id = self.changePasswordId();
-    }
-
-    murrix.server.emit("changePassword", { id: id, password: self.changePasswordPassword1() }, function(error)
-    {
-      self.changePasswordLoading(false);
-
-      if (error)
-      {
-        self.changePasswordErrorText("Failed to change password, please report this to the administrator");
-        return;
-      }
-
-      self.changePasswordPassword1("");
-      self.changePasswordPassword2("");
-      self.changePasswordErrorText("");
-      self.changePasswordId(false);
-
-      $(".modal").modal('hide');
-
-      $.cookie("userinfo", null, { path: "/" });
     });
   };
 

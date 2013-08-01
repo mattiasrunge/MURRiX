@@ -33,25 +33,7 @@
   </head>
 
   <body>
-<form class="modal fade" id="adminChangePasswordModal" tabindex="-1" role="dialog" aria-labelledby="adminChangePasswordModalLabel" aria-hidden="true"  data-bind="submit: adminModel.changePasswordSubmit">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="adminChangePasswordModalLabel">Change password</h3>
-      </div>
-      <div class="modal-body">
-          <input placeholder="Password" type="password" name="password1" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword1"/>
-          <input placeholder="Repeat password" type="password" name="password2" style="width: 515px;" data-bind="disable: adminModel.changePasswordLoading, value: adminModel.changePasswordPassword2"/>
-      </div>
-      <div class="modal-footer">
-        <p class="pull-left text-error" data-bind="visible: adminModel.changePasswordErrorText() != '', text: adminModel.changePasswordErrorText"></p>
-        <button data-bind="disable: adminModel.changePasswordLoading" type="button" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button data-bind="disable: adminModel.changePasswordLoading" type="submit" class="btn btn-primary">Change</button>
-      </div>
-    </div>
-  </div>
-</form>
+
     <div class="navbar-shadow"></div>
 
     <div class="navbar navbar-fixed-top navbar-inverse">
@@ -227,7 +209,7 @@
             <!-- ko if: currentUser -->
               <li><a href="#admin" data-bind="visible: currentUser().admin"><i class="icon-lock icon-fixed"></i> Administration</a></li>
               <li><a href="#" data-bind="visible: currentUser._person, hrefFirst: [ 'node', currentUser._person ]"><i class="icon-user icon-fixed"></i> Me</a></li>
-              <li><a href="#adminChangePasswordModal" data-toggle="modal" data-bind="click: adminModel.changePasswordClicked.bind($data, false)"><i class="icon-key icon-fixed"></i> Change password</a></li>
+              <li><a href="#" data-toggle="modal" data-bind="click: adminModel.userPasswordClicked"><i class="icon-key icon-fixed"></i> Change password</a></li>
               <li><a href="#" data-bind="click: adminModel.signOutClicked"><i class="icon-signout icon-fixed"></i> Sign out</a></li>
             <!-- /ko -->
 
@@ -382,6 +364,7 @@
     {{include:views/dialog/example/view.html}}
     {{include:views/dialog/group/view.html}}
     {{include:views/dialog/user/view.html}}
+    {{include:views/dialog/password/view.html}}
     {{include:views/dialog/textItem/view.html}}
     {{include:views/dialog/vehicleNode/view.html}}
     {{include:views/dialog/cameraNode/view.html}}
@@ -428,6 +411,7 @@
     <script src="{{link:views/dialog/example/model.js}}"></script>
     <script src="{{link:views/dialog/group/model.js}}"></script>
     <script src="{{link:views/dialog/user/model.js}}"></script>
+    <script src="{{link:views/dialog/password/model.js}}"></script>
     <script src="{{link:views/dialog/vehicleNode/model.js}}"></script>
     <script src="{{link:views/dialog/cameraNode/model.js}}"></script>
     <script src="{{link:views/dialog/locationNode/model.js}}"></script>
