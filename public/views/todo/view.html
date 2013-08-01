@@ -1,0 +1,34 @@
+
+<div data-bind="fadeVisible: todoModel.show">
+  <div class="abs-max content">
+    <div class="page-header">
+      <h1>TODO <small>Lists all open issues</small></h1>
+    </div>
+
+    <table class="table table-striped table-hover" style="margin-bottom: 50px;">
+      <thead>
+        <th>Number</th>
+        <th>Title</th>
+        <th>Comments</th>
+        <th>Created</th>
+      </thead>
+      <tbody data-bind="foreach: todoModel.issues">
+        <tr>
+          <td>
+            #<span data-bind="text: $data.number"></span>
+          </td>
+          <td>
+            <a target="top" href="#" data-bind="attr: { href: $data.html_url }, text: $data.title"></a>
+            <span data-bind="foreach: $data.labels">
+              <span class="label" style="color: black;" data-bind="text: $data.name, style: { 'background-color': '#' + $data.color }"></span>
+            </span>
+          </td>
+          <td data-bind="text: $data.comments"></td>
+          <td data-bind="text: $data.created_at"></td>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="abs-max background"></div>
+</div>
+

@@ -241,7 +241,7 @@
             <li><a href="#" data-bind="click: nodeModel.editAlbumNewOpen"><i style="vertical-align: center;" class="icon-book icon-fixed"></i> Album</a></li>
             <li><a href="#" data-bind="click: nodeModel.editPersonNewOpen"><i style="vertical-align: center;" class="icon-user icon-fixed"></i> Person</a></li>
             <li><a href="#" data-bind="click: nodeModel.editLocationNewOpen"><i style="vertical-align: center;" class="icon-flag icon-fixed"></i> Location</a></li>
-            <!--<li><a href="#" data-bind="click: nodeModel.editCameraNewOpen"><i style="vertical-align: center;" class="icon-camera icon-fixed"></i> Camera</a></li>-->
+            <li><a href="#" data-bind="click: nodeModel.editCameraNewOpen"><i style="vertical-align: center;" class="icon-camera icon-fixed"></i> Camera</a></li>
             <li><a href="#" data-bind="click: nodeModel.editVehicleNewOpen"><i style="vertical-align: center;" class="icon-truck icon-fixed"></i> Vehicle</a></li>
             <li><a href="#" data-bind="click: nodeModel.editTagsNewOpen"><i style="vertical-align: center;" class="icon-cloud icon-fixed"></i> Tag Collection</a></li>
           </ul>
@@ -258,9 +258,27 @@
     <div class="sidebar-shadow"></div>
 
     <div class="fix-max sidebar">
-      <div class="sidebar-image" style="background:url('img/murrix_logo_sidebar.png') no-repeat;"></div>
 
-      <div class="sidebar-fade"></div>
+      <div class="sidebar-fade-in"></div>
+
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: newsModel.show" class="sidebar-image" style="background-image:url('img/presentation_256.png');"></div>
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: browseModel.show" class="sidebar-image" style="background-image:url('img/calendar_256.png');"></div>
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: tagsModel.show" class="sidebar-image" style="background-image:url('img/properties_256.png');"></div>
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: searchModel.show" class="sidebar-image" style="background-image:url('img/preview_256.png');"></div>
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: organizeModel.show" class="sidebar-image" style="background-image:url('img/folder_256.png');"></div>
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: adminModel.show" class="sidebar-image" style="background-image:url('img/user_256.png');"></div>
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: configModel.show" class="sidebar-image" style="background-image:url('img/settings_256.png');"></div>
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: helpModel.show" class="sidebar-image" style="background-image:url('img/help_256.png');"></div>
+      <!-- Icon from http://www.visualpharm.com/ -->
+      <div data-bind="visible: todoModel.show" class="sidebar-image" style="background-image:url('img/copy_256.png');"></div>
 
       <ul class="nav nav-pills nav-stacked" style="margin-top: 250px;">
 
@@ -296,13 +314,13 @@
 
         <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': adminModel.show }" class="nav-link">
           <a href="#" data-bind="hrefFirstPrimary: adminModel.show() ? ' ' : 'admin'">
-            <i class="icon-lock icon-fixed"></i> Administration
+            <i class="icon-user icon-fixed"></i> Administration
           </a>
         </li>
 
         <li data-bind="fadeVisible: currentUser() &amp;&amp; currentUser().admin, css: { 'active': configModel.show }" class="nav-link">
           <a href="#" data-bind="hrefFirstPrimary: configModel.show() ? ' ' : 'config'">
-            <i class="icon-wrench icon-fixed"></i> Configuration
+            <i class="icon-cog icon-fixed"></i> Configuration
           </a>
         </li>
 
@@ -313,7 +331,7 @@
         </li>
 
         <li class="nav-link">
-          <a target="top" href="https://github.com/mattiasrunge/MURRiX/issues?state=open">
+          <a href="#" data-bind="hrefFirstPrimary: todoModel.show() ? ' ' : 'todo'">
             <i class="icon-check icon-fixed"></i> Todo
           </a>
         </li>
@@ -331,6 +349,7 @@
       {{include:views/search/view.html}}
       {{include:views/organize/view.html}}
       {{include:views/help/view.html}}
+      {{include:views/todo/view.html}}
       {{include:views/admin/view.html}}
       {{include:views/config/view.html}}
 
@@ -441,6 +460,7 @@
     <script src="{{link:views/tags/model.js}}"></script>
     <script src="{{link:views/organize/model.js}}"></script>
     <script src="{{link:views/help/model.js}}"></script>
+    <script src="{{link:views/todo/model.js}}"></script>
     <script src="{{link:views/map/model.js}}"></script>
     <script src="{{link:views/model.js}}"></script>
 

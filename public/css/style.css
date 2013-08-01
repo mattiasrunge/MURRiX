@@ -85,15 +85,7 @@ body {
           box-shadow: 4px 0 8px -2px black;
 }
 
-.sidebar-image {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 250px;
-  height: 250px;
-}
-
-.sidebar-fade {
+.sidebar-fade-out {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -105,6 +97,30 @@ body {
   background: -ms-linear-gradient(top, rgba( 255, 255, 255, 0 ) 50%, rgba( 255, 255, 255, 1 ) 100% );
   background: -o-linear-gradient( top, rgba( 255, 255, 255, 0 ) 50%, rgba( 255, 255, 255, 1 ) 100% );
   background: -webkit-linear-gradient( top, rgba( 255, 255, 255, 0 ) 50%, rgba( 255, 255, 255, 1 ) 100% );
+}
+
+.sidebar-fade-in {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 250px;
+  height: 250px;
+  background: transparent;
+  background: linear-gradient(top, rgba( 34, 34, 34, 255 ) 0%, rgba( 34, 34, 34, 1 ) 50% );
+  background: -moz-linear-gradient(top, rgba( 34, 34, 34, 1) 0%, rgba( 34, 34, 34, 1 ) 50% );
+  background: -ms-linear-gradient(top, rgba( 34, 34, 34, 1 ) 0%, rgba( 34, 34, 34, 1 ) 50% );
+  background: -o-linear-gradient( top, rgba( 34, 34, 34, 1 ) 0%, rgba( 34, 34, 34, 1 ) 50% );
+  background: -webkit-linear-gradient( top, rgba( 34, 34, 34, 1 ) 0%, rgba( 34, 34, 34, 0 ) 50% );
+}
+
+.sidebar-image {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 210px;
+  height: 210px;
+  background-size: 210px 210px;
+  background-repeat: no-repeat;
 }
 
 .sidebar {
