@@ -261,6 +261,8 @@
 
       <div class="sidebar-fade-in"></div>
 
+      <div data-bind="visible: !newsModel.show() && !browseModel.show() && !tagsModel.show() && !searchModel.show() && !organizeModel.show() && !adminModel.show() && !configModel.show() && !helpModel.show() && !todoModel.show()" class="sidebar-image" style="background-image:url('img/murrix_logo.png');"></div>
+
       <!-- Icon from http://www.visualpharm.com/ -->
       <div data-bind="visible: newsModel.show" class="sidebar-image" style="background-image:url('img/presentation_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
@@ -330,7 +332,7 @@
           </a>
         </li>
 
-        <li class="nav-link">
+        <li data-bind="css: { 'active': todoModel.show }" class="nav-link">
           <a href="#" data-bind="hrefFirstPrimary: todoModel.show() ? ' ' : 'todo'">
             <i class="icon-check icon-fixed"></i> Todo
           </a>
