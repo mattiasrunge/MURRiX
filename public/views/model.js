@@ -115,6 +115,20 @@ murrix.model = function()
 
   self.dialogModel = new DialogModel();
 
+  self.noneShowing = ko.computed(function()
+  {
+    return  !self.newsModel.show() &&
+            !self.browseModel.show() &&
+            !self.tagsModel.show() &&
+            !self.searchModel.show() &&
+            !self.organizeModel.show() &&
+            !self.adminModel.show() &&
+            !self.configModel.show() &&
+            !self.helpModel.show() &&
+            !self.todoModel.show() &&
+            !self.nodeModel.show();
+  });
+
   self.timezones = [
     "Unknown",
     "(GMT-12:00) International Date Line West",

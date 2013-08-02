@@ -1,21 +1,58 @@
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.commentsModel.show() && nodeModel.node()">
-  <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false">
+<div data-bind="fadeVisible: nodeModel.commentsModel.show">
+  <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
+    <div class="page-header">
+      <h1>Comments <small>Please write something</small></h1>
+    </div>
 
-<!--    <div class="navbar navbar-color navbar-inverse">
-      <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-comment icon-white"></i> Comments</span>
-        <ul class="nav pull-right">
-          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
-        </ul>
-      </div>
-    </div>-->
+    <div style="margin-bottom: 50px; margin-top: 20px;">
 
-    <div class="box box-content">
-      <table class="table table-condensed table-striped table-hover">
-        <tbody>
+      <form class="panel panel-primary" data-bind="submit: nodeModel.commentsModel.commentSubmit">
+        <div class="panel-heading">
+          <h3 class="panel-title">Write a comment</h3>
+        </div>
 
-          <tr>
-            <td class="media">
+        <div class="media-body clearfix" style="margin-bottom: -5px; height: 130px; position: relative;">
+          <img class="img-thumbnail" src="" style="width: 125px; height: 125px; position: absolute; top: 0px; left: 0px;" data-bind="srcUserProfilePicture: [ currentUser() !== false ? currentUser()._id() : false, 250, 250, 1 ]">
+
+          <div style="position: absolute; top: 0px; left: 140px; right: 0px; bottom: 0px;">
+            <textarea style="height: 125px;" class="form-control" placeholder="Write a comment..." data-bind="hasfocus: true, disable: nodeModel.commentsModel.commentLoading, value: nodeModel.commentsModel.commentText"></textarea>
+          </div>
+        </div>
+
+        <div class="panel-footer clearfix">
+          <button type="submit" class="btn btn-primary btn-small pull-right">Comment</button>
+        </div>
+
+      </form>
+
+      <!-- ko foreach: nodeModel.node().comments -->
+        <div class="panel">
+          <div class="panel-heading">
+
+            <h3 class="panel-title">
+              <span data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></span> wrote...
+            </h3>
+
+          </div>
+
+          <div class="media-body clearfix" style="margin-bottom: -5px;">
+            <img class="img-thumbnail pull-left" src="" style="width: 125px; height: 125px; margin-right: 15px; margin-bottom: 5px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 250, 250, 1 ]">
+
+            <div data-bind="text: $data.text"></div>
+          </div>
+
+          <div class="panel-footer">
+            <span data-bind="htmlTimestamp: $data.added.timestamp()"></span>
+          </div>
+
+        </div>
+
+      <!-- /ko -->
+    </div>
+
+
+
+<!--
               <a class="pull-left" href="#">
                 <span data-bind="if: currentUser() !== false">
                   <img class="media-object img-polaroid" src="" alt="" style="width: 123px; height: 123px;" data-bind="srcUserProfilePicture: [ currentUser()._id(), 123, 123, 1 ]"/>
@@ -34,30 +71,11 @@
                     </div>
                   </form>
                 </blockquote>
-              </div>
-            </td>
-          </tr>
+              </div>-->
 
-          <!-- ko foreach: nodeModel.node().comments -->
-            <tr>
-              <td class="media">
-                <a class="pull-left" href="#">
-                  <img class="media-object img-polaroid" src="" alt="" style="width: 123px; height: 123px;" data-bind="srcUserProfilePicture: [ $data.added._by(), 123, 123, 1 ]"/>
-                </a>
-                <div class="media-body">
-                  <blockquote style="margin-bottom: 0px; min-height: 133px;">
-                    <div style="padding-bottom: 5px; min-height: 100px;" data-bind="text: $data.text"></div>
-                    <small><span data-bind="htmlTimeAgo: $data.added.timestamp()"></span> by <span data-bind="textUserAttribute: [ $data.added._by(), 'name' ]"></span></small>
-                  </blockquote>
-                </div>
-              </td>
-            </tr>
-          <!-- /ko -->
 
-        </tbody>
-      </table>
-    </div>
+
 
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>

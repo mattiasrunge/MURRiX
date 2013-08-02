@@ -115,28 +115,31 @@
   </table>
 </script>
 
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.relationsModel.show() && nodeModel.relationsModel.enabled()">
-  <div class="relation-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragHandler, mousemove: nodeModel.relationsModel.dragHandler, mouseup: nodeModel.relationsModel.stopDragHandler, mousewheel: nodeModel.relationsModel.scrollHandler, DOMMouseScroll: nodeModel.relationsModel.scrollHandler }">
+<div data-bind="fadeVisible: nodeModel.relationsModel.show">
+  <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
 
-    <div class="relation-zoom-control">
-      <div class="line"></div>
-      <div class="inc" data-bind="click: nodeModel.relationsModel.zoomInc">
-        <div style="margin-left: 5px;"><i class="icon-plus"></i></div>
-      </div>
-      <div class="mark-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragMarkHandler }">
-        <div class="mark">
-          <div style="margin-left: 5px; margin-top: -4px;"><i class="icon-minus"></i></div>
+    <div class="relation-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragHandler, mousemove: nodeModel.relationsModel.dragHandler, mouseup: nodeModel.relationsModel.stopDragHandler, mousewheel: nodeModel.relationsModel.scrollHandler, DOMMouseScroll: nodeModel.relationsModel.scrollHandler }">
+
+      <div class="relation-zoom-control">
+        <div class="line"></div>
+        <div class="inc" data-bind="click: nodeModel.relationsModel.zoomInc">
+          <div style="margin-left: 5px;"><i class="icon-plus"></i></div>
+        </div>
+        <div class="mark-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragMarkHandler }">
+          <div class="mark">
+            <div style="margin-left: 5px; margin-top: -4px;"><i class="icon-minus"></i></div>
+          </div>
+        </div>
+        <div class="dec" data-bind="click: nodeModel.relationsModel.zoomDec">
+          <div style="margin-left: 5px;"><i class="icon-minus"></i></div>
         </div>
       </div>
-      <div class="dec" data-bind="click: nodeModel.relationsModel.zoomDec">
-        <div style="margin-left: 5px;"><i class="icon-minus"></i></div>
-      </div>
-    </div>
 
-    <div id="relation-canvas" style="position: absolute; top: 0px; left: 0px;">
-      <div data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.relationsModel.tree, if: nodeModel.relationsModel.tree }"></div>
+      <div id="relation-canvas" style="position: absolute; top: 0px; left: 0px;">
+        <div data-bind="template: { name: 'personRelationsTemplate', data: nodeModel.relationsModel.tree, if: nodeModel.relationsModel.tree }"></div>
+      </div>
     </div>
 
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>

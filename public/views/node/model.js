@@ -399,35 +399,6 @@ var NodeModel = function(parentModel)
   };
 
 
-  self.tagTypeaheadSource = function(query, callback)
-  {console.log("tagTypeaheadSource");
-    murrix.server.emit("distinct", { query: "tags", options: "nodes" }, function(error, tagList)
-    {console.log(tagList);
-      if (error)
-      {
-        console.log(error);
-        callback([]);
-        return;
-      }
-
-      if (self.node().tags)
-      {
-        tagList = tagList.filter(function(tagNameTest)
-        {
-          return !murrix.inArray(tagNameTest, self.node().tags());
-        });
-      }
-
-      callback(tagList);
-    });
-  };
-
-  self.tagTypeaheadUpdater= function(item)
-  {
-    self.tagName(item);
-    self.tagSubmit();
-  };
-
 
 
   self.profilePictureDropHandler = function(id)

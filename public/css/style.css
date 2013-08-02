@@ -123,6 +123,16 @@ body {
   background-repeat: no-repeat;
 }
 
+.sidebar-picture {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 250px;
+  height: 250px;
+  background-size: 250px 250px;
+  background-repeat: no-repeat;
+}
+
 .sidebar {
   top: 50px;
   width: 250px;
@@ -1056,50 +1066,46 @@ i.icon-fixed[class*="icon-white"] {
 }
 
 .timeline-container {
-  padding: 30px;
 }
 
 .timeline-day {
   position: relative;
-  margin-bottom: 45px;
+  margin-bottom: 20px;
 }
 
 .timeline-day-date {
-  width: 260px;
+  width: 200px;
   color: #ddd;
   line-height: normal;
 }
 
-.timeline-day:nth-child(odd) .timeline-day-date {
-  float: left;
-  margin: 20px 20px 0px 0px;
-  text-align: right;
-}
-
-.timeline-day:nth-child(even) .timeline-day-date {
+.timeline-day .timeline-day-date {
   float: right;
-  margin: 20px 0px 0px 20px;
-  text-align: left;
+  margin-top: 20px;
+  text-align: right;
 }
 
 .timeline-day-date-day {
   font-size: 20px;
+  color: #999;
 }
 
 .timeline-day-date-year {
   font-weight: bold;
   font-size: 60px;
+  color: black;
 }
 
 .timeline-day-content {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  padding: 20px;
+  padding-bottom: 10px;
 }
 
-.timeline-day:nth-child(odd) .timeline-day-content {
-  margin-left: 300px;
-}
-
-.timeline-day:nth-child(even) .timeline-day-content {
-  margin-right: 300px;
+.timeline-day .timeline-day-content {
+  margin-right: 240px;
 }
 
 .timeline-day-content-item {
@@ -1116,7 +1122,8 @@ i.icon-fixed[class*="icon-white"] {
 
 .timeline-day-content-item-picture {
   display: block;
-  margin: 0px 1px 1px 0px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .timeline-day-content-item-information {

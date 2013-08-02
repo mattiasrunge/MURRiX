@@ -1,105 +1,110 @@
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.timelineModel.show() && nodeModel.node() !== false">
-  <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false && nodeModel.timelineModel.timeline() !== false, event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
-
-    <div class="timeline-container" data-bind="foreach: nodeModel.timelineModel.timeline" >
-
-      <div class="timeline-day clearfix">
-        <div class="timeline-day-date">
-          <div data-bind="visible: $data.datestamp === false">
-            <div class="timeline-day-date-year">?</div>
-          </div>
-          <div data-bind="visible: $data.datestamp !== false">
-            <div class="timeline-day-date-year" data-bind="htmlTimestampToYear: $data.datestamp"></div>
-            <div class="timeline-day-date-day" data-bind="htmlTimestampToDay: $data.datestamp"></div>
-          </div>
-        </div>
-        <div class="timeline-day-content box box-content">
-          <!-- ko foreach: $data.texts -->
-            <div class="timeline-day-content-item">
-
-              <div data-bind="visible: $data.type === 'birth'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
-                  <i class="icon-quote-left icon-white"></i>
-                  Birth
-                </a>
-              </div>
-
-              <div data-bind="visible: $data.type === 'engagement'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
-                  <i class="icon-heart-empty icon-white"></i>
-                  Engagement
-                </a>
-              </div>
-
-              <div data-bind="visible: $data.type === 'marriage'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
-                  <i class="icon-heart icon-white"></i>
-                  Marriage
-                </a>
-              </div>
-
-              <div data-bind="visible: $data.type === 'death'">
-                <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
-                  <i class="icon-quote-right icon-white"></i>
-                  Death
-                </a>
-              </div>
-
-              <div data-bind="visible: !$data.type || $data.type === false || $data.type === 'none' || $data.type === ''">
-                <a class="timeline-day-content-item-text" href="#" data-bind="hrefSecondSecondary: $data._id">
-                  <h6 data-bind="text: $data.name"></h6>
-                </a>
-                <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
-              </div>
-
-              <div class="timeline-day-content-item-information">
-
-                <span data-bind="visible: $data.when !== false && $data.when.timeline !== false" class="timeline-day-content-item-information-item">
-                  <i class="icon-time icon-white"></i>
-                  <span data-bind="htmlPrintWhen: { when: $data.when, timezone: false, format: 'HH:mm:ss' }"></span>
-                </span>
-
-                <span data-bind="visible: $data.where !== false, if: $data.where !== false" class="timeline-day-content-item-information-item">
-                  <i class="icon-flag icon-white"></i>
-                  <span data-bind="htmlPrintWhere: $data.where"></span>
-                </span>
-
-                <span data-bind="visible: $data._who !== false, if: $data._who !== false" class="timeline-day-content-item-information-item">
-                  <i class="icon-user icon-white"></i>
-                  <a href="#" data-bind="hrefFirst: [ 'node', $data._who ], textNodeAttribute: [ $data._who, 'name' ]"></a>
-                </span>
-
-                <span class="timeline-day-content-item-information-item" style="text-decoration: none;" href="#" data-bind="visible: nodeModel.node().hasAdminAccess()">
-                  <i class="icon-pencil icon-white"></i>
-                  <a href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpen">Edit</a>
-                </span>
-
-              </div>
-            </div>
-          <!-- /ko -->
-
-          <!-- ko if: $data.audio.length > 0 -->
-            <div class="timeline-day-content-item" data-bind="foreach: $data.audio">
-              <a style="display: block;" href="#" data-bind="hrefSecondSecondary: $data._id">
-                <i class="icon-headphones icon-white"></i>
-                <span data-bind="text: $data.name"></span>
-              </a>
-            </div>
-          <!-- /ko -->
-
-          <!-- ko if: $data.images.length > 0 -->
-            <div class="timeline-day-content-item clearfix" data-bind="foreach: $data.images">
-              <a href="#" draggable="true" class="timeline-day-content-item-picture" data-bind="hrefSecondSecondary: $data._id" style="float: left;">
-                <img data-bind="srcPicture: [ $data._id, 80, 80, 1, $data.cacheId ], attr: { title: $data.name }, draggable: { id: $data._id, type: $data.type }" src="" alt="" style="width: 80px; height: 80px;">
-              </a>
-            </div>
-          <!-- /ko -->
-        </div>
-
-      </div>
+<div data-bind="fadeVisible: nodeModel.timelineModel.show">
+  <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
+    <div class="page-header">
+      <h1>Timeline <small>Shows all items grouped by days</small></h1>
     </div>
 
+    <div style="margin-bottom: 30px;" data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
+
+      <div class="timeline-container" data-bind="foreach: nodeModel.timelineModel.timeline" >
+
+        <div class="timeline-day clearfix">
+          <div class="timeline-day-date">
+            <div data-bind="visible: $data.datestamp === false">
+              <div class="timeline-day-date-year">?</div>
+            </div>
+            <div data-bind="visible: $data.datestamp !== false">
+              <div class="timeline-day-date-year" data-bind="htmlTimestampToYear: $data.datestamp"></div>
+              <div class="timeline-day-date-day" data-bind="htmlTimestampToDay: $data.datestamp"></div>
+            </div>
+          </div>
+          <div class="timeline-day-content">
+            <!-- ko foreach: $data.texts -->
+              <div class="timeline-day-content-item">
+
+                <div data-bind="visible: $data.type === 'birth'">
+                  <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
+                    <i class="icon-quote-left icon-white"></i>
+                    Birth
+                  </a>
+                </div>
+
+                <div data-bind="visible: $data.type === 'engagement'">
+                  <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
+                    <i class="icon-heart-empty icon-white"></i>
+                    Engagement
+                  </a>
+                </div>
+
+                <div data-bind="visible: $data.type === 'marriage'">
+                  <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
+                    <i class="icon-heart icon-white"></i>
+                    Marriage
+                  </a>
+                </div>
+
+                <div data-bind="visible: $data.type === 'death'">
+                  <a class="timeline-day-content-item-text" href="#" draggable="false" data-bind="hrefSecondSecondary: $data._id" style="font-size: 20px; font-weight: bold;">
+                    <i class="icon-quote-right icon-white"></i>
+                    Death
+                  </a>
+                </div>
+
+                <div data-bind="visible: !$data.type || $data.type === false || $data.type === 'none' || $data.type === ''">
+                  <a class="timeline-day-content-item-text" href="#" data-bind="hrefSecondSecondary: $data._id">
+                    <h6 data-bind="text: $data.name"></h6>
+                  </a>
+                  <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+                </div>
+
+                <div class="timeline-day-content-item-information">
+
+                  <span data-bind="visible: $data.when !== false && $data.when.timeline !== false" class="timeline-day-content-item-information-item">
+                    <i class="icon-time icon-white"></i>
+                    <span data-bind="htmlPrintWhen: { when: $data.when, timezone: false, format: 'HH:mm:ss' }"></span>
+                  </span>
+
+                  <span data-bind="visible: $data.where !== false, if: $data.where !== false" class="timeline-day-content-item-information-item">
+                    <i class="icon-flag icon-white"></i>
+                    <span data-bind="htmlPrintWhere: $data.where"></span>
+                  </span>
+
+                  <span data-bind="visible: $data._who !== false, if: $data._who !== false" class="timeline-day-content-item-information-item">
+                    <i class="icon-user icon-white"></i>
+                    <a href="#" data-bind="hrefFirst: [ 'node', $data._who ], textNodeAttribute: [ $data._who, 'name' ]"></a>
+                  </span>
+
+                  <span class="timeline-day-content-item-information-item" style="text-decoration: none;" href="#" data-bind="visible: nodeModel.node().hasAdminAccess()">
+                    <i class="icon-pencil icon-white"></i>
+                    <a href="#" data-bind="click: nodeModel.timelineModel.textItemEditOpen">Edit</a>
+                  </span>
+
+                </div>
+              </div>
+            <!-- /ko -->
+
+            <!-- ko if: $data.audio.length > 0 -->
+              <div class="timeline-day-content-item" data-bind="foreach: $data.audio">
+                <a style="display: block;" href="#" data-bind="hrefSecondSecondary: $data._id">
+                  <i class="icon-headphones icon-white"></i>
+                  <span data-bind="text: $data.name"></span>
+                </a>
+              </div>
+            <!-- /ko -->
+
+            <!-- ko if: $data.images.length > 0 -->
+              <div class="timeline-day-content-item clearfix" data-bind="foreach: $data.images">
+                <a href="#" draggable="true" class="timeline-day-content-item-picture img-thumbnail" data-bind="hrefSecondSecondary: $data._id" style="float: left;">
+                  <img data-bind="srcPicture: [ $data._id, 80, 80, 1, $data.cacheId ], attr: { title: $data.name }, draggable: { id: $data._id, type: $data.type }" src="" alt="" style="width: 80px; height: 80px;">
+                </a>
+              </div>
+            <!-- /ko -->
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>
 

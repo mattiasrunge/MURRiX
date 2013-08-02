@@ -259,30 +259,38 @@
 
     <div class="fix-max sidebar">
 
-      <div class="sidebar-fade-in"></div>
+      <!-- <div class="sidebar-fade-in"></div> -->
 
-      <div data-bind="visible: !newsModel.show() && !browseModel.show() && !tagsModel.show() && !searchModel.show() && !organizeModel.show() && !adminModel.show() && !configModel.show() && !helpModel.show() && !todoModel.show()" class="sidebar-image" style="background-image:url('img/murrix_logo.png');"></div>
+      <div data-bind="visible: noneShowing" class="sidebar-image" style="background-image:url('img/murrix_logo.png');"></div>
 
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: newsModel.show" class="sidebar-image" style="background-image:url('img/presentation_256.png');"></div>
+      <div data-bind="fadeVisible: newsModel.show" class="sidebar-image" style="background-image:url('img/presentation_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: browseModel.show" class="sidebar-image" style="background-image:url('img/calendar_256.png');"></div>
+      <div data-bind="fadeVisible: browseModel.show" class="sidebar-image" style="background-image:url('img/calendar_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: tagsModel.show" class="sidebar-image" style="background-image:url('img/properties_256.png');"></div>
+      <div data-bind="fadeVisible: tagsModel.show" class="sidebar-image" style="background-image:url('img/properties_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: searchModel.show" class="sidebar-image" style="background-image:url('img/preview_256.png');"></div>
+      <div data-bind="fadeVisible: searchModel.show" class="sidebar-image" style="background-image:url('img/preview_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: organizeModel.show" class="sidebar-image" style="background-image:url('img/folder_256.png');"></div>
+      <div data-bind="fadeVisible: organizeModel.show" class="sidebar-image" style="background-image:url('img/folder_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: adminModel.show" class="sidebar-image" style="background-image:url('img/user_256.png');"></div>
+      <div data-bind="fadeVisible: adminModel.show" class="sidebar-image" style="background-image:url('img/user_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: configModel.show" class="sidebar-image" style="background-image:url('img/settings_256.png');"></div>
+      <div data-bind="fadeVisible: configModel.show" class="sidebar-image" style="background-image:url('img/settings_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: helpModel.show" class="sidebar-image" style="background-image:url('img/help_256.png');"></div>
+      <div data-bind="fadeVisible: helpModel.show" class="sidebar-image" style="background-image:url('img/help_256.png');"></div>
       <!-- Icon from http://www.visualpharm.com/ -->
-      <div data-bind="visible: todoModel.show" class="sidebar-image" style="background-image:url('img/copy_256.png');"></div>
+      <div data-bind="fadeVisible: todoModel.show" class="sidebar-image" style="background-image:url('img/copy_256.png');"></div>
 
-      <ul class="nav nav-pills nav-stacked" style="margin-top: 250px;">
+      <div data-bind="fadeVisible: nodeModel.show, target: { handler: nodeModel.profilePictureDropHandler }">
+        <div data-bind="if: nodeModel.node() !== false">
+          <img class="sidebar-picture" data-bind="srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]">
+        </div>
+        <div class="sidebar-fade-out"></div>
+      </div>
+
+
+      <ul class="nav nav-pills nav-stacked" data-bind="visible: !nodeModel.show()" style="margin-top: 250px;">
 
         <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
           <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
@@ -339,11 +347,80 @@
         </li>
 
       </ul>
+
+
+      <ul class="nav nav-pills nav-stacked" data-bind="visible: nodeModel.show" style="margin-top: 250px;">
+
+        <li data-bind="fadeVisible: nodeModel.aboutModel.enabled, css: { 'active': nodeModel.aboutModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'about'">
+            <i class="icon-list-alt icon-fixed"></i>
+            Overview
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: nodeModel.filesModel.enabled, css: { 'active': nodeModel.filesModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'files'">
+            <i class="icon-th icon-fixed"></i>
+            Files
+            <span data-bind="visible: nodeModel.filesModel.loaded() || nodeModel.filesModel.loading()" class="badge pull-right">
+              <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.filesModel.loading"></i>
+              <span data-bind="visible: !nodeModel.filesModel.loading(), text: nodeModel.filesModel.files().length"></span>
+            </span>
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'timeline'">
+            <i class="icon-time icon-fixed"></i>
+            Timeline
+            <span data-bind="visible: nodeModel.timelineModel.loaded() || nodeModel.timelineModel.loading()" class="badge pull-right">
+              <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.timelineModel.loading"></i>
+              <span data-bind="visible: !nodeModel.timelineModel.loading(), text: nodeModel.timelineModel.timeline().length"></span>
+            </span>
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'relations'">
+            <i class="icon-sitemap icon-fixed"></i>
+            Relations
+            <span data-bind="visible: nodeModel.relationsModel.loaded() || nodeModel.relationsModel.loading()" class="badge pull-right">
+              <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.relationsModel.loading"></i>
+              <span data-bind="visible: !nodeModel.relationsModel.loading(), text: nodeModel.relationsModel.count"></span>
+            </span>
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: nodeModel.issuesModel.enabled, css: { 'active': nodeModel.issuesModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'issues'">
+            <i class="icon-warning-sign icon-fixed"></i>
+            Issues
+            <span data-bind="fadeVisible: nodeModel.issuesModel.issues().length > 0, text: nodeModel.issuesModel.issues().length" class="badge pull-right"></span>
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'comments', if: nodeModel.node() !== false">
+            <i class="icon-comment icon-fixed"></i>
+            Comments
+            <span data-bind="text: nodeModel.node().comments().length" class="badge pull-right"></span>
+          </a>
+        </li>
+
+       <!-- <li data-bind="fadeVisible: nodeModel.metricsModel.enabled, css: { 'active': nodeModel.metricsModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'metrics', if: nodeModel.node() !== false">
+            <i class="icon-signal icon-fixed"></i>
+            Metrics
+          </a>
+        </li>-->
+
+      </ul>
+
     </div>
+
     <div class="fix-max" style="top: 50px; left: 250px; right: none;">
 
-      <div class="abs-max background-map"></div>
-
+      {{include:views/map/view.html}}
       {{include:views/view.html}}
       {{include:views/news/view.html}}
       {{include:views/browse/view.html}}
@@ -355,26 +432,28 @@
       {{include:views/admin/view.html}}
       {{include:views/config/view.html}}
 
+      {{include:views/node/about/view.html}}
+      {{include:views/node/files/view.html}}
+      {{include:views/node/comments/view.html}}
+      {{include:views/node/timeline/view.html}}
+      {{include:views/node/relations/view.html}}
+
     </div>
 
-
-
-
     <div class="loading-overlay"></div>
-<div class="hide">
 
-          {{include:views/node/view.html}}
-          {{include:views/node/about/view.html}}
-          {{include:views/node/files/view.html}}
-          {{include:views/node/relations/view.html}}
-          {{include:views/node/comments/view.html}}
-          {{include:views/node/overlay/view.html}}
-          {{include:views/node/timeline/view.html}}
-          {{include:views/node/issues/view.html}}
-          {{include:views/node/metrics/view.html}}
+    <div class="hide">
+      {{include:views/node/view.html}}
 
-          {{include:views/map/view.html}}
-</div>
+
+
+
+      {{include:views/node/overlay/view.html}}
+
+      {{include:views/node/issues/view.html}}
+      {{include:views/node/metrics/view.html}}
+    </div>
+
     {{include:views/dialog/components/select/view.html}}
     {{include:views/dialog/components/text/view.html}}
     {{include:views/dialog/components/position/view.html}}

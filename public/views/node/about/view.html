@@ -1,18 +1,30 @@
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.aboutModel.show() && nodeModel.node()">
-  <div class="main-overlay-content" data-bind="if: nodeModel.node">
+<div data-bind="fadeVisible: nodeModel.aboutModel.show">
+  <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
+    <div class="page-header">
+      <h1>Overview <small>Summary of content</small></h1>
+    </div>
 
-<!--    <div class="navbar navbar-color navbar-inverse">
-      <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-list-alt icon-white"></i> About</span>
-        <ul class="nav pull-right">
-          <li><a class="pull-right close" data-bind="hrefSecondPrimary: ''" style="font-size: 30px">×</a></li>
-        </ul>
-      </div>
-    </div>-->
+    <form data-bind="submit: nodeModel.tagSubmit" class="clearfix" style="border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px;">
+      <input class="form-control pull-left input-small" placeholder="Write tag..." type="text" data-bind="visible: nodeModel.node().hasAdminAccess(), hasfocus: nodeModel.tagHasFocus, disable: nodeModel.tagLoading, value: nodeModel.tagName" data-provide="typeahead" style="width: 150px; margin-right: 10px; margin-bottom: 10px;"/>
 
-    <div class="container-fluid box box-content">
-      <div class="row-fluid">
-        <div class="span6">
+      <!-- ko foreach: nodeModel.node().tags -->
+        <span class="label label-success pull-left" style="margin-right: 10px; margin-bottom: 10px; font-size: 20px;">
+          <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a>
+          <span data-bind="visible: $parent.nodeModel.node().hasAdminAccess()">
+            &nbsp;
+            <a href="#" style="color: white;" data-bind="click: $parent.nodeModel.tagRemove">
+              <i class="icon-remove-sign"></i>
+            </a>
+          </span>
+        </span>
+      <!-- /ko -->
+
+
+    </form>
+
+    <div style="margin-bottom: 50px;">
+      <div class="row" style="margin-left: -15px">
+        <div class="col-lg-6">
 
           <div style="margin-bottom: 20px;" data-bind="visible: nodeModel.node().description() !== ''">
             <h4>Description</h4>
@@ -34,7 +46,7 @@
 
         </div>
 
-        <div class="span6">
+        <div class="col-lg-6">
           <div style="margin-bottom: 20px;">
             <h4>Details</h4>
             <table class="table table-striped">
@@ -85,5 +97,5 @@
     </div>
 
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>
