@@ -20,7 +20,7 @@ var OrganizeModel = function(parentModel)
   {
     if (value)
     {
-      parentModel.title("MURRiX - Organize");
+      parentModel.title("Organize");
     }
   });
 

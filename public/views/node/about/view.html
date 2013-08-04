@@ -19,81 +19,72 @@
         </span>
       <!-- /ko -->
 
-
     </form>
 
-    <div style="margin-bottom: 50px;">
-      <div class="row" style="margin-left: -15px">
-        <div class="col-lg-6">
+    <div class="clearfix">
 
-          <div style="margin-bottom: 20px;" data-bind="visible: nodeModel.node().description() !== ''">
-            <h4>Description</h4>
-            <p data-bind="text: nodeModel.node().description"></p>
+      <div class="list-group pull-right" style="width: 300px; margin-left: 50px;">
+
+        <!-- ko if: nodeModel.node().type() === 'person' -->
+
+          <div class="list-group-item" data-bind="visible: nodeModel.node().birthname() !== ''">
+            <h4 class="list-group-item-heading">Full birth name</h4>
+            <p class="list-group-item-text list-group-item-text-data" data-bind="text: nodeModel.node().birthname"></p>
           </div>
 
-          <div data-bind="if: nodeModel.node().type() === 'person'">
-            <h4>Lives at</h4>
-            <div class="alert alert-error" data-bind="visible: nodeModel.aboutModel.homesErrorText() !== '', text: nodeModel.aboutModel.homesErrorText"></div>
-            <div class="alert alert-info" data-bind="visible: nodeModel.aboutModel.homesLoading">Loading homes...</div>
-            <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: nodeModel.aboutModel.homes }"></div>
-
-            <h4>Owner of</h4>
-            <div class="alert alert-error" data-bind="visible: nodeModel.aboutModel.ownerOfErrorText() !== '', text: nodeModel.aboutModel.ownerOfErrorText"></div>
-            <div class="alert alert-info" data-bind="visible: nodeModel.aboutModel.ownerOfLoading">Loading ownerOf...</div>
-            <div class="clearfix" data-bind="template: { name: 'nodeBoxTemplate', foreach: nodeModel.aboutModel.ownerOf }"></div>
-
+          <div class="list-group-item" data-bind="visible: nodeModel.aboutModel.ageNow() !== false">
+            <h4 class="list-group-item-heading">Age</h4>
+            <p class="list-group-item-text list-group-item-text-data" data-bind="text: nodeModel.aboutModel.ageNow()"></p>
           </div>
 
-        </div>
-
-        <div class="col-lg-6">
-          <div style="margin-bottom: 20px;">
-            <h4>Details</h4>
-            <table class="table table-striped">
-              <tr>
-                <td>Name</td>
-                <td data-bind="text: nodeModel.node().name()"></td>
-              </tr>
-              <tr>
-                <td>Added&nbsp;by</td>
-                <td data-bind="textUserAttribute: [ nodeModel.node().added._by(), 'name' ]"></td>
-              </tr>
-              <tr>
-                <td>Added&nbsp;on</td>
-                <td data-bind="htmlTimestamp: nodeModel.node().added.timestamp"></td>
-              </tr>
-              <tr>
-                <td>Modified&nbsp;by</td>
-                <td data-bind="textUserAttribute: [ nodeModel.node().modified._by(), 'name' ]"></td>
-              </tr>
-              <tr>
-                <td>Modified&nbsp;on</td>
-                <td data-bind="htmlTimestamp: nodeModel.node().modified.timestamp"></td>
-              </tr>
-
-              <!-- ko if: nodeModel.node().type() === 'person' -->
-                <tr data-bind="visible: nodeModel.aboutModel.ageNow() !== false">
-                  <td>Age now</td>
-                  <td data-bind="text: nodeModel.aboutModel.ageNow()"></td>
-                </tr>
-                <tr data-bind="visible: nodeModel.aboutModel.ageAtDeath() !== false">
-                  <td>Age at death</td>
-                  <td data-bind="text: nodeModel.aboutModel.ageAtDeath()"></td>
-                </tr>
-                <tr>
-                  <td>Birthname</td>
-                  <td data-bind="text: nodeModel.node().birthname"></td>
-                </tr>
-                <tr>
-                  <td>Gender</td>
-                  <td data-bind="text: nodeModel.node().gender"></td>
-                </tr>
-              <!-- /ko -->
-            </table>
+          <div class="list-group-item" data-bind="visible: nodeModel.aboutModel.ageAtDeath() !== false">
+            <h4 class="list-group-item-heading">Died at age</h4>
+            <p class="list-group-item-text list-group-item-text-data" data-bind="text: nodeModel.aboutModel.ageAtDeath()"></p>
           </div>
-        </div>
+
+          <div class="list-group-item" data-bind="visible: nodeModel.node().gender() === 'm' || nodeModel.node().gender() === 'f'">
+            <h4 class="list-group-item-heading">Gender</h4>
+            <p class="list-group-item-text list-group-item-text-data" data-bind="text: nodeModel.node().gender() === 'm' ? 'Male' : 'Female'"></p>
+          </div>
+
+          <div class="list-group-item" data-bind="visible: nodeModel.aboutModel.homes().length > 0">
+            <h4 class="list-group-item-heading">Lives at</h4>
+            <div class="list-group-item-text list-group-item-text-data" data-bind="foreach: nodeModel.aboutModel.homes">
+              <a href="#" data-bind="hrefFirst: [ 'node', $data._id ], popoverNode: $data._id, text: $data.name"></a>
+            </div>
+          </div>
+
+          <div class="list-group-item" data-bind="visible: nodeModel.aboutModel.ownerOf().length > 0">
+            <h4 class="list-group-item-heading">Owner of</h4>
+            <div class="list-group-item-text list-group-item-text-data" data-bind="foreach: nodeModel.aboutModel.ownerOf">
+              <a href="#" data-bind="hrefFirst: [ 'node', $data._id ], popoverNode: $data._id, text: $data.name"></a>
+            </div>
+          </div>
+
+        <!-- /ko -->
 
       </div>
+
+      <p style="margin-bottom: 50px;" data-bind="text: nodeModel.node().description"></p>
+
+      <div data-bind="visible: nodeModel.node().type() === 'album' && nodeModel.aboutModel.showing().length > 0">
+        <h2>Present in this album</h2>
+        <div style="margin-bottom: 50px;" class="clearfix" data-bind="template: { name: 'nodeSmallTemplate', foreach: nodeModel.aboutModel.showing }"></div>
+      </div>
+
+      <div data-bind="visible: nodeModel.node().type() === 'album' && nodeModel.aboutModel.whos().length > 0">
+        <h2>Content creators in this album</h2>
+        <div style="margin-bottom: 50px;" class="clearfix" data-bind="template: { name: 'nodeSmallTemplate', foreach: nodeModel.aboutModel.whos }"></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 50px;">
+      <div class="text-muted" style="text-align: center; font-size: 12px;">
+        Last modified by <span data-bind="textUserAttribute: [ nodeModel.node().modified._by(), 'name' ]"></span> on <span data-bind="htmlTimestamp: nodeModel.node().modified.timestamp"></span>
+        <br>
+        Added by <span data-bind="textUserAttribute: [ nodeModel.node().added._by(), 'name' ]"></span> on <span data-bind="htmlTimestamp: nodeModel.node().added.timestamp"></span>
+      </div>
+
     </div>
 
   </div>

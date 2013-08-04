@@ -19,6 +19,7 @@ var TodoModel = function(parentModel)
     if (self.show())
     {
       self.issues.removeAll();
+      parentModel.title("TODO");
 
       jQuery.getJSON("https://api.github.com/repos/mattiasrunge/MURRiX/issues", function(data)
       {

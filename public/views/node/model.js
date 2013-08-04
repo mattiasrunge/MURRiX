@@ -26,7 +26,7 @@ var NodeModel = function(parentModel)
       return;
     }
 
-    parentModel.title("MURRiX - " + node.name());
+    parentModel.title(node.name());
   });
 
   parentModel.path().primary.subscribe(function(value)

@@ -18,6 +18,7 @@ var HelpModel = function(parentModel)
     if (self.show())
     {
       self.chapter(value.args.length === 0 ? "overview" : value.args[0]);
+      parentModel.title("Help");
     }
   });
 

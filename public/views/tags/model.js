@@ -23,7 +23,7 @@ var TagsModel = function(parentModel)
   {
     if (value)
     {
-      parentModel.title("MURRiX - Tags");
+      parentModel.title("Browse tags");
       self._load();
     }
   });

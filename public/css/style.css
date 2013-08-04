@@ -169,7 +169,16 @@ body {
   border-bottom: 1px solid #bbb;
 }
 
+.list-group-item-text-data {
+  color: #999;
+  padding-left: 10px;
+  font-size: 14px;
+}
 
+.list-group-item-text-data a {
+  margin-bottom: 5px;
+  display: block;
+}
 
 .background-timeline {
   position: absolute;

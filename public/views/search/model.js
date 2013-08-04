@@ -20,7 +20,7 @@ var SearchModel = function(parentModel)
   {
     if (value)
     {
-      parentModel.title("MURRiX - Search");
+      parentModel.title("Search by name");
     }
   });
 
