@@ -75,12 +75,12 @@ var MapModel = function(parentModel)
     {
       self.load();
 
-      self.tracksTimeout = setInterval(function()
-      {
-        self.loadTracks();
-      }, 5000);
-
-      self.loadTracks();
+//       self.tracksTimeout = setInterval(function()
+//       {
+//         self.loadTracks();
+//       }, 5000);
+//
+//       self.loadTracks();
     }
   });
 
