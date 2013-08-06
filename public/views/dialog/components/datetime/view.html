@@ -3,15 +3,15 @@
     <tr>
       <td>Date</td>
       <td class="form-inline">
-        <select class="input-small" data-bind="value: $data.year, foreach: yearList, disable: $data.yearDisabled">
+        <select style="width: 80px;" class="form-control" data-bind="value: $data.year, foreach: yearList, disable: $data.yearDisabled">
 	        <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
         </select>
         <strong>-</strong>
-        <select class="input-mini" data-bind="value: $data.month, foreach: monthList, disable: $data.monthDisabled">
+        <select style="width: 70px;" class="form-control" data-bind="value: $data.month, foreach: monthList, disable: $data.monthDisabled">
 	        <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
         </select>
         <strong>-</strong>
-        <select class="input-mini" data-bind="value: $data.day, foreach: dayList, disable: $data.dayDisabled">
+        <select style="width: 70px;" class="form-control" data-bind="value: $data.day, foreach: dayList, disable: $data.dayDisabled">
 	        <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
         </select>
       </td>
@@ -19,24 +19,24 @@
     <tr>
       <td>Time</td>
       <td class="form-inline">
-        <select class="input-mini" data-bind="value: $data.hour, foreach: hourList, disable: $data.hourDisabled">
+        <select style="width: 70px;" class="form-control" data-bind="value: $data.hour, foreach: hourList, disable: $data.hourDisabled">
 	        <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
         </select>
         <strong>:</strong>
-        <select class="input-mini" data-bind="value: $data.minute, foreach: minuteList, disable: $data.minuteDisabled">
+        <select style="width: 70px;" class="form-control" data-bind="value: $data.minute, foreach: minuteList, disable: $data.minuteDisabled">
 	        <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
         </select>
         <strong>:</strong>
-        <select class="input-mini" data-bind="value: $data.second, foreach: secondList, disable: $data.secondDisabled">
+        <select style="width: 70px;" class="form-control" data-bind="value: $data.second, foreach: secondList, disable: $data.secondDisabled">
 	        <option data-bind="attr: { value: $data.value }, text: $data.name"></option>
         </select>
       </td>
     </tr>
     <tr>
       <td>Timezone</td>
-      <td class="form-inline">
-        <select data-bind="value: $data.timezone, options: timezones, disable: $data.timezoneDisabled" style="width: 100%"></select>
-        <label class="checkbox" style="margin-top: 2px; font-size: 10px;">
+      <td>
+        <select class="form-control" data-bind="value: $data.timezone, options: timezones, disable: $data.timezoneDisabled" style="width: 100%"></select>
+        <label class="checkbox" style="margin-top: 2px; font-size: 10px; margin-bottom: 0px;">
 	        <input type="checkbox" data-bind="checked: $data.daylightSavings, disable: $data.daylightSavingsDisabled"> Daylight savings in affect
         </label>
       </td>

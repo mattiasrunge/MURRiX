@@ -1,21 +1,28 @@
 
-<div id="dialogTagsNode" class="modal hide fade" data-keyboard="false">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 data-bind="visible: dialogModel.tagsNodeModel.id() === false">Create a tag collection</h3>
-    <h3 data-bind="visible: dialogModel.tagsNodeModel.id() !== false">Edit tag collection</h3>
-  </div>
-  <div class="modal-body">
+<form id="dialogTagsNode" class="modal fade" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-    <div style="margin-right: 10px;">
-      <input placeholder="Write a name..." type="text" style="width: 100%; margin-bottom: 20px;" data-bind="disable: dialogModel.tagsNodeModel.disabled, value: dialogModel.tagsNodeModel.name"/>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-titel" data-bind="visible: dialogModel.tagsNodeModel.id() === false">Create a tag collection</h4>
+        <h4 class="modal-titel" data-bind="visible: dialogModel.tagsNodeModel.id() !== false">Edit tag collection</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group">
+          <input class="form-control" placeholder="Write a name..." type="text" data-bind="disable: dialogModel.tagsNodeModel.disabled, value: dialogModel.tagsNodeModel.name"/>
+        </div>
+
+        <div class="form-group">
+          <div data-bind="template: { name: dialogModel.tagsNodeModel.tagsModel.template(), data: dialogModel.tagsNodeModel.tagsModel }"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="pull-left text-danger" data-bind="visible: dialogModel.tagsNodeModel.errorText() != '', text: dialogModel.tagsNodeModel.errorText"></p>
+        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary" data-bind="click: dialogModel.tagsNodeModel.saveHandler">Save</a>
+      </div>
     </div>
-
-    <div data-bind="template: { name: dialogModel.tagsNodeModel.tagsModel.template(), data: dialogModel.tagsNodeModel.tagsModel }"></div>
   </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: dialogModel.tagsNodeModel.errorText() != '', text: dialogModel.tagsNodeModel.errorText"></p>
-    <a href="#" class="btn" data-dismiss="modal">Close</a>
-    <a href="#" class="btn btn-primary" data-bind="click: dialogModel.tagsNodeModel.saveHandler">Save</a>
-  </div>
-</div>
+</form>

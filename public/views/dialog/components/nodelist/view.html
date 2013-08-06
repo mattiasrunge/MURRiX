@@ -20,15 +20,15 @@
       <div class="media-body" style="margin-top: 5px; padding: 5px;">
         <a class="pull-right" style="margin-right: 5px; text-decoration: none;" href="#" data-bind="click: $parent.model.removeHandler, visible: !$parent.model.disabledRemove() && $parent.type === 'main'"><i class="icon-trash"></i></a>
 <!--         <a class="pull-right" style="margin-right: 5px; text-decoration: none;" href="#" data-bind="click: $parent.model.addHandler, visible: !$parent.model.disabledSearch() && $parent.type === 'suggestion'"><i class="icon-plus"></i></a>-->
-        <span class="pull-left">
-          <i style="vertical-align: center;" class="icon-book" data-bind="visible: $data.type() === 'album'"></i>
-          <i style="vertical-align: center;" class="icon-user" data-bind="visible: $data.type() === 'person'"></i>
-          <i style="vertical-align: center;" class="icon-camera" data-bind="visible: $data.type() === 'camera'"></i>
-          <i style="vertical-align: center;" class="icon-truck" data-bind="visible: $data.type() === 'vehicle'"></i>
-          <i style="vertical-align: center;" class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
+        <span class="icon-fixed pull-left">
+          <i class="icon-book" data-bind="visible: $data.type() === 'album'"></i>
+          <i class="icon-user" data-bind="visible: $data.type() === 'person'"></i>
+          <i class="icon-camera" data-bind="visible: $data.type() === 'camera'"></i>
+          <i class="icon-truck" data-bind="visible: $data.type() === 'vehicle'"></i>
+          <i class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
         </span>
-        <h6 class="media-heading" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0px;" data-bind="text: $data.name()"></h6>
-        <div class="muted" style="font-size: 10px;">
+        <h5 class="media-heading" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0px;" data-bind="text: $data.name()"></h5>
+        <div class="text-muted" style="font-size: 10px;">
           -
           <span data-bind="visible: $data.added.timestamp() === $data.modified.timestamp()">
             added
@@ -47,9 +47,8 @@
 </script>
 
 <script type="text/html" id="dialogComponentNodeListTemplate">
-  <div style="margin-right: 10px;">
-    <input placeholder="Search..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: $data.disabledSearch, typeahead: { items: 10, source: $data.typeaheadSource, matcher: $data.typeaheadMatcher, highlighter: $data.typeaheadHighlighter, updater: $data.typeaheadUpdater }" data-provide="typeahead"/>
-  </div>
+  <input placeholder="Search..." class="form-control" type="text" data-bind="disable: $data.disabledSearch, typeahead: { items: 10, source: $data.typeaheadSource, matcher: $data.typeaheadMatcher, highlighter: $data.typeaheadHighlighter, updater: $data.typeaheadUpdater }" data-provide="typeahead"/>
+
   <div data-bind="template: { name: 'dialogComponentNodeListItemTemplate', data: { nodes: $data.nodes, model: $data, type: 'main' } }"></div>
 
   <div data-bind="visible: $data.suggestionsNodes().length > 0">

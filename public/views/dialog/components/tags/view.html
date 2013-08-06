@@ -3,15 +3,17 @@
 
 <script type="text/html" id="dialogComponentTagsTemplate">
   <div>
-    <form data-bind="submit: $data.submitHandler" style="margin: 0px; margin-right: 10px;">
-      <input class="input-large" placeholder="Write tag name..." type="text" data-bind="disable: $data.disabled, value: $data.tagName" style="width: 100%;"/>
+    <form data-bind="submit: $data.submitHandler">
+      <input class="form-control" placeholder="Write tag name..." type="text" data-bind="disable: $data.disabled, value: $data.tagName"/>
     </form>
 
-    <div data-bind="foreach: $data.value">
+    <div data-bind="foreach: $data.value" style="margin-top: 20px; font-size: 20px;">
       <span class="label label-success">
         <span data-bind="text: $data"></span>
         &nbsp;
-        <a href="#" style="color: white;" data-bind="click: $parent.removeHandler">×</a>
+        <a href="#" style="color: white;" data-bind="click: $parent.removeHandler">
+          <i class="icon-remove-sign"></i>
+        </a>
       </span>
     </div>
   </div>

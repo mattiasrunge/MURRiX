@@ -22,11 +22,12 @@ var NodeModel = function(parentModel)
   {
     if (!node)
     {
+      self.groupAccessVisible(false);
       console.log("NodeModel: Node is false, do nothing more!");
       return;
     }
 
-    parentModel.title("MURRiX - " + node.name());
+    parentModel.title(node.name());
   });
 
   parentModel.path().primary.subscribe(function(value)
@@ -211,6 +212,7 @@ var NodeModel = function(parentModel)
 
 
   /* Accesses */
+  self.groupAccessVisible = ko.observable(false);
   self.groupAccessLoading = ko.observable(false);
   self.groupAccessErrorText = ko.observable("");
   self.groupAccessName = ko.observable("");
@@ -218,6 +220,11 @@ var NodeModel = function(parentModel)
   self.groupAccessListAdmins = ko.observableArray();
   self.groupAccessListReaders = ko.observableArray();
   self.groupAccessListOthers = ko.observableArray();
+
+  self.groupAccessToggle = function()
+  {
+    self.groupAccessVisible(!self.groupAccessVisible());
+  };
 
   self.loadGroups = function()
   {
@@ -398,35 +405,6 @@ var NodeModel = function(parentModel)
     self.tagSaveNode(nodeData);
   };
 
-
-  self.tagTypeaheadSource = function(query, callback)
-  {console.log("tagTypeaheadSource");
-    murrix.server.emit("distinct", { query: "tags", options: "nodes" }, function(error, tagList)
-    {console.log(tagList);
-      if (error)
-      {
-        console.log(error);
-        callback([]);
-        return;
-      }
-
-      if (self.node().tags)
-      {
-        tagList = tagList.filter(function(tagNameTest)
-        {
-          return !murrix.inArray(tagNameTest, self.node().tags());
-        });
-      }
-
-      callback(tagList);
-    });
-  };
-
-  self.tagTypeaheadUpdater= function(item)
-  {
-    self.tagName(item);
-    self.tagSubmit();
-  };
 
 
 

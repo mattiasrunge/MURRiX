@@ -1,46 +1,45 @@
-<div class="main-overlay" data-bind="fadeVisible: configModel.show">
-  <div class="main-overlay-content">
-
-    <div class="box box-content">
-      <h1>Triggers</h1>
-
-      <table class="table table-striped" style="margin-bottom: 0px;">
-        <thead>
-          <th>Description</th>
-          <th>Event</th>
-          <th>Criterias</th>
-          <th>Actions</th>
-        </thead>
-        <tbody data-bind="foreach: configModel.triggers">
-          <tr>
-            <td data-bind="text: $data.name"></td>
-            <td data-bind="text: $data.event"></td>
-            <td data-bind="foreach: $data.criterias">
-              <div data-bind="visible: $data.match === 'eq'">
-                $data.<span data-bind="text: $data.key"></span>&nbsp;=&nbsp;"<strong data-bind="text: $data.value"></strong>"
-              </div>
-              <div data-bind="visible: $data.match === 'ne'">
-                $data.<span data-bind="text: $data.key"></span>&nbsp;!=&nbsp;"<strong data-bind="text: $data.value"></strong>"
-              </div>
-              <div data-bind="visible: $data.match === 'in'">
-                inArray("<strong data-bind="text: $data.value"></strong>",&nbsp;$data.<span data-bind="text: $data.key"></span>)
-              </div>
-              <div data-bind="visible: $data.match === 'nin'">
-                !inArray("<strong data-bind="text: $data.value"></strong>",&nbsp;$data.<span data-bind="text: $data.key"></span>)
-              </div>
-            </td>
-            <td data-bind="foreach: $data.actions">
-              <div data-bind="visible: $data.action === 'set'">
-                $data.<span data-bind="text: $data.key"></span>&nbsp;=&nbsp;"<strong data-bind="text: $data.value"></strong>"
-              </div>
-              <div data-bind="visible: $data.action === 'push'">
-                $data.<span data-bind="text: $data.key"></span>.push("<strong data-bind="text: $data.value"></strong>")
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div data-bind="fadeVisible: configModel.show">
+  <div class="abs-max content">
+    <div class="page-header">
+      <h1>Configuration <small>Shows configuration settings</small></h1>
     </div>
+
+    <table class="table table-striped table-hover">
+      <thead>
+        <th>Description</th>
+        <th>Event</th>
+        <th>Criterias</th>
+        <th>Actions</th>
+      </thead>
+      <tbody data-bind="foreach: configModel.triggers">
+        <tr>
+          <td data-bind="text: $data.name"></td>
+          <td data-bind="text: $data.event"></td>
+          <td data-bind="foreach: $data.criterias">
+            <div data-bind="visible: $data.match === 'eq'">
+              $data.<span data-bind="text: $data.key"></span>&nbsp;=&nbsp;"<strong data-bind="text: $data.value"></strong>"
+            </div>
+            <div data-bind="visible: $data.match === 'ne'">
+              $data.<span data-bind="text: $data.key"></span>&nbsp;!=&nbsp;"<strong data-bind="text: $data.value"></strong>"
+            </div>
+            <div data-bind="visible: $data.match === 'in'">
+              inArray("<strong data-bind="text: $data.value"></strong>",&nbsp;$data.<span data-bind="text: $data.key"></span>)
+            </div>
+            <div data-bind="visible: $data.match === 'nin'">
+              !inArray("<strong data-bind="text: $data.value"></strong>",&nbsp;$data.<span data-bind="text: $data.key"></span>)
+            </div>
+          </td>
+          <td data-bind="foreach: $data.actions">
+            <div data-bind="visible: $data.action === 'set'">
+              $data.<span data-bind="text: $data.key"></span>&nbsp;=&nbsp;"<strong data-bind="text: $data.value"></strong>"
+            </div>
+            <div data-bind="visible: $data.action === 'push'">
+              $data.<span data-bind="text: $data.key"></span>.push("<strong data-bind="text: $data.value"></strong>")
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>

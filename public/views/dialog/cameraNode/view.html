@@ -1,54 +1,65 @@
+<form id="dialogCameraNode" class="modal fade" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-titel" data-bind="visible: dialogModel.cameraNodeModel.id() === false">Create a camera</h4>
+        <h4 class="modal-titel" data-bind="visible: dialogModel.cameraNodeModel.id() !== false">Edit camera</h4>
+      </div>
+      <div class="modal-body">
 
-<div id="dialogCameraNode" class="modal hide fade" data-keyboard="false">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 data-bind="visible: dialogModel.cameraNodeModel.id() === false">Create a camera</h3>
-    <h3 data-bind="visible: dialogModel.cameraNodeModel.id() !== false">Edit camera</h3>
-  </div>
-  <div class="modal-body">
-
-    <div style="margin-right: 10px;">
-      <input placeholder="Write a name..." type="text" style="width: 100%; margin-bottom: 20px;" data-bind="disable: dialogModel.cameraNodeModel.disabled, value: dialogModel.cameraNodeModel.name"/>
-    </div>
-
-    <div class="tabbable">
-      <ul class="nav nav-tabs" style="font-size: 10px;">
-        <li class="active"><a href="#dialogCameraNodeTabDescription" data-toggle="tab">About</a></li>
-        <li><a href="#dialogCameraNodeTabType" data-toggle="tab">Type</a></li>
-        <li><a href="#dialogCameraNodeTabSettings" data-toggle="tab">Settings</a></li>
-        <li><a href="#dialogCameraNodeTabOwners" data-toggle="tab">Owners</a></li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="dialogCameraNodeTabDescription">
-          <div data-bind="template: { name: dialogModel.cameraNodeModel.descriptionModel.template(), data: dialogModel.cameraNodeModel.descriptionModel }"></div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Write a name..." type="text" data-bind="disable: dialogModel.cameraNodeModel.disabled, value: dialogModel.cameraNodeModel.name"/>
         </div>
-        <div class="tab-pane" id="dialogCameraNodeTabType">
-          <div data-bind="template: { name: dialogModel.cameraNodeModel.typeModel.template(), data: dialogModel.cameraNodeModel.typeModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogCameraNodeTabSettings">
 
-          <h5 style="margin-top: 0px;">Select the timezone the camera is set to</h5>
-          <select data-bind="options: timezones, value: dialogModel.cameraNodeModel.timezone, disable: dialogModel.cameraNodeModel.disabled" style="width: 100%;"></select>
+        <div class="tabbable">
+          <ul class="nav nav-tabs nav-justified">
+            <li class="active"><a href="#dialogCameraNodeTabDescription" data-toggle="tab">About</a></li>
+            <li><a href="#dialogCameraNodeTabType" data-toggle="tab">Type</a></li>
+            <li><a href="#dialogCameraNodeTabSettings" data-toggle="tab">Settings</a></li>
+            <li><a href="#dialogCameraNodeTabOwners" data-toggle="tab">Owners</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="dialogCameraNodeTabDescription">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.cameraNodeModel.descriptionModel.template(), data: dialogModel.cameraNodeModel.descriptionModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogCameraNodeTabType">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.cameraNodeModel.typeModel.template(), data: dialogModel.cameraNodeModel.typeModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogCameraNodeTabSettings">
 
-          <h5>Serial number</h5>
-          <div style="margin-right: 10px; margin-button: 10px;">
-            <input placeholder="Write serial number..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: dialogModel.cameraNodeModel.disabled, value: dialogModel.cameraNodeModel.serial"/>
+              <div class="form-group">
+                <legend>Select the timezone the camera is set to</legend>
+                <select class="form-control" data-bind="options: timezones, value: dialogModel.cameraNodeModel.timezone, disable: dialogModel.cameraNodeModel.disabled"></select>
+              </div>
+
+              <div class="form-group">
+                <legend>Serial number</legend>
+                <input class="form-control" placeholder="Write serial number..." type="text" data-bind="disable: dialogModel.cameraNodeModel.disabled, value: dialogModel.cameraNodeModel.serial"/>
+              </div>
+
+              <div class="form-group">
+                <legend>Tracker Id</legend>
+                <input class="form-control" placeholder="Write a tracker id..." type="text" data-bind="disable: dialogModel.cameraNodeModel.disabled, value: dialogModel.cameraNodeModel.trackerId"/>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogCameraNodeTabOwners">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.cameraNodeModel.ownersModel.template(), data: dialogModel.cameraNodeModel.ownersModel }"></div>
+              </div>
+            </div>
           </div>
-
-          <h5>Tracker Id</h5>
-          <div style="margin-right: 10px; margin-button: 10px;">
-            <input placeholder="Write a tracker id..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: dialogModel.cameraNodeModel.disabled, value: dialogModel.cameraNodeModel.trackerId"/>
-          </div>
         </div>
-        <div class="tab-pane" id="dialogCameraNodeTabOwners">
-          <div data-bind="template: { name: dialogModel.cameraNodeModel.ownersModel.template(), data: dialogModel.cameraNodeModel.ownersModel }"></div>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="pull-left text-danger" data-bind="visible: dialogModel.cameraNodeModel.errorText() != '', text: dialogModel.cameraNodeModel.errorText"></p>
+        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary" data-bind="click: dialogModel.cameraNodeModel.saveHandler">Save</a>
       </div>
     </div>
   </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: dialogModel.cameraNodeModel.errorText() != '', text: dialogModel.cameraNodeModel.errorText"></p>
-    <a href="#" class="btn" data-dismiss="modal">Close</a>
-    <a href="#" class="btn btn-primary" data-bind="click: dialogModel.cameraNodeModel.saveHandler">Save</a>
-  </div>
-</div>
+</form>

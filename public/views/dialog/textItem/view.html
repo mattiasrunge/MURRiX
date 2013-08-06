@@ -1,50 +1,67 @@
+<form id="dialogTextItem" class="modal fade" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 data-bind="visible: dialogModel.textItemModel.id() === false">Create a text item</h4>
+        <h4 data-bind="visible: dialogModel.textItemModel.id() !== false">Edit text item</h4>
+      </div>
+      <div class="modal-body">
 
-<div id="dialogTextItem" class="modal hide fade" data-keyboard="false">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 data-bind="visible: dialogModel.textItemModel.id() === false">Create a text item</h3>
-    <h3 data-bind="visible: dialogModel.textItemModel.id() !== false">Edit text item</h3>
-  </div>
-  <div class="modal-body">
+        <div class="form-group">
+          <input class="form-control" placeholder="Write a name..." type="text" data-bind="disable: dialogModel.textItemModel.disabled, value: dialogModel.textItemModel.name"/>
+        </div>
 
-    <div style="margin-right: 10px;">
-      <input placeholder="Write a name..." type="text" style="width: 100%; margin-bottom: 20px;" data-bind="disable: dialogModel.textItemModel.disabled, value: dialogModel.textItemModel.name"/>
-    </div>
+        <div class="tabbable">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#dialogTextItemTabText" data-toggle="tab">Text</a></li>
+            <li><a href="#dialogTextItemTabType" data-toggle="tab">Type</a></li>
+            <li><a href="#dialogTextItemTabDatetime" data-toggle="tab">Date and Time</a></li>
+            <li><a href="#dialogTextItemTabPosition" data-toggle="tab" data-bind="visible: !dialogModel.textItemModel.hidePosition()">Position</a></li>
+            <li><a href="#dialogTextItemTabLocation" data-toggle="tab" data-bind="visible: !dialogModel.textItemModel.hideLocation()">Location</a></li>
+            <li><a href="#dialogTextItemTabRelations" data-toggle="tab">Relations</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="dialogTextItemTabText">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.textItemModel.textModel.template(), data: dialogModel.textItemModel.textModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabType">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.textItemModel.typeModel.template(), data: dialogModel.textItemModel.typeModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabDatetime">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.textItemModel.datetimeModel.template(), data: dialogModel.textItemModel.datetimeModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabPosition" data-bind="visible: !dialogModel.textItemModel.hidePosition()">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.textItemModel.positionModel.template(), data: dialogModel.textItemModel.positionModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabLocation" data-bind="visible: !dialogModel.textItemModel.hideLocation()">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.textItemModel.locationModel.template(), data: dialogModel.textItemModel.locationModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabRelations">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.textItemModel.relationsModel.template(), data: dialogModel.textItemModel.relationsModel }"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <div class="tabbable">
-      <ul class="nav nav-tabs" style="font-size: 10px;">
-        <li class="active"><a href="#dialogTextItemTabText" data-toggle="tab">Text</a></li>
-        <li><a href="#dialogTextItemTabType" data-toggle="tab">Type</a></li>
-        <li><a href="#dialogTextItemTabDatetime" data-toggle="tab">Date and Time</a></li>
-        <li><a href="#dialogTextItemTabPosition" data-toggle="tab" data-bind="visible: !dialogModel.textItemModel.hidePosition()">Position</a></li>
-        <li><a href="#dialogTextItemTabLocation" data-toggle="tab" data-bind="visible: !dialogModel.textItemModel.hideLocation()">Location</a></li>
-        <li><a href="#dialogTextItemTabRelations" data-toggle="tab">Relations</a></li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="dialogTextItemTabText">
-          <div data-bind="template: { name: dialogModel.textItemModel.textModel.template(), data: dialogModel.textItemModel.textModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabType">
-          <div data-bind="template: { name: dialogModel.textItemModel.typeModel.template(), data: dialogModel.textItemModel.typeModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabDatetime">
-          <div data-bind="template: { name: dialogModel.textItemModel.datetimeModel.template(), data: dialogModel.textItemModel.datetimeModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabPosition" data-bind="visible: !dialogModel.textItemModel.hidePosition()">
-          <div data-bind="template: { name: dialogModel.textItemModel.positionModel.template(), data: dialogModel.textItemModel.positionModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabLocation" data-bind="visible: !dialogModel.textItemModel.hideLocation()">
-          <div data-bind="template: { name: dialogModel.textItemModel.locationModel.template(), data: dialogModel.textItemModel.locationModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabRelations">
-          <div data-bind="template: { name: dialogModel.textItemModel.relationsModel.template(), data: dialogModel.textItemModel.relationsModel }"></div>
-        </div>
+      </div>
+
+      <div class="modal-footer">
+        <p class="pull-left text-danger" data-bind="visible: dialogModel.textItemModel.errorText() != '', text: dialogModel.textItemModel.errorText"></p>
+        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary" data-bind="click: dialogModel.textItemModel.saveHandler">Save</a>
       </div>
     </div>
   </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: dialogModel.textItemModel.errorText() != '', text: dialogModel.textItemModel.errorText"></p>
-    <a href="#" class="btn" data-dismiss="modal">Close</a>
-    <a href="#" class="btn btn-primary" data-bind="click: dialogModel.textItemModel.saveHandler">Save</a>
-  </div>
-</div>
+</form>

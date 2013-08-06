@@ -1,0 +1,29 @@
+
+<form id="dialogPassword" class="modal fade" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-titel">Change password</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group">
+          <input placeholder="Password..." class="form-control" type="password" data-bind="disable: dialogModel.passwordModel.disabled, value: dialogModel.passwordModel.password1"/>
+        </div>
+
+        <div class="form-group">
+          <input placeholder="Repeat password..." class="form-control" type="password" data-bind="disable: dialogModel.passwordModel.disabled, value: dialogModel.passwordModel.password2"/>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <p class="pull-left text-error" data-bind="visible: dialogModel.passwordModel.errorText() != '', text: dialogModel.passwordModel.errorText"></p>
+        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary" data-bind="disable: dialogModel.passwordModel.disabled, click: dialogModel.passwordModel.saveHandler">Save</a>
+      </div>
+
+    </div>
+  </div>
+</form>

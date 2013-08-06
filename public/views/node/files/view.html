@@ -1,14 +1,19 @@
-<div class="main-overlay" data-bind="fadeVisible: nodeModel.filesModel.show() && nodeModel.node() !== false">
-  <div class="main-overlay-content" data-bind="if: nodeModel.node() !== false, event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
+<div data-bind="fadeVisible: nodeModel.filesModel.show">
+  <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
+    <div class="page-header">
+      <h1>Files <small>Shows all files</small></h1>
+    </div>
 
-    <ul class="thumbnails" data-bind="foreach: nodeModel.filesModel.files">
-      <li class="">
-        <a href="#" class="thumbnail-picture" data-bind="hrefSecondSecondary: $data._id">
-          <img data-bind="srcPicture: [ $data._id, 250, 250, 1, $data.cacheId ], attr: { title: $data.name }, draggable: { id: $data._id, type: $data.type }" src="" alt="">
+    <div style="margin-bottom: 30px;" data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
+
+      <div data-bind="foreach: nodeModel.filesModel.files" class="clearfix">
+        <a href="#" class="thumbnail" data-bind="hrefSecondSecondary: $data._id" style="float: left; margin-right: 20px; margin-bottom: 20px;">
+          <img data-bind="srcPicture: [ $data._id, 250, 250, 1, $data.cacheId ], attr: { title: $data.name }, draggable: { id: $data._id, type: $data.type }" src="" alt="" style="width: 250px; height: 250px;">
         </a>
-      </li>
-    </ul>
+      </div>
+
+    </div>
 
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>

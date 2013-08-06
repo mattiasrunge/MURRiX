@@ -1,38 +1,47 @@
+<form id="dialogLocationNode" class="modal fade" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-titel" data-bind="visible: dialogModel.locationNodeModel.id() === false">Create a location</h4>
+        <h4 class="modal-titel" data-bind="visible: dialogModel.locationNodeModel.id() !== false">Edit location</h4>
+      </div>
+      <div class="modal-body">
 
-<div id="dialogLocationNode" class="modal hide fade" data-keyboard="false">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 data-bind="visible: dialogModel.locationNodeModel.id() === false">Create a location</h3>
-    <h3 data-bind="visible: dialogModel.locationNodeModel.id() !== false">Edit location</h3>
-  </div>
-  <div class="modal-body">
+        <div class="form-group">
+          <input class="form-control" placeholder="Write a name..." type="text" data-bind="disable: dialogModel.locationNodeModel.disabled, value: dialogModel.locationNodeModel.name"/>
+        </div>
 
-    <div style="margin-right: 10px;">
-      <input placeholder="Write a name..." type="text" style="width: 100%; margin-bottom: 20px;" data-bind="disable: dialogModel.locationNodeModel.disabled, value: dialogModel.locationNodeModel.name"/>
-    </div>
-
-    <div class="tabbable">
-      <ul class="nav nav-tabs" style="font-size: 10px;">
-        <li class="active"><a href="#dialogLocationNodeTabDescription" data-toggle="tab">About</a></li>
-        <li><a href="#dialogLocationNodeTabPosition" data-toggle="tab">Position</a></li>
-        <li><a href="#dialogLocationNodeTabOwners" data-toggle="tab">Owners</a></li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="dialogLocationNodeTabDescription">
-          <div data-bind="template: { name: dialogModel.locationNodeModel.descriptionModel.template(), data: dialogModel.locationNodeModel.descriptionModel }"></div>
+        <div class="tabbable">
+          <ul class="nav nav-tabs nav-justified">
+            <li class="active"><a href="#dialogLocationNodeTabDescription" data-toggle="tab">About</a></li>
+            <li><a href="#dialogLocationNodeTabPosition" data-toggle="tab">Position</a></li>
+            <li><a href="#dialogLocationNodeTabOwners" data-toggle="tab">Owners</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="dialogLocationNodeTabDescription">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.locationNodeModel.descriptionModel.template(), data: dialogModel.locationNodeModel.descriptionModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogLocationNodeTabPosition">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.locationNodeModel.positionModel.template(), data: dialogModel.locationNodeModel.positionModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogLocationNodeTabOwners">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.locationNodeModel.ownersModel.template(), data: dialogModel.locationNodeModel.ownersModel }"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="tab-pane" id="dialogLocationNodeTabPosition">
-          <div data-bind="template: { name: dialogModel.locationNodeModel.positionModel.template(), data: dialogModel.locationNodeModel.positionModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogLocationNodeTabOwners">
-          <div data-bind="template: { name: dialogModel.locationNodeModel.ownersModel.template(), data: dialogModel.locationNodeModel.ownersModel }"></div>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="pull-left text-danger" data-bind="visible: dialogModel.locationNodeModel.errorText() != '', text: dialogModel.locationNodeModel.errorText"></p>
+        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary" data-bind="click: dialogModel.locationNodeModel.saveHandler">Save</a>
       </div>
     </div>
   </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: dialogModel.locationNodeModel.errorText() != '', text: dialogModel.locationNodeModel.errorText"></p>
-    <a href="#" class="btn" data-dismiss="modal">Close</a>
-    <a href="#" class="btn btn-primary" data-bind="click: dialogModel.locationNodeModel.saveHandler">Save</a>
-  </div>
-</div>
+</form>

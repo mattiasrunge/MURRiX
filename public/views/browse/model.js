@@ -21,7 +21,7 @@ var BrowseModel = function(parentModel)
   {
     if (value)
     {
-      parentModel.title("MURRiX - Browse");
+      parentModel.title("Browse material by year");
       self._load();
     }
   });

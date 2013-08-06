@@ -23,7 +23,7 @@ var ConfigModel = function(parentModel)
   {
     if (value)
     {
-      parentModel.title("MURRiX - Configuration");
+      parentModel.title("Configuration");
       self._load();
     }
     else

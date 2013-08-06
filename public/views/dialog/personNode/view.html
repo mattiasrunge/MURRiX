@@ -1,56 +1,74 @@
 
-<div id="dialogPersonNode" class="modal hide fade" data-keyboard="false">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3 data-bind="visible: dialogModel.personNodeModel.id() === false">Create a person</h3>
-    <h3 data-bind="visible: dialogModel.personNodeModel.id() !== false">Edit person</h3>
-  </div>
-  <div class="modal-body">
+<form id="dialogPersonNode" class="modal fade" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-    <div style="margin-right: 10px;">
-      <input placeholder="Write a name..." type="text" style="width: 100%; margin-bottom: 20px;" data-bind="disable: dialogModel.personNodeModel.disabled, value: dialogModel.personNodeModel.name"/>
-    </div>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-titel" data-bind="visible: dialogModel.personNodeModel.id() === false">Create a person</h4>
+        <h4 class="modal-titel" data-bind="visible: dialogModel.personNodeModel.id() !== false">Edit person</h4>
+      </div>
+      <div class="modal-body">
 
-    <div class="tabbable">
-      <ul class="nav nav-tabs" style="font-size: 10px;">
-        <li class="active"><a href="#dialogTextItemTabDescription" data-toggle="tab">About</a></li>
-        <li><a href="#dialogTextItemTabBirthname" data-toggle="tab">Birthname</a></li>
-        <li><a href="#dialogTextItemTabGender" data-toggle="tab">Gender</a></li>
-        <li><a href="#dialogTextItemTabBirth" data-toggle="tab">Birth date</a></li>
-        <li><a href="#dialogTextItemTabPartner" data-toggle="tab">Partner</a></li>
-        <li><a href="#dialogTextItemTabParents" data-toggle="tab">Parents</a></li>
-        <li><a href="#dialogTextItemTabHomes" data-toggle="tab">Homes</a></li>
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="dialogTextItemTabDescription">
-          <div data-bind="template: { name: dialogModel.personNodeModel.descriptionModel.template(), data: dialogModel.personNodeModel.descriptionModel }"></div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Write a name..." type="text" data-bind="disable: dialogModel.personNodeModel.disabled, value: dialogModel.personNodeModel.name"/>
         </div>
-        <div class="tab-pane" id="dialogTextItemTabBirthname">
-          <div style="margin-right: 10px;">
-            <input placeholder="Write complete birth name..." type="text" style="width: 100%; margin-bottom: 0px;" data-bind="disable: dialogModel.personNodeModel.disabled, value: dialogModel.personNodeModel.birthname"/>
+
+        <div class="tabbable">
+          <ul class="nav nav-tabs nav-justified">
+            <li class="active"><a href="#dialogTextItemTabDescription" data-toggle="tab">About</a></li>
+            <li><a href="#dialogTextItemTabBirthname" data-toggle="tab">Birth name</a></li>
+            <li><a href="#dialogTextItemTabGender" data-toggle="tab">Gender</a></li>
+            <li><a href="#dialogTextItemTabBirth" data-toggle="tab">Birth date</a></li>
+            <li><a href="#dialogTextItemTabPartner" data-toggle="tab">Partner</a></li>
+            <li><a href="#dialogTextItemTabParents" data-toggle="tab">Parents</a></li>
+            <li><a href="#dialogTextItemTabHomes" data-toggle="tab">Homes</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="dialogTextItemTabDescription">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.personNodeModel.descriptionModel.template(), data: dialogModel.personNodeModel.descriptionModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabBirthname">
+              <div class="form-group">
+                <input class="form-control" placeholder="Write complete birth name..." type="text" data-bind="disable: dialogModel.personNodeModel.disabled, value: dialogModel.personNodeModel.birthname"/>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabBirth">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.personNodeModel.birthModel.template(), data: dialogModel.personNodeModel.birthModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabGender">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.personNodeModel.genderModel.template(), data: dialogModel.personNodeModel.genderModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabPartner">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.personNodeModel.partnerModel.template(), data: dialogModel.personNodeModel.partnerModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabParents">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.personNodeModel.parentsModel.template(), data: dialogModel.personNodeModel.parentsModel }"></div>
+              </div>
+            </div>
+            <div class="tab-pane" id="dialogTextItemTabHomes">
+              <div class="form-group">
+                <div data-bind="template: { name: dialogModel.personNodeModel.homesModel.template(), data: dialogModel.personNodeModel.homesModel }"></div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="tab-pane" id="dialogTextItemTabBirth">
-          <div data-bind="template: { name: dialogModel.personNodeModel.birthModel.template(), data: dialogModel.personNodeModel.birthModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabGender">
-          <div data-bind="template: { name: dialogModel.personNodeModel.genderModel.template(), data: dialogModel.personNodeModel.genderModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabPartner">
-          <div data-bind="template: { name: dialogModel.personNodeModel.partnerModel.template(), data: dialogModel.personNodeModel.partnerModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabParents">
-          <div data-bind="template: { name: dialogModel.personNodeModel.parentsModel.template(), data: dialogModel.personNodeModel.parentsModel }"></div>
-        </div>
-        <div class="tab-pane" id="dialogTextItemTabHomes">
-          <div data-bind="template: { name: dialogModel.personNodeModel.homesModel.template(), data: dialogModel.personNodeModel.homesModel }"></div>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="pull-left text-danger" data-bind="visible: dialogModel.personNodeModel.errorText() != '', text: dialogModel.personNodeModel.errorText"></p>
+        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary" data-bind="click: dialogModel.personNodeModel.saveHandler">Save</a>
       </div>
     </div>
   </div>
-  <div class="modal-footer">
-    <p class="pull-left text-error" data-bind="visible: dialogModel.personNodeModel.errorText() != '', text: dialogModel.personNodeModel.errorText"></p>
-    <a href="#" class="btn" data-dismiss="modal">Close</a>
-    <a href="#" class="btn btn-primary" data-bind="click: dialogModel.personNodeModel.saveHandler">Save</a>
-  </div>
-</div>
+</form>

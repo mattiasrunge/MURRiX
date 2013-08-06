@@ -4,12 +4,12 @@ function DialogBaseModel(self, elementId)
   self.elementId = elementId;
   self.visible = ko.observable(false);
 
-  $(self.elementId).on("shown", function()
+  $(self.elementId).on("shown.bs.modal", function()
   {
     self.visible(true);
   });
 
-  $(self.elementId).on("hidden", function()
+  $(self.elementId).on("hidden.bs.modal", function()
   {
     self.visible(false);
   });
@@ -45,5 +45,6 @@ function DialogModel()
   self.vehicleNodeModel = new DialogVehicleNodeModel();
   self.groupModel = new DialogGroupModel();
   self.userModel = new DialogUserModel();
+  self.passwordModel = new DialogPasswordModel();
   self.uploadModel = new DialogUploadModel();
 }

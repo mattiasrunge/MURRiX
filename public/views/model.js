@@ -110,9 +110,24 @@ murrix.model = function()
   self.tagsModel = new TagsModel(self);
   self.organizeModel = new OrganizeModel(self);
   self.helpModel = new HelpModel(self);
+  self.todoModel = new TodoModel(self);
   self.mapModel = new MapModel(self);
 
   self.dialogModel = new DialogModel();
+
+  self.noneShowing = ko.computed(function()
+  {
+    return  !self.newsModel.show() &&
+            !self.browseModel.show() &&
+            !self.tagsModel.show() &&
+            !self.searchModel.show() &&
+            !self.organizeModel.show() &&
+            !self.adminModel.show() &&
+            !self.configModel.show() &&
+            !self.helpModel.show() &&
+            !self.todoModel.show() &&
+            !self.nodeModel.show();
+  });
 
   self.timezones = [
     "Unknown",
@@ -199,7 +214,7 @@ murrix.model = function()
 
     list.push({ value: "XXXX", name: "????" });
 
-    for (var year = (new Date()).getFullYear(); year >= 1600; year--)
+    for (var year = (new Date()).getFullYear(); year >= 1000; year--)
     {
       list.push({ value: year + "", name: year + "" });
     }

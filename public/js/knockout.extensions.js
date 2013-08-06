@@ -1172,6 +1172,32 @@ $(function()
     }
   };
 
+  ko.bindingHandlers.htmlTimestampToNiceDate = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      var rawValue = ko.utils.unwrapObservable(value);
+
+      if (!rawValue)
+      {
+        $(element).text("unknown date");
+        return;
+      }
+
+      var dateItem = moment.utc(rawValue * 1000).local();
+
+      if (!dateItem.date())
+      {
+        $(element).html(rawValue);
+      }
+      else
+      {
+        $(element).html(dateItem.format("MMMM Do YYYY"));
+      }
+    }
+  };
+
+
   ko.bindingHandlers.htmlTimestampToTime = {
     update: function(element, valueAccessor)
     {

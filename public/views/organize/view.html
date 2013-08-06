@@ -29,104 +29,95 @@
   </div>
 </script>
 
-<div class="main-overlay" data-bind="fadeVisible: organizeModel.show">
-  <div class="main-overlay-content">
+<div data-bind="fadeVisible: organizeModel.show">
+  <div class="abs-max content">
+    <div class="page-header">
+      <h1>Organize <small>Move or link items between nodes</small></h1>
+    </div>
 
-<!--    <div class="navbar navbar-color navbar-inverse">
-      <div class="navbar-inner">
-        <span class="brand"><i style="vertical-align: baseline;" class="icon-folder-open icon-white"></i> Organize</span>
-        <ul class="nav pull-right">
-          <li><a class="pull-right close" data-bind="hrefFirstPrimary: ''" style="font-size: 30px">×</a></li>
+    <div class="row">
+      <div class="col-lg-6">
+        <input placeholder="Search for node..." type="text" style="width: 150px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.leftPaneTypeaheadUpdater }" data-provide="typeahead"/>
+
+        <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="foreach: organizeModel.leftNodes">
+          <li data-bind="css: { active: organizeModel.leftActiveNode() !== false && organizeModel.leftActiveNode()._id() === $data._id() }">
+            <a href="#" data-bind="text: $data.name, click: organizeModel.leftSetActiveNode.bind($data, $data)"></a>
+          </li>
         </ul>
-      </div>
-    </div>-->
 
-    <div class="box box-content">
-      <div class="row-fluid">
-        <div class="span6">
-          <input placeholder="Search for node..." type="text" style="width: 150px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.leftPaneTypeaheadUpdater }" data-provide="typeahead"/>
+        <div class="tab-content">
+          <div class="tab-pane active clearfix" style="min-height: 100000px;" data-bind="event: { drop: organizeModel.dragDropLeft, dragover: organizeModel.dragOver }">
 
-          <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="foreach: organizeModel.leftNodes">
-            <li data-bind="css: { active: organizeModel.leftActiveNode() !== false && organizeModel.leftActiveNode()._id() === $data._id() }">
-              <a href="#" data-bind="text: $data.name, click: organizeModel.leftSetActiveNode.bind($data, $data)"></a>
-            </li>
-          </ul>
-
-          <div class="tab-content">
-            <div class="tab-pane active clearfix" style="min-height: 100000px;" data-bind="event: { drop: organizeModel.dragDropLeft, dragover: organizeModel.dragOver }">
-
-              <div class="navbar" style="margin-bottom: 10px;" data-bind="if: organizeModel.leftActiveNode() !== false">
-                <div class="navbar-inner">
-                  <ul class="nav">
-                    <li data-bind="css: { active: organizeModel.mode() === 'move' }">
-                      <a href="#" title="Move mode" data-bind="click: organizeModel.setMoveMode"><i class="icon-move"></i></a>
-                    </li>
-                    <li data-bind="css: { active: organizeModel.mode() === 'link' }">
-                      <a href="#" title="Link mode" data-bind="click: organizeModel.setLinkMode"><i class="icon-link"></i></a>
-                    </li>
-                    <li class="divider-vertical"></li>
-                    <li data-bind="css: { active: organizeModel.display() === 'organizeItemsListTemplate' }">
-                      <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayList"><i class="icon-th-list"></i></a>
-                    </li>
-                    <li data-bind="css: { active: organizeModel.display() === 'organizeItemsIconsTemplate' }">
-                      <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayIcons"><i class="icon-th-large"></i></a>
-                    </li>
-                  </ul>
-                  <ul class="nav pull-right">
-                    <li><a href="#" title="Goto" data-bind="hrefFirst: [ 'node', organizeModel.leftActiveNode()._id() ]"><i class="icon-share-alt"></i></a></li>
-                    <li><a href="#" title="Close" data-bind="click: organizeModel.leftCloseActive">×</a></li>
-                  </ul>
-                </div>
+            <div class="navbar" style="margin-bottom: 10px;" data-bind="if: organizeModel.leftActiveNode() !== false">
+              <div class="navbar-inner">
+                <ul class="nav">
+                  <li data-bind="css: { active: organizeModel.mode() === 'move' }">
+                    <a href="#" title="Move mode" data-bind="click: organizeModel.setMoveMode"><i class="icon-move"></i></a>
+                  </li>
+                  <li data-bind="css: { active: organizeModel.mode() === 'link' }">
+                    <a href="#" title="Link mode" data-bind="click: organizeModel.setLinkMode"><i class="icon-link"></i></a>
+                  </li>
+                  <li class="divider-vertical"></li>
+                  <li data-bind="css: { active: organizeModel.display() === 'organizeItemsListTemplate' }">
+                    <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayList"><i class="icon-th-list"></i></a>
+                  </li>
+                  <li data-bind="css: { active: organizeModel.display() === 'organizeItemsIconsTemplate' }">
+                    <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayIcons"><i class="icon-th-large"></i></a>
+                  </li>
+                </ul>
+                <ul class="nav pull-right">
+                  <li><a href="#" title="Goto" data-bind="hrefFirst: [ 'node', organizeModel.leftActiveNode()._id() ]"><i class="icon-share-alt"></i></a></li>
+                  <li><a href="#" title="Close" data-bind="click: organizeModel.leftCloseActive">×</a></li>
+                </ul>
               </div>
-
-              <div data-bind="template: { name: organizeModel.display(), data: organizeModel.leftNodeItems }"></div>
             </div>
-          </div>
-        </div>
-        <div class="span6">
-         <input placeholder="Search for node..." type="text" style="width: 150px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.rightPaneTypeaheadUpdater }" data-provide="typeahead"/>
 
-          <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="foreach: organizeModel.rightNodes">
-            <li data-bind="css: { active: organizeModel.rightActiveNode() !== false && organizeModel.rightActiveNode()._id() === $data._id() }">
-              <a href="#" data-bind="text: $data.name, click: organizeModel.rightSetActiveNode.bind($data, $data)"></a>
-            </li>
-          </ul>
-
-          <div class="tab-content">
-            <div class="tab-pane active clearfix" style="min-height: 100000px;" data-bind="event: { drop: organizeModel.dragDropRight, dragover: organizeModel.dragOver }">
-
-              <div class="navbar" style="margin-bottom: 10px;" data-bind="if: organizeModel.rightActiveNode() !== false">
-                <div class="navbar-inner">
-                  <ul class="nav">
-                    <li data-bind="css: { active: organizeModel.mode() === 'move' }">
-                      <a href="#" title="Move mode" data-bind="click: organizeModel.setMoveMode"><i class="icon-move"></i></a>
-                    </li>
-                    <li data-bind="css: { active: organizeModel.mode() === 'link' }">
-                      <a href="#" title="Link mode" data-bind="click: organizeModel.setLinkMode"><i class="icon-link"></i></a>
-                    </li>
-                    <li class="divider-vertical"></li>
-                    <li data-bind="css: { active: organizeModel.display() === 'organizeItemsListTemplate' }">
-                      <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayList"><i class="icon-th-list"></i></a>
-                    </li>
-                    <li data-bind="css: { active: organizeModel.display() === 'organizeItemsIconsTemplate' }">
-                      <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayIcons"><i class="icon-th-large"></i></a>
-                    </li>
-                  </ul>
-                  <ul class="nav pull-right">
-                    <li><a href="#" title="Goto" data-bind="hrefFirst: [ 'node', organizeModel.rightActiveNode()._id() ]"><i class="icon-share-alt"></i></a></li>
-                    <li><a href="#" title="Close" data-bind="click: organizeModel.rightCloseActive">×</a></li>
-                  </ul>
-                </div>
-              </div>
-
-              <div data-bind="template: { name: organizeModel.display(), data: organizeModel.rightNodeItems }"></div>
-            </div>
+            <div data-bind="template: { name: organizeModel.display(), data: organizeModel.leftNodeItems }"></div>
           </div>
         </div>
       </div>
+      <div class="col-lg-6">
+        <input placeholder="Search for node..." type="text" style="width: 150px; margin-bottom: 7px;" class="pull-right" data-bind="disable: organizeModel.loading, typeahead: { items: 10, source: nodeModel.nodeTypeaheadSource, matcher: nodeModel.nodeTypeaheadMatcher, highlighter: nodeModel.nodeTypeaheadHighlighter, updater: organizeModel.rightPaneTypeaheadUpdater }" data-provide="typeahead"/>
 
+        <ul class="nav nav-tabs" style="font-size: 10px; margin-bottom: 10px;" data-bind="foreach: organizeModel.rightNodes">
+          <li data-bind="css: { active: organizeModel.rightActiveNode() !== false && organizeModel.rightActiveNode()._id() === $data._id() }">
+            <a href="#" data-bind="text: $data.name, click: organizeModel.rightSetActiveNode.bind($data, $data)"></a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane active clearfix" style="min-height: 100000px;" data-bind="event: { drop: organizeModel.dragDropRight, dragover: organizeModel.dragOver }">
+
+            <div class="navbar" style="margin-bottom: 10px;" data-bind="if: organizeModel.rightActiveNode() !== false">
+              <div class="navbar-inner">
+                <ul class="nav">
+                  <li data-bind="css: { active: organizeModel.mode() === 'move' }">
+                    <a href="#" title="Move mode" data-bind="click: organizeModel.setMoveMode"><i class="icon-move"></i></a>
+                  </li>
+                  <li data-bind="css: { active: organizeModel.mode() === 'link' }">
+                    <a href="#" title="Link mode" data-bind="click: organizeModel.setLinkMode"><i class="icon-link"></i></a>
+                  </li>
+                  <li class="divider-vertical"></li>
+                  <li data-bind="css: { active: organizeModel.display() === 'organizeItemsListTemplate' }">
+                    <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayList"><i class="icon-th-list"></i></a>
+                  </li>
+                  <li data-bind="css: { active: organizeModel.display() === 'organizeItemsIconsTemplate' }">
+                    <a href="#" title="Link mode" data-bind="click: organizeModel.setDisplayIcons"><i class="icon-th-large"></i></a>
+                  </li>
+                </ul>
+                <ul class="nav pull-right">
+                  <li><a href="#" title="Goto" data-bind="hrefFirst: [ 'node', organizeModel.rightActiveNode()._id() ]"><i class="icon-share-alt"></i></a></li>
+                  <li><a href="#" title="Close" data-bind="click: organizeModel.rightCloseActive">×</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div data-bind="template: { name: organizeModel.display(), data: organizeModel.rightNodeItems }"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
-  <div class="main-overlay-background"></div>
+  <div class="abs-max background"></div>
 </div>

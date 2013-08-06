@@ -25,7 +25,8 @@ var AboutModel = function(parentModel)
       self.loadAge();
       self.loadHomes();
       self.loadOwnerOf();
-      self.loadChildren();
+      self.loadShowing();
+      self.loadWhos();
     }
   });
 
@@ -36,13 +37,16 @@ var AboutModel = function(parentModel)
       self.loadAge();
       self.loadHomes();
       self.loadOwnerOf();
-      self.loadChildren();
+      self.loadShowing();
+      self.loadWhos();
     }
   });
 
 
   self.ageNow = ko.observable(false);
   self.ageAtDeath = ko.observable(false);
+  self.birthTimestamp = ko.observable(false);
+  self.deathTimestamp = ko.observable(false);
 
   self.loadAge = function()
   {
@@ -56,57 +60,21 @@ var AboutModel = function(parentModel)
           return;
         }
 
+        self.birthTimestamp(age.birthTimestamp);
+        self.deathTimestamp(age.deathTimestamp);
         self.ageNow(age.ageNow);
         self.ageAtDeath(age.ageAtDeath);
       });
     }
     else
     {
+      self.birthTimestamp(false);
+      self.deathTimestamp(false);
       self.ageNow(false);
       self.ageAtDeath(false);
     }
   };
 
-
-  self.childrenLoading = ko.observable(false);
-  self.childrenErrorText = ko.observable("");
-  self.children = ko.observableArray();
-
-  self.loadChildren = function()
-  {
-    self.children.removeAll();
-
-    if (parentModel.node() && parentModel.node().type() === 'person')
-    {
-      var query = { $or: [] };
-
-      query.type = { $in : [ "person" ] };
-      query["family.parents._id"] = parentModel.node()._id();
-
-      self.childrenErrorText("");
-      self.childrenLoading(true);
-
-      murrix.server.emit("find", { query: query, options: "nodes" }, function(error, nodeDataList)
-      {
-        self.childrenLoading(false);
-
-        if (error)
-        {
-          self.childrenErrorText(error);
-          return;
-        }
-
-        var nodeList = [];
-
-        for (var id in nodeDataList)
-        {
-          nodeList.push(murrix.cache.addNodeData(nodeDataList[id]));
-        }
-
-        self.children(nodeList);
-      });
-    }
-  };
 
   self.homesLoading = ko.observable(false);
   self.homesErrorText = ko.observable("");
@@ -184,6 +152,108 @@ var AboutModel = function(parentModel)
         }
 
         self.ownerOf(nodeList);
+      });
+    }
+  };
+
+
+
+
+  self.showingLoading = ko.observable(false);
+  self.showingErrorText = ko.observable("");
+  self.showing = ko.observableArray();
+
+  self.loadShowing = function()
+  {
+    self.showing.removeAll();
+
+    if (parentModel.node() && parentModel.node().type() === 'album')
+    {
+      var query = { };
+
+      self.showingErrorText("");
+      self.showingLoading(true);
+
+      murrix.server.emit("helper_nodeGetShowingSuggestions", { nodeId: parentModel.node()._id() }, function(error, nodeIdList)
+      {
+        self.showingLoading(false);
+
+        if (error)
+        {
+          console.log(error);
+          self.showingErrorText(error);
+          return;
+        }
+
+        self.showingErrorText("");
+        self.showingLoading(true);
+
+        murrix.cache.getNodes(nodeIdList, function(error, nodeList)
+        {
+          self.showingLoading(false);
+
+          if (error)
+          {
+            console.log(error);
+            self.showingErrorText(error);
+            return;
+          }
+
+          for (var n in nodeList)
+          {
+            self.showing.push(nodeList[n]);
+          }
+        });
+      });
+    }
+  };
+
+
+  self.whosLoading = ko.observable(false);
+  self.whosErrorText = ko.observable("");
+  self.whos = ko.observableArray();
+
+  self.loadWhos = function()
+  {
+    self.whos.removeAll();
+
+    if (parentModel.node() && parentModel.node().type() === 'album')
+    {
+      var query = { };
+
+      self.whosErrorText("");
+      self.whosLoading(true);
+
+      murrix.server.emit("helper_nodeGetWhoSuggestions", { nodeId: parentModel.node()._id() }, function(error, nodeIdList)
+      {
+        self.whosLoading(false);
+
+        if (error)
+        {
+          console.log(error);
+          self.whosErrorText(error);
+          return;
+        }
+
+        self.whosErrorText("");
+        self.whosLoading(true);
+
+        murrix.cache.getNodes(nodeIdList, function(error, nodeList)
+        {
+          self.whosLoading(false);
+
+          if (error)
+          {
+            console.log(error);
+            self.whosErrorText(error);
+            return;
+          }
+
+          for (var n in nodeList)
+          {
+            self.whos.push(nodeList[n]);
+          }
+        });
       });
     }
   };
