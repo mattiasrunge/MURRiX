@@ -29,7 +29,7 @@
           </div>
 
           <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
-            <video class="overlayVideo" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().exif.ImageHeight, nodeModel.overlayModel.item().cacheId ]" src="" alt=""></video>
+            <video class="overlayVideo" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().angle() === 90 || nodeModel.overlayModel.item().angle() === 270 ? nodeModel.overlayModel.item().exif.ImageHeight : nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().angle() === 90 || nodeModel.overlayModel.item().angle() === 270 ? nodeModel.overlayModel.item().exif.ImageWidth : nodeModel.overlayModel.item().exif.ImageHeight, nodeModel.overlayModel.item().cacheId ]" src="" alt=""></video>
           </div>
         </div>
 
