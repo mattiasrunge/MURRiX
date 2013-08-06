@@ -214,7 +214,7 @@ murrix.model = function()
 
     list.push({ value: "XXXX", name: "????" });
 
-    for (var year = (new Date()).getFullYear(); year >= 1600; year--)
+    for (var year = (new Date()).getFullYear(); year >= 1000; year--)
     {
       list.push({ value: year + "", name: year + "" });
     }

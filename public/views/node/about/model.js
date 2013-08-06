@@ -45,6 +45,8 @@ var AboutModel = function(parentModel)
 
   self.ageNow = ko.observable(false);
   self.ageAtDeath = ko.observable(false);
+  self.birthTimestamp = ko.observable(false);
+  self.deathTimestamp = ko.observable(false);
 
   self.loadAge = function()
   {
@@ -58,12 +60,16 @@ var AboutModel = function(parentModel)
           return;
         }
 
+        self.birthTimestamp(age.birthTimestamp);
+        self.deathTimestamp(age.deathTimestamp);
         self.ageNow(age.ageNow);
         self.ageAtDeath(age.ageAtDeath);
       });
     }
     else
     {
+      self.birthTimestamp(false);
+      self.deathTimestamp(false);
       self.ageNow(false);
       self.ageAtDeath(false);
     }

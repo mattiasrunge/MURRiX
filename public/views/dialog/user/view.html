@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <p class="pull-left text-error" data-bind="visible: dialogModel.userModel.errorText() != '', text: dialogModel.userModel.errorText"></p>
+        <p class="pull-left text-danger" data-bind="visible: dialogModel.userModel.errorText() != '', text: dialogModel.userModel.errorText"></p>
         <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
         <a href="#" class="btn btn-primary" data-bind="disable: dialogModel.userModel.disabled, click: dialogModel.userModel.saveHandler">Save</a>
       </div>

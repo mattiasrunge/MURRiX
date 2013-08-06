@@ -180,6 +180,31 @@ body {
   display: block;
 }
 
+/* Make position: fixed stuff work in dialogs! */
+.modal .modal-dialog {
+  -webkit-transform: none !important;
+  -ms-transform: none !important;
+  transform: none !important;
+}
+
+.modal-dialog .form-group:last-child {
+  margin-bottom: 0px;
+}
+
+.modal-dialog .modal-footer {
+  margin-top: 0px;
+}
+
+.modal-dialog .nav-tabs {
+  margin-bottom: 20px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.modal-dialog .dialogComponentSelectOption:last-child {
+  margin-bottom: 0px;
+}
+
 .background-timeline {
   position: absolute;
   top: 40px;
