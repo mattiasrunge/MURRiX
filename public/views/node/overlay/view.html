@@ -675,7 +675,7 @@
               <div class="form-group">
                 <div class="btn-group" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile' || nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
                   <button title="Rotate counter clockwise" style="width: 110px;" class="btn btn-default btn-small" data-bind="click: nodeModel.overlayModel.rotateLeft"><i class="icon-undo"></i></button>
-                  <button title="Mirror" style="width: 110px;" class="btn btn-default btn-small" data-bind="click: nodeModel.overlayModel.mirror">Mirror</button>
+                  <button title="Mirror" style="width: 111px;" class="btn btn-default btn-small" data-bind="disable: nodeModel.overlayModel.item().whatDetailed() === 'videoFile', click: nodeModel.overlayModel.mirror">Mirror</button>
                   <button title="Rotate clockwise" style="width: 110px;" class="btn btn-default btn-small" data-bind="click: nodeModel.overlayModel.rotateRight"><i class="icon-repeat"></i></button>
                 </div>
               </div>
