@@ -252,35 +252,38 @@ var OverlayModel = function(parentModel)
 
   self.remove = function()
   {
-    var itemData = ko.mapping.toJS(self.item);
-
-    self.editLoading(true);
-
-    var nextId = self.nextId();
-
-    murrix.server.emit("removeItem", itemData._id, function(error)
+    if (window.confirm("Are you sure you want to remove " + self.item().name() + "?"))
     {
-      self.editLoading(false);
+      var itemData = ko.mapping.toJS(self.item);
 
-      if (error)
+      self.editLoading(true);
+
+      var nextId = self.nextId();
+
+      murrix.server.emit("removeItem", itemData._id, function(error)
       {
-        self.editErrorText(error);
-        return;
-      }
+        self.editLoading(false);
 
-      console.log("OverlayModel: Successfully removed " + itemData._id + " will move to the next one " + nextId);
+        if (error)
+        {
+          self.editErrorText(error);
+          return;
+        }
 
-      if (nextId === itemData._id)
-      {
-        document.location.hash = murrix.createPath(1, null, '');
-      }
-      else
-      {
-        document.location.hash = murrix.createPath(1, null, nextId);
-      }
+        console.log("OverlayModel: Successfully removed " + itemData._id + " will move to the next one " + nextId);
 
-      murrix.model.nodeModel.loadNode();
-    });
+        if (nextId === itemData._id)
+        {
+          document.location.hash = murrix.createPath(1, null, '');
+        }
+        else
+        {
+          document.location.hash = murrix.createPath(1, null, nextId);
+        }
+
+        murrix.model.nodeModel.loadNode();
+      });
+    }
   };
 
   self.hideRaw = function()

@@ -13,7 +13,6 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/imgareaselect-default.css" rel="stylesheet">
@@ -532,6 +531,8 @@
     </div>
 
 
+    {{include:views/node/overlay/view.html}}
+
     <div class="fix-max" style="top: 50px; left: 250px; right: none;">
 
       {{include:views/map/view.html}}
@@ -552,6 +553,7 @@
       {{include:views/node/timeline/view.html}}
       {{include:views/node/relations/view.html}}
 
+
     </div>
 
     <div class="loading-overlay"></div>
@@ -562,7 +564,7 @@
 
 
 
-      {{include:views/node/overlay/view.html}}
+
 
       {{include:views/node/issues/view.html}}
       {{include:views/node/metrics/view.html}}
@@ -589,15 +591,9 @@
     {{include:views/dialog/upload/view.html}}
 
 
- <!-- Third-party script files -->
+    <!-- Third-party script files -->
     <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-
-<!--     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> -->
-<!--     <script>window.jQuery || document.write('<script src="js/jquery-1.8.2.min.js"><\/script>')</script> -->
-
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/jquery-ui-1.9.1.custom.min.js"><\/script>')</script>
-
     <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
     <script src="js/knockout-2.2.1.js"></script>
