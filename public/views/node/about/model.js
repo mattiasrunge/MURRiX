@@ -59,7 +59,7 @@ var AboutModel = function(parentModel)
           console.log(error);
           return;
         }
-console.log(age);
+
         self.birthTimestamp(age.birthTimestamp);
         self.deathTimestamp(age.deathTimestamp);
         self.ageNow(age.ageNow);
