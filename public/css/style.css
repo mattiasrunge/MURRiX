@@ -62,24 +62,12 @@ body {
 }
 
 .navbar-shadow {
-  position: fixed;
-  top: 0px;
-  left: 250px;
-  right: 0px;
-  height: 50px;
-  z-index: 10;
   -webkit-box-shadow: 0 4px 8px -2px black;
      -moz-box-shadow: 0 4px 8px -2px black;
           box-shadow: 0 4px 8px -2px black;
 }
 
 .sidebar-shadow {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 250px;
-  bottom: 0px;
-  z-index: 10;
   -webkit-box-shadow: 4px 0 8px -2px black;
      -moz-box-shadow: 4px 0 8px -2px black;
           box-shadow: 4px 0 8px -2px black;
@@ -140,6 +128,7 @@ body {
   z-index: 20;
   overflow-y: auto;
   overflow-x: hidden;
+  background-color: white;
 }
 
 .sidebar .nav-pills > li > a {
@@ -152,6 +141,60 @@ body {
 
 .sidebar .nav-pills > li + li {
   margin-left: 0;
+}
+
+.rightsbar {
+  top: 50px;
+  width: 500px;
+  right: none;
+  left: 250px;
+  z-index: 9;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.rightsbar-background {
+  background-color: whiteSmoke;
+/*   opacity: 0.9; */
+  z-index: 1;
+}
+
+.rightsbar-content {
+  z-index: 2;
+  padding: 20px;
+  padding-top: 0px;
+  overflow: auto;
+}
+
+.rightsbar-shadow {
+  -webkit-box-shadow: 4px 0 8px -2px black;
+     -moz-box-shadow: 4px 0 8px -2px black;
+          box-shadow: 4px 0 8px -2px black;
+}
+
+.rightsbar .page-header {
+  margin-bottom: 0px;
+}
+
+.rightsbar th {
+  font-size: 10px;
+}
+
+.rightsbar .access-column {
+  width: 100px;
+}
+
+.rightsbar .access-column button {
+  width: 100%;
+}
+
+.rightsbar .btn-public {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.rightsbar .close {
+  margin-top: 20px;
 }
 
 .content-header-fade {
@@ -1059,18 +1102,27 @@ i.icon-fixed[class*="icon-white"] {
 .modal-big {
   right: 50px;
   left: 50px;
-  top: 50px !important;
+  top: 50px;
   bottom: 50px;
   width: auto;
   margin: 0px;
+  position: absolute;
+}
+
+.modal-big .modal-content {
+  right: 0px;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  position: absolute;
 }
 
 .modal-big .modal-body {
   position: absolute;
-  top: 49px;
+  top: 70px;
   left: 0px;
-  right: 0px;
-  bottom: 60px;
+  right: 331px;
+  bottom: 74px;
   overflow: auto;
   max-height: none;
 }
@@ -1082,19 +1134,14 @@ i.icon-fixed[class*="icon-white"] {
   right: 0px;
 }
 
-.modal-body-side {
-  right: 331px !important;
-}
-
-.modal-sidebar {
+.modal-big .modal-sidebar {
   position: absolute;
-  top: 49px;
-  bottom: 60px;
+  top: 70px;
+  bottom: 74px;
   right: 0px;
   width: 300px;
-
   padding: 15px;
-  background-color: #f5f5f5;
+  background-color: #fafafa;
   border-left: 1px solid #ddd;
   box-shadow: inset 1px 0 0 #ffffff;
 }

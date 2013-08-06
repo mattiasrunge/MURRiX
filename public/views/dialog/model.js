@@ -4,8 +4,6 @@ function DialogBaseModel(self, elementId)
   self.elementId = elementId;
   self.visible = ko.observable(false);
 
-  console.log("DialogBaseModel", $(self.elementId));
-
   $(self.elementId).on("shown.bs.modal", function()
   {
     self.visible(true);

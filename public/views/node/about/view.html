@@ -8,7 +8,7 @@
       <input class="form-control pull-left input-small" placeholder="Write tag..." type="text" data-bind="visible: nodeModel.node().hasAdminAccess(), hasfocus: nodeModel.tagHasFocus, disable: nodeModel.tagLoading, value: nodeModel.tagName" data-provide="typeahead" style="width: 150px; margin-right: 10px; margin-bottom: 10px;"/>
 
       <!-- ko foreach: nodeModel.node().tags -->
-        <span class="label label-success pull-left" style="margin-right: 10px; margin-bottom: 10px; font-size: 20px;">
+        <span class="label label-success pull-left" style="margin-right: 10px; margin-bottom: 10px; font-size: 22px;">
           <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a>
           <span data-bind="visible: $parent.nodeModel.node().hasAdminAccess()">
             &nbsp;

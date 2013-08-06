@@ -62,18 +62,18 @@
       <img style="width: 80px; height: 80px;" class="media-object" data-bind="srcNodeProfilePicture: [ $data._id(), 80, 80, 1 ]">
     </a>
     <div class="media-body" style="margin-top: 5px; padding: 5px;">
-      <span class="pull-left">
-        <i style="vertical-align: center;" class="icon-book" data-bind="visible: $data.type() === 'album'"></i>
-        <i style="vertical-align: center;" class="icon-user" data-bind="visible: $data.type() === 'person'"></i>
-        <i style="vertical-align: center;" class="icon-camera" data-bind="visible: $data.type() === 'camera'"></i>
-        <i style="vertical-align: center;" class="icon-truck" data-bind="visible: $data.type() === 'vehicle'"></i>
-        <i style="vertical-align: center;" class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
-        <i style="vertical-align: center;" class="icon-cloud" data-bind="visible: $data.type() === 'tags'"></i>
+      <span class="icon-fixed pull-left">
+        <i class="icon-book" data-bind="visible: $data.type() === 'album'"></i>
+        <i class="icon-user" data-bind="visible: $data.type() === 'person'"></i>
+        <i class="icon-camera" data-bind="visible: $data.type() === 'camera'"></i>
+        <i class="icon-truck" data-bind="visible: $data.type() === 'vehicle'"></i>
+        <i class="icon-flag" data-bind="visible: $data.type() === 'location'"></i>
+        <i class="icon-cloud" data-bind="visible: $data.type() === 'tags'"></i>
       </span>
       <h6 class="media-heading" style="white-space: nowrap; width: 210px; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0px;">
         <a href="#" style="cursor: pointer;" data-bind="hrefFirst: ['node', $data._id()], text: $data.name()"></a>
       </h6>
-      <div class="muted" style="font-size: 10px;">
+      <div class="text-muted" style="font-size: 10px;">
         -
         <span data-bind="visible: $data.added.timestamp() === $data.modified.timestamp()">
           added
@@ -103,120 +103,6 @@
     </div>
   </div>
 </script>
-
-<div class="sidebar-nav box" data-bind="fadeVisible: nodeModel.show() && nodeModel.node() !== false">
-
-  <div class="sidebar-nav-profilepicture" data-bind="target: { handler: nodeModel.profilePictureDropHandler }, if: nodeModel.node()">
-    <div class="sidebar-nav-issues" style="display: none;">
-      <i class="icon-warning-sign"></i>
-      Issues found!
-    </div>
-    <div class="sidebar-nav-droptarget">Drop here</div>
-    <img draggable="false" src="" alt="" data-bind="srcNodeProfilePicture: [ nodeModel.node()._id(), 250, 250, 1 ]"/>
-  </div>
-
-  <div class="sidebar-nav-content">
-    <ul class="nav nav-stacked nav-pills" style="font-size: 16px;">
-
-      <li data-bind="fadeVisible: nodeModel.aboutModel.enabled, css: { 'active': nodeModel.aboutModel.show }" class="nav-link" style="line-height: 30px;">
-        <a href="#" data-bind="hrefSecondPrimary: 'about'">
-          <i class="icon-list-alt icon-fixed"></i>
-          About
-        </a>
-      </li>
-
-      <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link" style="line-height: 30px;">
-        <a href="#" data-bind="hrefSecondPrimary: 'timeline'">
-          <i class="icon-time icon-fixed"></i>
-          Timeline
-          <span data-bind="fadeVisible: nodeModel.timelineModel.loaded() || nodeModel.timelineModel.loading()" class="badge pull-right" style="margin-top: -2px;">
-            <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.timelineModel.loading"></i>
-            <span data-bind="visible: !nodeModel.timelineModel.loading(), text: nodeModel.timelineModel.timeline().length"></span>
-          </span>
-        </a>
-      </li>
-
-      <li data-bind="fadeVisible: nodeModel.filesModel.enabled, css: { 'active': nodeModel.filesModel.show }" class="nav-link" style="line-height: 30px;">
-        <a href="#" data-bind="hrefSecondPrimary: 'files'">
-          <i class="icon-th icon-fixed"></i>
-          Files
-          <span data-bind="fadeVisible: nodeModel.filesModel.loaded() || nodeModel.filesModel.loading()" class="badge pull-right" style="margin-top: -2px;">
-            <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.filesModel.loading"></i>
-            <span data-bind="visible: !nodeModel.filesModel.loading(), text: nodeModel.filesModel.files().length"></span>
-          </span>
-        </a>
-      </li>
-
-      <li data-bind="fadeVisible: nodeModel.relationsModel.enabled, css: { 'active': nodeModel.relationsModel.show }" class="nav-link" style="line-height: 30px;">
-        <a href="#" data-bind="hrefSecondPrimary: 'relations'">
-          <i class="icon-sitemap icon-fixed"></i>
-          Relations
-          <span data-bind="fadeVisible: nodeModel.relationsModel.loaded() || nodeModel.relationsModel.loading()" class="badge pull-right" style="margin-top: -2px;">
-            <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.relationsModel.loading"></i>
-            <span data-bind="visible: !nodeModel.relationsModel.loading(), text: nodeModel.relationsModel.count"></span>
-          </span>
-        </a>
-      </li>
-
-      <li data-bind="fadeVisible: nodeModel.issuesModel.enabled, css: { 'active': nodeModel.issuesModel.show }" class="nav-link" style="line-height: 30px;">
-        <a href="#" data-bind="hrefSecondPrimary: 'issues'">
-          <i class="icon-warning-sign icon-fixed"></i> Issues <span data-bind="fadeVisible: nodeModel.issuesModel.issues().length > 0, text: nodeModel.issuesModel.issues().length" class="badge badge-important pull-right" style="margin-top: -2px;"></span>
-        </a>
-      </li>
-
-      <li data-bind="fadeVisible: nodeModel.commentsModel.enabled, css: { 'active': nodeModel.commentsModel.show }" class="nav-link" style="line-height: 30px;">
-        <a href="#" data-bind="hrefSecondPrimary: 'comments', if: nodeModel.node() !== false">
-          <i class="icon-comment icon-fixed"></i>
-          Comments
-          <span data-bind="text: nodeModel.node().comments().length" class="badge pull-right" style="margin-top: -2px;"></span>
-        </a>
-      </li>
-
-      <li data-bind="fadeVisible: nodeModel.metricsModel.enabled, css: { 'active': nodeModel.metricsModel.show }" class="nav-link" style="line-height: 30px;">
-        <a href="#" data-bind="hrefSecondPrimary: 'metrics', if: nodeModel.node() !== false">
-          <i class="icon-signal icon-fixed"></i>
-          Metrics
-        </a>
-      </li>
-    </ul>
-
-    <div style="position: absolute; left: 0px; right: 0px; bottom: 0px; padding: 0px 10px 0px 10px;" data-bind="if: nodeModel.node() !== false">
-
-      <div style="margin-bottom: 10px;" data-bind="foreach: nodeModel.node().tags">
-        <span class="label label-success">
-          <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a>
-          <span data-bind="visible: $parent.nodeModel.node().hasAdminAccess()">
-            &nbsp;
-            <a href="#" style="color: white;" data-bind="click: $parent.nodeModel.tagRemove">×</a>
-          </span>
-        </span>
-      </div>
-
-
-      <form data-bind="submit: nodeModel.tagSubmit, visible: nodeModel.node().hasAdminAccess()" style="margin: 0px; margin-right: 10px;">
-        <input class="input-large" placeholder="Write tag name..." type="text" data-bind="hasfocus: nodeModel.tagHasFocus, disable: nodeModel.tagLoading, value: nodeModel.tagName, typeahead: { source: nodeModel.tagTypeaheadSource, updater: nodeModel.tagTypeaheadUpdater }" data-provide="typeahead" style="width: 100%;"/>
-      </form>
-    </div>
-
-    <!--<div style="position: absolute; left: 0px; right: 0px; bottom: 0px; text-align: center; height: 50px;" data-bind="if: nodeModel.node() !== false">
-      <div class="modal-footer" style="text-align: center; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px;" data-bind="visible: nodeModel.node().hasAdminAccess()">
-
-
-
-        <button rel="tooltip" title="Edit accesses" class="btn btn-link" href="#editAccessModal" data-toggle="modal"><i class="icon-key"></i></button>
-
-        <button data-bind="ifnotset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, true)" rel="tooltip" title="Click to make public" class="btn btn-link"><i class="icon-lock"></i></button>
-        <button data-bind="ifset: nodeModel.node().public, disable: nodeModel.publicLoading, click: nodeModel.changePublic.bind($data, false)" rel="tooltip" title="Click to make private" class="btn btn-link" style="margin: 0px;"><i class="icon-unlock"></i></button>
-
-        <button rel="tooltip" title="Edit" class="btn btn-link" href="#" data-bind="click: nodeModel.editNode"><i class="icon-pencil"></i></button>
-
-        <button rel="tooltip" title="Remove" class="btn btn-link" href="#" data-bind="click: nodeModel.removeNode"><i class="icon-trash"></i></button>
-      </div>
-    </div>-->
-  </div>
-
-  <div class="sidebar-nav-background"></div>
-</div>
 
 <div class="well" data-bind="fadeVisible: nodeModel.show() && !nodeModel.node() && !nodeModel.loadingNode()"  style="width: 500px; margin-left: auto; margin-right: auto; margin-top: 60px; text-align: center; position: relative; z-index: 5;">
   <h3>Could not access the requested node</h3>
