@@ -1,10 +1,10 @@
 <div data-bind="fadeVisible: nodeModel.timelineModel.show">
-  <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
+  <div class="abs-max content" data-bind="if: nodeModel.node() !== false, event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
     <div class="page-header">
       <h1>Timeline <small>Shows all items grouped by days</small></h1>
     </div>
 
-    <div style="margin-bottom: 30px;" data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
+    <div style="margin-bottom: 30px;">
 
       <div class="timeline-container" data-bind="foreach: nodeModel.timelineModel.timeline" >
 

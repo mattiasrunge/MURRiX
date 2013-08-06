@@ -47,7 +47,7 @@
           </span>
         </div>
 
-        <p data-bind="html: $data.description"></p>
+        <p data-bind="html: $data.description().replace(/\n/g, '<br>')"></p>
       </div>
 
     </div>

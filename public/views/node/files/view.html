@@ -1,10 +1,10 @@
 <div data-bind="fadeVisible: nodeModel.filesModel.show">
-  <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
+  <div class="abs-max content" data-bind="if: nodeModel.node() !== false, event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
     <div class="page-header">
       <h1>Files <small>Shows all files</small></h1>
     </div>
 
-    <div style="margin-bottom: 30px;" data-bind="event: { dragenter: murrix.dragNoopHandler, dragexit: murrix.dragNoopHandler, dragover: murrix.dragNoopHandler, drop: dialogModel.uploadModel.dropEventHandler }">
+    <div style="margin-bottom: 30px;">
 
       <div data-bind="foreach: nodeModel.filesModel.files" class="clearfix">
         <a href="#" class="thumbnail" data-bind="hrefSecondSecondary: $data._id" style="float: left; margin-right: 20px; margin-bottom: 20px;">
