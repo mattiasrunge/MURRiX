@@ -1177,7 +1177,7 @@ $(function()
     {
       var value = valueAccessor();
       var rawValue = ko.utils.unwrapObservable(value);
-
+console.log("htmlTimestampToNiceDate", rawValue);
       if (!rawValue)
       {
         $(element).text("unknown date");

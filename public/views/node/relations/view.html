@@ -15,7 +15,7 @@
           <!-- /ko -->
 
           <!-- ko if: $data.parents.length > 0 || $data.type === 'child' -->
-            <div style="height: 40px; width: 2px; background-color: white; margin-left: auto; margin-right: auto; margin-top: -5px; overflow: visible;">
+            <div style="height: 40px; width: 2px; background-color: #ccc; margin-left: auto; margin-right: auto; margin-top: -5px; overflow: visible;">
               <button data-bind="visible: $data.type !== 'child', click: nodeModel.relationsModel.expandParentsClicked" class="relation-expand relation-parent-expand">
                 <i data-bind="visible: !$data.showParents()" class="icon-plus"></i>
                 <i data-bind="visible: $data.showParents()" class="icon-minus"></i>
@@ -34,25 +34,25 @@
 
           <div data-bind="css: { 'relation-me': $data.type === 'me' }" style="display: inline-block; position: relative;">
 
-            <div data-bind="style: { zoom: nodeModel.relationsModel.zoom }" style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 92px;">
+            <div data-bind="style: { zoom: nodeModel.relationsModel.zoom }" style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 90px;">
 
-              <div class="box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: nodeModel.relationsModel.zoom() <= 0.7">
+              <div class="box-content relation-person-box-small" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: nodeModel.relationsModel.zoom() <= 0.7">
 
                 <div class="relation-person-image-small">
-                  <img data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 80, 80, 1, $data.profilePicture ? $data.profilePicture.cacheId : false, false ], attr: { title: $data.name }">
+                  <img style="width: 88px; height: 88px;" data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 250, 250, 1, $data.profilePicture ? $data.profilePicture.cacheId : false, false ], attr: { title: $data.name }">
                 </div>
 
-                <div class="box relation-person-image-small-title" data-bind="css: { 'relation-person-title-male': $data.gender === 'm', 'relation-person-title-female': $data.gender === 'f' }">
+                <div class="relation-person-image-small-title" data-bind="css: { 'relation-person-title-male': $data.gender === 'm', 'relation-person-title-female': $data.gender === 'f' }">
                   <a src="#" data-bind="click: nodeModel.relationsModel.personClickHandler">
                     <span data-bind="text: $data.name"></span>
                   </a>
                 </div>
               </div>
 
-              <div class="box box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: nodeModel.relationsModel.zoom() > 0.7">
+              <div class="box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: nodeModel.relationsModel.zoom() > 0.7">
 
                 <div class="relation-person-image">
-                  <img data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 80, 80, 1, $data.profilePicture ? $data.profilePicture.cacheId : false, false ]">
+                  <img style="width: 88px; height: 88px;" data-bind="srcPicture: [ $data.profilePicture ? $data.profilePicture._id : false, 250, 250, 1, $data.profilePicture ? $data.profilePicture.cacheId : false, false ]">
                 </div>
 
                 <div class="relation-person-title">
@@ -68,7 +68,7 @@
                   </a>
                 </div>
 
-                <div style="padding-left: 90px;">
+                <div style="padding-left: 100px;">
                   <div data-bind="visible: $data.birth || $data.death" style="margin-bottom: 10px;">
                     <i class="icon-calendar"></i>
                     <span class="relation-person-birth" data-bind="visible: $data.birth, text: $data.birth"></span>
@@ -84,7 +84,7 @@
           </div>
 
           <!-- ko if: $data.children.length > 0 || $data.type === 'parent' -->
-            <div style="height: 40px; width: 2px; background-color: white; margin-left: auto; margin-right: auto; margin-bottom: -13px; overflow: visible;">
+            <div style="height: 40px; width: 2px; background-color: #ccc; margin-left: auto; margin-right: auto; margin-bottom: -13px; overflow: visible;">
               <button data-bind="visible: $data.type !== 'parent', click: nodeModel.relationsModel.expandChildrenClicked" class="relation-expand relation-child-expand">
                 <i data-bind="visible: !$data.showChildren()" class="icon-plus"></i>
                 <i data-bind="visible: $data.showChildren()" class="icon-minus"></i>
@@ -123,15 +123,15 @@
       <div class="relation-zoom-control">
         <div class="line"></div>
         <div class="inc" data-bind="click: nodeModel.relationsModel.zoomInc">
-          <div style="margin-left: 5px;"><i class="icon-plus"></i></div>
+          <div style="margin-left: 4px; margin-top: 2px;"><i class="icon-plus"></i></div>
         </div>
         <div class="mark-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragMarkHandler }">
           <div class="mark">
-            <div style="margin-left: 5px; margin-top: -4px;"><i class="icon-minus"></i></div>
+            <div style="margin-left: 4px; margin-top: -2px;"><i class="icon-minus"></i></div>
           </div>
         </div>
         <div class="dec" data-bind="click: nodeModel.relationsModel.zoomDec">
-          <div style="margin-left: 5px;"><i class="icon-minus"></i></div>
+          <div style="margin-left: 4px; margin-top: 2px;"><i class="icon-minus"></i></div>
         </div>
       </div>
 

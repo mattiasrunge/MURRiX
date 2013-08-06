@@ -707,18 +707,25 @@ i.icon-fixed[class*="icon-white"] {
 
 .relation-person-box {
   text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 3px 3px 3px 3px;
+  background-color: white;
+}
+
+.relation-person-box-small {
+  text-align: center;
 }
 
 .relation-horizontal-line-left {
   height: 2px;
-  background-color: white;
+  background-color: #ccc;
   display: inline-block;
   width: 50%;
 }
 
 .relation-horizontal-line-right {
   height: 2px;
-  background-color: white;
+  background-color: #ccc;
   display: inline-block;
   width: 50%;
 }
@@ -731,21 +738,16 @@ i.icon-fixed[class*="icon-white"] {
   position: absolute;
   width: 80px;
   height: 80px;
-  top: -6px;
-  left: -6px;
-  border: 1px solid #555;
-  -webkit-box-shadow: 3px 3px 15px 3px black;
-    -moz-box-shadow: 3px 3px 15px 3px black;
-          box-shadow: 3px 3px 15px 3px black;
-  border-radius: 3px 3px 3px 3px;
+  top: 0px;
+  left: 0px;
+  border-radius: 3px 0px 0px 3px;
   z-index: 3;
 }
 
 .relation-person-image img {
   width: 80px;
   height: 80px;
-  border-radius: 3px 3px 3px 3px;
-  background-color: #555;
+  border-radius: 3px 0px 0px 3px;
 }
 
 .relation-person-image-small {
@@ -754,18 +756,16 @@ i.icon-fixed[class*="icon-white"] {
   vertical-align: top;
   margin-left: auto;
   margin-right: auto;
-  border: 1px solid #555;
-  -webkit-box-shadow: 3px 3px 15px 3px black;
-    -moz-box-shadow: 3px 3px 15px 3px black;
-          box-shadow: 3px 3px 15px 3px black;
-  border-radius: 3px 3px 3px 3px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  display: inline-block;
   z-index: 3;
 }
 
 .relation-person-image-small img {
   width: 90px;
   height: 90px;
-  border-radius: 3px 3px 3px 3px;
+  border-radius: 3px;
   background-color: #555;
 }
 
@@ -773,7 +773,7 @@ i.icon-fixed[class*="icon-white"] {
   padding: 5px;
   text-align: center;
   margin: 0px 30px;
-  border-radius: 10px;
+  border-radius: 3px;
   margin-left: auto;
   margin-right: auto;
   width: 200px;
@@ -797,7 +797,7 @@ i.icon-fixed[class*="icon-white"] {
 .relation-person-title a {
   color: black;
   cursor: pointer;
-  margin-left: 80px;
+  margin-left: 88px;
 }
 
 .relation-person-partner {
@@ -833,18 +833,19 @@ i.icon-fixed[class*="icon-white"] {
   z-index: 1;
   position: relative;
   border-radius: 3px;
-  border: 1px solid #555;
+  border: 1px solid #ccc;
   color: #0088CC;
   background-color: white;
   font-size: 10px;
 }
 
 .relation-child-expand {
-  margin-top: 30px;
+  margin-top: 29px;
 }
 
 .relation-parent-expand {
-  margin-top: -19px;
+  top: -8px;
+  position: relative;
 }
 
 
@@ -921,8 +922,8 @@ i.icon-fixed[class*="icon-white"] {
   left: 8px;
   background-color: white;
   width: 2px;
-  border-left: 1px solid #555;
-  border-right: 1px solid #555;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
 
 .relation-zoom-control .mark-container {
@@ -943,8 +944,8 @@ i.icon-fixed[class*="icon-white"] {
   padding: 0px;
   margin: 0;
   border-radius: 3px;
-  border: 1px solid #555;
-  color: #555;
+  border: 1px solid #ccc;
+  color: #ccc;
   background-color: white;
   font-size: 10px;
 }
@@ -959,8 +960,8 @@ i.icon-fixed[class*="icon-white"] {
   padding: 0px;
   margin: 0;
   border-radius: 3px;
-  border: 1px solid #555;
-  color: #555;
+  border: 1px solid #ccc;
+  color: #ccc;
   background-color: white;
   font-size: 10px;
 }
@@ -975,8 +976,8 @@ i.icon-fixed[class*="icon-white"] {
   padding: 0;
   margin: 0;
   border-radius: 3px;
-  border: 1px solid #555;
-  color: #555;
+  border: 1px solid #ccc;
+  color: #ccc;
   background-color: white;
   font-size: 10px;
 }

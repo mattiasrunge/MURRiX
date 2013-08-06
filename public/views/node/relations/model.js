@@ -26,14 +26,24 @@ var RelationsModel = function(parentModel)
   {
     self.enabled(value !== false && value.type() === "person")
 
-    self.loaded(false);
-    self.load();
+    self.init();
   });
 
   self.show.subscribe(function(value)
   {
-    self.load();
+    self.enabled(parentModel.node() !== false && parentModel.node().type() === "person")
+
+    self.init();
   });
+
+  self.init = function()
+  {
+    if (self.show() && parentModel.node() !== false)
+    {
+      self.loaded(false);
+      self.load();
+    }
+  };
 
   self.dragging = false;
   self.canvasElement = false;
@@ -224,34 +234,42 @@ var RelationsModel = function(parentModel)
   self._adjustCanvasPosition = function()
   {
     var canvasElement = $("#relation-canvas");
-    var size = { width: canvasElement.width(), height: canvasElement.height() };
 
-    var diffHeight = (self.canvasSize.height - size.height) / 2;
-    var diffWidth = (self.canvasSize.width - size.width) / 2;
+    if (canvasElement.is(":visible"))
+    {
+      var size = { width: canvasElement.width(), height: canvasElement.height() };
 
-    var position = canvasElement.position();
+      var diffHeight = (self.canvasSize.height - size.height) / 2;
+      var diffWidth = (self.canvasSize.width - size.width) / 2;
 
-    canvasElement.css("top", position.top + diffHeight);
-    canvasElement.css("left", position.left + diffWidth);
+      var position = canvasElement.position();
 
-    self._storePosition();
+      canvasElement.css("top", position.top + diffHeight);
+      canvasElement.css("left", position.left + diffWidth);
+
+      self._storePosition();
+    }
   };
 
   self._adjustPosition = function()
   {
     var canvasElement = $("#relation-canvas");
-    var meElement = $(".relation-me");
-    var offset = meElement.offset();
 
-    var diffTop = self.meOffset.top - offset.top;
-    var diffLeft = self.meOffset.left - offset.left;
+    if (canvasElement.is(":visible"))
+    {
+      var meElement = $(".relation-me");
+      var offset = meElement.offset();
 
-    var position = canvasElement.position();
+      var diffTop = self.meOffset.top - offset.top;
+      var diffLeft = self.meOffset.left - offset.left;
 
-    canvasElement.css("top", position.top + diffTop);
-    canvasElement.css("left", position.left + diffLeft);
+      var position = canvasElement.position();
 
-    self._storePosition();
+      canvasElement.css("top", position.top + diffTop);
+      canvasElement.css("left", position.left + diffLeft);
+
+      self._storePosition();
+    }
   };
 
   self._center = function()
@@ -263,7 +281,6 @@ var RelationsModel = function(parentModel)
     {
       var position = meElement.position();
 
-      position.left -= 130; // Half of the sidebar
       position.left -= ($(window).width() - meElement.width()) / 2;
       position.top -= ($(window).height() - meElement.height()) / 2;
 
