@@ -267,7 +267,7 @@ function DialogUploadModel()
     });
   };
 
-  $(self.elementId).on("hidden", function()
+  $(self.elementId).on("hidden.bs.modal", function()
   {
     self.files.removeAll();
     self.speed(0);
