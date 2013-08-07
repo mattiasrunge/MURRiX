@@ -538,4 +538,5 @@ var NodeModel = function(parentModel)
   self.issuesModel = new IssuesModel(self);
   self.metricsModel = new MetricsModel(self);
   self.mapModel = new MapModel(self);
+  self.toolsModel = new ToolsModel(self);
 };

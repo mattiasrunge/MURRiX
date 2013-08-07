@@ -387,8 +387,15 @@
 
         <li data-bind="fadeVisible: nodeModel.mapModel.enabled, css: { 'active': nodeModel.mapModel.show }" class="nav-link">
           <a href="#" data-bind="hrefSecondPrimary: 'map'">
-            <i class="icon-flag icon-fixed"></i>
+            <i class="icon-globe icon-fixed"></i>
             Map
+          </a>
+        </li>
+
+        <li data-bind="fadeVisible: nodeModel.toolsModel.enabled, css: { 'active': nodeModel.toolsModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'tools'">
+            <i class="icon-wrench icon-fixed"></i>
+            Tools
           </a>
         </li>
 
@@ -561,6 +568,7 @@
       {{include:views/node/timeline/view.html}}
       {{include:views/node/relations/view.html}}
       {{include:views/node/map/view.html}}
+      {{include:views/node/tools/view.html}}
 
 
     </div>
@@ -652,6 +660,7 @@
     <script src="{{link:views/node/issues/model.js}}"></script>
     <script src="{{link:views/node/metrics/model.js}}"></script>
     <script src="{{link:views/node/map/model.js}}"></script>
+    <script src="{{link:views/node/tools/model.js}}"></script>
     <script src="{{link:views/node/model.js}}"></script>
     <script src="{{link:views/search/model.js}}"></script>
     <script src="{{link:views/admin/model.js}}"></script>

@@ -1156,14 +1156,13 @@ i.icon-fixed[class*="icon-white"] {
 }
 
 .timeline-day-date {
-  width: 200px;
+  width: 240px;
   color: #ddd;
   line-height: normal;
 }
 
 .timeline-day .timeline-day-date {
   float: right;
-  margin-top: 20px;
   text-align: right;
 }
 
@@ -1187,7 +1186,7 @@ i.icon-fixed[class*="icon-white"] {
 }
 
 .timeline-day .timeline-day-content {
-  margin-right: 240px;
+  margin-right: 280px;
 }
 
 .timeline-day-content-item {

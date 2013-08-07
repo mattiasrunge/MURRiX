@@ -33,7 +33,6 @@ var BackgroundMapModel = function(parentModel)
   self.trackIndex = {};
   self.tracksTimeout = null;
   self.lastTrackTimestamp = false;//moment.utc().unix() - 3600 * 24;//Math.floor(new Date().getTime() / 1000);
-  console.log(self.lastTrackTimestamp);
   self.markers = ko.observableArray();
   self.trackMarkers = ko.observableArray();
   self.tracks = ko.observableArray();

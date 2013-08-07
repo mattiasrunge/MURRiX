@@ -504,7 +504,7 @@ var OverlayModel = function(parentModel)
           }
         }
 
-        self.showingModel.suggestions(suggestions);
+        self.showingModel.suggestions(suggestions.reverse());
       });
 
       return;
