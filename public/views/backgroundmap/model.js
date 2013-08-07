@@ -5,7 +5,7 @@ var MapTrack = function()
 
 };
 
-var MapModel = function(parentModel)
+var BackgroundMapModel = function(parentModel)
 {
   var self = this;
 

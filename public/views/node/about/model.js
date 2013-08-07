@@ -10,9 +10,11 @@ var AboutModel = function(parentModel)
 
   parentModel.path().primary.subscribe(function(value)
   {
-    if (self.show() !== (value.action === "about"))
+    var show = (value.action === "about" || value.action === "") && parentModel.show();
+
+    if (self.show() !== show)
     {
-      self.show(value.action === "about");
+      self.show(show);
     }
   });
 

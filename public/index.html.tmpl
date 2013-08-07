@@ -363,6 +363,17 @@
           </a>
         </li>
 
+        <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'timeline'">
+            <i class="icon-time icon-fixed"></i>
+            Timeline
+            <span data-bind="visible: nodeModel.timelineModel.loaded() || nodeModel.timelineModel.loading()" class="badge pull-right">
+              <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.timelineModel.loading"></i>
+              <span data-bind="visible: !nodeModel.timelineModel.loading(), text: nodeModel.timelineModel.timeline().length"></span>
+            </span>
+          </a>
+        </li>
+
         <li data-bind="fadeVisible: nodeModel.filesModel.enabled, css: { 'active': nodeModel.filesModel.show }" class="nav-link">
           <a href="#" data-bind="hrefSecondPrimary: 'files'">
             <i class="icon-th icon-fixed"></i>
@@ -374,14 +385,10 @@
           </a>
         </li>
 
-        <li data-bind="fadeVisible: nodeModel.timelineModel.enabled, css: { 'active': nodeModel.timelineModel.show }" class="nav-link">
-          <a href="#" data-bind="hrefSecondPrimary: 'timeline'">
-            <i class="icon-time icon-fixed"></i>
-            Timeline
-            <span data-bind="visible: nodeModel.timelineModel.loaded() || nodeModel.timelineModel.loading()" class="badge pull-right">
-              <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.timelineModel.loading"></i>
-              <span data-bind="visible: !nodeModel.timelineModel.loading(), text: nodeModel.timelineModel.timeline().length"></span>
-            </span>
+        <li data-bind="fadeVisible: nodeModel.mapModel.enabled, css: { 'active': nodeModel.mapModel.show }" class="nav-link">
+          <a href="#" data-bind="hrefSecondPrimary: 'map'">
+            <i class="icon-flag icon-fixed"></i>
+            Map
           </a>
         </li>
 
@@ -536,7 +543,7 @@
 
     <div class="fix-max" style="top: 50px; left: 250px; right: none;">
 
-      {{include:views/map/view.html}}
+      {{include:views/backgroundmap/view.html}}
       {{include:views/view.html}}
       {{include:views/news/view.html}}
       {{include:views/browse/view.html}}
@@ -553,6 +560,7 @@
       {{include:views/node/comments/view.html}}
       {{include:views/node/timeline/view.html}}
       {{include:views/node/relations/view.html}}
+      {{include:views/node/map/view.html}}
 
 
     </div>
@@ -643,6 +651,7 @@
     <script src="{{link:views/node/timeline/model.js}}"></script>
     <script src="{{link:views/node/issues/model.js}}"></script>
     <script src="{{link:views/node/metrics/model.js}}"></script>
+    <script src="{{link:views/node/map/model.js}}"></script>
     <script src="{{link:views/node/model.js}}"></script>
     <script src="{{link:views/search/model.js}}"></script>
     <script src="{{link:views/admin/model.js}}"></script>
@@ -653,7 +662,7 @@
     <script src="{{link:views/organize/model.js}}"></script>
     <script src="{{link:views/help/model.js}}"></script>
     <script src="{{link:views/todo/model.js}}"></script>
-    <script src="{{link:views/map/model.js}}"></script>
+    <script src="{{link:views/backgroundmap/model.js}}"></script>
     <script src="{{link:views/model.js}}"></script>
 
     <!-- Initialization scripts and definitions -->

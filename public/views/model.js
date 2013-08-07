@@ -111,7 +111,7 @@ murrix.model = function()
   self.organizeModel = new OrganizeModel(self);
   self.helpModel = new HelpModel(self);
   self.todoModel = new TodoModel(self);
-  self.mapModel = new MapModel(self);
+  self.backgroundMapModel = new BackgroundMapModel(self);
 
   self.dialogModel = new DialogModel();
 

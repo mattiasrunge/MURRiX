@@ -13,6 +13,8 @@ var NodeModel = function(parentModel)
     {
       self.show(value.action === "node");
     }
+
+    self.path().primary.valueHasMutated();
   });
 
   self.node = ko.observable(false);
@@ -535,4 +537,5 @@ var NodeModel = function(parentModel)
   self.timelineModel = new TimelineModel(self);
   self.issuesModel = new IssuesModel(self);
   self.metricsModel = new MetricsModel(self);
+  self.mapModel = new MapModel(self);
 };

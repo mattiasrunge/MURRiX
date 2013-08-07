@@ -1,8 +1,8 @@
 <div class="abs-max background-map"></div>
 
 <div style="position: absolute; top: 41px; left: 300px;">
-  <div data-bind="foreach: mapModel.trackMarkers">
-    <div class="box trackBox" data-bind="click: mapModel.trackClicked">
+  <div data-bind="foreach: backgroundMapModel.trackMarkers">
+    <div class="box trackBox" data-bind="click: backgroundMapModel.trackClicked">
       <img src="img/arrow.png" style="vertical-align: baseline;"/>
       <div style="display: inline-block; padding-right: 5px; padding-left: 5px;">
         Tracking <span data-bind="text: $data.deviceName"></span> owned by <span data-bind="text: $data.ownerName"></span>.<br>
