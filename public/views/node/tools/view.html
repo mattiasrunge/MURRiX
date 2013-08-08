@@ -5,18 +5,55 @@
     </div>
 
      <ul class="nav nav-tabs" style="margin-bottom: 20px;">
-      <li data-bind="css: { active: nodeModel.toolsModel.tool() === 'batch_camera' }">
-        <a href="#" data-bind="hrefFirstSecondary: 'batch_camera'">Set Camera</a>
+      <li data-bind="css: { active: nodeModel.toolsModel.tool() === 'set_camera' }">
+        <a href="#" data-bind="hrefSecondSecondary: 'set_camera'">Set Camera</a>
+      </li>
+      <li data-bind="css: { active: nodeModel.toolsModel.tool() === 'hide_raw' }">
+        <a href="#" data-bind="hrefSecondSecondary: 'hide_raw'">Hide Raw</a>
       </li>
     </ul>
 
-    <div style="margin-bottom: 30px;" data-bind="visible: nodeModel.toolsModel.tool() === 'batch_camera'">
+    <div style="margin-bottom: 30px;" data-bind="visible: nodeModel.toolsModel.tool() === 'hide_raw'">
 
-      <p>
+      <p class="page-description">
+        The number of raw images which are not hidden behind another image are stated below. It is possible to hide them all in one go if a suitable parent can be found. Matching is done on name e.g. IMG123.CR2 will be hidden behind IMG123.JPG.
+      </p>
+
+      <div data-bind="visible: nodeModel.toolsModel.rawLoading" class="panel panel-loading">
+        <i class="icon-spinner icon-spin icon-large"></i> Loading...
+      </div>
+
+      <table class="table table-condensed table-striped" data-bind="visible: !nodeModel.toolsModel.rawLoading()">
+        <thead>
+          <tr>
+            <th>Not&nbsp;possible&nbsp;to&nbsp;hide</th>
+            <th>Possible&nbsp;to&nbsp;hide</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-bind="text: nodeModel.toolsModel.rawCannotHide().length"></td>
+            <td data-bind="text: nodeModel.toolsModel.rawCanHide().length"></td>
+            <td>
+              <button class="btn btn-xs btn-primary" data-bind="click: nodeModel.toolsModel.hideRaw, disable: nodeModel.toolsModel.rawLoading">Hide all possible</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom: 30px;" data-bind="visible: nodeModel.toolsModel.tool() === 'set_camera'">
+
+      <p class="page-description">
         Below is a list of items grouped by camera identifiers such as serial number or model name read from the images exif data. If there is a camera found that matches the serial number or name it's name will be listed in the suggestion column. Under actions there is a button to set the suggested camera on all the images with matching exif data. Note that it will overwrite any previously set camera. If no suggested camera can be identified a button to create one based on the exif data is presented.
       </p>
 
-      <table class="table table-condensed table-striped">
+      <div data-bind="visible: nodeModel.toolsModel.cameraIdentifiersLoading" class="panel panel-loading">
+        <i class="icon-spinner icon-spin icon-large"></i> Loading...
+      </div>
+
+      <table class="table table-condensed table-striped" data-bind="visible: !nodeModel.toolsModel.cameraIdentifiersLoading()">
         <thead>
           <tr>
             <th>Count</th>
@@ -40,8 +77,8 @@
               </span>
             </td>
             <td>
-              <button class="btn btn-xs btn-primary" data-bind="click: nodeModel.toolsModel.setCamera, visible: $data._with !== false, disable: nodeModel.toolsModel.loading">Set camera</button>
-              <button class="btn btn-xs btn-primary" data-bind="click: nodeModel.toolsModel.withCreateFromExif, visible: $data._with === false && $data.type !== 'none', disable: nodeModel.toolsModel.loading">Create camera</button>
+              <button class="btn btn-xs btn-primary" data-bind="click: nodeModel.toolsModel.setCamera, visible: $data._with !== false, disable: nodeModel.toolsModel.cameraIdentifiersLoading">Set camera</button>
+              <button class="btn btn-xs btn-primary" data-bind="click: nodeModel.toolsModel.withCreateFromExif, visible: $data._with === false && $data.type !== 'none', disable: nodeModel.toolsModel.cameraIdentifiersLoading">Create camera</button>
             </td>
           </tr>
         </tbody>

@@ -7,10 +7,15 @@ var ToolsModel = function(parentModel)
   parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
 
   self.show = ko.observable(false);
-  self.items = ko.observableArray();
-  self.loading = ko.observable(false);
-  self.loaded = ko.observable(false);
+
+  self.cameraIdentifiersLoading = ko.observable(false);
+  self.cameraIdentifiersLoaded = ko.observable(false);
   self.cameraIdentifiers = ko.observableArray();
+
+  self.rawLoading = ko.observable(false);
+  self.rawLoaded = ko.observable(false);
+  self.rawCanHide = ko.observableArray();
+  self.rawCannotHide = ko.observableArray();
 
   parentModel.path().primary.subscribe(function(value)
   {
@@ -23,11 +28,11 @@ var ToolsModel = function(parentModel)
 
     if (self.show())
     {
-      self.tool(value.args.length === 0 ? "batch_camera" : value.args[0]);
+      self.tool(value.args.length === 0 ? "set_camera" : value.args[0]);
     }
   });
 
-  self.tool = ko.observable("batch_camera");
+  self.tool = ko.observable("set_camera");
 
   self.enabled = ko.computed(function()
   {
@@ -44,30 +49,96 @@ var ToolsModel = function(parentModel)
   {
     if (value && parentModel.node() !== false)
     {
-      self.loadCameraIdentifiers();
+      self.tool.valueHasMutated();
     }
   });
 
   parentModel.node.subscribe(function(value)
   {
-    self.loaded(false);
+    self.cameraIdentifiersLoaded(false);
     self.cameraIdentifiers.removeAll();
+
+    self.rawLoaded(false);
+    self.rawCanHide.removeAll();
+    self.rawCannotHide.removeAll();
 
     if (self.show() && value !== false)
     {
-      self.loadCameraIdentifiers();
+      self.tool.valueHasMutated();
     }
   });
 
+  self.tool.subscribe(function(value)
+  {
+    if (value === "set_camera")
+    {
+      self.loadCameraIdentifiers();
+    }
+    else if (value === "hide_raw")
+    {
+      self.loadRaw();
+    }
+  });
+
+  self.loadRaw = function()
+  {
+    console.log("ToolsModel: Loading raw data...");
+
+    if (self.show() && !self.rawLoaded() && parentModel.node() !== false)
+    {
+      self.rawLoading(true);
+
+      murrix.server.emit("helper_nodeToolsGetHideRawList", { nodeId: parentModel.node()._id() }, function(error, cannotHideList, canHideList)
+      {
+        self.rawLoading(false);
+
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        self.rawCanHide(canHideList);
+        self.rawCannotHide(cannotHideList);
+      });
+    }
+  };
+
+  self.hideRaw = function()
+  {
+    self.rawLoading(true);
+
+    murrix.server.emit("helper_nodeToolsHideRaw", { list: self.rawCanHide() }, function(error, itemDataList)
+    {
+      self.rawLoading(false);
+
+      if (error)
+      {
+        console.log(error);
+        return;
+      }
+
+      for (var n = 0; n < itemDataList.length; n++)
+      {
+        murrix.cache.addItemData(itemDataList[n]);
+      }
+
+      self.rawLoaded(false);
+      self.loadRaw();
+    });
+  };
+
   self.loadCameraIdentifiers = function()
   {
-    if (self.show() && !self.loaded() && parentModel.node() !== false)
+    console.log("ToolsModel: Loading camera identifiers...");
+
+    if (self.show() && !self.cameraIdentifiersLoaded() && parentModel.node() !== false)
     {
-      self.loading(true);
+      self.cameraIdentifiersLoading(true);
 
       murrix.server.emit("helper_nodeToolsGetCameraList", { nodeId: parentModel.node()._id() }, function(error, identifiers)
       {
-        self.loading(false);
+        self.cameraIdentifiersLoading(false);
 
         if (error)
         {
@@ -84,7 +155,7 @@ var ToolsModel = function(parentModel)
   {
     murrix.model.dialogModel.cameraNodeModel.showCreate(function(node)
     {
-      self.loaded(false);
+      self.cameraIdentifiersLoaded(false);
       self.loadCameraIdentifiers();
     });
 
@@ -101,11 +172,11 @@ var ToolsModel = function(parentModel)
 
   self.setCamera = function()
   {
-    self.loading(true);
+    self.cameraIdentifiersLoading(true);
 
     murrix.server.emit("helper_nodeToolsSetCamera", { _with: this._with, _itemIds: this._itemIds }, function(error, itemDataList)
     {
-      self.loading(false);
+      self.cameraIdentifiersLoading(false);
 
       if (error)
       {
@@ -118,7 +189,7 @@ var ToolsModel = function(parentModel)
         murrix.cache.addItemData(itemDataList[n]);
       }
 
-      self.loaded(false);
+      self.cameraIdentifiersLoaded(false);
       self.loadCameraIdentifiers();
     });
   };

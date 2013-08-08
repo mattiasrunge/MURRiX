@@ -1147,6 +1147,20 @@ i.icon-fixed[class*="icon-white"] {
   box-shadow: inset 1px 0 0 #ffffff;
 }
 
+.panel-loading {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: 16px;
+}
+
+.page-description {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
 .timeline-container {
 }
 
