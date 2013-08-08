@@ -11,7 +11,38 @@
       <li data-bind="css: { active: nodeModel.toolsModel.tool() === 'hide_raw' }">
         <a href="#" data-bind="hrefSecondSecondary: 'hide_raw'">Hide Raw</a>
       </li>
+       <li data-bind="css: { active: nodeModel.toolsModel.tool() === 'remove_duplicates' }">
+        <a href="#" data-bind="hrefSecondSecondary: 'remove_duplicates'">Remove Duplicates</a>
+      </li>
     </ul>
+
+    <div style="margin-bottom: 30px;" data-bind="visible: nodeModel.toolsModel.tool() === 'remove_duplicates'">
+
+      <p class="page-description">
+        Any files which has been uploaded more then once to this node will be listed here. It is then possible to remove duplicates. It is not possible to decide which version should be removed. Identification is done by comparing the files checksums. Please not that removing is an extremly slow operation which means that it will take a very long time to complete this action if there is a lot of duplicates.
+      </p>
+
+      <div data-bind="visible: nodeModel.toolsModel.duplicatesLoading" class="panel panel-loading">
+        <i class="icon-spinner icon-spin icon-large"></i> Loading...
+      </div>
+
+      <table class="table table-condensed table-striped" data-bind="visible: !nodeModel.toolsModel.duplicatesLoading()">
+        <thead>
+          <tr>
+            <th>Found&nbsp;duplicates</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-bind="text: nodeModel.toolsModel.duplicates().length"></td>
+            <td>
+              <button class="btn btn-xs btn-primary" data-bind="click: nodeModel.toolsModel.removeDuplicates, disable: nodeModel.toolsModel.duplicatesLoading() || nodeModel.toolsModel.duplicates().length === 0">Remove all duplicates</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <div style="margin-bottom: 30px;" data-bind="visible: nodeModel.toolsModel.tool() === 'hide_raw'">
 
@@ -36,7 +67,7 @@
             <td data-bind="text: nodeModel.toolsModel.rawCannotHide().length"></td>
             <td data-bind="text: nodeModel.toolsModel.rawCanHide().length"></td>
             <td>
-              <button class="btn btn-xs btn-primary" data-bind="click: nodeModel.toolsModel.hideRaw, disable: nodeModel.toolsModel.rawLoading">Hide all possible</button>
+              <button class="btn btn-xs btn-primary" data-bind="click: nodeModel.toolsModel.hideRaw, disable: nodeModel.toolsModel.rawLoading() || nodeModel.toolsModel.rawCanHide().length === 0">Hide all possible</button>
             </td>
           </tr>
         </tbody>
@@ -59,7 +90,7 @@
             <th>Count</th>
             <th>Type</th>
             <th>Identifier</th>
-            <th>Matched&nbsp;Camera</th>
+            <th>Matched&nbsp;camera</th>
             <th>Action</th>
           </tr>
         </thead>

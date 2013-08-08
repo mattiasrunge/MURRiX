@@ -17,6 +17,10 @@ var ToolsModel = function(parentModel)
   self.rawCanHide = ko.observableArray();
   self.rawCannotHide = ko.observableArray();
 
+  self.duplicatesLoading = ko.observable(false);
+  self.duplicatesLoaded = ko.observable(false);
+  self.duplicates = ko.observableArray();
+
   parentModel.path().primary.subscribe(function(value)
   {
     var show = value.action === "tools";
@@ -62,6 +66,9 @@ var ToolsModel = function(parentModel)
     self.rawCanHide.removeAll();
     self.rawCannotHide.removeAll();
 
+    self.duplicatesLoaded(false);
+    self.duplicates.removeAll();
+
     if (self.show() && value !== false)
     {
       self.tool.valueHasMutated();
@@ -78,7 +85,53 @@ var ToolsModel = function(parentModel)
     {
       self.loadRaw();
     }
+    else if (value === "remove_duplicates")
+    {
+      self.loadDuplicates();
+    }
   });
+
+  self.loadDuplicates = function()
+  {
+    console.log("ToolsModel: Loading duplicates...");
+
+    if (self.show() && !self.duplicatesLoaded() && parentModel.node() !== false)
+    {
+      self.duplicatesLoading(true);
+
+      murrix.server.emit("helper_nodeToolsGetDuplicateList", { nodeId: parentModel.node()._id() }, function(error, list)
+      {
+        self.duplicatesLoading(false);
+
+        if (error)
+        {
+          console.log(error);
+          return;
+        }
+
+        self.duplicates(list);
+      });
+    }
+  };
+
+  self.removeDuplicates = function()
+  {
+    self.duplicatesLoading(true);
+
+    murrix.server.emit("helper_nodeToolsRemoveDuplicates", { list: self.duplicates() }, function(error)
+    {
+      self.duplicatesLoading(false);
+
+      if (error)
+      {
+        console.log(error);
+        return;
+      }
+
+      self.duplicatesLoaded(false);
+      self.loadDuplicates();
+    });
+  };
 
   self.loadRaw = function()
   {
