@@ -1,4 +1,4 @@
-<div data-bind="fadeVisible: nodeModel.aboutModel.show">
+<div data-bind="fadeVisible: nodeModel.aboutModel.show() && nodeModel.node() !== false">
   <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
     <div class="page-header">
       <h1>Overview <small>Summary of content</small></h1>

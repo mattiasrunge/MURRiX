@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>MURRiX</title>
+    <title>Loading...</title>
     <link id="favicon" rel="shortcut icon" href="img/murrix_icon.png" type="image/png">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -295,7 +295,7 @@
       </div>
 
 
-      <ul class="nav nav-pills nav-stacked" data-bind="visible: !nodeModel.show()" style="margin-top: 250px;">
+      <ul class="nav nav-pills nav-stacked" data-bind="visible: !nodeModel.show() || nodeModel.node() === false" style="margin-top: 250px;">
 
         <li data-bind="fadeVisible: currentUser(), css: { 'active': newsModel.show }" class="nav-link">
           <a href="#" data-bind="hrefFirstPrimary: newsModel.show() ? ' ' : 'news'">
@@ -354,7 +354,7 @@
       </ul>
 
 
-      <ul class="nav nav-pills nav-stacked" data-bind="visible: nodeModel.show" style="margin-top: 250px;">
+      <ul class="nav nav-pills nav-stacked" data-bind="visible: nodeModel.show() && nodeModel.node() !== false" style="margin-top: 250px;">
 
         <li data-bind="fadeVisible: nodeModel.aboutModel.enabled, css: { 'active': nodeModel.aboutModel.show }" class="nav-link">
           <a href="#" data-bind="hrefSecondPrimary: 'about'">
@@ -562,6 +562,7 @@
       {{include:views/admin/view.html}}
       {{include:views/config/view.html}}
 
+      {{include:views/node/view.html}}
       {{include:views/node/about/view.html}}
       {{include:views/node/files/view.html}}
       {{include:views/node/comments/view.html}}
@@ -576,7 +577,7 @@
     <div class="loading-overlay"></div>
 
     <div class="hide">
-      {{include:views/node/view.html}}
+
 
 
 

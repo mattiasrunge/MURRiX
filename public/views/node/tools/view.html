@@ -1,4 +1,4 @@
-<div data-bind="fadeVisible: nodeModel.toolsModel.show">
+<div data-bind="fadeVisible: nodeModel.toolsModel.show() && nodeModel.node() !== false">
   <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
     <div class="page-header">
       <h1>Tools <small>Batch tools for working on a large number of items</small></h1>

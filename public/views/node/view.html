@@ -104,8 +104,19 @@
   </div>
 </script>
 
-<div class="well" data-bind="fadeVisible: nodeModel.show() && !nodeModel.node() && !nodeModel.loadingNode()"  style="width: 500px; margin-left: auto; margin-right: auto; margin-top: 60px; text-align: center; position: relative; z-index: 5;">
-  <h3>Could not access the requested node</h3>
-  <p class="text-error">The node might not exist or there are insufficient rights to access it.</p>
-  <p><a href="#">Back to the start page</a></p>
+<div data-bind="fadeVisible: nodeModel.show() && nodeModel.node() === false && !nodeModel.loadingNode()">
+  <div class="abs-max content">
+    <div class="page-header">
+      <h1>Access denied</h1>
+    </div>
+    <p class="alert alert-danger">
+      <strong>
+        <i class="icon-warning-sign"></i>
+        The requested node might not exist or you have insufficient rights to access it.
+      </strong>
+      Please try to sign in with an account which have access or contact the administrator if you think you should have access.
+    </p>
+    <p><a href="#">Back to the start page</a></p>
+  </div>
+  <div class="abs-max background"></div>
 </div>

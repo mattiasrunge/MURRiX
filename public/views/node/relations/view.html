@@ -115,7 +115,7 @@
   </table>
 </script>
 
-<div data-bind="fadeVisible: nodeModel.relationsModel.show">
+<div data-bind="fadeVisible: nodeModel.relationsModel.show() && nodeModel.node() !== false">
   <div class="abs-max content" data-bind="if: nodeModel.node() !== false">
 
     <div class="relation-container" data-bind="event: { mousedown: nodeModel.relationsModel.startDragHandler, mousemove: nodeModel.relationsModel.dragHandler, mouseup: nodeModel.relationsModel.stopDragHandler, mousewheel: nodeModel.relationsModel.scrollHandler, DOMMouseScroll: nodeModel.relationsModel.scrollHandler }">

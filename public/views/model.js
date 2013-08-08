@@ -5,16 +5,18 @@ murrix.model = function()
 
   self.path = ko.observable({ primary: ko.observable({ action: "invalid", args: [] }), secondary: ko.observable("") });
 
-  self.title = ko.observable("MURRiX");
+  self.title = ko.observable(document.location.hostname);
 
   self.title.subscribe(function(value)
   {
     $("title").text(value);
   });
 
+  self.title.valueHasMutated();
+
   self.path().primary.subscribe(function()
   {
-    self.title("MURRiX");
+    self.title(document.location.hostname);
   });
 
   self.currentUser = ko.observable(false);
@@ -126,7 +128,7 @@ murrix.model = function()
             !self.configModel.show() &&
             !self.helpModel.show() &&
             !self.todoModel.show() &&
-            !self.nodeModel.show();
+            (!self.nodeModel.show() || self.nodeModel.node() === false);
   });
 
   self.timezones = [
