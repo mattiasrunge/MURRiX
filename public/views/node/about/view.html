@@ -23,6 +23,18 @@
 
 
     <div class="clearfix">
+      <!-- ko if: nodeModel.node().type() === 'camera' || nodeModel.node().type() === 'vehicle' || nodeModel.node().type() === 'location' -->
+        <div class="list-group pull-right" style="width: 300px; margin-left: 50px;">
+
+          <div class="list-group-item" data-bind="visible: nodeModel.node()._owners().length > 0">
+            <h4 class="list-group-item-heading">Owned by</h4>
+            <div class="list-group-item-text list-group-item-text-data" data-bind="foreach: nodeModel.node()._owners">
+              <a href="#" data-bind="hrefFirst: [ 'node', $data ], popoverNode: $data, textNodeAttribute: [ $data, 'name' ]"></a>
+            </div>
+          </div>
+        </div>
+      <!-- /ko -->
+
       <!-- ko if: nodeModel.node().type() === 'person' -->
         <div class="list-group pull-right" style="width: 300px; margin-left: 50px;">
           <div class="list-group-item" data-bind="visible: nodeModel.node().birthname() !== ''">

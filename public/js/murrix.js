@@ -972,27 +972,34 @@ murrix.cache = new function()
   self.getGroups = function(idList, callback)
   {
     var groupList = {};
-    var idRequestList = [];
+    var query = {};
 
-    for (var n = 0; n < idList.length; n++)
+    if (idList.length > 0)
     {
-      if (self.groups[idList[n]])
+      var idRequestList = [];
+
+      for (var n = 0; n < idList.length; n++)
       {
-        groupList[idList[n]] = self.groups[idList[n]];
+        if (self.groups[idList[n]])
+        {
+          groupList[idList[n]] = self.groups[idList[n]];
+        }
+        else
+        {
+          idRequestList.push(idList[n]);
+        }
       }
-      else
+
+      if (idRequestList.length === 0)
       {
-        idRequestList.push(idList[n]);
+        callback(null, groupList);
+        return;
       }
+
+      query = { _id: { $in: idRequestList } };
     }
 
-    if (idRequestList.length === 0)
-    {
-      callback(null, groupList);
-      return;
-    }
-
-    murrix.server.emit("findGroups", { query: { _id: { $in: idRequestList } }, options: {} }, function(error, groupDataList)
+    murrix.server.emit("findGroups", { query: query, options: {} }, function(error, groupDataList)
     {
       if (error)
       {

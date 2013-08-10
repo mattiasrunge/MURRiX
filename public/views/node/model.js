@@ -236,8 +236,13 @@ var NodeModel = function(parentModel)
 
     if (self.node() !== false && parentModel.currentUser() !== false)
     {
-      var groupIdList = parentModel.currentUser()._groups();
-      groupIdList.concat(self.node()._readers(), self.node()._admins());
+      var groupIdList = [];
+
+      if (typeof parentModel.currentUser().admin === "undefined" || parentModel.currentUser().admin() !== true)
+      {
+        groupIdList = parentModel.currentUser()._groups();
+        groupIdList = groupIdList.concat(self.node()._readers(), self.node()._admins());
+      }
 
       murrix.cache.getGroups(groupIdList, function(error, groupList)
       {

@@ -664,19 +664,19 @@
 
             <div style="margin: 0px 10px 10px 10px; font-size: 10px;">
               <div class="form-group">
-                <button style="width: 100%" class="btn btn-danger btn-small" data-bind="click: nodeModel.overlayModel.remove">Remove</button>
+                <button style="width: 100%" class="btn btn-danger btn-small" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.remove">Remove</button>
               </div>
               <div class="form-group" data-bind="visible: nodeModel.overlayModel.item().exif && nodeModel.overlayModel.item().exif.MIMEType && (nodeModel.overlayModel.item().exif.MIMEType() === 'image/x-canon-cr2' || nodeModel.overlayModel.item().exif.MIMEType() === 'image/x-canon-crw')">
-                <button style="width: 100%" class="btn btn-default btn-small" data-bind="click: nodeModel.overlayModel.hideRaw">Hide raw image</button>
+                <button style="width: 100%" class="btn btn-default btn-small" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.hideRaw">Hide raw image</button>
               </div>
               <div class="form-group" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
-                <button style="width: 100%"  class="btn btn-default btn-small" data-bind="click: nodeModel.overlayModel.setThumbPosition">Set thumbnail position</button>
+                <button style="width: 100%"  class="btn btn-default btn-small" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.setThumbPosition">Set thumbnail position</button>
               </div>
               <div class="form-group">
                 <div class="btn-group" data-bind="visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile' || nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
-                  <button title="Rotate counter clockwise" style="width: 110px;" class="btn btn-default btn-small" data-bind="click: nodeModel.overlayModel.rotateLeft"><i class="icon-undo"></i></button>
-                  <button title="Mirror" style="width: 111px;" class="btn btn-default btn-small" data-bind="disable: nodeModel.overlayModel.item().whatDetailed() === 'videoFile', click: nodeModel.overlayModel.mirror">Mirror</button>
-                  <button title="Rotate clockwise" style="width: 110px;" class="btn btn-default btn-small" data-bind="click: nodeModel.overlayModel.rotateRight"><i class="icon-repeat"></i></button>
+                  <button title="Rotate counter clockwise" style="width: 110px;" class="btn btn-default btn-small" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.rotateLeft"><i class="icon-undo"></i></button>
+                  <button title="Mirror" style="width: 111px;" class="btn btn-default btn-small" data-bind="disable: nodeModel.overlayModel.item().whatDetailed() === 'videoFile' || nodeModel.overlayModel.editLoading(), click: nodeModel.overlayModel.mirror">Mirror</button>
+                  <button title="Rotate clockwise" style="width: 110px;" class="btn btn-default btn-small" data-bind="disable: nodeModel.overlayModel.editLoading, click: nodeModel.overlayModel.rotateRight"><i class="icon-repeat"></i></button>
                 </div>
               </div>
               <div class="form-group">
