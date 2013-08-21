@@ -313,6 +313,8 @@ $(function()
       $(element).text("...loading...");
 
       var whereId = ko.utils.unwrapObservable(where._id);
+      var longitude = ko.utils.unwrapObservable(where.longitude);
+      var latitude = ko.utils.unwrapObservable(where.latitude);
 
       if (whereId)
       {
@@ -334,16 +336,13 @@ $(function()
           }
         });
       }
-      else if (where.longitude && where.latitude)
+      else if (longitude && latitude)
       {
         // TODO: Look in our own database first
-
-        var longitude = ko.utils.unwrapObservable(where.longitude);
-        var latitude = ko.utils.unwrapObservable(where.latitude);
         var options = {};
 
         options.sensor = false;
-        options.latlng = longitude + "," + latitude;
+        options.latlng = latitude + "," + longitude;
 
         jQuery.getJSON("http://maps.googleapis.com/maps/api/geocode/json", options, function(data)
         {

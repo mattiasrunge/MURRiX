@@ -104,7 +104,7 @@ var BackgroundMapModel = function(parentModel)
 
         var clickHandler = function()
         {
-          document.location.hash += "/:" + this._id;
+          document.location.hash += ":" + this._id;
         };
 
         for (n = 0; n < markerList.length; n++)
