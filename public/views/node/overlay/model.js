@@ -1155,7 +1155,7 @@ var OverlayModel = function(parentModel)
       self.whereInitialize();
       self.whoInitialize();
       self.withInitialize();
-      parentModel.loadNode();
+      //parentModel.loadNode();
 
       if (callback)
       {
@@ -1288,7 +1288,7 @@ var OverlayModel = function(parentModel)
     {
       for (var n = 0; n < self.item().with().referenceTimelines().length; n++)
       {
-        if (self.item().with().referenceTimelines()[n].offset() === offset)
+        if (self.item().with().referenceTimelines()[n].offset && self.item().with().referenceTimelines()[n].offset() === offset)
         {
           return false;
         }
@@ -1340,7 +1340,7 @@ var OverlayModel = function(parentModel)
        return;
     }
 
-    var nodeData = ko.mapping.toJS(self.item()._with);
+    var nodeData = ko.mapping.toJS(self.item().with());
 
     var reference = {};
 
@@ -1348,7 +1348,7 @@ var OverlayModel = function(parentModel)
     reference.type = "utc";
     reference.offset = self.item().when.timestamp() - self.whenCreateExifCameraTimestamp();
     reference.name = "(UTC " + reference.offset + "s) from " + self.item().name();
-    console.log(reference);
+    console.log(reference, nodeData);
 
     nodeData.referenceTimelines = nodeData.referenceTimelines || [];
     nodeData.referenceTimelines.push(reference);

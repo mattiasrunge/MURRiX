@@ -381,7 +381,7 @@
 
         <div style="font-size: 10px; padding: 10px; padding-top: 0px; text-align: left;">
           <table class="table table-striped table-condensed">
-            <tr data-bind="visible: !nodeModel.overlayModel.item().type || nodeModel.overlayModel.item().type() === 'none'">
+            <tr>
               <td>
                 <a href="#" data-bind="visible: nodeModel.node().hasAdminAccess(), click: nodeModel.overlayModel.whoEditClicked">Created&nbsp;by</a>
                 <span data-bind="visible: !nodeModel.node().hasAdminAccess()">Created&nbsp;by</span>
