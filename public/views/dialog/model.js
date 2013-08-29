@@ -47,4 +47,5 @@ function DialogModel()
   self.userModel = new DialogUserModel();
   self.passwordModel = new DialogPasswordModel();
   self.uploadModel = new DialogUploadModel();
+  self.downloadModel = new DialogDownloadModel();
 }

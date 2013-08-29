@@ -70,6 +70,12 @@
                 Upload
               </a>
             </li>
+             <li>
+              <a href="#" data-bind="click: dialogModel.downloadModel.show">
+                <i style="vertical-align: center;" class="icon-save icon-fixed"></i>
+                Download
+              </a>
+            </li>
             <li>
               <a href="#" data-bind="click: nodeModel.removeNode">
                 <i style="vertical-align: center;" class="icon-trash icon-fixed"></i>
@@ -607,6 +613,7 @@
     {{include:views/dialog/albumNode/view.html}}
     {{include:views/dialog/tagsNode/view.html}}
     {{include:views/dialog/upload/view.html}}
+    {{include:views/dialog/download/view.html}}
 
 
     <!-- Third-party script files -->
@@ -648,6 +655,7 @@
     <script src="{{link:views/dialog/tagsNode/model.js}}"></script>
     <script src="{{link:views/dialog/textItem/model.js}}"></script>
     <script src="{{link:views/dialog/upload/model.js}}"></script>
+    <script src="{{link:views/dialog/download/model.js}}"></script>
     <script src="{{link:views/dialog/model.js}}"></script>
 
 

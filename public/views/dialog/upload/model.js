@@ -9,6 +9,7 @@ function DialogUploadModel()
   self.files = ko.observableArray();
   self.speed = ko.observable(0);
   self.hasChanged = ko.observable(false);
+  self.errorText = ko.observable("");
 
   self.progress = ko.computed(function()
   {
@@ -105,7 +106,7 @@ function DialogUploadModel()
 
       if (fileItem.type === "")
       {
-        console.log("Can not handle files without a MIMEType", fileItem);
+        self.errorText("Can not handle files without a MIMEType", fileItem);
         continue;
       }
 
@@ -125,7 +126,7 @@ function DialogUploadModel()
 
     if (self.files().length === 0)
     {
-      console.log("No files queued, doing nothing...");
+      self.errorText("No files queued, doing nothing...");
       return;
     }
 
@@ -159,7 +160,7 @@ function DialogUploadModel()
 
     if (index >= self.files().length)
     {
-      console.log("All files are done!");
+      self.errorText("All files are done!");
       return;
     }
 
@@ -167,11 +168,11 @@ function DialogUploadModel()
     self.files()[index].status("uploading");
     self.files()[index].progress(0);
 
-    murrix.file.upload(self.files()[index].file, function(error, id, progress, speed)
+    murrix.upload(self.files()[index].file, function(error, id, progress, speed)
     {
       if (error)
       {
-        console.log("Upload failed, reason: " + error, self.files()[index].file);
+        self.errorText("Upload failed, reason: " + error, self.files()[index].file);
         self.files()[index].status("upload_failed");
         return;
       }
@@ -212,14 +213,14 @@ function DialogUploadModel()
     {
       if (error)
       {
-        console.log("Could not query for item, reason: " + error);
+        self.errorText("Could not query for item, reason: " + error);
         file.status("hide_failed");
         return;
       }
 
       if (itemDataList.length === 0)
       {
-        console.log("Found nowhere to hide " + file.name() + ", will import instead!");
+        self.errorText("Found nowhere to hide " + file.name() + ", will import instead!");
         self._doImport(file);
         return;
       }
@@ -228,12 +229,12 @@ function DialogUploadModel()
       {
         if (error)
         {
-          console.log("Could not hide file, reason: " + error);
+          self.errorText("Could not hide file, reason: " + error);
           file.status("hide_failed");
           return;
         }
 
-        console.log(file.name() + " hidden successfully behind " + itemDataNew.name + "!");
+        self.errorText(file.name() + " hidden successfully behind " + itemDataNew.name + "!");
         murrix.cache.addItemData(itemDataNew);
         self.hasChanged(true);
         file.status("hide_success");
@@ -254,12 +255,12 @@ function DialogUploadModel()
     {
       if (error)
       {
-        console.log("Could not import file, reason: " + error);
+        self.errorText("Could not import file, reason: " + error);
         file.status("import_failed");
         return;
       }
 
-      console.log(file.name() + " imported successfully!");
+      self.errorText(file.name() + " imported successfully!");
       murrix.cache.addItemData(itemDataNew);
       self.hasChanged(true);
       file.status("import_success");
@@ -275,6 +276,7 @@ function DialogUploadModel()
   {
     self.files.removeAll();
     self.speed(0);
+    self.errorText("");
 
     if (self.hasChanged())
     {

@@ -16,7 +16,8 @@
     "gedcom-stream": "0.3.0",
     "xml2js": ">= 0.2.8",
     "express": ">= 3.0.0-rc5",
-    "cookie": ">= 0.1.0"
+    "cookie": ">= 0.1.0",
+    "node-native-zip": ">= 1.1.0"
   },
   "devDependencies": {
     "jshint": "~1.1.0"

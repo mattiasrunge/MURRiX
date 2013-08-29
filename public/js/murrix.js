@@ -1119,55 +1119,50 @@ murrix.dnd = new function()
 }();
 
 
-murrix.file = new function()
+murrix.upload = function(file, callback)
 {
-  var self = this;
+  var form = new FormData();
 
-  self.upload = function(file, callback)
-  {
-    var form = new FormData();
+  form.append("file", file);
 
-    form.append("file", file);
+  var startTime = murrix.timestamp();
 
-    var startTime = murrix.timestamp();
+  $.ajax({
+    url: "/upload",
+    type: "POST",
+    xhr: function()
+    {
+      myXhr = $.ajaxSettings.xhr();
 
-    $.ajax({
-      url: "/upload",
-      type: "POST",
-      xhr: function()
+      var progressListener = function(event)
       {
-        myXhr = $.ajaxSettings.xhr();
+        var progress = Math.round((event.loaded / event.total) * 100);
+        var duration = murrix.timestamp() - startTime;
+        var speed = event.total / (duration === 0 ? 1 : duration);
 
-        var progressListener = function(event)
-        {
-          var progress = (event.loaded / event.total) * 100;
-          var duration = murrix.timestamp() - startTime;
-          var speed = event.total / (duration === 0 ? 1 : duration);
+        callback(null, null, progress, speed);
+      };
 
-          callback(null, null, progress, speed);
-        };
+      myXhr.upload.addEventListener("progress", progressListener, false);
+      myXhr.addEventListener("progress", progressListener, false);
 
-        myXhr.upload.addEventListener("progress", progressListener, false);
-        myXhr.addEventListener("progress", progressListener, false);
-
-        return myXhr;
-      },
-      success: function(data)
-      {
-        callback(null, data.path);
-      },
-      error: function(data)
-      {
-        console.log("Upload failed, reason: " + data.responseText, file);
-        callback("Upload failed, reason: " + data.responseText, null, 0, 0);
-      },
-      data: form,
-      cache: false,
-      contentType: false,
-      processData: false
-    }, "json");
-  };
-}();
+      return myXhr;
+    },
+    success: function(data)
+    {
+      callback(null, data.path);
+    },
+    error: function(data)
+    {
+      console.log("Upload failed, reason: " + data.responseText, file);
+      callback("Upload failed, reason: " + data.responseText, null, 0, 0);
+    },
+    data: form,
+    cache: false,
+    contentType: false,
+    processData: false
+  }, "json");
+};
 
 murrix.loadProfilePicture = function(element, pictureId, width, height, square)
 {
