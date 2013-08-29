@@ -5,6 +5,8 @@ files/*
 !files/.murrix
 dumps/*
 !dumps/.murrix
+dumps/*
+sessions/*
 node_modules
 config.json
 triggers.json

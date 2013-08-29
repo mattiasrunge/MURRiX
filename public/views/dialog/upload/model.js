@@ -176,12 +176,10 @@ function DialogUploadModel()
         return;
       }
 
-      self.speed(speed);
-      self.files()[index].id = id;
-      self.files()[index].progress(progress);
-
-      if (progress === 100)
+      if (id)
       {
+        self.files()[index].id = id;
+
         if (self.files()[index].isRaw)
         {
           self._doHide(self.files()[index]);
@@ -190,6 +188,12 @@ function DialogUploadModel()
         {
           self._doImport(self.files()[index]);
         }
+      }
+      else
+      {
+        self.speed(speed);
+
+        self.files()[index].progress(progress);
       }
     });
   };

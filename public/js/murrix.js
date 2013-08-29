@@ -1123,78 +1123,49 @@ murrix.file = new function()
 {
   var self = this;
 
-  self._readChunk = function(file, offset, chunkSize)
-  {
-    var data = null;
-
-    if (file.slice)
-    {
-      data = file.slice(offset, offset + Math.min(chunkSize, file.size - offset));
-    }
-    else if (file.webkitSlice)
-    {
-      data = file.webkitSlice(offset, offset + Math.min(chunkSize, file.size - offset));
-    }
-    else if (file.mozSlice)
-    {
-      data = file.mozSlice(offset, offset + Math.min(chunkSize, file.size - offset));
-    }
-    else
-    {
-      return false;
-    }
-
-    file.reader.readAsBinaryString(data);
-    return true;
-  };
-
   self.upload = function(file, callback)
   {
-    var size = 0;
+    var form = new FormData();
 
-    file.reader = new FileReader();
+    form.append("file", file);
 
-    file.reader.onload = function(event)
-    {
-      var startTime = murrix.timestamp();
-      var data = window.btoa(event.target.result); // base64 encode
+    var startTime = murrix.timestamp();
 
-      murrix.server.emit("fileChunk", { id: file.uploadId, data: data }, function(error, id, progress, offset, chunkSize)
+    $.ajax({
+      url: "/upload",
+      type: "POST",
+      xhr: function()
       {
-        if (error)
+        myXhr = $.ajaxSettings.xhr();
+
+        var progressListener = function(event)
         {
-          console.log(error);
-          murrix.file.reader = null;
-          callback(error);
-          return;
-        }
+          var progress = (event.loaded / event.total) * 100;
+          var duration = murrix.timestamp() - startTime;
+          var speed = event.total / (duration === 0 ? 1 : duration);
 
-        var duration = murrix.timestamp() - startTime;
-        var speed = size / (duration === 0 ? 1 : duration);
-//console.log("::", speed, size, duration);
+          callback(null, null, progress, speed);
+        };
 
-        callback(null, id, progress, speed);
+        myXhr.upload.addEventListener("progress", progressListener, false);
+        myXhr.addEventListener("progress", progressListener, false);
 
-        size = chunkSize;
-
-        if (progress < 100)
-        {
-          if (!murrix.file._readChunk(file, offset, chunkSize))
-          {
-            console.log("Failed to read chunk!");
-            callback("Failed to read chunk!"); // TODO: Check this before we start, and tell server on fails so it can clear states
-            return;
-          }
-        }
-      });
-    };
-
-    murrix.server.emit("fileStart", { filename: file.name, size: file.size }, function(error, id, offset, chunkSize)
-    {
-      size = chunkSize;
-      file.uploadId = id;
-      murrix.file._readChunk(file, offset, chunkSize);
-    });
+        return myXhr;
+      },
+      success: function(data)
+      {
+        callback(null, data.path);
+      },
+      error: function(data)
+      {
+        console.log("Upload failed, reason: " + data.responseText, file);
+        callback("Upload failed, reason: " + data.responseText, null, 0, 0);
+      },
+      data: form,
+      cache: false,
+      contentType: false,
+      processData: false
+    }, "json");
   };
 }();
 
