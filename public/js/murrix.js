@@ -328,10 +328,14 @@ murrix.cache = new function()
 
     self.initImageList = list;
 
-    if (self.initImageList.length === 0 && self.imageTimer)
+    self.imageTimer = null;
+
+    if (self.initImageList.length > 0)
     {
-      clearInterval(self.imageTimer);
-      self.imageTimer = null;
+      self.imageTimer = setTimeout(function()
+      {
+        self.initImageTimeout();
+      }, 1000);
     }
   };
 
@@ -361,16 +365,16 @@ murrix.cache = new function()
 
     if (!self.imageTimer)
     {
-      self.imageTimer = setInterval(function()
+      self.imageTimer = setTimeout(function()
       {
         self.initImageTimeout();
-      }, 500);
+      }, 1000);
     }
   };
 
   self.isElementVisible = function($element, elementWidth, elementHeight)
-  {
-    if ($element.is(":visible"))
+  {return true;
+    //if ($element.is(":visible"))
     {
       var offset = $element.offset();
 

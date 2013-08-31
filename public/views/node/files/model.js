@@ -77,8 +77,9 @@ var FilesModel = function(parentModel)
 
         console.log("FilesModel: Loaded " + fileList.length + " files!");
         self.loaded(true);
+        self.files(fileList);
 
-        addFiles();
+        //addFiles();
       });
     }
   };
