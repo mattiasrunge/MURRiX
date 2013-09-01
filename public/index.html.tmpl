@@ -375,7 +375,7 @@
             Timeline
             <span data-bind="visible: nodeModel.timelineModel.loaded() || nodeModel.timelineModel.loading()" class="badge pull-right">
               <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.timelineModel.loading"></i>
-              <span data-bind="visible: !nodeModel.timelineModel.loading(), text: nodeModel.timelineModel.timeline().length"></span>
+              <span data-bind="visible: !nodeModel.timelineModel.loading(), text: nodeModel.timelineModel.data().length"></span>
             </span>
           </a>
         </li>
@@ -386,7 +386,7 @@
             Files
             <span data-bind="visible: nodeModel.filesModel.loaded() || nodeModel.filesModel.loading()" class="badge pull-right">
               <i class="icon-spinner icon-spin" data-bind="visible: nodeModel.filesModel.loading"></i>
-              <span data-bind="visible: !nodeModel.filesModel.loading(), text: nodeModel.filesModel.files().length"></span>
+              <span data-bind="visible: !nodeModel.filesModel.loading(), text: nodeModel.filesModel.data().length"></span>
             </span>
           </a>
         </li>

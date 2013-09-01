@@ -1,4 +1,98 @@
 
+function BaseModel(self, parentModel, options)
+{
+  self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
+  parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
+
+  self.show = ko.observable(false);
+  self.enabled = ko.observable(true);
+
+  parentModel.path().primary.subscribe(function(value)
+  {
+    var show = value.action === options.action;
+
+    if (self.show() !== show)
+    {
+      self.show(show);
+    }
+
+    if (show && options.title)
+    {
+      murrix.model.title(options.title);
+    }
+  });
+}
+
+function BaseDataModel(self, parentModel, observableData)
+{
+  self.data = observableData;
+  self.error = ko.observable("");
+  self.loading = ko.observable(false);
+  self.loaded = ko.observable(false);
+
+  self.show.subscribe(function(value)
+  {
+    self.loadInternal();
+  });
+
+  self.loadInternal = function()
+  {
+    if (self.load && self.show() && !self.loaded())
+    {
+      self.loading(true);
+      self.error("");
+
+      self.load(function(error, data)
+      {
+        self.loading(false);
+
+        if (error)
+        {
+          self.error("Failed to load node data, reason: " + error);
+          console.log(self.error());
+        }
+        else
+        {
+          self.data(data);
+          self.loaded(true);
+        }
+      });
+    }
+  };
+
+  self.resetInternal = function()
+  {
+    if (self.reset)
+    {
+      self.reset();
+    }
+
+    if ($.isArray(self.data()))
+    {
+      self.data.removeAll();
+    }
+    else
+    {
+      self.data(false);
+    }
+
+    self.error("");
+    self.loading(false);
+    self.loaded(false);
+  };
+}
+
+function BaseNodeDataModel(self, parentModel, observableData)
+{
+  BaseDataModel(self, parentModel, observableData);
+
+  parentModel.node.subscribe(function(value)
+  {
+    self.resetInternal();
+    self.loadInternal();
+  });
+}
+
 murrix.model = function()
 {
   var self = this;

@@ -6,7 +6,7 @@
 
     <div style="margin-bottom: 30px;">
 
-      <div class="timeline-container" data-bind="foreach: nodeModel.timelineModel.timeline" >
+      <div class="timeline-container" data-bind="foreach: nodeModel.timelineModel.data" >
 
         <div class="timeline-day clearfix">
           <div class="timeline-day-date">
@@ -59,7 +59,7 @@
 
                 <div class="timeline-day-content-item-information">
 
-                  <span data-bind="visible: $data.when !== false && $data.when.timeline !== false" class="timeline-day-content-item-information-item">
+                  <span data-bind="visible: $data.when !== false && $data.when.timestamp !== false" class="timeline-day-content-item-information-item">
                     <i class="icon-time icon-white"></i>
                     <span data-bind="htmlPrintWhen: { when: $data.when, timezone: false, format: 'HH:mm:ss' }"></span>
                   </span>

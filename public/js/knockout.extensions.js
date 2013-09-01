@@ -282,13 +282,16 @@ $(function()
   ko.bindingHandlers.yearSlider = {
     update: function(element, valueAccessor)
     {
+      var options = valueAccessor();
+
       $(element).slider({
-        value: ko.utils.unwrapObservable(valueAccessor()[0]),
-        min: 1800,
-        max: new Date().getFullYear(),
+        value: ko.utils.unwrapObservable(options.year),
+        min: options.min ? options.min : 1800,
+        max: options.max ? options.max : new Date().getFullYear(),
         step: 1,
-        slide: function(event, ui) { valueAccessor()[0](ui.value); },
-        stop: function(event, ui) { valueAccessor()[0](ui.value); valueAccessor()[1](ui.value, true); }
+        start: function(event, ui) { options.sliding(true); },
+        slide: function(event, ui) { options.year(ui.value); },
+        stop: function(event, ui) { options.sliding(false); options.year.valueHasMutated(); }
       });
     }
   };

@@ -3,46 +3,27 @@ var NewsModel = function(parentModel)
 {
   var self = this;
 
-  self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
+  BaseModel(self, parentModel, { action: "news", title: "Recent changes" });
+  BaseDataModel(self, parentModel, ko.observableArray());
 
-  self.show = ko.observable(false);
-  self.nodes = ko.observableArray();
-
-  parentModel.path().primary.subscribe(function(value)
+  self.load = function(callback)
   {
-    if (self.show() !== (value.action === "news"))
+    murrix.server.emit("find", { query: { }, options: { collection: "nodes", limit: 40, sort: "modified.timestamp", sortDirection: "desc" } }, function(error, nodeDataList)
     {
-      self.show(value.action === "news");
-    }
-  });
-
-  self.show.subscribe(function(value)
-  {
-    self.nodes.removeAll();
-
-    if (value)
-    {
-      parentModel.title("Recent changes");
-
-      murrix.server.emit("find", { query: { }, options: { collection: "nodes", limit: 40, sort: "modified.timestamp", sortDirection: "desc" } }, function(error, nodeDataList)
+      if (error)
       {
-        if (error)
-        {
-          console.log(error);
-          callback([]);
-          return;
-        }
+        callback(error);
+        return;
+      }
 
-        var nodeList = [];
+      var nodeList = [];
 
-        for (var key in nodeDataList)
-        {
-          nodeList.push(murrix.cache.addNodeData(nodeDataList[key]));
-        }
+      for (var key in nodeDataList)
+      {
+        nodeList.push(murrix.cache.addNodeData(nodeDataList[key]));
+      }
 
-        self.nodes(nodeList);
-      });
-    }
-  });
+      callback(null, nodeList);
+    });
+  };
 };
