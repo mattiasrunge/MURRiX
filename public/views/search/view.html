@@ -36,40 +36,40 @@
     </form>
 
     <div style="margin-top: 20px;">
-      <span data-bind="visible: searchModel.queryInput() !== '' && !searchModel.loading()">
-        Found <span data-bind="text: searchModel.resultCount"></span> node(s) matching "<span data-bind="text: searchModel.queryInput"></span>"
+      <span data-bind="visible: searchModel.query() !== '' && !searchModel.loading()">
+        Found <span data-bind="text: searchModel.count"></span> node(s) matching "<span data-bind="text: searchModel.query"></span>"
       </span>
 
       <span data-bind="visible: searchModel.loading">
-        Searching for <span data-bind="text: searchModel.queryInput"></span>...
+        Searching for <span data-bind="text: searchModel.query"></span>...
       </span>
     </div>
 
-    <div class="alert alert-error" data-bind="visible: searchModel.errorText() !== '', text: searchModel.errorText"></div>
+    <div class="alert alert-error" data-bind="visible: searchModel.error() !== '', text: searchModel.error"></div>
 
     <ul class="pagination" data-bind="visible: searchModel.pages().length > 1" style="margin-bottom: 0px;">
 
-      <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
+      <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.page() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
       <!-- ko foreach: searchModel.pages -->
-        <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
+        <li data-bind="css: { active: $parent.searchModel.page() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
       <!-- /ko -->
 
-      <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+      <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.page() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
 
     </ul>
 
-    <div class="clearfix" data-bind="template: { name: 'nodeSearchTemplate', foreach: searchModel.results }" style="margin-top: 50px;"></div>
+    <div class="clearfix" data-bind="template: { name: 'nodeSearchTemplate', foreach: searchModel.data }" style="margin-top: 50px;"></div>
 
     <ul class="pagination" data-bind="visible: searchModel.pages().length > 1">
 
-      <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
+      <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.page() == 0 }"><a href="#" data-bind="click: searchModel.previousPageClicked">&laquo;</a></li>
 
       <!-- ko foreach: searchModel.pages -->
-        <li data-bind="css: { active: $parent.searchModel.currentPage() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
+        <li data-bind="css: { active: $parent.searchModel.page() == $data }"><a href="#" data-bind="text: $data + 1, click: $parent.searchModel.pageClicked"></a></li>
       <!-- /ko -->
 
-      <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.currentPage() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
+      <li data-bind="if: searchModel.pages().length > 1, css: { disabled: searchModel.page() == searchModel.pages().length - 1 }"><a href="#" data-bind="click: searchModel.nextPageClicked">&raquo;</a></li>
 
     </ul>
 

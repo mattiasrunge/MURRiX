@@ -6,12 +6,22 @@ function BaseModel(self, parentModel, options)
 
   self.show = ko.observable(false);
   self.enabled = ko.observable(true);
+  self.args = ko.observableArray();
 
   parentModel.path().primary.subscribe(function(value)
   {
     var show = value.action === options.action;
 
-    if (self.show() !== show)
+    if (show)
+    {
+      self.args(value.args);
+    }
+
+    if (self.show() === show && show === true)
+    {
+      self.show.valueHasMutated();
+    }
+    else
     {
       self.show(show);
     }
