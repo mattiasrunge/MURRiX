@@ -88,117 +88,12 @@
 
       <ul class="nav navbar-nav" data-bind="visible: nodeModel.node() !== false && nodeModel.node().hasAdminAccess()">
         <li>
-          <a rel="tooltip" href="#" data-bind="click: nodeModel.groupAccessToggle">
+          <a rel="tooltip" href="#" data-bind="toggle: nodeModel.accessesModel.show">
             <i data-bind="ifnotset: nodeModel.node().public" class="icon-lock icon-white"></i>
             <i data-bind="ifset: nodeModel.node().public" class="icon-unlock icon-white"></i>
           </a>
-          <ul class="dropdown-menu hide">
-            <li data-bind="ifnotset: nodeModel.node().public">
-              <a href="#" data-bind="click: nodeModel.changePublic.bind($data, true)">
-                <i style="vertical-align: center;" class="icon-unlock icon-fixed"></i>
-                Make public
-              </a>
-            </li>
-            <li data-bind="ifset: nodeModel.node().public">
-              <a href="#" data-bind="click: nodeModel.changePublic.bind($data, false)">
-                <i style="vertical-align: center;" class="icon-lock icon-fixed"></i>
-                Make private
-              </a>
-            </li>
-            <li class="divider"></li>
-            <li class="dropdown-header">
-              Administrators
-            </li>
-            <!-- ko foreach: nodeModel.groupAccessListAdmins -->
-              <li class="dropdown-submenu">
-                <a tabindex="-1" href="#" data-bind="click: noClick">
-                  <i style="vertical-align: center;" class="icon-eye-open icon-fixed"></i>
-                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
-
-                  <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.nodeModel.groupAccessRemove">Remove access</button>
-                  <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.nodeModel.groupAccessMakeReader">Make reader</button>
-                </a>
-
-                <ul class="dropdown-menu">
-                  <li>
-                      <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeReader">
-                      <i style="vertical-align: center;" class="icon-minus icon-fixed"></i>
-                      Revoke admin access
-                    </a>
-                  </li>
-                  <li>
-                      <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessRemove">
-                      <i style="vertical-align: center;" class="icon-remove icon-fixed"></i>
-                      Revoke read access
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            <!-- /ko -->
-            <li class="divider"></li>
-            <li class="dropdown-header">
-              Readers
-            </li>
-            <!-- ko foreach: nodeModel.groupAccessListReaders -->
-              <li class="dropdown-submenu">
-                <a tabindex="-1" href="#" data-bind="click: noClick">
-                  <i style="vertical-align: center;" class="icon-eye-close icon-fixed"></i>
-                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
-
-                  <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.nodeModel.groupAccessRemove">Remove access</button>
-                  <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">Make admin</button>
-                </a>
-
-                <ul class="dropdown-menu">
-                  <li>
-                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">
-                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
-                      Grant admin access
-                    </a>
-                  </li>
-                  <li>
-                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessRemove">
-                      <i style="vertical-align: center;" class="icon-remove icon-fixed"></i>
-                      Revoke read access
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            <!-- /ko -->
-            <li class="divider"></li>
-            <li class="dropdown-header">
-              Others
-            </li>
-            <!-- ko foreach: nodeModel.groupAccessListOthers -->
-              <li class="dropdown-submenu">
-                <a tabindex="-1" href="#" data-bind="click: noClick">
-                  <i style="vertical-align: center;" class="icon-group icon-fixed"></i>
-                  <div style="display: inline-block; nowrap; width: 150px; overflow: hidden; text-overflow: ellipsis;" data-bind="text: $data.name, attr: { title: $data.name }"></div>
-
-                  <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.nodeModel.groupAccessMakeReader">Make reader</button>
-                  <button type="button" class="btn btn-default btn-xs" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">Make admin</button>
-                </a>
-
-                <ul class="dropdown-menu">
-                  <li>
-                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">
-                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
-                      Grant admin access
-                    </a>
-                  </li>
-                  <li>
-                    <a tabindex="-1" href="#" data-bind="click: $parent.nodeModel.groupAccessMakeReader">
-                      <i style="vertical-align: center;" class="icon-plus icon-fixed"></i>
-                      Grant read access
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            <!-- /ko -->
-          </ul>
         </li>
       </ul>
-
 
       <ul class="nav navbar-nav pull-right">
         <li class="dropdown">
@@ -444,114 +339,7 @@
     </div>
 
 
-
-    <div class="fix-max rightsbar rightsbar-shadow" data-bind="slideVisible: nodeModel.groupAccessVisible()">
-      <div class="fix-max rightsbar-content">
-
-        <button type="button" class="close" aria-hidden="true" data-bind="click: nodeModel.groupAccessToggle">&times;</button>
-
-        <h2 class="page-header">Access rights</h2>
-
-        <h4 class="page-header">Public <small>Make node readable to users that have not signed in</small></h4>
-
-        <div data-bind="ifnotset: nodeModel.node().public">
-          <button class="btn btn-success btn-xs btn-public" data-bind="click: nodeModel.changePublic.bind($data, true)">
-            <i class="icon-unlock icon-fixed"></i>
-            Make public
-          </button>
-        </div>
-
-        <div data-bind="ifset: nodeModel.node().public">
-          <button class="btn btn-danger btn-xs btn-public" data-bind="click: nodeModel.changePublic.bind($data, false)">
-            <i class="icon-lock icon-fixed"></i>
-            Make private
-          </button>
-        </div>
-
-
-        <h4 class="page-header">Administrators <small>Groups that can read and edit this node</small></h4>
-        <table class="table table-condensed table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Read access</th>
-              <th>Admin access</th>
-            </tr>
-          </thead>
-          <tbody data-bind="foreach: nodeModel.groupAccessListAdmins">
-            <tr>
-              <td>
-                <i style="vertical-align: center;" class="icon-group"></i>
-                <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
-              </td>
-              <td class="clearfix access-column">
-                <button type="button" class="btn btn-danger btn-xs pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove">Revoke</button>
-              </td>
-              <td class="clearfix access-column">
-                <button type="button" class="btn btn-danger btn-xs pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeReader">Revoke</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-
-        <h4 class="page-header">Readers <small>Groups that can read this node</small></h4>
-        <table class="table table-condensed table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Read access</th>
-              <th>Admin access</th>
-            </tr>
-          </thead>
-          <tbody data-bind="foreach: nodeModel.groupAccessListReaders">
-            <tr>
-              <td>
-                <i style="vertical-align: center;" class="icon-group"></i>
-                <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
-              </td>
-              <td class="clearfix access-column">
-                <button type="button" class="btn btn-danger btn-xs pull-right" data-bind="click: $parent.nodeModel.groupAccessRemove">Revoke</button>
-              </td>
-              <td class="clearfix access-column">
-                <button type="button" class="btn btn-success btn-xs pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">Grant</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-
-        <h4 class="page-header">Others <small>Groups without any rights this node</small></h4>
-        <table class="table table-condensed table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Read access</th>
-              <th>Admin access</th>
-            </tr>
-          </thead>
-          <tbody data-bind="foreach: nodeModel.groupAccessListOthers">
-            <tr>
-              <td>
-                <i style="vertical-align: center;" class="icon-group"></i>
-                <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
-              </td>
-              <td class="clearfix access-column">
-                <button type="button" class="btn btn-success btn-xs pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeReader">Grant</button>
-              </td>
-              <td class="clearfix access-column">
-                <button type="button" class="btn btn-success btn-xs pull-right" data-bind="click: $parent.nodeModel.groupAccessMakeAdmin">Grant</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-
-      </div>
-      <div class="fix-max rightsbar-background"></div>
-    </div>
-
-
+    {{include:views/node/accesses/view.html}}
     {{include:views/node/overlay/view.html}}
 
     <div class="fix-max" style="top: 50px; left: 250px; right: none;">
@@ -670,6 +458,7 @@
     <script src="{{link:views/node/metrics/model.js}}"></script>
     <script src="{{link:views/node/map/model.js}}"></script>
     <script src="{{link:views/node/tools/model.js}}"></script>
+    <script src="{{link:views/node/accesses/model.js}}"></script>
     <script src="{{link:views/node/model.js}}"></script>
     <script src="{{link:views/search/model.js}}"></script>
     <script src="{{link:views/admin/model.js}}"></script>

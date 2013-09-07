@@ -118,7 +118,6 @@ var SearchModel = function(parentModel)
   self.pageClicked = function(page)
   {
     document.location.hash = "#search:" + self.queryInput() + ":" + page;
-    return false;
   };
 
   self.previousPageClicked = function()

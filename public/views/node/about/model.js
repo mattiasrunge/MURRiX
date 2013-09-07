@@ -260,4 +260,67 @@ var AboutModel = function(parentModel)
     }
   };
 
+
+
+  self.tagLoading = ko.observable(false);
+  self.tagErrorText = ko.observable("");
+  self.tagName = ko.observable("");
+  self.tagHasFocus = ko.observable(true);
+
+  self.tagSaveNode = function(nodeData)
+  {
+    self.tagErrorText("");
+    self.tagLoading(true);
+
+    murrix.server.emit("saveNode", nodeData, function(error, nodeData)
+    {
+      self.tagLoading(false);
+
+      if (error)
+      {
+        self.tagErrorText(error);
+        return;
+      }
+
+      self.tagName("");
+      self.tagErrorText("");
+      self.tagHasFocus(true);
+
+      murrix.cache.addNodeData(nodeData); // This should update self.node() by reference
+    });
+  };
+
+  self.tagSubmit = function()
+  {
+    self.tagErrorText("");
+
+    var nodeData = ko.mapping.toJS(parentModel.node);
+
+    nodeData.tags = nodeData.tags || [];
+
+    if (murrix.inArray(self.tagName(), nodeData.tags))
+    {
+      self.tagErrorText("Can not save multiple tags with the same name");
+      return;
+    }
+
+    nodeData.tags.push(self.tagName().toLowerCase().replace(/ /g, "_"));
+
+    self.tagSaveNode(nodeData);
+  };
+
+  self.tagRemove = function(tagName)
+  {
+    var nodeData = ko.mapping.toJS(parentModel.node);
+
+    nodeData.tags = nodeData.tags || [];
+
+    nodeData.tags = nodeData.tags.filter(function(tagNameTest)
+    {
+      return tagNameTest !== tagName;
+    });
+
+    self.tagSaveNode(nodeData);
+  };
+
 };

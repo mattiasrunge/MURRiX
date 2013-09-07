@@ -4,15 +4,15 @@
       <h1>Overview <small>Summary of content</small></h1>
     </div>
 
-    <form data-bind="submit: nodeModel.tagSubmit" class="clearfix" style="border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px;">
-      <input class="form-control pull-left input-small" placeholder="Write tag..." type="text" data-bind="visible: nodeModel.node().hasAdminAccess(), hasfocus: nodeModel.tagHasFocus, disable: nodeModel.tagLoading, value: nodeModel.tagName" data-provide="typeahead" style="width: 150px; margin-right: 10px; margin-bottom: 10px;"/>
+    <form data-bind="submit: nodeModel.aboutModel.tagSubmit" class="clearfix" style="border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px;">
+      <input class="form-control pull-left input-small" placeholder="Write tag..." type="text" data-bind="visible: nodeModel.node().hasAdminAccess(), hasfocus: nodeModel.aboutModel.tagHasFocus, disable: nodeModel.aboutModel.tagLoading, value: nodeModel.aboutModel.tagName" data-provide="typeahead" style="width: 150px; margin-right: 10px; margin-bottom: 10px;"/>
 
       <!-- ko foreach: nodeModel.node().tags -->
         <span class="label label-success pull-left" style="margin-right: 10px; margin-bottom: 10px; font-size: 22px;">
           <a href="#" data-bind="text: $data, attr: { href: '#search:tag=' + $data }" style="color: white; cursor: pointer; text-decoration: none;"></a>
           <span data-bind="visible: $parent.nodeModel.node().hasAdminAccess()">
             &nbsp;
-            <a href="#" style="color: white;" data-bind="click: $parent.nodeModel.tagRemove">
+            <a href="#" style="color: white;" data-bind="click: $parent.nodeModel.aboutModel.tagRemove">
               <i class="icon-remove-sign"></i>
             </a>
           </span>

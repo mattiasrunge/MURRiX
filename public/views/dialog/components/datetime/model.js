@@ -19,6 +19,43 @@ function DialogComponentDatetimeModel()
   self.timezone = ko.observable("Unknown");
   self.daylightSavings = ko.observable(false);
 
+  self.setCurrent = function()
+  {
+    var time = moment().local();
+
+    self.year(time.year());
+    self.month(time.month());
+    self.day(time.date());
+    self.hour(time.hours());
+    self.minute(time.minutes());
+    self.second(time.seconds());
+
+    if (self.daylightSavings())
+    {
+      time.zone(time.zone() + 60);
+    }
+
+    var timezone = time.format("Z");
+
+    if (timezone === "00:00")
+    {
+      timezone = "(GMT)";
+    }
+    else
+    {
+      timezone = "(GMT" + timezone + ")";
+    }
+
+    for (var n = 0; n < murrix.model.timezones.length; n++)
+    {
+      if (murrix.model.timezones[n].indexOf(timezone) !== -1)
+      {
+        self.timezone(murrix.model.timezones[n]);
+        break;
+      }
+    }
+  };
+
   self.yearDisabled = ko.computed(function()
   {
     return self.disabled() || self.disabledDateTime();

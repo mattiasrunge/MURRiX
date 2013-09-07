@@ -1,6 +1,20 @@
 
 $(function()
 {
+  ko.bindingHandlers.toggle = {
+    update: function(element, valueAccessor)
+    {
+      var value = valueAccessor();
+      $(element).off("click");
+
+      $(element).on("click", function(event)
+      {
+        value(!value());
+        event.preventDefault();
+      });
+    }
+  };
+
   ko.bindingHandlers.ifset = {
     update: function(element, valueAccessor)
     {

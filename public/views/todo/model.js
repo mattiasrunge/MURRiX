@@ -3,28 +3,14 @@ var TodoModel = function(parentModel)
 {
   var self = this;
 
-  self.path = ko.observable({ primary: ko.observable(""), secondary: ko.observable("") });
-  parentModel.path().secondary.subscribe(function(value) { murrix.updatePath(value, self.path); });
+  BaseModel(self, parentModel, { action: "todo", title: "TODO" });
+  BaseDataModel(self, parentModel, ko.observableArray());
 
-  self.show = ko.observable(false);
-  self.issues = ko.observableArray();
-
-  parentModel.path().primary.subscribe(function(value)
+  self.load = function(callback)
   {
-    if (self.show() !== (value.action === "todo"))
+    jQuery.getJSON("https://api.github.com/repos/mattiasrunge/MURRiX/issues", function(data)
     {
-      self.show(value.action === "todo");
-    }
-
-    if (self.show())
-    {
-      self.issues.removeAll();
-      parentModel.title("TODO");
-
-      jQuery.getJSON("https://api.github.com/repos/mattiasrunge/MURRiX/issues", function(data)
-      {
-        self.issues(data);
-      });
-    }
-  });
+      callback(null, data);
+    });
+  };
 };
