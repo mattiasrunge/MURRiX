@@ -3,4 +3,7 @@ SRC = $(shell find . \( -name "*.js" \) -o \( -name node_modules -prune \) -type
 lint:
 	@jshint ${SRC}
 
-.PHONY: lint
+test:
+	@mocha --reporter spec --ui tdd --recursive lib
+
+.PHONY: lint test

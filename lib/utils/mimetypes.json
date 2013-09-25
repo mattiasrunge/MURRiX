@@ -1,0 +1,6 @@
+{
+  "rawimage": [ "image/x-canon-cr2", "image/x-raw", "image/x-canon-crw", "image/x-nikon-nef", "image/CR2" ],
+  "image": [ "image/jpeg", "image/gif", "image/tiff", "image/png", "image/bmp", "image/x-canon-cr2", "image/x-raw", "image/x-canon-crw", "image/x-nikon-nef", "image/CR2" ],
+  "video": [ "video/mpeg", "video/avi", "video/quicktime", "video/x-ms-wmv", "video/mp4", "video/3gpp", "video/x-msvideo" ],
+  "audio": [ "audio/mpeg", "audio/x-wav", "audio/x-m4a", "audio/mp4" ]
+}
