@@ -1,0 +1,51 @@
+﻿<div class="welcome">
+  <div class="row">
+    <div class="col-md-2 sidebar right-border">
+
+      <div class="profile" data-bind="if: user() !== false">
+        <img src="http://lorempixel.com/40/40/" class="pull-left">
+        <div>
+          <div data-bind="text: user().name"></div>
+          <div>
+            <a href="#murrix/profile">Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <ul class="nav nav-pills nav-stacked">
+        <li class="header">Search</li>
+        <!-- ko foreach: searchRoutes -->
+          <li data-bind="css: { active: isActive }">
+            <a data-bind="attr: { href: hash }">
+              <i data-bind="attr: { class: 'icon-fixed ' + icon }"></i>
+              <span data-bind="text: name"></span>
+            </a>
+          </li>
+        <!--/ko-->
+      </ul>
+
+      <ul class="nav">
+        <li class="header">Last visited</li>
+        <li><a href="#"><i class="icon-book icon-fixed"></i> Node 1</a></li>
+        <li><a href="#"><i class="icon-book icon-fixed"></i> Node 2</a></li>
+        <li><a href="#"><i class="icon-book icon-fixed"></i> Node 3</a></li>
+        <li><a href="#"><i class="icon-book icon-fixed"></i> Node 4</a></li>
+        <li><a href="#"><i class="icon-book icon-fixed"></i> Node 5</a></li>
+      </ul>
+
+      <ul class="nav nav-pills nav-stacked" data-bind="visible: user() !== false && user().admin === true">
+        <li class="header">Administration</li>
+        <!-- ko foreach: adminRoutes -->
+          <li data-bind="css: { active: isActive }">
+            <a data-bind="attr: { href: hash }">
+              <i data-bind="attr: { class: 'icon-fixed ' + icon }"></i>
+              <span data-bind="text: name"></span>
+            </a>
+          </li>
+        <!--/ko-->
+      </ul>
+    </div>
+    <div class="col-md-10 main" data-bind="router: { transition: 'entrance', cacheViews:true }"></div>
+  </div>
+</div>
+

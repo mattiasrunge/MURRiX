@@ -10,7 +10,6 @@
     "send": ">= 0.1.0",
     "moment": ">= 2.0.0",
     "waveform": ">= 0.6.0",
-    "stewardess": "= 0.2.2",
     "commander": ">= 1.1.1",
     "ewait": ">= 0.1.4",
     "gedcom-stream": "0.3.0",
@@ -18,8 +17,8 @@
     "express": ">= 3.0.0-rc5",
     "cookie": ">= 0.1.0",
     "node-native-zip": ">= 1.1.0",
-    "acall.js": ">= 0.0.3",
-    "achain.js": ">= 0.0.3"
+    "acall.js": ">= 0.0.4",
+    "achain.js": ">= 0.0.7"
   },
   "devDependencies": {
     "jshint": "~1.1.0",

@@ -1,0 +1,71 @@
+<script type="text/html" data-bind="attr: { id: id + '-list-template' }">
+  <div class="media bottom-border" style="padding-bottom: 15px;">
+    <a class="pull-left" href="#">
+      <img class="media-object profile-img" src="http://lorempixel.com/80/80" alt="...">
+    </a>
+    <div class="pull-right text-muted" style="font-size: 55px;">
+      <i data-bind="visible: $data.type === 'album'" class="icon icon-book"></i>
+      <i data-bind="visible: $data.type === 'person'" class="icon icon-user"></i>
+      <i data-bind="visible: $data.type === 'location'" class="icon icon-map-marker"></i>
+      <i data-bind="visible: $data.type === 'camera'" class="icon icon-camera"></i>
+      <i data-bind="visible: $data.type === 'vehicle'" class="icon icon-truck"></i>
+    </div>
+    <div class="media-body clearfix">
+      <h4 class="media-heading" style="margin-bottom: 10px; font-size: 14px;"><a href="#" data-bind="text: $data.name, attr: { href: '#node/' + $data._id }"></a></h4>
+
+      <div style="font-size: 12px;" data-bind="html: $data.description"></div>
+
+      <div class="clearfix" data-bind="foreach: tags" style="font-size: 14px; margin-top: 5px;">
+        <div class="label label-success pull-left" data-bind="text: $data" style="margin-right: 5px; margin-bottom: 5px;"></div>
+      </div>
+
+    </div>
+  </div>
+</script>
+
+<ul class="nav nav-tabs nav-justified">
+  <li class="active">
+    <a href="#" data-toggle="tab" data-bind="attr: { href: '#' + id + '-all' }">
+      Found <span data-bind="text: list().length"></span> results
+    </a>
+  </li>
+  <li data-bind="css: { disabled: listAlbum().length === 0 }">
+    <a href="#" data-toggle="tab" data-bind="attr: { href: '#' + id + '-album' }">
+      <i class="icon icon-book"></i>
+      <span data-bind="text: listAlbum().length"></span> albums
+    </a>
+  </li>
+  <li data-bind="css: { disabled: listPerson().length === 0 }">
+    <a href="#" data-toggle="tab" data-bind="attr: { href: '#' + id + '-person' }">
+      <i class="icon icon-user"></i>
+      <span data-bind="text: listPerson().length"></span> persons
+    </a>
+  </li>
+  <li data-bind="css: { disabled: listLocation().length === 0 }">
+    <a href="#" data-toggle="tab" data-bind="attr: { href: '#' + id + '-location' }">
+      <i class="icon icon-map-marker"></i>
+      <span data-bind="text: listLocation().length"></span> locations
+    </a>
+  </li>
+  <li data-bind="css: { disabled: listCamera().length === 0 }">
+    <a href="#" data-toggle="tab" data-bind="attr: { href: '#' + id + '-camera' }">
+      <i class="icon icon-camera"></i>
+      <span data-bind="text: listCamera().length"></span> cameras
+    </a>
+  </li>
+  <li data-bind="css: { disabled: listVehicle().length === 0 }">
+    <a href="#" data-toggle="tab" data-bind="attr: { href: '#' + id + '-vehicle' }">
+      <i class="icon icon-truck"></i>
+      <span data-bind="text: listVehicle().length"></span> vehicles
+    </a>
+  </li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" style="padding-top: 15px;" data-bind="attr: { id: id + '-all' }, template: { name: id + '-list-template', foreach: list }"></div>
+  <div class="tab-pane" style="padding-top: 15px;" data-bind="attr: { id: id + '-album' }, template: { name: id + '-list-template', foreach: listAlbum }"></div>
+  <div class="tab-pane" style="padding-top: 15px;" data-bind="attr: { id: id + '-person' }, template: { name: id + '-list-template', foreach: listPerson }"></div>
+  <div class="tab-pane" style="padding-top: 15px;" data-bind="attr: { id: id + '-location' }, template: { name: id + '-list-template', foreach: listLocation }"></div>
+  <div class="tab-pane" style="padding-top: 15px;" data-bind="attr: { id: id + '-camera' }, template: { name: id + '-list-template', foreach: listCamera }"></div>
+  <div class="tab-pane" style="padding-top: 15px;" data-bind="attr: { id: id + '-vehicle' }, template: { name: id + '-list-template', foreach: listVehicle }"></div>
+</div>

@@ -1,0 +1,26 @@
+﻿<div>
+  <div class="page-header">
+    <div class="pull-right" style="font-size: 12px;">
+      <div class="radio">
+        <label>
+          <input type="radio" name="mode" value="or" data-bind="checked: mode">
+          Mode or
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="mode" value="and" data-bind="checked: mode">
+          Mode and
+        </label>
+      </div>
+    </div>
+
+    <h1>Browse by labels <i class="icon-spinner icon-spin" data-bind="visible: loading"></i></h1>
+  </div>
+
+  <div class="label-browser clearfix" data-bind="foreach: labels">
+    <div class="label pull-left" data-bind="text: $data.name, click: $parent.clicked, css: { 'label-success': !$data.selected, 'label-warning': $data.selected }"></div>
+  </div>
+
+  <div data-bind="nodeList: { list: list }"></div>
+</div>

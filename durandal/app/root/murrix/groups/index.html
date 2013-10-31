@@ -1,0 +1,50 @@
+﻿<div>
+  <div data-bind="notification: { error: errorText, success: successText }"></div>
+  <div class="page-header">
+    <h1>Groups <i class="icon-spinner icon-spin" data-bind="visible: loading"></i></h1>
+  </div>
+
+  <div class="row">
+    <div class="col-md-7 right-border">
+
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody data-bind="foreach: list" style="font-size: 12px;">
+          <tr>
+            <td class="nowrap">
+              <a href="#" data-bind="text: $data.name, attr: { href: '#murrix/groups/' + $data._id }"></a>
+            </td>
+            <td data-bind="text: $data.description"></td>
+            <td>
+              <a href="#" data-bind="click: $parent.deleteUser">
+                <i class="icon icon-trash"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="col-md-5">
+      <div class="bottom-border" style="margin-bottom: 15px;">
+        <a type="button" class="close pull-right" aria-hidden="true" href="#murrix/groups" data-bind="visible: group() !== false">&times;</a>
+        <h3 data-bind="visible: group() === false">Add new group</h3>
+        <h3 data-bind="visible: group() !== false">Edit group</h3>
+      </div>
+      <div data-bind="visible: group() === false, groupAdd: { group: group, loading: loading, error: errorText, success: successText }"></div>
+      <div data-bind="visible: group() !== false, groupEdit: { group: group, loading: loading, error: errorText, success: successText }"></div>
+
+      <div data-bind="if: group() !== false">
+        <h3>Members</h3>
+        <div data-bind="userList: { groupId: group()._id }"></div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,37 @@
+﻿<div>
+  <div data-bind="notification: { error: errorText, success: successText }"></div>
+  <div class="page-header">
+    <h1>Profile</h1>
+  </div>
+
+  <div class="row">
+    <div class="col-md-5 right-border" data-bind="userEdit: { user: user, loading: loading, error: errorText, success: successText }"></div>
+    <div class="col-md-7" data-bind="if: user() !== false">
+      <h3>Properties</h3>
+      <table class="table table-striped" style="font-size: 12px;">
+        <tbody>
+          <tr>
+            <td><strong>Last login</strong></td>
+            <td data-bind="datetimeAgo: user().lastLogin"></td>
+          </tr>
+          <tr>
+            <td><strong>Created</strong></td>
+            <td data-bind="datetimeAgo: user().added.timestamp"></td>
+          </tr>
+          <tr>
+            <td><strong>Modified</strong></td>
+            <td data-bind="datetimeAgo: user().modified ? user().modified.timestamp : false"></td>
+          </tr>
+          <tr>
+            <td><strong>Administrator</strong></td>
+            <td data-bind="text: user().admin ? 'yes' : 'no'"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Group memberships</h3>
+      <div data-bind="groupList: { idList: user()._groups }"></div>
+    </div>
+  </div>
+
+</div>

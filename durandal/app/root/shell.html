@@ -1,0 +1,72 @@
+﻿<div>
+  <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+
+   <ul class="nav navbar-nav pull-right">
+      <li>
+        <a href="#">
+          <i class="icon-question-sign icon-large"></i>
+        </a>
+      </li>
+    </ul>
+
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" data-bind="attr: { href: router.navigationModel()[0].hash }">
+          <i class="icon-home icon-large" data-bind="visible: !router.isNavigating()"></i>
+          <i class="icon-spinner icon-large icon-spin" data-bind="visible: router.isNavigating"></i>
+        </a>
+        <form class="navbar-form navbar-left" role="search" data-bind="submit: nodeSubmit">
+          <div class="form-group header-search" data-bind="nodeSelect: { id: nodeId, disable: loading, placeholder: 'Search for anything' }, value: nodeIdRaw"></div>
+        </form>
+      </div>
+
+      <ul class="nav navbar-nav pull-right">
+        <li data-bind="visible: user() === false">
+          <a href="#signin">
+            <i class="icon-user icon-large"></i>
+            Sign in
+          </a>
+        </a>
+        <li class="dropdown" data-bind="if: user() !== false, visible: user() !== false">
+          <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+            <img src="http://lorempixel.com/20/20/" style="vertical-align: top; border-radius: 2px; margin-right: 5px;">
+            <span data-bind="text: user().name"></span>
+            <strong class="caret"></strong>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#murrix/profile"><i class="icon-user icon-fixed"></i> Profile</a></li>
+            <li><a href="#" data-bind="click: signout"><i class="icon-signout icon-fixed"></i> Sign out</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
+        <li>
+          <a href="#">
+            <i class="icon-random icon-large"></i>
+          </a>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="icon-plus icon-large"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#"><i class="icon-book icon-fixed"></i> Album</a></li>
+            <li><a href="#"><i class="icon-user icon-fixed"></i> Person</a></li>
+            <li><a href="#"><i class="icon-map-marker icon-fixed"></i> Location</a></li>
+            <li><a href="#"><i class="icon-camera icon-fixed"></i> Camera</a></li>
+            <li><a href="#"><i class="icon-truck icon-fixed"></i> Vehicle</a></li>
+            <li><a href="#"><i class="icon-cloud icon-fixed"></i> Tag Collection</a></li>
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
+
+  <div class="container page-host">
+    <div data-bind="router: { transition: 'entrance', cacheViews: true }"></div>
+  </div>
+
+</div>

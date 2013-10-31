@@ -1,0 +1,183 @@
+﻿
+body {
+  overflow-y: scroll;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.splash {
+  text-align: center;
+  margin: 10% 0 0 0;
+}
+
+.splash .message {
+  font-size: 5em;
+  line-height: 1.5em;
+  -webkit-text-shadow: rgba(0, 0, 0, 0.5) 0 0 15px;
+  text-shadow: rgba(0, 0, 0, 0.5) 0 0 15px;
+  text-transform: uppercase;
+}
+
+.splash .icon-spinner {
+  text-align: center;
+  display: inline-block;
+  font-size: 5em;
+  margin-top: 50px;
+}
+
+input.nodeSelectValid {
+  font-weight: bold;
+  color: #2d6ca2;
+}
+
+
+.page-host {
+  position: relative;
+  top: 51px;
+}
+
+.nav-tabs a {
+  color: #555;
+  font-size: 12px;
+}
+
+.nav-tabs li.active a {
+  color: black;
+}
+
+.name-search {
+  margin-bottom: 30px;
+}
+
+.name-search .form {
+  margin-top: 30px;
+}
+
+.label-browser {
+  margin-top: 25px;
+  padding-bottom: 30px;
+  font-size: 14px;
+}
+
+.label-browser .label {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.year-browser {
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 30px;
+}
+
+.year-browser .number {
+  padding-bottom: 15px;
+}
+
+.year-browser a {
+  color: #aaa;
+}
+
+.year-browser a:hover {
+  text-decoration: none;
+}
+
+.navbar-fixed-top .navbar-brand {
+  height: 50px;
+}
+
+.navbar-fixed-top .header-search {
+  width: 640px;
+}
+
+.navbar-fixed-top .navbar-form {
+  padding: 0;
+}
+
+.navbar-fixed-top .icon-spinner {
+  margin-right: 1px;
+}
+
+.right-border {
+  border-right: 1px solid #eee;
+}
+
+.top-border {
+  border-top: 1px solid #eee;
+}
+
+.bottom-border {
+  border-bottom: 1px solid #eee;
+}
+
+.media>.pull-left {
+  margin-right: 15px;
+}
+
+.welcome .sidebar {
+  min-height: 500px;
+}
+
+.welcome .sidebar .profile {
+  margin-top: 30px;
+  font-size: 12px;
+}
+
+.welcome .sidebar .profile img {
+  border-radius: 2px;
+  margin-right: 10px;
+  vertical-align: top;
+  width: 40px;
+  height: 40px;
+  -webkit-box-shadow: 1px 1px 2px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow:    1px 1px 2px rgba(50, 50, 50, 0.75);
+  box-shadow:         1px 1px 2px rgba(50, 50, 50, 0.75);
+}
+
+img.profile-img {
+  border-radius: 2px;
+  vertical-align: top;
+  -webkit-box-shadow: 1px 1px 2px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow:    1px 1px 2px rgba(50, 50, 50, 0.75);
+  box-shadow:         1px 1px 2px rgba(50, 50, 50, 0.75);
+}
+
+.welcome .sidebar ul.nav {
+  margin-top: 30px;
+}
+
+.welcome .sidebar li.header {
+  font-weight: bold;
+  color: #aaa;
+  font-size: 20px;
+  padding-bottom: 5px;
+}
+
+.welcome .sidebar ul.nav>li>a {
+  padding: 2px;
+  font-size: 13px;
+  color: #444;
+}
+
+.welcome .sidebar ul.nav>li.active>a {
+  color: white;
+  padding-left: 6px;
+}
+
+i.icon-fixed[class*=" icon-"] {
+  width: 16px;
+  display: inline-block;
+}
+
+@media (max-width: 979px) {
+  .page-host {
+    top: 0;
+  }
+
+  .navbar-fixed-top {
+    margin-bottom: 0;
+  }
+}

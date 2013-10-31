@@ -16,12 +16,12 @@ program
   {
     var murrix = new Murrix(program);
 
-    murrix.on("done", function()
-    {
-      murrix.server.start();
-    });
+//     murrix.on("done", function()
+//     {
+//       murrix.server.start();
+//     });
 
-    murrix.emit("init");
+//     murrix.emit("init");
   });
 
 // program

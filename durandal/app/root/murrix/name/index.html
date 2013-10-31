@@ -1,0 +1,18 @@
+﻿<div>
+  <div class="page-header">
+    <h1>Search by name <i class="icon-spinner icon-spin" data-bind="visible: loading"></i></h1>
+  </div>
+
+  <div class="name-search">
+    <form class="form" role="search" data-bind="submit: submit">
+      <div class="input-group">
+        <input name="query" type="search" class="form-control" placeholder="Enter name to search for" data-bind="value: query, disable: loading">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="submit" data-bind="disable: loading">Search</button>
+        </span>
+      </div>
+    </form>
+  </div>
+
+  <div data-bind="nodeList: { list: list }"></div>
+</div>

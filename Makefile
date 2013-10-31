@@ -6,4 +6,7 @@ lint:
 test:
 	@mocha --reporter spec --ui tdd --recursive lib
 
-.PHONY: lint test
+watchtest:
+	@mocha --reporter spec --ui tdd --recursive lib --watch
+
+.PHONY: lint test watchtest

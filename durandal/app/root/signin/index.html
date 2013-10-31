@@ -1,0 +1,40 @@
+﻿<div style="margin-top: 20px;">
+  <div data-bind="if: errorText() !== false">
+    <div class="alert alert-danger" data-bind="text: errorText"></div>
+  </div>
+
+  <form class="form-horizontal well" role="form" data-bind="submit: submit">
+    <div class="form-group">
+      <div class="col-lg-offset-4 col-lg-4">
+        <h1>Sign in</h1>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputUsername" class="col-lg-offset-2 col-lg-2 control-label">Username</label>
+      <div class="col-lg-4">
+        <input type="text" class="form-control" name="username" placeholder="Username" data-bind="value: username, disable: loading">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputPassword" class="col-lg-offset-2 col-lg-2 control-label">Password</label>
+      <div class="col-lg-4">
+        <input type="password" class="form-control" name="password" placeholder="Password" data-bind="value: password, disable: loading">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-lg-offset-4 col-lg-4">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" data-bind="checked: rememberMe, disable: loading"> Remember me
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-lg-offset-4 col-lg-4">
+        <button type="submit" class="btn btn-primary" data-bind="disable: loading">Sign in</button>
+      </div>
+    </div>
+  </form>
+
+</div>

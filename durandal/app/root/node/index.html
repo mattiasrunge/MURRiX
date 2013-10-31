@@ -1,0 +1,19 @@
+﻿<div class="container-fluid knockout-samples">
+  <div class="row-fluid">
+    <div class="span2 well">
+        <ul class="nav nav-list">
+            <li class="nav-header">Administration</li>
+
+            <!--ko foreach: router.navigationModel-->
+            <li data-bind="css: { active: isActive }">
+                <a data-bind="attr: { href: hash }, text: title"></a>
+            </li>
+            <!--/ko-->
+
+        </ul>
+    </div>
+      <div class="span10">
+          <!--ko router: { cacheViews:true }--><!--/ko-->
+      </div>
+  </div>
+</div>
