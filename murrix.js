@@ -71,9 +71,6 @@ exports.Murrix = function(options)
 //   self.triggers = new MurrixTriggersManager(self, path.resolve(self.basePath(), "./triggers.json"));
 //   modules.push(self.triggers);
 //
-//   self.backup = new MurrixBackupManager(self);
-//   modules.push(self.backup);
-//
 //   self.scrapers = new MurrixScrapersManager(self);
 //   modules.push(self.scrapers);
 //

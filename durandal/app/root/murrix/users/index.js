@@ -92,6 +92,15 @@ define(['durandal/app', 'plugins/router', 'knockout', 'murrix'], function(app, r
     list: list,
     loading: loading,
     errorText: errorText,
-    successText: successText
+    successText: successText,
+    canActivate: function()
+    {
+      if (murrix.user() === false)
+      {
+        return { redirect: "signin" };
+      }
+      
+      return true;
+    }
   }
 });

@@ -1,5 +1,5 @@
 ﻿<div class="container page-host">
-  <div class="welcome">
+  <div class="welcome" data-bind="visible: user() !== false">
     <div class="row">
       <div class="col-md-2 sidebar right-border">
 
@@ -29,7 +29,7 @@
           <!--/ko-->
         </ul>
         
-        <ul class="nav" data-bind="display: visited().length > 0">
+        <ul class="nav" data-bind="visible: visited().length > 0">
           <li class="header">Last visited</li>
           <!-- ko foreach: visited -->
             <li>
@@ -57,7 +57,7 @@
           <!--/ko-->
         </ul>
       </div>
-      <div class="col-md-10 main" data-bind="router: { transition: 'entrance', cacheViews:true }"></div>
+      <div class="col-md-10 main" data-bind="router: { transition: 'entrance', cacheViews: true }"></div>
     </div>
   </div>
 </div>

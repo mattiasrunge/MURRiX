@@ -42,6 +42,15 @@ define(['plugins/router', 'knockout', 'jquery-ui', 'bootstrap', 'moment', 'murri
     submit: function()
     {
       router.navigate("/murrix/search/" + query());
+    },
+    canActivate: function()
+    {
+      if (murrix.user() === false)
+      {
+        return { redirect: "signin" };
+      }
+      
+      return true;
     }
   }
 });

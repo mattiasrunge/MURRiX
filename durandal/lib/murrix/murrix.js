@@ -36,7 +36,7 @@ define(["knockout"], function(ko)
       userNode(false);
       return;
     }
-    console.log("_person", value._person);
+    
     server.emit("node.find", { query: { _id: value._person } }, function(error, nodeDataList)
     {
       if (error)

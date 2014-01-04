@@ -135,6 +135,15 @@ define(['plugins/router', 'knockout', 'jquery-ui', 'bootstrap', 'moment', 'murri
 
         list(nodeList);
       });
+    },
+    canActivate: function()
+    {
+      if (murrix.user() === false)
+      {
+        return { redirect: "signin" };
+      }
+      
+      return true;
     }
   }
 });

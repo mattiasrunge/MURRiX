@@ -7,7 +7,10 @@ define(['jquery', 'knockout', 'typeahead', 'murrix'], function($, ko, typeahead,
   {
     var self = this;
 
-    self.disable = settings.disable;
+    self.disable = ko.computed(function()
+    {
+      return settings.disable() || murrix.user() === false; 
+    });
     self.placeholder = ko.observable(settings.placeholder);
     self.value = ko.observable("");
     self.valid = ko.observable(false);

@@ -10,5 +10,14 @@ define(['knockout', 'murrix'], function(ko, murrix)
     loading: loading,
     errorText: errorText,
     successText: successText,
+    canActivate: function()
+    {
+      if (murrix.user() === false)
+      {
+        return { redirect: "signin" };
+      }
+      
+      return true;
+    }
   }
 });

@@ -1,6 +1,15 @@
-﻿<div class="node-container">
-  
+﻿<div class="container" data-bind="visible: node() === false">
+  <div style="margin-top: 80px;">
+    <div class="alert alert-danger" style="text-align: center;">
+      <h1><i class="fa fa-exclamation-triangle"></i> Could not retreive the requested node</h1>
+      <p>
+        Either the address is wrong or you have insufficient rights to access it, try <a href="#signin">signing in</a>.
+      </p>
+    </div>
+  </div>
+</div>
 
+<div class="node-container" data-bind="visible: node() !== false">
   <div class="node-banner-stuff" data-bind="if: node() !== false, css: { 'node-banner-stuff-small': smallMenu }">
     <div class="container" style="position: relative; height: 251px;">
       <span class="node-profile-img" style="width: 172px; height: 172px;" data-bind="profilePicture: { node: node(), width: 250, height: 250 }"></span>

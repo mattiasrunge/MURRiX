@@ -128,6 +128,15 @@ define(['plugins/router', 'knockout', 'murrix', 'jquery'], function(router, ko, 
       }
 
       router.navigate("/murrix/label/" + selected().join(mode() === "and" ? "&" : "|"));
+    },
+    canActivate: function()
+    {
+      if (murrix.user() === false)
+      {
+        return { redirect: "signin" };
+      }
+      
+      return true;
     }
   }
 });

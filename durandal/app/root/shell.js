@@ -61,6 +61,9 @@ define(["plugins/router", "durandal/app", "ko-ext", "moment", "murrix", "jquery"
       {
         $.cookie("userinfo", null, { path: "/" });
         murrix.user(false);
+        
+        window.location.reload(); // TODO: We don't want to reload the whole page, just refresh the router!
+        //router.navigate(router.activeInstruction().fragment);
       });
     }
   };
