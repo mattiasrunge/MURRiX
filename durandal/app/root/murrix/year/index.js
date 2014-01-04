@@ -23,6 +23,14 @@ define(['plugins/router', 'knockout', 'jquery-ui', 'bootstrap', 'moment', 'murri
         slide: function(event, ui) { options.year(ui.value); },
         stop: function(event, ui) { options.sliding(false); options.year.valueHasMutated(); }
       });
+
+      if (options.loading)
+      {
+        options.loading.subscribe(function(value)
+        {
+          $(element).slider(value ? "disable" : "enable");
+        });
+      }
     }
   };
 
@@ -35,6 +43,11 @@ define(['plugins/router', 'knockout', 'jquery-ui', 'bootstrap', 'moment', 'murri
       {
         event.preventDefault();
         event.stopPropagation();
+
+        if (loading())
+        {
+          return;
+        }
 
         value(parseInt(value(), 10) + 1);
       });
@@ -50,6 +63,11 @@ define(['plugins/router', 'knockout', 'jquery-ui', 'bootstrap', 'moment', 'murri
       {
         event.preventDefault();
         event.stopPropagation();
+
+        if (loading())
+        {
+          return;
+        }
 
         value(parseInt(value(), 10) - 1);
       });

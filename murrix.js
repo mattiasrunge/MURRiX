@@ -36,7 +36,7 @@ function Murrix(options)
 
   sessions.loadFromDisk(self.basePath() + "sessions/");
 
-  db.open("localhost", 27017, "murrix", function(error)
+  db.open("localhost", 27017, "murrix_devel", function(error)
   {
     self.server.start();
   });

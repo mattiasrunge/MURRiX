@@ -1,22 +1,45 @@
 ﻿
-define(['knockout'], function(ko)
+define(['ko-ext', 'murrix'], function(ko, murrix)
 {
-    var Person = function (name, children)
+  var commentText = ko.observable("");
+  var errorText = ko.observable(false);
+  var loading = ko.observable(false);
+  
+  return {
+    node: murrix.node,
+    commentText: commentText,
+    errorText: errorText,
+    loading: loading,
+    user: murrix.user,
+    activate: function()
     {
-      this.name = name;
-      this.children = ko.observableArray(children);
+      console.log("node", murrix.node());
+    },
+    submitComment: function()
+    {
+      if (commentText() === "") 
+      {
+        errorText("Can not submit an empty comment.");
+        return;
+      }
+      
+      loading(true);
+      errorText(false);
+      
+      murrix.server.emit("node.comment", { _id: murrix.node()._id, text: commentText() }, function(error, nodeData)
+      {
+        loading(false);
+        
+        if (error)
+        {
+          errorText(error);
+          return;
+        }
+        
+        commentText("");
 
-      this.addChild = function () {
-        this.children.push("New child");
-      }.bind(this);
+        murrix.node(nodeData);
+      });
     }
-
-    return {
-      people : [
-        new Person("Annabelle", ["Arnie", "Anders", "Apple"]),
-        new Person("Bertie", ["Boutros-Boutros", "Brianna", "Barbie", "Bee-bop"]),
-        new Person("Charles", ["Cayenne", "Cleopatra"])
-      ],
-      showRenderTimes : ko.observable(false)
-    }
+  }
 });

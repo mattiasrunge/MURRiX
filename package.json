@@ -1,6 +1,6 @@
 {
   "name": "murrix.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "Mattias Runge <mattias@runge.se>",
   "repository": { "type": "git", "url": "git://github.com/mattiasrunge/MURRiX.git" },
@@ -18,7 +18,9 @@
     "cookie": ">= 0.1.0",
     "node-native-zip": ">= 1.1.0",
     "acall.js": ">= 0.0.4",
-    "achain.js": ">= 0.0.7"
+    "achain.js": ">= 0.0.7",
+    "imagemagick": ">= 0.1.3",
+    "q": ">= 0.9.7"
   },
   "devDependencies": {
     "jshint": "~1.1.0",

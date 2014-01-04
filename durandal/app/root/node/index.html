@@ -1,19 +1,34 @@
-﻿<div class="container-fluid knockout-samples">
-  <div class="row-fluid">
-    <div class="span2 well">
-        <ul class="nav nav-list">
-            <li class="nav-header">Administration</li>
+﻿<div class="node-container">
+  
 
-            <!--ko foreach: router.navigationModel-->
-            <li data-bind="css: { active: isActive }">
-                <a data-bind="attr: { href: hash }, text: title"></a>
-            </li>
-            <!--/ko-->
+  <div class="node-banner-stuff" data-bind="if: node() !== false, css: { 'node-banner-stuff-small': smallMenu }">
+    <div class="container" style="position: relative; height: 251px;">
+      <span class="node-profile-img" style="width: 172px; height: 172px;" data-bind="profilePicture: { node: node(), width: 250, height: 250 }"></span>
 
-        </ul>
-    </div>
-      <div class="span10">
-          <!--ko router: { cacheViews:true }--><!--/ko-->
+      <div class="node-title">
+        <span data-bind="text: node().name"></span>
       </div>
+
+      <div class="node-labels clearfix" data-bind="foreach: node().tags">
+        <a href="#" class="label label-info pull-right" data-bind="attr: { href: '#murrix/label/' + $data }">
+          #<span data-bind="text: $data"></span>
+        </a>
+      </div>
+
+      <ul class="nav nav-pills nav-justified nav-banner" data-bind="foreach: router.navigationModel">
+
+        <!-- ko if: $data.type !== 'items' && ($data.type !== 'family' || ($data.type === 'family' && $parent.node().type === 'person')) -->
+          <li data-bind="css: { active: $data.isActive }">
+
+            <a data-bind="attr: { href: $data.dynamicHash }">
+              <i data-bind="visible: $data.icon, attr: { class: 'icon ' + $data.icon }"></i>
+              <span data-bind="visible: $data.name, text: $data.name"></span>
+            </a>
+          </li>
+        <!--/ko-->
+
+      </ul>
+    </div>
   </div>
+  <div class="node-main" data-bind="router: { cacheViews:true }"></div>
 </div>

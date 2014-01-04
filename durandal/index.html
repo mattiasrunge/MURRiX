@@ -14,15 +14,20 @@
     <link rel="apple-touch-startup-image" href="lib/durandal/img/ios-startup-image-portrait.png" media="(orientation:portrait)" />
     <link rel="apple-touch-icon" href="lib/durandal/img/icon.png"/>
 
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" />
 <!--     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css" /> -->
-    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.css" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="lib/jquery-ui/custom-theme/jquery-ui-1.10.0.custom.css" />
     <link rel="stylesheet" href="css/ie10mobile.css" />
     <link rel="stylesheet" href="lib/durandal/css/durandal.css" />
     <link rel="stylesheet" href="css/murrix.css" />
+    
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
     <script type="text/javascript">
       if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
@@ -32,34 +37,25 @@
         document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
       }
 
-//       var server = io.connect();
-//       var user = ko.observable(false);
-//
-//       server.socket.on("error", function(reason)
-//       {
-//         console.error("Unable to connect Socket.IO, reason: " + reason);
-//       });
-//
-//       server.on("connect", function()
-//       {
-//         console.info("Successfully established a working connection to server");
-//       });
-//
-//       server.on("user.event.current", function(userData)
-//       {
-//         console.log("Current user is:" , userData);
-//         user =
-//
-//       });
     </script>
+    
+    <script type="text/html" id="loading-template">
+      <div class="splash">
+        <div class="message">
+          <i class="fa fa-spinner fa-spin active"></i>
+          Loading...
+        </div>
+      </div>
+    </script>
+    
   </head>
   <body>
     <div id="applicationHost">
       <div class="splash">
         <div class="message">
+          <i class="fa fa-spinner fa-spin active"></i>
           Initializing MURRiX...
         </div>
-        <i class="icon-spinner icon-2x icon-spin active"></i>
       </div>
     </div>
 

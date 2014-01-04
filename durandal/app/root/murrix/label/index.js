@@ -74,7 +74,6 @@ define(['plugins/router', 'knockout', 'murrix', 'jquery'], function(router, ko, 
 
         labels(items);
 
-
         var query = {};
 
         if (mode() === "and")
@@ -111,6 +110,11 @@ define(['plugins/router', 'knockout', 'murrix', 'jquery'], function(router, ko, 
     },
     clicked: function(data)
     {
+      if (loading())
+      {
+        return;
+      }
+
       var pos = $.inArray(data.name, selected());
 
       if (pos === -1)

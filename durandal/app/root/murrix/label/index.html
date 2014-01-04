@@ -3,13 +3,13 @@
     <div class="pull-right" style="font-size: 12px;">
       <div class="radio">
         <label>
-          <input type="radio" name="mode" value="or" data-bind="checked: mode">
+          <input type="radio" name="mode" value="or" data-bind="checked: mode, disable: loading">
           Mode or
         </label>
       </div>
       <div class="radio">
         <label>
-          <input type="radio" name="mode" value="and" data-bind="checked: mode">
+          <input type="radio" name="mode" value="and" data-bind="checked: mode, disable: loading">
           Mode and
         </label>
       </div>
@@ -19,7 +19,9 @@
   </div>
 
   <div class="label-browser clearfix" data-bind="foreach: labels">
-    <div class="label pull-left" data-bind="text: $data.name, click: $parent.clicked, css: { 'label-success': !$data.selected, 'label-warning': $data.selected }"></div>
+    <div class="label pull-left" data-bind="click: $parent.clicked, css: { 'label-info': !$data.selected, 'label-success': $data.selected }">
+      #<span data-bind="text: $data.name"></span>
+    </div>
   </div>
 
   <div data-bind="nodeList: { list: list }"></div>

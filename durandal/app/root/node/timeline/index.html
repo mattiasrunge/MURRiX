@@ -1,32 +1,51 @@
-﻿<style type='text/css'>
-    .liveExample { font-size: 16px; }
-    .liveExample li { line-height: 26px; }
-    .liveExample h3 { line-height: 30px; }
-    .renderTime { color: #777; font-style: italic; font-size: 0.8em; }
-</style>
-<div>
-    <h2>Timeline</h2>
-    <div class="well liveExample">
-        <h3>Timeline</h3>
-        <ul data-bind="foreach: people">
-            <li>
-                <div>
-                    <span data-bind="text: name"> </span> has <span data-bind='text: children().length'>&nbsp;</span> children:
-                    <a href='#' data-bind='click: addChild'>Add child</a>
-                    <span class='renderTime' data-bind='visible: $root.showRenderTimes'>
-                        (person rendered at <span data-bind='text: new Date().getSeconds()'> </span>)
-                    </span>
-                </div>
-                <ul data-bind="foreach: children">
-                    <li>
-                        <span data-bind="text: $data"> </span>
-                        <span class='renderTime' data-bind='visible: $root.showRenderTimes'>
-                            (child rendered at <span data-bind='text: new Date().getSeconds()'> </span>)
-                        </span>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <label><input data-bind='checked: showRenderTimes' type='checkbox' /> Show render times</label>
+﻿<div class="container" >
+
+  <div data-bind="foreach: list">
+    <h4 style="border-bottom: 1px solid #ddd; padding: 0 5px 10px 5px; margin-bottom: 0;" data-bind="text: $data.date"></h4>
+    <div style="padding: 0 5px 30px 5px;">
+      <div data-bind="foreach: $data.texts">
+        <div style="margin-top: 20px;">
+      
+          <div data-bind="visible: $data.type === 'birth'">
+            <h6>
+              <i class="icon-quote-left icon-white"></i>
+              Birth
+            </h6>
+            <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+          </div>
+
+          <div data-bind="visible: $data.type === 'engagement'">
+            <h6>
+              <i class="icon-heart-empty icon-white"></i>
+              Engagement
+            </h6>
+            <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+          </div>
+
+          <div data-bind="visible: $data.type === 'marriage'">
+            <h6>
+              <i class="icon-heart icon-white"></i>
+              Marriage
+            </h6>
+            <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+          </div>
+
+          <div data-bind="visible: $data.type === 'death'">
+            <h6>
+              <i class="icon-quote-right icon-white"></i>
+              Death
+            </h6>
+            <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+          </div>
+
+          <div data-bind="visible: !$data.type || $data.type === false || $data.type === 'none' || $data.type === '', html: $data.text.replace(/\n/g, '<br>')"></div>
+        </div>
+      </div>
+      <div class="clearfix" data-bind="foreach: $data.files" style="margin-top: 20px;">
+        <a data-bind="media: $data.url, tooltip: { title: $data.name }, attr: { href: '#node/' + $root.node()._id + '/timeline/' + $data._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 80px; height: 80px; background-color: #ddd"></a>
+      </div>
     </div>
+  </div>
+
+  <div data-bind="template: { name: 'loading-template', if: loading }"></div>
 </div>

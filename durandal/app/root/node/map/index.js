@@ -1,22 +1,10 @@
 ﻿
-define(['knockout'], function(ko)
+define(['knockout', 'murrix'], function(ko, murrix)
 {
-    var Person = function (name, children)
+  return {
+    activate: function(nodeId, itemId)
     {
-      this.name = name;
-      this.children = ko.observableArray(children);
-
-      this.addChild = function () {
-        this.children.push("New child");
-      }.bind(this);
+      murrix.itemId(itemId ? itemId : false);
     }
-
-    return {
-      people : [
-        new Person("Annabelle", ["Arnie", "Anders", "Apple"]),
-        new Person("Bertie", ["Boutros-Boutros", "Brianna", "Barbie", "Bee-bop"]),
-        new Person("Charles", ["Cayenne", "Cleopatra"])
-      ],
-      showRenderTimes : ko.observable(false)
-    }
+  }
 });

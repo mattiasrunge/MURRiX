@@ -1,15 +1,11 @@
 ﻿
-define(['plugins/router', 'knockout', 'murrix', 'jquery', 'jquery-cookie'], function(router, ko, murrix, $)
+define(['plugins/router', 'knockout', 'murrix', 'jquery', 'jquery-cookie'], function(router, ko, murrix, $, cookie)
 {
   var username = ko.observable("");
   var password = ko.observable("");
   var rememberMe = ko.observable("");
   var errorText = ko.observable(false);
   var loading = ko.observable(false);
-  var ready = ko.computed(function()
-  {
-    return (username() !== "" && password() !== "")
-  });
 
   return {
     canActivate: function()
@@ -26,9 +22,11 @@ define(['plugins/router', 'knockout', 'murrix', 'jquery', 'jquery-cookie'], func
     rememberMe: rememberMe,
     errorText: errorText,
     loading: loading,
-    ready: ready,
     submit: function(data)
     {
+      username($("#signin_username").val());
+      password($("#signin_password").val());
+      
       if (username() === "" || password() === "")
       {
         errorText("Username and password must be entered!");

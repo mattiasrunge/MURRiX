@@ -30,7 +30,7 @@ define(['jquery', 'knockout', 'typeahead', 'murrix'], function($, ko, typeahead,
           query.type = { $in: settings.types };
         }
 
-        murrix.server.emit("node.find", { query: query, limit:  settings.limit }, function(error, nodeDataList)
+        murrix.server.emit("node.find", { query: query, limit:  settings.limit, profilePicture: true }, function(error, nodeDataList)
         {
           if (error)
           {
@@ -51,11 +51,11 @@ define(['jquery', 'knockout', 'typeahead', 'murrix'], function($, ko, typeahead,
       },
       updater: function(key)
       {
-        if (settings.id() === key)
-        {
-          settings.id.valueHasMutated();
-        }
-        else
+//         if (settings.id() === key)
+//         {
+//           settings.id.valueHasMutated();
+//         }
+//         else
         {
           settings.id(key);
         }
@@ -78,14 +78,14 @@ define(['jquery', 'knockout', 'typeahead', 'murrix'], function($, ko, typeahead,
           return "<strong>" + match + "</strong>";
         });
 
-        var imgUrl = "http://placekitten.com/g/32/32";
+        var url = "http://placekitten.com/g/32/32";
 
-    //     if (nodeData._profilePicture && nodeData._profilePicture() !== false)
-    //     {
-    //       imgUrl = "/preview?id=" + nodeData._profilePicture() + "&width=32&height=32&square=1";
-    //     }
-
-        return "<div><img style='margin-right: 20px; width: 32px; height: 32px;' class='pull-left' src='" + imgUrl + "'/><span style='padding: 6px; display: inline-block;'>" + name + "</span></div>";
+        if (nodeData._profilePicture)
+        {
+          url = "/media/" + nodeData.profilePictureInfo.id + "/image/80/80?angle=" + nodeData.profilePictureInfo.angle + "&mirror=" + nodeData.profilePictureInfo.mirror;
+        }
+        
+        return "<div><img style='margin-right: 20px; width: 32px; height: 32px;' class='pull-left' src='" + url + "'/><span style='padding: 6px; display: inline-block;'>" + name + "</span></div>";
       }
     };
 
