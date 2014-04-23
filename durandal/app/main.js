@@ -7,7 +7,7 @@ requirejs.config({
     "transitions" : "../lib/durandal/js/transitions",
     "knockout": "../lib/knockout/knockout-3.0.0",
     "bootstrap": "../lib/bootstrap/js/bootstrap",
-    "jquery": "../lib/jquery/jquery-1.9.1",
+    "jquery": "../lib/jquery/jquery-2.0.3.min",
     "jquery-ui": "../lib/jquery-ui/jquery-ui.min",
     "jquery-cookie": "../lib/jquery/plugins/jquery.cookie",
     "typeahead": "../lib/typeahead/typeahead",

@@ -342,6 +342,10 @@ i.icon-fixed[class*=" icon-"] {
   left: 0;
 }
 
+.node-content-buttons {
+  text-align: center;
+}
+
 .nav-banner {
   position: absolute;
   left: -10px;
@@ -813,7 +817,8 @@ i.icon-fixed[class*=" icon-"] {
 }
 
 .item-container .image-container .showing-container .showing-item:hover .frame {
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 1px black;
   z-index: 10;
 }
 

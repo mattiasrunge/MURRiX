@@ -30,7 +30,7 @@ define(['plugins/router', 'knockout', 'murrix', 'jquery', 'jquery-cookie'], func
       if (username() === "" || password() === "")
       {
         errorText("Username and password must be entered!");
-        return;
+        return false;
       }
 
       errorText(false);
@@ -68,8 +68,10 @@ define(['plugins/router', 'knockout', 'murrix', 'jquery', 'jquery-cookie'], func
 
         murrix.user(userData);
 
-        router.navigateBack();
+        document.location.reload();
       });
+      
+      return false;
     }
   };
 });

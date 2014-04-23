@@ -1,5 +1,19 @@
 ﻿<div class="container" >
 
+  <div class="node-content-buttons">
+    <div class="btn-group">
+      <button type="button" class="btn btn-default">Write new text</button>
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Add new event <span class="caret"></span></button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="#">Birth</a></li>
+        <li><a href="#">Engagement</a></li>
+        <li><a href="#">Marriage</a></li>
+        <li><a href="#">Death</a></li>
+        <li><a href="#">Other</a></li>
+      </ul>
+    </div>
+  </div>
+
   <div data-bind="foreach: list">
     <h4 style="border-bottom: 1px solid #ddd; padding: 0 5px 10px 5px; margin-bottom: 0;" data-bind="text: $data.date"></h4>
     <div style="padding: 0 5px 30px 5px;">
@@ -8,37 +22,45 @@
       
           <div data-bind="visible: $data.type === 'birth'">
             <h6>
-              <i class="icon-quote-left icon-white"></i>
+              <i class="fa fa-quote-left fa-white"></i>
               Birth
             </h6>
-            <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+            <p data-bind="html: $data.text.replace(/\n/g, '<br>')"></p>
           </div>
 
           <div data-bind="visible: $data.type === 'engagement'">
             <h6>
-              <i class="icon-heart-empty icon-white"></i>
+              <i class="fa fa-heart-empty fa-white"></i>
               Engagement
             </h6>
-            <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+            <p data-bind="html: $data.text.replace(/\n/g, '<br>')"></p>
           </div>
 
           <div data-bind="visible: $data.type === 'marriage'">
             <h6>
-              <i class="icon-heart icon-white"></i>
+              <i class="fa fa-heart fa-white"></i>
               Marriage
             </h6>
-            <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+            <p data-bind="html: $data.text.replace(/\n/g, '<br>')"></p>
           </div>
 
           <div data-bind="visible: $data.type === 'death'">
             <h6>
-              <i class="icon-quote-right icon-white"></i>
+              <i class="fa fa-quote-right fa-white"></i>
               Death
             </h6>
-            <div data-bind="html: $data.text.replace(/\n/g, '<br>')"></div>
+            <p data-bind="html: $data.text.replace(/\n/g, '<br>')"></p>
           </div>
 
-          <div data-bind="visible: !$data.type || $data.type === false || $data.type === 'none' || $data.type === '', html: $data.text.replace(/\n/g, '<br>')"></div>
+          <div data-bind="visible: !$data.type || $data.type === false || $data.type === 'none' || $data.type === ''">
+            <h6 data-bind="text: $data.name"></h6>
+            <p data-bind="html: $data.text.replace(/\n/g, '<br>')"></p>
+            <div class="text-muted" style="font-size: 10px; margin-top: 5px;">
+              <span style="margin-right: 20px;"><i class="fa fa-user"></i> <span data-bind="userName: $data.added._by"></span></span>
+              <span style="margin-right: 20px;"><i class="fa fa-map-marker"></i> <span data-bind="whereName: $data.where"></span></span>
+              <a style="margin-right: 20px;" href="#"><i class="fa fa-pencil"></i> Edit</a>
+            </div>
+          </div>
         </div>
       </div>
       <div class="clearfix" data-bind="foreach: $data.files" style="margin-top: 20px;">
