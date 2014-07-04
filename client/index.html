@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MURRiX</title>
+
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" />
+    <link rel="stylesheet" href="bower_components/durandal/css/durandal.css" />
+    <link rel="stylesheet" href="css/murrix.css" />
+    
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    
+    <script type="text/html" id="loading-template">
+      <div class="splash">
+        <div class="message">
+          <i class="fa fa-spinner fa-spin active"></i>
+          Loading...
+        </div>
+      </div>
+    </script>
+    
+    <script src="bower_components/requirejs/require.js" data-main="app/main"></script>
+  </head>
+  <body>
+    <div id="applicationHost">
+      <div class="splash">
+        <div class="message">
+          <i class="fa fa-spinner fa-spin active"></i>
+          Initializing MURRiX...
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+﻿<div class="container page-host">
+  <div class="welcome" data-bind="visible: user() !== false">
+    <div class="row">
+      <div class="col-md-2 sidebar right-border">
+
+        <div class="profile" data-bind="if: user() !== false">
+          <span src="" class="picture pull-left" style="width: 40px; height: 40px;" data-bind="profilePicture: { user: user(), width: 80, height: 80 }"></span>
+          <div>
+            <div data-bind="text: user().name"></div>
+            <div>
+              <a href="#/home/profile">Profile</a>
+              <span data-bind="visible: user()._person">
+                &nbsp;&bull;&nbsp;
+                <a href="#" data-bind="attr: { href: '#/node/' + user()._person }">Me</a>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <ul class="nav nav-pills nav-stacked">
+          <li class="header">Search</li>
+          <!-- ko foreach: searchLinks -->
+            <li data-bind="css: { active: $data.active }">
+              <a data-bind="attr: { href: $data.path }">
+                <i data-bind="attr: { class: 'fa icon-fixed ' + $data.icon() }"></i>
+                <span data-bind="text: $data.title"></span>
+              </a>
+            </li>
+          <!--/ko-->
+        </ul>
+        
+        <ul class="nav" data-bind="visible: visited().length > 0">
+          <li class="header">Last visited</li>
+          <!-- ko foreach: visited -->
+            <li>
+              <a href="#" data-bind="attr: { href: '#node/' + $data._id }, tooltip: { title: $data.name }">
+                <i data-bind="visible: $data.type === 'album'" class="fa fa-book icon-fixed"></i>
+                <i data-bind="visible: $data.type === 'person'" class="fa fa-user icon-fixed"></i>
+                <i data-bind="visible: $data.type === 'location'" class="fa fa-map-marker icon-fixed"></i>
+                <i data-bind="visible: $data.type === 'camera'" class="fa fa-camera-retro icon-fixed"></i>
+                <i data-bind="visible: $data.type === 'vehicle'" class="fa fa-truck icon-fixed"></i>
+                <span data-bind="text: $data.name"></span>
+              </a>
+            </li>
+          <!--/ko-->
+        </ul>
+
+        <ul class="nav nav-pills nav-stacked" data-bind="visible: user() !== false && user().admin === true">
+          <li class="header">Administration</li>
+          <!-- ko foreach: adminRoutes -->
+            <li data-bind="css: { active: isActive }">
+              <a data-bind="attr: { href: hash }">
+                <i data-bind="attr: { class: 'icon-fixed ' + icon }"></i>
+                <span data-bind="text: name"></span>
+              </a>
+            </li>
+          <!--/ko-->
+        </ul>
+      </div>
+      <div class="col-md-10 main">
+        <div data-bind="zone: {}"></div>
+      </div>
+    </div>
+  </div>
+</div>

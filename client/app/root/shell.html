@@ -1,0 +1,70 @@
+﻿<div>
+  <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+
+   <ul class="nav navbar-nav pull-right">
+      <li>
+        <a href="#">
+          <i class="fa fa-question-sign fa-large"></i>
+        </a>
+      </li>
+    </ul>
+
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <i class="fa fa-home fa-large" data-bind="visible: !loading()"></i>
+          <i class="fa fa-spinner fa-large fa-spin" data-bind="visible: loading"></i>
+        </a>
+        <div class="navbar-form navbar-left">
+          <div class="form-group header-search" data-bind="nodeSelect: { id: nodeId, disable: loading, placeholder: 'Search for anything' }, value: nodeIdRaw"></div>
+        </div>
+      </div>
+
+      <ul class="nav navbar-nav pull-right">
+        <li data-bind="visible: user() === false">
+          <a href="#/signin">
+            <i class="fa fa-sign-in fa-large"></i>
+            Sign in
+          </a>
+        </a>
+        <li class="dropdown" data-bind="if: user() !== false, visible: user() !== false">
+          <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+            <span style="vertical-align: top; border-radius: 2px; margin-right: 5px; width: 20px; height: 20px; display: inline-block;" data-bind="profilePicture: { user: user(), width: 80, height: 80 }"></span>
+            <span data-bind="text: user().name"></span>
+            <strong class="caret"></strong>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#murrix/profile"><i class="fa fa-user fa-fixed"></i> Profile</a></li>
+            <li><a href="#" data-bind="click: signout"><i class="fa fa-sign-out fa-fixed"></i> Sign out</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
+        <li>
+          <a href="#" data-bind="click: randomNode">
+            <i class="fa fa-random fa-large"></i>
+          </a>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="fa fa-plus fa-large"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#"><i class="fa fa-book fa-fixed"></i> Album</a></li>
+            <li><a href="#"><i class="fa fa-user fa-fixed"></i> Person</a></li>
+            <li><a href="#"><i class="fa fa-map-marker fa-fixed"></i> Location</a></li>
+            <li><a href="#"><i class="fa fa-camera-retro fa-fixed"></i> Camera</a></li>
+            <li><a href="#"><i class="fa fa-truck fa-fixed"></i> Vehicle</a></li>
+            <li><a href="#"><i class="fa fa-cloud fa-fixed"></i> Tag Collection</a></li>
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+
+  <div data-bind="zone: {}"></div>
+<!--   <div data-bind="router: { cacheViews: true }"></div> -->
+  <div data-bind="visible: item() !== false, itemView: { }"></div>
+</div>

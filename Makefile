@@ -1,15 +1,20 @@
-SRC = $(shell find . \( -name "*.js" \) -o \( -name node_modules -prune \) -type f | sort)
+SRC = $(shell find . -name "*.js" -o \( -name node_modules -o -name bower_components -o -name old \) -prune -type f | sort)
 
 lint:
 	@jshint ${SRC}
 	
-style:
+style: configure
 	./node_modules/jscs/bin/jscs ${SRC}
 
-test:
+test: configure
 	@mocha --reporter spec --ui tdd --recursive lib
 
-watchtest:
+watchtest: configure
 	@mocha --reporter spec --ui tdd --recursive lib --watch
 
-.PHONY: lint test watchtest
+configure:
+	npm install
+	cd client
+	./node_modules/bower/bin/bower install
+	
+.PHONY: lint test watchtest style configure
