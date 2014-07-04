@@ -5,11 +5,12 @@ define([
   "text!./index.html",
   "./recent/index",
   "./name/index",
+  "./label/index",
   "ko-ext",
   "bootstrap", 
   "murrix",
   "when"
-], function(zone, router, template, ZoneRecent, ZoneName, ko, bootstrap, murrix, when)
+], function(zone, router, template, ZoneRecent, ZoneName, ZoneLabel, ko, bootstrap, murrix, when)
 {
 //   var childRouter = router.createChildRouter().makeRelative({
 //     moduleId: "root/murrix",
@@ -36,7 +37,7 @@ define([
   return zone({
     template: template,
     route: "/home",
-    zones: [ ZoneRecent, ZoneName ],
+    zones: [ ZoneRecent, ZoneName, ZoneLabel ],
     onInit: function() {
       this.model.user = murrix.user;
       this.model.userNode = murrix.userNode;

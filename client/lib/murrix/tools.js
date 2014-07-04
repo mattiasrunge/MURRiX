@@ -143,6 +143,25 @@ define(["jquery"], function($)
       }
 
       return "1/" + Math.round(1/num);
+    },
+    parseQueryString: function(queryString) {
+      var params = {};
+      var queries = queryString.split("&");
+  
+      for (var n = 0; n < queries.length; n++) {
+          var parts = queries[n].split('=');
+          
+          if (parts[0].indexOf("[]") === -1) {
+            params[parts[0]] = parts[1];
+          } else {
+            parts[0] = parts[0].replace("[]", "");
+            
+            params[parts[0]] = params[parts[0]] || [];
+            params[parts[0]].push(parts[1]);
+          }
+      }
+  
+      return params;
     }
   }
 });

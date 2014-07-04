@@ -2,8 +2,9 @@
 
 define([
   "knockout",
-  "when/sequence"
-], function(ko, sequence) {
+  "when/sequence",
+  "tools"
+], function(ko, sequence, tools) {
   "use strict";
 
   var Router = function() {
@@ -23,8 +24,17 @@ define([
       var routesToActivate = [];
       var routesToDeactivate = [];
       var fragment = window.location.hash.replace("#", "");
+      var query = {};
       
       fragment = fragment[fragment.length - 1] === "/" ? fragment.substr(0, fragment.length - 1) : fragment;
+      
+      var pos = fragment.indexOf("?");
+      if (pos !== -1) {
+        var queryString = fragment.substr(pos + 1);
+        fragment = fragment.substr(0, pos);
+        
+        query = tools.parseQueryString(queryString);
+      }
       
       // First check redirects
       for (var routeFrom in this.redirects) {
@@ -52,6 +62,10 @@ define([
             for (var i = 0; i < names.length; i++) {
               params[names[i].substr(1)] = args[i];
             }
+          }
+          
+          for (var name in query) {
+            params[name] = query[name];
           }
           
           routesToActivate.push({ route: this.routes[n].route, zone: this.routes[n].zone, params: params });

@@ -12,7 +12,7 @@ requirejs.config({
     "jquery-cookie": "../bower_components/jquery-cookie/jquery.cookie",
     "typeahead": "../bower_components/bootstrap3-typeahead/bootstrap3-typeahead.min",
     "slider": "../bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min",
-    "route-recognizer": "../bower_components/route-recognizer/dist/route-recognizer.amd",
+    
     "zone": "../lib/zone",
     "router": "../lib/router",
     

@@ -1,142 +1,111 @@
 ﻿
-define(['plugins/router', 'knockout', 'murrix', 'jquery'], function(router, ko, murrix, $)
-{
-  var errorText = ko.observable();
-  var successText = ko.observable();
-  var loading = ko.observable(false);
-  var selected = ko.observableArray();
-  var list = ko.observableArray();
-  var labels = ko.observableArray();
-  var mode = ko.observable("or");
-
-  mode.subscribe(function(value)
-  {
-    if (selected().length > 0)
-    {
-      router.navigate("/murrix/label/" + selected().join(value === "and" ? "&" : "|"));
-    }
-  });
-
-  return {
-    errorText: errorText,
-    successText: successText,
-    loading: loading,
-    list: list,
-    labels: labels,
-    mode: mode,
-    activate: function(id)
-    {
-      if (!id)
-      {
-        selected.removeAll();
-      }
-      else
-      {
-        if (id.indexOf("&") !== -1)
-        {
-          selected(id.split("&"));
-          mode("and");
-        }
-        else if (id.indexOf("|") !== -1)
-        {
-          selected(id.split("|"));
-          mode("or");
-        }
-        else
-        {
-          selected.removeAll();
-          selected.push(id);
-        }
-      }
-
-      loading(true);
-      list.removeAll();
-
-      murrix.server.emit("node.getLabels", {}, function(error, labelList)
-      {
-        loading(false);
-
-        if (error)
-        {
-          errorText(error);
+define([
+  "zone", 
+  "router", 
+  "text!./index.html",
+  "knockout",
+  "bootstrap",
+  "moment",
+  "murrix"
+], function(zone, router, template, ko, bootstrap, moment, murrix) {
+  return zone({
+    template: template,
+    route: "/label",
+    onInit: function() {
+      this.model.title = ko.observable("Search by label");
+      this.model.icon = ko.observable("fa-tag");
+      this.model.errorText = ko.observable();
+      this.model.loading = ko.observable(false);
+      this.model.selected = ko.observableArray();
+      this.model.labels = ko.observableArray();
+      this.model.list = ko.observableArray();
+      this.model.mode = ko.observable("or");
+      
+      this.model.clicked = function(data) {
+        if (this.model.loading()) {
           return;
         }
 
-        var items = [];
+        var pos = this.model.selected().indexOf(data.name);
 
-        for (var n = 0; n < labelList.length; n++)
-        {
-          items.push({
-            name: labelList[n],
-            selected: $.inArray(labelList[n], selected()) !== -1
-          });
+        if (pos === -1) {
+          this.model.selected.push(data.name);
+        } else {
+          this.model.selected.splice(pos, 1);
+        }
+        
+        this.model.submit();
+      }.bind(this);
+      
+      this.model.mode.subscribe(function() {
+        this.model.submit();
+      }.bind(this));
+        
+      this.model.submit = function() {
+        var queryString = "";
+        var queryList = this.model.selected().map(function(element) {
+          return "select[]=" + element;
+        });
+        
+        if (this.model.mode() === "and") {
+          queryList.push("mode=and");
+        }
+        
+        if (queryList.length > 0) {
+          queryString = "?" + queryList.join("&");
+        }
+        
+        router.navigateTo(this.getPath() + queryString);
+      }.bind(this);
+    },
+    onLoad: function(d, args) {
+      this.model.mode(args.mode ? args.mode : "or");
+      this.model.selected(args.select ? args.select : []);
+      this.model.loading(true);
+      this.model.list.removeAll();
+      
+      console.log("selected", this.model.selected(), args);
+
+      murrix.server.emit("node.getLabels", {}, function(error, labelList) {
+        this.model.loading(false);
+
+        if (error) {
+          errorText(error);
+          d.reject(error);
+          return;
         }
 
-        labels(items);
+        this.model.labels(labelList.map(function(element) {
+          console.log(element, this.model.selected().indexOf(element) !== -1);
+          return {
+            name: element,
+            selected: this.model.selected().indexOf(element) !== -1
+          };
+        }.bind(this)));
 
         var query = {};
 
-        if (mode() === "and")
-        {
-          query = { tags: { $all: selected() } };
-        }
-        else
-        {
-          query = { tags: { $in: selected() } };
+        if (this.model.mode() === "and") {
+          query = { tags: { $all: this.model.selected() } };
+        } else {
+          query = { tags: { $in: this.model.selected() } };
         }
 
-        loading(true);
+        this.model.loading(true);
 
-        murrix.server.emit("node.find", { query: query }, function(error, nodeDataList)
-        {
-          loading(false);
+        murrix.server.emit("node.find", { query: query }, function(error, nodeDataList) {
+          this.model.loading(false);
 
-          if (error)
-          {
+          if (error) {
             errorText(error);
+            d.reject(error);
             return;
           }
 
-          var nodeList = [];
-
-          for (var key in nodeDataList)
-          {
-            nodeList.push(nodeDataList[key]);
-          }
-
-          list(nodeList);
-        });
-      });
-    },
-    clicked: function(data)
-    {
-      if (loading())
-      {
-        return;
-      }
-
-      var pos = $.inArray(data.name, selected());
-
-      if (pos === -1)
-      {
-        selected.push(data.name);
-      }
-      else
-      {
-        //console.log(selected.slice(pos, 1));
-        selected.splice(pos, 1);
-      }
-
-      router.navigate("/murrix/label/" + selected().join(mode() === "and" ? "&" : "|"));
-    },
-    canActivate: function()
-    {
-      if (murrix.user() === false)
-      {
-        return { redirect: "signin" };
-      }
-      
-      return true;
+          this.model.list(nodeDataList);
+          d.resolve();
+        }.bind(this));
+      }.bind(this));
     }
-  }
+  });
 });
