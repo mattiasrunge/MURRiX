@@ -1,0 +1,24 @@
+<div class="media bottom-border" style="padding-bottom: 15px;">
+
+  <span class="media-object profile-img pull-left" style="width: 80px; height: 80px;" data-bind="profilePicture: { node: $data, width: 80, height: 80 }"></span>
+  
+  <div class="pull-right text-muted" style="font-size: 55px;">
+    <i data-bind="visible: $data.type === 'album'" class="fa fa-book"></i>
+    <i data-bind="visible: $data.type === 'person'" class="fa fa-user"></i>
+    <i data-bind="visible: $data.type === 'location'" class="fa fa-map-marker"></i>
+    <i data-bind="visible: $data.type === 'camera'" class="fa fa-camera"></i>
+    <i data-bind="visible: $data.type === 'vehicle'" class="fa fa-truck"></i>
+  </div>
+  <div class="media-body clearfix">
+    <h4 class="media-heading" style="margin-bottom: 10px; font-size: 14px;"><a href="#" data-bind="text: $data.name, attr: { href: '#/node/' + $data._id }"></a></h4>
+
+    <p style="font-size: 12px;" data-bind="html: $data.description"></p>
+
+    <div class="clearfix" data-bind="foreach: tags" style="margin-top: 5px;">
+      <div class="label label-info pull-left">
+        #<span data-bind="text: $data"></span>
+      </div>
+    </div>
+
+  </div>
+</div>

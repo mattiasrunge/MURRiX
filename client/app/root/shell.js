@@ -1,6 +1,7 @@
 ﻿
 define([
   "zone",
+  "notification",
   "router",
   "text!./shell.html",
   "./home/index",
@@ -10,8 +11,7 @@ define([
   "murrix",
   "jquery",
   "jquery-cookie"
-], function(zone, router, template, ZoneHome, ZoneSignin, ko, moment, murrix, $, cookie)
-{
+], function(zone, notification, router, template, ZoneHome, ZoneSignin, ko, moment, murrix, $, cookie) {
   var nodeId = ko.observable(false);
 
   nodeId.subscribe(function(value) {
@@ -38,7 +38,7 @@ define([
       this.model.randomNode = function() {
         murrix.server.emit("node.random", {}, function(error, nodeData) {
           if (error) {
-            console.log("Could not get random node, error: " + error);
+            notification.error(error);
             return;
           }
 

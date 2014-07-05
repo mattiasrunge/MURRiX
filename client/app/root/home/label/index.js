@@ -1,20 +1,20 @@
 ﻿
 define([
   "zone", 
-  "router", 
   "text!./index.html",
+  "notification",
+  "router", 
   "knockout",
-  "bootstrap",
-  "moment",
   "murrix"
-], function(zone, router, template, ko, bootstrap, moment, murrix) {
+], function(zone, template, notification, router, ko, murrix) {
   return zone({
     template: template,
     route: "/label",
+    transition: "entrance-in",
     onInit: function() {
-      this.model.title = ko.observable("Search by label");
+      this.model.type = ko.observable("search");
+      this.model.title = ko.observable("Browse by labels");
       this.model.icon = ko.observable("fa-tag");
-      this.model.errorText = ko.observable();
       this.model.loading = ko.observable(false);
       this.model.selected = ko.observableArray();
       this.model.labels = ko.observableArray();
@@ -55,7 +55,7 @@ define([
           queryString = "?" + queryList.join("&");
         }
         
-        router.navigateTo(this.getPath() + queryString);
+        router.navigateTo(this.model.path() + queryString);
       }.bind(this);
     },
     onLoad: function(d, args) {
@@ -64,19 +64,17 @@ define([
       this.model.loading(true);
       this.model.list.removeAll();
       
-      console.log("selected", this.model.selected(), args);
-
       murrix.server.emit("node.getLabels", {}, function(error, labelList) {
         this.model.loading(false);
 
         if (error) {
-          errorText(error);
+          notification.error(error);
           d.reject(error);
           return;
         }
 
         this.model.labels(labelList.map(function(element) {
-          console.log(element, this.model.selected().indexOf(element) !== -1);
+
           return {
             name: element,
             selected: this.model.selected().indexOf(element) !== -1
@@ -97,7 +95,7 @@ define([
           this.model.loading(false);
 
           if (error) {
-            errorText(error);
+            notification.error(error);
             d.reject(error);
             return;
           }

@@ -11,7 +11,8 @@
     "jquery-cookie"            : "1.4.1",
     "bootstrap3-typeahead"     : "3.0.3",
     "seiyria-bootstrap-slider" : "3.1.0",
-    "when"                     : "3.3.1"
+    "when"                     : "3.3.1",
+    "requirejs-tpl"            : "git@github.com:/One-com/requirejs-tpl.git"
   },
   "private": true,
   "resolutions": {

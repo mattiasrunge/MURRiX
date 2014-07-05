@@ -8,56 +8,55 @@ define([
 ], function($, ko, router, when) {
   "use strict";
   
-  var idCounter = 0;
-  
   ko.bindingHandlers.zone = {
     update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-      $(element).attr("id", ko.unwrap(viewModel._id));
+      bindingContext.$data._setContainer(element);
     }
   };
 
   return function(lifecycle) {
     return function(options) {
-
       this.options = options || {};
       this.parent = options.parent;
+      this.absoluteRoute = "";
+      
       this._args = false;
+      this._container = false;
+      this._element = false;
 
       this.model = {};
-      this.model._id = "ZoneTarget_" + (idCounter++);
       this.model.zones = ko.observableArray();
+      this.model.active = ko.observable(false);
+      this.model.path = ko.observable("#");
+      this.model._setContainer = function(container) {
+        this._container = container;
+      }.bind(this);
       
       lifecycle.zones = lifecycle.zones || [];
       lifecycle.template = lifecycle.template || "<div></div>";
-      lifecycle.route = lifecycle.route || false;
+      lifecycle.route = lifecycle.route || "";
       lifecycle.onInit = (lifecycle.onInit || function() {}).bind(this);
       lifecycle.onLoad = (lifecycle.onLoad || function(d) { d.resolve(); }).bind(this);
       lifecycle.onShow = (lifecycle.onShow || function(d) { d.resolve(); }).bind(this);
       lifecycle.onHide = (lifecycle.onHide || function(d) { d.resolve(); }).bind(this);
-      
-
-      this.getRoute = function() {
-        if (lifecycle.route === false) {
-          return false;
-        }
-
-        var parentRoute = this.parent.getRoute && this.parent.getRoute() !== false ? this.parent.getRoute() : "";
-        return parentRoute + lifecycle.route;
-      };
-      
-      this.getPath = function() {
-        var route = this.getRoute();
-        var pos = route.indexOf("/:");
-        return "#" + route.substr(0, pos === -1 ? route.length : pos);
-      };
 
       this.init = function() {
         lifecycle.onInit();
 
-        if (this.getRoute() !== false) {
-          router.register(this.getRoute(), this);
+        // Calculate absolute route
+        if (lifecycle.route !== false) {
+          this.absoluteRoute = (this.parent ? this.parent.absoluteRoute : "") + lifecycle.route;
+        }
+        
+        // Calculate the absolute path
+        this.model.path("#" + this.absoluteRoute.split("/:", 1)[0]);
+        
+        // Register the route
+        if (this.absoluteRoute !== "") {
+          router.register(this.absoluteRoute, this);
         }
 
+        // Load child zones
         for (var n = 0; n < lifecycle.zones.length; n++) {
           var zone = new lifecycle.zones[n]({
             parent : this
@@ -69,7 +68,7 @@ define([
       };
       
       this.load = function(args) {
-        console.log("Loading zone " + lifecycle.route + " with args ", args);
+        console.log("Loading zone " + lifecycle.absoluteRoute + " with args ", args);
         
         var jsonArgs = JSON.stringify(args);
         var d = when.defer();
@@ -86,7 +85,7 @@ define([
       };
 
       this.activate = function() {
-        console.log("Activating zone " + lifecycle.route);
+        console.log("Activating zone " + lifecycle.absoluteRoute);
         
         var d = when.defer();
         
@@ -104,7 +103,7 @@ define([
       };
 
       this.deactivate = function() {
-        console.log("Deactivating zone " + lifecycle.route);
+        console.log("Deactivating zone " + lifecycle.absoluteRoute);
         
         var d = when.defer();
         
@@ -120,37 +119,33 @@ define([
         return d.promise;
       };
       
-      this.isActive = function() {
-        return this._isCreated();
+      this._isCreated = function() {
+        return !!this._element;
       };
       
-      this._isCreated = function() {
-        return !!this.element;
-      };
-
       this._create = function() {
         if (this._isCreated()) {
           return true;
         }
-
-        var container = null;
+        
+        var container = false;
 
         if (this.options.container) {
           container = $(this.options.container).get(0);
         } else {
-          if (!this.parent.element) {
+          if (!this.parent._element) {
             console.error("Parent zone is not created, can not create this zone", this);
             return false;
           }
-
-          container = $(this.parent.element).find("#" + this.parent.model._id).get(0);
+          
+          container = this.parent._container;
         }
 
         if (!container) {
           console.error("Could not find the designated container in parent zone", this, options.container);
           return false;
         }
-
+        
         var $element = $(lifecycle.template);
 
         if (!$element) {
@@ -158,11 +153,18 @@ define([
           return false;
         }
 
-        this.element = $element.get(0);
-
-        ko.applyBindings(this.model, this.element);
+        this._element = $element.get(0);
+        
+        ko.applyBindings(this.model, this._element);
+        
         $(container).empty();
+        
+        if (lifecycle.transition) {
+          $element.addClass(lifecycle.transition);
+        }
+        
         $element.appendTo(container);
+        this.model.active(true);
 
         return true;
       };
@@ -172,29 +174,21 @@ define([
           return false;
         }
 
-        var $element = $(this.element);
+        var $element = $(this._element);
 
         $element.find("*").each(function() {
           $(this).off();
         });
 
-        ko.removeNode(this.element);
+        ko.removeNode(this._element);
         $element.remove();
 
-        delete this.element;
+        this._element = false;
+        
+        this.model.active(false);
 
         return true;
       };
-
-//       var keys = Object.keys(obj);
-// 
-//       for (var n = 0; n < keys.length; n++) {
-//         if (typeof obj[keys[n]] === "function") {
-//           this[keys[n]] = obj[keys[n]].bind(this);
-//         } else {
-//           this[keys[n]] = obj[keys[n]];
-//         }
-//       }
     };
   };
 });

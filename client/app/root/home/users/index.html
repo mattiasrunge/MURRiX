@@ -1,5 +1,4 @@
 ﻿<div>
-  <div data-bind="notification: { error: errorText, success: successText }"></div>
   <div class="page-header">
     <h1>Users <i class="fa fa-spinner fa-spin" data-bind="visible: loading"></i></h1>
   </div>
@@ -20,7 +19,7 @@
         <tbody data-bind="foreach: list" style="font-size: 12px;">
           <tr>
             <td class="nowrap">
-              <a href="#" data-bind="text: $data.name, attr: { href: '#murrix/users/' + $data._id }"></a>
+              <a href="#" data-bind="text: $data.name, attr: { href: $root.path() + '/' + $data._id }"></a>
             </td>
             <td class="nowrap" data-bind="text: $data.username"></td>
             <td class="nowrap" data-bind="text: $data.email"></td>
@@ -37,12 +36,12 @@
     </div>
     <div class="col-md-5">
       <div class="bottom-border" style="margin-bottom: 15px;">
-        <a type="button" class="close pull-right" aria-hidden="true" href="#murrix/users" data-bind="visible: user() !== false">&times;</a>
+        <a type="button" class="close pull-right" aria-hidden="true" href="#" data-bind="visible: user() !== false, attr: { href: $root.path() }">&times;</a>
         <h3 data-bind="visible: user() === false">Add new user</h3>
         <h3 data-bind="visible: user() !== false">Edit user</h3>
       </div>
-      <div data-bind="visible: user() === false, userAdd: { user: user, loading: loading, error: errorText, success: successText }"></div>
-      <div data-bind="visible: user() !== false, userEdit: { user: user, loading: loading, error: errorText, success: successText }"></div>
+      <div data-bind="visible: user() === false, userAdd: { user: user, loading: loading }"></div>
+      <div data-bind="visible: user() !== false, userEdit: { user: user, loading: loading }"></div>
 
       <div data-bind="if: user() !== false">
         <h3>Group memberships</h3>

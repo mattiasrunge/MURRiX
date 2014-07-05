@@ -97,11 +97,13 @@ define([
       }
       
       for (n = 0; n < routesToDeactivate.length; n++) {
-        seq.push(function(route) {
-          return function() {
-            return route.zone.deactivate();
-          };
-        }(routesToDeactivate[n]));
+        if (routesToDeactivate[n].zone._isCreated()) {
+          seq.push(function(route) {
+            return function() {
+              return route.zone.deactivate();
+            };
+          }(routesToDeactivate[n]));
+        }
       }
 
       for (n = 0; n < routesToActivate.length; n++) {

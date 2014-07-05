@@ -1,0 +1,48 @@
+<div>
+  <ul class="nav nav-tabs nav-justified">
+    <li data-bind="css: { active: selected() === 'all' }">
+      <a href="#" data-bind="click: select.bind($data, 'all')">
+        Found <span data-bind="text: list().length"></span> results
+      </a>
+    </li>
+    <li data-bind="css: { active: selected() === 'album', disabled: listAlbum().length === 0 }">
+      <a href="#" data-bind="click: select.bind($data, 'album')">
+        <i class="fa fa-book"></i>
+        <span data-bind="text: listAlbum().length"></span> albums
+      </a>
+    </li>
+    <li data-bind="css: { active: selected() === 'person', disabled: listPerson().length === 0 }">
+      <a href="#" data-bind="click: select.bind($data, 'person')">
+        <i class="fa fa-user"></i>
+        <span data-bind="text: listPerson().length"></span> persons
+      </a>
+    </li>
+    <li data-bind="css: { active: selected() === 'location', disabled: listLocation().length === 0 }">
+      <a href="#" data-bind="click: select.bind($data, 'location')">
+        <i class="fa fa-map-marker"></i>
+        <span data-bind="text: listLocation().length"></span> locations
+      </a>
+    </li>
+    <li data-bind="css: { active: selected() === 'camera', disabled: listCamera().length === 0 }">
+      <a href="#" data-bind="click: select.bind($data, 'camera')">
+        <i class="fa fa-camera-retro"></i>
+        <span data-bind="text: listCamera().length"></span> cameras
+      </a>
+    </li>
+    <li data-bind="css: { active: selected() === 'vehicle', disabled: listVehicle().length === 0 }">
+      <a href="#" data-bind="click: select.bind($data, 'vehicle')">
+        <i class="fa fa-truck"></i>
+        <span data-bind="text: listVehicle().length"></span> vehicles
+      </a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'all' }, template: { name: 'nodeListItem', foreach: list }"></div>
+    <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'album' }, template: { name: 'nodeListItem', foreach: listAlbum }"></div>
+    <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'person' }, template: { name: 'nodeListItem', foreach: listPerson }"></div>
+    <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'location' }, template: { name: 'nodeListItem', foreach: listLocation }"></div>
+    <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'camera' }, template: { name: 'nodeListItem', foreach: listCamera }"></div>
+    <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'vehicle' }, template: { name: 'nodeListItem', foreach: listVehicle }"></div>
+  </div>
+</div>

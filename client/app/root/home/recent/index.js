@@ -8,10 +8,11 @@ define([
   return zone({
     template: template,
     route: "/recent",
+    transition: "entrance-in",
     onInit: function() {
+      this.model.type = ko.observable("search");
       this.model.title = ko.observable("Recent");
       this.model.icon = ko.observable("fa-bell");
-      this.model.errorText = ko.observable();
       this.model.loading = ko.observable(false);
       this.model.list = ko.observableArray();
     },

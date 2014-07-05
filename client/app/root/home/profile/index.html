@@ -1,11 +1,10 @@
 ﻿<div>
-  <div data-bind="notification: { error: errorText, success: successText }"></div>
   <div class="page-header">
     <h1>Profile</h1>
   </div>
 
   <div class="row">
-    <div class="col-md-5 right-border" data-bind="userEdit: { user: user, loading: loading, error: errorText, success: successText }"></div>
+    <div class="col-md-5 right-border" data-bind="userEdit: { user: user, loading: loading }"></div>
     <div class="col-md-7" data-bind="if: user() !== false">
       <h3>Properties</h3>
       <table class="table table-striped" style="font-size: 12px;">

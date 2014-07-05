@@ -2,24 +2,23 @@
 requirejs.config({
   paths: {
     "text": "../bower_components/requirejs-text/text",
-    "durandal":"../bower_components/durandal/js",
-    "plugins" : "../bower_components/durandal/js/plugins",
-    "transitions" : "../bower_components/durandal/js/transitions",
+    "tpl": "../bower_components/requirejs-tpl/lib/tpl",
     "knockout": "../bower_components/knockoutjs/dist/knockout.debug",
     "bootstrap": "../bower_components/bootstrap/dist/js/bootstrap.min",
     "jquery": "../bower_components/jquery/dist/jquery.min",
     "moment": "../bower_components/moment/min/moment.min",
     "jquery-cookie": "../bower_components/jquery-cookie/jquery.cookie",
-    "typeahead": "../bower_components/bootstrap3-typeahead/bootstrap3-typeahead.min",
+    "typeahead": "../bower_components/bootstrap3-typeahead/bootstrap3-typeahead",
     "slider": "../bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min",
     
     "zone": "../lib/zone",
+    "widget": "../lib/widget",
     "router": "../lib/router",
+    "notification": "../lib/notification",
     
     "murrix": "../lib/murrix/murrix",
     "ko-ext": "../lib/murrix/ko.extensions",
     "tools": "../lib/murrix/tools"
-    
   },
   packages: [
     { name: "when", location: "../bower_components/when", main: "when" }
@@ -32,17 +31,34 @@ requirejs.config({
     "jquery-cookie": {
       deps: ["jquery"],
       exports: "jQuery"
+    },
+    "typeahead": {
+      deps: ["jquery"],
+      exports: "$"
     }
   }
 });
 
-define(["root/shell", "router", "murrix"],  function(Shell, router, murrix)
-{
+define([
+  "root/shell",
+  "router",
+  "knockout",
+  "murrix",
+  "widgets/notification/index",
+  "widgets/nodeSelect/index",
+  "widgets/nodeList/index",
+  "widgets/groupList/index",
+  "widgets/groupEdit/index",
+  "widgets/groupAdd/index",
+  "widgets/userList/index",
+  "widgets/userEdit/index",
+  "widgets/userAdd/index"
+], function(Shell, router, ko, murrix) {
   document.title = "MURRiX";
 
   $(function() {
     var shell = new Shell({
-      container: "body"
+      container: "#applicationHost"
     });
     
     shell.init();

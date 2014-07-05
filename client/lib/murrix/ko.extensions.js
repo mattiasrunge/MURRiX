@@ -1,6 +1,12 @@
 
-define(['jquery', 'knockout', 'bootstrap', 'murrix', 'moment'], function($, ko, bootstrap, murrix, moment)
-{
+define([
+  'jquery',
+  'knockout',
+  'bootstrap',
+  'moment',
+  'slider',
+  'murrix'
+], function($, ko, bootstrap, moment, slider, murrix) {
   var activeImages = [];
   var queuedImages = [];
   
@@ -24,6 +30,29 @@ define(['jquery', 'knockout', 'bootstrap', 'murrix', 'moment'], function($, ko, 
       activeImages = activeImages.concat(toActivate);
     }
   }
+  
+  ko.bindingHandlers.slider = {
+    update: function(element, valueAccessor) {
+      var options = valueAccessor();
+
+      var s = $(element).slider({
+        value: ko.utils.unwrapObservable(options.value),
+        min: options.min ? options.min : 1800,
+        max: options.max ? options.max : new Date().getFullYear(),
+        step: 1,
+        selection: "none"
+      });
+      
+      s.on("slideStart", function() { options.active(true); });
+      s.on("slideStop", function() { options.active(false); options.value(s.slider("getValue")); });
+
+      if (options.disable) {
+        options.disable.subscribe(function(value) {
+          $(element).slider(value ? "disable" : "enable");
+        });
+      }
+    }
+  };
   
   ko.bindingHandlers.print = {
     update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {

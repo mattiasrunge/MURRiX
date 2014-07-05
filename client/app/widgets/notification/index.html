@@ -1,0 +1,27 @@
+<div data-bind="if: messages().length > 0">
+  <div data-bind="foreach: messages" style="margin-top: 15px;">
+    <div data-part="alert" class="alert fade in" data-bind="css: { 'alert-danger': $data.type === 'error', 'alert-success': $data.type === 'success', 'alert-info': $data.type === 'info' }">
+      <button type="button" class="close" aria-hidden="true" data-bind="click: $parent.close">&times;</button>
+
+      <span data-bind="visible: $data.type === 'success'">
+        <i class="fa fa-check-circle"></i>
+        <strong>Success</strong>
+        &nbsp;
+      </span>
+
+      <span data-bind="visible: $data.type === 'error'">
+        <i class="fa fa-exclamation-circle"></i>
+        <strong>Error</strong>
+        &nbsp;
+      </span>
+      
+      <span data-bind="visible: $data.type === 'info'">
+        <i class="fa fa-info-circle"></i>
+        <strong>Information</strong>
+        &nbsp;
+      </span>
+
+      <span data-bind="html: $data.text"></span>
+    </div>
+  </div>
+</div>

@@ -33,7 +33,7 @@
           <li class="header">Last visited</li>
           <!-- ko foreach: visited -->
             <li>
-              <a href="#" data-bind="attr: { href: '#node/' + $data._id }, tooltip: { title: $data.name }">
+              <a href="#" data-bind="attr: { href: '#/node/' + $data._id }, tooltip: { title: $data.name }">
                 <i data-bind="visible: $data.type === 'album'" class="fa fa-book icon-fixed"></i>
                 <i data-bind="visible: $data.type === 'person'" class="fa fa-user icon-fixed"></i>
                 <i data-bind="visible: $data.type === 'location'" class="fa fa-map-marker icon-fixed"></i>
@@ -47,17 +47,18 @@
 
         <ul class="nav nav-pills nav-stacked" data-bind="visible: user() !== false && user().admin === true">
           <li class="header">Administration</li>
-          <!-- ko foreach: adminRoutes -->
-            <li data-bind="css: { active: isActive }">
-              <a data-bind="attr: { href: hash }">
-                <i data-bind="attr: { class: 'icon-fixed ' + icon }"></i>
-                <span data-bind="text: name"></span>
+          <!-- ko foreach: adminLinks -->
+            <li data-bind="css: { active: $data.active }">
+              <a data-bind="attr: { href: $data.path }">
+                <i data-bind="attr: { class: 'fa icon-fixed ' + $data.icon() }"></i>
+                <span data-bind="text: $data.title"></span>
               </a>
             </li>
           <!--/ko-->
         </ul>
       </div>
       <div class="col-md-10 main">
+        <div data-bind="notification: {  }"></div>
         <div data-bind="zone: {}"></div>
       </div>
     </div>

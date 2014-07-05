@@ -1,151 +1,73 @@
 ﻿
-define(['plugins/router', 'knockout', 'slider', 'bootstrap', 'moment', 'murrix'], function(router, ko, slider, bootstrap, moment, murrix)
-{
-  var errorText = ko.observable();
-  var successText = ko.observable();
-  var loading = ko.observable(false);
-  var year = ko.observable(new Date().getFullYear());
-  var sliding = ko.observable(false);
-  var list = ko.observableArray();
-  var timer = false;
-
-  ko.bindingHandlers.slider = {
-    update: function(element, valueAccessor)
-    {
-      var options = valueAccessor();
-
-      var s = $(element).slider({
-        value: ko.utils.unwrapObservable(options.year),
-        min: options.min ? options.min : 1800,
-        max: options.max ? options.max : new Date().getFullYear(),
-        step: 1,
-        selection: "none"
-      });
+define([
+  "zone",
+  "text!./index.html",
+  "notification",
+  "router",
+  "knockout",
+  "moment",
+  "murrix"
+], function(zone, template, notification, router, ko, moment, murrix) {
+  return zone({
+    template: template,
+    route: "/year/:year",
+    transition: "entrance-in",
+    onInit: function() {
+      this.model.type = ko.observable("search");
+      this.model.title = ko.observable("Browse by year");
+      this.model.icon = ko.observable("fa-clock-o");
+      this.model.loading = ko.observable(false);
+      this.model.list = ko.observableArray();
+      this.model.year = ko.observable(new Date().getFullYear());
+      this.model.sliding = ko.observable(false);
       
-      s.on("slideStart", function() { options.sliding(true); });
-      //s.on("slide", function() { options.year(s.slider('getValue')); });
-      s.on("slideStop", function() { options.sliding(false); options.year(s.slider('getValue')); });
-
-      if (options.loading)
-      {
-        options.loading.subscribe(function(value)
-        {
-          $(element).slider(value ? "disable" : "enable");
-        });
-      }
-    }
-  };
-
-  ko.bindingHandlers.increase = {
-    update: function(element, valueAccessor)
-    {
-      var value = valueAccessor();
-
-      $(element).on('click', function(event)
-      {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (loading())
-        {
-          return;
+      var timer = false;
+      
+      this.model.year.subscribe(function(value) {
+        if (timer) {
+          clearTimeout(timer);
+          timer = false;
         }
 
-        value(parseInt(value(), 10) + 1);
-      });
-    }
-  };
-
-  ko.bindingHandlers.decrease = {
-    update: function(element, valueAccessor)
-    {
-      var value = valueAccessor();
-
-      $(element).on('click', function(event)
-      {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (loading())
-        {
-          return;
+        if (!this.model.sliding()) {
+          timer = setTimeout(function() {
+            timer = false;
+            router.navigateTo(this.model.path() + "/" + value);
+          }.bind(this), 200);
         }
+      }.bind(this));
+      
+      this.model.increase = function() {
+        this.model.year(parseInt(this.model.year(), 10) + 1);
+      }.bind(this);
+      
+      this.model.decrease = function() {
+        this.model.year(parseInt(this.model.year(), 10) - 1);
+      }.bind(this);
+    },
+    onLoad: function(d, args) {
+      this.model.loading(true);
+      this.model.list.removeAll();
 
-        value(parseInt(value(), 10) - 1);
-      });
-    }
-  };
+      this.model.sliding(true); // Prevent recursive update
+      this.model.year(args.year ? args.year : new Date().getFullYear());
+      this.model.sliding(false);
 
-  year.subscribe(function(value)
-  {
-    if (timer)
-    {
-      clearTimeout(timer);
-      timer = false;
-    }
-
-    if (!sliding())
-    {
-      timer = setTimeout(function()
-      {
-        timer = false;
-        router.navigate("/murrix/year/" + value);
-      }, 200);
-    }
-  });
-
-  return {
-    errorText: errorText,
-    successText: successText,
-    loading: loading,
-    year: year,
-    sliding: sliding,
-    list: list,
-    activate: function(id)
-    {
-      if (!id)
-      {
-        id = new Date().getFullYear();
-      }
-
-      sliding(true);
-      year(id);
-      sliding(false);
-
-      var startTime = moment([ year() ]);
+      var startTime = moment([ this.model.year() ]);
       var endTime = startTime.clone().add("years", 1);
 
-      loading(true);
-      list.removeAll();
+      murrix.server.emit("node.findByYear", { year: this.model.year() }, function(error, nodeDataList) {
+        this.model.loading(false);
 
-      murrix.server.emit("node.findByYear", { year: id }, function(error, nodeDataList)
-      {
-        loading(false);
-
-        if (error)
-        {
-          errorText(error);
+        if (error) {
+          notification.error(error);
+          d.reject(error);
           return;
         }
 
-        var nodeList = [];
-
-        for (var key in nodeDataList)
-        {
-          nodeList.push(nodeDataList[key]);
-        }
-
-        list(nodeList);
-      });
-    },
-    canActivate: function()
-    {
-      if (murrix.user() === false)
-      {
-        return { redirect: "signin" };
-      }
-      
-      return true;
+        this.model.list(nodeDataList);
+        d.resolve();
+      }.bind(this));
     }
-  }
+  });
 });

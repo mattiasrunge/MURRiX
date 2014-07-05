@@ -1,26 +1,26 @@
 ﻿
 define([
-  "zone", 
-  "router", 
+  "zone",
   "text!./index.html",
+  "notification",
+  "router",
   "knockout",
-  "bootstrap",
-  "moment",
   "murrix"
-], function(zone, router, template, ko, bootstrap, moment, murrix) {
+], function(zone, template, notification, router, ko, murrix) {
   return zone({
     template: template,
     route: "/search/:query",
+    transition: "entrance-in",
     onInit: function() {
+      this.model.type = ko.observable("search");
       this.model.title = ko.observable("Search by name");
       this.model.icon = ko.observable("fa-search");
-      this.model.errorText = ko.observable();
       this.model.loading = ko.observable(false);
       this.model.query = ko.observable("");
       this.model.list = ko.observableArray();
       
       this.model.submit = function() {
-        router.navigateTo(this.getPath() + "/" + this.model.query());
+        router.navigateTo(this.model.path() + "/" + this.model.query());
       }.bind(this);
     },
     onLoad: function(d, args) {
@@ -32,7 +32,7 @@ define([
         this.model.loading(false);
         
         if (error) {
-          this.model.errorText(error);
+          notification.error(error);
           d.resolve();
           return;
         }

@@ -1,106 +1,62 @@
 ﻿
-define(['durandal/app', 'plugins/router', 'knockout', 'murrix'], function(app, router, ko, murrix)
-{
-  var group = ko.observable(false);
-  var list = ko.observableArray();
-  var loading = ko.observable(false);
-  var errorText = ko.observable("");
-  var successText = ko.observable("");
 
-  function loadList()
-  {
-    murrix.server.emit("group.find", { options: { sort: [ 'name' ] }}, function(error, userDataList)
-    {
-      if (error)
-      {
-        console.log(error);
-        return;
-      }
-
-      list.removeAll();
-
-      for (var key in userDataList)
-      {
-        list.push(userDataList[key]);
-      }
-    });
-  }
-
-  murrix.user.subscribe(function(value)
-  {
-    if (value === false)
-    {
-      list.removeAll();
-    }
-    else
-    {
-      loadList();
-    }
-  });
-
-  group.subscribe(function(value)
-  {
-    if (value !== false)
-    {
-      loadList();
-      router.navigate("/murrix/groups/" + value._id);
-    }
-  });
-
-  return {
-    activate: function(id)
-    {
-      loadList();
-
-      if (!id)
-      {
-        group(false);
-        return;
-      }
-
-      murrix.server.emit("group.get", id, function(error, groupData)
-      {
-        if (error)
-        {
-          console.log(error);
-          return;
-        }
-
-        group(groupData ? groupData : false);
-      });
-    },
-    deleteUser: function(data)
-    {
-      app.showMessage('Are you sure you want to delete ' + data.name + '?', 'Confirm action', ['Yes', 'No']).always(function(answer)
-      {
-        if (answer === "Yes")
-        {
-          murrix.server.emit("group.remove", data._id, function(error)
-          {
-            if (error)
-            {
-              console.log(error);
+define([
+  "zone",
+  "text!./index.html",
+  "notification",
+  "knockout",
+  "murrix"
+], function(zone, template, notification, ko, murrix) {
+  return zone({
+    template: template,
+    route: "/group/:id",
+    transition: "entrance-in",
+    onInit: function() {
+      this.model.type = ko.observable("admin");
+      this.model.title = ko.observable("Groups");
+      this.model.icon = ko.observable("fa-group");
+      this.model.loading = ko.observable(false);
+      this.model.list = ko.observableArray();
+      this.model.group = ko.observable(false);
+      
+      // TODO: Group add should reload
+      
+      this.model.deleteGroup = function(data) {
+        if (confirm("Are you sure you want to delete " + data.name + "?")) {
+          murrix.server.emit("group.remove", data._id, function(error) {
+            if (error) {
+              notification.error(error);
               return;
             }
 
-            router.navigate("/murrix/groups");
-          });
+            router.reload();
+          }.bind(this));
         }
-      });
+      }.bind(this);
     },
-    group: group,
-    list: list,
-    loading: loading,
-    errorText: errorText,
-    successText: successText,
-    canActivate: function()
-    {
-      if (murrix.user() === false)
-      {
-        return { redirect: "signin" };
-      }
-      
-      return true;
+    onLoad: function(d, args) {
+      murrix.server.emit("group.find", { options: { sort: [ 'name' ] }}, function(error, groupDataList) {
+        if (error) {
+          notification.error(error);
+          d.reject(error);
+          return;
+        }
+
+        var list = [];
+        for (var key in groupDataList) {
+          list.push(groupDataList[key]);
+        }
+        
+        this.model.list(list);
+        this.model.group(false);
+        
+        if (args.id) {
+          this.model.group(groupDataList[args.id]);
+        }
+        
+        d.resolve();        
+      }.bind(this));
     }
-  }
+  });
 });
+
