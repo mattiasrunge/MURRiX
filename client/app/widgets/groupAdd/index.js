@@ -21,7 +21,6 @@ define([
           return;
         }
 
-        this.model.errorText(false);
         this.model.loading(true);
 
         murrix.server.emit("group.save", {

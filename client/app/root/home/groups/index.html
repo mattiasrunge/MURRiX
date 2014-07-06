@@ -36,8 +36,8 @@
         <h3 data-bind="visible: group() === false">Add new group</h3>
         <h3 data-bind="visible: group() !== false">Edit group</h3>
       </div>
-      <div data-bind="visible: group() === false, groupAdd: { group: group, loading: loading, error: errorText, success: successText }"></div>
-      <div data-bind="visible: group() !== false, groupEdit: { group: group, loading: loading, error: errorText, success: successText }"></div>
+      <div data-bind="visible: group() === false, groupAdd: { group: group, loading: loading }"></div>
+      <div data-bind="visible: group() !== false, groupEdit: { group: group, loading: loading }"></div>
 
       <div data-bind="if: group() !== false">
         <h3>Members</h3>

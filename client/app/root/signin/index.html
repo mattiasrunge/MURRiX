@@ -1,7 +1,5 @@
 ﻿<div class="container" style="margin-top: 70px;">
-  <div data-bind="if: errorText() !== false">
-    <div class="alert alert-danger" data-bind="text: errorText"></div>
-  </div>
+  <div data-bind="notification: {  }"></div>
 
   <form class="form-horizontal well" role="form" data-bind="submit: submit">
     <div class="form-group">
