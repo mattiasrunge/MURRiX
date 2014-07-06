@@ -10,6 +10,7 @@ requirejs.config({
     "jquery-cookie": "../bower_components/jquery-cookie/jquery.cookie",
     "typeahead": "../bower_components/bootstrap3-typeahead/bootstrap3-typeahead",
     "slider": "../bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min",
+    "datetimepicker": "../bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min",
     
     "zone": "../lib/zone",
     "widget": "../lib/widget",
@@ -40,30 +41,31 @@ requirejs.config({
 });
 
 define([
-  "root/shell",
+  "root/index",
   "router",
   "knockout",
+  "jquery",
   "murrix",
   "widgets/notification/index",
   "widgets/nodeSelect/index",
   "widgets/nodeList/index",
+  "widgets/timePicker/index",
   "widgets/groupList/index",
   "widgets/groupEdit/index",
   "widgets/groupAdd/index",
   "widgets/userList/index",
   "widgets/userEdit/index",
   "widgets/userAdd/index"
-], function(Shell, router, ko, murrix) {
+], function(ZoneRoot, router, ko, $, murrix) {
   document.title = "MURRiX";
 
   $(function() {
-    var shell = new Shell({
+    var root = new ZoneRoot({
       container: "#applicationHost"
     });
     
-    shell.init();
-    
-    shell.activate().then(function() {
+    root.init();
+    root.activate().then(function() {
       router.addRedirect("", "/home/recent");
       router.addRedirect("/", "/home/recent");
       router.process();

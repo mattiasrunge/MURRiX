@@ -1061,3 +1061,20 @@ i.icon-fixed[class*=" icon-"] {
     -o-animation-name: fadeIn;
     animation-name: fadeIn;
 }
+
+.access-column {
+  text-align: center;
+  width: 110px
+}
+
+.notification {
+  position: fixed;
+  right: 10px;
+  bottom: 0;
+  z-index: 3000;
+}
+
+.notification .alert {
+  width: 330px;
+  margin-bottom: 10px;
+}

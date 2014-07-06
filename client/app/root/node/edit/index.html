@@ -1,141 +1,17 @@
-﻿<div class="container" data-bind="if: node() !== false">
+﻿<div class="container">
   <div class="row">
     <div class="col-md-2">
-      <ul class="nav nav-pills nav-stacked">
-        <li class="active"><a href="#information" data-toggle="tab">Information</a></li>
-        <li><a href="#access" data-toggle="tab">Access</a></li>
-        <li><a href="#upload" data-toggle="tab">Upload</a></li>
-        <li><a href="#locations" data-toggle="tab">Locations</a></li>
-        <li><a href="#people" data-toggle="tab">People</a></li>
-        <li><a href="#time" data-toggle="tab">Time</a></li>
-        <li><a href="#todo" data-toggle="tab">Todo</a></li>
+      <ul class="nav nav-pills nav-stacked" data-bind="foreach: editLinks">
+        <li data-bind="css: { active: $data.active }">
+          <a data-bind="attr: { href: $data.path }">
+            <span data-bind="text: $data.title"></span>
+          </a>
+        </li>
       </ul>
     </div>
     <div class="col-md-10">
       <div class="tab-content">
-        <div class="tab-pane active" id="information">
-
-        
-        </div>
-        <div class="tab-pane" id="access">
-          <h2 class="page-header">Access rights</h2>
-
-          <h4 class="page-header">Public <small>Make node readable to users that have not signed in</small></h4>
-
-          <div data-bind="ifnotset: node().public">
-            <button class="btn btn-success btn-xs btn-public" data-bind="click: changePublic.bind($data, true)">
-              <i class="icon-unlock icon-fixed"></i>
-              Make public
-            </button>
-          </div>
-
-          <div data-bind="ifset: node().public">
-            <button class="btn btn-danger btn-xs btn-public" data-bind="click: changePublic.bind($data, false)">
-              <i class="icon-lock icon-fixed"></i>
-              Make private
-            </button>
-          </div>
-
-
-          <h4 class="page-header">Administrators <small>Groups that can read and edit this node</small></h4>
-          <table class="table table-condensed table-striped">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th style="width: 110px;">Read access</th>
-                <th style="width: 110px;">Admin access</th>
-              </tr>
-            </thead>
-            <tbody data-bind="foreach: admins">
-              <tr>
-                <td>
-                  <i style="vertical-align: center;" class="icon-group"></i>
-                  <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
-                </td>
-                <td class="clearfix access-column">
-                  <button type="button" class="btn btn-danger btn-xs pull-right" data-bind="click: $parent.remove">Revoke</button>
-                </td>
-                <td class="clearfix access-column">
-                  <button type="button" class="btn btn-danger btn-xs pull-right" data-bind="click: $parent.makeReader">Revoke</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-
-          <h4 class="page-header">Readers <small>Groups that can read this node</small></h4>
-          <table class="table table-condensed table-striped">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th style="width: 110px;">Read access</th>
-                <th style="width: 110px;">Admin access</th>
-              </tr>
-            </thead>
-            <tbody data-bind="foreach: readers">
-              <tr>
-                <td>
-                  <i style="vertical-align: center;" class="icon-group"></i>
-                  <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
-                </td>
-                <td class="clearfix access-column">
-                  <button type="button" class="btn btn-danger btn-xs pull-right" data-bind="click: $parent.remove">Revoke</button>
-                </td>
-                <td class="clearfix access-column">
-                  <button type="button" class="btn btn-success btn-xs pull-right" data-bind="click: $parent.makeAdmin">Grant</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-
-          <h4 class="page-header">Others <small>Groups without any rights this node</small></h4>
-          <table class="table table-condensed table-striped">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th style="width: 110px;">Read access</th>
-                <th style="width: 110px;">Admin access</th>
-              </tr>
-            </thead>
-            <tbody data-bind="foreach: others">
-              <tr>
-                <td>
-                  <i style="vertical-align: center;" class="icon-group"></i>
-                  <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
-                </td>
-                <td class="clearfix access-column">
-                  <button type="button" class="btn btn-success btn-xs pull-right" data-bind="click: $parent.makeReader">Grant</button>
-                </td>
-                <td class="clearfix access-column">
-                  <button type="button" class="btn btn-success btn-xs pull-right" data-bind="click: $parent.makeAdmin">Grant</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        
-        </div>
-        <div class="tab-pane" id="upload">
-
-        
-        </div>
-        <div class="tab-pane" id="locations">
-
-        
-        </div>
-        <div class="tab-pane" id="people">
-
-        
-        </div>
-        <div class="tab-pane" id="time">
-
-        
-        </div>
-        <div class="tab-pane" id="todo">
-
-        
-        </div>
-        
+        <div class="tab-pane active" data-bind="zone: {}"></div>
       </div>
     </div>
   </div>

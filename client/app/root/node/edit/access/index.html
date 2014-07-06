@@ -1,0 +1,116 @@
+﻿<div>
+  <h3 class="page-header clearfix">
+    Access <small>Control which groups should have access</small>
+    
+    <div data-bind="if: !node().public" class="pull-right">
+      <button class="btn btn-success" data-bind="click: changePublic.bind($data, true)">
+        <i class="fa fa-unlock fa-fixed"></i>
+        Make public
+      </button>
+    </div>
+
+    <div data-bind="if: node().public" class="pull-right">
+      <button class="btn btn-danger" data-bind="click: changePublic.bind($data, false)">
+        <i class="fa fa-lock fa-fixed"></i>
+        Make private
+      </button>
+    </div>
+  </h3>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4>
+        Administrators
+        <small>Groups that can read and edit this node</small>
+      </h4>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Group</th>
+          <th>Read access</th>
+          <th>Admin access</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: admins">
+        <tr>
+          <td>
+            <i class="fa fa-group"></i>
+            <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
+          </td>
+          <td class="access-column">
+            <button type="button" class="btn btn-danger btn-xs" data-bind="click: $parent.remove">Revoke</button>
+          </td>
+          <td class="access-column">
+            <button type="button" class="btn btn-danger btn-xs" data-bind="click: $parent.makeReader">Revoke</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4>
+        Readers
+        <small>Groups that can read this node</small>
+      </h4>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Group</th>
+          <th>Read access</th>
+          <th>Admin access</th>
+        </tr>
+      </thead>
+        <tbody data-bind="foreach: readers">
+        <tr>
+          <td>
+            <i class="fa fa-group"></i>
+            <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
+          </td>
+          <td class="access-column">
+            <button type="button" class="btn btn-danger btn-xs" data-bind="click: $parent.remove">Revoke</button>
+          </td>
+          <td class="access-column">
+            <button type="button" class="btn btn-success btn-xs" data-bind="click: $parent.makeAdmin">Grant</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4>
+        Others
+        <small>Groups without any rights this node</small>
+      </h4>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Group</th>
+          <th>Read access</th>
+          <th>Admin access</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: others">
+        <tr>
+          <td>
+            <i class="fa fa-group"></i>
+            <span data-bind="text: $data.name, attr: { title: $data.name }"></span>
+          </td>
+          <td class="access-column">
+            <button type="button" class="btn btn-success btn-xs" data-bind="click: $parent.makeReader">Grant</button>
+          </td>
+          <td class="access-column">
+            <button type="button" class="btn btn-success btn-xs" data-bind="click: $parent.makeAdmin">Grant</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+</div>

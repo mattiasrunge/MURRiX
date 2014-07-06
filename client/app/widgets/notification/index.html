@@ -1,5 +1,5 @@
 <div data-bind="if: messages().length > 0">
-  <div data-bind="foreach: messages" style="margin-top: 15px;">
+  <div data-bind="foreach: messages">
     <div data-part="alert" class="alert fade in" data-bind="css: { 'alert-danger': $data.type === 'error', 'alert-success': $data.type === 'success', 'alert-info': $data.type === 'info' }">
       <button type="button" class="close" aria-hidden="true" data-bind="click: $parent.close">&times;</button>
 

@@ -1,43 +1,42 @@
-﻿<div class="container" data-bind="visible: node() === false">
-  <div style="margin-top: 80px;">
-    <div class="alert alert-danger" style="text-align: center;">
-      <h1><i class="fa fa-exclamation-triangle"></i> Could not retreive the requested node</h1>
-      <p>
-        Either the address is wrong or you have insufficient rights to access it, try <a href="#signin">signing in</a>.
-      </p>
+﻿<div>
+  <div class="container" data-bind="visible: node() === false">
+    <div style="margin-top: 80px;">
+      <div class="alert alert-danger" style="text-align: center;">
+        <h1><i class="fa fa-exclamation-triangle"></i> Could not retreive the requested node</h1>
+        <p>
+          Either the address is wrong or you have insufficient rights to access it, try <a href="#/signin">signing in</a>.
+        </p>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="node-container" data-bind="visible: node() !== false">
-  <div class="node-banner-stuff" data-bind="if: node() !== false, css: { 'node-banner-stuff-small': smallMenu }">
-    <div class="container" style="position: relative; height: 251px;">
-      <span class="node-profile-img" style="width: 172px; height: 172px;" data-bind="profilePicture: { node: node(), width: 250, height: 250 }"></span>
+  <div class="node-container" data-bind="visible: node() !== false">
+    <div class="node-banner-stuff" data-bind="if: node() !== false, css: { 'node-banner-stuff-small': smallMenu }">
+      <div class="container" style="position: relative; height: 251px;">
+        <span class="node-profile-img" style="width: 172px; height: 172px;" data-bind="profilePicture: { node: node(), width: 250, height: 250 }"></span>
 
-      <div class="node-title">
-        <span data-bind="text: node().name"></span>
-      </div>
+        <div class="node-title">
+          <span data-bind="text: node().name"></span>
+        </div>
 
-      <div class="node-labels clearfix" data-bind="foreach: node().tags">
-        <a href="#" class="label label-info pull-right" data-bind="attr: { href: '#murrix/label/' + $data }">
-          #<span data-bind="text: $data"></span>
-        </a>
-      </div>
+        <div class="node-labels clearfix" data-bind="foreach: node().tags">
+          <a href="#" class="label label-info pull-right" data-bind="attr: { href: '#/home/label?select[]=' + $data }">
+            #<span data-bind="text: $data"></span>
+          </a>
+        </div>
 
-      <ul class="nav nav-pills nav-justified nav-banner" data-bind="foreach: router.navigationModel">
-
-        <!-- ko if: $data.type !== 'items' && ($data.type !== 'family' || ($data.type === 'family' && $parent.node().type === 'person')) -->
-          <li data-bind="css: { active: $data.isActive }">
-
-            <a data-bind="attr: { href: $data.dynamicHash }">
-              <i data-bind="visible: $data.icon, attr: { class: 'icon ' + $data.icon }"></i>
-              <span data-bind="visible: $data.name, text: $data.name"></span>
+        <ul class="nav nav-pills nav-justified nav-banner" data-bind="foreach: nodeLinks">
+          <li data-bind="css: { active: $data.active }">
+            <a data-bind="attr: { href: $data.path }">
+              <span data-bind="text: $data.title"></span>
             </a>
           </li>
-        <!--/ko-->
-
-      </ul>
+          <!-- TODO: if: $data.type !== 'items' && ($data.type !== 'family' || ($data.type === 'family' && $parent.node().type === 'person')) -->
+        </ul>
+      </div>
+    </div>
+    <div class="node-main">
+      <div data-bind="zone: {}"></div>
     </div>
   </div>
-  <div class="node-main" data-bind="router: { cacheViews:true }"></div>
 </div>

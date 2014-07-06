@@ -162,6 +162,46 @@ define(["jquery"], function($)
       }
   
       return params;
+    },
+    removeFromArray: function(item, list) {
+      return list.filter(function(element) {
+        return element !== item;
+      });
+    },
+    addToArray: function(item, list) {
+      list.push(item);
+      return list;
+    },
+    getList: function(type, start, end) {
+      var list = [];
+      var len = 2;
+      
+      if (type === "years") {
+        start = start || 1600;
+        end = end || (new Date().getFullYear() + 10);
+        len = 4;
+      } else if (type === "months") {
+        start = start || 1;
+        end = end || 12;
+      } else if (type === "days") {
+        start = start || 1;
+        end = end || 31;
+      } else if (type === "hours") {
+        start = start || 0;
+        end = end || 23;
+      } else if (type === "minutes") {
+        start = start || 0;
+        end = end || 59;
+      } else if (type === "seconds") {
+        start = start || 0;
+        end = end || 59;
+      }
+      
+      for (var n = start; n <= end; n++) {
+        list.push(("00000" + n).slice(-len));
+      }
+       
+      return list;
     }
   }
 });

@@ -7,10 +7,11 @@ define([
 ], function(zone, template, ko, murrix) {
   return zone({
     template: template,
-    route: "/map",
-     onInit: function() {
-      this.model.title = ko.observable("Map");
-      this.model.type = ko.observable("node");
+    route: "/time",
+    transition: "entrance-in",
+    onInit: function() {
+      this.model.type = ko.observable("nodeEdit");
+      this.model.title = ko.observable("Time");
     }
   });
 });

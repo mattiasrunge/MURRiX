@@ -1,45 +1,44 @@
 ﻿
-define(['ko-ext', 'murrix'], function(ko, murrix)
-{
-  var commentText = ko.observable("");
-  var errorText = ko.observable(false);
-  var loading = ko.observable(false);
-  
-  return {
-    node: murrix.node,
-    commentText: commentText,
-    errorText: errorText,
-    loading: loading,
-    user: murrix.user,
-    activate: function()
-    {
-      console.log("node", murrix.node());
-    },
-    submitComment: function()
-    {
-      if (commentText() === "") 
-      {
-        errorText("Can not submit an empty comment.");
-        return;
-      }
+define([
+  "zone",
+  "text!./index.html",
+  "notification",
+  "knockout",
+  "murrix"
+], function(zone, template, notification, ko, murrix) {
+  return zone({
+    template: template,
+    route: "/overview",
+    transition: "entrance-in",
+    onInit: function() {
+      this.model.loading = ko.observable(false);
+      this.model.commentText = ko.observable("");
+      this.model.node = murrix.node;
+      this.model.user = murrix.user;
+      this.model.title = ko.observable("Overview");
+      this.model.type = ko.observable("node");
       
-      loading(true);
-      errorText(false);
-      
-      murrix.server.emit("node.comment", { _id: murrix.node()._id, text: commentText() }, function(error, nodeData)
-      {
-        loading(false);
-        
-        if (error)
-        {
-          errorText(error);
+      this.model.submitComment = function() {
+        if (this.model.commentText() === "") {
+          notification.error("Can not submit an empty comment.");
           return;
         }
         
-        commentText("");
+        this.model.loading(true);
+        
+        murrix.server.emit("node.comment", { _id: murrix.node()._id, text: this.model.commentText() }, function(error, nodeData) {
+          this.model.loading(false);
+          
+          if (error) {
+            notification.error(error);
+            return;
+          }
+          
+          this.model.commentText("");
 
-        murrix.node(nodeData);
-      });
+          murrix.node(nodeData);
+        }.bind(this));
+      }.bind(this);
     }
-  }
+  });
 });

@@ -64,10 +64,8 @@
         </div>
       </div>
       <div class="clearfix" data-bind="foreach: $data.files" style="margin-top: 20px;">
-        <a data-bind="media: $data.url, tooltip: { title: $data.name }, attr: { href: '#node/' + $root.node()._id + '/timeline/' + $data._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 80px; height: 80px; background-color: #ddd"></a>
+        <a data-bind="media: $data.url, tooltip: { title: $data.name }, attr: { href: $root.activePath() + '/' + $data._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 80px; height: 80px; background-color: #ddd"></a>
       </div>
     </div>
   </div>
-
-  <div data-bind="template: { name: 'loading-template', if: loading }"></div>
 </div>

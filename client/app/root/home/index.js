@@ -20,6 +20,7 @@ define([
   return zone({
     template: template,
     route: "/home",
+    transition: "entrance-in-fade",
     zones: [ ZoneRecent, ZoneName, ZoneYear, ZoneLabel, ZoneProfile, ZoneSettings, ZoneUsers, ZoneGroups ],
     onInit: function() {
       this.model.user = murrix.user;

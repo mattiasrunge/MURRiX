@@ -1,9 +1,126 @@
-﻿<style type='text/css'>
-    .liveExample { font-size: 16px; }
-    .liveExample li { line-height: 26px; }
-    .liveExample h3 { line-height: 30px; }
-    .renderTime { color: #777; font-style: italic; font-size: 0.8em; }
-</style>
-<div>
-    <h2>Comments</h2>
+﻿<div>
+  <h3 class="page-header clearfix">
+    Information <small>Edit basic information about this node</small>
+  </h3>
+    
+  <form class="form-horizontal" role="form">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="Enter name...">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Description</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" rows="6" placeholder="Enter description..."></textarea>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Birth name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="Enter birth name...">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Birth time</label>
+      <div class="col-sm-10">
+        <div data-bind="timePicker: { disable: loading }"></div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Death time</label>
+      <div class="col-sm-10">
+        <div data-bind="timePicker: { disable: loading }"></div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Gender</label>
+      <div class="col-sm-10">
+        <label class="radio-inline">
+          <input type="radio" value="m"> Male
+        </label>
+        <label class="radio-inline">
+          <input type="radio" value="f"> Female
+        </label>
+      </div>  
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Mother</label>
+      <div class="col-sm-10">
+        <div data-bind="nodeSelect: { id: motherId, disable: loading, types: [ 'person' ], placeholder: 'Select mother...' }"></div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Father</label>
+      <div class="col-sm-10">
+        <div data-bind="nodeSelect: { id: fatherId, disable: loading, types: [ 'person' ], placeholder: 'Select father...' }"></div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Partner</label>
+      <div class="col-sm-10">
+        <div data-bind="nodeSelect: { id: partnerId, disable: loading, types: [ 'person' ], placeholder: 'Select partner...' }"></div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Home</label>
+      <div class="col-sm-10">
+        <div data-bind="nodeSelect: { id: homeId, disable: loading, types: [ 'location' ], placeholder: 'Select home location...' }"></div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Owners</label>
+      <div class="col-sm-10">
+        TODO
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Position</label>
+      <div class="col-sm-10">
+        TODO
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Camera type</label>
+      <div class="col-sm-10">
+        TODO
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Camera timezone</label>
+      <div class="col-sm-10">
+        TODO
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Camera serial number</label>
+      <div class="col-sm-10">
+        TODO
+      </div>
+    </div>
+    
+      
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <a href="#" class="btn btn-primary" data-bind="disable: loading, click: submit">Save</a>
+        <a href="#" class="btn btn-default" data-bind="disable: loading, click: reset">Reset</a>
+      </div>
+    </div>
+  </form>
+    
 </div>

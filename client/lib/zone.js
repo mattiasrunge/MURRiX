@@ -20,7 +20,7 @@ define([
       this.parent = options.parent;
       this.absoluteRoute = "";
       
-      this._args = false;
+      this.args = ko.observable();
       this._container = false;
       this._element = false;
 
@@ -28,6 +28,22 @@ define([
       this.model.zones = ko.observableArray();
       this.model.active = ko.observable(false);
       this.model.path = ko.observable("#");
+      this.model.activePath = ko.computed(function() {
+          // Calculate the active path
+          var absoluteRoute = "";
+          
+          if (this.parent) {
+            absoluteRoute = this.parent.absoluteRoute;
+            
+            for (var name in this.parent.args()) {
+              absoluteRoute = absoluteRoute.replace(":" + name, this.parent.args()[name]);
+            }
+          }
+          
+          absoluteRoute += lifecycle.route;
+          
+          return "#" + absoluteRoute.split("/:", 1)[0];
+      }.bind(this));
       this.model._setContainer = function(container) {
         this._container = container;
       }.bind(this);
@@ -48,7 +64,7 @@ define([
           this.absoluteRoute = (this.parent ? this.parent.absoluteRoute : "") + lifecycle.route;
         }
         
-        // Calculate the absolute path
+        // Calculate the path
         this.model.path("#" + this.absoluteRoute.split("/:", 1)[0]);
         
         // Register the route
@@ -67,15 +83,25 @@ define([
         }
       };
       
+      this.reload = function() {
+        console.log("Reloading zone " + this.absoluteRoute + " with args ", this.args());
+        
+        var d = when.defer();
+        lifecycle.onLoad(d, this.args());
+        
+        return d.promise;
+      };
+      
       this.load = function(args) {
-        console.log("Loading zone " + lifecycle.absoluteRoute + " with args ", args);
+        console.log("Loading zone " + this.absoluteRoute + " with args ", args);
         
         var jsonArgs = JSON.stringify(args);
         var d = when.defer();
         
         // Only call onLoad if argument has changed
-        if (this._args !== jsonArgs) {
-          this._args = jsonArgs;
+        if (JSON.stringify(this.args()) !== jsonArgs) {
+          this.args(args);
+          
           lifecycle.onLoad(d, args);
         } else {
           d.resolve();
@@ -85,7 +111,7 @@ define([
       };
 
       this.activate = function() {
-        console.log("Activating zone " + lifecycle.absoluteRoute);
+        console.log("Activating zone " + this.absoluteRoute);
         
         var d = when.defer();
         
@@ -103,12 +129,12 @@ define([
       };
 
       this.deactivate = function() {
-        console.log("Deactivating zone " + lifecycle.absoluteRoute);
+        console.log("Deactivating zone " + this.absoluteRoute);
         
         var d = when.defer();
         
         if (this._isCreated()) {
-          this._args = false;
+          this.args(false);
           this._destroy();
         
           lifecycle.onHide(d);

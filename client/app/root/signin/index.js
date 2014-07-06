@@ -12,6 +12,7 @@ define([
   return zone({
     template: template,
     route: "/signin",
+    transition: "entrance-in-fade",
     onInit: function() {
       this.model.username = ko.observable("");
       this.model.password = ko.observable("");
