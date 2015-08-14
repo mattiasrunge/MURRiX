@@ -1,0 +1,12 @@
+<table class="table table-striped" style="font-size: 12px;">
+    <tbody data-bind="foreach: users">
+        <tr>
+            <td style="white-space: nowrap;">
+                <strong>
+                    <span src="" class="picture" style="width: 24px; height: 24px; margin-right: 5px;" data-bind="picture: { nodeId: $data._person, width: 24, height: 24, square: 1 }"></span>
+                    <span data-bind="text: $data.name"></span>
+                </strong>
+            </td>
+        </tr>
+    </tbody>
+</table>

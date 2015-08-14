@@ -1,0 +1,53 @@
+﻿<div class="animated fadeInRight">
+    <div class="page-header">
+        <h1>Users <i class="fa fa-spinner fa-spin" data-bind="visible: loading"></i></h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7 right-border">
+
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>E-Mail</th>
+                        <th>Last login</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                    <tbody data-bind="foreach: list" style="font-size: 12px;">
+                    <tr>
+                        <td class="nowrap">
+                            <span src="" class="picture" style="width: 24px; height: 24px; margin-right: 5px;" data-bind="picture: { nodeId: $data._person, width: 24, height: 24, square: 1 }"></span>
+                            <a href="#" data-bind="text: $data.name, location: { userId: $data._id }"></a>
+                        </td>
+                        <td class="nowrap" data-bind="text: $data.username"></td>
+                        <td class="nowrap" data-bind="text: $data.email"></td>
+                        <td class="nowrap" data-bind="datetimeAgo: $data.lastLogin"></td>
+                        <td>
+                            <a href="#" data-bind="click: $parent.deleteUser">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-md-5">
+            <div class="bottom-border" style="margin-bottom: 15px;">
+                <a type="button" class="close pull-right" aria-hidden="true" href="#" data-bind="visible: user() !== false, location: { userId: null }">&times;</a>
+                <h3 data-bind="visible: user() === false">Add new user</h3>
+                <h3 data-bind="visible: user() !== false">Edit user</h3>
+            </div>
+            <div data-bind="if: user() === false">
+                <user_add params="{ create: createHandler }"></user_add>
+            </div>
+            <div data-bind="if: user() !== false">
+                <user_edit params="{ user: user, update: updateHandler }"></user_edit>
+            </div>
+        </div>
+    </div>
+
+</div>

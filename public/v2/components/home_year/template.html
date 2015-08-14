@@ -1,0 +1,25 @@
+﻿<div class="animated fadeInRight">
+    <div class="page-header">
+        <h1>Browse by year <i class="fa fa-spinner fa-spin" data-bind="visible: loading"></i></h1>
+    </div>
+
+    <div class="year-browser">
+        <div class="number">
+            <a href="#" data-bind="click: decrease">
+                <i class="fa fa-chevron-left"></i>
+            </a>
+            <span class="" data-bind="text: year"></span>
+            <a href="#" data-bind="click: increase">
+                <i class="fa fa-chevron-right"></i>
+            </a>
+        </div>
+
+        <form class="form " role="search">
+            <div class="form-group">
+                <div data-bind="slider: { value: sliderYear, disabled: loading, active: sliding }"></div>
+            </div>
+        </form>
+    </div>
+
+    <node_list params="{ type: type, list: list }"></node_list>
+</div>

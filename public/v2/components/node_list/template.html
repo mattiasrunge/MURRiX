@@ -1,0 +1,35 @@
+<div>
+    <ul class="nav nav-tabs nav-justified" data-bind="foreach: types">
+        <li data-bind="css: { active: $data.active, disabled: $data.list().length === 0  }">
+            <a href="#" data-bind="location: { type: $data.type }">
+                <i data-bind="visible: $data.icon, attr: { class: 'fa ' + $data.icon }"></i>
+                <span data-bind="text: $data.list().length"></span> <span data-bind="text: $data.suffix"></span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content" data-bind="foreach: types">
+        <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: $data.active }, foreach: $data.list">
+            <div class="media bottom-border" style="padding-bottom: 15px;">
+
+                <span class="media-object profile-img pull-left" style="width: 80px; height: 80px;" data-bind="picture: { id: $data._profilePicture, width: 80, height: 80, square: 1 }"></span>
+
+                <div class="pull-right text-muted" style="font-size: 55px;">
+                    <i data-bind="visible: $parent.icon, attr: { class: 'fa ' + $parent.icon }"></i>
+                </div>
+                <div class="media-body clearfix">
+                    <h4 class="media-heading" style="margin-bottom: 10px; font-size: 14px;"><a href="#" data-bind="text: $data.name, attr: { href: '#/node/' + $data._id }"></a></h4>
+
+                    <p style="font-size: 12px;" data-bind="html: $data.description"></p>
+
+                    <div class="clearfix" data-bind="foreach: tags" style="margin-top: 5px;">
+                        <div class="label label-info pull-left">
+                            #<span data-bind="text: $data"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

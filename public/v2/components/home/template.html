@@ -1,0 +1,102 @@
+﻿<div class="container page-host">
+    <div class="welcome" data-bind="visible: user() !== false">
+        <div class="row">
+            <div class="col-md-2 sidebar right-border">
+
+                <div class="profile" data-bind="if: user() !== false">
+                    <span src="" class="picture pull-left" style="width: 40px; height: 40px;" data-bind="picture: { nodeId: $data._person, width: 40, height: 40, square: 1 }"></span>
+                    <div>
+                        <div data-bind="text: user().name"></div>
+                        <div>
+                            <a href="#" data-bind="location: { page: 'home', section: 'profile' }">Profile</a>
+                            <span data-bind="visible: user()._person">
+                                &nbsp;&bull;&nbsp;
+                                <a href="#" data-bind="attr: { href: '#/node/' + user()._person }">Me</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="header">Search</li>
+                    <li data-bind="css: { active: !section() || section() === 'recent' }">
+                        <a href="#" data-bind="location: { page: 'home', section: '' }">
+                            <i class="fa icon-fixed fa-bell"></i>
+                            Recent
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'search' }">
+                        <a href="#" data-bind="location: { page: 'home', section: 'search' }">
+                            <i class="fa icon-fixed fa-search"></i>
+                            Name
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'year' }">
+                        <a href="#" data-bind="location: { page: 'home', section: 'year' }">
+                            <i class="fa icon-fixed fa-clock-o"></i>
+                            Browse by year
+                        </a>
+                    </li>
+                    <!--<li data-bind="css: { active: section() === 'label' }">
+                        <a href="#" data-bind="location: { page: 'home', section: 'label' }">
+                            <i class="fa icon-fixed fa-tag"></i>
+                            Browse by labels
+                        </a>
+                    </li>-->
+                </ul>
+
+                <ul class="nav" data-bind="visible: visited().length > 0">
+                    <li class="header">Last visited</li>
+                    <!-- ko foreach: visited -->
+                        <li>
+                            <a href="#" data-bind="attr: { href: '#/node/' + $data._id }, tooltip: { title: $data.name }">
+                                <i data-bind="visible: $data.type === 'album'" class="fa fa-book icon-fixed"></i>
+                                <i data-bind="visible: $data.type === 'person'" class="fa fa-user icon-fixed"></i>
+                                <i data-bind="visible: $data.type === 'location'" class="fa fa-map-marker icon-fixed"></i>
+                                <i data-bind="visible: $data.type === 'camera'" class="fa fa-camera-retro icon-fixed"></i>
+                                <i data-bind="visible: $data.type === 'vehicle'" class="fa fa-truck icon-fixed"></i>
+                                <span data-bind="text: $data.name"></span>
+                            </a>
+                        </li>
+                    <!--/ko-->
+                </ul>
+
+                <ul class="nav nav-pills nav-stacked" data-bind="visible: user() !== false && user().admin === true">
+                    <li class="header">Administration</li>
+                    <li data-bind="css: { active: section() === 'users' }">
+                        <a href="#" data-bind="location: { page: 'home', section: 'users' }">
+                            <i class="fa icon-fixed fa-user"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'groups' }">
+                        <a href="#" data-bind="location: { page: 'home', section: 'groups' }">
+                            <i class="fa icon-fixed fa-group"></i>
+                            Groups
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-10 main">
+                <div data-bind="if: !section() || section() === 'recent'">
+                    <home_recent></home_recent>
+                </div>
+                <div data-bind="if: section() === 'search'">
+                    <home_search></home_search>
+                </div>
+                <div data-bind="if: section() === 'year'">
+                    <home_year></home_year>
+                </div>
+                <div data-bind="if: section() === 'profile'">
+                    <home_profile></home_profile>
+                </div>
+                <div data-bind="if: section() === 'users'">
+                    <home_users></home_users>
+                </div>
+                <div data-bind="if: section() === 'groups'">
+                    <home_groups></home_groups>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

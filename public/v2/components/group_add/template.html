@@ -1,0 +1,21 @@
+<div>
+    <form class="form-horizontal clearfix" role="form" data-bind="submit: save">
+        <div class="form-group">
+            <label for="inputName" class="col-lg-3 control-label">Name</label>
+            <div class="col-lg-9">
+                <input type="text" class="form-control" id="inputName" placeholder="Name" data-bind="value: name, disable: loading">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputDescription" class="col-lg-3 control-label">Description</label>
+            <div class="col-lg-9">
+                <textarea class="form-control" id="inputDescription" placeholder="Description" data-bind="value: description, disable: loading"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-offset-3 col-lg-9 cleafix">
+                <a href="#" class="btn btn-primary" data-bind="disable: loading, click: save">Create</a>
+            </div>
+        </div>
+    </form>
+</div>
