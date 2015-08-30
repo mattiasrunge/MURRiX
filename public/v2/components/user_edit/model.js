@@ -11,6 +11,9 @@ define([
             this.user = params.user;
             this.loading = notification.loadObservable("component/user_edit", false); // TODO: Dispose!
             this.updateHandler = params.update || function() {};
+            this.hideGroups = ko.pureComputed(function() {
+                return ko.unwrap(params.hideGroups);
+            });
 
             this.personId = ko.observable(false);
             this.name = ko.observable("");

@@ -16,7 +16,7 @@
                 </a>
                 <div class="navbar-form navbar-left">
                     <div class="form-group header-search">
-                        <node_select params="{ id: nodeId, disable: loading, placeholder: 'Search for anything', value: nodeIdRaw }"></node_select>
+                        <node_select params="{ id: nodeId, disable: loading, placeholder: 'Search for anything' }"></node_select>
                     </div>
                 </div>
             </div>
@@ -68,6 +68,7 @@
     <login data-bind="visible: !user()"></login>
     <div data-bind="visible: user()">
         <home data-bind="visible: page() === 'home' || !page()"></home>
+        <node data-bind="visible: page() === 'node'"></node>
     </div>
 
 </div>

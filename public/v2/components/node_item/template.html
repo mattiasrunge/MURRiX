@@ -1,0 +1,237 @@
+<div data-bind="if: item() !== false">
+  <div class="item-container" data-bind="css: { fullscreen: fullscreen }">
+    <div class="image-container">
+
+      <!-- ko if: videoUrl() === false -->
+        <div class="" data-bind="click: containerClick">
+          <a class="fullscreenButton" href="#" data-bind="click: toggleFullscreen, visible: !fullscreen(), tooltip: { placement: 'left', title: 'Switch to fullscreen' }">
+            <i class="fa fa-expand"></i>
+          </a>
+          <a class="fullscreenButton" href="#" data-bind="click: toggleFullscreen, visible: fullscreen, tooltip: { placement: 'left', title: 'Exit fullscreen' }">
+            <i class="fa fa-compress"></i>
+          </a>
+
+          <div class="image" data-bind="media: { url: imageUrl, speed: 300, fadeSwitch: true }"></div>
+
+          <!-- ko foreach: item().showing -->
+            <div class="showing-item" data-bind="style: { top: (($data.y - $data.height / 2) * 100) + '%', left: (($data.x - $data.width / 2) * 100) + '%', width: ($data.width * 100) + '%', height: ($data.height * 100) + '%' }">
+              <div class="frame"></div>
+              <div class="name-container">
+                <div class="name" data-bind="nodeName: $data._id"></div>
+              </div>
+            </div>
+
+          <!-- /ko -->
+        </div>
+      <!-- /ko -->
+
+      <!-- ko if: videoUrl() !== false -->
+        <video preload="metadata" controls="true" data-bind="attr: { src: videoUrl, poster: imageUrl }" src="" alt=""></video>
+      <!-- /ko -->
+
+      <div class="arrow-container left" data-bind="click: goPrevious">
+        <div class="arrow"><i class="fa fa-chevron-left"></i></div>
+      </div>
+      <div class="arrow-container right" data-bind="click: goNext">
+        <div class="arrow"><i class="fa fa-chevron-right"></i></div>
+      </div>
+    </div>
+    <div class="data-container">
+      <table style="margin-right: auto; margin-left: auto;">
+        <tbody>
+          <tr>
+            <td>
+              <span class="name">
+                <strong data-bind="text: itemIndex() + 1"></strong> of <strong data-bind="text: list().length"></strong>
+              </span>
+              &nbsp;
+              <a href="#" data-bind="click: togglePlaying, visible: !playing(), tooltip: { title: 'Start slideshow' }" style="color: white;">
+                <i class="fa fa-play"></i>
+              </a>
+              <a href="#" data-bind="click: togglePlaying, visible: playing, tooltip: { title: 'Stop slideshow' }" style="color: white;">
+                <i class="fa fa-pause"></i>
+              </a>
+            </td>
+            <td class="who" data-bind="visible: item()._who, if: item()._who">
+              <i class="fa fa-user"></i> <span data-bind="nodeName: item()._who"></span>
+            </td>
+            <td class="where" data-bind="visible: item().where, if: item().where">
+              <i class="fa fa-map-marker"></i> <span data-bind="whereName: item().where"></span>
+            </td>
+            <td class="when" data-bind="visible: item().when, if: item().when">
+              <i class="fa fa-clock-o"></i> <span data-bind="datetimeLocal: item().when.timestamp"></span>
+            </td>
+            <td class="showing" data-bind="visible: item().showing && item().showing.length > 0, if: item().showing && item().showing.length > 0">
+              <i class="fa fa-user"></i> <span data-bind="text: item().showing.length"></span>
+            </td>
+            <td class="comments" data-bind="visible: item().comments && item().comments.length > 0, if: item().comments && item().comments.length > 0">
+              <i class="fa fa-comment"></i> <span data-bind="text: item().comments.length"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-container">
+      <div class="top-buttons pull-right">
+        <a href="#" data-bind="click: close"><i class="fa fa-times"></i></a>
+      </div>
+      <div class="title">
+        <h5>
+          <i data-bind="visible: node().type === 'album'" class="fa fa-book"></i>
+          <i data-bind="visible: node().type === 'person'" class="fa fa-user"></i>
+          <i data-bind="visible: node().type === 'location'" class="fa fa-map-marker"></i>
+          <i data-bind="visible: node().type === 'camera'" class="fa fa-camera-retro"></i>
+          <i data-bind="visible: node().type === 'vehicle'" class="fa fa-truck"></i>
+          <span data-bind="text: node().name"></span>
+        </h5>
+
+        <ul class="nav nav-pills nav-justified nav-banner" style="position: relative;">
+          <li class="active"><a href="#comments" data-toggle="tab">Comments</a></li>
+          <li><a href="#details" data-toggle="tab">Details</a></li>
+          <li><a href="#download" data-toggle="tab">Download</a></li>
+        </ul>
+      </div>
+
+      <div class="tab-content">
+        <div class="tab-pane active" id="comments">
+
+          <div class="media">
+            <span class="media-object pull-left" style="width: 64px; height: 64px;" data-bind="picture: { nodeId: user()._personId, width: 80, height: 80 }"></span>
+            <div class="media-body">
+              <form data-bind="submit: submitComment">
+                <div class="form-group">
+                  <textarea class="form-control" style="width: 100%; height: 64px;" placeholder="Write a comment..." data-bind="value: commentText, disabled: loading"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" data-bind="disabled: loading">Post comment</button>
+                <p class="text-danger error-text" data-bind="visible: errorText() !== false, text: errorText"></p>
+              </form>
+            </div>
+          </div>
+          <!-- ko foreach: item().comments -->
+            <div class="media">
+              <span class="media-object pull-left" style="width: 64px; height: 64px;" data-bind="profilePicture: { userId: $data.added._by, width: 80, height: 80 }"></span>
+              <div class="media-body">
+                <h6 class="media-heading">
+                  <span data-bind="userName: $data.added._by">...</span> said <span data-bind="datetimeAgo: $data.added.timestamp"></span>...
+                </h6>
+                <p data-bind="html: $data.text.replace(/\n/g, '<br>')"></p>
+              </div>
+            </div>
+          <!-- /ko -->
+
+        </div>
+        <div class="tab-pane" id="details">
+
+          <table class="table table-striped table-condensed" style="margin-bottom: 0;">
+            <tbody>
+              <tr>
+                <td>Name</td>
+                <td data-bind="text: item().name"></td>
+              </tr>
+              <tr>
+                <td>Item&nbsp;added&nbsp;by</td>
+                <td data-bind="userName: item().added._by"></td>
+              </tr>
+              <tr>
+                <td>Item&nbsp;added&nbsp;on</td>
+                <td data-bind="datetimeLocal: item().added.timestamp"></td>
+              </tr>
+              <tr>
+                <td>Item&nbsp;modified&nbsp;by</td>
+                <td data-bind="userName: item().modified._by"></td>
+              </tr>
+              <tr>
+                <td>Item&nbsp;modified&nbsp;on</td>
+                <td data-bind="datetimeLocal: item().modified.timestamp"></td>
+              </tr>
+              <!-- ko if: item().exif -->
+                <tr>
+                  <td>File&nbsp;size</td>
+                  <td data-bind="htmlSize: item().exif.FileSize"></td>
+                </tr>
+                <tr data-bind="if: item().exif.ImageWidth && item().exif.ImageHeight">
+                  <td>Resolution</td>
+                  <td data-bind="text: item().exif.ImageWidth + 'x' + item().exif.ImageHeight"></td>
+                </tr>
+                <tr data-bind="if: item().type">
+                  <td>Type</td>
+                  <td data-bind="text: item().type"></td>
+                </tr>
+                <tr data-bind="if: item().exif.Make">
+                  <td>Camera&nbsp;make</td>
+                  <td data-bind="text: item().exif.Make"></td>
+                </tr>
+                <tr data-bind="if: item().exif.Model">
+                  <td>Camera&nbsp;model</td>
+                  <td data-bind="text: item().exif.Model"></td>
+                </tr>
+                <tr data-bind="if: item().exif.Orientation">
+                  <td>Orientation</td>
+                  <td data-bind="text: item().exif.Orientation"></td>
+                </tr>
+                <tr data-bind="if: item().angle">
+                  <td>Angle</td>
+                  <td data-bind="text: item().angle"></td>
+                </tr>
+                <tr data-bind="if: item().mirror">
+                  <td>Mirror</td>
+                  <td data-bind="text: item().mirror"></td>
+                </tr>
+                <tr data-bind="if: item().exif.MIMEType">
+                  <td>MIME&nbsp;type</td>
+                  <td data-bind="text: item().exif.MIMEType"></td>
+                </tr>
+                <tr data-bind="if: item().exif.ISO">
+                  <td>ISO</td>
+                  <td data-bind="text: tools.makeDecimalPretty(item().exif.ISO)"></td>
+                </tr>
+                <tr data-bind="if: item().exif.FocalLength">
+                  <td>Focal&nbsp;length</td>
+                  <td data-bind="text: tools.makeDecimalPretty(item().exif.FocalLength)"></td>
+                </tr>
+                <tr data-bind="if: item().exif.ShutterSpeedValue">
+                  <td>Shutter&nbsp;speed&nbsp;value</td>
+                  <td data-bind="text: tools.makeDecimalPretty(item().exif.ShutterSpeedValue)"></td>
+                </tr>
+                <tr data-bind="if: item().exif.ShutterSpeedValue">
+                  <td>Aperture&nbsp;value</td>
+                  <td data-bind="text: tools.makeDecimalPretty(item().exif.ShutterSpeedValue)"></td>
+                </tr>
+                <tr data-bind="if: item().exif.ResolutionUnit">
+                  <td>Resolution&nbsp;unit</td>
+                  <td data-bind="text: item().exif.ResolutionUnit"></td>
+                </tr>
+                <tr data-bind="if: item().exif.Compression">
+                  <td>Compression</td>
+                  <td data-bind="text: item().exif.Compression"></td>
+                </tr>
+                <tr data-bind="if: item().exif.ColorSpace">
+                  <td>Color&nbsp;space</td>
+                  <td data-bind="text: item().exif.ColorSpace"></td>
+                </tr>
+                <tr data-bind="if: item().exif.ColorComponents">
+                  <td>Color&nbsp;components</td>
+                  <td data-bind="text: item().exif.ColorComponents"></td>
+                </tr>
+                <tr data-bind="if: item().exif.BitsPerSample">
+                  <td>Bits&nbsp;per&nbsp;sample</td>
+                  <td data-bind="text: item().exif.BitsPerSample"></td>
+                </tr>
+                <tr data-bind="if: item().exif.ComponentsConfiguration">
+                  <td>Components&nbsp;configuration</td>
+                  <td data-bind="text: item().exif.ComponentsConfiguration"></td>
+                </tr>
+                <tr data-bind="if: item().exif.EncodingProcess">
+                  <td>Encoding&nbsp;process</td>
+                  <td data-bind="text: item().exif.EncodingProcess"></td>
+                </tr>
+              <!-- /ko -->
+            </tbody>
+          </table>
+
+        </div>
+        <div class="tab-pane" id="download">...</div>
+      </div>
+    </div>
+  </div>
+</div>

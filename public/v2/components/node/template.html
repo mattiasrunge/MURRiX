@@ -1,0 +1,93 @@
+﻿<div class="container page-host">
+    <div class="welcome" data-bind="visible: node() !== false">
+        <div class="row" data-bind="if: node() !== false">
+            <div class="col-md-2 sidebar right-border">
+
+                <div class="profile" data-bind="if: node() !== false">
+                    <div src="" class="picture" style="width: 170px; height: 170px;" data-bind="picture: { id: node()._profilePicture, width: 250, height: 250, square: 1 }"></div>
+                </div>
+
+                <ul class="nav nav-pills nav-stacked">
+                    <li data-bind="css: { active: !section() || section() === 'overview' }">
+                        <a href="#" data-bind="location: { page: 'node', section: '' }">
+                            <i class="fa fa-fw fa-file-o"></i>
+                            Overview
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'timeline' }">
+                        <a href="#" data-bind="location: { page: 'node', section: 'timeline' }">
+                            <i class="fa fa-fw fa-clock-o"></i>
+                            Timeline
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'logbook' }">
+                        <a href="#" data-bind="location: { page: 'node', section: 'logbook' }">
+                            <i class="fa fa-fw fa-calendar"></i>
+                            Logbook
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'media' }">
+                        <a href="#" data-bind="location: { page: 'node', section: 'media' }">
+                            <i class="fa fa-fw fa-photo"></i>
+                            Media
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'map' }">
+                        <a href="#" data-bind="location: { page: 'node', section: 'map' }">
+                            <i class="fa fa-fw fa-globe"></i>
+                            Map
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'family' }, visible: node().type === 'person'">
+                        <a href="#" data-bind="location: { page: 'node', section: 'family' }">
+                            <i class="fa fa-fw fa-sitemap"></i>
+                            Family
+                        </a>
+                    </li>
+                </ul>
+                <ul class="nav nav-pills nav-stacked" data-bind="">
+                    <li class="header">Administration</li>
+                    <li data-bind="css: { active: section() === 'edit' }">
+                        <a href="#" data-bind="location: { page: 'node', section: 'edit' }">
+                            <i class="fa fa-fw fa-edit"></i>
+                            Edit
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'access' }">
+                        <a href="#" data-bind="location: { page: 'node', section: 'access' }">
+                            <i class="fa fa-fw fa-lock"></i>
+                            Access
+                        </a>
+                    </li>
+                    <li data-bind="css: { active: section() === 'import' }">
+                        <a href="#" data-bind="location: { page: 'node', section: 'import' }">
+                            <i class="fa fa-fw fa-upload"></i>
+                            Import
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-10 main">
+                <!--<div data-bind="if: !section() || section() === 'recent'">
+                    <home_recent></home_recent>
+                </div>-->
+                <div data-bind="if: section() === 'media'">
+                    <node_media params="{ node: node }"></node_media>
+                </div>
+                <div data-bind="if: section() === 'timeline'">
+                    <node_timeline params="{ node: node }"></node_timeline>
+                </div>
+                <div data-bind="if: section() === 'map'">
+                    <node_map params="{ node: node }"></node_map>
+                </div>
+                <div data-bind="if: section() === 'family'">
+                    <node_family params="{ node: node }"></node_family>
+                </div>
+
+                <div data-bind="if: section() === 'access'">
+                    <node_access params="{ node: node }"></node_access>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+﻿<div>
+    <node_item params="{ node: node, itemId: itemId, list: list }"></node_item>
+    <div class="animated fadeInRight">
+        <div class="clearfix" data-bind="foreach: list">
+            <a data-bind="picture: { id: $data._id, width: 250, height: 250, square: 1 }, location: { itemId: $data._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 240px; height: 240px; background-color: #ddd"></a>
+        </div>
+    </div>
+</div>

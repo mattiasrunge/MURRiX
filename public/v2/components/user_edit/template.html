@@ -56,7 +56,7 @@
         </form>
     </div>
 
-    <div data-bind="if: user() !== false">
+    <div data-bind="if: !hideGroups()">
         <div class="pull-right">
             <group_select params="{ id: groupId, disable: loading, placeholder: 'Add group' }"></group_select>
         </div>

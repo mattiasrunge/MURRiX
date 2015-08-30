@@ -1,0 +1,36 @@
+<div class="animated fadeInRight">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Group</th>
+                <th>&nbsp;</th>
+                <th class="access-check-column">None</th>
+                <th class="access-check-column">Read</th>
+                <th class="access-check-column">Admin</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: list">
+            <tr>
+                <td>
+                    <i style="vertical-align: center;" class="icon-group"></i>
+                    <span data-bind="text: $data.name"></span>
+                </td>
+                <td>
+                    <small data-bind="text: $data.description"></small>
+                </td>
+                <td class="access-check" data-bind="css: { 'access-check-notactive': !$data.noaccess }, click: $parent.removeAccess">
+                    <i data-bind="visible: $data.noaccess" class="fa fa-check access-check-icon"></i>
+                    <i data-bind="visible: !$data.noaccess" class="fa fa-check access-check-button"></i>
+                </td>
+                <td class="access-check" data-bind="css: { 'access-check-notactive': !$data.reader }, click: $parent.readAccess">
+                    <i data-bind="visible: $data.reader" class="fa fa-check access-check-icon"></i>
+                    <i data-bind="visible: !$data.reader" class="fa fa-check access-check-button"></i>
+                </td>
+                <td class="access-check" data-bind="css: { 'access-check-notactive': !$data.admin }, click: $parent.adminAccess">
+                    <i data-bind="visible: $data.admin && $data.id !== 0" class="fa fa-check access-check-icon"></i>
+                    <i data-bind="visible: !$data.admin && $data.id !== 0" class="fa fa-check access-check-button"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

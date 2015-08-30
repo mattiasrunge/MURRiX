@@ -15,7 +15,9 @@ define([
             this.page = ko.observable(false);
             this.nodeId = ko.observable(false);
             this.item = ko.observable(false);
-            this.nodeIdRaw = ko.observable(false);
+            this.nodeIdString = ko.pureComputed(function() {
+                return location.current().nodeId;
+            });
 
             this.page = ko.pureComputed(function() {
                 return location.current().page;
@@ -41,14 +43,15 @@ define([
                 console.log("nodeId", value);
 
                 if (value) {
-                    location.goto({ page: "node", id: value });
+                    location.goto({ page: "node", nodeId: value });
                 }
             });
 
-            this.nodeIdRaw.subscribe(function(value) {
-                console.log("nodeIdRaw", value);
-                this.nodeId(value);
+            this.nodeIdString.subscribe(function(value) {
+                this.nodeId(value || false);
             }.bind(this));
+
+            this.nodeId(this.nodeIdString());
         }
     };
 });

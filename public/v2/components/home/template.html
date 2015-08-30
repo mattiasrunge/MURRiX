@@ -11,7 +11,7 @@
                             <a href="#" data-bind="location: { page: 'home', section: 'profile' }">Profile</a>
                             <span data-bind="visible: user()._person">
                                 &nbsp;&bull;&nbsp;
-                                <a href="#" data-bind="attr: { href: '#/node/' + user()._person }">Me</a>
+                                <a href="#" data-bind="location: { page: 'node', nodeId: user()._person }">Me</a>
                             </span>
                         </div>
                     </div>
@@ -21,25 +21,25 @@
                     <li class="header">Search</li>
                     <li data-bind="css: { active: !section() || section() === 'recent' }">
                         <a href="#" data-bind="location: { page: 'home', section: '' }">
-                            <i class="fa icon-fixed fa-bell"></i>
+                            <i class="fa fa-fw fa-bell"></i>
                             Recent
                         </a>
                     </li>
                     <li data-bind="css: { active: section() === 'search' }">
                         <a href="#" data-bind="location: { page: 'home', section: 'search' }">
-                            <i class="fa icon-fixed fa-search"></i>
+                            <i class="fa fa-fw fa-search"></i>
                             Name
                         </a>
                     </li>
                     <li data-bind="css: { active: section() === 'year' }">
                         <a href="#" data-bind="location: { page: 'home', section: 'year' }">
-                            <i class="fa icon-fixed fa-clock-o"></i>
+                            <i class="fa fa-fw fa-clock-o"></i>
                             Browse by year
                         </a>
                     </li>
                     <!--<li data-bind="css: { active: section() === 'label' }">
                         <a href="#" data-bind="location: { page: 'home', section: 'label' }">
-                            <i class="fa icon-fixed fa-tag"></i>
+                            <i class="fa fa-fw fa-tag"></i>
                             Browse by labels
                         </a>
                     </li>-->
@@ -49,12 +49,12 @@
                     <li class="header">Last visited</li>
                     <!-- ko foreach: visited -->
                         <li>
-                            <a href="#" data-bind="attr: { href: '#/node/' + $data._id }, tooltip: { title: $data.name }">
-                                <i data-bind="visible: $data.type === 'album'" class="fa fa-book icon-fixed"></i>
-                                <i data-bind="visible: $data.type === 'person'" class="fa fa-user icon-fixed"></i>
-                                <i data-bind="visible: $data.type === 'location'" class="fa fa-map-marker icon-fixed"></i>
-                                <i data-bind="visible: $data.type === 'camera'" class="fa fa-camera-retro icon-fixed"></i>
-                                <i data-bind="visible: $data.type === 'vehicle'" class="fa fa-truck icon-fixed"></i>
+                            <a href="#" data-bind="location: { page: 'node', nodeId: $data._id }, tooltip: { title: $data.name }">
+                                <i data-bind="visible: $data.type === 'album'" class="fa fa-book fa-fw"></i>
+                                <i data-bind="visible: $data.type === 'person'" class="fa fa-user fa-fw"></i>
+                                <i data-bind="visible: $data.type === 'location'" class="fa fa-map-marker fa-fw"></i>
+                                <i data-bind="visible: $data.type === 'camera'" class="fa fa-camera-retro fa-fw"></i>
+                                <i data-bind="visible: $data.type === 'vehicle'" class="fa fa-truck fa-fw"></i>
                                 <span data-bind="text: $data.name"></span>
                             </a>
                         </li>
@@ -65,13 +65,13 @@
                     <li class="header">Administration</li>
                     <li data-bind="css: { active: section() === 'users' }">
                         <a href="#" data-bind="location: { page: 'home', section: 'users' }">
-                            <i class="fa icon-fixed fa-user"></i>
+                            <i class="fa fa-fw fa-user"></i>
                             Users
                         </a>
                     </li>
                     <li data-bind="css: { active: section() === 'groups' }">
                         <a href="#" data-bind="location: { page: 'home', section: 'groups' }">
-                            <i class="fa icon-fixed fa-group"></i>
+                            <i class="fa fa-fw fa-group"></i>
                             Groups
                         </a>
                     </li>

@@ -25,6 +25,10 @@ define([
             this.options = {
                 items: params.limit,
                 source: function(queryString, callback) {
+                    if (queryString === "") {
+                        return callback([]);
+                    }
+
                     var query = { name: { $regex: ".*" + queryString + ".*", $options: "-i" } };
 
                     if (params.types && params.types.length > 0) {
@@ -50,7 +54,7 @@ define([
         //           if (params.id() === key) {
         //             params.id.valueHasMutated();
         //           } else {
-
+console.log("updater", key._id);
                     params.id(key._id);
         //           }
 
@@ -83,7 +87,7 @@ define([
             };
 
             var setValid = function() {
-                if (params.id() !== false) {
+                if (params.id()) {
                     var query = { _id: params.id() };
 
                     socket.emit("find", { query: query, options: { collection: "nodes" } }, function(error, nodeDataList) {

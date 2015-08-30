@@ -18,7 +18,7 @@
                     <i data-bind="visible: $parent.icon, attr: { class: 'fa ' + $parent.icon }"></i>
                 </div>
                 <div class="media-body clearfix">
-                    <h4 class="media-heading" style="margin-bottom: 10px; font-size: 14px;"><a href="#" data-bind="text: $data.name, attr: { href: '#/node/' + $data._id }"></a></h4>
+                    <h4 class="media-heading" style="margin-bottom: 10px; font-size: 14px;"><a href="#" data-bind="text: $data.name, location: { page: 'node', nodeId: $data._id }"></a></h4>
 
                     <p style="font-size: 12px;" data-bind="html: $data.description"></p>
 

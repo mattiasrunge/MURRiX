@@ -7,6 +7,149 @@ define([
     "moment",
     "lib/socket"
 ], function(ko, $, slider, moment, socket) {
+    var activeImages = [];
+    var queuedImages = [];
+
+    function loadImages(imageDone) {
+        if (imageDone) {
+            activeImages.splice(activeImages.indexOf(imageDone), 1);
+        }
+
+        while (queuedImages.length > 0 && activeImages.length < 5) {
+            var toActivate = queuedImages.splice(0, Math.max(5 - activeImages.length, 0));
+
+            for (var n = 0; n < toActivate.length; n++) {
+                toActivate[n].src = toActivate[n]._src;
+                delete toActivate[n]._src;
+            }
+
+            activeImages = activeImages.concat(toActivate);
+        }
+    }
+
+    ko.bindingHandlers.map = {
+        init: function(element, valueAccessor) {
+            var $element = $(element);
+
+            element.element = $("<div style='height: 100%;'></div>");
+            $element.append(element.element);
+
+            var options = {
+                zoom: 10,
+                center: new google.maps.LatLng(57.6706907666667, 11.9375348333333),
+//                 mapTypeId: google.maps.MapTypeId.HYBRID,
+                streetViewControl: false,
+                panControl: false,
+                mapTypeControl: false,
+                zoomControl: true,
+                zoomControlOptions: {
+                    style: google.maps.ZoomControlStyle.DEFAULT,
+                    position: google.maps.ControlPosition.RIGHT_TOP
+                },
+                scaleControl: true,
+                scaleControlOptions: {
+                    position: google.maps.ControlPosition.RIGHT_BOTTOM
+                }
+            };
+
+            element.map = new google.maps.Map(element.element.get(0), options);
+
+            var resize = function() {
+                var bottom = parseInt($element.css("bottom").replace("px", ""), 10);
+                $element.css("height", ($(window).innerHeight() - $element.offset().top - bottom) + "px");
+            }
+
+            $(window).on("resize", resize);
+            resize();
+
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                $(window).off("resize", resize);
+                $element.empty();
+                delete element.map;
+            });
+        }
+    };
+
+    ko.bindingHandlers.media = {
+        update: function(element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+            var $element = $(element);
+            var image = new Image();
+            var speed = "fast";
+            var fadeSwitch = false;
+
+            if (typeof value === "object") {
+                speed = value.speed ? ko.unwrap(value.speed) : speed;
+                fadeSwitch = value.fadeSwitch ? ko.unwrap(value.fadeSwitch) : fadeSwitch;
+
+                value = ko.unwrap(value.url);
+            }
+
+            if (!value) {
+                console.log("Will not load empty image");
+                return;
+            }
+
+            var timestamp = new Date().getTime().toString();
+
+            if (!fadeSwitch) {
+                $element.html("<i class='fa fa-spinner' style='display: block; width: 12px; margin-top: 45%; margin-left: auto; margin-right: auto;'></i>");
+            }
+
+            $element.data("loadTimestamp", timestamp);
+
+            image.onerror = function() {
+                if ($element.data("loadTimestamp") === timestamp) {
+                    $element.html("<div class='text-danger' style='margin-top: 45%; text-align: center;'>Failed to load image!</div>");
+                }
+
+                loadImages(image);
+            };
+
+            image.onload = function() {
+                if ($element.data("loadTimestamp") === timestamp) {
+                    var $div = $("<div></div>");
+
+                    $div.css("background-repeat", "no-repeat");
+                    $div.css("background-position", "center");
+                    $div.css("background-size", "contain");
+                    $div.css("background-image", "url('" + value + "')");
+                    $div.css("position", "absolute");
+                    $div.css("top", "0");
+                    $div.css("left", "0");
+                    $div.css("bottom", "0");
+                    $div.css("right", "0");
+
+                    if (fadeSwitch) {
+                        $div.hide();
+
+                        var child = $element.children();
+
+                        if (child.length > 0) {
+                            child.fadeOut(speed, function() {
+                                child.remove();
+                            });
+                        }
+
+                        $element.append($div);
+                        $div.fadeIn(speed);
+                    } else {
+                        $element.empty();
+                        $element.append($image);
+                    }
+                }
+
+                loadImages(image);
+            };
+
+            image._src = value;
+
+            queuedImages.push(image);
+
+            loadImages();
+        }
+    };
+
     ko.bindingHandlers.slider = {
         init: function(element, valueAccessor) {
             ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
@@ -70,10 +213,127 @@ define([
         }
     };
 
+    ko.bindingHandlers.datetimeLocal = {
+        update: function(element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            if (!value) {
+                $(element).text("Unknown");
+                return;
+            }
+
+            var dateItem = moment.utc(value * 1000).local();
+
+            if (!dateItem.date()) {
+                $(element).html(value);
+            } else {
+                $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
+            }
+        }
+    };
+
+    ko.bindingHandlers.yearmonth = {
+        update: function(element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            if (!value) {
+                $(element).text("Unknown");
+                return;
+            }
+
+            var dateItem = moment.utc(value).local();
+
+            if (!dateItem.date()) {
+                $(element).html(value);
+            } else {
+                $(element).html(dateItem.format("MMMM YYYY"));
+            }
+        }
+    };
+
+    ko.bindingHandlers.monthday = {
+        update: function(element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            if (!value) {
+                $(element).text("Unknown");
+                return;
+            }
+
+            var dateItem = moment.utc(value).local();
+
+            if (!dateItem.date()) {
+                $(element).html(value);
+            } else {
+                $(element).html(dateItem.format("dddd, MMMM Do"));
+            }
+        }
+    };
+
+    ko.bindingHandlers.nodeName = {
+        update: function(element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+
+            socket.emit("find", { query: { _id: value }, options: { collection: "nodes", limit: 1 } }, function(error, result) {
+                if (error) {
+                    $(element).text("Unknown");
+                    console.log(error);
+                    return;
+                }
+
+                if (result.length === 0) {
+                    $(element).text("Unknown");
+                    return;
+                }
+
+                $(element).text(result[0].name);
+            });
+        }
+    };
+
+    ko.bindingHandlers.whereName = {
+        update: function(element, valueAccessor) {
+            var value = valueAccessor();
+            var param = ko.unwrap(value);
+
+            var where = param || false;
+
+            if (!where || where === null) {
+                $(element).text("Unknwon");
+                return;
+            }
+
+            var whereId = where._id;
+            var longitude = where.longitude;
+            var latitude = where.latitude;
+
+            if (whereId) {
+                ko.bindingHandlers.nodeName.update(element, ko.observable(whereId));
+            } else if (longitude && latitude) {
+                // TODO: Look in our own database first
+                var options = {};
+
+                options.sensor = false;
+                options.latlng = latitude + "," + longitude;
+
+                jQuery.getJSON("http://maps.googleapis.com/maps/api/geocode/json", options, function(data) {
+                    if (data.status !== "OK" || data.results.length === 0) {
+                        $(element).text("unknown location");
+                        return;
+                    }
+
+                    $(element).text(data.results[0].formatted_address);
+                });
+            } else {
+                $(element).text("Unknown");
+            }
+        }
+    };
+
     ko.bindingHandlers.picture = {
         init: function(element, valueAccessor) {
             var value = ko.unwrap(valueAccessor());
-            element.child = $("<img>");
+            element.child = $("<img style='width: 100%; height: 100%;'>");
             $(element).append(element.child);
         },
         update: function(element, valueAccessor) {
