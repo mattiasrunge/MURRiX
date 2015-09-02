@@ -15,6 +15,7 @@ define([
         viewModel: function(params) {
             this.tools = tools;
             this.loading = notification.loadObservable("component/node_item", false); // TODO: Dispose!
+            this.commentText = ko.observable("");
             this.list = ko.pureComputed(function() {
                 return ko.unwrap(params.list);
             });
@@ -90,7 +91,6 @@ define([
             }.bind(this));
 
             this.load = function() {
-                console.log("123");
                 if (!this.itemId()) {
                     this.item(false);
                     return;
@@ -98,7 +98,7 @@ define([
 
                 this.loading(true);
 
-                socket.emit("find", { query: { _id: this.itemId() }, options: { collection: "items", limit: 1 } }, function(error, nodeDataList) {
+                socket.emit("find", { query: { _id: this.itemId() }, options: { collection: "items", limit: 1 } }, function(error, itemDataList) {
                     this.loading(false);
 
                     if (error) {
@@ -106,14 +106,36 @@ define([
                         return;
                     }
 
-                    console.log("find item", nodeDataList);
+                    console.log("find item", itemDataList);
 
-                    if (nodeDataList.length === 0) {
+                    if (itemDataList.length === 0) {
                         notification.error("No item found with this id");
                         return;
                     }
 
-                    this.item(nodeDataList[0]);
+                    this.item(itemDataList[0]);
+                }.bind(this));
+            }.bind(this);
+
+            this.submitComment = function() {
+                if (this.commentText() === "") {
+                    notification.error("Can not submit an empty comment.");
+                    return;
+                }
+
+                this.loading(true);
+
+                socket.emit("commentItem", { id: this.item()._id, text: this.commentText() }, function(error, itemData) {
+                    this.loading(false);
+
+                    if (error) {
+                        notification.error(error);
+                        return;
+                    }
+
+                    commentText("");
+
+                    this.item(itemData);
                 }.bind(this));
             }.bind(this);
 
@@ -171,10 +193,6 @@ define([
             };
 
 
-
-            this.submitComment = function() {
-
-            };
 
   var scrollable = function()
   {

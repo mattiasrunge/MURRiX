@@ -1,35 +1,38 @@
-﻿<div class="timeline animated fadeInRight">
-    <dl data-bind="foreach: list">
-        <dt data-bind="yearmonth: $data.year + '-' + $data.month"></dt>
-        <!-- ko foreach: $data.items -->
-            <dd class="pos-right clearfix" data-bind="css: { 'pos-right': $data.even, 'pos-left': !$data.even }">
-                <div class="circ"></div>
-                <div class="time" data-bind="monthday: $data.datestamp[0] + '-' + $data.datestamp[1] + '-' + $data.datestamp[2]"></div>
-                <div class="events">
-                    <div class="events-body">
-                        <div data-bind="foreach: $data.texts">
-                            <h4 class="events-heading" data-bind="text: $data.name"></h4>
-                            <p data-bind="html: $data.text"></p>
-                        </div>
-                        <div data-bind="if: $data.images.length > 0">
-                            <div data-bind="if: $data.images.length > 5 && !$data.imagesExpanded()">
-                                <p class="clearfix">
-                                    <a data-bind="picture: { id: $data.images[0]._id, width: 250, height: 250, square: 1 }, location: { itemId: $data.images[0]._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
-                                    <a data-bind="picture: { id: $data.images[1]._id, width: 250, height: 250, square: 1 }, location: { itemId: $data.images[1]._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
-                                    <a data-bind="picture: { id: $data.images[2]._id, width: 250, height: 250, square: 1 }, location: { itemId: $data.images[2]._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
-                                    <a data-bind="picture: { id: $data.images[3]._id, width: 250, height: 250, square: 1 }, location: { itemId: $data.images[3]._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
-                                    <a class="overlay-expand" data-bind="picture: { id: $data.images[4]._id, width: 250, height: 250, square: 1 }, click: $data.imagesExpanded.bind(null, true)" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block; font-size: 30px;"></a>
-                                </p>
+<div>
+    <node_item params="{ node: node, itemId: itemId, list: list }"></node_item>﻿
+    <div class="timeline animated fadeInRight">
+        <dl data-bind="foreach: list">
+            <dt data-bind="yearmonth: $data.year + '-' + $data.month"></dt>
+            <!-- ko foreach: $data.items -->
+                <dd class="pos-right clearfix" data-bind="css: { 'pos-right': $data.even, 'pos-left': !$data.even }">
+                    <div class="circ"></div>
+                    <div class="time" data-bind="monthday: $data.datestamp[0] + '-' + $data.datestamp[1] + '-' + $data.datestamp[2]"></div>
+                    <div class="events">
+                        <div class="events-body">
+                            <div data-bind="foreach: $data.texts">
+                                <h4 class="events-heading" data-bind="text: $data.name"></h4>
+                                <p data-bind="html: $data.text"></p>
                             </div>
-                            <div data-bind="if: $data.images.length < 6 || $data.imagesExpanded()">
-                                <p data-bind="foreach: $data.images" class="clearfix">
-                                    <a data-bind="picture: { id: $data._id, width: 250, height: 250, square: 1 }, location: { itemId: $data._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
-                                </p>
+                            <div data-bind="if: $data.images.length > 0">
+                                <div data-bind="if: $data.images.length > 5 && !$data.imagesExpanded()">
+                                    <p class="clearfix">
+                                        <a data-bind="picture: { id: $data.images[0]._id, width: 250, height: 250, square: 1 }, location: { itemId: $data.images[0]._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
+                                        <a data-bind="picture: { id: $data.images[1]._id, width: 250, height: 250, square: 1 }, location: { itemId: $data.images[1]._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
+                                        <a data-bind="picture: { id: $data.images[2]._id, width: 250, height: 250, square: 1 }, location: { itemId: $data.images[2]._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
+                                        <a data-bind="picture: { id: $data.images[3]._id, width: 250, height: 250, square: 1 }, location: { itemId: $data.images[3]._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
+                                        <a class="overlay-expand" data-bind="picture: { id: $data.images[4]._id, width: 250, height: 250, square: 1 }, click: $data.imagesExpanded.bind(null, true)" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block; font-size: 30px;"></a>
+                                    </p>
+                                </div>
+                                <div data-bind="if: $data.images.length < 6 || $data.imagesExpanded()">
+                                    <p data-bind="foreach: $data.images" class="clearfix">
+                                        <a data-bind="picture: { id: $data._id, width: 250, height: 250, square: 1 }, location: { itemId: $data._id }" style="float: left; margin-right: 1px; margin-bottom: 1px; width: 85px; height: 85px; background-color: #ddd; display: block;"></a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </dd>
-        <!-- /ko -->
-    </dl>
+                </dd>
+            <!-- /ko -->
+        </dl>
+    </div>
 </div>

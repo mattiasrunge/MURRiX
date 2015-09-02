@@ -5,8 +5,11 @@ define([
     "jquery",
     "slider",
     "moment",
-    "lib/socket"
-], function(ko, $, slider, moment, socket) {
+    "autosize",
+    "lib/socket",
+    "lib/tools",
+    "lib/location"
+], function(ko, $, slider, moment, autosize, socket, tools, location) {
     var activeImages = [];
     var queuedImages = [];
 
@@ -29,6 +32,7 @@ define([
 
     ko.bindingHandlers.map = {
         init: function(element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
             var $element = $(element);
 
             element.element = $("<div style='height: 100%;'></div>");
@@ -54,18 +58,53 @@ define([
 
             element.map = new google.maps.Map(element.element.get(0), options);
 
-            var resize = function() {
-                var bottom = parseInt($element.css("bottom").replace("px", ""), 10);
-                $element.css("height", ($(window).innerHeight() - $element.offset().top - bottom) + "px");
+            if (value.resize) {
+                var resize = function() {
+                    var bottom = parseInt($element.css("bottom").replace("px", ""), 10);
+                    $element.css("height", ($(window).innerHeight() - $element.offset().top - bottom) + "px");
+                    google.maps.event.trigger(element.map, "resize");
+                }
+
+                $(window).on("resize", resize);
+                resize();
+            } else {
+                google.maps.event.trigger(element.map, "resize");
             }
 
-            $(window).on("resize", resize);
-            resize();
-
             ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
-                $(window).off("resize", resize);
+                if (value.resize) {
+                    $(window).off("resize", resize);
+                }
+
                 $element.empty();
                 delete element.map;
+            });
+        }
+    };
+
+    ko.bindingHandlers.textUserAttribute = {
+        update: function(element, valueAccessor) {
+            var value = valueAccessor();
+            var params = ko.unwrap(value).map(ko.unwrap);
+            var id = params[0] || false;
+
+            if (!id) {
+                $(element).text("Unknown");
+                return;
+            }
+
+            socket.emit("findUsers", { query: { _id: id }, options: { limit: 1 } }, function(error, userDataList) {
+                if (error) {
+                    $(element).text("Unknown");
+                    notification.error(error);
+                    return;
+                }
+
+                if (userDataList[id]) {
+                    $(element).text(userDataList[id][params[1]]);
+                } else {
+                    $(element).text("Unknown");
+                }
             });
         }
     };
@@ -232,6 +271,21 @@ define([
         }
     };
 
+    ko.bindingHandlers.htmlSize = {
+        update: function(element, valueAccessor) {
+            var fileSizeInBytes = ko.utils.unwrapObservable(valueAccessor());
+            var i = -1;
+            var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+
+            do {
+                fileSizeInBytes = fileSizeInBytes / 1024;
+                i++;
+            } while (fileSizeInBytes > 1024);
+
+            $(element).html(fileSizeInBytes.toFixed(1) + byteUnits[i]);
+        }
+    };
+
     ko.bindingHandlers.yearmonth = {
         update: function(element, valueAccessor) {
             var value = ko.unwrap(valueAccessor());
@@ -343,6 +397,13 @@ define([
 
             if (ko.unwrap(value.id)) {
                 element.child.attr("src", "/preview?id=" + ko.unwrap(value.id) + "&width=" + ko.unwrap(value.width) + "&height=" + ko.unwrap(value.height) + "&square=" + ko.unwrap(value.square));
+            } else if (ko.unwrap(value.resolve)) {
+                socket.emit("helper_resolve", ko.unwrap(value.resolve), function(error, id) {
+                    if (error) {
+                        return console.error(error);
+                    }
+                    element.child.attr("src", "/preview?id=" + id + "&width=" + ko.unwrap(value.width) + "&height=" + ko.unwrap(value.height) + "&square=" + ko.unwrap(value.square));
+                });
             } else if (ko.unwrap(value.nodeId)) {
                 socket.emit("find", { query: { _id: ko.unwrap(value.nodeId) }, options: { collection: "nodes", limit: 1 } }, function(error, nodeDataList) {
                     if (error) {
@@ -355,8 +416,69 @@ define([
                     }
 
                     element.child.attr("src", "/preview?id=" + nodeDataList[0]._profilePicture + "&width=" + ko.unwrap(value.width) + "&height=" + ko.unwrap(value.height) + "&square=" + ko.unwrap(value.square));
-                }.bind(this));
+                });
+            } else if (ko.unwrap(value.userId)) {
+                socket.emit("findUsers", { query: { _id: ko.unwrap(value.userId) }, options: { limit: 1 } }, function(error, userDataList) {
+                    if (error) {
+                        notification.error(error);
+                        return;
+                    }
+
+                    if (userDataList[ko.unwrap(value.userId)]) {
+                        socket.emit("find", { query: { _id: userDataList[ko.unwrap(value.userId)]._person }, options: { collection: "nodes", limit: 1 } }, function(error, nodeDataList) {
+                            if (error) {
+                                notification.error(error);
+                                return
+                            }
+
+                            if (nodeDataList.length === 0 || !nodeDataList[0]._profilePicture) {
+                                return;
+                            }
+
+                            element.child.attr("src", "/preview?id=" + nodeDataList[0]._profilePicture + "&width=" + ko.unwrap(value.width) + "&height=" + ko.unwrap(value.height) + "&square=" + ko.unwrap(value.square));
+                        });
+                    }
+                });
             }
+        }
+    };
+
+    ko.bindingHandlers.nodeLink = {
+        update: function(element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+            socket.emit("helper_resolve", value, function(error, value) {
+                if (error) {
+                    console.error(error);
+                    return $(element).text("");
+                }
+
+                $(element).html(value.name);
+                $(element).attr("href", location.constructUrl({ page: "node", nodeId: value._id }));
+            });
+        }
+    };
+
+    ko.bindingHandlers.resolve = {
+        update: function(element, valueAccessor) {
+            var value = ko.unwrap(valueAccessor());
+            socket.emit("helper_resolve", value, function(error, value) {
+                if (error) {
+                    console.error(error);
+                    return $(element).text("");
+                }
+
+                $(element).html(value);
+            });
+        }
+    };
+
+    ko.bindingHandlers.autosize = {
+        init: function(element, valueAccessor) {
+            autosize(element);
+
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                autosize.destroy(element);
+            });
         }
     };
 });

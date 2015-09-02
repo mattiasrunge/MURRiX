@@ -19,16 +19,16 @@
                     <small data-bind="text: $data.description"></small>
                 </td>
                 <td class="access-check" data-bind="css: { 'access-check-notactive': !$data.noaccess }, click: $parent.removeAccess">
-                    <i data-bind="visible: $data.noaccess" class="fa fa-check access-check-icon"></i>
-                    <i data-bind="visible: !$data.noaccess" class="fa fa-check access-check-button"></i>
+                    <i data-bind="visible: $data.noaccess" class="fa fa-check access-check-icon text-success"></i>
+                    <i data-bind="visible: !$data.noaccess" class="fa fa-check access-check-button text-success"></i>
                 </td>
                 <td class="access-check" data-bind="css: { 'access-check-notactive': !$data.reader }, click: $parent.readAccess">
-                    <i data-bind="visible: $data.reader" class="fa fa-check access-check-icon"></i>
-                    <i data-bind="visible: !$data.reader" class="fa fa-check access-check-button"></i>
+                    <i data-bind="visible: $data.reader" class="fa fa-check access-check-icon text-success"></i>
+                    <i data-bind="visible: !$data.reader" class="fa fa-check access-check-button text-success"></i>
                 </td>
                 <td class="access-check" data-bind="css: { 'access-check-notactive': !$data.admin }, click: $parent.adminAccess">
-                    <i data-bind="visible: $data.admin && $data.id !== 0" class="fa fa-check access-check-icon"></i>
-                    <i data-bind="visible: !$data.admin && $data.id !== 0" class="fa fa-check access-check-button"></i>
+                    <i data-bind="visible: $data.admin && $data.id !== 0" class="fa fa-check access-check-icon text-success"></i>
+                    <i data-bind="visible: !$data.admin && $data.id !== 0" class="fa fa-check access-check-button text-success"></i>
                 </td>
             </tr>
         </tbody>

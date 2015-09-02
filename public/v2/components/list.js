@@ -23,11 +23,13 @@ define([
         "user_add",
         "user_select",
         "node",
+        "node_overview",
         "node_media",
         "node_timeline",
         "node_map",
         "node_family",
         "node_access",
+        "node_import",
         "node_item",
         "node_select"
     ];

@@ -5,8 +5,9 @@ define([
     "knockout",
     "lib/location",
     "lib/user",
-    "lib/notification"
-], function(template, ko, location, user, notification) {
+    "lib/notification",
+    "lib/socket"
+], function(template, ko, location, user, notification, socket) {
     return {
         template: template,
         viewModel: function(params) {
@@ -24,15 +25,14 @@ define([
             });
 
             this.randomNode = function() {
-    //             murrix.server.emit("node.random", {}, function(error, nodeData) {
-    //             if (error) {
-    //                 notification.error(error);
-    //                 return;
-    //             }
-    //
-    //             router.navigateTo("/node/" + nodeData._id);
-    //             return;
-    //             });
+                socket.emit("findRandom", "nodes", function(error, nodeData) {
+                    if (error) {
+                        notification.error(error);
+                        return;
+                    }
+
+                    location.goto({ page: "node", nodeId: nodeData._id });
+                });
             }.bind(this);
 
             this.signout = function() {

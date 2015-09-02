@@ -1,0 +1,26 @@
+<div class="animated fadeInRight">
+    <div class="row" data-bind="if: node">
+        <div class="col-md-8">
+            <h4>Description</h4>
+            <p style="white-space: pre-line;" data-bind="html: node().description"></p>
+        </div>
+        <div class="col-md-4">
+            <div>
+                <h4>Tags</h4>
+                <div class="node-labels clearfix" data-bind="foreach: node().tags">
+                    <a href="#" class="label label-info pull-left" data-bind="attr: { href: '#/home/label?select[]=' + $data }">
+                        #<span data-bind="text: $data"></span>
+                    </a>
+                </div>
+                <h4>People in this album</h4>
+                <div data-bind="foreach: listShowing" class="clearfix">
+                    <div class="picture pull-left" style="width: 100px; height: 100px;" data-bind="picture: { id: $data._profilePicture, width: 250, height: 250, square: 1 }, attr: { title: $data.name }"></div>
+                </div>
+                <h4>Content creators this album</h4>
+                <div data-bind="foreach: listWho" class="clearfix">
+                    <div class="picture pull-left" style="width: 100px; height: 100px;" data-bind="picture: { id: $data._profilePicture, width: 250, height: 250, square: 1 }, attr: { title: $data.name }"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

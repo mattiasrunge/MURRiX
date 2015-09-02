@@ -13,6 +13,7 @@ requirejs.config({
         notify: "node_modules/bootstrap-notify/bootstrap-notify.min",
         mprogress: "node_modules/mprogress/mprogress.min",
         typeahead: "node_modules/bootstrap-3-typeahead/bootstrap3-typeahead.min",
+        autosize: "node_modules/autosize/dist/autosize.min"
     },
     shim: {
         bootstrap: {
