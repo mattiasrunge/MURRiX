@@ -1,9 +1,10 @@
 "use strict";
 
-module.exports = {
-    description: "Unset an environment variable",
-    help: "Usage: unsetenv <name>",
-    execute: function*(session, params) {
-        session.env(params.name, false);
-    }
-};
+const vorpal = require("../vorpal");
+const session = require("../session");
+
+vorpal
+.command("unsetenv <name>", "Unset an environment variable")
+.action(vorpal.wrap(function*(args) {
+    yield session.env(args.name, null);
+}));

@@ -1,19 +1,19 @@
 "use strict";
 
+const vorpal = require("../vorpal");
 const client = require("../client");
+const session = require("../session");
 
-module.exports = {
-    description: "Print information about user ids",
-    help: "Usage: id [username]",
-    execute: function*(session, params) {
-        let info = yield client.call("id", {
-            username: params.username || session.env("username")
-        });
+vorpal
+.command("id [username]", "Print information about user ids")
+.action(vorpal.wrap(function*(args) {
+    let info = yield client.call("id", {
+        username: args.username || (yield session.env("username"))
+    });
 
-        let str = "uid=" + info.uid.id + "(" + info.uid.name + ") ";
-        str += "gid=" + info.gid.id + "(" + info.gid.name + ") ";
-        str += "groups=" + info.gids.map((group) => group.id + "(" + group.name + ")").join(",");
+    let str = "uid=" + info.uid.id + "(" + info.uid.name + ") ";
+    str += "gid=" + info.gid.id + "(" + info.gid.name + ") ";
+    str += "groups=" + info.gids.map((group) => group.id + "(" + group.name + ")").join(",");
 
-        session.stdout().write(str + "\n");
-    }
-};
+    this.log(str);
+}));

@@ -1,9 +1,10 @@
 "use strict";
 
-module.exports = {
-    description: "Set an environment variable",
-    help: "Usage: setenv <name> <value>",
-    execute: function*(session, params) {
-        session.env(params.name, params.value);
-    }
-};
+const vorpal = require("../vorpal");
+const session = require("../session");
+
+vorpal
+.command("setenv <name> <value>", "Set an environment variable")
+.action(vorpal.wrap(function*(args) {
+    yield session.env(args.name, args.value);
+}));

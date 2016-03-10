@@ -1,26 +1,30 @@
 "use strict";
 
+const vorpal = require("../vorpal");
+const session = require("../session");
 const client = require("../client");
-const path = require("../path");
+const vfs = require("../vfs");
 
-module.exports = {
-    description: "Change owner and group for node",
-    help: "Usage: chown <username> <path>",
-    execute: function*(session, params) {
-        let username = params.username;
-        let group = false;
+vorpal
+.command("chown <username> <path>", "Change owner and group for node")
+.autocomplete({
+    data: function(input) {
+        return vfs.autocomplete(input);
+    }
+})
+.action(vorpal.wrap(function*(args) {
+    let username = args.username;
+    let group = false;
 
-        if (username.indexOf(":") !== -1) {
-            let parts = username.split(":");
-            username = parts[0];
-            group = parts[1];
-        }
+    if (username.indexOf(":") !== -1) {
+        let parts = username.split(":");
+        username = parts[0];
+        group = parts[1];
+    }
 
-        yield client.call("chown", {
-            abspath: path.normalize(session.env("cwd"), params.path),
-            username: username,
-            group: group
-        });
-    },
-    completer: path.completer
-};
+    yield client.call("chown", {
+        abspath: vfs.normalize(yield session.env("cwd"), args.path),
+        username: username,
+        group: group
+    });
+}));

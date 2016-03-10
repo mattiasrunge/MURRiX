@@ -1,18 +1,17 @@
 "use strict";
 
+const vorpal = require("../vorpal");
+const session = require("../session");
 const client = require("../client");
+const vfs = require("../vfs");
 
-module.exports = {
-    description: "Find nodes",
-    help: "Usage: find <search>",
-    execute: function*(session, params) {
-        let items = yield client.call("find", {
-            abspath: session.env("cwd"),
-            search: params.search
-        });
+vorpal
+.command("find <search>", "Find nodes")
+.action(vorpal.wrap(function*(args) {
+    let items = yield client.call("find", {
+        abspath: yield session.env("cwd"),
+        search: args.search
+    });
 
-        for (let item of items) {
-            session.stdout().write(item + "\n");
-        }
-    }
-};
+    this.log(items.join("\n"));
+}));

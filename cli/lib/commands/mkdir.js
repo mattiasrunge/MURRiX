@@ -1,16 +1,15 @@
 "use strict";
 
+const vorpal = require("../vorpal");
+const session = require("../session");
 const client = require("../client");
-const path = require("../path");
+const vfs = require("../vfs");
 
-module.exports = {
-    description: "Create a new directory node",
-    help: "Usage: mkdir <path>",
-    execute: function*(session, params) {
-        yield client.call("create", {
-            abspath: path.normalize(session.env("cwd"), params.path),
-            type: "d"
-        });
-    },
-    completer: path.completer
-};
+vorpal
+.command("mkdir <path>", "Create a new directory node")
+.action(vorpal.wrap(function*(args) {
+    yield client.call("create", {
+        abspath: vfs.normalize(yield session.env("cwd"), args.path),
+        type: "d"
+    });
+}));

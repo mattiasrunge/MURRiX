@@ -1,13 +1,15 @@
 "use strict";
 
-module.exports = {
-    description: "List all environment variables",
-    help: "Usage: env",
-    execute: function*(session/*, params*/) {
-        for (let name of Object.keys(session._env)) {
-            if (typeof session.env(name) === "string") {
-                session.stdout().write(name + "=" + session.env(name) + "\n");
-            }
+const vorpal = require("../vorpal");
+const session = require("../session");
+
+vorpal
+.command("env", "List all environment variables")
+.action(vorpal.wrap(function*(args) {
+    for (let name of Object.keys(session.environment)) {
+        let value = yield session.env(name);
+        if (typeof value === "string") {
+            this.log(name + "=" + value);
         }
     }
-};
+}));

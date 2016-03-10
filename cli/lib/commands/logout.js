@@ -1,17 +1,17 @@
 "use strict";
 
+const vorpal = require("../vorpal");
 const client = require("../client");
+const session = require("../session");
 
-module.exports = {
-    description: "Logout",
-    help: "Usage: logout",
-    execute: function*(session/*, params*/) {
-        let result = yield client.call("logout");
+vorpal
+.command("logout", "Logout user")
+.action(vorpal.wrap(function*(args) {
+    let result = yield client.call("logout");
 
-        if (result) {
-            session.env("username", "guest");
-        } else {
-            session.stdout().write("Logout failed".red + "\n");
-        }
+    if (!result) {
+        throw new Error("Logout failed");
     }
-};
+
+    yield session.env("username", "guest");
+}));

@@ -1,33 +1,36 @@
 "use strict";
 
+const vorpal = require("../vorpal");
+const session = require("../session");
 const client = require("../client");
-const path = require("../path");
+const vfs = require("../vfs");
 
-module.exports = {
-    description: "Change directory",
-    help: "Usage: cd <path>",
-    execute: function*(session, params) {
-        let abspath = path.normalize(session.env("cwd"), params.path);
+vorpal
+.command("cd <path>", "Change directory")
+.autocomplete({
+    data: function(input) {
+        return vfs.autocomplete(input);
+    }
+})
+.action(vorpal.wrap(function*(args) {
+    let abspath = vfs.normalize(yield session.env("cwd"), args.path);
 
-        let access = yield client.call("access", {
-            abspath: abspath,
-            modestr: "x"
-        });
+    let access = yield client.call("access", {
+        abspath: abspath,
+        modestr: "x"
+    });
 
-        if (!access) {
-            session.stdout().write(("Permission denied").red + "\n");
-            return;
-        }
+    if (!access) {
+       throw new Error("Permission denied");
+    }
 
-        let node = yield client.call("resolve", {
-            abspath: abspath
-        });
+    let node = yield client.call("resolve", {
+        abspath: abspath
+    });
 
-        if (!node) {
-            session.stdout().write(("Invalid path " + abspath).red + "\n");
-        } else {
-            session.env("cwd", abspath);
-        }
-    },
-    completer: path.completer
-};
+    if (!node) {
+        throw new Error("Invalid path " + abspath);
+    }
+
+    yield session.env("cwd", abspath);
+}));

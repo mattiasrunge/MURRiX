@@ -1,16 +1,20 @@
 "use strict";
 
+const vorpal = require("../vorpal");
+const session = require("../session");
 const client = require("../client");
-const path = require("../path");
+const vfs = require("../vfs");
 
-module.exports = {
-    description: "Change mode bits for node",
-    help: "Usage: chmod <mode> <path>",
-    execute: function*(session, params) {
-        yield client.call("chmod", {
-            abspath: path.normalize(session.env("cwd"), params.path),
-            mode: params.mode
-        });
-    },
-    completer: path.completer
-};
+vorpal
+.command("chmod <mode> <path>", "Change mode bits for node")
+.autocomplete({
+    data: function(input) {
+        return vfs.autocomplete(input);
+    }
+})
+.action(vorpal.wrap(function*(args) {
+    yield client.call("chmod", {
+        abspath: vfs.normalize(yield session.env("cwd"), args.path),
+        mode: args.mode
+    });
+}));

@@ -8,18 +8,21 @@ let io = null;
 
 module.exports = {
     connected: false,
-    url: "",
     hostname: "",
     port: 0,
-    connect: (uri) => {
-        let parsed = url.parse(uri);
+    init: co(function*(config) {
+        module.exports.hostname = config.hostname;
+        module.exports.port = config.port;
 
-        module.exports.url = uri;
-        module.exports.hostname = parsed.hostname;
-        module.exports.port = parsed.port;
+        yield module.exports.connect();
 
+        console.log(("Successfully connected to " + config.hostname + ":" + config.port).green + "\n");
+    }),
+    connect: () => {
         return new Promise((resolve, reject) => {
-            io = socket(module.exports.url);
+            let url = "ws://" + module.exports.hostname + ":" + module.exports.port;
+
+            io = socket(url);
 
             io.on("connect", () => {
                 module.exports.connected = true;
@@ -28,12 +31,12 @@ module.exports = {
 
             io.on("connect_error", (error) => {
                 module.exports.connected = false;
-                reject("Error while connecting to " + module.exports.url + ", " + error);
+                reject("Error while connecting to " + url + ", " + error);
             });
 
             io.on("connect_timeout", () => {
                 module.exports.connected = false;
-                reject("Connection timed out while connecting to " + module.exports.url);
+                reject("Connection timed out while connecting to " + url);
             });
 
             io.on("disconnect", () => {

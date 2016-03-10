@@ -1,16 +1,20 @@
 "use strict";
 
+const vorpal = require("../vorpal");
+const session = require("../session");
 const client = require("../client");
-const path = require("../path");
+const vfs = require("../vfs");
 
-module.exports = {
-    description: "Copy a node",
-    help: "Usage: cp <srcpath> <destpath>",
-    execute: function*(session, params) {
-        yield client.call("copy", {
-            srcpath: path.normalize(session.env("cwd"), params.srcpath),
-            destpath: path.normalize(session.env("cwd"), params.destpath)
-        });
-    },
-    completer: path.completer
-};
+vorpal
+.command("cp <srcpath> <destpath>", "Copy a node")
+.autocomplete({
+    data: function(input) {
+        return vfs.autocomplete(input);
+    }
+})
+.action(vorpal.wrap(function*(args) {
+    yield client.call("copy", {
+        srcpath: vfs.normalize(yield session.env("cwd"), args.srcpath),
+        destpath: vfs.normalize(yield session.env("cwd"), args.destpath)
+    });
+}));

@@ -1,15 +1,19 @@
 "use strict";
 
+const vorpal = require("../vorpal");
+const session = require("../session");
 const client = require("../client");
-const path = require("../path");
+const vfs = require("../vfs");
 
-module.exports = {
-    description: "Remove a node",
-    help: "Usage: rm <path>",
-    execute: function*(session, params) {
-        yield client.call("unlink", {
-            abspath: path.normalize(session.env("cwd"), params.path)
-        });
-    },
-    completer: path.completer
-};
+vorpal
+.command("rm <path>", "Remove a node")
+.autocomplete({
+    data: function(input) {
+        return vfs.autocomplete(input);
+    }
+})
+.action(vorpal.wrap(function*(args) {
+    yield client.call("unlink", {
+        abspath: vfs.normalize(yield session.env("cwd"), args.path)
+    });
+}));

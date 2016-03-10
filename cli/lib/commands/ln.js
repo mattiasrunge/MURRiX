@@ -1,16 +1,20 @@
 "use strict";
 
+const vorpal = require("../vorpal");
+const session = require("../session");
 const client = require("../client");
-const path = require("../path");
+const vfs = require("../vfs");
 
-module.exports = {
-    description: "Link a node",
-    help: "Usage: ln <srcpath> <destpath>",
-    execute: function*(session, params) {
-        yield client.call("link", {
-            srcpath: path.normalize(session.env("cwd"), params.srcpath),
-            destpath: path.normalize(session.env("cwd"), params.destpath)
-        });
-    },
-    completer: path.completer
-};
+vorpal
+.command("ln <srcpath> <destpath>", "Link a node")
+.autocomplete({
+    data: function(input) {
+        return vfs.autocomplete(input);
+    }
+})
+.action(vorpal.wrap(function*(args) {
+    yield client.call("link", {
+        srcpath: vfs.normalize(yield session.env("cwd"), args.srcpath),
+        destpath: vfs.normalize(yield session.env("cwd"), args.destpath)
+    });
+}));
