@@ -1,9 +1,6 @@
 "use strict";
 
-/* jslint bitwise: true */
-
 const columnify = require("columnify");
-const octal = require("octal");
 const moment = require("moment");
 const vorpal = require("../vorpal");
 const session = require("../session");
@@ -28,19 +25,7 @@ vorpal
     if (!args.options.l) {
         let list = items
         .filter((item) => item.name !== "." && item.name !== "..")
-        .map((item) => {
-            if (item.node.properties.type === "d" || item.node.properties.type === "r") {
-                return item.name.bold;
-            } else if (item.node.properties.type === "u") {
-                return item.name.yellow;
-            } else if (item.node.properties.type === "g") {
-                return item.name.magenta;
-            } else if (item.node.properties.type === "f") {
-                return item.name.blue;
-            }
-
-            return item.name;
-        });
+        .map((item) => vfs.colorName(item.name, item.node.properties.type));
 
         return this.log(list.join("  "));
     }
@@ -59,34 +44,16 @@ vorpal
     }
 
     let columns = columnify(items.map((item) => {
-        let mode = "";
-        mode += item.node.properties.mode & octal("400") ? "r" : "-";
-        mode += item.node.properties.mode & octal("200") ? "w" : "-";
-        mode += item.node.properties.mode & octal("100") ? "x" : "-";
-        mode += item.node.properties.mode & octal("040") ? "r" : "-";
-        mode += item.node.properties.mode & octal("020") ? "w" : "-";
-        mode += item.node.properties.mode & octal("010") ? "x" : "-";
-        mode += item.node.properties.mode & octal("004") ? "r" : "-";
-        mode += item.node.properties.mode & octal("002") ? "w" : "-";
-        mode += item.node.properties.mode & octal("001") ? "x" : "-";
-
-        let name = item.name;
-
-        if (item.node.properties.type === "d" || item.node.properties.type === "r") {
-            name = name.bold;
-        } else if (item.node.properties.type === "u") {
-            name = name.yellow;
-        } else if (item.node.properties.type === "g") {
-            name = name.magenta;
-        } else if (item.node.properties.type === "f") {
-            name = name.blue;
-        }
+        let mode = vfs.modeString(item.node.properties.mode);
+        let name = vfs.colorName(item.name, item.node.properties.type);
+        let uid = ucache[item.node.properties.uid] ? ucache[item.node.properties.uid] : item.node.properties.uid.toString();
+        let gid = gcache[item.node.properties.gid] ? gcache[item.node.properties.gid] : item.node.properties.gid.toString();
 
         return {
             mode: item.node.properties.type + mode,
             count: item.node.properties.count,
-            uid: (ucache[item.node.properties.uid] ? ucache[item.node.properties.uid] : item.node.properties.uid.toString()).cyan,
-            gid: (gcache[item.node.properties.gid] ? gcache[item.node.properties.gid] : item.node.properties.gid.toString()).cyan,
+            uid: uid.cyan,
+            gid: gid.cyan,
             children: Object.keys(item.node.properties.children).length,
             mtime: moment(item.node.properties.mtime).format(),
             name: name.bold

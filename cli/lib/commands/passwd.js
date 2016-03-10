@@ -11,12 +11,12 @@ vorpal
     let prompt1 = yield this.promptAsync({
         type: "password",
         name: "password",
-        message: "New password: ",
+        message: "New password: "
     });
     let prompt2 = yield this.promptAsync({
         type: "password",
         name: "password",
-        message: "Confirm new password: ",
+        message: "Confirm new password: "
     });
 
     if (prompt1.password !== prompt2.password) {

@@ -10,7 +10,7 @@ vorpal
     let prompt = yield this.promptAsync({
         type: "password",
         name: "password",
-        message: "Password: ",
+        message: "Password: "
     });
 
     let result = yield client.call("login", { username: args.username, password: prompt.password });

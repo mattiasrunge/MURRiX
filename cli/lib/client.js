@@ -1,6 +1,5 @@
 "use strict";
 
-const url = require("url");
 const socket = require("socket.io-client");
 const co = require("bluebird").coroutine;
 

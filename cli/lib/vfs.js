@@ -1,6 +1,9 @@
 "use strict";
 
+/* jslint bitwise: true */
+
 const path = require("path");
+const octal = require("octal");
 const co = require("bluebird").coroutine;
 const client = require("./client");
 const session = require("./session");
@@ -40,5 +43,33 @@ module.exports = {
         }
 
         return dir.replace(/\/+/g, "/");
+    },
+    colorName: (name, type) => {
+        if (type === "d" || type === "r") {
+            return name.bold;
+        } else if (type === "u") {
+            return name.yellow;
+        } else if (type === "g") {
+            return name.magenta;
+        } else if (type === "f") {
+            return name.blue;
+        }
+
+        return name;
+    },
+    modeString: (mode) => {
+        let modeStr = "";
+
+        modeStr += mode & octal("400") ? "r" : "-";
+        modeStr += mode & octal("200") ? "w" : "-";
+        modeStr += mode & octal("100") ? "x" : "-";
+        modeStr += mode & octal("040") ? "r" : "-";
+        modeStr += mode & octal("020") ? "w" : "-";
+        modeStr += mode & octal("010") ? "x" : "-";
+        modeStr += mode & octal("004") ? "r" : "-";
+        modeStr += mode & octal("002") ? "w" : "-";
+        modeStr += mode & octal("001") ? "x" : "-";
+
+        return modeStr;
     }
 };

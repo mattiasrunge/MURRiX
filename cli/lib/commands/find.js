@@ -3,7 +3,6 @@
 const vorpal = require("../vorpal");
 const session = require("../session");
 const client = require("../client");
-const vfs = require("../vfs");
 
 vorpal
 .command("find <search>", "Find nodes")

@@ -22,7 +22,7 @@ const argv = require("yargs")
 
 process
 .on("SIGINT", () => { main.stop().then(process.exit); })
-.on("SIGTERM", () => {  main.stop().then(process.exit); });
+.on("SIGTERM", () => { main.stop().then(process.exit); });
 
 main.start(argv)
 .catch(function(error) {

@@ -4,7 +4,6 @@ const co = require("bluebird").coroutine;
 const path = require("path");
 const glob = require("glob-promise");
 const vorpal = require("./vorpal");
-const client = require("./client");
 
 require("colors"); // Modifies the string prototype
 

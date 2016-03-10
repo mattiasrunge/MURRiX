@@ -6,7 +6,7 @@ const session = require("../session");
 
 vorpal
 .command("logout", "Logout user")
-.action(vorpal.wrap(function*(args) {
+.action(vorpal.wrap(function*(/*args*/) {
     let result = yield client.call("logout");
 
     if (!result) {

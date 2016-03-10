@@ -21,7 +21,7 @@ vorpal
     });
 
     if (!access) {
-       throw new Error("Permission denied");
+        throw new Error("Permission denied");
     }
 
     let node = yield client.call("resolve", {
