@@ -2,6 +2,5 @@
 
 define([
     "knockout"
-], function(ko) {
-
+], function(/*ko*/) {
 });

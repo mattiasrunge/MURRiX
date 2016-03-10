@@ -1,10 +1,11 @@
+"use strict";
 
 const client = require("../client");
 
 module.exports = {
     description: "Quit program",
     help: "Usage: quit",
-    execute: function*(session, params) {
+    execute: function*(session/*, params*/) {
         session.quit();
         yield client.stop();
     }

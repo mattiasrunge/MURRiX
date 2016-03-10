@@ -1,5 +1,7 @@
 "use strict";
 
+/* jslint bitwise: true */
+
 const client = require("../client");
 const path = require("../path");
 const columnify = require("columnify");

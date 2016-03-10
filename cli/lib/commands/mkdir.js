@@ -2,7 +2,6 @@
 
 const client = require("../client");
 const path = require("../path");
-const p = require("path");
 
 module.exports = {
     description: "Create a new directory node",

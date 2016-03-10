@@ -1,7 +1,6 @@
 "use strict";
 
 const client = require("../client");
-const path = require("../path");
 
 module.exports = {
     description: "Create a new group",
@@ -9,7 +8,7 @@ module.exports = {
     execute: function*(session, params) {
         let name = yield session.ask("Name:");
 
-        let group = yield client.call("create", {
+        yield client.call("create", {
             abspath: "/groups/" + params.name,
             type: "g",
             attributes: {

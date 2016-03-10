@@ -18,7 +18,7 @@ module.exports = {
         .map((file) => file[0] === "/" ? file.substr(1) : file);
 
         files.forEach((file) => directories.add(p.dirname(file)));
-        directories = Array.from(directories).filter((dir) => dir !== "" && dir !== "." ).sort();
+        directories = Array.from(directories).filter((dir) => dir !== "" && dir !== ".").sort();
 
         for (let directory of directories) {
             session.stdout().write("Importing directory " + directory + "...\n");
@@ -35,10 +35,10 @@ module.exports = {
             let filename = p.join(p.dirname(params.fspath), file);
             let uploadId = yield client.call("allocateuploadid");
             let options = {
-                host : client.hostname,
-                port : client.port,
-                path : "/upload/" + uploadId,
-                method : "POST"
+                host: client.hostname,
+                port: client.port,
+                path: "/upload/" + uploadId,
+                method: "POST"
             };
 
             let response = yield uploader.postFileAsync(options, filename, { });

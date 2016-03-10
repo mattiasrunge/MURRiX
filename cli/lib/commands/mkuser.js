@@ -1,7 +1,6 @@
 "use strict";
 
 const client = require("../client");
-const path = require("../path");
 
 module.exports = {
     description: "Create a new user",

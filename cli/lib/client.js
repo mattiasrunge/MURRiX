@@ -33,7 +33,7 @@ module.exports = {
 
             io.on("connect_timeout", () => {
                 module.exports.connected = false;
-                reject("Connection timed out while connecting to " + module.exports.url + ", " + error);
+                reject("Connection timed out while connecting to " + module.exports.url);
             });
 
             io.on("disconnect", () => {
