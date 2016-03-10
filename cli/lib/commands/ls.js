@@ -26,7 +26,23 @@ vorpal
     });
 
     if (!args.options.l) {
-        return this.log(items.map((item) => item.name).join("  "));
+        let list = items
+        .filter((item) => item.name !== "." && item.name !== "..")
+        .map((item) => {
+            if (item.node.properties.type === "d" || item.node.properties.type === "r") {
+                return item.name.bold;
+            } else if (item.node.properties.type === "u") {
+                return item.name.yellow;
+            } else if (item.node.properties.type === "g") {
+                return item.name.magenta;
+            } else if (item.node.properties.type === "f") {
+                return item.name.blue;
+            }
+
+            return item.name;
+        });
+
+        return this.log(list.join("  "));
     }
 
     let ucache = {};

@@ -15,6 +15,7 @@ module.exports.wrap = function(fn) {
 
             yield co(fn.bind(this))(args);
         } catch (e) {
+            this.log(e);
             if (typeof e === "string") {
                 this.log(e.split("\n")[0].replace(/^Error: /, "").red);
             } else {

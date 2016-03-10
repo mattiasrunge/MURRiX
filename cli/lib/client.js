@@ -16,7 +16,7 @@ module.exports = {
 
         yield module.exports.connect();
 
-        console.log(("Successfully connected to " + config.hostname + ":" + config.port).green + "\n");
+        console.log(("Successfully connected to MURRiX at " + config.hostname + ":" + config.port).green + "\n");
     }),
     connect: () => {
         return new Promise((resolve, reject) => {

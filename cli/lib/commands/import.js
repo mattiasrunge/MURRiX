@@ -1,5 +1,6 @@
 "use strict";
 
+const path = require("path");
 const walk = require("walk-promise");
 const checksum = require("bluebird").promisifyAll(require("checksum"));
 const uploader = require("bluebird").promisifyAll(require("file-uploader"));
@@ -14,10 +15,10 @@ vorpal
     let directories = new Set();
     let files = (yield walk(args.fspath))
     .filter((file) => file) // Filter out null object (unreadable)
-    .map((file) => p.join(file.root, file.name).replace(p.dirname(args.fspath), ""))
+    .map((file) => path.join(file.root, file.name).replace(path.dirname(args.fspath), ""))
     .map((file) => file[0] === "/" ? file.substr(1) : file);
 
-    files.forEach((file) => directories.add(p.dirname(file)));
+    files.forEach((file) => directories.add(path.dirname(file)));
     directories = Array.from(directories).filter((dir) => dir !== "" && dir !== ".").sort();
 
     for (let directory of directories) {
@@ -32,7 +33,7 @@ vorpal
     for (let file of files) {
         this.log("Importing file " + file + "...");
 
-        let filename = p.join(p.dirname(args.fspath), file);
+        let filename = path.join(path.dirname(args.fspath), file);
         let uploadId = yield client.call("allocateuploadid");
         let options = {
             host: client.hostname,
@@ -51,7 +52,7 @@ vorpal
             abspath: vfs.normalize(yield session.env("cwd"), file.replace(/ /g, "_")),
             type: "f",
             attributes: {
-                filename: p.basename(file),
+                filename: path.basename(file),
                 sha1: yield checksum.fileAsync(filename),
                 _uploadId: uploadId
             }
