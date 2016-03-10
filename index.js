@@ -1,17 +1,34 @@
 "use strict";
 
-const mfw = require("mfw");
-const db = require("./lib/db");
-const vfs = require("./lib/vfs");
+const path = require("path");
+const main = require("./lib/main");
+const packageData = require("./package.json");
+const argv = require("yargs")
+.usage("Usage: $0 -c [config]")
+.example("$0 -c ./conf/config.json", "Start server with specific configuration file")
+.help("help")
+.strict()
+.option("c", {
+    alias: "config",
+    default: path.relative(__dirname, "conf/config.json"),
+    describe: "Configuration file",
+    type: "string"
+})
+.option("level", {
+    default: "info",
+    describe: "Log level",
+    type: "string"
+})
+.argv;
 
-db.init()
-.then(vfs.init)
-.then(() => {
-    mfw({
-        name: "mfw",
-        port: 8080,
-        api: require("./lib/http-api"),
-        routes: require("./lib/http-routes"),
-        client: __dirname + "/client"
-    }).start();
+process
+.on("SIGINT", () => { main.stop().then(process.exit); })
+.on("SIGTERM", () => { main.stop().then(process.exit); });
+
+main.start(argv, packageData.version)
+.catch(function(error) {
+    console.error("FATAL ERROR");
+    console.error(error);
+    console.error(error.stack);
+    process.exit(255);
 });
