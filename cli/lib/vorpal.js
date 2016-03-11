@@ -1,8 +1,11 @@
 "use strict";
 
 const co = require("bluebird").coroutine;
+const less = require("vorpal-less");
 
 module.exports = require("vorpal")();
+
+module.exports.use(less);
 
 module.exports.wrap = function(fn) {
     return co(function*(args) {

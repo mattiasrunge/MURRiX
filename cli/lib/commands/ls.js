@@ -16,6 +16,7 @@ vorpal
     }
 })
 .action(vorpal.wrap(function*(args) {
+    let pipedOutput = this.commandWrapper.pipes.length > 0;
     let dir = args.path || (yield session.env("cwd"));
     let items = yield client.call("list", {
         abspath: vfs.normalize(yield session.env("cwd"), dir),
@@ -23,11 +24,20 @@ vorpal
     });
 
     if (!args.options.l) {
-        let list = items
-        .filter((item) => item.name !== "." && item.name !== "..")
-        .map((item) => vfs.colorName(item.name, item.node.properties.type));
+        let list = items.filter((item) => item.name !== "." && item.name !== "..");
 
-        return this.log(list.join("  "));
+        if (pipedOutput) {
+            list = list.map((item) => item.name);
+
+            for (let line of list) {
+                this.log(line);
+            }
+        } else {
+            list = list.map((item) => vfs.colorName(item.name, item.node.properties.type));
+            this.log(list.join("  "));
+        }
+
+        return;
     }
 
     let ucache = {};

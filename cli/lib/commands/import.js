@@ -2,6 +2,7 @@
 
 const path = require("path");
 const walk = require("walk-promise");
+const fsAutocomplete = require("vorpal-autocomplete-fs");
 const checksum = require("bluebird").promisifyAll(require("checksum"));
 const uploader = require("bluebird").promisifyAll(require("file-uploader"));
 const vorpal = require("../vorpal");
@@ -11,6 +12,7 @@ const vfs = require("../vfs");
 
 vorpal
 .command("import <fspath>", "Import files or directories from the file system")
+.autocomplete(fsAutocomplete())
 .action(vorpal.wrap(function*(args) {
     let directories = new Set();
     let files = (yield walk(args.fspath))

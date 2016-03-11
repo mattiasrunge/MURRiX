@@ -29,6 +29,7 @@
     "sha1": "1.1.1",
     "socket.io-client": "1.4.5",
     "split": "1.0.0",
+    "strip-ansi": "^3.0.1",
     "vorpal": "^1.10.8",
     "walk-promise": "0.2.0",
     "winston": "2.2.0",
