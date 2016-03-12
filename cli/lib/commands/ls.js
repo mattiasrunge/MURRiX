@@ -4,27 +4,24 @@ const columnify = require("columnify");
 const moment = require("moment");
 const vorpal = require("../vorpal");
 const session = require("../session");
-const client = require("../client");
 const vfs = require("../vfs");
+const terminal = require("../terminal");
 
 vorpal
 .command("ls [path]", "List directory")
 .option("-l", "Use a long listing format")
 .autocomplete({
     data: function(input) {
-        return vfs.autocomplete(input);
+        return terminal.autocomplete(input);
     }
 })
 .action(vorpal.wrap(function*(args) {
+    let cwd = yield session.env("cwd");
     let pipedOutput = this.commandWrapper.pipes.length > 0;
-    let dir = args.path || (yield session.env("cwd"));
-    let items = yield client.call("list", {
-        abspath: vfs.normalize(yield session.env("cwd"), dir),
-        all: true
-    });
+    let dir = args.path || cwd;
 
     if (!args.options.l) {
-        let list = items.filter((item) => item.name !== "." && item.name !== "..");
+        let list = yield vfs.list(terminal.normalize(cwd, dir), false);
 
         if (pipedOutput) {
             list = list.map((item) => item.name);
@@ -33,29 +30,31 @@ vorpal
                 this.log(line);
             }
         } else {
-            list = list.map((item) => vfs.colorName(item.name, item.node.properties.type));
+            list = list.map((item) => terminal.colorName(item.name, item.node.properties.type));
             this.log(list.join("  "));
         }
 
         return;
     }
 
+    let items = yield vfs.list(terminal.normalize(cwd, dir), true);
+
     let ucache = {};
     let gcache = {};
 
     for (let item of items) {
         if (!ucache[item.node.properties.uid]) {
-            ucache[item.node.properties.uid] = yield client.call("uname", { uid: item.node.properties.uid });
+            ucache[item.node.properties.uid] = yield vfs.uname(item.node.properties.uid);
         }
 
         if (!gcache[item.node.properties.gid]) {
-            gcache[item.node.properties.gid] = yield client.call("gname", { gid: item.node.properties.gid });
+            gcache[item.node.properties.gid] = yield vfs.gname(item.node.properties.gid);
         }
     }
 
     let columns = columnify(items.map((item) => {
-        let mode = vfs.modeString(item.node.properties.mode);
-        let name = vfs.colorName(item.name, item.node.properties.type);
+        let mode = terminal.modeString(item.node.properties.mode);
+        let name = terminal.colorName(item.name, item.node.properties.type);
         let uid = ucache[item.node.properties.uid] ? ucache[item.node.properties.uid] : item.node.properties.uid.toString();
         let gid = gcache[item.node.properties.gid] ? gcache[item.node.properties.gid] : item.node.properties.gid.toString();
 

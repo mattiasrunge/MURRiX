@@ -2,18 +2,18 @@
 
 const vorpal = require("../vorpal");
 const session = require("../session");
-const client = require("../client");
 const vfs = require("../vfs");
+const terminal = require("../terminal");
 
 vorpal
 .command("rm <path>", "Remove a node")
 .autocomplete({
     data: function(input) {
-        return vfs.autocomplete(input);
+        return terminal.autocomplete(input);
     }
 })
 .action(vorpal.wrap(function*(args) {
-    yield client.call("unlink", {
-        abspath: vfs.normalize(yield session.env("cwd"), args.path)
-    });
+    let cwd = yield session.env("cwd");
+
+    yield vfs.unlink(terminal.normalize(cwd, args.path));
 }));

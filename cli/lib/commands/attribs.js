@@ -2,21 +2,21 @@
 
 const vorpal = require("../vorpal");
 const session = require("../session");
-const client = require("../client");
 const vfs = require("../vfs");
+const terminal = require("../terminal");
 
 vorpal
 .command("attribs [path]", "Print node attributes")
 .autocomplete({
     data: function(input) {
-        return vfs.autocomplete(input);
+        return terminal.autocomplete(input);
     }
 })
 .action(vorpal.wrap(function*(args) {
-    let dir = args.path || (yield session.env("cwd"));
-    let node = yield client.call("resolve", {
-        abspath: vfs.normalize(yield session.env("cwd"), dir)
-    });
+    let cwd = yield session.env("cwd");
+    let abspath = args.path ? terminal.normalize(cwd, args.path) : cwd;
+
+    let node = yield vfs.resolve(abspath);
 
     this.log(JSON.stringify(node.attributes, null, 2));
 }));

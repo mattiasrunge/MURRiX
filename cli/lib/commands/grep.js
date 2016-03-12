@@ -2,7 +2,6 @@
 
 const stripAnsi = require("strip-ansi");
 const vorpal = require("../vorpal");
-const session = require("../session");
 
 vorpal
 .command("grep <pattern> [files...]", "Grep implementation.")

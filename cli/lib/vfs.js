@@ -1,75 +1,174 @@
 "use strict";
 
-/* jslint bitwise: true */
-
-const path = require("path");
-const octal = require("octal");
-const co = require("bluebird").coroutine;
 const client = require("./client");
-const session = require("./session");
 
 module.exports = {
-    autocomplete: co(function*(input) {
-        let names = [];
+    resolve: (abspath) => {
+        return client.call("resolve", {
+            abspath: abspath
+        });
+    },
+    access: (abspath, modestr) => {
+        return client.call("access", {
+            abspath: abspath,
+            modestr: modestr
+        });
+    },
+    chmod: (abspath, mode) => {
+        return client.call("chmod", {
+            abspath: abspath,
+            mode: mode
+        });
+    },
+    chown: (abspath, userstring) => {
+        let group = false;
+        let username = userstring;
 
-        try {
-            if (input === "") {
-                let items = yield client.call("list", { abspath: yield session.env("cwd") });
-                return items.map((item) => item.name);
+        if (userstring.indexOf(":") !== -1) {
+            let parts = userstring.split(":");
+            username = parts[0];
+            group = parts[1];
+        }
+
+        return client.call("chown", {
+            abspath: abspath,
+            username: username,
+            group: group
+        });
+    },
+    copy: (srcpath, destpath) => {
+        return client.call("copy", {
+            srcpath: srcpath,
+            destpath: destpath
+        });
+    },
+    move: (srcpath, destpath) => {
+        return client.call("move", {
+            srcpath: srcpath,
+            destpath: destpath
+        });
+    },
+    link: (srcpath, destpath) => {
+        return client.call("link", {
+            srcpath: srcpath,
+            destpath: destpath
+        });
+    },
+    unlink: (abspath) => {
+        return client.call("unlink", {
+            abspath: abspath
+        });
+    },
+    create: (abspath, type, attributes) => {
+        return client.call("create", {
+            abspath: abspath,
+            type: type,
+            attributes: attributes || {}
+        });
+    },
+    setAttributes: (abspath, attributes) => {
+         return client.call("setattributes", {
+             abspath: abspath,
+             attributes: attributes
+         });
+    },
+    list: (abspath, all) => {
+        return client.call("list", {
+            abspath: abspath,
+            all: all
+        });
+    },
+    find: (abspath, search) => {
+        return client.call("find", {
+            abspath: abspath,
+            search: search
+        });
+    },
+
+    allocateUploadId: () => {
+        return client.call("allocateuploadid");
+    },
+
+    id: (username) => {
+        return client.call("id", {
+            username: username
+        });
+    },
+    login: (username, password) => {
+        return client.call("login", { username: username, password: password });
+    },
+    logout: () => {
+        return client.call("logout");
+    },
+    passwd: (username, password) => {
+        return client.call("passwd", { username: username, password: password });
+    },
+    uname: (uid) => {
+        return client.call("uname", { uid: uid });
+    },
+    gname: (gid) => {
+        return client.call("gname", { gid: gid });
+    },
+    mkgroup: (name, fullname) => {
+        return client.call("create", {
+            abspath: "/groups/" + name,
+            type: "g",
+            attributes: {
+                name: fullname
             }
-
-            let dir = module.exports.normalize(yield session.env("cwd"), input);
-            let parentDir = path.dirname(dir);
-            let match = path.basename(dir);
-            let items = yield client.call("list", { abspath: parentDir });
-
-            names = items
-            .map((item) => item.name)
-            .filter((name) => name.indexOf(match) === 0)
-            .map((name) => input[0] === "/" ? path.join(parentDir, name) : name);
-        } catch (e) {
-            console.error(e.red);
-        }
-
-        return names;
-    }),
-    normalize: (cwd, dir) => {
-        if (dir.indexOf(".") === 0 && dir[1] !== ".") {
-            dir = dir.replace(/\./, cwd);
-        } else if (dir.indexOf("..") === 0) {
-            dir = dir.replace(/\.\./, path.dirname(cwd));
-        } else if (dir.indexOf("/") !== 0) {
-            dir = path.join(cwd, dir);
-        }
-
-        return dir.replace(/\/+/g, "/");
+        });
     },
-    colorName: (name, type) => {
-        if (type === "d" || type === "r") {
-            return name.bold;
-        } else if (type === "u") {
-            return name.yellow;
-        } else if (type === "g") {
-            return name.magenta;
-        } else if (type === "f") {
-            return name.blue;
-        }
+    mkuser: (username, fullname) => {
+        let p = client.call("create", {
+            abspath: "/groups/" + username,
+            type: "g",
+            attributes: {
+                name: fullname
+            }
+        });
 
-        return name;
-    },
-    modeString: (mode) => {
-        let modeStr = "";
+        p = p.then((group) => {
+            return client.call("create", {
+                abspath: "/users/" + username,
+                type: "u",
+                attributes: {
+                    gid: group.attributes.gid,
+                    name: fullname
+                }
+            });
+        });
 
-        modeStr += mode & octal("400") ? "r" : "-";
-        modeStr += mode & octal("200") ? "w" : "-";
-        modeStr += mode & octal("100") ? "x" : "-";
-        modeStr += mode & octal("040") ? "r" : "-";
-        modeStr += mode & octal("020") ? "w" : "-";
-        modeStr += mode & octal("010") ? "x" : "-";
-        modeStr += mode & octal("004") ? "r" : "-";
-        modeStr += mode & octal("002") ? "w" : "-";
-        modeStr += mode & octal("001") ? "x" : "-";
+        p = p.then(() => {
+            return client.call("link", {
+                srcpath: "/groups/" + username,
+                destpath: "/users/" + username
+            });
+        });
 
-        return modeStr;
+        p = p.then(() => {
+            return client.call("link", {
+                srcpath: "/users/" + username,
+                destpath: "/groups/" + username
+            });
+        });
+
+        return p;
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

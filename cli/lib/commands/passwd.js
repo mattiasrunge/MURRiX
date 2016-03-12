@@ -1,7 +1,7 @@
 "use strict";
 
 const vorpal = require("../vorpal");
-const client = require("../client");
+const vfs = require("../vfs");
 const session = require("../session");
 
 vorpal
@@ -23,7 +23,7 @@ vorpal
         throw new Error("Passwords do not match");
     }
 
-    yield client.call("passwd", { username: username, password: prompt1.password });
+    yield vfs.passwd(username, prompt1.password);
 
     this.log("Password updated".green);
 }));

@@ -7,13 +7,15 @@ const checksum = require("bluebird").promisifyAll(require("checksum"));
 const uploader = require("bluebird").promisifyAll(require("file-uploader"));
 const vorpal = require("../vorpal");
 const session = require("../session");
-const client = require("../client");
 const vfs = require("../vfs");
+const client = require("../client");
+const terminal = require("../terminal");
 
 vorpal
 .command("import <fspath>", "Import files or directories from the file system")
 .autocomplete(fsAutocomplete())
 .action(vorpal.wrap(function*(args) {
+    let cwd = yield session.env("cwd");
     let directories = new Set();
     let files = (yield walk(args.fspath))
     .filter((file) => file) // Filter out null object (unreadable)
@@ -26,17 +28,14 @@ vorpal
     for (let directory of directories) {
         this.log("Importing directory " + directory + "...");
 
-        yield client.call("create", {
-            abspath: vfs.normalize(yield session.env("cwd"), directory.replace(/ /g, "_")),
-            type: "d"
-        });
+        yield vfs.create(terminal.normalize(cwd, directory.replace(/ /g, "_")), "d");
     }
 
     for (let file of files) {
         this.log("Importing file " + file + "...");
 
         let filename = path.join(path.dirname(args.fspath), file);
-        let uploadId = yield client.call("allocateuploadid");
+        let uploadId = yield vfs.allocateUploadId();
         let options = {
             host: client.hostname,
             port: client.port,
@@ -50,14 +49,10 @@ vorpal
             throw new Error("Failed to upload " + file);
         }
 
-        yield client.call("create", {
-            abspath: vfs.normalize(yield session.env("cwd"), file.replace(/ /g, "_")),
-            type: "f",
-            attributes: {
-                filename: path.basename(file),
-                sha1: yield checksum.fileAsync(filename),
-                _uploadId: uploadId
-            }
+        yield vfs.create(terminal.normalize(cwd, file.replace(/ /g, "_")), "f", {
+            filename: path.basename(file),
+            sha1: yield checksum.fileAsync(filename),
+            _uploadId: uploadId
         });
     }
 }));

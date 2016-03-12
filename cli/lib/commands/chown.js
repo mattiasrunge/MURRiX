@@ -2,29 +2,18 @@
 
 const vorpal = require("../vorpal");
 const session = require("../session");
-const client = require("../client");
 const vfs = require("../vfs");
+const terminal = require("../terminal");
 
 vorpal
-.command("chown <username> <path>", "Change owner and group for node")
+.command("chown <userstring> <path>", "Change owner and group for node")
 .autocomplete({
     data: function(input) {
-        return vfs.autocomplete(input);
+        return terminal.autocomplete(input);
     }
 })
 .action(vorpal.wrap(function*(args) {
-    let username = args.username;
-    let group = false;
+    let cwd = yield session.env("cwd");
 
-    if (username.indexOf(":") !== -1) {
-        let parts = username.split(":");
-        username = parts[0];
-        group = parts[1];
-    }
-
-    yield client.call("chown", {
-        abspath: vfs.normalize(yield session.env("cwd"), args.path),
-        username: username,
-        group: group
-    });
+    yield vfs.chown(terminal.normalize(cwd, args.path), args.userstring);
 }));

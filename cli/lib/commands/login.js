@@ -1,7 +1,7 @@
 "use strict";
 
 const vorpal = require("../vorpal");
-const client = require("../client");
+const vfs = require("../vfs");
 const session = require("../session");
 
 vorpal
@@ -13,7 +13,7 @@ vorpal
         message: "Password: "
     });
 
-    let result = yield client.call("login", { username: args.username, password: prompt.password });
+    let result = yield vfs.login(args.username, prompt.password);
 
     if (!result) {
         throw new Error("Login failed");

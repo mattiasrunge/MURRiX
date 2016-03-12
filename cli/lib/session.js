@@ -42,7 +42,10 @@ module.exports = {
     set: co(function*(name, value) {
         module.exports.session[name] = value;
     }),
+    expand: (str) => {
+        return expandvar(str, module.exports.environment);
+    },
     refreshPrompt: () => {
-        vorpal.delimiter(expandvar(module.exports.environment.ps1, module.exports.environment));
+        vorpal.delimiter(module.exports.expand(module.exports.environment.ps1));
     }
 };

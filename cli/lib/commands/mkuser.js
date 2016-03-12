@@ -1,7 +1,7 @@
 "use strict";
 
 const vorpal = require("../vorpal");
-const client = require("../client");
+const vfs = require("../vfs");
 
 vorpal
 .command("mkuser <username>", "Create a new user")
@@ -12,30 +12,5 @@ vorpal
         message: "Name: "
     });
 
-    let group = yield client.call("create", {
-        abspath: "/groups/" + args.username,
-        type: "g",
-        attributes: {
-            name: prompt.name
-        }
-    });
-
-    yield client.call("create", {
-        abspath: "/users/" + args.username,
-        type: "u",
-        attributes: {
-            gid: group.attributes.gid,
-            name: prompt.name
-        }
-    });
-
-    yield client.call("link", {
-        srcpath: "/groups/" + args.username,
-        destpath: "/users/" + args.username
-    });
-
-    yield client.call("link", {
-        srcpath: "/users/" + args.username,
-        destpath: "/groups/" + args.username
-    });
+    yield vfs.mkuser(args.username, prompt.name);
 }));

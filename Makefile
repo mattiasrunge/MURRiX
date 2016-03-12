@@ -5,6 +5,7 @@ DEPS := deps
 all: test lint coverage
 
 deps:
+	npm set progress=false
 	npm --cache ./node_modules/.npm-cache install
 
 test: $(DEPS)
