@@ -8,6 +8,25 @@ module.exports = {
             abspath: abspath
         });
     },
+    messageSend: (username, text, subject, metadata) => {
+        return client.call("messagesend", {
+            username: username,
+            text: text,
+	    subject: subject,
+            metadata: metadata
+        });
+    },
+    messageCount: () => {
+        return client.call("messagecount", {});
+    },
+    messageRead: (index) => {
+        return client.call("messageread", {
+            index: index
+        });
+    },
+    messageList: () => {
+        return client.call("messagelist", {});
+    },
     access: (abspath, modestr) => {
         return client.call("access", {
             abspath: abspath,
@@ -155,20 +174,3 @@ module.exports = {
         return p;
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

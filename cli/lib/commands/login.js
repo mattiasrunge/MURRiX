@@ -20,4 +20,8 @@ vorpal
     }
 
     yield session.env("username", args.username);
+
+    let messages = yield vfs.list("/users/" + args.username + "/new_messages");
+
+    this.log("Welcome " + args.username.bold + ", you have " + messages.length.toString().bold + " new message(s)!");
 }));

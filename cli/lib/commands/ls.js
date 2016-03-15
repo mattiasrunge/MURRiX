@@ -21,7 +21,7 @@ vorpal
     let dir = args.path || cwd;
 
     if (!args.options.l) {
-        let list = yield vfs.list(terminal.normalize(cwd, dir), false);
+        let list = yield vfs.list(terminal.normalize(cwd, dir));
 
         if (pipedOutput) {
             list = list.map((item) => item.name);

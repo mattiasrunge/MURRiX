@@ -9,7 +9,7 @@ require("colors"); // Modifies the string prototype
 
 module.exports = {
     start: co(function*() {
-        let files = yield glob(path.join(__dirname, "commands", "*.js"), { nodir: true });
+        let files = yield glob(path.join(__dirname, "commands", "**/*.js"));
         files.forEach(require);
 
         vorpal

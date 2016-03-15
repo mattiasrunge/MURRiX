@@ -1,6 +1,3 @@
 "use strict";
 
-define([
-    "knockout"
-], function(/*ko*/) {
-});
+const ko = require("knockout");
