@@ -5,7 +5,7 @@
 const path = require("path");
 const octal = require("octal");
 const co = require("bluebird").coroutine;
-const vfs = require("./vfs");
+const api = require("api.io").client;
 const session = require("./session");
 
 module.exports = {
@@ -15,14 +15,14 @@ module.exports = {
 
         try {
             if (input === "") {
-                let items = yield vfs.list(cwd);
+                let items = yield api.vfs.list(cwd);
                 return items.map((item) => item.name);
             }
 
             let dir = module.exports.normalize(cwd, input);
             let parentDir = path.dirname(dir);
             let match = path.basename(dir);
-            let items = yield vfs.list(parentDir);
+            let items = yield api.vfs.list(parentDir);
 
             names = items
             .map((item) => item.name)

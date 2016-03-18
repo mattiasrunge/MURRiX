@@ -7,8 +7,7 @@ const checksum = require("bluebird").promisifyAll(require("checksum"));
 const uploader = require("bluebird").promisifyAll(require("file-uploader"));
 const vorpal = require("../vorpal");
 const session = require("../session");
-const vfs = require("../vfs");
-const client = require("../client");
+const api = require("api.io").client;
 const terminal = require("../terminal");
 
 vorpal
@@ -28,17 +27,17 @@ vorpal
     for (let directory of directories) {
         this.log("Importing directory " + directory + "...");
 
-        yield vfs.create(terminal.normalize(cwd, directory.replace(/ /g, "_")), "d");
+        yield api.vfs.create(terminal.normalize(cwd, directory.replace(/ /g, "_")), "d");
     }
 
     for (let file of files) {
         this.log("Importing file " + file + "...");
 
         let filename = path.join(path.dirname(args.fspath), file);
-        let uploadId = yield vfs.allocateUploadId();
+        let uploadId = yield api.vfs.allocateUploadId();
         let options = {
-            host: client.hostname,
-            port: client.port,
+            host: "localhost", // TODO
+            port: 8080, // TODO
             path: "/upload/" + uploadId,
             method: "POST"
         };
@@ -49,7 +48,7 @@ vorpal
             throw new Error("Failed to upload " + file);
         }
 
-        yield vfs.create(terminal.normalize(cwd, file.replace(/ /g, "_")), "f", {
+        yield api.vfs.create(terminal.normalize(cwd, file.replace(/ /g, "_")), "f", {
             filename: path.basename(file),
             sha1: yield checksum.fileAsync(filename),
             _uploadId: uploadId

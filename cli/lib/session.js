@@ -2,7 +2,7 @@
 
 const co = require("bluebird").coroutine;
 const expandvar = require("expand-var");
-const client = require("./client");
+const api = require("api.io").client;
 const vorpal = require("./vorpal");
 
 module.exports = {
@@ -13,11 +13,7 @@ module.exports = {
     },
     session: {},
     init: co(function*() {
-        let serverEnv = yield client.call("session");
-
-        for (let key of Object.keys(serverEnv)) {
-            module.exports.environment[key] = serverEnv[key];
-        }
+        yield api.vfs.logout();
 
         module.exports.refreshPrompt();
     }),

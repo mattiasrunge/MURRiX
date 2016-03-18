@@ -1,19 +1,21 @@
 "use strict";
 
-const co = require("bluebird").coroutine;
-const client = require("./client");
+const Bluebird = require("bluebird");
+const co = Bluebird.coroutine;
+
+const api = require("api.io").client;
 const session = require("./session");
 const shell = require("./shell");
 
 module.exports = {
     start: co(function*(args) {
-        yield client.init(args);
+        yield api.connect(args);
         yield session.init();
 
         yield shell.start();
     }),
     stop: co(function*() {
         console.log("Received shutdown signal, stoppping...");
-        yield client.stop();
+        yield api.disconnect();
     })
 };

@@ -4,4 +4,4 @@ set +v
 
 DIR=$(dirname "$0")
 
-node $DIR/../index.js
+node $DIR/../core/index.js

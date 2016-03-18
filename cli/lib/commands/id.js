@@ -1,7 +1,7 @@
 "use strict";
 
 const vorpal = require("../vorpal");
-const vfs = require("../vfs");
+const api = require("api.io").client;
 const session = require("../session");
 
 vorpal
@@ -9,7 +9,7 @@ vorpal
 .action(vorpal.wrap(function*(args) {
     let username = args.username || (yield session.env("username"));
 
-    let info = yield vfs.id(username);
+    let info = yield api.vfs.id(username);
 
     let str = "uid=" + info.uid.id + "(" + info.uid.name + ") ";
     str += "gid=" + info.gid.id + "(" + info.gid.name + ") ";

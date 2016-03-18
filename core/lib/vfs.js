@@ -8,11 +8,12 @@ const uuid = require("node-uuid");
 const path = require("path");
 const octal = require("octal");
 const sha1 = require("sha1");
-const db = require("./db");
 const fs = require("fs-extra-promise");
 const mime = require("mime");
 const checksum = promisifyAll(require("checksum"));
 const moment = require("moment");
+const api = require("api.io");
+const db = require("./db");
 
 let params = {};
 let asession = {
@@ -22,7 +23,7 @@ let asession = {
     umask: "770"
 };
 
-module.exports = {
+module.exports = api.register("vfs", {
     init: co(function*(config) {
         params = config;
 
@@ -94,14 +95,14 @@ module.exports = {
             yield module.exports.link(asession, "/groups/guest", "/users/guest");
         }
     }),
-    login: co(function*(session, username, password, force) {
+    login: function*(session, username, password) {
         let user = yield module.exports.resolve(asession, "/users/" + username);
 
         if (!user) {
             throw new Error("No user called " + username + " found");
         }
 
-        if (!force && user.attributes.password !== sha1(password)) {
+        if (user.attributes.password !== sha1(password)) {
             throw new Error("Authentication failed");
         }
 
@@ -113,13 +114,29 @@ module.exports = {
         session.gids = groups.map((group) => group.node.attributes.gid);
 
         return user;
-    }),
-    passwd: co(function*(session, username, password) {
+    },
+    logout: function*(session) {
+        let user = yield module.exports.resolve(asession, "/users/guest");
+
+        if (!user) {
+            throw new Error("No user called guest found");
+        }
+
+        let groups = yield module.exports.list(asession, "/users/guest");
+
+        session.username = "guest";
+        session.uid = user.attributes.uid;
+        session.gid = user.attributes.gid;
+        session.gids = groups.map((group) => group.node.attributes.gid);
+
+        return user;
+    },
+    passwd: function*(session, username, password) {
         return module.exports.setattributes(session, "/users/" + username, {
             password: sha1(password)
         });
-    }),
-    id: co(function*(session, username) {
+    },
+    id: function*(session, username) {
         let user = yield module.exports.resolve(asession, "/users/" + username);
         let groups = yield module.exports.list(asession, "/users/" + username);
 
@@ -139,8 +156,8 @@ module.exports = {
                 };
             })
         };
-    }),
-    messageSend: co(function*(session, username, text, metadata) {
+    },
+    messageSend: function*(session, username, text, metadata) {
         let user = yield module.exports.resolve(asession, "/users/" + username);
 
         if (!user) {
@@ -158,8 +175,8 @@ module.exports = {
         });
 
         yield module.exports.link(asession, "/users/" + username + "/all_messages/" + name, "/users/" + username + "/new_messages");
-    }),
-    messageCount: co(function*(session) {
+    },
+    messageCount: function*(session) {
         let allMessages = [];
         let newMessages = [];
 
@@ -178,8 +195,8 @@ module.exports = {
             total: allMessages.length,
             unread: newMessages.length
         };
-    }),
-    messageRead: co(function*(session, index) {
+    },
+    messageRead: function*(session, index) {
         let messages = [];
 
         if (typeof index === "undefined") {
@@ -201,8 +218,8 @@ module.exports = {
         module.exports.unlink(asession, "/users/" + session.username + "/new_messages/" + messages[index].name);
 
         return messages[index];
-    }),
-    messageList: co(function*(session) {
+    },
+    messageList: function*(session) {
         let messages = [];
         let unreadIds = [];
 
@@ -226,8 +243,8 @@ module.exports = {
         });
 
         return messages;
-    }),
-    uname: co(function*(session, uid) {
+    },
+    uname: function*(session, uid) {
         let users = yield module.exports.list(asession, "/users");
 
         for (let user of users) {
@@ -237,8 +254,8 @@ module.exports = {
         }
 
         return false;
-    }),
-    gname: co(function*(session, gid) {
+    },
+    gname: function*(session, gid) {
         let groups = yield module.exports.list(asession, "/groups");
 
         for (let group of groups) {
@@ -248,18 +265,18 @@ module.exports = {
         }
 
         return false;
-    }),
-    uid: co(function*(session, uname) {
+    },
+    uid: function*(session, uname) {
         let user = yield module.exports.resolve(asession, "/users/" + uname);
 
         return user.attributes.uid;
-    }),
-    gid: co(function*(session, gname) {
+    },
+    gid: function*(session, gname) {
         let group = yield module.exports.resolve(asession, "/groups/" + gname);
 
         return group.attributes.gid;
-    }),
-    allocateuid: co(function*(/*session*/) {
+    },
+    allocateuid: function*(/*session*/) {
         let users = yield module.exports.list(asession, "/users");
         let uid = 0;
 
@@ -270,8 +287,8 @@ module.exports = {
         }
 
         return uid + 1;
-    }),
-    allocategid: co(function*(/*session*/) {
+    },
+    allocategid: function*(/*session*/) {
         let groups = yield module.exports.list(asession, "/groups");
         let gid = 0;
 
@@ -282,8 +299,8 @@ module.exports = {
         }
 
         return gid + 1;
-    }),
-    access: co(function*(session, abspathOrNode, modestr) {
+    },
+    access: function*(session, abspathOrNode, modestr) {
         let node = abspathOrNode;
 
         if (typeof node === "string") {
@@ -307,8 +324,8 @@ module.exports = {
         }
 
         return (node.properties.mode & mode) > 0;
-    }),
-    resolve: co(function*(session, abspath, noerror) {
+    },
+    resolve: function*(session, abspath, noerror) {
         let pathParts = abspath.replace(/\/$/g, "").split("/");
         let root = yield db.findOne("nodes", { "properties.type": "r" });
 
@@ -339,8 +356,8 @@ module.exports = {
 
         pathParts.shift();
         return getchild(session, root, pathParts, noerror);
-    }),
-    ensure: co(function*(session, abspath, type, attributes) {
+    },
+    ensure: function*(session, abspath, type, attributes) {
         let node = yield module.exports.resolve(session, abspath, true);
 
         if (!node) {
@@ -348,8 +365,8 @@ module.exports = {
         }
 
         return node;
-    }),
-    list: co(function*(session, abspath, all) {
+    },
+    list: function*(session, abspath, all) {
         let list = [];
         let parent = yield module.exports.resolve(session, abspath);
 
@@ -378,8 +395,8 @@ module.exports = {
         });
 
         return list;
-    }),
-    find: co(function*(session, abspath, search) {
+    },
+    find: function*(session, abspath, search) {
         let list = [];
         let guard = [];
         let node = yield module.exports.resolve(session, abspath);
@@ -405,8 +422,8 @@ module.exports = {
         yield rfind(abspath, node);
 
         return list;
-    }),
-    chmod: co(function*(session, abspath, mode) {
+    },
+    chmod: function*(session, abspath, mode) {
         let node = yield module.exports.resolve(session, abspath);
 
         if (!(yield module.exports.access(session, node, "w"))) {
@@ -417,8 +434,8 @@ module.exports = {
         node.properties.mode = octal(mode);
 
         yield db.updateOne("nodes", node);
-    }),
-    chown: co(function*(session, abspath, username, group) {
+    },
+    chown: function*(session, abspath, username, group) {
         let node = yield module.exports.resolve(session, abspath);
 
         if (!(yield module.exports.access(session, node, "w"))) {
@@ -433,8 +450,8 @@ module.exports = {
         }
 
         yield db.updateOne("nodes", node);
-    }),
-    setattributes: co(function*(session, abspath, attributes) {
+    },
+    setattributes: function*(session, abspath, attributes) {
         let node = yield module.exports.resolve(session, abspath);
 
         if (!(yield module.exports.access(session, node, "w"))) {
@@ -448,8 +465,8 @@ module.exports = {
         }
 
         yield db.updateOne("nodes", node);
-    }),
-    create: co(function*(session, abspath, type, attributes) {
+    },
+    create: function*(session, abspath, type, attributes) {
         let parent = yield module.exports.resolve(session, path.dirname(abspath));
         let name = path.basename(abspath);
         let exists = parent.properties.children.filter((child) => child.name === name).length > 0;
@@ -518,8 +535,8 @@ module.exports = {
         yield db.updateOne("nodes", parent);
 
         return node;
-    }),
-    unlink: co(function*(session, abspath) {
+    },
+    unlink: function*(session, abspath) {
         let parent = yield module.exports.resolve(session, path.dirname(abspath));
         let name = path.basename(abspath);
         let child = parent.properties.children.filter((child) => child.name === name)[0];
@@ -558,8 +575,8 @@ module.exports = {
         });
 
         yield rremove(child.id);
-    }),
-    link: co(function*(session, srcpath, destpath) {
+    },
+    link: function*(session, srcpath, destpath) {
         let srcparent = yield module.exports.resolve(session, path.dirname(srcpath));
         let name = path.basename(srcpath);
         let child = srcparent.properties.children.filter((child) => child.name === name)[0];
@@ -598,8 +615,8 @@ module.exports = {
 
         node.properties.count++;
         yield db.updateOne("nodes", node);
-    }),
-    move: co(function*(session, srcpath, destpath) {
+    },
+    move: function*(session, srcpath, destpath) {
         let srcparent = yield module.exports.resolve(session, path.dirname(srcpath));
         let name = path.basename(srcpath);
         let child = srcparent.properties.children.filter((child) => child.name === name)[0];
@@ -638,8 +655,8 @@ module.exports = {
         destparent.properties.children.push(child);
         destparent.properties.ctime = new Date();
         yield db.updateOne("nodes", destparent);
-    }),
-    copy: co(function*(session, srcpath, destpath) {
+    },
+    copy: function*(session, srcpath, destpath) {
         let srcparent = yield module.exports.resolve(session, path.dirname(srcpath));
         let name = path.basename(srcpath);
         let child = srcparent.properties.children.filter((child) => child.name === name)[0];
@@ -705,5 +722,5 @@ module.exports = {
 
         destparent.properties.children.push(child);
         yield db.updateOne("nodes", destparent);
-    })
-};
+    }
+});

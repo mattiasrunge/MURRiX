@@ -2,7 +2,7 @@
 
 const vorpal = require("../vorpal");
 const session = require("../session");
-const vfs = require("../vfs");
+const api = require("api.io").client;
 const terminal = require("../terminal");
 
 vorpal
@@ -19,5 +19,5 @@ vorpal
 
     attributes[args.name] = args.value;
 
-    yield vfs.setAttributes(terminal.normalize(cwd, dir), attributes);
+    yield api.vfs.setAttributes(terminal.normalize(cwd, dir), attributes);
 }));

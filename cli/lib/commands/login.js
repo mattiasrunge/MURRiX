@@ -1,7 +1,7 @@
 "use strict";
 
 const vorpal = require("../vorpal");
-const vfs = require("../vfs");
+const api = require("api.io").client;
 const session = require("../session");
 
 vorpal
@@ -13,7 +13,7 @@ vorpal
         message: "Password: "
     });
 
-    let result = yield vfs.login(args.username, prompt.password);
+    let result = yield api.vfs.login(args.username, prompt.password);
 
     if (!result) {
         throw new Error("Login failed");
@@ -21,7 +21,7 @@ vorpal
 
     yield session.env("username", args.username);
 
-    let messages = yield vfs.list("/users/" + args.username + "/new_messages");
+    let messages = yield api.vfs.list("/users/" + args.username + "/new_messages");
 
     this.log("Welcome " + args.username.bold + ", you have " + messages.length.toString().bold + " new message(s)!");
 }));

@@ -4,7 +4,7 @@ const columnify = require("columnify");
 const moment = require("moment");
 const vorpal = require("../vorpal");
 const session = require("../session");
-const vfs = require("../vfs");
+const api = require("api.io").client;
 const terminal = require("../terminal");
 
 vorpal
@@ -21,7 +21,7 @@ vorpal
     let dir = args.path || cwd;
 
     if (!args.options.l) {
-        let list = yield vfs.list(terminal.normalize(cwd, dir));
+        let list = yield api.vfs.list(terminal.normalize(cwd, dir));
 
         if (pipedOutput) {
             list = list.map((item) => item.name);
@@ -37,18 +37,18 @@ vorpal
         return;
     }
 
-    let items = yield vfs.list(terminal.normalize(cwd, dir), true);
+    let items = yield api.vfs.list(terminal.normalize(cwd, dir), true);
 
     let ucache = {};
     let gcache = {};
 
     for (let item of items) {
         if (!ucache[item.node.properties.uid]) {
-            ucache[item.node.properties.uid] = yield vfs.uname(item.node.properties.uid);
+            ucache[item.node.properties.uid] = yield api.vfs.uname(item.node.properties.uid);
         }
 
         if (!gcache[item.node.properties.gid]) {
-            gcache[item.node.properties.gid] = yield vfs.gname(item.node.properties.gid);
+            gcache[item.node.properties.gid] = yield api.vfs.gname(item.node.properties.gid);
         }
     }
 

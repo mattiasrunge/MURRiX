@@ -2,19 +2,19 @@
 
 const columnify = require("columnify");
 const vorpal = require("../../vorpal");
-const vfs = require("../../vfs");
+const api = require("api.io").client;
 
 vorpal
 .command("message list", "List messages.")
 .action(vorpal.wrap(function*(args) {
-    let list = yield vfs.messageList();
+    let list = yield api.vfs.messageList();
     let ucache = {};
 
     list = list.reverse();
 
     for (let message of list) {
         if (!ucache[message.node.attributes.from]) {
-            ucache[message.node.attributes.from] = yield vfs.uname(message.node.attributes.from);
+            ucache[message.node.attributes.from] = yield api.vfs.uname(message.node.attributes.from);
         }
     }
 

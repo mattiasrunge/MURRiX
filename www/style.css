@@ -1,0 +1,28 @@
+
+@import: "node_modules/bootstrap/dist/css/bootstrap.css";
+@import: "node_modules/bootstrap-material-design/dist/css/material.css";
+@import: "node_modules/bootstrap-material-design/dist/css/roboto.css";
+@import: "node_modules/bootstrap-material-design/dist/css/ripples.css";
+@import: "node_modules/mprogress/build/css/mprogress.css";
+@import: "node_modules/animate.css/source/animate.css";
+@import: "node_modules/snackbarjs/dist/snackbar.css";
+
+.snackbar.alert {
+    color: rgba(255,255,255,.84);
+}
+
+.snackbar.alert-danger {
+    background-color: #f44336;
+}
+
+.snackbar.alert-success {
+    background-color: #4caf50;
+}
+
+.snackbar.alert-info {
+    background-color: #03a9f4;
+}
+
+.snackbar.alert-warning {
+    background-color: #ff5722;
+}

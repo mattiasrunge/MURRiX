@@ -1,7 +1,7 @@
 "use strict";
 
 const vorpal = require("../vorpal");
-const vfs = require("../vfs");
+const api = require("api.io").client;
 
 vorpal
 .command("mkgroup <name>", "Create a new group")
@@ -12,5 +12,15 @@ vorpal
         message: "Name: "
     });
 
-    yield vfs.mkgroup(args.name, prompt.name);
+    yield api.vfs.mkgroup(args.name, prompt.name);
 }));
+/*
+ mkgroup: (name, fullname) => {
+        return client.call("create", {
+            abspath: "/groups/" + name,
+            type: "g",
+            attributes: {
+                name: fullname
+            }
+        });
+    },*/

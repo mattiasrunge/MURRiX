@@ -2,7 +2,7 @@
 
 const vorpal = require("../vorpal");
 const session = require("../session");
-const vfs = require("../vfs");
+const api = require("api.io").client;
 const terminal = require("../terminal");
 
 vorpal
@@ -16,7 +16,7 @@ vorpal
     let cwd = yield session.env("cwd");
     let abspath = args.path ? terminal.normalize(cwd, args.path) : cwd;
 
-    let node = yield vfs.resolve(abspath);
+    let node = yield api.vfs.resolve(abspath);
 
     this.log(JSON.stringify(node.attributes, null, 2));
 }));
