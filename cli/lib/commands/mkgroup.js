@@ -12,15 +12,5 @@ vorpal
         message: "Name: "
     });
 
-    yield api.vfs.mkgroup(args.name, prompt.name);
+    yield api.auth.mkgroup(args.name, prompt.name);
 }));
-/*
- mkgroup: (name, fullname) => {
-        return client.call("create", {
-            abspath: "/groups/" + name,
-            type: "g",
-            attributes: {
-                name: fullname
-            }
-        });
-    },*/

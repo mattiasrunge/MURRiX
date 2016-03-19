@@ -3,6 +3,7 @@
 const path = require("path");
 const fs = require("fs-extra-promise");
 const staticFile = require("koa-static");
+const parse = require("co-busboy");
 const CleanCSS = require("clean-css");
 const promisifyAll = require("bluebird").promisifyAll;
 const babel = promisifyAll(require("babel-core"));
@@ -13,7 +14,6 @@ const wwwPath = path.join(__dirname, "..", "..", "www");
 
 let css;
 let cssTime;
-let uploadIds = {};
 
 module.exports = {
     "/style.css": function*() {
@@ -52,7 +52,7 @@ module.exports = {
         store.unset("uploadIds", id);
 
         let part;
-        while (part = yield parse(this)) {
+        while ((part = yield parse(this))) {
             let stream = fs.createWriteStream(path.join(configuration.uploadDirectory, id));
             part.pipe(stream);
         }

@@ -1,20 +1,16 @@
 "use strict";
 
 const path = require("path");
-const fs = require("fs-extra-promise");
 const http = require("http");
 const co = require("bluebird").coroutine;
 const promisify = require("bluebird").promisify;
-const promisifyAll = require("bluebird").promisifyAll;
 const koa = require("koa.io");
 const bodyParser = require("koa-bodyparser");
 const route = require("koa-route");
-const parse = require("co-busboy");
 const enableDestroy = require("server-destroy");
 const uuid = require("node-uuid");
 const moment = require("moment");
 const configuration = require("./configuration");
-const HttpError = require("./http-error");
 const routes = require("./http-routes");
 const store = require("./store");
 const api = require("api.io");
@@ -25,7 +21,6 @@ let params = {};
 module.exports = {
     init: co(function*(config) {
         let app = koa();
-        let wwwPath = path.join(__dirname, "..", "..", "www");
 
         params = config;
 
@@ -74,7 +69,7 @@ module.exports = {
         enableDestroy(server);
 
         // Socket.io if we have defined API
-        yield api.start(server)
+        yield api.start(server);
 
         api.on("connection", (client) => {
             client.session.uploads = client.session.uploads || {};
@@ -84,6 +79,8 @@ module.exports = {
                 client.session.uploads[id] = path.join(params.uploadDirectory, id);
                 return id;
             };
+
+
         });
 
         server.listen(configuration.port);

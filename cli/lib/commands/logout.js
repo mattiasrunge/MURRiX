@@ -7,7 +7,7 @@ const session = require("../session");
 vorpal
 .command("logout", "Logout user")
 .action(vorpal.wrap(function*(/*args*/) {
-    let result = yield api.vfs.logout();
+    let result = yield api.auth.logout();
 
     if (!result) {
         throw new Error("Logout failed");

@@ -1,8 +1,9 @@
 "use strict";
 
+const $ = require("jquery");
 const ko = require("knockout");
 const utils = require("lib/utils");
-const location = require("lib/location");
+const loc = require("lib/location");
 
 ko.bindingHandlers.copyToClipboard = {
     init: (element, valueAccessor) => {
@@ -19,7 +20,7 @@ ko.bindingHandlers.copyToClipboard = {
 };
 
 ko.bindingHandlers.location = {
-    init: (element, valueAccessor) => {
+    init: (element/*, valueAccessor*/) => {
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             $(element).off("click");
         });
@@ -31,7 +32,7 @@ ko.bindingHandlers.location = {
         $element.off("click");
 
         if (typeof value !== "string") {
-            value = location.constructUrl(value, true);
+            value = loc.constructUrl(value, true);
         } else if (value[0] !== "#" && value.indexOf("http") !== 0 && value.indexOf("mailto") !== 0) {
             value = "#" + value;
         }
@@ -44,7 +45,7 @@ ko.bindingHandlers.location = {
         } else {
             $element.on("click", function(event) {
                 event.preventDefault();
-                location.goto(value);
+                loc.goto(value);
             });
         }
     }

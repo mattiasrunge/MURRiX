@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "www",
   "version": "0.0.0",
   "description": "",
   "main": "mfw.js",
@@ -10,7 +10,7 @@
   "license": "GPL-2.0",
   "dependencies": {
     "animate.css": "^3.4.0",
-    "api.io": "0.0.3",
+    "api.io": "0.0.6",
     "babel-polyfill": "^6.7.2",
     "bluebird": "^3.3.4",
     "bootstrap": "^3.3.5",

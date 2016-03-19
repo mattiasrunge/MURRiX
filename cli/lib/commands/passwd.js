@@ -23,7 +23,7 @@ vorpal
         throw new Error("Passwords do not match");
     }
 
-    yield api.vfs.passwd(username, prompt1.password);
+    yield api.auth.passwd(username, prompt1.password);
 
     this.log("Password updated".green);
 }));

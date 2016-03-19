@@ -12,7 +12,7 @@ module.exports = {
         yield ui.start();
 
         // TODO: temp
-        yield api.vfs.login("guest", null, true);
+        yield api.auth.session();
         let result = yield api.vfs.list("/");
         console.log("result", result);
     })

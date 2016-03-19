@@ -17,7 +17,7 @@ module.exports = {
             style: "alert-danger",
             timeout: 10000,
             htmlAllowed: true
-        }
+        };
 
         $.snackbar(options).snackbar("show");
     },
@@ -29,7 +29,7 @@ module.exports = {
             style: "alert-success",
             timeout: 5000,
             htmlAllowed: true
-        }
+        };
 
         $.snackbar(options).snackbar("show");
     },
@@ -41,7 +41,7 @@ module.exports = {
             style: "alert-warning",
             timeout: 5000,
             htmlAllowed: true
-        }
+        };
 
         $.snackbar(options).snackbar("show");
     },
@@ -53,7 +53,7 @@ module.exports = {
             style: "alert-info",
             timeout: 5000,
             htmlAllowed: true
-        }
+        };
 
         $.snackbar(options).snackbar("show");
     },

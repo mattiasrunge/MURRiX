@@ -13,9 +13,9 @@ module.exports = {
     },
     session: {},
     init: co(function*() {
-        yield api.vfs.logout();
+        let session = yield api.auth.session();
 
-        module.exports.refreshPrompt();
+        yield module.exports.env("username", session.username);
     }),
     env: co(function*(name, value) {
         if (value) {

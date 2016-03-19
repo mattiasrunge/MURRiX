@@ -2,10 +2,10 @@
 
 /* jslint bitwise: true */
 
+const path = require("path");
 const co = require("bluebird").coroutine;
 const promisifyAll = require("bluebird").promisifyAll;
 const uuid = require("node-uuid");
-const path = require("path");
 const octal = require("octal");
 const sha1 = require("sha1");
 const fs = require("fs-extra-promise");
@@ -13,17 +13,11 @@ const mime = require("mime");
 const checksum = promisifyAll(require("checksum"));
 const moment = require("moment");
 const api = require("api.io");
-const db = require("./db");
+const db = require("../db");
 
 let params = {};
-let asession = {
-    username: "admin",
-    uid: 1000,
-    gid: 1000,
-    umask: "770"
-};
 
-module.exports = api.register("vfs", {
+let vfs = api.register("vfs", {
     init: co(function*(config) {
         params = config;
 
@@ -48,263 +42,12 @@ module.exports = api.register("vfs", {
 
             yield db.insertOne("nodes", root);
         }
-
-        if (!(yield module.exports.resolve(asession, "/users", true))) {
-            yield module.exports.create(asession, "/users", "d");
-        }
-
-        if (!(yield module.exports.resolve(asession, "/groups", true))) {
-            yield module.exports.create(asession, "/groups", "d");
-        }
-
-        if (!(yield module.exports.resolve(asession, "/users/admin", true))) {
-            yield module.exports.create(asession, "/users/admin", "u", {
-                uid: 1000,
-                gid: 1000,
-                password: sha1("admin"),
-                name: "Administrator"
-            });
-        }
-
-        if (!(yield module.exports.resolve(asession, "/users/guest", true))) {
-            yield module.exports.create(asession, "/users/guest", "u", {
-                uid: 1001,
-                gid: 1001,
-                password: sha1("guest"),
-                name: "Guest"
-            });
-        }
-
-        if (!(yield module.exports.resolve(asession, "/groups/admin", true))) {
-            yield module.exports.create(asession, "/groups/admin", "g", {
-                gid: 1000,
-                name: "Administrators"
-            });
-
-            yield module.exports.link(asession, "/users/admin", "/groups/admin");
-            yield module.exports.link(asession, "/groups/admin", "/users/admin");
-        }
-
-        if (!(yield module.exports.resolve(asession, "/groups/guest", true))) {
-            yield module.exports.create(asession, "/groups/guest", "g", {
-                gid: 1001,
-                name: "Guests"
-            });
-
-            yield module.exports.link(asession, "/users/guest", "/groups/guest");
-            yield module.exports.link(asession, "/groups/guest", "/users/guest");
-        }
     }),
-    login: function*(session, username, password) {
-        let user = yield module.exports.resolve(asession, "/users/" + username);
-
-        if (!user) {
-            throw new Error("No user called " + username + " found");
-        }
-
-        if (user.attributes.password !== sha1(password)) {
-            throw new Error("Authentication failed");
-        }
-
-        let groups = yield module.exports.list(asession, "/users/" + username);
-
-        session.username = username;
-        session.uid = user.attributes.uid;
-        session.gid = user.attributes.gid;
-        session.gids = groups.map((group) => group.node.attributes.gid);
-
-        return user;
-    },
-    logout: function*(session) {
-        let user = yield module.exports.resolve(asession, "/users/guest");
-
-        if (!user) {
-            throw new Error("No user called guest found");
-        }
-
-        let groups = yield module.exports.list(asession, "/users/guest");
-
-        session.username = "guest";
-        session.uid = user.attributes.uid;
-        session.gid = user.attributes.gid;
-        session.gids = groups.map((group) => group.node.attributes.gid);
-
-        return user;
-    },
-    passwd: function*(session, username, password) {
-        return module.exports.setattributes(session, "/users/" + username, {
-            password: sha1(password)
-        });
-    },
-    id: function*(session, username) {
-        let user = yield module.exports.resolve(asession, "/users/" + username);
-        let groups = yield module.exports.list(asession, "/users/" + username);
-
-        return {
-            uid: {
-                id: user.attributes.uid,
-                name: username
-            },
-            gid: {
-                id: user.attributes.gid,
-                name: groups.filter((group) => group.node.attributes.gid === user.attributes.gid).map((group) => group.name)[0] || ""
-            },
-            gids: groups.map((group) => {
-                return {
-                    id: group.node.attributes.gid,
-                    name: group.name
-                };
-            })
-        };
-    },
-    messageSend: function*(session, username, text, metadata) {
-        let user = yield module.exports.resolve(asession, "/users/" + username);
-
-        if (!user) {
-            throw new Error("No such user");
-        }
-
-        let name = moment().format();
-        let allMessages = yield module.exports.ensure(asession, "/users/" + username + "/all_messages", "d");
-        let newMessages = yield module.exports.ensure(asession, "/users/" + username + "/new_messages", "d");
-
-        let message = yield module.exports.create(asession, "/users/" + username + "/all_messages/" + name, "m", {
-            from: yield module.exports.uid(session, session.username),
-            text: text,
-            metadata: metadata || {}
-        });
-
-        yield module.exports.link(asession, "/users/" + username + "/all_messages/" + name, "/users/" + username + "/new_messages");
-    },
-    messageCount: function*(session) {
-        let allMessages = [];
-        let newMessages = [];
-
-        try {
-            allMessages = yield module.exports.list(asession, "/users/" + session.username + "/all_messages");
-        } catch (e) {}
-
-        try {
-            newMessages = yield module.exports.list(asession, "/users/" + session.username + "/new_messages");
-        } catch (e) {}
-
-        allMessages = allMessages || [];
-        newMessages = newMessages || [];
-
-        return {
-            total: allMessages.length,
-            unread: newMessages.length
-        };
-    },
-    messageRead: function*(session, index) {
-        let messages = [];
-
-        if (typeof index === "undefined") {
-            try {
-                messages = yield module.exports.list(asession, "/users/" + session.username + "/new_messages");
-            } catch (e) {}
-
-            index = Math.max(messages.length - 1, 0);
-        } else {
-            try {
-                messages = yield module.exports.list(asession, "/users/" + session.username + "/all_messages");
-            } catch (e) {}
-        }
-
-        if (messages.length <= index) {
-            throw new Error("No message with that index");
-        }
-
-        module.exports.unlink(asession, "/users/" + session.username + "/new_messages/" + messages[index].name);
-
-        return messages[index];
-    },
-    messageList: function*(session) {
-        let messages = [];
-        let unreadIds = [];
-
-        try {
-            messages = yield module.exports.list(asession, "/users/" + session.username + "/all_messages");
-        } catch (e) {}
-
-        try {
-            let node = yield module.exports.resolve(asession, "/users/" + session.username + "/new_messages");
-
-            if (node) {
-                unreadIds = node.properties.children.map((child) => child.id);
-            }
-        } catch (e) {}
-
-        messages = messages || [];
-
-        messages.forEach((message, index) => {
-            message.index = index;
-            message.unread = unreadIds.indexOf(message.node._id) !== -1;
-        });
-
-        return messages;
-    },
-    uname: function*(session, uid) {
-        let users = yield module.exports.list(asession, "/users");
-
-        for (let user of users) {
-            if (user.node.attributes.uid === uid) {
-                return user.name;
-            }
-        }
-
-        return false;
-    },
-    gname: function*(session, gid) {
-        let groups = yield module.exports.list(asession, "/groups");
-
-        for (let group of groups) {
-            if (group.node.attributes.gid === gid) {
-                return group.name;
-            }
-        }
-
-        return false;
-    },
-    uid: function*(session, uname) {
-        let user = yield module.exports.resolve(asession, "/users/" + uname);
-
-        return user.attributes.uid;
-    },
-    gid: function*(session, gname) {
-        let group = yield module.exports.resolve(asession, "/groups/" + gname);
-
-        return group.attributes.gid;
-    },
-    allocateuid: function*(/*session*/) {
-        let users = yield module.exports.list(asession, "/users");
-        let uid = 0;
-
-        for (let user of users) {
-            if (user.node.attributes.uid > uid) {
-                uid = user.node.attributes.uid;
-            }
-        }
-
-        return uid + 1;
-    },
-    allocategid: function*(/*session*/) {
-        let groups = yield module.exports.list(asession, "/groups");
-        let gid = 0;
-
-        for (let group of groups) {
-            if (group.node.attributes.gid > gid) {
-                gid = group.node.attributes.gid;
-            }
-        }
-
-        return gid + 1;
-    },
     access: function*(session, abspathOrNode, modestr) {
         let node = abspathOrNode;
 
         if (typeof node === "string") {
-            node = yield module.exports.resolve(session, abspathOrNode);
+            node = yield vfs.resolve(session, abspathOrNode);
         }
 
         let mode = 0;
@@ -347,7 +90,7 @@ module.exports = api.register("vfs", {
 
             node = yield db.findOne("nodes", { _id: child.id });
 
-            if (!(yield module.exports.access(session, node, "r"))) {
+            if (!(yield vfs.access(session, node, "r"))) {
                 throw new Error("Permission denied");
             }
 
@@ -358,19 +101,19 @@ module.exports = api.register("vfs", {
         return getchild(session, root, pathParts, noerror);
     },
     ensure: function*(session, abspath, type, attributes) {
-        let node = yield module.exports.resolve(session, abspath, true);
+        let node = yield vfs.resolve(session, abspath, true);
 
         if (!node) {
-            node = yield module.exports.create(session, abspath, type, attributes || {});
+            node = yield vfs.create(session, abspath, type, attributes || {});
         }
 
         return node;
     },
     list: function*(session, abspath, all) {
         let list = [];
-        let parent = yield module.exports.resolve(session, abspath);
+        let parent = yield vfs.resolve(session, abspath);
 
-        if (!(yield module.exports.access(session, parent, "r"))) {
+        if (!(yield vfs.access(session, parent, "r"))) {
             throw new Error("Permission denied");
         }
 
@@ -378,7 +121,7 @@ module.exports = api.register("vfs", {
         let nodes = yield db.find("nodes", { _id: { $in: ids } });
 
         if (all) {
-            let pparent = yield module.exports.resolve(session, path.dirname(abspath));
+            let pparent = yield vfs.resolve(session, path.dirname(abspath));
 
             list.push({ name: ".", node: parent });
             list.push({ name: "..", node: pparent });
@@ -399,10 +142,10 @@ module.exports = api.register("vfs", {
     find: function*(session, abspath, search) {
         let list = [];
         let guard = [];
-        let node = yield module.exports.resolve(session, abspath);
+        let node = yield vfs.resolve(session, abspath);
 
         let rfind = co(function*(dir, node) {
-            if ((yield module.exports.access(session, node, "r"))) {
+            if ((yield vfs.access(session, node, "r"))) {
                 for (let child of node.properties.children) {
                     if (guard.indexOf(child.id) === -1) {
                         guard.push(child.id);
@@ -424,9 +167,9 @@ module.exports = api.register("vfs", {
         return list;
     },
     chmod: function*(session, abspath, mode) {
-        let node = yield module.exports.resolve(session, abspath);
+        let node = yield vfs.resolve(session, abspath);
 
-        if (!(yield module.exports.access(session, node, "w"))) {
+        if (!(yield vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");
         }
 
@@ -436,25 +179,25 @@ module.exports = api.register("vfs", {
         yield db.updateOne("nodes", node);
     },
     chown: function*(session, abspath, username, group) {
-        let node = yield module.exports.resolve(session, abspath);
+        let node = yield vfs.resolve(session, abspath);
 
-        if (!(yield module.exports.access(session, node, "w"))) {
+        if (!(yield vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");
         }
 
         node.properties.ctime = new Date();
-        node.properties.uid = yield module.exports.uid(session, username);
+        node.properties.uid = yield vfs.uid(session, username);
 
         if (group) {
-            node.properties.gid = yield module.exports.gid(session, group);
+            node.properties.gid = yield vfs.gid(session, group);
         }
 
         yield db.updateOne("nodes", node);
     },
     setattributes: function*(session, abspath, attributes) {
-        let node = yield module.exports.resolve(session, abspath);
+        let node = yield vfs.resolve(session, abspath);
 
-        if (!(yield module.exports.access(session, node, "w"))) {
+        if (!(yield vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");
         }
 
@@ -467,7 +210,7 @@ module.exports = api.register("vfs", {
         yield db.updateOne("nodes", node);
     },
     create: function*(session, abspath, type, attributes) {
-        let parent = yield module.exports.resolve(session, path.dirname(abspath));
+        let parent = yield vfs.resolve(session, path.dirname(abspath));
         let name = path.basename(abspath);
         let exists = parent.properties.children.filter((child) => child.name === name).length > 0;
 
@@ -475,7 +218,7 @@ module.exports = api.register("vfs", {
             throw new Error(abspath + " already exists");
         }
 
-        if (!(yield module.exports.access(session, parent, "w"))) {
+        if (!(yield vfs.access(session, parent, "w"))) {
             throw new Error("Permission denied");
         }
 
@@ -496,11 +239,9 @@ module.exports = api.register("vfs", {
         };
 
         if (type === "u") {
-            node.attributes.uid = node.attributes.uid || (yield module.exports.allocateuid());
             node.attributes.password = sha1(name);
             node.properties.mode = octal("770");
         } else if (type === "g") {
-            node.attributes.gid = node.attributes.gid || (yield module.exports.allocategid());
             node.properties.mode = octal("770");
         } else if (type === "f") {
             if (!node.attributes._uploadId) {
@@ -537,7 +278,7 @@ module.exports = api.register("vfs", {
         return node;
     },
     unlink: function*(session, abspath) {
-        let parent = yield module.exports.resolve(session, path.dirname(abspath));
+        let parent = yield vfs.resolve(session, path.dirname(abspath));
         let name = path.basename(abspath);
         let child = parent.properties.children.filter((child) => child.name === name)[0];
 
@@ -545,7 +286,7 @@ module.exports = api.register("vfs", {
             return;
         }
 
-        if (!(yield module.exports.access(session, parent, "w"))) {
+        if (!(yield vfs.access(session, parent, "w"))) {
             throw new Error("Permission denied");
         }
 
@@ -577,7 +318,7 @@ module.exports = api.register("vfs", {
         yield rremove(child.id);
     },
     link: function*(session, srcpath, destpath) {
-        let srcparent = yield module.exports.resolve(session, path.dirname(srcpath));
+        let srcparent = yield vfs.resolve(session, path.dirname(srcpath));
         let name = path.basename(srcpath);
         let child = srcparent.properties.children.filter((child) => child.name === name)[0];
 
@@ -585,11 +326,11 @@ module.exports = api.register("vfs", {
             throw new Error(srcpath + " does not exists");
         }
 
-        if (!(yield module.exports.access(session, srcparent, "w"))) {
+        if (!(yield vfs.access(session, srcparent, "w"))) {
             throw new Error("Permission denied");
         }
 
-        let destparent = yield module.exports.resolve(session, path.dirname(destpath));
+        let destparent = yield vfs.resolve(session, path.dirname(destpath));
         let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
 
         if (destchild) {
@@ -603,7 +344,7 @@ module.exports = api.register("vfs", {
             child.name = path.basename(destpath);
         }
 
-        if (!(yield module.exports.access(session, destparent, "w"))) {
+        if (!(yield vfs.access(session, destparent, "w"))) {
             throw new Error("Permission denied");
         }
 
@@ -617,7 +358,7 @@ module.exports = api.register("vfs", {
         yield db.updateOne("nodes", node);
     },
     move: function*(session, srcpath, destpath) {
-        let srcparent = yield module.exports.resolve(session, path.dirname(srcpath));
+        let srcparent = yield vfs.resolve(session, path.dirname(srcpath));
         let name = path.basename(srcpath);
         let child = srcparent.properties.children.filter((child) => child.name === name)[0];
 
@@ -625,14 +366,14 @@ module.exports = api.register("vfs", {
             throw new Error(srcpath + " does not exists");
         }
 
-        if (!(yield module.exports.access(session, srcparent, "w"))) {
+        if (!(yield vfs.access(session, srcparent, "w"))) {
             throw new Error("Permission denied");
         }
 
         srcparent.properties.children = srcparent.properties.children.filter((child) => child.name !== name);
         srcparent.properties.ctime = new Date();
 
-        let destparent = yield module.exports.resolve(session, path.dirname(destpath));
+        let destparent = yield vfs.resolve(session, path.dirname(destpath));
         let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
 
         if (destchild) {
@@ -646,7 +387,7 @@ module.exports = api.register("vfs", {
             child.name = path.basename(destpath);
         }
 
-        if (!(yield module.exports.access(session, destparent, "w"))) {
+        if (!(yield vfs.access(session, destparent, "w"))) {
             throw new Error("Permission denied");
         }
 
@@ -657,7 +398,7 @@ module.exports = api.register("vfs", {
         yield db.updateOne("nodes", destparent);
     },
     copy: function*(session, srcpath, destpath) {
-        let srcparent = yield module.exports.resolve(session, path.dirname(srcpath));
+        let srcparent = yield vfs.resolve(session, path.dirname(srcpath));
         let name = path.basename(srcpath);
         let child = srcparent.properties.children.filter((child) => child.name === name)[0];
 
@@ -665,11 +406,11 @@ module.exports = api.register("vfs", {
             throw new Error(srcpath + " does not exists");
         }
 
-        if (!(yield module.exports.access(session, srcparent, "r"))) {
+        if (!(yield vfs.access(session, srcparent, "r"))) {
             throw new Error("Permission denied");
         }
 
-        let destparent = yield module.exports.resolve(session, path.dirname(destpath));
+        let destparent = yield vfs.resolve(session, path.dirname(destpath));
         let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
 
         if (destchild) {
@@ -714,7 +455,7 @@ module.exports = api.register("vfs", {
             return node._id;
         });
 
-        if (!(yield module.exports.access(session, destparent, "w"))) {
+        if (!(yield vfs.access(session, destparent, "w"))) {
             throw new Error("Permission denied");
         }
 
@@ -722,5 +463,10 @@ module.exports = api.register("vfs", {
 
         destparent.properties.children.push(child);
         yield db.updateOne("nodes", destparent);
+    },
+    allocateUploadId: function*(session) {
+        return session.allocateUploadId();
     }
 });
+
+module.exports = vfs;

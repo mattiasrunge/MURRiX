@@ -13,7 +13,7 @@ vorpal
         message: "Password: "
     });
 
-    let result = yield api.vfs.login(args.username, prompt.password);
+    let result = yield api.auth.login(args.username, prompt.password);
 
     if (!result) {
         throw new Error("Login failed");
@@ -21,7 +21,7 @@ vorpal
 
     yield session.env("username", args.username);
 
-    let messages = yield api.vfs.list("/users/" + args.username + "/new_messages");
+    let counts = yield api.message.count();
 
-    this.log("Welcome " + args.username.bold + ", you have " + messages.length.toString().bold + " new message(s)!");
+    this.log("Welcome " + args.username.bold + ", you have " + counts.unread.toString().bold + " new message(s)!");
 }));

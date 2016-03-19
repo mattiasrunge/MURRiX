@@ -44,11 +44,11 @@ vorpal
 
     for (let item of items) {
         if (!ucache[item.node.properties.uid]) {
-            ucache[item.node.properties.uid] = yield api.vfs.uname(item.node.properties.uid);
+            ucache[item.node.properties.uid] = yield api.auth.uname(item.node.properties.uid);
         }
 
         if (!gcache[item.node.properties.gid]) {
-            gcache[item.node.properties.gid] = yield api.vfs.gname(item.node.properties.gid);
+            gcache[item.node.properties.gid] = yield api.auth.gname(item.node.properties.gid);
         }
     }
 
