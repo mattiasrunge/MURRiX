@@ -28,6 +28,10 @@ In general no configuration options are needed but if something needs to be chan
 
     $ ./bin/core
 
+## How to start the CLI
+
+    $ ./bin/cli
+
 Now you can start your brower and access MURRiX at port 8080 if the configuration was not changed. The default admin username and password are: admin/admin
 
 ## Credits
