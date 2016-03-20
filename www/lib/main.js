@@ -1,13 +1,11 @@
 "use strict";
 
-const Bluebird = require("bluebird");
-const co = Bluebird.coroutine;
-
 const api = require("api.io-client");
-const ui = require("./ui");
+const ui = require("lib/ui");
+const utils = require("lib/utils");
 
 module.exports = {
-    start: co(function*(args) {
+    start: utils.co(function*(args) {
         yield api.connect(args);
         console.log(yield api.auth.session());
         yield ui.start();

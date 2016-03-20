@@ -2,24 +2,16 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const Bluebird = require("bluebird");
-const co = Bluebird.coroutine;
-
+const utils = require("lib/utils");
 const status = require("lib/status");
 
-module.exports = function() {
+module.exports = utils.wrapComponent(function*(params) {
     this.response = ko.observable(false);
 
-
     // TODO: temp
-    let init = co(function*() {
-        let result = yield api.vfs.list("/");
-        console.log("result", result);
-        this.response(JSON.stringify(result, null, 2));
-    }.bind(this));
-
-    init();
-
+    let result = yield api.vfs.list("/");
+    console.log("result", result);
+    this.response(JSON.stringify(result, null, 2));
 
     api.message.on("new", function*(message) {
         this.response(JSON.stringify(message, null, 2));
@@ -29,4 +21,4 @@ module.exports = function() {
 
         status.printSuccess("Got message from " + name);
     }.bind(this));
-};
+});
