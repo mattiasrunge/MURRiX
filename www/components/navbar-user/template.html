@@ -1,0 +1,11 @@
+<li class="dropdown" data-bind="visible: user">
+    <a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+        <li><a href="#">Profile</a></li>
+        <li><a href="#">Me</a></li>
+        <li><a href="#">Messages</a></li>
+        <li class="divider"></li>
+        <li><a href="#">Logout</a></li>
+    </ul>
+</li>
+<li data-bind="visible: !user()"><a href="#" data-bind="location: { page: 'login' }">Login</a></li>

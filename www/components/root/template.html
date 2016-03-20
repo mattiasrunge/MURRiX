@@ -1,76 +1,45 @@
 <div>
     <div class="navbar navbar-inverse">
-        <div class="container">
-            <div class="row">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="javascript:void(0)" style="font-weight: bold; font-size: 50px;">
-                        Titel
-                    </a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <form class="navbar-form navbar-right">
-                        <input type="text" class="form-control input-lg" placeholder="Search">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="navbar navbar-inverse">
-            <div class="container-fluid">
-              <div class="navbar-header">
+        <div class="container-fluid">
+            <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="javascript:void(0)">Brand</a>
-              </div>
-              <div class="navbar-collapse collapse navbar-inverse-collapse">
+            </div>
+            <div class="navbar-collapse collapse navbar-inverse-collapse">
                 <ul class="nav navbar-nav">
-                  <li class="active"><a href="javascript:void(0)">Active</a></li>
-                  <li><a href="javascript:void(0)">Link</a></li>
-                  <li class="dropdown">
-                    <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown
-                      <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="javascript:void(0)">Action</a></li>
-                      <li><a href="javascript:void(0)">Another action</a></li>
-                      <li><a href="javascript:void(0)">Something else here</a></li>
-                      <li class="divider"></li>
-                      <li class="dropdown-header">Dropdown header</li>
-                      <li><a href="javascript:void(0)">Separated link</a></li>
-                      <li><a href="javascript:void(0)">One more separated link</a></li>
-                    </ul>
-                  </li>
+                    <li class="active"><a href="javascript:void(0)">Active</a></li>
+                    <li><a href="javascript:void(0)">Link</a></li>
+                    <li class="dropdown">
+                        <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="javascript:void(0)">Action</a></li>
+                            <li><a href="javascript:void(0)">Another action</a></li>
+                            <li><a href="javascript:void(0)">Something else here</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Dropdown header</li>
+                            <li><a href="javascript:void(0)">Separated link</a></li>
+                            <li><a href="javascript:void(0)">One more separated link</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <form class="navbar-form navbar-left">
-                  <div class="form-group is-empty">
-                    <input type="text" class="form-control col-md-8" placeholder="Search">
-                  <span class="material-input"></span></div>
+                    <div class="form-group is-empty">
+                        <input type="text" class="form-control col-md-8" placeholder="Search">
+                        <span class="material-input"></span>
+                    </div>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
-                  <li><a href="javascript:void(0)">Link</a></li>
-                  <li class="dropdown">
-                    <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown
-                      <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="javascript:void(0)">Action</a></li>
-                      <li><a href="javascript:void(0)">Another action</a></li>
-                      <li><a href="javascript:void(0)">Something else here</a></li>
-                      <li class="divider"></li>
-                      <li><a href="javascript:void(0)">Separated link</a></li>
-                    </ul>
-                  </li>
+                    <li><a href="javascript:void(0)">Link</a></li>
+                    <!-- ko component: "navbar-user" -->
+                    <!-- /ko -->
                 </ul>
-              </div>
             </div>
-          </div>
-
-    <div class="container">
-        <div class="row">
-            Put some content here!<br>
-            Server said: <pre data-bind="text: response() ? response : 'Nothing'"></pre>
         </div>
     </div>
+
+    <page-login data-bind="visible: page() === 'login'"></page-login>
 </div>

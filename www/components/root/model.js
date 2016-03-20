@@ -4,8 +4,13 @@ const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const status = require("lib/status");
+const loc = require("lib/location");
 
 module.exports = utils.wrapComponent(function*(params) {
+    this.page = ko.pureComputed(() => {
+        return ko.unwrap(loc.current().page);
+    });
+
     this.response = ko.observable(false);
 
     // TODO: temp
