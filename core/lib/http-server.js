@@ -19,7 +19,7 @@ let server;
 let params = {};
 
 module.exports = {
-    init: co(function*(config) {
+    init: co(function*(config, version) {
         let app = koa();
 
         params = config;
@@ -27,7 +27,7 @@ module.exports = {
         store.create("uploadIds");
 
         // Setup application
-        app.name = "murrix";
+        app.name = "murrix-v" + version;
         app.use(bodyParser());
 
         // Configure error handling
@@ -79,8 +79,6 @@ module.exports = {
                 client.session.uploads[id] = path.join(params.uploadDirectory, id);
                 return id;
             };
-
-
         });
 
         server.listen(configuration.port);

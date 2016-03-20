@@ -12,7 +12,7 @@ const auth = require("./apis/auth");
 const message = require("./apis/message");
 
 module.exports = {
-    start: co(function*(args) {
+    start: co(function*(args, version) {
         yield logger.init(args.level);
         yield configuration.init(args);
 
@@ -26,7 +26,7 @@ module.exports = {
         yield auth.init(configuration);
         yield message.init(configuration);
 
-        yield server.init(configuration);
+        yield server.init(configuration, version);
     }),
     stop: co(function*() {
         log.info("Received shutdown signal, stoppping...");

@@ -11,7 +11,6 @@ const sha1 = require("sha1");
 const fs = require("fs-extra-promise");
 const mime = require("mime");
 const checksum = promisifyAll(require("checksum"));
-const moment = require("moment");
 const api = require("api.io");
 const db = require("../db");
 

@@ -1,5 +1,5 @@
 SRC = $(shell git ls-files \*.js)
-DEFAULT_FLAGS := --reporter spec --ui tdd --recursive test --harmony
+DEFAULT_FLAGS := --reporter spec --ui tdd --recursive test
 DEPS := deps
 
 all: test lint coverage

@@ -19,21 +19,21 @@ require.config({
     },
     shim: {
         bootstrap: {
-            deps: ["jquery"]
+            deps: [ "jquery" ]
         },
         ripples: {
-            deps: ["jquery"]
+            deps: [ "jquery" ]
         },
         material: {
-            deps: ["jquery"]
+            deps: [ "jquery" ]
         },
         snackbar: {
-            deps: ["jquery"]
+            deps: [ "jquery" ]
         }
     }
 });
 
-define(["lib/main"], (main) => {
+define([ "lib/main" ], (main) => {
     let args = {
         hostname: location.hostname,
         port: location.port

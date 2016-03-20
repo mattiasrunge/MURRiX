@@ -1,37 +1,25 @@
 "use strict";
 
 const ko = require("knockout");
-// const socket = require("mfw/socket");
-// const co = require("co");
-
-require("lib/bindings");
+const api = require("api.io-client");
+const Bluebird = require("bluebird");
+const co = Bluebird.coroutine;
 
 module.exports = function() {
     this.response = ko.observable(false);
 
-//     let test = co(function*() {
-//         return yield new Promise((resolve, reject) => {
-//             setTimeout(() => { resolve("after"); }, 1000);
-//         });
-//     });
-//
-//
-//     console.log("Sending Ping");
-//     socket.emit("session", { }, (error, data) =>{
-//         if (error) {
-//             console.error(error);
-//             this.response(error);
-//             return;
-//         }
-//
-//         console.log("before");
-//         test().then((value) => { console.log(value); });
-//
-//         console.log("Received " + data);
-//         this.response(data);
-//
-//         socket.emit("list", { abspath: "/" }, (error, data) => {
-//             console.log(data);
-//         });
-//     });
+
+    // TODO: temp
+    let init = co(function*() {
+        let result = yield api.vfs.list("/");
+        console.log("result", result);
+        this.response(JSON.stringify(result, null, 2));
+    }.bind(this));
+
+    init();
+
+
+    api.message.on("new", function*(message) {
+        this.response(JSON.stringify(message, null, 2));
+    }.bind(this));
 };

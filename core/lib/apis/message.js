@@ -1,7 +1,6 @@
 "use strict";
 
 const co = require("bluebird").coroutine;
-const promisifyAll = require("bluebird").promisifyAll;
 const moment = require("moment");
 const api = require("api.io");
 const vfs = require("./vfs");
@@ -21,16 +20,18 @@ let message = api.register("message", {
         }
 
         let name = moment().format();
-        let allMessages = yield vfs.ensure(auth.getAdminSession(), "/users/" + username + "/all_messages", "d");
-        let newMessages = yield vfs.ensure(auth.getAdminSession(), "/users/" + username + "/new_messages", "d");
+        yield vfs.ensure(auth.getAdminSession(), "/users/" + username + "/all_messages", "d");
+        yield vfs.ensure(auth.getAdminSession(), "/users/" + username + "/new_messages", "d");
 
-        yield vfs.create(auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "m", {
-            from: yield vfs.uid(session, session.username),
+        let item = yield vfs.create(auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "m", {
+            from: yield auth.uid(session, session.username),
             text: text,
             metadata: metadata || {}
         });
 
         yield vfs.link(auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "/users/" + username + "/new_messages");
+
+        message.emit("new", item, { username: username });
     },
     count: function*(session) {
         let allMessages = [];

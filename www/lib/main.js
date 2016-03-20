@@ -9,11 +9,7 @@ const ui = require("./ui");
 module.exports = {
     start: co(function*(args) {
         yield api.connect(args);
-        yield ui.start();
-
-        // TODO: temp
         yield api.auth.session();
-        let result = yield api.vfs.list("/");
-        console.log("result", result);
+        yield ui.start();
     })
 };
