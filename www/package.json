@@ -6,18 +6,18 @@
   "author": "Mattias Runge <mattias@runge.se>",
   "license": "GPL-2.0",
   "dependencies": {
-    "animate.css": "^3.4.0",
-    "api.io": "0.0.11",
-    "bluebird": "^3.3.4",
-    "bootstrap": "^3.3.5",
-    "bootstrap-material-design": "^0.3.0",
-    "jquery": "^2.1.4",
-    "knockout": "^3.4.0",
-    "moment": "^2.10.6",
-    "mprogress": "^0.1.1",
-    "requirejs": "^2.1.20",
+    "animate.css": "3.5.1",
+    "api.io": "0.0.13",
+    "bluebird": "3.3.4",
+    "bootstrap": "3.3.6",
+    "bootstrap-material-design": "0.5.9",
+    "jquery": "2.2.2",
+    "knockout": "3.4.0",
+    "moment": "2.12.0",
+    "mprogress": "0.1.1",
+    "requirejs": "2.2.0",
     "requirejs-json": "0.0.3",
-    "requirejs-text": "^2.0.12",
-    "snackbarjs": "https://github.com/FezVrasta/snackbarjs"
+    "requirejs-text": "2.0.12",
+    "snackbarjs": "1.1.0"
   }
 }

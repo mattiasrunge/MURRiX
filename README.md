@@ -39,7 +39,7 @@ Now you can start your brower and access MURRiX at port 8080 if the configuratio
 * [Node.js](http://nodejs.org/)
 * [MongoDB](http://www.mongodb.org/)
 * [Socket.IO](http://socket.io/)
-* [node-static](https://github.com/cloudhead/node-static)
+* [Koa](http://koajs.com/)
 * [sha1](https://github.com/pvorb/node-sha1)
 * [JSHint](http://www.jshint.com/)
 * [Exiftool](http://owl.phy.queensu.ca/~phil/exiftool/)

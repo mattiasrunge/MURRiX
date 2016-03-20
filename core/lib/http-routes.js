@@ -24,7 +24,13 @@ module.exports = {
             cssTime = stat.mtime.toString();
 
             let source = yield fs.readFileAsync(filename);
-            css = new CleanCSS({ root: wwwPath }).minify(source).styles;
+            let compiled = new CleanCSS({ root: wwwPath }).minify(source);
+
+            if (compiled.errors.length > 0) {
+                throw new Error(compiled.errors);
+            }
+
+            css = compiled.styles;
         }
 
         this.type = "text/css";

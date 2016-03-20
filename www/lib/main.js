@@ -9,7 +9,7 @@ const ui = require("./ui");
 module.exports = {
     start: co(function*(args) {
         yield api.connect(args);
-        yield api.auth.session();
+        console.log(yield api.auth.session());
         yield ui.start();
     })
 };

@@ -5,6 +5,8 @@ const api = require("api.io-client");
 const Bluebird = require("bluebird");
 const co = Bluebird.coroutine;
 
+const status = require("lib/status");
+
 module.exports = function() {
     this.response = ko.observable(false);
 
@@ -21,5 +23,10 @@ module.exports = function() {
 
     api.message.on("new", function*(message) {
         this.response(JSON.stringify(message, null, 2));
+
+        let name = yield api.auth.uname(message.attributes.from);
+        console.log(message.attributes.from, name);
+
+        status.printSuccess("Got message from " + name);
     }.bind(this));
 };
