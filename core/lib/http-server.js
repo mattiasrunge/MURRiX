@@ -7,6 +7,9 @@ const promisify = require("bluebird").promisify;
 const koa = require("koa.io");
 const bodyParser = require("koa-bodyparser");
 const route = require("koa-route");
+const compress = require("koa-compress");
+const conditional = require("koa-conditional-get");
+const etag = require("koa-etag");
 const enableDestroy = require("server-destroy");
 const uuid = require("node-uuid");
 const moment = require("moment");
@@ -28,7 +31,10 @@ module.exports = {
 
         // Setup application
         app.name = "murrix-v" + version;
+        app.use(compress());
         app.use(bodyParser());
+        app.use(conditional());
+        app.use(etag());
 
         // Configure error handling
         app.use(function*(next) {
