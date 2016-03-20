@@ -22,5 +22,4 @@ reg: test lint style
 configure: $(DEPS)
 
 
-
 .PHONY: all deps test lint style reg

@@ -1,8 +1,14 @@
 {
   "name": "murrix",
   "version": "0.0.0",
-  "description": "",
+  "description": "MURRiX is a specialized Content Management System",
   "main": "index.js",
+  "author": "Mattias Runge <mattias@runge.se>",
+  "license": "GPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mattiasrunge/MURRiX.git"
+  },
   "scripts": {
     "install": "cd www && npm install"
   },
@@ -59,7 +65,5 @@
   },
   "engines": {
     "node": ">= 5.7.0"
-  },
-  "author": "Mattias Runge <mattias@runge.se>",
-  "license": "GPL-2.0"
+  }
 }
