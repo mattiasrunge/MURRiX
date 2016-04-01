@@ -13,9 +13,9 @@ require.config({
         mprogress: "node_modules/mprogress/build/js/mprogress.min",
         moment: "node_modules/moment/min/moment.min",
         snackbar: "node_modules/snackbarjs/dist/snackbar.min",
-        bluebird: "node_modules/bluebird/js/browser/bluebird.min",
         "socket.io-client": "/socket.io/socket.io",
-        "api.io-client": "node_modules/api.io/browser/api.io-client"
+        "api.io-client": "/api.io/api.io-client",
+        "co": "/api.io/co"
     },
     shim: {
         bootstrap: {

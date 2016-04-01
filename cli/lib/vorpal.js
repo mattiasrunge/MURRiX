@@ -16,7 +16,7 @@ module.exports.wrap = function(fn) {
                 });
             };
 
-            yield co(fn.bind(this))(args);
+            yield co(fn.bind(this))(module.exports.cliSession, args);
         } catch (e) {
             if (typeof e === "string") {
                 this.log(e.split("\n")[0].replace(/^Error: /, "").red);

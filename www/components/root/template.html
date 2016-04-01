@@ -34,12 +34,11 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="javascript:void(0)">Link</a></li>
-                    <!-- ko component: "navbar-user" -->
-                    <!-- /ko -->
+                    <!-- ko component: "auth-navbar-user" --><!-- /ko -->
                 </ul>
             </div>
         </div>
     </div>
 
-    <page-login data-bind="visible: page() === 'login'"></page-login>
+    <auth-page-login data-bind="visible: page() === 'login'"></auth-page-login>
 </div>

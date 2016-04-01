@@ -1,8 +1,8 @@
 "use strict";
 
 const co = require("bluebird").coroutine;
-const expandvar = require("expand-var");
 const api = require("api.io").client;
+const expandvar = require("expand-var");
 const vorpal = require("./vorpal");
 
 module.exports = {
@@ -45,3 +45,6 @@ module.exports = {
         vorpal.delimiter(module.exports.expand(module.exports.environment.ps1));
     }
 };
+
+// TODO: This is somewhat of a hack, figure out something better
+vorpal.cliSession = module.exports;

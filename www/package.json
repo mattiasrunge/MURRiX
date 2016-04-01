@@ -7,8 +7,6 @@
   "license": "GPL-2.0",
   "dependencies": {
     "animate.css": "3.5.1",
-    "api.io": "0.0.13",
-    "bluebird": "3.3.4",
     "bootstrap": "3.3.6",
     "bootstrap-material-design": "0.5.9",
     "jquery": "2.2.2",

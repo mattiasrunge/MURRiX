@@ -1,8 +1,7 @@
 "use strict";
 
 const ko = require("knockout");
-const Bluebird = require("bluebird");
-const co = Bluebird.coroutine;
+const co = require("co");
 
 let clipBoardContent = false;
 
@@ -22,7 +21,7 @@ module.exports = {
     wrapComponent: (fn) => {
         if (fn.constructor.name === "GeneratorFunction") {
             return function(params) {
-                co(fn.bind(this))(params)
+                co.wrap(fn.bind(this))(params)
                 .catch((error) => {
                     console.error(error.stack);
                 });
@@ -31,7 +30,7 @@ module.exports = {
 
         return fn;
     },
-    co: co
+    co: co.wrap
 };
 
 document.addEventListener("copy", (e) => {

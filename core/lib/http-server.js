@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require("fs-extra-promise");
 const path = require("path");
 const http = require("http");
 const co = require("bluebird").coroutine;
@@ -23,9 +24,13 @@ let params = {};
 
 module.exports = {
     init: co(function*(config, version) {
+        params = config;
+
         let app = koa();
 
-        params = config;
+        if (params.bableCompileDirectory) {
+            yield fs.removeAsync(params.bableCompileDirectory);
+        }
 
         store.create("uploadIds");
 

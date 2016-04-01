@@ -1,10 +1,9 @@
 "use strict";
 
 const vorpal = require("../vorpal");
-const session = require("../session");
 
 vorpal
 .command("echo <text>", "Echo text")
-.action(vorpal.wrap(function*(args) {
+.action(vorpal.wrap(function*(session, args) {
     this.log(session.expand(args.text));
 }));
