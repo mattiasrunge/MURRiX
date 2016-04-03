@@ -13,7 +13,7 @@ module.exports = {
         console.error(text);
 
         let options = {
-            content: "<strong>Error:</strong> " + text,
+            content: text,
             style: "alert-danger",
             timeout: 10000,
             htmlAllowed: true
@@ -25,7 +25,7 @@ module.exports = {
         console.log(text);
 
         let options = {
-            content: "<strong>Success:<//strong> " + text,
+            content: text,
             style: "alert-success",
             timeout: 5000,
             htmlAllowed: true
@@ -37,7 +37,7 @@ module.exports = {
         console.log(text);
 
         let options = {
-            content: "<strong>Warning:<//strong> " + text,
+            content: text,
             style: "alert-warning",
             timeout: 5000,
             htmlAllowed: true
@@ -49,7 +49,7 @@ module.exports = {
         console.log(text);
 
         let options = {
-            content: "<strong>Information:<//strong> " + text,
+            content: text,
             style: "alert-info",
             timeout: 5000,
             htmlAllowed: true
@@ -64,15 +64,16 @@ module.exports = {
     },
     destroy: (status) => {
         list.remove(status);
-    }
+    },
+    loading: ko.computed(() => {
+        let loading = list().filter((status) => status()).length > 0;
+
+        if (loading) {
+            mprogress.start();
+        } else {
+            mprogress.end();
+        }
+
+        return loading;
+    })
 };
-
-ko.computed(() => {
-    let loading = list().filter((status) => status()).length > 0;
-
-    if (loading) {
-        mprogress.start();
-    } else {
-        mprogress.end();
-    }
-});

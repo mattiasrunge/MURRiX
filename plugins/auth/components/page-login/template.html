@@ -1,27 +1,21 @@
-<div class="container">
-    <div class="row">
-        <form class="form-horizontal well">
-            <h1>Login</h1>
-            <div class="form-group">
-                <label for="inputUsername" class="col-md-2 control-label">Username</label>
-
-                <div class="col-md-10">
-                    <input type="text" class="form-control" id="inputUsername" placeholder="Username">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="inputPassword" class="col-md-2 control-label">Password</label>
-
-                <div class="col-md-10">
-                    <input type="password" class="form-control" id="inputPassword" placeholder="Password">
-
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-10 col-md-offset-2">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </div>
-            </div>
-        </form>
+<div>
+    <div class="page-header">
+        <h1>Login</h1>
+    </div>
+    <form class="form clearfix" data-bind="submit: login, visible: !user()">
+        <div class="form-group label-floating">
+            <label for="username" class="control-label">Username</label>
+            <input type="text" class="form-control" id="username" data-bind="textInput: username, disable: loading">
+        </div>
+        <div class="form-group label-floating">
+            <label for="password" class="control-label">Password</label>
+            <input type="password" class="form-control" id="password" data-bind="textInput: password, disable: loading">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-raised btn-info pull-right" data-bind="disable: loading"><i class="fa fa-sign-in fa-fw"></i> Login</button>
+        </div>
+    </form>
+    <div class="" data-bind="visible: user">
+        <button class="btn btn-raised btn-info" data-bind="disable: loading, click: loginDisallowed"><i class="fa fa-sign-out fa-fw"></i> Logout</button>
     </div>
 </div>

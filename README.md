@@ -33,15 +33,3 @@ In general no configuration options are needed but if something needs to be chan
     $ ./bin/cli
 
 Now you can start your brower and access MURRiX at port 8080 if the configuration was not changed. The default admin username and password are: admin/admin
-
-## Credits
-
-* [Node.js](http://nodejs.org/)
-* [MongoDB](http://www.mongodb.org/)
-* [Socket.IO](http://socket.io/)
-* [Koa](http://koajs.com/)
-* [sha1](https://github.com/pvorb/node-sha1)
-* [JSHint](http://www.jshint.com/)
-* [Exiftool](http://owl.phy.queensu.ca/~phil/exiftool/)
-* [FFmpeg](http://ffmpeg.org/)
-* [Google Maps](https://maps.google.se/)

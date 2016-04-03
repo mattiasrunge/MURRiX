@@ -1,10 +1,148 @@
 
 @import: "node_modules/bootstrap/dist/css/bootstrap.css";
-@import: "node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.css";
-@import: "node_modules/bootstrap-material-design/dist/css/ripples.css";
+@import: "node_modules/font-awesome/css/font-awesome.css";
 @import: "node_modules/mprogress/build/css/mprogress.css";
 @import: "node_modules/animate.css/animate.css";
 @import: "node_modules/snackbarjs/dist/snackbar.css";
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', Georgia, Times, serif;
+}
+p {
+  font-family: 'Raleway', Helvetica, Arial, sans-serif;
+}
+
+body {
+  overflow-y: scroll;
+  font-family: 'Raleway', Helvetica, Arial, sans-serif;
+}
+
+.page-container {
+  position: relative;
+  top: 51px;
+}
+
+
+.right-border {
+  border-right: 1px solid #eee;
+}
+
+.top-border {
+  border-top: 1px solid #eee;
+}
+
+.bottom-border {
+  border-bottom: 1px solid #eee;
+}
+
+.media>.pull-left {
+  margin-right: 15px;
+}
+
+.main {
+  margin-left: 200px;
+}
+
+.navbar .profile .picture img {
+  border-radius: 2px;
+}
+
+.navbar .profile .picture {
+  border-radius: 1px;
+  margin-right: 5px;
+  vertical-align: top;
+  background-color: #ccc;
+  display: inline-block;
+}
+
+.sidebar {
+  font-family: 'Raleway', Helvetica, Arial, sans-serif;
+  position: fixed;
+  top: 50px;
+  width: 200px;
+  bottom: 0;
+  overflow: auto;
+}
+
+.sidebar .profile {
+  margin-top: 30px;
+  font-size: 12px;
+}
+
+.sidebar .profile .picture img {
+  border-radius: 2px;
+}
+
+.sidebar .profile .picture {
+  border-radius: 1px;
+  margin-right: 10px;
+  vertical-align: top;
+  background-color: #ccc;
+}
+
+.sidebar ul.nav {
+  margin-top: 30px;
+}
+
+.sidebar li.header {
+  font-family: 'Montserrat', Georgia, Times, serif;
+  font-weight: bold;
+  color: #aaa;
+  font-size: 20px;
+  padding-bottom: 5px;
+}
+
+.sidebar ul.nav>li>a {
+  width: 169px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 2px;
+  font-size: 13px;
+  color: #444;
+}
+
+.sidebar ul.nav>li.active>a {
+  color: white;
+  padding-left: 6px;
+}
+
+.main {
+  margin-left: 200px;
+}
+
+.snackbar {
+  background-color: #323232;
+  color: rgba(255,255,255, 0.84);
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+          box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+  height: 0;
+  -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
+       -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
+          transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
+  -webkit-transform: translateY(200%);
+      -ms-transform: translateY(200%);
+       -o-transform: translateY(200%);
+          transform: translateY(200%);
+}
+.snackbar.snackbar-opened {
+  padding: 14px 15px;
+  margin-bottom: 20px;
+  height: auto;
+  -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
+       -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
+          transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
+  -webkit-transform: none;
+      -ms-transform: none;
+       -o-transform: none;
+          transform: none;
+}
+.snackbar.toast {
+  border-radius: 200px;
+}l
 
 .snackbar.alert {
     color: rgba(255,255,255,.84);

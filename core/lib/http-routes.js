@@ -91,7 +91,7 @@ module.exports = {
                 let filestat = yield fs.statAsync(filename);
                 let compiledFilestat = yield fs.statAsync(compiledFilename);
 
-                if (moment(filestat).isBefore(moment(compiledFilestat))) {
+                if (moment(filestat.mtime).isBefore(moment(compiledFilestat.mtime))) {
                     return yield next;
                 }
             }

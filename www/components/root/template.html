@@ -1,44 +1,50 @@
 <div>
-    <div class="navbar navbar-inverse">
-        <div class="container-fluid">
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="javascript:void(0)">Brand</a>
+                <a class="navbar-brand" href="#">
+                    <i class="fa fa-home fa-large" data-bind="visible: !loading()"></i>
+                    <i class="fa fa-spinner fa-large fa-spin" data-bind="visible: loading"></i>
+                </a>
+                <div class="navbar-form navbar-left">
+                    <div class="form-group header-search" data-bind=""></div>
+                </div>
             </div>
-            <div class="navbar-collapse collapse navbar-inverse-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="javascript:void(0)">Active</a></li>
-                    <li><a href="javascript:void(0)">Link</a></li>
-                    <li class="dropdown">
-                        <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="javascript:void(0)">Action</a></li>
-                            <li><a href="javascript:void(0)">Another action</a></li>
-                            <li><a href="javascript:void(0)">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li class="dropdown-header">Dropdown header</li>
-                            <li><a href="javascript:void(0)">Separated link</a></li>
-                            <li><a href="javascript:void(0)">One more separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="navbar-form navbar-left">
-                    <div class="form-group is-empty">
-                        <input type="text" class="form-control col-md-8" placeholder="Search">
-                        <span class="material-input"></span>
-                    </div>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="javascript:void(0)">Link</a></li>
-                    <!-- ko component: "auth-navbar-user" --><!-- /ko -->
-                </ul>
-            </div>
+
+
+            <ul class="nav navbar-nav navbar-right" data-bind="component: 'auth-navbar-user'"></ul>
+
+            <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
+                <li>
+                    <a href="#" data-bind="click: random">
+                        <i class="fa fa-random fa-large"></i>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-plus fa-large"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><i class="fa fa-book fa-fw"></i> Album</a></li>
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> Person</a></li>
+                        <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> Location</a></li>
+                        <li><a href="#"><i class="fa fa-camera-retro fa-fw"></i> Camera</a></li>
+                        <li><a href="#"><i class="fa fa-truck fa-fw"></i> Vehicle</a></li>
+                        <li><a href="#"><i class="fa fa-cloud fa-fw"></i> Tag Collection</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 
-    <auth-page-login data-bind="visible: page() === 'login'"></auth-page-login>
+    <div class="container page-container">
+        <div class="row">
+            <div class="col-md-2 sidebar right-border">
+                <sidebar></sidebar>
+            </div>
+            <div class="col-md-10 main">
+                <auth-page-login data-bind="visible: page() === 'login'"></auth-page-login>
+            </div>
+        </div>
+    </div>
 </div>

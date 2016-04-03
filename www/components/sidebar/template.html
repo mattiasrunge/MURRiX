@@ -1,0 +1,59 @@
+<div>
+    <auth-sidebar-user></auth-sidebar-user>
+
+    <ul class="nav nav-pills nav-stacked">
+        <li class="header">Search</li>
+        <li data-bind="css: { active: page() === 'recent' }">
+            <a data-bind="location: { page: 'recent' }">
+                <i data-bind="attr: { class: 'fa fa-fw fa-newspaper-o' }"></i>
+                Recent
+            </a>
+        </li>
+        <li data-bind="css: { active: page() === 'search' }">
+            <a data-bind="location: { page: 'search' }">
+                <i data-bind="attr: { class: 'fa fa-fw fa-search' }"></i>
+                Search by name
+            </a>
+        </li>
+        <li data-bind="css: { active: page() === 'year' }">
+            <a data-bind="location: { page: 'year' }">
+                <i data-bind="attr: { class: 'fa fa-fw fa-clock-o' }"></i>
+                Search by year
+            </a>
+        </li>
+        <li data-bind="css: { active: page() === 'label' }">
+            <a data-bind="location: { page: 'label' }">
+                <i data-bind="attr: { class: 'fa fa-fw fa-hashtag' }"></i>
+                Search by labels
+            </a>
+        </li>
+    </ul>
+
+    <ul class="nav" data-bind="visible: visited().length > 0">
+        <li class="header">Last visited</li>
+        <!-- ko foreach: visited -->
+            <li>
+                <a href="#" data-bind="attr: { href: '#/node/' + $data._id }, tooltip: { title: $data.name }">
+                    <i data-bind="visible: $data.type === 'album'" class="fa fa-book fa-fw"></i>
+                    <i data-bind="visible: $data.type === 'person'" class="fa fa-user fa-fw"></i>
+                    <i data-bind="visible: $data.type === 'location'" class="fa fa-map-marker fa-fw"></i>
+                    <i data-bind="visible: $data.type === 'camera'" class="fa fa-camera-retro fa-fw"></i>
+                    <i data-bind="visible: $data.type === 'vehicle'" class="fa fa-truck fa-fw"></i>
+                    <span data-bind="text: $data.name"></span>
+                </a>
+            </li>
+        <!--/ko-->
+    </ul>
+
+    <ul class="nav nav-pills nav-stacked" data-bind="visible: user() !== false && user().admin === true">
+        <li class="header">Administration</li>
+        <!-- ko foreach: adminLinks -->
+            <li data-bind="css: { active: $data.active }">
+            <a data-bind="attr: { href: $data.path }">
+                <!--<i data-bind="attr: { class: 'fa fa-fw ' + $data.icon() }"></i>-->
+                <span data-bind="text: $data.title"></span>
+            </a>
+            </li>
+        <!--/ko-->
+    </ul>
+</div>
