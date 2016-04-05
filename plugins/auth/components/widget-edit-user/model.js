@@ -17,6 +17,11 @@ module.exports = utils.wrapComponent(function*(params) {
     this.email = ko.observable("");
     this.password1 = ko.observable("");
     this.password2 = ko.observable("");
+    this.person = ko.observable(false);
+
+    ko.computed(() => {
+        console.log("person", ko.unwrap(this.person));
+    });
 
     let subscription = params.user.subscribe(() => this.reset());
 

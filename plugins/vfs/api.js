@@ -68,6 +68,18 @@ let vfs = api.register("vfs", {
 
         return (node.properties.mode & mode) > 0;
     },
+    query: function*(session, query, options) {
+        let nodes = yield db.find("nodes", query, options);
+        let results = [];
+
+        for (let node of nodes) {
+            if (yield vfs.access(session, node, "r")) {
+                results.push(node);
+            }
+        }
+
+        return results;
+    },
     resolve: function*(session, abspath, noerror) {
         let pathParts = abspath.replace(/\/$/g, "").split("/");
         let root = yield db.findOne("nodes", { "properties.type": "r" });

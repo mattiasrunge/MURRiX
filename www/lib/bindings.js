@@ -2,9 +2,13 @@
 
 const $ = require("jquery");
 const ko = require("knockout");
+const co = require("co");
 const moment = require("moment");
+const api = require("api.io-client");
 const utils = require("lib/utils");
+const status = require("lib/status");
 const loc = require("lib/location");
+const typeahead = require("typeahead");
 
 ko.bindingHandlers.copyToClipboard = {
     init: (element, valueAccessor) => {
@@ -105,5 +109,79 @@ ko.bindingHandlers.htmlSize = {
         } while (fileSizeInBytes > 1024);
 
         $(element).html(fileSizeInBytes.toFixed(1) + byteUnits[i]);
+    }
+};
+
+ko.bindingHandlers.typeahead = {
+    init: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+        let loading = status.create();
+
+        let lookup = co.wrap(function*(querystr) {
+            return yield api.vfs.query({
+                "properties.type": "p",
+                "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
+            }, {
+                limit: 10
+            });
+        });
+
+        $element.typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            display: (selection) => selection.attributes.name,
+            source: (querystr, dummy, resolve) => {
+                lookup(querystr)
+                .then(resolve)
+                .catch((error) => {
+                    status.printError(error);
+                    resolve([]);
+                });
+            },
+            limit: 10
+        });
+
+        $element.on("typeahead:active", () => { $element.removeClass("typeahead-valid"); });
+        $element.on("typeahead:idle", () => {
+            if (valueAccessor()()) {
+                $element.addClass("typeahead-valid");
+            }
+        });
+        $element.on("typeahead:change", () => {
+            lookup($element.typeahead("val"))
+            .then((list) => {
+                if (list.length === 1) {
+                    valueAccessor()(list[0]);
+                    $element.addClass("typeahead-valid");
+                } else {
+                    valueAccessor()(false);
+                }
+            })
+            .catch((error) => {
+                status.printError(error);
+                valueAccessor()(false);
+            });
+        });
+
+        $element.on("typeahead:asyncrequest", () => loading(true));
+        $element.on("typeahead:asynccancel", () => loading(false));
+        $element.on("typeahead:asyncreceive", () => loading(false));
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            $element.typeahead("destroy");
+            status.destroy(loading);
+        });
+    },
+    update: (element, valueAccessor) => {
+        let node = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        if (node) {
+            $element.typeahead("val", node.attributes.name);
+            $element.addClass("typeahead-valid");
+        }
     }
 };

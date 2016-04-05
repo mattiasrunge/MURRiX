@@ -8,7 +8,7 @@ require.config({
         jquery: "node_modules/jquery/dist/jquery.min",
         knockout: "node_modules/knockout/build/output/knockout-latest",
         bootstrap: "node_modules/bootstrap/dist/js/bootstrap.min",
-        typeahead: "node_modules/typeahead.js/dist/typeahead.jquery.min",
+        typeahead: "node_modules/corejs-typeahead/dist/typeahead.jquery",
         mprogress: "node_modules/mprogress/build/js/mprogress.min",
         moment: "node_modules/moment/min/moment.min",
         snackbar: "node_modules/snackbarjs/dist/snackbar.min",

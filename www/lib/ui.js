@@ -6,7 +6,6 @@ const ko = require("knockout");
 const utils = require("lib/utils");
 const bindings = require("lib/bindings");
 const bootstrap = require("bootstrap");
-const typeahead = require("typeahead");
 
 module.exports = {
     start: utils.co(function*() {

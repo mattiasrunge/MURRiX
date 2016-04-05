@@ -17,7 +17,7 @@
     "requirejs-json": "0.0.3",
     "requirejs-text": "2.0.12",
     "snackbarjs": "1.1.0",
-    "typeahead.js": "^0.11.1",
+    "corejs-typeahead": "https://github.com/mattiasrunge/typeahead.js",
     "typeahead.js-bootstrap-css": "^1.2.1"
   }
 }

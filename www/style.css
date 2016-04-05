@@ -169,3 +169,8 @@ body {
 .snackbar.alert-warning {
     background-color: #ff5722;
 }
+
+.typeahead-valid {
+    font-weight: bold;
+    color: #2d6ca2;
+}

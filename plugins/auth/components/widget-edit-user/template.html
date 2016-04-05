@@ -15,7 +15,9 @@
             </div>
             <div class="form-group">
                 <label for="inputPerson" class="col-lg-3 control-label">Person</label>
-                <div class="col-lg-9" data-bind="nodeSelect: { id: personId, disable: loading, types: [ 'person' ], placeholder: 'Person' }"></div>
+                <div class="col-lg-9">
+                    <people-widget-select params="{ inputId: 'inputPerson', person: person }"></people-widget-select>
+                </div>
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-3 col-lg-9 clearfix">
