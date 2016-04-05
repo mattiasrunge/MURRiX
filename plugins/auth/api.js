@@ -91,12 +91,9 @@ let auth = api.register("auth", {
         }
 
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
+        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", true);
 
-        if (!user) {
-            return false;
-        }
-
-        return { username: session.username, user: user };
+        return { username: session.username, user: user, person: person };
     },
     groupList: function*(session, username) {
         if (username !== session.username && session.username !== "admin") {
@@ -172,7 +169,6 @@ let auth = api.register("auth", {
         });
     },
     passwordReset: function*(session, username, resetId, password) {
-        console.log(username, resetId, password);
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
 
         if (user.attributes.resetId !== resetId) {
@@ -184,12 +180,23 @@ let auth = api.register("auth", {
             password: sha1(password)
         });
     },
-    saveProfile: function*(session, username, attributes) {
+    saveProfile: function*(session, username, attributes, personId) {
         if (username !== session.username && session.username !== "admin") {
             throw new Error("Not allowed");
         }
 
-        return vfs.setattributes(auth.getAdminSession(), "/users/" + username, attributes);
+        yield vfs.setattributes(auth.getAdminSession(), "/users/" + username, attributes);
+
+        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + username + "/person", true);
+
+        if (person && person._id !== personId) {
+            yield vfs.unlink(auth.getAdminSession(), "/users/" + username + "/person");
+        }
+
+        if (personId && (!person || person._id !== personId)) {
+            person = yield vfs.queryOne(auth.getAdminSession(), { _id: personId });
+            yield vfs.link(auth.getAdminSession(), person, "/users/" + username + "/person");
+        }
     },
     changeUsername: function*(session, oldusername, newusername) {
         if (oldusername === "admin" || oldusername === "guest") {

@@ -10,17 +10,14 @@ const loc = require("lib/location");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
-
-//     this.personId = ko.observable(false);
     this.name = ko.observable("");
     this.username = ko.observable("");
     this.email = ko.observable("");
     this.password1 = ko.observable("");
     this.password2 = ko.observable("");
     this.person = ko.observable(false);
-
-    ko.computed(() => {
-        console.log("person", ko.unwrap(this.person));
+    this.personId = ko.pureComputed(() => {
+        return this.person() ? this.person()._id : false;
     });
 
     let subscription = params.user.subscribe(() => this.reset());
@@ -29,10 +26,10 @@ module.exports = utils.wrapComponent(function*(params) {
         this.password1("");
         this.password2("");
 
-//           this.personId(params.user()._person);
         this.name(params.user().attributes.name);
         this.username(params.username());
         this.email(params.user().attributes.email);
+        this.person(params.person());
     };
 
     this.save = co.wrap(function*() {
@@ -45,7 +42,7 @@ module.exports = utils.wrapComponent(function*(params) {
         try {
             yield api.auth.saveProfile(params.username(), {
                 name: this.name()
-            });
+            }, this.personId());
 
             if (params.username() !== this.username()) {
                 yield api.auth.changeUsername(params.username(), this.username());
@@ -53,6 +50,7 @@ module.exports = utils.wrapComponent(function*(params) {
                 if (params.username() === session.username()) {
                     session.user(yield api.auth.logout());
                     session.username("guest");
+                    session.person(this.person());
                     status.printInfo("After username change you must login again");
 
                     loc.goto({ page: "login" });

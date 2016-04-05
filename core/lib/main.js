@@ -3,7 +3,6 @@
 const path = require("path");
 const co = require("bluebird").coroutine;
 const glob = require("glob-promise");
-const api = require("api.io");
 const configuration = require("./configuration");
 const logger = require("./log");
 const log = logger(module);

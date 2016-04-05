@@ -26,8 +26,13 @@ module.exports = utils.wrapComponent(function*(params) {
         this.loading(true);
 
         try {
-            session.user(yield api.auth.login(this.username(), this.password()));
-            session.username(this.username());
+            yield api.auth.login(this.username(), this.password());
+
+            let userinfo = yield api.auth.whoami();
+            session.user(userinfo.user);
+            session.username(userinfo.username);
+            session.person(userinfo.person);
+
             status.printSuccess("Login successfull, welcome " + session.user().attributes.name + "!");
 
             this.username("");
@@ -48,6 +53,7 @@ module.exports = utils.wrapComponent(function*(params) {
         try {
             session.user(yield api.auth.logout());
             session.username("guest");
+            session.person(false);
             status.printSuccess("Logout successfull");
 
             loc.goto({ page: "login" });

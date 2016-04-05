@@ -1,6 +1,5 @@
 "use strict";
 
-const ko = require("knockout");
 const co = require("co");
 const api = require("api.io-client");
 const utils = require("lib/utils");
@@ -18,6 +17,7 @@ module.exports = utils.wrapComponent(function*(params) {
         try {
             session.user(yield api.auth.logout());
             session.username("guest");
+            session.person(false);
             status.printSuccess("Logout successfull");
         } catch (e) {
             console.error(e);

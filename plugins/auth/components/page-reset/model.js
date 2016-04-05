@@ -5,7 +5,6 @@ const co = require("co");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const status = require("lib/status");
-const session = require("lib/session");
 const loc = require("lib/location");
 
 module.exports = utils.wrapComponent(function*(params) {

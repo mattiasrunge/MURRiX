@@ -80,6 +80,15 @@ let vfs = api.register("vfs", {
 
         return results;
     },
+    queryOne: function*(session, query, options) {
+        let node = yield db.findOne("nodes", query, options);
+
+        if (node && !(yield vfs.access(session, node, "r"))) {
+            throw new Error("No Permission");
+        }
+
+        return node;
+    },
     resolve: function*(session, abspath, noerror) {
         let pathParts = abspath.replace(/\/$/g, "").split("/");
         let root = yield db.findOne("nodes", { "properties.type": "r" });
@@ -358,16 +367,20 @@ let vfs = api.register("vfs", {
 
         yield rremove(child.id);
     },
-    link: function*(session, srcpath, destpath) {
-        //console.log("linking", srcpath, destpath);
+    link: function*(session, srcpathOrNode, destpath) {
+        // console.log("linking", srcpathOrNode, destpath);
 
-        let srcnode = yield vfs.resolve(session, srcpath);
+        let srcnode = srcpathOrNode;
+
+        if (typeof srcnode === "string") {
+            srcnode = yield vfs.resolve(session, srcnode);
+        }
 
         if (!(yield vfs.access(session, srcnode, "r"))) {
             throw new Error("Permission denied");
         }
 
-        let name = path.basename(srcpath);
+        let name = "_unamed_";
 
         let destnode = yield vfs.resolve(session, destpath, true);
 
@@ -375,6 +388,10 @@ let vfs = api.register("vfs", {
             name = path.basename(destpath);
             destpath = path.dirname(destpath);
             destnode = yield vfs.resolve(session, destpath);
+        } else if (typeof srcpathOrNode !== "string") {
+            throw new Error("Source node supplied, destpath must have fully qualified name");
+        } else {
+            name = path.basename(srcpathOrNode);
         }
 
         if (!(yield vfs.access(session, destnode, "w"))) {

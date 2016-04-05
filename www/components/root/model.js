@@ -15,6 +15,5 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.random = () => {
-
     };
 });

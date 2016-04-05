@@ -101,7 +101,7 @@ ko.bindingHandlers.htmlSize = {
     update: function(element, valueAccessor) {
         let fileSizeInBytes = ko.unwrap(valueAccessor());
         let i = -1;
-        let byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+        let byteUnits = [ " kB", " MB", " GB", " TB", "PB", "EB", "ZB", "YB" ];
 
         do {
             fileSizeInBytes = fileSizeInBytes / 1024;
