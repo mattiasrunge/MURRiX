@@ -1,6 +1,7 @@
 
 @import: "node_modules/bootstrap/dist/css/bootstrap.css";
 @import: "node_modules/font-awesome/css/font-awesome.css";
+@import: "node_modules/typeahead.js-bootstrap-css/typeaheadjs.css";
 @import: "node_modules/mprogress/build/css/mprogress.css";
 @import: "node_modules/animate.css/animate.css";
 @import: "node_modules/snackbarjs/dist/snackbar.css";
@@ -14,7 +15,12 @@ p {
 
 body {
   overflow-y: scroll;
+  overflow-x: hidden;
   font-family: 'Raleway', Helvetica, Arial, sans-serif;
+}
+
+.fadeInRight {
+    animation-duration: 0.3s;
 }
 
 .page-container {

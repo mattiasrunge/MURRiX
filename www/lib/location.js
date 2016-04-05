@@ -66,6 +66,9 @@ module.exports = {
             module.exports.current(args);
             module.exports.lastString = argsString;
         }
+    },
+    reload: () => {
+        document.location.reload();
     }
 };
 

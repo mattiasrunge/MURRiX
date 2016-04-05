@@ -9,15 +9,15 @@ const session = require("lib/session");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.user = session.user;
+    this.loggedIn = session.loggedIn;
     this.loading = status.create();
 
     this.logout = co.wrap(function*() {
         this.loading(true);
 
         try {
-            yield api.auth.logout();
-
-            this.user(false);
+            session.user(yield api.auth.logout());
+            session.username("guest");
             status.printSuccess("Logout successfull");
         } catch (e) {
             console.error(e);

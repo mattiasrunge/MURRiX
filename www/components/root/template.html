@@ -30,7 +30,6 @@
                         <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> Location</a></li>
                         <li><a href="#"><i class="fa fa-camera-retro fa-fw"></i> Camera</a></li>
                         <li><a href="#"><i class="fa fa-truck fa-fw"></i> Vehicle</a></li>
-                        <li><a href="#"><i class="fa fa-cloud fa-fw"></i> Tag Collection</a></li>
                     </ul>
                 </li>
             </ul>
@@ -43,7 +42,15 @@
                 <sidebar></sidebar>
             </div>
             <div class="col-md-10 main">
-                <auth-page-login data-bind="visible: page() === 'login'"></auth-page-login>
+                <div data-bind="if: page() === 'login'">
+                    <auth-page-login></auth-page-login>
+                </div>
+                <div data-bind="if: page() === 'profile'">
+                    <auth-page-profile></auth-page-profile>
+                </div>
+                <div data-bind="if: page() === 'reset'">
+                    <auth-page-reset></auth-page-reset>
+                </div>
             </div>
         </div>
     </div>

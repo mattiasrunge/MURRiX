@@ -1,0 +1,41 @@
+<div class="fadeInRight animated">
+    <div class="page-header">
+        <h1>Reset password for <span data-bind="text: username"></span></h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-horizontal clearfix" role="form" data-bind="submit: changePassword" autocomplete="off">
+                <div class="form-group">
+                    <label for="inputPassword1" class="col-lg-3 control-label">Password</label>
+                    <div class="col-lg-9">
+                        <input type="password" class="form-control" id="inputPassword1" placeholder="New password" data-bind="value: password1, disable: loading">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword2" class="col-lg-3 control-label">&nbsp;</label>
+                    <div class="col-lg-9">
+                        <input type="password" class="form-control" id="inputPassword2" placeholder="Confirm password" data-bind="value: password2, disable: loading">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-3 col-lg-9 clearfix">
+                        <a href="#" class="btn btn-primary" data-bind="disable: loading, click: changePassword">Change password</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="well">
+                <h5>If you have not requested this password change</h5>
+                <p>
+                    Please do nothing or contact the site administrator to report it.
+                </p>
+
+                <h5>If you have requested this password change</h5>
+                <p>
+                    Please enter the new password and confirm the change.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

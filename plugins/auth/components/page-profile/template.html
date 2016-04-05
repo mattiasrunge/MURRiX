@@ -1,0 +1,33 @@
+﻿<div class="fadeInRight animated">
+    <div class="page-header">
+        <h1>Profile</h1>
+    </div>
+
+    <div class="row" data-bind="visible: loggedIn">
+        <div class="col-md-5 right-border">
+            <auth-widget-edit-user params="{ user: user, username: username }"></auth-widget-edit-user>
+        </div>
+        <div class="col-md-7" data-bind="if: user">
+            <h3>Properties</h3>
+            <table class="table table-striped" style="font-size: 12px;">
+                <tbody>
+                    <tr>
+                        <td><strong>Last login</strong></td>
+                        <td data-bind="datetimeAgo: user().attributes.loginTime"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Created</strong></td>
+                        <td data-bind="datetimeAgo: user().properties.ctime"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modified</strong></td>
+                        <td data-bind="datetimeAgo: user().properties.mtime"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Group memberships</h3>
+            <auth-widget-list-groups params="{ list: groupList }"></auth-widget-list-groups>
+        </div>
+    </div>
+</div>

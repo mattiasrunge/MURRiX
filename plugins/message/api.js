@@ -9,6 +9,7 @@ const auth = require("../auth/api");
 let params = {};
 
 let message = api.register("message", {
+    deps: [ "vfs", "auth" ],
     init: co(function*(config) {
         params = config;
     }),

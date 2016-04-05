@@ -61,9 +61,15 @@ module.exports = {
     },
     unamed: () => [
         function*(next) {
-            let ext = path.extname(this.originalUrl);
-            let filename = path.join(wwwPath, this.originalUrl);
-            let compiledFilename = path.join(configuration.bableCompileDirectory, this.originalUrl);
+            let url = this.originalUrl;
+
+            if (url[url.length - 1] === "/") {
+                url += "index.html";
+            }
+
+            let ext = path.extname(url);
+            let filename = path.join(wwwPath, url);
+            let compiledFilename = path.join(configuration.bableCompileDirectory, url);
 
             // Preprocess
 

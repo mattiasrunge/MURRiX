@@ -9,6 +9,7 @@ const koa = require("koa.io");
 const bodyParser = require("koa-bodyparser");
 const route = require("koa-route");
 const compress = require("koa-compress");
+const session = require("koa-session");
 const conditional = require("koa-conditional-get");
 const etag = require("koa-etag");
 const enableDestroy = require("server-destroy");
@@ -20,6 +21,7 @@ const store = require("./store");
 const api = require("api.io");
 
 let server;
+let sessions = {};
 let params = {};
 
 module.exports = {
@@ -36,6 +38,8 @@ module.exports = {
 
         // Setup application
         app.name = "murrix-v" + version;
+        app.keys = [ "murrix is tha best" ];
+        app.use(session({ key: app.name }, app));
         app.use(compress());
         app.use(bodyParser());
         app.use(conditional());
@@ -52,6 +56,22 @@ module.exports = {
                 this.type = "text/plain";
                 this.body = error.message || error;
             }
+        });
+
+        // Configure sessions
+        app.use(function *(next) {
+            if (typeof this.session.sessionId === "undefined") {
+                this.session.sessionId = uuid.v4();
+                console.log("Created session " + this.session.sessionId);
+            }
+
+            sessions[this.session.sessionId] = sessions[this.session.sessionId] || {
+                sessionId: this.session.sessionId
+            };
+
+            this.sessionData = sessions[this.session.sessionId];
+
+            yield next;
         });
 
         // Create routes
@@ -80,7 +100,7 @@ module.exports = {
         enableDestroy(server);
 
         // Socket.io if we have defined API
-        yield api.start(server);
+        yield api.start(server, app.name, sessions);
 
         api.on("connection", (client) => {
             client.session.uploads = client.session.uploads || {};

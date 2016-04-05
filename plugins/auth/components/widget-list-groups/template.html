@@ -1,0 +1,13 @@
+<table class="table table-striped" style="font-size: 12px;">
+    <tbody data-bind="foreach: list">
+        <tr>
+            <td style="white-space: nowrap;">
+                <strong>
+                    <i class="icon icon-group"></i>
+                    <span data-bind="text: $data.name"></span>
+                </strong>
+            </td>
+            <td data-bind="text: $data.node.attributes.description"></td>
+        </tr>
+    </tbody>
+</table>

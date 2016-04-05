@@ -1,21 +1,39 @@
-<div>
+<div class="fadeInRight animated">
     <div class="page-header">
         <h1>Login</h1>
     </div>
-    <form class="form clearfix" data-bind="submit: login, visible: !user()">
-        <div class="form-group label-floating">
-            <label for="username" class="control-label">Username</label>
-            <input type="text" class="form-control" id="username" data-bind="textInput: username, disable: loading">
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form clearfix" data-bind="submit: login, if: !loggedIn()">
+                <div class="form-group label-floating">
+                    <label for="username" class="control-label">E-Mail</label>
+                    <input type="text" class="form-control" id="username" data-bind="textInput: username, disable: loading">
+                </div>
+                <div class="form-group label-floating">
+                    <label for="password" class="control-label">Password</label>
+                    <input type="password" class="form-control" id="password" data-bind="textInput: password, disable: loading">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-raised btn-primary pull-right" data-bind="disable: loginDisallowed"><i class="fa fa-sign-in fa-fw"></i> Login</button>
+                    <button class="btn btn-link pull-right" data-bind="disable: loading, click: reset">Forgot your password?</button>
+                </div>
+            </form>
+            <div class="" data-bind="visible: loggedIn">
+                <button class="btn btn-raised btn-primary" data-bind="disable: loading, click: logout"><i class="fa fa-sign-out fa-fw"></i> Logout</button>
+            </div>
         </div>
-        <div class="form-group label-floating">
-            <label for="password" class="control-label">Password</label>
-            <input type="password" class="form-control" id="password" data-bind="textInput: password, disable: loading">
+        <div class="col-md-6">
+            <div class="well">
+                <h5>Don't have an account?</h5>
+                <p>
+                    To be allowed to login you need to have an account. If you do not have an account please contact the site administrator for one.
+                </p>
+
+                <h5>Forgot your password?</h5>
+                <p>
+                    If you have forgot your password, you can use the password reset function by pressing the <mark><small>Forgot your password?</small></mark> link. An email will be sent to the registered email with a special link. The link will allow you to set a new password.
+                </p>
+            </div>
         </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-raised btn-info pull-right" data-bind="disable: loading"><i class="fa fa-sign-in fa-fw"></i> Login</button>
-        </div>
-    </form>
-    <div class="" data-bind="visible: user">
-        <button class="btn btn-raised btn-info" data-bind="disable: loading, click: loginDisallowed"><i class="fa fa-sign-out fa-fw"></i> Logout</button>
     </div>
 </div>
