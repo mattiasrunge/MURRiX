@@ -170,7 +170,15 @@ body {
     background-color: #ff5722;
 }
 
-.typeahead-valid {
+.twitter-typeahead .valid {
     font-weight: bold;
     color: #2d6ca2;
+}
+
+.twitter-typeahead img {
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    margin-right: 10px;
+    vertical-align: middle;
 }

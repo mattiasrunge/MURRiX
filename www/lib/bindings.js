@@ -112,25 +112,27 @@ ko.bindingHandlers.htmlSize = {
     }
 };
 
-let lookup = co.wrap(function*(querystr) {
-    let list = yield api.vfs.list("/people", false, {
-        "properties.type": "p",
-        "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
-    });
+ko.bindingHandlers.nodeselect = {
+    lookup: co.wrap(function*(root, querystr) {
+        let list = yield api.vfs.list(root, false, {
+            "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
+        });
 
-    return list.map((item) => {
-        return {
-            path: "/people/" + item.name,
-            node: item.node
-        };
-    });
-});
-
-ko.bindingHandlers.typeahead = {
+        return list.map((item) => {
+            return {
+                path: root + "/" + item.name,
+                node: item.node
+            };
+        });
+    }),
     init: (element, valueAccessor) => {
+        let root = ko.unwrap(valueAccessor().root);
+        let path = valueAccessor().path;
         let $element = $(element);
         let loading = status.create();
         let limit = 10;
+
+        $element.addClass("typeahead");
 
         $element.typeahead({
             hint: true,
@@ -139,36 +141,44 @@ ko.bindingHandlers.typeahead = {
         }, {
             display: (selection) => selection.node.attributes.name,
             source: (querystr, dummy, resolve) => {
-                lookup(querystr)
+                ko.bindingHandlers.nodeselect.lookup(root, querystr)
                 .then(resolve)
                 .catch((error) => {
                     status.printError(error);
                     resolve([]);
                 });
             },
+            templates: {
+                suggestion: (selection) => {
+                    console.log(selection);
+                    return "<div><img src='http://lorempixel.com/16/16'>" + selection.node.attributes.name + "</div>";
+                }
+            },
             limit: limit
         });
 
-        $element.on("typeahead:active", () => { $element.removeClass("typeahead-valid"); });
+        $element.on("typeahead:active", () => {
+            $element.removeClass("valid");
+        });
         $element.on("typeahead:idle", () => {
-            if (valueAccessor()()) {
-                $element.addClass("typeahead-valid");
+            if (path()) {
+                $element.addClass("valid");
             }
         });
         $element.on("typeahead:change", () => {
-            lookup($element.typeahead("val"))
+            ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"))
             .then((list) => {
                 if (list.length === 1) {
-                    valueAccessor()(list[0].path);
-                    $element.addClass("typeahead-valid");
+                    path(list[0].path);
+                    $element.addClass("valid");
                 } else {
-                    valueAccessor()(false);
-                    $element.removeClass("typeahead-valid");
+                    path(false);
+                    $element.removeClass("valid");
                 }
             })
             .catch((error) => {
                 status.printError(error);
-                valueAccessor()(false);
+                path(false);
             });
         });
 
@@ -182,26 +192,28 @@ ko.bindingHandlers.typeahead = {
         });
     },
     update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
+        let path = valueAccessor().path;
         let $element = $(element);
 
-        if (value) {
-            api.vfs.resolve(value)
+        if (path()) {
+            api.vfs.resolve(path())
             .then((node) => {
                 if (node) {
-                    valueAccessor()(value);
-                    $element.addClass("typeahead-valid");
+                    $element.addClass("valid");
                     $element.typeahead("val", node.attributes.name);
                 } else {
-                    valueAccessor()(false);
-                    $element.removeClass("typeahead-valid");
+                    path(false);
+                    $element.removeClass("valid");
                     $element.typeahead("val", "");
                 }
             })
             .catch((error) => {
                 status.printError(error);
-                valueAccessor()(false);
+                path(false);
             });
+        } else {
+            $element.removeClass("valid");
+            $element.typeahead("val", "");
         }
     }
 };
