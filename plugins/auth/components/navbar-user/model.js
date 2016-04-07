@@ -16,9 +16,8 @@ module.exports = utils.wrapComponent(function*(params) {
         this.loading(true);
 
         try {
-            session.user(yield api.auth.logout());
-            session.username("guest");
-            session.person(false);
+            yield api.auth.logout();
+            yield session.loadUser();
             status.printSuccess("Logout successfull");
         } catch (e) {
             console.error(e);

@@ -15,10 +15,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.email = ko.observable("");
     this.password1 = ko.observable("");
     this.password2 = ko.observable("");
-    this.person = ko.observable(false);
-    this.personId = ko.pureComputed(() => {
-        return this.person() ? this.person()._id : false;
-    });
+    this.personPath = ko.observable(false);
 
     let subscription = params.user.subscribe(() => this.reset());
 
@@ -29,7 +26,7 @@ module.exports = utils.wrapComponent(function*(params) {
         this.name(params.user().attributes.name);
         this.username(params.username());
         this.email(params.user().attributes.email);
-        this.person(params.person());
+        this.personPath(params.personPath());
     };
 
     this.save = co.wrap(function*() {
@@ -42,17 +39,15 @@ module.exports = utils.wrapComponent(function*(params) {
         try {
             yield api.auth.saveProfile(params.username(), {
                 name: this.name()
-            }, this.personId());
+            }, this.personPath());
 
             if (params.username() !== this.username()) {
                 yield api.auth.changeUsername(params.username(), this.username());
 
                 if (params.username() === session.username()) {
-                    session.user(yield api.auth.logout());
-                    session.username("guest");
-                    session.person(this.person());
                     status.printInfo("After username change you must login again");
-
+                    yield api.auth.logout();
+                    yield session.loadUser();
                     loc.goto({ page: "login" });
                 }
             }

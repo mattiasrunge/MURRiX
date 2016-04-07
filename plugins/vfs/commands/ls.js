@@ -20,7 +20,7 @@ vorpal
     let dir = args.path || cwd;
 
     if (!args.options.l) {
-        let list = yield api.vfs.list(terminal.normalize(cwd, dir));
+        let list = yield api.vfs.list(terminal.normalize(cwd, dir), false, null, true);
 
         if (pipedOutput) {
             list = list.map((item) => item.name);
@@ -36,7 +36,7 @@ vorpal
         return;
     }
 
-    let items = yield api.vfs.list(terminal.normalize(cwd, dir), true);
+    let items = yield api.vfs.list(terminal.normalize(cwd, dir), true, null, true);
 
     let ucache = {};
     let gcache = {};
@@ -52,8 +52,13 @@ vorpal
     }
 
     let columns = columnify(items.map((item) => {
-        let mode = terminal.modeString(item.node.properties.mode);
         let name = terminal.colorName(item.name, item.node.properties.type);
+
+        if (item.node.properties.type === "s") {
+            name += " -> " + item.node.attributes.path;
+        }
+
+        let mode = terminal.modeString(item.node.properties.mode);
         let uid = ucache[item.node.properties.uid] ? ucache[item.node.properties.uid] : item.node.properties.uid.toString();
         let gid = gcache[item.node.properties.gid] ? gcache[item.node.properties.gid] : item.node.properties.gid.toString();
 

@@ -91,7 +91,7 @@ let auth = api.register("auth", {
         }
 
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
-        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", true);
+        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", true, true);
 
         return { username: session.username, user: user, person: person };
     },
@@ -180,22 +180,21 @@ let auth = api.register("auth", {
             password: sha1(password)
         });
     },
-    saveProfile: function*(session, username, attributes, personId) {
+    saveProfile: function*(session, username, attributes, personPath) {
         if (username !== session.username && session.username !== "admin") {
             throw new Error("Not allowed");
         }
-
+console.log(personPath);
         yield vfs.setattributes(auth.getAdminSession(), "/users/" + username, attributes);
 
-        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + username + "/person", true);
+        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + username + "/person", true, true);
 
-        if (person && person._id !== personId) {
+        if (person && person.attributes.path !== personPath) {
             yield vfs.unlink(auth.getAdminSession(), "/users/" + username + "/person");
         }
 
-        if (personId && (!person || person._id !== personId)) {
-            person = yield vfs.queryOne(auth.getAdminSession(), { _id: personId });
-            yield vfs.link(auth.getAdminSession(), person, "/users/" + username + "/person");
+        if (personPath && (!person || person.attributes.path !== personPath)) {
+            yield vfs.symlink(auth.getAdminSession(), personPath, "/users/" + username + "/person");
         }
     },
     changeUsername: function*(session, oldusername, newusername) {
@@ -208,6 +207,7 @@ let auth = api.register("auth", {
         }
 
         yield vfs.move(auth.getAdminSession(), "/users/" + oldusername, "/users/" + newusername);
+        // TODO: symlinks to groups needs to be updated if username changed
     },
     passwd: function*(session, username, password) {
         if (username !== session.username && session.username !== "admin") {
@@ -322,8 +322,8 @@ let auth = api.register("auth", {
         return user;
     },
     connect: function*(session, username, groupname) {
-        yield vfs.link(session, "/groups/" + groupname, "/users/" + username + "/groups");
-        yield vfs.link(session, "/users/" + username, "/groups/" + groupname + "/users");
+        yield vfs.symlink(session, "/groups/" + groupname, "/users/" + username + "/groups");
+        yield vfs.symlink(session, "/users/" + username, "/groups/" + groupname + "/users");
     }
 });
 

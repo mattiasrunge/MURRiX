@@ -112,27 +112,32 @@ ko.bindingHandlers.htmlSize = {
     }
 };
 
+let lookup = co.wrap(function*(querystr) {
+    let list = yield api.vfs.list("/people", false, {
+        "properties.type": "p",
+        "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
+    });
+
+    return list.map((item) => {
+        return {
+            path: "/people/" + item.name,
+            node: item.node
+        };
+    });
+});
+
 ko.bindingHandlers.typeahead = {
     init: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
         let $element = $(element);
         let loading = status.create();
-
-        let lookup = co.wrap(function*(querystr) {
-            return yield api.vfs.query({
-                "properties.type": "p",
-                "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
-            }, {
-                limit: 10
-            });
-        });
+        let limit = 10;
 
         $element.typeahead({
             hint: true,
             highlight: true,
             minLength: 1
         }, {
-            display: (selection) => selection.attributes.name,
+            display: (selection) => selection.node.attributes.name,
             source: (querystr, dummy, resolve) => {
                 lookup(querystr)
                 .then(resolve)
@@ -141,7 +146,7 @@ ko.bindingHandlers.typeahead = {
                     resolve([]);
                 });
             },
-            limit: 10
+            limit: limit
         });
 
         $element.on("typeahead:active", () => { $element.removeClass("typeahead-valid"); });
@@ -154,10 +159,11 @@ ko.bindingHandlers.typeahead = {
             lookup($element.typeahead("val"))
             .then((list) => {
                 if (list.length === 1) {
-                    valueAccessor()(list[0]);
+                    valueAccessor()(list[0].path);
                     $element.addClass("typeahead-valid");
                 } else {
                     valueAccessor()(false);
+                    $element.removeClass("typeahead-valid");
                 }
             })
             .catch((error) => {
@@ -176,12 +182,26 @@ ko.bindingHandlers.typeahead = {
         });
     },
     update: (element, valueAccessor) => {
-        let node = ko.unwrap(valueAccessor());
+        let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
-        if (node) {
-            $element.typeahead("val", node.attributes.name);
-            $element.addClass("typeahead-valid");
+        if (value) {
+            api.vfs.resolve(value)
+            .then((node) => {
+                if (node) {
+                    valueAccessor()(value);
+                    $element.addClass("typeahead-valid");
+                    $element.typeahead("val", node.attributes.name);
+                } else {
+                    valueAccessor()(false);
+                    $element.removeClass("typeahead-valid");
+                    $element.typeahead("val", "");
+                }
+            })
+            .catch((error) => {
+                status.printError(error);
+                valueAccessor()(false);
+            });
         }
     }
 };
