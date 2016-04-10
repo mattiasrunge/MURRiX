@@ -1,0 +1,25 @@
+﻿<div class="fadeInRight animated">
+    <div style="height: 500px;" data-bind="map: { position: position, zoom: position() ? 15 : 10 }"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Contact information</h3>
+            <table class="table table-striped">
+                <tbody data-bind="foreach: node().attributes.contact">
+                    <tr>
+                        <td data-bind="text: $data.type"></td>
+                        <td data-bind="text: $data.data"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Homes</h3>
+            <div class="list-group" data-bind="foreach: homes">
+                <a href="#" class="list-group-item" data-bind="css: { active: $parent.selectedHome() === $data }, click: $parent.selectedHome.bind($parent, $data)">
+                    <h4 class="list-group-item-heading" data-bind="text: $data.node.attributes.name"></h4>
+                    <p class="list-group-item-text" data-bind="html: $data.node.attributes.address.replace('\n','<br>')"></p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,45 +1,15 @@
 <div>
-    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">
-                    <i class="fa fa-home fa-large" data-bind="visible: !loading()"></i>
-                    <i class="fa fa-spinner fa-large fa-spin" data-bind="visible: loading"></i>
-                </a>
-                <div class="navbar-form navbar-left">
-                    <div class="form-group header-search" data-bind=""></div>
-                </div>
-            </div>
-
-
-            <ul class="nav navbar-nav navbar-right" data-bind="component: 'auth-navbar-user'"></ul>
-
-            <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
-                <li>
-                    <a href="#" data-bind="click: random">
-                        <i class="fa fa-random fa-large"></i>
-                    </a>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-plus fa-large"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#"><i class="fa fa-book fa-fw"></i> Album</a></li>
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> Person</a></li>
-                        <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> Location</a></li>
-                        <li><a href="#"><i class="fa fa-camera-retro fa-fw"></i> Camera</a></li>
-                        <li><a href="#"><i class="fa fa-truck fa-fw"></i> Vehicle</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <navbar></navbar>
 
     <div class="container page-container">
         <div class="row">
             <div class="col-md-2 sidebar right-border">
-                <sidebar></sidebar>
+                <div data-bind="if: page() !== 'node'">
+                    <sidebar></sidebar>
+                </div>
+                <div data-bind="if: page() === 'node'">
+                    <sidebar-node></sidebar-node>
+                </div>
             </div>
             <div class="col-md-10 main">
                 <div data-bind="if: page() === 'login'">
@@ -50,6 +20,9 @@
                 </div>
                 <div data-bind="if: page() === 'reset'">
                     <auth-page-reset></auth-page-reset>
+                </div>
+                <div data-bind="if: page() === 'node'">
+                    <page-node></page-node>
                 </div>
             </div>
         </div>

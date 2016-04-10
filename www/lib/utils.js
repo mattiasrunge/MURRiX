@@ -30,7 +30,22 @@ module.exports = {
 
         return fn;
     },
-    co: co.wrap
+    co: co.wrap,
+    modeString: (mode) => {
+        let modeStr = "";
+
+        modeStr += mode & parseInt("400", 8) ? "r" : "-";
+        modeStr += mode & parseInt("200", 8) ? "w" : "-";
+        modeStr += mode & parseInt("100", 8) ? "x" : "-";
+        modeStr += mode & parseInt("040", 8) ? "r" : "-";
+        modeStr += mode & parseInt("020", 8) ? "w" : "-";
+        modeStr += mode & parseInt("010", 8) ? "x" : "-";
+        modeStr += mode & parseInt("004", 8) ? "r" : "-";
+        modeStr += mode & parseInt("002", 8) ? "w" : "-";
+        modeStr += mode & parseInt("001", 8) ? "x" : "-";
+
+        return modeStr;
+    }
 };
 
 document.addEventListener("copy", (e) => {

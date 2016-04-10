@@ -4,9 +4,9 @@
         <div data-bind="text: user().attributes.name"></div>
         <div>
             <a href="#" data-bind="location: { page: 'profile' }">Profile</a>
-            <span data-bind="visible: person, if: person">
+            <span data-bind="visible: personPath, if: personPath">
                 &nbsp;&bull;&nbsp;
-                <a href="#" data-bind="location: { page: 'node', id: person()._id }">Me</a>
+                <a href="#" data-bind="location: { page: 'node', path: personPath }">Me</a>
             </span>
         </div>
     </div>

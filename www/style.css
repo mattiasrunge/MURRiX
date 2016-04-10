@@ -28,6 +28,9 @@ body {
   top: 51px;
 }
 
+.left-border {
+  border-left: 1px solid #eee;
+}
 
 .right-border {
   border-right: 1px solid #eee;
@@ -181,4 +184,294 @@ body {
     border-radius: 2px;
     margin-right: 10px;
     vertical-align: middle;
+}
+
+
+
+.relation-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  cursor: move;
+}
+
+.relation-person-box {
+  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 3px 3px 3px 3px;
+  background-color: white;
+}
+
+.relation-person-box-small {
+  text-align: center;
+}
+
+.relation-horizontal-line-left {
+  height: 2px;
+  background-color: #ccc;
+  display: inline-block;
+  width: 50%;
+}
+
+.relation-horizontal-line-right {
+  height: 2px;
+  background-color: #ccc;
+  display: inline-block;
+  width: 50%;
+}
+
+.relation-horizontal-line-hide {
+  background-color: transparent;
+}
+
+.relation-person-image {
+  position: absolute;
+  width: 88px;
+  height: 88px;
+  top: 0px;
+  left: 0px;
+  border-radius: 3px 0px 0px 3px;
+  z-index: 3;
+}
+
+.relation-person-image img {
+  width: 88px;
+  height: 88px;
+  border-radius: 3px 0px 0px 3px;
+}
+
+.relation-person-image-small {
+  width: 90px;
+  height: 90px;
+  vertical-align: top;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  display: inline-block;
+  z-index: 3;
+}
+
+.relation-person-image-small img {
+  width: 90px;
+  height: 90px;
+  border-radius: 3px;
+  background-color: #555;
+}
+
+.relation-person-image-small-title {
+  padding: 5px;
+  text-align: center;
+  margin: 0px 30px;
+  border-radius: 3px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.relation-person-image-small-title a {
+  color: black;
+  cursor: pointer;
+}
+
+.relation-person-title {
+  padding: 5px 10px;
+  z-index: 2;
+  position: relative;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.relation-person-title a {
+  color: black;
+  cursor: pointer;
+  margin-left: 88px;
+}
+
+.relation-person-partner {
+  cursor: pointer;
+}
+
+.relation-person-title-background {
+  z-index: -1;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  opacity: 0.7;
+  background-color: white;
+  border-radius: 3px 3px 0px 0px;
+}
+
+.relation-person-title-male {
+  background-color: #0088CC;
+}
+
+.relation-person-title-female {
+  background-color: #FF9999;
+}
+
+.relation-expand {
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+  margin: 0;
+  margin-left: -9px;
+  z-index: 1;
+  position: relative;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  color: #0088CC;
+  background-color: white;
+  font-size: 10px;
+}
+
+.relation-child-expand {
+  margin-top: 29px;
+}
+
+.relation-parent-expand {
+  top: -8px;
+  position: relative;
+}
+
+
+
+.relation-cut {
+  width: 16px;
+  height: 16px;
+  padding: 0px;
+  margin: 0;
+  margin-left: -7px;
+  z-index: 1;
+  position: relative;
+  font-size: 8px;
+  border-radius: 16px;
+}
+
+.relation-cut i {
+  line-height: normal !important;
+  display: block !important;
+}
+
+.relation-parent-cut {
+  margin-top: 2px;
+}
+
+.relation-child-cut {
+  margin-bottom: -42px;
+}
+
+
+
+.relation-add {
+  width: 16px;
+  height: 16px;
+  padding: 0px;
+  margin: 0;
+  margin-left: -7px;
+  z-index: 1;
+  position: relative;
+  font-size: 8px;
+  border-radius: 16px;
+}
+
+.relation-add i {
+  line-height: normal !important;
+  display: block !important;
+}
+
+.relation-parent-add {
+  margin-top: -28px;
+  margin-left: -22px;
+}
+
+.relation-child-add {
+  margin-bottom: -42px;
+  margin-left: -22px;
+}
+
+
+.relation-zoom-control {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  width: 20px;
+  height: 208px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.relation-zoom-control .line {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 8px;
+  background-color: white;
+  width: 2px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.relation-zoom-control .mark-container {
+  position: absolute;
+  top: 20px;
+  left: 0px;
+  right: 0px;
+  bottom: 20px;
+  z-index: 2;
+}
+
+.relation-zoom-control .mark {
+  position: absolute;
+  left: 0px;
+  width: 18px;
+  height: 10px;
+  z-index: 2;
+  padding: 0px;
+  margin: 0;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  color: #ccc;
+  background-color: white;
+  font-size: 10px;
+}
+
+.relation-zoom-control .inc {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 18px;
+  height: 18px;
+  z-index: 2;
+  padding: 0px;
+  margin: 0;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  color: #ccc;
+  background-color: white;
+  font-size: 10px;
+}
+
+.relation-zoom-control .dec {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 18px;
+  height: 18px;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  color: #ccc;
+  background-color: white;
+  font-size: 10px;
 }

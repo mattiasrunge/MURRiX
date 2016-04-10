@@ -90,10 +90,15 @@ let auth = api.register("auth", {
             return { username: "guest", user: yield auth.logout(session) };
         }
 
+        let personPath = false;
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
         let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", true, true);
 
-        return { username: session.username, user: user, person: person };
+        if (person) {
+            personPath = person.attributes.path;
+        }
+
+        return { username: session.username, user: user, personPath: personPath };
     },
     groupList: function*(session, username) {
         if (username !== session.username && session.username !== "admin") {
@@ -184,7 +189,7 @@ let auth = api.register("auth", {
         if (username !== session.username && session.username !== "admin") {
             throw new Error("Not allowed");
         }
-console.log(personPath);
+
         yield vfs.setattributes(auth.getAdminSession(), "/users/" + username, attributes);
 
         let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + username + "/person", true, true);

@@ -2,7 +2,7 @@
     <a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown"><span class="picture" style="width: 20px; height: 20px;" data-bind=""><img src="http://lorempixel.com/20/20"></span><span data-bind="text: user().attributes.name"></span> <b class="caret"></b></a>
     <ul class="dropdown-menu">
         <li><a href="#" data-bind="location: { page: 'profile' }"><i class="fa fa-info fa-fw"></i> Profile</a></li>
-        <li data-bind="visible: person, if: person"><a href="#" data-bind="location: { page: 'node', id: person()._id }"><i class="fa fa-user fa-fw"></i> Me</a></li>
+        <li data-bind="visible: personPath, if: personPath"><a href="#" data-bind="location: { page: 'node', path: personPath }"><i class="fa fa-user fa-fw"></i> Me</a></li>
         <li><a href="#" data-bind="location: { page: 'messages' }"><i class="fa fa-inbox fa-fw"></i> Messages</a></li>
         <li class="divider"></li>
         <li><a href="#" data-bind="click: logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>

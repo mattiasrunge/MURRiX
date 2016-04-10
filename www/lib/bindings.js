@@ -10,6 +10,71 @@ const status = require("lib/status");
 const loc = require("lib/location");
 const typeahead = require("typeahead");
 
+ko.bindingHandlers.map = {
+    init: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let zoom = ko.unwrap(value.zoom) || 10;
+
+        let options = {
+            zoom: zoom,
+            center: new google.maps.LatLng(57.6706907666667, 11.9375348333333),
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            streetViewControl: false,
+            panControl: false,
+            mapTypeControl: false,
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.DEFAULT,
+                position: google.maps.ControlPosition.RIGHT_TOP
+            },
+            scaleControl: true,
+            scaleControlOptions: {
+                position: google.maps.ControlPosition.RIGHT_BOTTOM
+            }
+        };
+
+        element.map = new google.maps.Map(element, options);
+
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            $(element).off("click");
+        });
+    },
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let position = ko.unwrap(value.position);
+        let zoom = ko.unwrap(value.zoom) || 10;
+
+        if (position) {
+            element.map.setCenter(new google.maps.LatLng(position.latitude, position.longitude));
+
+            if (element.marker) {
+                element.marker.setMap(null);
+                delete element.marker;
+            }
+
+            element.marker = new google.maps.Marker({
+                position: {
+                    lat: position.latitude,
+                    lng: position.longitude
+                },
+                map: element.map
+            });
+        } else {
+            if (element.marker) {
+                element.marker.setMap(null);
+                delete element.marker;
+            }
+
+            element.map.setCenter(new google.maps.LatLng(57.6706907666667, 11.9375348333333));
+        }
+
+        element.map.setZoom(zoom);
+
+
+    }
+};
+
 ko.bindingHandlers.copyToClipboard = {
     init: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
@@ -112,6 +177,47 @@ ko.bindingHandlers.htmlSize = {
     }
 };
 
+ko.bindingHandlers.uname = {
+    update: function(element, valueAccessor) {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        api.auth.uname(value)
+        .then((name) => {
+            $element.text(name);
+        })
+        .catch((error) => {
+            $element.html("<span class='text-error'>unknown</span>");
+            status.printError(error);
+        });
+    }
+};
+
+ko.bindingHandlers.gname = {
+    update: function(element, valueAccessor) {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        api.auth.gname(value)
+        .then((name) => {
+            $element.text(name);
+        })
+        .catch((error) => {
+            $element.html("<span class='text-error'>unknown</span>");
+            status.printError(error);
+        });
+    }
+};
+
+ko.bindingHandlers.mode = {
+    update: function(element, valueAccessor) {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        $element.text(utils.modeString(value));
+    }
+};
+
 ko.bindingHandlers.nodeselect = {
     lookup: co.wrap(function*(root, querystr) {
         let list = yield api.vfs.list(root, false, {
@@ -128,9 +234,9 @@ ko.bindingHandlers.nodeselect = {
     init: (element, valueAccessor) => {
         let root = ko.unwrap(valueAccessor().root);
         let path = valueAccessor().path;
+        let limit = ko.unwrap(valueAccessor().limit) || 10;
         let $element = $(element);
-        let loading = status.create();
-        let limit = 10;
+        element.loading = status.create();
 
         $element.addClass("typeahead");
 
@@ -150,13 +256,15 @@ ko.bindingHandlers.nodeselect = {
             },
             templates: {
                 suggestion: (selection) => {
-                    console.log(selection);
                     return "<div><img src='http://lorempixel.com/16/16'>" + selection.node.attributes.name + "</div>";
                 }
             },
             limit: limit
         });
 
+        $element.on("typeahead:asyncrequest", () => element.loading(true));
+        $element.on("typeahead:asynccancel", () => element.loading(false));
+        $element.on("typeahead:asyncreceive", () => element.loading(false));
         $element.on("typeahead:active", () => {
             $element.removeClass("valid");
         });
@@ -165,7 +273,7 @@ ko.bindingHandlers.nodeselect = {
                 $element.addClass("valid");
             }
         });
-        $element.on("typeahead:change", () => {
+        $element.on("typeahead:change typeahead:select", () => {
             ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"))
             .then((list) => {
                 if (list.length === 1) {
@@ -182,13 +290,9 @@ ko.bindingHandlers.nodeselect = {
             });
         });
 
-        $element.on("typeahead:asyncrequest", () => loading(true));
-        $element.on("typeahead:asynccancel", () => loading(false));
-        $element.on("typeahead:asyncreceive", () => loading(false));
-
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             $element.typeahead("destroy");
-            status.destroy(loading);
+            status.destroy(element.loading);
         });
     },
     update: (element, valueAccessor) => {
@@ -196,8 +300,11 @@ ko.bindingHandlers.nodeselect = {
         let $element = $(element);
 
         if (path()) {
+            element.loading(true);
             api.vfs.resolve(path())
             .then((node) => {
+                element.loading(false);
+
                 if (node) {
                     $element.addClass("valid");
                     $element.typeahead("val", node.attributes.name);
@@ -208,7 +315,7 @@ ko.bindingHandlers.nodeselect = {
                 }
             })
             .catch((error) => {
-                status.printError(error);
+                element.loading(false);
                 path(false);
             });
         } else {

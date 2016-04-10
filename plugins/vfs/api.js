@@ -30,8 +30,11 @@ let vfs = api.register("vfs", {
                     type: "r",
                     mode: octal("775"),
                     birthtime: new Date(),
+                    birthuid: 1000,
                     ctime: new Date(),
+                    cuid: 1000,
                     mtime: new Date(),
+                    muid: 1000,
                     uid: 1000,
                     gid: 1000,
                     children: [],
@@ -152,20 +155,22 @@ let vfs = api.register("vfs", {
         if (all) {
             let pparent = yield vfs.resolve(session, path.dirname(abspath));
 
-            list.push({ name: ".", node: parent });
-            list.push({ name: "..", node: pparent });
+            list.push({ name: ".", node: parent, path: abspath });
+            list.push({ name: "..", node: pparent, path: path.dirname(abspath) });
         }
 
         for (let child of parent.properties.children) {
             let node = nodes.filter((node) => node._id === child.id)[0];
+            let dir = path.join(abspath, child.name);
 
             if (node) {
                 if (node.properties.type === "s" && !nofollow) {
+                    dir = node.attributes.path;
                     node = yield vfs.resolve(session, node.attributes.path, true);
                 }
 
                 if (node) {
-                    list.push({ name: child.name, node: node });
+                    list.push({ name: child.name, node: node, path: dir });
                 }
             }
         }
@@ -211,6 +216,7 @@ let vfs = api.register("vfs", {
         }
 
         node.properties.ctime = new Date();
+        node.properties.cuid = session.uid;
         node.properties.mode = octal(mode);
 
         yield db.updateOne("nodes", node);
@@ -223,6 +229,7 @@ let vfs = api.register("vfs", {
         }
 
         node.properties.ctime = new Date();
+        node.properties.cuid = session.uid;
         node.properties.uid = yield api.auth.uid(session, username);
 
         if (group) {
@@ -240,6 +247,8 @@ let vfs = api.register("vfs", {
 
         node.properties.ctime = new Date();
         node.properties.mtime = new Date();
+        node.properties.cuid = session.uid;
+        node.properties.muid = session.uid;
 
         for (let key of Object.keys(attributes)) {
             if (attributes[key] !== null) {
@@ -289,7 +298,9 @@ let vfs = api.register("vfs", {
                 birthtime: new Date(),
                 birthuid: session.uid,
                 ctime: new Date(),
+                cuid: session.uid,
                 mtime: new Date(),
+                muid: session.uid,
                 uid: session.uid,
                 gid: session.gid,
                 children: [],
@@ -352,6 +363,7 @@ let vfs = api.register("vfs", {
 
         parent.properties.children = parent.properties.children.filter((child) => child.name !== name);
         parent.properties.ctime = new Date();
+        parent.properties.cuid = session.uid;
         yield db.updateOne("nodes", parent);
 
         let rremove = co(function*(id) {
@@ -428,6 +440,7 @@ let vfs = api.register("vfs", {
 
         destnode.properties.children.push({ id: srcnode._id, name: name });
         destnode.properties.ctime = new Date();
+        destnode.properties.cuid = session.uid;
         yield db.updateOne("nodes", destnode);
 
         srcnode.properties.count++;
@@ -489,6 +502,7 @@ let vfs = api.register("vfs", {
 
         srcparent.properties.children = srcparent.properties.children.filter((child) => child.name !== name);
         srcparent.properties.ctime = new Date();
+        srcparent.properties.cuid = session.uid;
 
         let destparent = path.dirname(destpath) === path.dirname(srcpath) ? srcparent : yield vfs.resolve(session, path.dirname(destpath));
         let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
@@ -512,6 +526,7 @@ let vfs = api.register("vfs", {
 
         destparent.properties.children.push(child);
         destparent.properties.ctime = new Date();
+        destparent.properties.cuid = session.uid;
         yield db.updateOne("nodes", destparent);
     },
     copy: function*(session, srcpath, destpath) {
@@ -547,7 +562,9 @@ let vfs = api.register("vfs", {
             node._id = uuid.v4();
             node.properties.birthtime = new Date();
             node.properties.ctime = new Date();
+            node.properties.cuid = session.uid;
             node.properties.mtime = new Date();
+            node.properties.muid = session.uid;
             node.properties.uid = session.uid;
             node.properties.gid = session.gid;
             node.properties.count = 1;
