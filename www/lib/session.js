@@ -19,5 +19,12 @@ module.exports = {
         module.exports.personPath(userinfo.personPath);
 
         console.log(userinfo);
+    }),
+    searchPaths: ko.pureComputed(() => {
+        if (module.exports.loggedIn()) {
+            return [ "/people", "/locations" ];
+        }
+
+        return [];
     })
 };

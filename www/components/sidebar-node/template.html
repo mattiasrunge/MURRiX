@@ -2,22 +2,14 @@
     <people-sidebar-person params="{ node: node, section: section }"></people-sidebar-person>
 </div>
 
-<div class="top-border" data-bind="if: node, visible: node" style="margin-top: 15px; padding-top: 15px;">
-    <p class="text-muted" style="font-size: 7px; font-family: monospace;">
-        <span>
-            Modified by <span data-bind="uname: node().properties.muid"></span> <span data-bind="datetimeAgo: node().properties.mtime"></span>
-        </span>
-        <br>
-        <span>
-            Created by <span data-bind="uname: node().properties.birthuid"></span> <span data-bind="datetimeAgo: node().properties.birthtime"></span>
-        </span>
-        <!--<br>
-        <span>
-            <span data-bind="text: node().properties.type"></span><span data-bind="mode: node().properties.mode"></span>
-            <span data-bind="text: node().properties.count"></span>
-            <span data-bind="uname: node().properties.uid"></span>
-            <span data-bind="gname: node().properties.gid"></span>
-            <span data-bind="text: Object.keys(node().properties.children).length"></span>
-        </span>-->
-    </p>
+<div class="top-border text-muted" data-bind="if: node, visible: node" style="margin-top: 15px; padding-top: 15px; font-size: 10px;">
+    <div>
+        Modified <span data-bind="datetimeAgo: node().properties.mtime"></span>
+    </div>
+    <div>
+        Created <span data-bind="datetimeAgo: node().properties.birthtime"></span>
+    </div>
+    <div>
+        <a href="#" data-bind="location: { section: 'history' }">Full history</a>
+    </div>
 </div>

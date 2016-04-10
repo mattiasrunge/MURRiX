@@ -140,37 +140,41 @@ let vfs = api.register("vfs", {
     list: function*(session, abspath, all, filter, nofollow) {
         let query = filter || {};
         let list = [];
-        let parent = yield vfs.resolve(session, abspath);
+        let abspaths = abspath instanceof Array ? abspath : [ abspath ];
 
-        if (!(yield vfs.access(session, parent, "r"))) {
-            throw new Error("Permission denied");
-        }
+        for (let abspath of abspaths) {
+            let parent = yield vfs.resolve(session, abspath);
 
-        let ids = parent.properties.children.map((child) => child.id);
+            if (!(yield vfs.access(session, parent, "r"))) {
+                throw new Error("Permission denied");
+            }
 
-        query._id = { $in: ids };
+            let ids = parent.properties.children.map((child) => child.id);
 
-        let nodes = yield db.find("nodes", query);
+            query._id = { $in: ids };
 
-        if (all) {
-            let pparent = yield vfs.resolve(session, path.dirname(abspath));
+            let nodes = yield db.find("nodes", query);
 
-            list.push({ name: ".", node: parent, path: abspath });
-            list.push({ name: "..", node: pparent, path: path.dirname(abspath) });
-        }
+            if (all) {
+                let pparent = yield vfs.resolve(session, path.dirname(abspath));
 
-        for (let child of parent.properties.children) {
-            let node = nodes.filter((node) => node._id === child.id)[0];
-            let dir = path.join(abspath, child.name);
+                list.push({ name: ".", node: parent, path: abspath });
+                list.push({ name: "..", node: pparent, path: path.dirname(abspath) });
+            }
 
-            if (node) {
-                if (node.properties.type === "s" && !nofollow) {
-                    dir = node.attributes.path;
-                    node = yield vfs.resolve(session, node.attributes.path, true);
-                }
+            for (let child of parent.properties.children) {
+                let node = nodes.filter((node) => node._id === child.id)[0];
+                let dir = path.join(abspath, child.name);
 
                 if (node) {
-                    list.push({ name: child.name, node: node, path: dir });
+                    if (node.properties.type === "s" && !nofollow) {
+                        dir = node.attributes.path;
+                        node = yield vfs.resolve(session, node.attributes.path, true);
+                    }
+
+                    if (node) {
+                        list.push({ name: child.name, node: node, path: dir });
+                    }
                 }
             }
         }

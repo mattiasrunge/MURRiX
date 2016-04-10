@@ -10,6 +10,7 @@ const loc = require("lib/location");
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.loading;
     this.user = session.user;
+    this.searchPaths = session.searchPaths;
     this.path = ko.pureComputed({
         read: () => {
             let page = ko.unwrap(loc.current().page);

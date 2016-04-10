@@ -3,7 +3,13 @@
 const ko = require("knockout");
 const utils = require("lib/utils");
 const loc = require("lib/location");
+const api = require("api.io-client");
+const status = require("lib/status");
+const session = require("lib/session");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.page = ko.pureComputed(() => ko.unwrap(loc.current().page) || "recent");
+
+
+    this.dispose = () => {
+    };
 });

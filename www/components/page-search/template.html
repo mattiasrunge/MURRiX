@@ -1,0 +1,15 @@
+<div class="fadeInRight animated">
+    <div class="page-header">
+        <h1>Search by name</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form" role="search" style="margin-bottom: 15px;">
+                <input name="query" type="search" class="form-control" placeholder="Enter name to search for" data-bind="textInput: query, disable: loading">
+            </form>
+
+            <widget-list-nodes params="{ list: list }"></widget-list-nodes>
+        </div>
+    </div>
+</div>

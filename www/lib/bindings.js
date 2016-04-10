@@ -1,5 +1,10 @@
 "use strict";
 
+/* TODO:
+ * Cleanup of map is not done, memory leak there
+ * Make map more flexible with an option to send in markers as a list
+ */
+
 const $ = require("jquery");
 const ko = require("knockout");
 const co = require("co");

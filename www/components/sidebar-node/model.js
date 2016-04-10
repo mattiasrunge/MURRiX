@@ -1,5 +1,9 @@
 "use strict";
 
+/* TODO:
+ * Make a nicer footer for nodes
+ */
+
 const ko = require("knockout");
 const utils = require("lib/utils");
 const session = require("lib/session");

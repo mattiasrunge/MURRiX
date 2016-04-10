@@ -1,0 +1,75 @@
+<script type="text/html" id="nodeListTemplate">
+    <div class="media bottom-border" style="padding-bottom: 15px;">
+
+        <span class="media-object profile-img pull-left" style="width: 80px; height: 80px;" data-bind="profilePicture: { node: $data, width: 80, height: 80 }"></span>
+
+        <div class="pull-right text-muted" style="font-size: 55px;">
+            <i data-bind="visible: $data.node.properties.type === 'a'" class="fa fa-book"></i>
+            <i data-bind="visible: $data.node.properties.type === 'p'" class="fa fa-user"></i>
+            <i data-bind="visible: $data.node.properties.type === 'l'" class="fa fa-map-marker"></i>
+            <i data-bind="visible: $data.node.properties.type === 'c'" class="fa fa-camera"></i>
+            <i data-bind="visible: $data.node.properties.type === 'v'" class="fa fa-truck"></i>
+        </div>
+        <div class="media-body clearfix">
+            <h4 class="media-heading" style="margin-bottom: 10px; font-size: 14px;"><a href="#" data-bind="text: $data.node.attributes.name, location: { page: 'node', path: $data.path }"></a></h4>
+
+            <p style="font-size: 12px;" data-bind="html: $data.node.attributes.description"></p>
+
+            <!--<div class="clearfix" data-bind="foreach: tags" style="margin-top: 5px;">
+                <div class="label label-info pull-left">
+                    #<span data-bind="text: $data"></span>
+                </div>
+            </div>-->
+
+        </div>
+    </div>
+</script>
+
+<div>
+    <ul class="nav nav-tabs nav-justified">
+        <li data-bind="css: { active: selected() === 'all' }">
+            <a href="#" data-bind="click: selected.bind($data, 'all')">
+                Found <span data-bind="text: all().length"></span> results
+            </a>
+        </li>
+        <li data-bind="css: { active: selected() === 'album', disabled: albums().length === 0 }">
+            <a href="#" data-bind="click: selected.bind($data, 'album')">
+                <i class="fa fa-book"></i>
+                <span data-bind="text: albums().length"></span> albums
+            </a>
+        </li>
+        <li data-bind="css: { active: selected() === 'person', disabled: people().length === 0 }">
+            <a href="#" data-bind="click: selected.bind($data, 'person')">
+                <i class="fa fa-user"></i>
+                <span data-bind="text: people().length"></span> persons
+            </a>
+        </li>
+        <li data-bind="css: { active: selected() === 'location', disabled: locations().length === 0 }">
+            <a href="#" data-bind="click: selected.bind($data, 'location')">
+                <i class="fa fa-map-marker"></i>
+                <span data-bind="text: locations().length"></span> locations
+            </a>
+        </li>
+        <li data-bind="css: { active: selected() === 'camera', disabled: cameras().length === 0 }">
+            <a href="#" data-bind="click: selected.bind($data, 'camera')">
+                <i class="fa fa-camera-retro"></i>
+                <span data-bind="text: cameras().length"></span> cameras
+            </a>
+        </li>
+        <li data-bind="css: { active: selected() === 'vehicle', disabled: vehicles().length === 0 }">
+            <a href="#" data-bind="click: selected.bind($data, 'vehicle')">
+                <i class="fa fa-truck"></i>
+                <span data-bind="text: vehicles().length"></span> vehicles
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'all' }, template: { name: 'nodeListTemplate', foreach: all }"></div>
+        <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'album' }, template: { name: 'nodeListTemplate', foreach: albums }"></div>
+        <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'person' }, template: { name: 'nodeListTemplate', foreach: people }"></div>
+        <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'location' }, template: { name: 'nodeListTemplate', foreach: locations }"></div>
+        <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'camera' }, template: { name: 'nodeListTemplate', foreach: cameras }"></div>
+        <div class="tab-pane" style="padding-top: 15px;" data-bind="css: { active: selected() === 'vehicle' }, template: { name: 'nodeListTemplate', foreach: vehicles }"></div>
+    </div>
+</div>

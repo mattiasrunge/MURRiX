@@ -12,6 +12,12 @@
                 </div>
             </div>
             <div class="col-md-10 main">
+                <div data-bind="if: page() === 'recent'">
+                    <page-recent></page-recent>
+                </div>
+                <div data-bind="if: page() === 'search'">
+                    <page-search></page-search>
+                </div>
                 <div data-bind="if: page() === 'login'">
                     <auth-page-login></auth-page-login>
                 </div>
@@ -24,6 +30,7 @@
                 <div data-bind="if: page() === 'node'">
                     <page-node></page-node>
                 </div>
+
             </div>
         </div>
     </div>

@@ -20,7 +20,7 @@
                     <tr data-bind="visible: partner, if: partner">
                         <td><strong>Partner</strong></td>
                         <td>
-                            <a href="#" data-bind="location: { page: 'node', path: '' }, text: partner().attributes.name"></a>
+                            <a href="#" data-bind="location: { page: 'node', path: partnerPath }, text: partner().attributes.name"></a>
                         </td>
                     </tr>
                     <tr>

@@ -1,5 +1,12 @@
 ﻿"use strict";
 
+/* TODO:
+ * Homes should have a date interval on them, store as attributes on the symlink
+ * Contact information should have icons and emails be clickable etc
+ * Add map control to switch between hybrid, terrain, satellite etc
+ * Google API key should be placed in a configuration file and the call should be done from serverside
+ */
+
 const ko = require("knockout");
 const $ = require("jquery");
 const api = require("api.io-client");
@@ -11,7 +18,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.path = params.path;
     this.selectedHome = ko.observable(false);
 
-    this.position = ko.asyncComputed(function*() {
+    this.position = ko.asyncComputed(false, function*() {
         if (!this.selectedHome()) {
             return false;
         }
@@ -38,7 +45,7 @@ module.exports = utils.wrapComponent(function*(params) {
         return false;
     });
 
-    this.homes = ko.asyncComputed(function*() {
+    this.homes = ko.asyncComputed(false, function*() {
         let list = yield api.vfs.list(this.path() + "/homes");
 
         if (list.length > 0) {

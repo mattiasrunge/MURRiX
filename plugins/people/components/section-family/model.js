@@ -1,5 +1,16 @@
 ﻿"use strict";
 
+/* TODO:
+ * Age information is missing
+ * Linking to other people is not working
+ * Partner information is missing
+ * Sorting children on age is disabled
+ * Profile pictures are missing
+ * Size should be reduced
+ * Should implement a fullscreen option
+ * Height should be adjusted if the window is resized
+ */
+
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");

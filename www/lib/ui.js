@@ -8,9 +8,9 @@ const utils = require("lib/utils");
 const bindings = require("lib/bindings");
 const bootstrap = require("bootstrap");
 
-ko.asyncComputed = function(fn, onError) {
+ko.asyncComputed = function(defaultValue, fn, onError, extend) {
     let promise = co.wrap(fn);
-    let result = ko.observable();
+    let result = ko.observable(defaultValue);
     let computed = ko.pureComputed(() => {
         promise()
         .then((data) => {
@@ -28,6 +28,10 @@ ko.asyncComputed = function(fn, onError) {
             }
         });
     });
+
+    if (extend) {
+        computed.extend(extend);
+    }
 
     return ko.pureComputed(() => {
         computed();
