@@ -231,7 +231,7 @@ ko.bindingHandlers.nodeselect = {
 
         return list.map((item) => {
             return {
-                path: root + "/" + item.name,
+                path: item.path,
                 node: item.node
             };
         });
@@ -279,6 +279,7 @@ ko.bindingHandlers.nodeselect = {
             }
         });
         $element.on("typeahead:change typeahead:select", () => {
+	// TODO: event, selection is in parameters, nno need for a lookup!
             ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"))
             .then((list) => {
                 if (list.length === 1) {

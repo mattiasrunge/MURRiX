@@ -22,7 +22,7 @@ module.exports = {
     }),
     searchPaths: ko.pureComputed(() => {
         if (module.exports.loggedIn()) {
-            return [ "/people", "/locations" ];
+            return [ "/people", "/locations", "/albums" ];
         }
 
         return [];

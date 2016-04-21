@@ -30,8 +30,8 @@ module.exports = {
 
         let app = koa();
 
-        if (params.bableCompileDirectory) {
-            yield fs.removeAsync(params.bableCompileDirectory);
+        if (params.cacheDirectory) {
+            yield fs.removeAsync(params.cacheDirectory);
         }
 
         store.create("uploadIds");

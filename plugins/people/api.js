@@ -15,7 +15,7 @@ let people = api.register("people", {
 
         if (!(yield vfs.resolve(auth.getAdminSession(), "/people", true))) {
             yield vfs.create(auth.getAdminSession(), "/people", "d");
-            yield vfs.chown(auth.getAdminSession(), "/people", "admin:users");
+            yield vfs.chown(auth.getAdminSession(), "/people", "admin", "users");
         }
     }),
     mkperson: function*(session, name, attributes) {

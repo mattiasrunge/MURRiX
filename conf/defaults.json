@@ -1,7 +1,5 @@
 {
-    "mongoUrl": "mongodb://localhost:27017/murrix_test_20160122",
-    "fileDirectory": "/home/mattias/murrix_data",
     "uploadDirectory": "/tmp",
-    "bableCompileDirectory": "/tmp/bableCompile",
+    "cacheDirectory": "/tmp/murrix_cache",
     "port": 8080
 }

@@ -15,7 +15,7 @@ let location = api.register("location", {
 
         if (!(yield vfs.resolve(auth.getAdminSession(), "/locations", true))) {
             yield vfs.create(auth.getAdminSession(), "/locations", "d");
-            yield vfs.chown(auth.getAdminSession(), "/locations", "admin:users");
+            yield vfs.chown(auth.getAdminSession(), "/locations", "admin", "users");
         }
     }),
     mklocation: function*(session, name, attributes) {

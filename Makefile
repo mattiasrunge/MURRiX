@@ -6,7 +6,7 @@ all: test lint coverage
 
 deps:
 	npm set progress=false
-	npm --cache ./node_modules/.npm-cache install
+	npm install
 
 test: $(DEPS)
 	./node_modules/.bin/mocha $(DEFAULT_FLAGS)

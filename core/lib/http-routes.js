@@ -69,7 +69,7 @@ module.exports = {
 
             let ext = path.extname(url);
             let filename = path.join(wwwPath, url);
-            let compiledFilename = path.join(configuration.bableCompileDirectory, url);
+            let compiledFilename = path.join(configuration.cacheDirectory, url);
 
             // Preprocess
 
@@ -131,7 +131,7 @@ module.exports = {
 
             yield next;
         },
-        staticFile(configuration.bableCompileDirectory),
+        staticFile(configuration.cacheDirectory),
         staticFile(wwwPath)
     ]
 };

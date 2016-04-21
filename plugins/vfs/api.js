@@ -109,7 +109,7 @@ let vfs = api.register("vfs", {
                     return false;
                 }
 
-                throw new Error("No such path: " + pathParts.join(":"));
+                throw new Error("No such (abspath=" + abspath + ") path: " + pathParts.join(":"));
             }
 
             node = yield db.findOne("nodes", { _id: child.id });
