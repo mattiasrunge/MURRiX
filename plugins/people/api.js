@@ -24,8 +24,24 @@ let people = api.register("people", {
         yield vfs.create(session, "/people/" + name + "/parents", "d");
         yield vfs.create(session, "/people/" + name + "/children", "d");
         yield vfs.create(session, "/people/" + name + "/homes", "d");
+        yield vfs.create(session, "/people/" + name + "/measurments", "d");
 
         return person;
+    },
+    addMeasurement: function*(session, abspath, name, time, value, unit) {
+        let node = yield vfs.resolve(session, abspath + "/measurments/" + name, true);
+
+        if (!node) {
+            node = yield vfs.create(session, abspath + "/measurments/" + name, "c", {
+                values: []
+            });
+        }
+
+        node.attributes.values.push({ time: time, value: value, unit: unit });
+
+        yield vfs.setattributes(session, abspath + "/measurments/" + name, {
+            values: node.attributes.values
+        });
     },
     find: function*(session, name) {
         return yield vfs.resolve(session, "/people/" + name, true);
