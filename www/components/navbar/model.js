@@ -31,5 +31,13 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.random = () => {
+        api.vfs.random(session.searchPaths(), 1)
+        .then((item) => {
+            if (item) {
+                loc.goto({ page: "node", path: item.path });
+            } else {
+                status.printError("No random node could be found");
+            }
+        });
     };
 });

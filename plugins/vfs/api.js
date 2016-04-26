@@ -185,6 +185,34 @@ let vfs = api.register("vfs", {
 
         return list;
     },
+    random: function*(session, abspaths, limit) {
+        let list = [];
+        let result = false;
+
+        for (let abspath of abspaths) {
+            let parent = yield vfs.resolve(session, abspath);
+
+            if (!(yield vfs.access(session, parent, "r"))) {
+                continue;
+            }
+
+            for (let child of parent.properties.children) {
+                list.push({ id: child.id, name: child.name, path: path.join(abspath, child.name) });
+            }
+        }
+
+        while (!result && list.length > 0) {
+            let index = Math.floor(Math.random() * list.length) + 1;
+            let child = list.splice(index, 1)[0];
+            let node = yield db.findOne("nodes", { _id: child.id });
+
+            if (yield vfs.access(session, node, "r")) {
+                result = { name: child.name, node: node, path: child.path };
+            }
+        }
+
+        return result;
+    },
     find: function*(session, abspath, search) {
         let list = [];
         let guard = [];
