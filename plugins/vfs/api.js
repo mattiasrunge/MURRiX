@@ -341,6 +341,8 @@ let vfs = api.register("vfs", {
             attributes: attributes || {}
         };
 
+        node.attributes.tags = node.attributes.tags || [];
+
         if (type === "u") {
             node.attributes.password = sha1(name);
             node.properties.mode = octal("770");
