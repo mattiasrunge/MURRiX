@@ -244,6 +244,17 @@ let auth = api.register("auth", {
             })
         };
     },
+    name: function*(session, uid) {
+        let users = yield vfs.list(auth.getAdminSession(), "/users");
+
+        for (let user of users) {
+            if (user.node.attributes.uid === uid) {
+                return user.node.attributes.name;
+            }
+        }
+
+        return false;
+    },
     uname: function*(session, uid) {
         let users = yield vfs.list(auth.getAdminSession(), "/users");
 

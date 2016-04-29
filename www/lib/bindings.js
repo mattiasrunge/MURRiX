@@ -14,6 +14,7 @@ const utils = require("lib/utils");
 const status = require("lib/status");
 const loc = require("lib/location");
 const typeahead = require("typeahead");
+const autosize = require("autosize");
 
 ko.bindingHandlers.map = {
     init: (element, valueAccessor) => {
@@ -77,6 +78,20 @@ ko.bindingHandlers.map = {
         element.map.setZoom(zoom);
 
 
+    }
+};
+
+ko.bindingHandlers.autosize = {
+    init: (element) => {
+        autosize(element);
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            autosize.destroy(element);
+        });
+    },
+    update: (element, valueAccessor) => {
+        valueAccessor()();
+        autosize.update(element);
     }
 };
 
@@ -179,6 +194,22 @@ ko.bindingHandlers.htmlSize = {
         } while (fileSizeInBytes > 1024);
 
         $(element).html(fileSizeInBytes.toFixed(1) + byteUnits[i]);
+    }
+};
+
+ko.bindingHandlers.unameNice = {
+    update: function(element, valueAccessor) {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        api.auth.name(value)
+        .then((name) => {
+            $element.text(name);
+        })
+        .catch((error) => {
+            $element.html("<span class='text-error'>unknown</span>");
+            status.printError(error);
+        });
     }
 };
 

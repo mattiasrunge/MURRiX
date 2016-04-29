@@ -49,6 +49,10 @@ let vfs = api.register("vfs", {
     access: function*(session, abspathOrNode, modestr) {
         let node = abspathOrNode;
 
+        if (session.almighty) {
+            return true;
+        }
+
         if (typeof node === "string") {
             node = yield vfs.resolve(session, abspathOrNode);
         }
@@ -87,7 +91,7 @@ let vfs = api.register("vfs", {
         let node = yield db.findOne("nodes", query, options);
 
         if (node && !(yield vfs.access(session, node, "r"))) {
-            throw new Error("No Permission");
+            throw new Error("Permission denied");
         }
 
         return node;

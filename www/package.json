@@ -7,7 +7,9 @@
   "license": "GPL-2.0",
   "dependencies": {
     "animate.css": "3.5.1",
+    "autosize": "^3.0.15",
     "bootstrap": "3.3.6",
+    "corejs-typeahead": "https://github.com/mattiasrunge/typeahead.js",
     "font-awesome": "^4.5.0",
     "jquery": "2.2.2",
     "knockout": "3.4.0",
@@ -17,7 +19,6 @@
     "requirejs-json": "0.0.3",
     "requirejs-text": "2.0.12",
     "snackbarjs": "1.1.0",
-    "corejs-typeahead": "https://github.com/mattiasrunge/typeahead.js",
     "typeahead.js-bootstrap-css": "^1.2.1"
   }
 }
