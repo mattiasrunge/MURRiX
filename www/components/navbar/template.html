@@ -2,12 +2,18 @@
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
-                <i class="fa fa-home fa-large" data-bind="visible: !loading()"></i>
-                <i class="fa fa-spinner fa-large fa-spin" data-bind="visible: loading"></i>
+                <i class="fa fa-home fa-large fa-fw" data-bind="visible: !loading()"></i>
+                <i class="fa fa-spinner fa-large fa-spin fa-fw" data-bind="visible: loading"></i>
             </a>
             <div class="navbar-form navbar-left">
-                <div class="form-group header-search" style="width: 600px;">
+                <div class="form-group header-search" style="width: 600px; position: relative;">
                     <input type="text" class="form-control" placeholder="Search for anything" data-bind="nodeselect: { root: searchPaths, path: path }" style="width: 100%;">
+                    <a class="star" href="#" data-bind="css: { active: starred }, attr: { title: starred() ? 'Click to unstar' : 'Click to star' }, click: toggleStar, visible: loggedIn() && path() !== ''">
+                        <span class="fa-stack">
+                            <i class="star-button fa fa-star fa-stack-1x"></i>
+                            <i class="outline fa fa-star-o fa-stack-1x"></i>
+                        </span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -17,11 +23,19 @@
 
         <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
             <li>
-                <a href="#" data-bind="click: random">
+                <a href="#" data-bind="click: random, visible: loggedIn()">
                     <i class="fa fa-random fa-large"></i>
                 </a>
             </li>
-            <li class="dropdown">
+            <li class="dropdown" data-bind="visible: stars().length > 0 && loggedIn()">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-star fa-large"></i>
+                </a>
+                <ul class="dropdown-menu" data-bind="foreach: stars">
+                    <li><a href="#" data-bind="location: { page: 'node', path: $data.path }, nodename: $data.path"></a></li>
+                </ul>
+            </li>
+            <li class="dropdown hide">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="fa fa-plus fa-large"></i>
                 </a>

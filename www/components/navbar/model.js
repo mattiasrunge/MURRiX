@@ -11,6 +11,8 @@ module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.loading;
     this.user = session.user;
     this.searchPaths = session.searchPaths;
+    this.stars = session.stars;
+    this.loggedIn = session.loggedIn;
     this.path = ko.pureComputed({
         read: () => {
             let page = ko.unwrap(loc.current().page);
@@ -29,6 +31,33 @@ module.exports = utils.wrapComponent(function*(params) {
             }
         }
     });
+    this.starred = ko.pureComputed(() => {
+        if (this.path() !== "") {
+            for (let star of session.stars()) {
+                if (star.path === this.path()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    });
+
+    this.toggleStar = () => {
+        api.auth.toggleStar(this.path())
+        .then((result) => {
+            session.stars(result.stars);
+
+            if (result.created) {
+                status.printSuccess(session.node().attributes.name + " starred");
+            } else {
+                status.printSuccess(session.node().attributes.name + " unstarred");
+            }
+        })
+        .catch((error) => {
+            status.printError(error);
+        });
+    };
 
     this.random = () => {
         api.vfs.random(session.searchPaths(), 1)

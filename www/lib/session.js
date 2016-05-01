@@ -9,16 +9,9 @@ module.exports = {
     user: ko.observable(false),
     username: ko.observable("guest"),
     personPath: ko.observable(false),
+    stars: ko.observableArray(),
     loggedIn: ko.pureComputed(() => {
         return module.exports.user() && module.exports.username() !== "guest";
-    }),
-    loadUser: co.wrap(function*() {
-        let userinfo = yield api.auth.whoami();
-        module.exports.user(userinfo.user);
-        module.exports.username(userinfo.username);
-        module.exports.personPath(userinfo.personPath);
-
-        console.log(userinfo);
     }),
     searchPaths: ko.pureComputed(() => {
         if (module.exports.loggedIn()) {
@@ -26,5 +19,14 @@ module.exports = {
         }
 
         return [];
+    }),
+    loadUser: co.wrap(function*() {
+        let userinfo = yield api.auth.whoami();
+        module.exports.user(userinfo.user);
+        module.exports.username(userinfo.username);
+        module.exports.personPath(userinfo.personPath);
+        module.exports.stars(userinfo.stars || []);
+
+        console.log(userinfo);
     })
 };

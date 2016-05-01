@@ -197,6 +197,22 @@ ko.bindingHandlers.htmlSize = {
     }
 };
 
+ko.bindingHandlers.nodename = {
+    update: function(element, valueAccessor) {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        api.vfs.resolve(value)
+        .then((node) => {
+            $element.text(node.attributes.name);
+        })
+        .catch((error) => {
+            $element.html("<span class='text-error'>unknown</span>");
+            status.printError(error);
+        });
+    }
+};
+
 ko.bindingHandlers.unameNice = {
     update: function(element, valueAccessor) {
         let value = ko.unwrap(valueAccessor());

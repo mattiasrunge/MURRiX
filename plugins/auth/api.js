@@ -93,12 +93,54 @@ let auth = api.register("auth", {
         let personPath = false;
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
         let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", true, true);
+        let stars = yield auth.getStars(session);
 
         if (person) {
             personPath = person.attributes.path;
         }
 
-        return { username: session.username, user: user, personPath: personPath };
+        return { username: session.username, user: user, personPath: personPath, stars: stars };
+    },
+    getStars: function*(session) {
+        if (session.username === "guest") {
+            return [];
+        }
+
+        if (yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/stars", true, true)) {
+            let list = yield vfs.list(auth.getAdminSession(), "/users/" + session.username + "/stars");
+
+            return list.map((item) => {
+                delete item.node;
+                return item;
+            });
+        }
+
+        return [];
+    },
+    toggleStar: function*(session, abspath) {
+        if (session.username === "guest") {
+            throw new Error("Not allowed");
+        }
+
+        yield vfs.ensure(auth.getAdminSession(), "/users/" + session.username + "/stars", "d");
+
+        let stars = yield auth.getStars(session);
+        let star = stars.filter((star) => star.path === abspath)[0];
+
+        if (star) {
+            yield vfs.unlink(auth.getAdminSession(), "/users/" + session.username + "/stars/" + star.name);
+
+            let index = stars.indexOf(star);
+
+            if (index !== -1) {
+                stars.splice(index, 1);
+            }
+        } else {
+            yield vfs.symlink(auth.getAdminSession(), abspath, "/users/" + session.username + "/stars");
+            stars = yield auth.getStars(session);
+        }
+
+        return { stars: stars, created: !star };
     },
     groupList: function*(session, username) {
         if (username !== session.username && session.username !== "admin") {

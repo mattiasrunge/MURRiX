@@ -1,11 +1,11 @@
 <div data-bind="foreach: list">
-    <div class="row bottom-border" style="margin-top: 20px; padding-bottom: 10px;">
+    <div class="row" style="margin-top: 20px; padding-bottom: 10px;">
         <div class="col-md-2">
             <img class="img-circle" src="http://lorempixel.com/50/50" />
         </div>
         <div class="col-md-10" style="padding-left: 0;">
-            <div data-bind="unameNice: $data.node.properties.birthuid"></div>
-            <small class="text-muted" data-bind="datetimeAgo: $data.node.properties.birthtime"></small>
+            <small class="pull-right" data-bind="datetimeAgo: $data.node.properties.birthtime"></small>
+            <h5 data-bind="unameNice: $data.node.properties.birthuid"></h5>
             <p style="margin-top: 10px; white-space: pre-line;" data-bind="text: $data.node.attributes.text"></p>
         </div>
     </div>
@@ -15,8 +15,8 @@
         <img class="img-circle" src="http://lorempixel.com/50/50" />
     </div>
     <div class="col-md-10" style="padding-left: 0;">
-        <div data-bind="text: user().attributes.name"></div>
-        <textarea style="margin-top: 10px;" rows="1" class="form-control" data-bind="textInput: comment, event: { keypress: post }, autosize: comment, disable: loading" placeholder="Write a comment..."></textarea>
+        <h5 data-bind="text: user().attributes.name"></h5>
+        <textarea style="margin-top: 10px; resize: none;" rows="1" class="form-control" data-bind="textInput: comment, event: { keypress: post }, autosize: comment, disable: loading" placeholder="Write a comment..."></textarea>
     </div>
 </div>
 
