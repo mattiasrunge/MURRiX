@@ -19,10 +19,13 @@ const configuration = require("./configuration");
 const routes = require("./http-routes");
 const store = require("./store");
 const api = require("api.io");
+const db = require("./db");
+const log = require("./log")(module);
 
 let server;
 let sessions = {};
 let params = {};
+let timer = null;
 
 module.exports = {
     init: co(function*(config, version) {
@@ -33,6 +36,12 @@ module.exports = {
         if (params.cacheDirectory) {
             yield fs.removeAsync(params.cacheDirectory);
         }
+
+        yield module.exports.loadSessions();
+
+        timer = setInterval(() => {
+            module.exports.persistSessions();
+        }, 1000 * 60 * 5);
 
         store.create("uploadIds");
 
@@ -114,9 +123,32 @@ module.exports = {
 
         server.listen(configuration.port);
     }),
+    loadSessions: co(function*() {
+        let list = yield db.find("sessions");
+
+        log.info("Loading " + list.length + " sessions");
+
+        for (let session of list) {
+            sessions[session._id] = session;
+        }
+    }),
+    persistSessions: co(function*() {
+        log.info("Persisting " + Object.keys(sessions).length + " sessions");
+
+        for (let sessionId of Object.keys(sessions)) {
+            sessions[sessionId]._id = sessionId;
+            yield db.updateOne("sessions", sessions[sessionId], { upsert: true });
+        }
+    }),
     stop: co(function*() {
+        if (timer) {
+            clearInterval(timer);
+            timer = null;
+        }
+
         if (server) {
             yield promisify(server.destroy, { context: server })();
+            yield module.exports.persistSessions();
         }
     })
 };
