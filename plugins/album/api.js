@@ -21,7 +21,7 @@ let album = api.register("album", {
     mkalbum: function*(session, name, attributes) {
         let album = yield vfs.create(session, "/albums/" + name, "a", attributes);
 
-        yield vfs.create(session, "/albums/" + name + "/residents", "d");
+        yield vfs.create(session, "/albums/" + name + "/files", "d");
 
         return album;
     },

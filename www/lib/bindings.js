@@ -15,6 +15,12 @@ const status = require("lib/status");
 const loc = require("lib/location");
 const typeahead = require("typeahead");
 const autosize = require("autosize");
+const LazyLoad = require("lazyload");
+
+let lazyload = new LazyLoad({
+    show_while_loading: true,
+    elements_selector: "img.lazyload"
+});
 
 ko.bindingHandlers.map = {
     init: (element, valueAccessor) => {
@@ -375,5 +381,57 @@ ko.bindingHandlers.nodeselect = {
             $element.removeClass("valid");
             $element.typeahead("val", "");
         }
+    }
+};
+
+ko.bindingHandlers.picture = {
+    update: (element, valueAccessor) => {
+        let id = ko.unwrap(valueAccessor());
+        let $element = $(element);
+        let width = parseInt($element.css("width"), 10);
+        let height = parseInt($element.css("height"), 10);
+        let image = new Image();
+
+        image.onerror = (error) => {
+            status.printError(error);
+            // TODO: Set failed image
+        };
+
+        image.onload = () => {
+            $element.attr("src", image.src);
+            console.log("image on load", image.src);
+        };
+
+        api.file.getPictureFilename(id, width, height)
+        .then((filename) => {
+            image.src = "/" + filename;
+        })
+        .catch((error) => {
+            status.printError(error);
+            // TODO: Set failed image
+        });
+
+        // TODO: Set loading image
+    }
+};
+
+ko.bindingHandlers.pictures = {
+    update: (element, valueAccessor) => {
+        let data = ko.unwrap(valueAccessor());
+        let items = ko.unwrap(data.items);
+        let width = ko.unwrap(data.width);
+        let height = ko.unwrap(data.height);
+        let margin = ko.unwrap(data.margin) || 0;
+        let classes = ko.unwrap(data.classes) || "";
+        let $element = $(element);
+
+        $element.empty();
+
+        for (let item of items) {
+            let $image = $("<img data-original='" + item.filename + "' style='width: " + width + "px; height: " + height + "px; background-color: black; margin-right: " + margin + "px; margin-bottom: " + margin + "px;' class='lazyload " + classes + "'>");
+            $element.append($image);
+        }
+
+        lazyload.update();
     }
 };

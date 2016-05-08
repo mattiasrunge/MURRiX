@@ -1,0 +1,18 @@
+<div>
+    <img src="http://lorempixel.com/184/184">
+
+    <ul class="nav nav-pills nav-stacked">
+        <li data-bind="css: { active: section() === 'about' }">
+            <a data-bind="location: { section: 'about' }">
+                <i data-bind="attr: { class: 'fa fa-fw fa-user' }"></i>
+                About
+            </a>
+        </li>
+        <li data-bind="css: { active: section() === 'media' }">
+            <a data-bind="location: { section: 'media' }">
+                <i data-bind="attr: { class: 'fa fa-fw fa-file-image-o' }"></i>
+                Media
+            </a>
+        </li>
+    </ul>
+</div>

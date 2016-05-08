@@ -12,6 +12,12 @@ let Database = function() {
         db = yield MongoClient.connect(url);
     });
 
+    this.createIndexes = (collectionName, indexes) => {
+        let collection = db.collection(collectionName);
+
+        return collection.createIndexes(indexes);
+    };
+
     this.find = (collectionName, query, options) => {
         let collection = db.collection(collectionName);
 

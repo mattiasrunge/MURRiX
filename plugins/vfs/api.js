@@ -9,15 +9,13 @@ const uuid = require("node-uuid");
 const octal = require("octal");
 const sha1 = require("sha1");
 const fs = require("fs-extra-promise");
-const mime = require("mime");
-const checksum = promisifyAll(require("checksum"));
 const api = require("api.io");
 const db = require("../../core/lib/db");
 
 let params = {};
 
 let vfs = api.register("vfs", {
-    deps: [],
+    deps: [ ],
     init: co(function*(config) {
         params = config;
 
@@ -45,6 +43,14 @@ let vfs = api.register("vfs", {
 
             yield db.insertOne("nodes", root);
         }
+
+        yield db.createIndexes("nodes", [
+            {
+                key: {
+                    "properties.type": 1
+                }
+            }
+        ]);
     }),
     access: function*(session, abspathOrNode, modestr) {
         let node = abspathOrNode;
@@ -76,6 +82,10 @@ let vfs = api.register("vfs", {
         return (node.properties.mode & mode) > 0;
     },
     query: function*(session, query, options) {
+        if (options && options.fields) {
+            options.fields["properties"] = 1;
+        }
+
         let nodes = yield db.find("nodes", query, options);
         let results = [];
 
@@ -88,6 +98,10 @@ let vfs = api.register("vfs", {
         return results;
     },
     queryOne: function*(session, query, options) {
+        if (options && options.fields) {
+            options.fields["properties"] = 1;
+        }
+        
         let node = yield db.findOne("nodes", query, options);
 
         if (node && !(yield vfs.access(session, node, "r"))) {
@@ -97,6 +111,10 @@ let vfs = api.register("vfs", {
         return node;
     },
     resolve: function*(session, abspath, noerror, nofollow) {
+        if (typeof abspath !== "string") {
+            return abspath;
+        }
+
         let pathParts = abspath.replace(/\/$/g, "").split("/");
         let root = yield db.findOne("nodes", { "properties.type": "r" });
 
@@ -345,7 +363,7 @@ let vfs = api.register("vfs", {
             attributes: attributes || {}
         };
 
-        node.attributes.tags = node.attributes.tags || [];
+        node.attributes.labels = node.attributes.labels || [];
 
         if (type === "u") {
             node.attributes.password = sha1(name);
@@ -353,30 +371,25 @@ let vfs = api.register("vfs", {
         } else if (type === "g") {
             node.properties.mode = octal("770");
         } else if (type === "f") {
-            if (!node.attributes._uploadId) {
-                throw new Error("File must have an upload id attribute");
-            }
-
-            if (!node.attributes.filename) {
+            if (!node.attributes.name) {
                 throw new Error("File must have a filename attribute");
             }
 
-            let ext = path.extname(node.attributes.filename);
-            let uploadId = node.attributes._uploadId;
-            delete node.attributes._uploadId;
+            let ext = path.extname(node.attributes.name);
+            let source = node.attributes._source;
+            delete node.attributes._source;
 
             node.attributes.diskfilename = node._id + ext;
-            node.attributes.mimetype = mime.lookup(ext);
-
-            let sha1 = yield checksum.fileAsync(session.uploads[uploadId]);
-
-            if (node.attributes.sha1 !== sha1) {
-                throw new Error("Checksum does not match, upload failed");
-            }
 
             let diskfilepath = path.join(params.fileDirectory, node.attributes.diskfilename);
 
-            yield fs.moveAsync(session.uploads[uploadId], diskfilepath);
+            if (source.mode === "symlink") {
+                yield fs.ensureSymlinkAsync(source.filename, diskfilepath);
+            } else if (source.mode === "copy") {
+                yield fs.copyAsync(source.filename, diskfilepath);
+            } else {
+                yield fs.moveAsync(source.filename, diskfilepath);
+            }
         }
 
         parent.properties.children.push({ id: node._id, name: name });
@@ -435,18 +448,12 @@ let vfs = api.register("vfs", {
             destpath = destpath + "/" + name
         }
 
-        yield vfs.create(session, destpath, "s", {
+        return yield vfs.create(session, destpath, "s", {
             path: srcpath
         });
     },
-    link: function*(session, srcpathOrNode, destpath) {
-        // console.log("linking", srcpathOrNode, destpath);
-
-        let srcnode = srcpathOrNode;
-
-        if (typeof srcnode === "string") {
-            srcnode = yield vfs.resolve(session, srcnode, false, true);
-        }
+    link: function*(session, srcpath, destpath) {
+        let srcnode = yield vfs.resolve(session, srcpath, false, true);
 
         if (!(yield vfs.access(session, srcnode, "r"))) {
             throw new Error("Permission denied");

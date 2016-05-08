@@ -132,6 +132,7 @@ module.exports = {
             yield next;
         },
         staticFile(configuration.cacheDirectory),
-        staticFile(wwwPath)
+        staticFile(wwwPath),
+        staticFile(configuration.mcsDirectory)
     ]
 };

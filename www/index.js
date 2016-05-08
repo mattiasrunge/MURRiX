@@ -13,6 +13,7 @@ require.config({
         moment: "node_modules/moment/min/moment.min",
         snackbar: "node_modules/snackbarjs/dist/snackbar.min",
         autosize: "node_modules/autosize/dist/autosize.min",
+        lazyload: "node_modules/vanilla-lazyload/dist/lazyload",
         "socket.io-client": "/socket.io/socket.io",
         "api.io-client": "/api.io/api.io-client",
         "co": "/api.io/co"

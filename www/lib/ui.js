@@ -12,7 +12,9 @@ ko.asyncComputed = function(defaultValue, fn, onError, extend) {
     let promise = co.wrap(fn);
     let result = ko.observable(defaultValue);
     let computed = ko.pureComputed(() => {
-        promise()
+        promise((value) => {
+            result(value);
+        })
         .then((data) => {
             result(data);
         })

@@ -2,6 +2,9 @@
     <div data-bind="if: type() === 'p'">
         <people-page-person params="{ node: node, path: path, section: section }"></people-page-person>
     </div>
+    <div data-bind="if: type() === 'a'">
+        <album-page-album params="{ node: node, path: path, section: section }"></album-page-album>
+    </div>
 </div>
 <div data-bind="if: !node()">
     Invalid path

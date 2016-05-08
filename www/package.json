@@ -19,6 +19,7 @@
     "requirejs-json": "0.0.3",
     "requirejs-text": "2.0.12",
     "snackbarjs": "1.1.0",
-    "typeahead.js-bootstrap-css": "^1.2.1"
+    "typeahead.js-bootstrap-css": "^1.2.1",
+    "vanilla-lazyload": "^1.5.7"
   }
 }

@@ -1,0 +1,8 @@
+﻿<div style="margin-top: 15px;">
+    <div data-bind="if: section() === 'about'">
+        <album-section-about params="{ node: node, path: path }"></album-section-about>
+    </div>
+    <div data-bind="if: section() === 'media'">
+        <album-section-media params="{ node: node, path: path }"></album-section-media>
+    </div>
+</div>

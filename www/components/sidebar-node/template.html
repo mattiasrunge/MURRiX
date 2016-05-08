@@ -1,6 +1,9 @@
 <div data-bind="if: type() === 'p'">
     <people-sidebar-person params="{ node: node, section: section }"></people-sidebar-person>
 </div>
+<div data-bind="if: type() === 'a'">
+    <album-sidebar-album params="{ node: node, section: section }"></album-sidebar-album>
+</div>
 
 <div class="top-border text-muted" data-bind="if: node, visible: node" style="margin-top: 15px; padding-top: 15px; font-size: 10px;">
     <div>
@@ -9,7 +12,7 @@
     <div>
         Created <span data-bind="datetimeAgo: node().properties.birthtime"></span>
     </div>
-    <div>
+    <div class="hide">
         <a href="#" data-bind="location: { section: 'history' }">Full history</a>
     </div>
 </div>

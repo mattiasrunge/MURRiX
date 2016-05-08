@@ -1,0 +1,23 @@
+﻿<div class="fadeInRight animated">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 data-bind="text: node().attributes.fullname ? node().attributes.fullname : node().attributes.name"></h2>
+            <p data-bind="html: node().attributes.description"></p>
+        </div>
+        <div class="col-md-4 left-border">
+            <file-mosaic params="{ path: path, size: size }"></file-mosaic>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="bottom-border" style="margin-left: 15px; margin-right: 15px; margin-top: 15px;"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Comments</h3>
+
+            <comment-widget-comments params="{ path: path }"></comment-widget-comments>
+        </div>
+    </div>
+</div>
