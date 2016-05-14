@@ -8,13 +8,22 @@ const session = require("lib/session");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.user = session.user;
+    this.uid = ko.pureComputed(() => {
+        if (!this.user()) {
+            return false;
+        }
+
+        return this.user().attributes.uid;
+    });
     this.path = params.path;
     this.loading = status.create();
     this.newFlag = ko.observable(false);
     this.list = ko.asyncComputed([], function*() {
         this.newFlag();
         this.newFlag(false);
-        return yield api.comment.list(ko.unwrap(this.path));
+        let list = yield api.comment.list(ko.unwrap(this.path));
+        console.log(list);
+        return list;
     }.bind(this), (error) => {
         status.printError(error);
         return [];

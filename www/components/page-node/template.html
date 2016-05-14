@@ -5,6 +5,9 @@
     <div data-bind="if: type() === 'a'">
         <album-page-album params="{ node: node, path: path, section: section }"></album-page-album>
     </div>
+    <div data-bind="if: type() === 'l'">
+        <location-page-location params="{ node: node, path: path, section: section }"></location-page-location>
+    </div>
 </div>
 <div data-bind="if: !node()">
     Invalid path

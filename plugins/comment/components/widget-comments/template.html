@@ -1,22 +1,30 @@
 <div data-bind="foreach: list">
-    <div class="row" style="margin-top: 20px; padding-bottom: 10px;">
-        <div class="col-md-2">
-            <img class="img-circle" src="http://lorempixel.com/50/50" />
+    <div class="row">
+        <div class="col-md-2" style="padding-top: 5px;">
+            <auth-picture-user params="{ size: 20, uid: $data.node.properties.birthuid, classes: 'img-circle' }"></auth-picture-user>
         </div>
-        <div class="col-md-10" style="padding-left: 0;">
-            <small class="pull-right" data-bind="datetimeAgo: $data.node.properties.birthtime"></small>
-            <h5 data-bind="unameNice: $data.node.properties.birthuid"></h5>
-            <p style="margin-top: 10px; white-space: pre-line;" data-bind="text: $data.node.attributes.text"></p>
+        <div class="col-md-10">
+            <h6 data-bind="unameNice: $data.node.properties.birthuid"></h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <small class="text-muted" style="font-size: 9px;" data-bind="datetimeAgo: $data.node.properties.birthtime"></small>
+            <p style="margin-top: 10px; white-space: pre-line; font-size: 10px;" data-bind="text: $data.node.attributes.text"></p>
         </div>
     </div>
 </div>
-<div class="row" style="margin-top: 20px; padding-bottom: 20px;">
-    <div class="col-md-2">
-        <img class="img-circle" src="http://lorempixel.com/50/50" />
+<div class="row">
+    <div class="col-md-2" style="padding-top: 5px;">
+        <auth-picture-user params="{ size: 20, uid: uid, classes: 'img-circle' }"></auth-picture-user>
     </div>
-    <div class="col-md-10" style="padding-left: 0;">
-        <h5 data-bind="text: user().attributes.name"></h5>
-        <textarea style="margin-top: 10px; resize: none;" rows="1" class="form-control" data-bind="textInput: comment, event: { keypress: post }, autosize: comment, disable: loading" placeholder="Write a comment..."></textarea>
+    <div class="col-md-10">
+        <h6 data-bind="text: user().attributes.name"></h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <textarea style="margin-top: 5px; resize: none; font-size: 10px;" rows="1" class="form-control" data-bind="textInput: comment, event: { keypress: post }, autosize: comment, disable: loading" placeholder="Write a comment..."></textarea>
     </div>
 </div>
 

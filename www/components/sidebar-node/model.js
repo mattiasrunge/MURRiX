@@ -17,4 +17,5 @@ module.exports = utils.wrapComponent(function*(params) {
         return ko.unwrap(loc.current().section) || "about";
     });
     this.node = session.node;
+    this.path = session.path;
 });

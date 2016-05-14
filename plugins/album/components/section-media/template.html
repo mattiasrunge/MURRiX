@@ -1,7 +1,18 @@
 ﻿<div class="fadeInRight animated">
     <div class="row">
-        <div class="col-md-12" style="padding-bottom: 15px;">
-            <file-grid params="{ path: path, size: size }"></file-grid>
+        <div class="col-md-8">
+            <h2 data-bind="text: node().attributes.name"></h2>
+            <node-description params="{ node: node }"></node-description>
+            <node-labels params="{ node: node }"></node-labels>
+        </div>
+        <div class="col-md-4 left-border">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <file-grid class="top-border" style="display: block; margin-top: 15px; padding-top: 15px; padding-bottom: 15px;" params="{ path: path, size: size }"></file-grid>
         </div>
     </div>
 </div>

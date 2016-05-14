@@ -1,11 +1,23 @@
 ﻿<div class="fadeInRight animated">
     <div class="row">
         <div class="col-md-8">
-            <h2 data-bind="text: node().attributes.fullname ? node().attributes.fullname : node().attributes.name"></h2>
-            <p data-bind="html: node().attributes.description"></p>
+            <h2 data-bind="text: node().attributes.name"></h2>
+            <node-description params="{ node: node }"></node-description>
+            <node-labels params="{ node: node }"></node-labels>
         </div>
         <div class="col-md-4 left-border">
-            <file-mosaic params="{ path: path, size: size }"></file-mosaic>
+            <table class="table node-table text-muted">
+                <tbody>
+                    <tr>
+                        <td><strong>Birthday</strong></td>
+                        <td data-bind="text: 'abc'"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Age</strong></td>
+                        <td data-bind="text: 'abc'"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -14,7 +26,10 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
+            <h3>In this album</h3>
+        </div>
+        <div class="col-md-6">
             <h3>Comments</h3>
 
             <comment-widget-comments params="{ path: path }"></comment-widget-comments>

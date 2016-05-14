@@ -1,117 +1,112 @@
 ﻿<script type="text/html" id="personRelationsTemplate">
+    <table style="text-align: center;" class="relation-table">
+        <tbody>
+            <!-- ko if: $data.tree.parents().length > 0 -->
+                <tr class="relation-parent-row" data-bind="visible: $data.tree.parentsVisible">
+                    <td data-bind="foreach: $data.tree.parents" style="white-space: nowrap; line-height: normal; padding: 0px; margin: 0px; padding-left: 15px; padding-right: 15px;"><div style="display: inline-block; vertical-align: bottom;" data-bind="template: { name: 'personRelationsTemplate', data: $data }"></div></td>
+                </tr>
+            <!-- /ko -->
+            <tr>
+                <td style="line-height: normal; padding: 0px;">
+                    <!-- ko if: $data.tree.type === 'child' -->
+                        <div class="relation-horizontal-line-left" data-bind="css: { 'relation-horizontal-line-hide': $data.tree.first }"></div><!--
+                        --><div class="relation-horizontal-line-right" data-bind="css: { 'relation-horizontal-line-hide': $data.tree.last }"></div>
+                    <!-- /ko -->
 
-  <table style="text-align: center;" class="relation-table">
-    <tbody>
-      <!-- ko if: $data.tree.parents().length > 0 -->
-        <tr class="relation-parent-row" data-bind="visible: $data.tree.parentsVisible">
-          <td data-bind="foreach: $data.tree.parents" style="white-space: nowrap; line-height: normal; padding: 0px; margin: 0px; padding-left: 15px; padding-right: 15px;"><div style="display: inline-block; vertical-align: bottom;" data-bind="template: { name: 'personRelationsTemplate', data: $data }"></div></td>
-        </tr>
-      <!-- /ko -->
-      <tr>
-        <td style="line-height: normal; padding: 0px;">
-          <!-- ko if: $data.tree.type === 'child' -->
-            <div class="relation-horizontal-line-left" data-bind="css: { 'relation-horizontal-line-hide': $data.tree.first }"></div><!--
-            --><div class="relation-horizontal-line-right" data-bind="css: { 'relation-horizontal-line-hide': $data.tree.last }"></div>
-          <!-- /ko -->
+                    <!-- ko if: $data.tree.parents().length > 0 || $data.tree.type === 'child' -->
+                        <div style="height: 40px; width: 2px; background-color: #ccc; margin-left: auto; margin-right: auto; margin-top: -5px; overflow: visible;">
+                            <button data-bind="visible: $data.tree.type !== 'child', click: $data.tree.expandParents" class="relation-expand relation-parent-expand">
+                                <i data-bind="visible: !$data.tree.parentsVisible()" class="fa fa-plus"></i>
+                                <i data-bind="visible: $data.tree.parentsVisible()" class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    <!-- /ko -->
 
-          <!-- ko if: $data.tree.parents().length > 0 || $data.tree.type === 'child' -->
-            <div style="height: 40px; width: 2px; background-color: #ccc; margin-left: auto; margin-right: auto; margin-top: -5px; overflow: visible;">
-              <button data-bind="visible: $data.tree.type !== 'child', click: $data.tree.expandParents" class="relation-expand relation-parent-expand">
-                <i data-bind="visible: !$data.tree.parentsVisible()" class="fa fa-plus"></i>
-                <i data-bind="visible: $data.tree.parentsVisible()" class="fa fa-minus"></i>
-              </button>
-            </div>
-          <!-- /ko -->
+                    <div data-bind="css: { 'relation-me': $data.tree.type === 'me' }" style="display: inline-block; position: relative;">
 
-          <div data-bind="css: { 'relation-me': $data.tree.type === 'me' }" style="display: inline-block; position: relative;">
+                        <div data-bind="style: { zoom: $component.zoom }" style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 90px;">
 
-            <div data-bind="style: { zoom: $component.zoom }" style="vertical-align: top; margin-left: auto; margin-right: auto; width: 320px; height: 90px;">
+                            <div class="box-content relation-person-box-small" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: $component.zoom() <= 0.7">
 
-              <div class="box-content relation-person-box-small" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: $component.zoom() <= 0.7">
+                                <div class="relation-person-image-small">
+                                    <file-profile-picture params="{ size: 88, path: $data.tree.path, nolazyload: true }"></file-profile-picture>
+                                </div>
 
-                <div class="relation-person-image-small">
-                  <div style="width: 88px; height: 88px;" data-bind="profilePicture: { node: $data, width: 250, height: 250 }"></div>
-                </div>
+                                <div class="relation-person-image-small-title" data-bind="css: { 'relation-person-title-male': $data.attributes.gender === 'm', 'relation-person-title-female': $data.attributes.gender === 'f' }">
+                                    <a src="#" data-bind="location: { page: 'node', path: $data.tree.path }, text: $data.attributes.name"></a>
+                                </div>
+                            </div>
 
-                <div class="relation-person-image-small-title" data-bind="css: { 'relation-person-title-male': $data.attributes.gender === 'm', 'relation-person-title-female': $data.attributes.gender === 'f' }">
-                  <a src="#" data-bind="attr: { href: '#node/' + $data._id + '/family' }">
-                    <span data-bind="text: $data.attributes.name"></span>
-                  </a>
-                </div>
-              </div>
+                            <div class="box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: $component.zoom() > 0.7">
 
-              <div class="box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: $component.zoom() > 0.7">
+                                <div class="relation-person-image">
+                                    <file-profile-picture params="{ size: 88, path: $data.tree.path, nolazyload: true }"></file-profile-picture>
+                                </div>
 
-                <div class="relation-person-image">
-                  <div style="width: 88px; height: 88px;" data-bind="profilePicture: { node: $data, width: 250, height: 250 }"></div>
-                </div>
+                                <div class="relation-person-title">
+                                    <div class="relation-person-title-background" data-bind="css: { 'relation-person-title-male': $data.attributes.gender === 'm', 'relation-person-title-female': $data.attributes.gender === 'f' }"></div>
+                                        <a src="#" data-bind="location: { page: 'node', path: $data.tree.path }, text: $data.attributes.name"></a>
+                                </div>
 
-                <div class="relation-person-title">
-                  <div class="relation-person-title-background" data-bind="css: { 'relation-person-title-male': $data.attributes.gender === 'm', 'relation-person-title-female': $data.attributes.gender === 'f' }"></div>
-                  <a src="#" data-bind="attr: { href: '#node/' + $data._id + '/family' }">
-                    <span data-bind="text: $data.attributes.name"></span>
-                  </a>
-                </div>
+                                <div style="padding-left: 100px; font-size: 12px;">
+                                    <!--<div data-bind="visible: $data.ageInfo.birth || $data.ageInfo.death" style="margin-bottom: 10px;">
+                                        <i class="fa fa-calendar"></i>
+                                        <span class="relation-person-birth" data-bind="visible: $data.ageInfo.birth, text: $data.ageInfo.birth"></span>
+                                        <span class="relation-person-death" data-bind="visible: $data.ageInfo.death">&mdash; <span data-bind="text: $data.ageInfo.death"></span></span>
+                                    </div>-->
+                                    <div>
+                                        <i class="fa fa-heart"></i>
+                                        <people-partner-link class="relation-person-partner" params="{ path: $data.tree.path }"></people-partner-link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div style="padding-left: 100px; font-size: 12px;">
-                  <!--<div data-bind="visible: $data.ageInfo.birth || $data.ageInfo.death" style="margin-bottom: 10px;">
-                    <i class="fa fa-calendar"></i>
-                    <span class="relation-person-birth" data-bind="visible: $data.ageInfo.birth, text: $data.ageInfo.birth"></span>
-                    <span class="relation-person-death" data-bind="visible: $data.ageInfo.death">&mdash; <span data-bind="text: $data.ageInfo.death"></span></span>
-                  </div>
-                  <div data-bind="if: $data.family._partner">
-                    <i class="fa fa-heart"></i>
-                    <a href="#" class="relation-person-partner" data-bind="nodeName: $data.family._partner, attr: { href: '#node/' + $data.family._partner + '/family' }"></a>-->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                    <!-- ko if: $data.tree.children().length > 0 || $data.tree.type === 'parent' -->
+                        <div style="height: 40px; width: 2px; background-color: #ccc; margin-left: auto; margin-right: auto; margin-bottom: -13px; overflow: visible;">
+                            <button data-bind="visible: $data.tree.type !== 'parent', click: $data.tree.expandChildren" class="relation-expand relation-child-expand">
+                                <i data-bind="visible: !$data.tree.childrenVisible()" class="fa fa-plus"></i>
+                                <i data-bind="visible: $data.tree.childrenVisible()" class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    <!-- /ko -->
 
-          <!-- ko if: $data.tree.children().length > 0 || $data.tree.type === 'parent' -->
-            <div style="height: 40px; width: 2px; background-color: #ccc; margin-left: auto; margin-right: auto; margin-bottom: -13px; overflow: visible;">
-              <button data-bind="visible: $data.tree.type !== 'parent', click: $data.tree.expandChildren" class="relation-expand relation-child-expand">
-                <i data-bind="visible: !$data.tree.childrenVisible()" class="fa fa-plus"></i>
-                <i data-bind="visible: $data.tree.childrenVisible()" class="fa fa-minus"></i>
-              </button>
-            </div>
-          <!-- /ko -->
-
-          <!-- ko if: $data.tree.type === 'parent' -->
-            <div class="relation-horizontal-line-left" data-bind="css: { 'relation-horizontal-line-hide': $data.tree.first }"></div><!--
-            --><div class="relation-horizontal-line-right" data-bind="css: { 'relation-horizontal-line-hide': $data.tree.last }"></div>
-          <!-- /ko -->
-        </td>
-      </tr>
-      <!-- ko if: $data.tree.children().length > 0 -->
-        <tr class="relation-child-row" data-bind="visible: $data.tree.childrenVisible">
-          <td data-bind="foreach: $data.tree.children" style="white-space: nowrap; line-height: normal; padding: 0px; margin: 0px; padding-left: 15px; padding-right: 15px;"><div style="display: inline-block; vertical-align: top;" data-bind="template: { name: 'personRelationsTemplate', data: $data }"></div></td>
-        </tr>
-      <!-- /ko -->
-    </tbody>
-  </table>
+                    <!-- ko if: $data.tree.type === 'parent' -->
+                        <div class="relation-horizontal-line-left" data-bind="css: { 'relation-horizontal-line-hide': $data.tree.first }"></div><!--
+                        --><div class="relation-horizontal-line-right" data-bind="css: { 'relation-horizontal-line-hide': $data.tree.last }"></div>
+                    <!-- /ko -->
+                </td>
+            </tr>
+            <!-- ko if: $data.tree.children().length > 0 -->
+                <tr class="relation-child-row" data-bind="visible: $data.tree.childrenVisible">
+                    <td data-bind="foreach: $data.tree.children" style="white-space: nowrap; line-height: normal; padding: 0px; margin: 0px; padding-left: 15px; padding-right: 15px;"><div style="display: inline-block; vertical-align: top;" data-bind="template: { name: 'personRelationsTemplate', data: $data }"></div></td>
+                </tr>
+            <!-- /ko -->
+        </tbody>
+    </table>
 </script>
 
 <div style="overflow: hidden; position: relative; background-color: #eaeaea; margin-top: -15px; margin-left: -15px;" data-bind="if: person() !== false, style: { height: height() + 'px' }" id="relation-element">
-  <div class="relation-container" data-bind="event: { mousedown: startDragHandler, mousemove: dragHandler, mouseup: stopDragHandler, mousewheel: scrollHandler, DOMMouseScroll: scrollHandler }">
+    <div class="relation-container" data-bind="event: { mousedown: startDragHandler, mousemove: dragHandler, mouseup: stopDragHandler, mousewheel: scrollHandler, DOMMouseScroll: scrollHandler }">
 
-    <div class="relation-zoom-control">
-      <div class="line"></div>
-      <div class="inc" data-bind="click: zoomInc">
-        <div style="margin-left: 4px; margin-top: 2px;"><i class="fa fa-plus"></i></div>
-      </div>
-      <div class="mark-container" data-bind="event: { mousedown: startDragMarkHandler }">
-        <div class="mark">
-          <div style="margin-left: 4px; margin-top: -2px;"><i class="fa fa-minus"></i></div>
+        <div class="relation-zoom-control">
+            <div class="line"></div>
+            <div class="inc" data-bind="click: zoomInc">
+                <div style="margin-left: 4px; margin-top: 2px;"><i class="fa fa-plus"></i></div>
+            </div>
+            <div class="mark-container" data-bind="event: { mousedown: startDragMarkHandler }">
+                <div class="mark">
+                    <div style="margin-left: 4px; margin-top: -2px;"><i class="fa fa-minus"></i></div>
+                </div>
+            </div>
+            <div class="dec" data-bind="click: zoomDec">
+                <div style="margin-left: 4px; margin-top: 2px;"><i class="fa fa-minus"></i></div>
+            </div>
         </div>
-      </div>
-      <div class="dec" data-bind="click: zoomDec">
-        <div style="margin-left: 4px; margin-top: 2px;"><i class="fa fa-minus"></i></div>
-      </div>
-    </div>
 
-    <div id="relation-canvas" style="position: absolute; top: 0px; left: 0px;">
-      <div data-bind="template: { name: 'personRelationsTemplate', data: person, if: person, afterRender: afterRender.bind($data) }"></div>
+        <div id="relation-canvas" style="position: absolute; top: 0px; left: 0px;">
+            <div data-bind="template: { name: 'personRelationsTemplate', data: person, if: person, afterRender: afterRender.bind($data) }"></div>
+        </div>
     </div>
-  </div>
 </div>

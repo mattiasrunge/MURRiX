@@ -23,13 +23,13 @@ let file = api.register("file", {
 
         let metadata = yield mcs.getMetadata(attributes._source.filename);
 
-        if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
-            throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
-        }
+//         if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
+//             throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
+//         }
 
-        if (attributes.md5 && attributes.md5 !== metadata.md5) {
-            throw new Error("md5 checksum for file does not match, is the file corrupt? " + attributes.md5 + " !== " + metadata.md5);
-        }
+//         if (attributes.md5 && attributes.md5 !== metadata.md5) {
+//             throw new Error("md5 checksum for file does not match, is the file corrupt? " + attributes.md5 + " !== " + metadata.md5);
+//         }
 
         if (metadata.deviceSerialNumber) {
             // TODO: find device

@@ -1,0 +1,5 @@
+﻿<div data-bind="visible: node, if: node">
+    <div data-bind="foreach: node().attributes.labels">
+        <span class="label label-primary" data-bind="text: $data"></span>
+    </div>
+</div>

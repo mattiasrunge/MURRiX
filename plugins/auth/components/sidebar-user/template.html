@@ -1,5 +1,5 @@
 <div class="profile" data-bind="visible: loggedIn, if: loggedIn">
-    <span src="" class="picture pull-left" style="width: 40px; height: 40px;" data-bind=""><img src="http://lorempixel.com/40/40"></span>
+    <auth-picture-user params="{ size: 40, uid: uid, classes: 'img-circle' }" class="picture pull-left"></auth-picture-user>
     <div>
         <div data-bind="text: user().attributes.name"></div>
         <div>

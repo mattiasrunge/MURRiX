@@ -9,9 +9,7 @@ const session = require("lib/session");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
-    this.path = ko.pureComputed(() => {
-        return ko.unwrap(loc.current().path);
-    });
+    this.path = session.path;
     this.type = ko.pureComputed(() => {
         return this.node() ? this.node().properties.type : false;
     });
@@ -26,7 +24,7 @@ module.exports = utils.wrapComponent(function*(params) {
         }
 
         this.loading(true);
-        api.vfs.resolve(path)
+        api.vfs.resolve(path, true)
         .then((node) => {
             this.loading(false);
             this.node(node);

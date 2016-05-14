@@ -386,32 +386,24 @@ ko.bindingHandlers.nodeselect = {
 
 ko.bindingHandlers.picture = {
     update: (element, valueAccessor) => {
-        let id = ko.unwrap(valueAccessor());
+        let data = ko.unwrap(valueAccessor());
+        let item = ko.unwrap(data.item);
+        let width = ko.unwrap(data.width);
+        let height = ko.unwrap(data.height);
+        let classes = ko.unwrap(data.classes) || "";
         let $element = $(element);
-        let width = parseInt($element.css("width"), 10);
-        let height = parseInt($element.css("height"), 10);
-        let image = new Image();
+        let nolazyload = !!ko.unwrap(data.nolazyload);
 
-        image.onerror = (error) => {
-            status.printError(error);
-            // TODO: Set failed image
-        };
+        $element.empty();
 
-        image.onload = () => {
-            $element.attr("src", image.src);
-            console.log("image on load", image.src);
-        };
-
-        api.file.getPictureFilename(id, width, height)
-        .then((filename) => {
-            image.src = "/" + filename;
-        })
-        .catch((error) => {
-            status.printError(error);
-            // TODO: Set failed image
-        });
-
-        // TODO: Set loading image
+        if (item) {
+            if (nolazyload) {
+                $element.append($("<img src='" + item.filename + "' style='width: " + width + "px; height: " + height + "px;' class='" + classes + "'>"));
+            } else {
+                $element.append($("<img data-original='" + item.filename + "' style='width: " + width + "px; height: " + height + "px;' class='lazyload " + classes + "'>"));
+                lazyload.update();
+            }
+        }
     }
 };
 

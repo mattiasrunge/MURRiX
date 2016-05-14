@@ -1,11 +1,15 @@
+<file-profile-picture params="{ size: 184, path: path }"></file-profile-picture>
+
 <div data-bind="if: type() === 'p'">
-    <people-sidebar-person params="{ node: node, section: section }"></people-sidebar-person>
+    <people-sidebar-person params="{ node: node, path: path, section: section }"></people-sidebar-person>
 </div>
 <div data-bind="if: type() === 'a'">
-    <album-sidebar-album params="{ node: node, section: section }"></album-sidebar-album>
+<!--     <album-sidebar-album params="{ node: node, path: path, section: section }"></album-sidebar-album> -->
 </div>
-
-<div class="top-border text-muted" data-bind="if: node, visible: node" style="margin-top: 15px; padding-top: 15px; font-size: 10px;">
+<div data-bind="if: type() === 'l'">
+    <location-sidebar-location params="{ node: node, path: path, section: section }"></location-sidebar-location>
+</div>
+<!--<div class="top-border text-muted" data-bind="if: node, visible: node" style="margin-top: 15px; padding-top: 15px; font-size: 10px;">
     <div>
         Modified <span data-bind="datetimeAgo: node().properties.mtime"></span>
     </div>
@@ -15,4 +19,5 @@
     <div class="hide">
         <a href="#" data-bind="location: { section: 'history' }">Full history</a>
     </div>
-</div>
+</div>-->
+<comment-widget-comments style="display: block; padding-top: 20px; padding-bottom: 20px;" params="{ path: path }"></comment-widget-comments>

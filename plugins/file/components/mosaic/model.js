@@ -19,7 +19,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(true);
 
-        let files = yield api.vfs.list(this.path() + "/files");
+        let files = yield api.vfs.list(this.path() + "/files", true);
 
         let indexes = [];
 

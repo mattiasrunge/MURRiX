@@ -240,6 +240,7 @@ module.exports = utils.wrapComponent(function*(params) {
         nodeData.tree.childrenLoaded = false;
         nodeData.tree.parents = ko.observableArray();
         nodeData.tree.children = ko.observableArray();
+        nodeData.tree.path = ko.observable(nodePath);
 
         nodeData.tree.expandParents = () => {
             nodeData.tree.parentsVisible(!nodeData.tree.parentsVisible());
@@ -250,7 +251,6 @@ module.exports = utils.wrapComponent(function*(params) {
             nodeData.tree.childrenVisible(!nodeData.tree.childrenVisible());
             this._adjustPosition();
         };
-
 
         nodeData.tree.loadParents = () => {
             if (!nodeData.tree.parents.loaded) {
@@ -293,7 +293,7 @@ module.exports = utils.wrapComponent(function*(params) {
                     nodeData.tree.childrenLoading(false);
 
 
-//                     list.sort((a, b) => {
+//                    TODO list.sort((a, b) => {
 //                         if (a.ageInfo.birthTimestamp === b.ageInfo.deathTimestamp) {
 //                             return 0;
 //                         } else if (!a.ageInfo.birthTimestamp) {
@@ -344,7 +344,7 @@ module.exports = utils.wrapComponent(function*(params) {
     },
 
     this.zoomSet(0.8);
-    this.person(this.createPerson(null, this.node(), this.path(), "me", 0, 1));
+    this.person = ko.pureComputed(() => this.createPerson(null, this.node(), this.path(), "me", 0, 1));
 
     this.dispose = () => {
     };
