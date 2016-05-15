@@ -14,7 +14,7 @@ module.exports = utils.wrapComponent(function*(params) {
         return this.node() ? this.node().properties.type : false;
     });
     this.section = ko.pureComputed(() => {
-        return ko.unwrap(loc.current().section) || "about";
+        return ko.unwrap(loc.current().section) || "default";
     });
     this.node = session.node;
 

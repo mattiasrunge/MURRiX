@@ -1,13 +1,13 @@
 <file-profile-picture params="{ size: 184, path: path }"></file-profile-picture>
 
 <div data-bind="if: type() === 'p'">
-    <people-sidebar-person params="{ node: node, path: path, section: section }"></people-sidebar-person>
+    <people-sidebar params="{ node: node, path: path, section: section }"></people-sidebar>
 </div>
 <div data-bind="if: type() === 'a'">
-<!--     <album-sidebar-album params="{ node: node, path: path, section: section }"></album-sidebar-album> -->
+    <album-sidebar params="{ node: node, path: path, section: section }"></album-sidebar>
 </div>
 <div data-bind="if: type() === 'l'">
-    <location-sidebar-location params="{ node: node, path: path, section: section }"></location-sidebar-location>
+    <location-sidebar params="{ node: node, path: path, section: section }"></location-sidebar>
 </div>
 <!--<div class="top-border text-muted" data-bind="if: node, visible: node" style="margin-top: 15px; padding-top: 15px; font-size: 10px;">
     <div>
