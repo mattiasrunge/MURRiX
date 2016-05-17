@@ -14,8 +14,7 @@ const utils = require("lib/utils");
 const status = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.node = params.node;
-    this.path = params.path;
+    this.nodepath = params.nodepath;
     this.selectedHome = ko.observable(false);
 
     this.position = ko.asyncComputed(false, function*() {
@@ -46,7 +45,7 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.homes = ko.asyncComputed(false, function*() {
-        let list = yield api.vfs.list(this.path() + "/homes");
+        let list = yield api.vfs.list(this.nodepath().path + "/homes");
 
         if (list.length > 0) {
             if (!this.selectedHome()) {

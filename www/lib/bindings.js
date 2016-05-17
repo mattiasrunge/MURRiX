@@ -47,7 +47,6 @@ ko.bindingHandlers.map = {
 
         element.map = new google.maps.Map(element, options);
 
-
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             $(element).off("click");
         });
@@ -82,8 +81,6 @@ ko.bindingHandlers.map = {
         }
 
         element.map.setZoom(zoom);
-
-
     }
 };
 

@@ -1,14 +1,14 @@
-<div data-bind="if: node">
+<div data-bind="if: nodepath">
     <div data-bind="if: type() === 'p'">
-        <people-page params="{ node: node, path: path, section: section }"></people-page>
+        <people-page params="{ nodepath: nodepath, section: section }"></people-page>
     </div>
     <div data-bind="if: type() === 'a'">
-        <album-page params="{ node: node, path: path, section: section }"></album-page>
+        <album-page params="{ nodepath: nodepath, section: section }"></album-page>
     </div>
     <div data-bind="if: type() === 'l'">
-        <location-page params="{ node: node, path: path, section: section }"></location-page>
+        <location-page params="{ nodepath: nodepath, section: section }"></location-page>
     </div>
 </div>
-<div data-bind="if: !node()">
+<div data-bind="if: !nodepath()">
     Invalid path
 </div>

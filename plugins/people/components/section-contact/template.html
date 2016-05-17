@@ -1,10 +1,10 @@
 ﻿<div class="fadeInRight animated">
     <div style="height: 500px;" data-bind="map: { position: position, zoom: position() ? 15 : 10 }"></div>
-    <div class="row">
+    <div class="row" data-bind="if: nodepath">
         <div class="col-md-6">
             <h3>Contact information</h3>
             <table class="table table-striped">
-                <tbody data-bind="foreach: node().attributes.contact">
+                <tbody data-bind="foreach: nodepath().node.attributes.contact">
                     <tr>
                         <td data-bind="text: $data.type"></td>
                         <td data-bind="text: $data.data"></td>

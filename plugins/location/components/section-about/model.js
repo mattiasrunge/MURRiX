@@ -14,16 +14,15 @@ const session = require("lib/session");
 const status = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.node = params.node;
-    this.path = params.path;
+    this.nodepath = params.nodepath;
 
     this.position = ko.asyncComputed(false, function*() {
-        if (!this.node()) {
+        if (!this.nodepath()) {
             return false;
         }
 
         let options = {
-            address: this.node().attributes.address,
+            address: this.nodepath().node.attributes.address,
             key: "AIzaSyCSEsNChIm5df-kICUgXZLvqGRT9N_dUUY"
         };
 
@@ -45,8 +44,12 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.residents = ko.asyncComputed([], function*(setter) {
+        if (!this.nodepath()) {
+            return [];
+        }
+
         setter([]);
-        return yield api.vfs.list(ko.unwrap(this.path) + "/residents");
+        return yield api.vfs.list(this.nodepath().path + "/residents");
     }.bind(this), (error) => {
         status.printError(error);
         return [];

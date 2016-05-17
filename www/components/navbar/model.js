@@ -63,7 +63,7 @@ module.exports = utils.wrapComponent(function*(params) {
         api.vfs.random(session.searchPaths(), 1)
         .then((item) => {
             if (item) {
-                loc.goto({ page: "node", path: item.path });
+                loc.goto({ page: "node", path: item.path, section: null });
             } else {
                 status.printError("No random node could be found");
             }

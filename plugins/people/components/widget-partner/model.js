@@ -9,7 +9,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.item = ko.asyncComputed(false, function*(setter) {
         setter(false);
 
-        let path = params.path() + "/partner";
+        let path = ko.unwrap(params.path) + "/partner";
         let node = yield api.vfs.resolve(path, true, true);
 
         if (node && node.properties.type === "s") {

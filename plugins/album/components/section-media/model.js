@@ -11,12 +11,17 @@ const status = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
-    this.path = params.path;
-    this.node = params.node;
+    this.nodepath = params.nodepath;
     this.size = 235;
 
-    this.count = ko.asyncComputed(-1, function*() {
-        let filesNode = yield api.vfs.resolve(ko.unwrap(this.path) + "/files");
+    this.count = ko.asyncComputed(-1, function*(setter) {
+        if (!this.nodepath()) {
+            return [];
+        }
+
+        setter([]);
+
+        let filesNode = yield api.vfs.resolve(this.nodepath().path + "/files");
         return filesNode.properties.children.length;
     }.bind(this), (error) => {
         status.printError(error);

@@ -3,11 +3,8 @@
 const ko = require("knockout");
 const co = require("co");
 const api = require("api.io-client");
-const loc = require("lib/location");
 
 module.exports = {
-    node: ko.observable(false),
-    path: ko.pureComputed(() => ko.unwrap(loc.current().path)),
     user: ko.observable(false),
     username: ko.observable("guest"),
     personPath: ko.observable(false),

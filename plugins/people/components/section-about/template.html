@@ -1,16 +1,16 @@
 ﻿<div class="fadeInRight animated">
-    <div class="row">
+    <div class="row" data-bind="if: nodepath">
         <div class="col-md-8">
-            <h2 data-bind="text: node().attributes.fullname ? node().attributes.fullname : node().attributes.name"></h2>
-            <node-description params="{ node: node }"></node-description>
-            <node-labels params="{ node: node }"></node-labels>
+            <h2 data-bind="text: nodepath().node.attributes.fullname ? nodepath().node.attributes.fullname : nodepath().node.attributes.name"></h2>
+            <node-description params="{ nodepath: nodepath }"></node-description>
+            <node-labels params="{ nodepath: nodepath }"></node-labels>
         </div>
         <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
                 <tbody>
                     <tr>
                         <td><strong>Birth name</strong></td>
-                        <td data-bind="text: node().attributes.birthname"></td>
+                        <td data-bind="text: nodepath().node.attributes.birthname"></td>
                     </tr>
                     <tr>
                         <td><strong>Birthday</strong></td>
@@ -23,12 +23,12 @@
                     <tr>
                         <td><strong>Partner</strong></td>
                         <td>
-                            <widget-partner params="{ path: path }"></widget-partner>
+                            <people-widget-partner params="{ path: nodepath().path }"></people-widget-partner>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Allergies</strong></td>
-                        <td data-bind="html: node().attributes.allergies"></td>
+                        <td data-bind="html: nodepath().node.attributes.allergies"></td>
                     </tr>
                 </tbody>
             </table>

@@ -22,7 +22,6 @@ module.exports = utils.wrapComponent(function*(params) {
         this.newFlag();
         this.newFlag(false);
         let list = yield api.comment.list(ko.unwrap(this.path));
-        console.log(list);
         return list;
     }.bind(this), (error) => {
         status.printError(error);
@@ -33,7 +32,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.post = (model, event) => {
         if (event.keyCode === 13 && !event.shiftKey) {
             this.loading(true);
-            api.comment.comment(this.path(), this.comment())
+            api.comment.comment(ko.unwrap(this.path), this.comment())
             .then(() => {
                 this.loading(false);
                 this.comment("");

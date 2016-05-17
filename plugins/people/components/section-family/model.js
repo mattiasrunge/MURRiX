@@ -17,8 +17,7 @@ const utils = require("lib/utils");
 const status = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.node = params.node;
-    this.path = params.path;
+    this.nodepath = params.nodepath;
     this.person = ko.observable(false);
     this.loading = status.create();
     this.height = ko.observable(300);
@@ -344,7 +343,7 @@ module.exports = utils.wrapComponent(function*(params) {
     },
 
     this.zoomSet(0.8);
-    this.person = ko.pureComputed(() => this.createPerson(null, this.node(), this.path(), "me", 0, 1));
+    this.person = ko.pureComputed(() => this.createPerson(null, this.nodepath().node, this.nodepath().path, "me", 0, 1));
 
     this.dispose = () => {
     };

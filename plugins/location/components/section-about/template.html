@@ -1,16 +1,16 @@
 ﻿<div class="fadeInRight animated">
     <div class="row">
         <div class="col-md-8">
-            <h2 data-bind="text: node().attributes.name"></h2>
-            <node-description params="{ node: node }"></node-description>
-            <node-labels params="{ node: node }"></node-labels>
+            <h2 data-bind="text: nodepath().node.attributes.name"></h2>
+            <node-description params="{ nodepath: nodepath }"></node-description>
+            <node-labels params="{ nodepath: nodepath }"></node-labels>
         </div>
         <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
                 <tbody>
                     <tr>
                         <td><strong>Address</strong></td>
-                        <td data-bind="html: node().attributes.address.replace('\n','<br>')"></td>
+                        <td data-bind="html: nodepath().node.attributes.address.replace('\n','<br>')"></td>
                     </tr>
                     <tr>
                         <td><strong>Longitude</strong></td>
