@@ -16,8 +16,8 @@
                     <!-- ko if: $data.tree.parents().length > 0 || $data.tree.type === 'child' -->
                         <div style="height: 40px; width: 2px; background-color: #ccc; margin-left: auto; margin-right: auto; margin-top: -5px; overflow: visible;">
                             <button data-bind="visible: $data.tree.type !== 'child', click: $data.tree.expandParents" class="relation-expand relation-parent-expand">
-                                <i data-bind="visible: !$data.tree.parentsVisible()" class="fa fa-plus"></i>
-                                <i data-bind="visible: $data.tree.parentsVisible()" class="fa fa-minus"></i>
+                                <i data-bind="visible: !$data.tree.parentsVisible()" class="material-icons md-18">add</i>
+                                <i data-bind="visible: $data.tree.parentsVisible()" class="material-icons md-18">remove</i>
                             </button>
                         </div>
                     <!-- /ko -->
@@ -50,12 +50,12 @@
 
                                 <div style="padding-left: 100px; font-size: 12px;">
                                     <!--<div data-bind="visible: $data.ageInfo.birth || $data.ageInfo.death" style="margin-bottom: 10px;">
-                                        <i class="fa fa-calendar"></i>
+                                        <i class="material-icons md-14">date_range</i>
                                         <span class="relation-person-birth" data-bind="visible: $data.ageInfo.birth, text: $data.ageInfo.birth"></span>
                                         <span class="relation-person-death" data-bind="visible: $data.ageInfo.death">&mdash; <span data-bind="text: $data.ageInfo.death"></span></span>
                                     </div>-->
                                     <div>
-                                        <i class="fa fa-heart"></i>
+                                        <i class="material-icons md-14">favorite</i>
                                         <people-widget-partner class="relation-person-partner" params="{ path: $data.tree.path }"></people-widget-partner>
                                     </div>
                                 </div>
@@ -66,8 +66,8 @@
                     <!-- ko if: $data.tree.children().length > 0 || $data.tree.type === 'parent' -->
                         <div style="height: 40px; width: 2px; background-color: #ccc; margin-left: auto; margin-right: auto; margin-bottom: -13px; overflow: visible;">
                             <button data-bind="visible: $data.tree.type !== 'parent', click: $data.tree.expandChildren" class="relation-expand relation-child-expand">
-                                <i data-bind="visible: !$data.tree.childrenVisible()" class="fa fa-plus"></i>
-                                <i data-bind="visible: $data.tree.childrenVisible()" class="fa fa-minus"></i>
+                                <i data-bind="visible: !$data.tree.childrenVisible()" class="material-icons md-18">add</i>
+                                <i data-bind="visible: $data.tree.childrenVisible()" class="material-icons md-18">remove</i>
                             </button>
                         </div>
                     <!-- /ko -->
@@ -93,15 +93,15 @@
         <div class="relation-zoom-control">
             <div class="line"></div>
             <div class="inc" data-bind="click: zoomInc">
-                <div style="margin-left: 4px; margin-top: 2px;"><i class="fa fa-plus"></i></div>
+                <div style="margin-left: 1px; margin-top: 2px;"><i class="material-icons md-14">add</i></div>
             </div>
             <div class="mark-container" data-bind="event: { mousedown: startDragMarkHandler }">
                 <div class="mark">
-                    <div style="margin-left: 4px; margin-top: -2px;"><i class="fa fa-minus"></i></div>
+                    <div style="margin-left: 1px; margin-top: -2px;"><i class="material-icons md-14">remove</i></div>
                 </div>
             </div>
             <div class="dec" data-bind="click: zoomDec">
-                <div style="margin-left: 4px; margin-top: 2px;"><i class="fa fa-minus"></i></div>
+                <div style="margin-left: 1px; margin-top: 2px;"><i class="material-icons md-14">remove</i></div>
             </div>
         </div>
 
