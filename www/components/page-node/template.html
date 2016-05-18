@@ -9,6 +9,6 @@
         <location-page params="{ nodepath: nodepath, section: section }"></location-page>
     </div>
 </div>
-<div data-bind="if: !nodepath()">
+<div data-bind="if: !nodepath() && !loading()">
     Invalid path
 </div>

@@ -10,6 +10,7 @@ const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = node.nodepath;
+    this.loading = node.loading;
     this.type = ko.pureComputed(() => {
         return this.nodepath() ? this.nodepath().node.properties.type : false;
     });
