@@ -9,12 +9,8 @@ const session = require("lib/session");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.user = session.user;
+    this.loggedIn = session.loggedIn;
     this.page = ko.pureComputed(() => {
         return ko.unwrap(loc.current().page);
     });
-
-    // TODO: Temp
-
-    this.visited = ko.observableArray();
-    this.adminLinks = ko.observableArray();
 });

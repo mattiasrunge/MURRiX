@@ -13,10 +13,12 @@ ko.asyncComputed = function(defaultValue, fn, onError, extend) {
     let result = ko.observable(defaultValue);
     let computed = ko.pureComputed(() => {
         promise((value) => {
-            result(value);
+            return result(value);
         })
         .then((data) => {
-            result(data);
+            if (typeof data !== "undefined") {
+                result(data);
+            }
         })
         .catch((error) => {
             if (onError) {

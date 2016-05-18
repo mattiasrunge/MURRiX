@@ -1,22 +1,47 @@
 
 @import: "node_modules/bootstrap/dist/css/bootstrap.css";
-@import: "node_modules/font-awesome/css/font-awesome.css";
 @import: "node_modules/typeahead.js-bootstrap-css/typeaheadjs.css";
 @import: "node_modules/mprogress/build/css/mprogress.css";
 @import: "node_modules/animate.css/animate.css";
 @import: "node_modules/snackbarjs/dist/snackbar.css";
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', Georgia, Times, serif;
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
 }
-p {
-  font-family: 'Raleway', Helvetica, Arial, sans-serif;
+
+.material-icons { vertical-align: middle; }
+.material-icons.spin { animation: spin 1s infinite linear; }
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-20 { font-size: 20px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+
+h1, h2, h3, h4, h5, h6, .heading {
+  font-family: 'Bubblegum Sans', Georgia, Times, serif;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #7c1616;
+  padding-bottom: 10px;
 }
 
 body {
   overflow-y: scroll;
   overflow-x: hidden;
-  font-family: 'Raleway', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
 }
 
 .fadeInRight {
@@ -56,6 +81,16 @@ body {
   margin-left: 200px;
 }
 
+.navbar-background {
+    background: linear-gradient(to right, black 0%, #7c1616 100%);
+/*     background: linear-gradient(to right, #7c1616 0%, #015900 100%); */
+    border-color: black;
+}
+
+.navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-text, .navbar-inverse .navbar-brand {
+    color: white;
+}
+
 .navbar .profile .picture {
   border-radius: 1px;
   margin-right: 5px;
@@ -67,30 +102,12 @@ body {
     position: absolute;
     top: 4px;
     right: 4px;
-}
-
-.navbar .star .outline {
-    color: #ccc;
-    font-size: 20px;
-}
-
-.navbar .star:hover .fa-stack .outline, .navbar .star.active .fa-stack .outline {
-    display: none;
-}
-
-.navbar .star .star-button {
-    color: white;
-    font-size: 20px;
-}
-
-.navbar .star:hover .star-button, .navbar .star.active .star-button {
     color: #FAB400;
 }
 
 .sidebar {
-  font-family: 'Raleway', Helvetica, Arial, sans-serif;
   position: fixed;
-  top: 50px;
+  top: 52px;
   width: 200px;
   bottom: 0;
   overflow-y: auto;
@@ -100,6 +117,11 @@ body {
 .sidebar .profile {
   margin-top: 30px;
   font-size: 12px;
+  margin-bottom: 15px;
+}
+
+.sidebar .material-icons {
+    margin-right: 3px;
 }
 
 .sidebar .profile .picture {
@@ -109,30 +131,50 @@ body {
 }
 
 .sidebar ul.nav {
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 .sidebar li.header {
-  font-family: 'Montserrat', Georgia, Times, serif;
+  font-family: 'Bubblegum Sans', Georgia, Times, serif;
   font-weight: bold;
-  color: #aaa;
+  color: #7c1616;
   font-size: 20px;
   padding-bottom: 5px;
+  margin-top: 15px;
 }
 
-.sidebar ul.nav>li>a {
-  width: 169px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  padding: 2px;
-  font-size: 13px;
-  color: #444;
+.sidebar .nav-pills > li > a {
+    padding: 5px;
+    padding-left: 7px;
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    color: rgba(0, 0, 0, 0.54);
+
+        width: 169px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 15px;
 }
 
-.sidebar ul.nav>li.active>a {
-  color: white;
-  padding-left: 6px;
+.sidebar .nav-pills > li.active > a,
+.sidebar .nav-pills > li.active > a:hover,
+.sidebar .nav-pills > li > a:hover {
+    background-color: transparent;
+    border-color: black;
+    color: black;
+}
+
+.sidebar .comments {
+    font-size: 12px;
+}
+
+.sidebar .name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 .main {
@@ -206,6 +248,61 @@ body {
 }
 
 
+
+
+.node-item-panel {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+  margin-right: 15px;
+  margin-bottom: 15px;
+  overflow: hidden;
+  display: block;
+  color: black;
+}
+
+.node-item-panel:hover {
+    cursor: pointer;
+    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+}
+
+.node-item-panel h4 {
+    margin: 0;
+    padding-bottom: 5px;
+    margin-bottom: -5px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+}
+
+.node-item-panel file-profile-picture {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background-color: #ccc;
+}
+
+.node-item-panel node-description {
+    height: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    color: #888;
+    font-size: 12px;
+}
+
+.node-item-panel node-labels {
+    height: 23px;
+    margin-bottom: -3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-top: 10px;
+    display: block;
+}
 
 .relation-container {
   position: absolute;
@@ -536,7 +633,7 @@ body {
 .timeline > li > .timeline-panel {
   width: 95%;
   float: left;
-  border: 1px solid #d4d4d4;
+  border: 1px solid #ccc;
   /*border-radius: 2px;*/
   /*padding: 20px;*/
   position: relative;
@@ -779,3 +876,7 @@ body {
 .node-table > tbody > tr:first-child > td {
     border-top: none;
 }
+
+
+
+

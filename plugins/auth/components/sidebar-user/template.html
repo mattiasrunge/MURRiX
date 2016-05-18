@@ -1,7 +1,7 @@
 <div class="profile" data-bind="visible: loggedIn, if: loggedIn">
     <auth-picture-user params="{ size: 40, uid: uid, classes: 'img-circle' }" class="picture pull-left"></auth-picture-user>
     <div>
-        <div data-bind="text: user().attributes.name"></div>
+        <div class="name" data-bind="text: user().attributes.name"></div>
         <div>
             <a href="#" data-bind="location: { page: 'profile' }">Profile</a>
             <span data-bind="visible: personPath, if: personPath">

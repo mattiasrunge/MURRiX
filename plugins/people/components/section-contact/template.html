@@ -6,7 +6,9 @@
             <table class="table table-striped">
                 <tbody data-bind="foreach: nodepath().node.attributes.contact">
                     <tr>
-                        <td data-bind="text: $data.type"></td>
+                        <td>
+                            <strong data-bind="text: $data.type"></strong>
+                        </td>
                         <td data-bind="text: $data.data"></td>
                     </tr>
                 </tbody>

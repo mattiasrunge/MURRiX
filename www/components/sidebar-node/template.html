@@ -20,6 +20,9 @@
         <a href="#" data-bind="location: { section: 'history' }">Full history</a>
     </div>
 </div>-->
+<ul class="nav">
+    <li class="header">Comments</li>
+</ul>
 <div data-bind="if: nodepath">
-    <comment-widget-comments style="display: block; padding-top: 20px; padding-bottom: 20px;" params="{ path: nodepath().path }"></comment-widget-comments>
+    <comment-widget-comments style="display: block; padding-bottom: 30px;" params="{ path: nodepath().path }"></comment-widget-comments>
 </div>

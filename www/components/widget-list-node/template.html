@@ -1,21 +1,19 @@
-<div class="media" style="padding-top: 45px;">
-    <div class="media-body clearfix" style="padding-bottom: 15px;">
-        <file-profile-picture class="pull-right" params="{ size: 80, path: nodepath.path }"></file-profile-picture>
+<a class="node-item-panel" style="width: 305px;" data-bind="location: { page: 'node', path: nodepath().path, section: null }">
+    <div style="position: relative; height: 303px;">
+        <file-profile-picture params="{ size: 303, path: nodepath().path }"></file-profile-picture>
 
-        <h4 class="media-heading" style="margin-bottom: 10px; font-size: 14px;">
-            <a href="#" data-bind="location: { page: 'node', path: nodepath.path, section: null }">
-                <span class=text-muted">
-                    <i data-bind="visible: nodepath.node.properties.type === 'a'" class="fa fa-book"></i>
-                    <i data-bind="visible: nodepath.node.properties.type === 'p'" class="fa fa-user"></i>
-                    <i data-bind="visible: nodepath.node.properties.type === 'l'" class="fa fa-map-marker"></i>
-                    <i data-bind="visible: nodepath.node.properties.type === 'c'" class="fa fa-camera"></i>
-                    <i data-bind="visible: nodepath.node.properties.type === 'v'" class="fa fa-truck"></i>
-                </span>
-                <span data-bind="text: nodepath.node.attributes.fullname ? nodepath.node.attributes.fullname : nodepath.node.attributes.name"></span>
-            </a>
-        </h4>
+        <div style="bottom: 0; left: 0; right: 0; position: absolute; padding: 15px;">
+            <h4>
+                <i class="material-icons md-18" data-bind="visible: nodepath().node.properties.type === 'a'">photo_album</i>
+                <i class="material-icons md-18" data-bind="visible: nodepath().node.properties.type === 'p'">person</i>
+                <i class="material-icons md-18" data-bind="visible: nodepath().node.properties.type === 'l'">location_on</i>
 
+                <span data-bind="text: nodepath().node.attributes.fullname ? nodepath().node.attributes.fullname :  nodepath().node.attributes.name"></span>
+            </h4>
+        </div>
+    </div>
+    <div style="padding: 15px;">
         <node-description params="{ nodepath: nodepath }"></node-description>
         <node-labels params="{ nodepath: nodepath }"></node-labels>
     </div>
-</div>
+</a>

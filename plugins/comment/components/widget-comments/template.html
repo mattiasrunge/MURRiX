@@ -1,15 +1,17 @@
-<div data-bind="foreach: list">
-    <div class="row">
-        <div class="col-md-12" style="font-size: 11px;">
-            <auth-picture-user class="pull-left" params="{ size: 42, uid: $data.node.properties.birthuid, classes: '' }" style="display: block; margin-right: 5px;"></auth-picture-user>
-            <div style="font-weight: bold;;" data-bind="unameNice: $data.node.properties.birthuid"></div>
-            <small class="text-muted" data-bind="datetimeAgo: $data.node.properties.birthtime"></small>
-            <p style="white-space: pre-line;" data-bind="text: $data.node.attributes.text"></p>
+<div class="comments">
+    <div data-bind="foreach: list">
+        <div class="row">
+            <div class="col-md-12">
+                <auth-picture-user class="pull-left" params="{ size: 30, uid: $data.node.properties.birthuid, classes: 'img-circle' }" style="display: block; margin-right: 10px;"></auth-picture-user>
+                <div class="name" data-bind="unameNice: $data.node.properties.birthuid"></div>
+                <small class="text-muted" data-bind="datetimeAgo: $data.node.properties.birthtime"></small>
+                <p style="white-space: pre-line;" data-bind="text: $data.node.attributes.text"></p>
+            </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <textarea style="margin-top: 5px; resize: none; font-size: 11px;" rows="1" class="form-control" data-bind="textInput: comment, event: { keypress: post }, autosize: comment, disable: loading" placeholder="Leave a comment..."></textarea>
+    <div class="row">
+        <div class="col-md-12">
+            <textarea style="margin-top: 5px; resize: none;" rows="1" class="form-control" data-bind="textInput: comment, event: { keypress: post }, autosize: comment, disable: loading" placeholder="Leave a comment..."></textarea>
+        </div>
     </div>
 </div>

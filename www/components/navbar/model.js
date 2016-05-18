@@ -6,6 +6,7 @@ const utils = require("lib/utils");
 const status = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");
+const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.loading;
@@ -49,9 +50,9 @@ module.exports = utils.wrapComponent(function*(params) {
             session.stars(result.stars);
 
             if (result.created) {
-                status.printSuccess(session.node().attributes.name + " starred");
+                status.printSuccess(node.nodepath().node.attributes.name + " starred");
             } else {
-                status.printSuccess(session.node().attributes.name + " unstarred");
+                status.printSuccess(node.nodepath().node.attributes.name + " unstarred");
             }
         })
         .catch((error) => {

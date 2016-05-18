@@ -23,11 +23,27 @@ module.exports = utils.wrapComponent(function*(params) {
             return [];
         }
 
+        let query = {};
+
+        if (this.query().indexOf("label:") === 0) {
+            let labels = this.query().replace(/label:/, "").split("+");
+
+            if (labels.length === 0) {
+                return [];
+            }
+
+            query = {
+                "attributes.labels": { $in: labels }
+            };
+        } else {
+            query = {
+                "attributes.name": { $regex: ".*" + this.query() + ".*", $options: "-i" }
+            };
+        }
+
         this.loading(true);
 
-        let list = yield api.vfs.list(session.searchPaths(), false, {
-            "attributes.name": { $regex: ".*" + this.query() + ".*", $options: "-i" }
-        });
+        let list = yield api.vfs.list(session.searchPaths(), false, query);
 
         this.loading(false);
 
@@ -36,7 +52,7 @@ module.exports = utils.wrapComponent(function*(params) {
         this.loading(false);
         status.printError(error);
         return [];
-    }, { rateLimit: { timeout: 300, method: "notifyWhenChangesStop" } });
+    }, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
 
     this.dispose = () => {
         status.destroy(this.loading);

@@ -14,22 +14,22 @@
                     <input type="password" class="form-control" id="password" data-bind="textInput: password, disable: loading">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-raised btn-primary pull-right" data-bind="disable: loginDisallowed"><i class="fa fa-sign-in fa-fw"></i> Login</button>
+                    <button type="submit" class="btn btn-raised btn-primary pull-right" data-bind="disable: loginDisallowed">Login</button>
                     <button class="btn btn-link pull-right" data-bind="disable: loading, click: reset">Forgot your password?</button>
                 </div>
             </form>
             <div class="" data-bind="visible: loggedIn">
-                <button class="btn btn-raised btn-primary" data-bind="disable: loading, click: logout"><i class="fa fa-sign-out fa-fw"></i> Logout</button>
+                <button class="btn btn-raised btn-primary" data-bind="disable: loading, click: logout">Logout</button>
             </div>
         </div>
         <div class="col-md-6">
             <div class="well">
-                <h5>Don't have an account?</h5>
+                <h4>Don't have an account?</h4>
                 <p>
                     To be allowed to login you need to have an account. If you do not have an account please contact the site administrator for one.
                 </p>
 
-                <h5>Forgot your password?</h5>
+                <h4>Forgot your password?</h4>
                 <p>
                     If you have forgot your password, you can use the password reset function by pressing the <mark><small>Forgot your password?</small></mark> link. An email will be sent to the registered email with a special link. The link will allow you to set a new password.
                 </p>
