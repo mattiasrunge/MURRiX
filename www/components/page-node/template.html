@@ -1,4 +1,7 @@
 <div data-bind="if: nodepath">
+    <div data-bind="if: showPath">
+        <widget-fullscreen-node params="{ nodepath: nodepath, showPath: showPath }"></widget-fullscreen-node>
+    </div>
     <div data-bind="if: type() === 'p'">
         <people-page params="{ nodepath: nodepath, section: section }"></people-page>
     </div>

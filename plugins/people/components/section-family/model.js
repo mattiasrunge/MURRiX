@@ -81,14 +81,14 @@ module.exports = utils.wrapComponent(function*(params) {
     };
 
     this.scrollHandler = (data, event) => {
-        let wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
-
-        wheelData /= 50;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        this.zoomSet(this.round(this.zoom() + wheelData, 1));
+//         let wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
+//
+//         wheelData /= 50;
+//
+//         event.preventDefault();
+//         event.stopPropagation();
+//
+//         this.zoomSet(this.round(this.zoom() + wheelData, 1));
     };
 
     this.zoomSet = (value, noanimation) => {
@@ -225,7 +225,7 @@ module.exports = utils.wrapComponent(function*(params) {
         this._storePosition();
     };
 
-    this.createPerson = (parentNodeData, nodeData, nodePath, type, index, count) => {
+    this.createPerson = (parentNodeData, nodeData, nodePath, metrics, type, index, count) => {
         console.log("createPerson", nodeData, nodePath);
         nodeData.tree = {};
         nodeData.tree.parentsVisible = ko.observable(false);
@@ -240,6 +240,7 @@ module.exports = utils.wrapComponent(function*(params) {
         nodeData.tree.parents = ko.observableArray();
         nodeData.tree.children = ko.observableArray();
         nodeData.tree.path = ko.observable(nodePath);
+        nodeData.tree.metrics = ko.observable(metrics);
 
         nodeData.tree.expandParents = () => {
             nodeData.tree.parentsVisible(!nodeData.tree.parentsVisible());
@@ -251,73 +252,75 @@ module.exports = utils.wrapComponent(function*(params) {
             this._adjustPosition();
         };
 
-        nodeData.tree.loadParents = () => {
+        nodeData.tree.loadParents = utils.co(function*() {
             if (!nodeData.tree.parents.loaded) {
                 nodeData.tree.parents.loaded = true;
                 nodeData.tree.parentsLoading(true);
 
-                api.vfs.list(nodePath + "/parents")
-                .then((list) => {
-                    nodeData.tree.parentsLoading(false);
+                let list = yield api.vfs.list(nodePath + "/parents")
 
-                    list.sort(function(a, b) {
-                        if (a.node.attributes.gender === b.node.attributes.gender) {
-                            return 0;
-                        } else if (a.node.attributes.gender === "m") {
-                            return 1;
-                        } else if (a.node.attributes.gender === "f") {
-                            return -1;
-                        }
+                nodeData.tree.parentsLoading(false);
 
+                list.sort(function(a, b) {
+                    if (a.node.attributes.gender === b.node.attributes.gender) {
                         return 0;
-                    });
-
-                    for (let n = 0; n < list.length; n++) {
-                        nodeData.tree.parents.push(this.createPerson(nodeData, list[n].node, list[n].path, "parent", n, list.length));
+                    } else if (a.node.attributes.gender === "m") {
+                        return 1;
+                    } else if (a.node.attributes.gender === "f") {
+                        return -1;
                     }
 
-                    this._adjustPosition();
-
+                    return 0;
                 });
-            }
-        };
 
-        nodeData.tree.loadChildren = () => {
+                for (let n = 0; n < list.length; n++) {
+                    let metrics = yield api.people.getMetrics(list[n].path);
+
+                    nodeData.tree.parents.push(this.createPerson(nodeData, list[n].node, list[n].path, metrics, "parent", n, list.length));
+                }
+
+                this._adjustPosition();
+            }
+        }.bind(this));
+
+        nodeData.tree.loadChildren = utils.co(function*() {
             if (!nodeData.tree.children.loaded) {
                 nodeData.tree.children.loaded = true;
                 nodeData.tree.childrenLoading(true);
 
-                api.vfs.list(nodePath + "/children")
-                .then((list) => {
-                    nodeData.tree.childrenLoading(false);
+                let list = yield api.vfs.list(nodePath + "/children");
 
+                nodeData.tree.childrenLoading(false);
 
-//                    TODO list.sort((a, b) => {
-//                         if (a.ageInfo.birthTimestamp === b.ageInfo.deathTimestamp) {
-//                             return 0;
-//                         } else if (!a.ageInfo.birthTimestamp) {
-//                             return -1;
-//                         } else if (!b.ageInfo.birthTimestamp) {
-//                             return 1;
-//                         }
-//
-//                         let offset = Math.abs(Math.min(a.ageInfo.birthTimestamp, b.ageInfo.birthTimestamp));
-//                         return (offset + a.ageInfo.birthTimestamp) - (offset + b.ageInfo.birthTimestamp);
-//                     });
+                for (let child of list) {
+                    child.metrics = yield api.people.getMetrics(child.path);
+                }
 
-                    for (let n = 0; n < list.length; n++) {
-                        nodeData.tree.children.push(this.createPerson(nodeData, list[n].node, list[n].path, "child", n, list.length));
+                list.sort((a, b) => {
+                    console.log(a, b);
+                    if (a.metrics.birthdate === b.metrics.birthdate) {
+                        return 0;
+                    } else if (!a.metrics.birthdate) {
+                        return -1;
+                    } else if (!b.metrics.birthdate) {
+                        return 1;
                     }
 
-                    this._adjustPosition();
+                    return b.metrics.age - a.metrics.age;
                 });
+
+                for (let n = 0; n < list.length; n++) {
+                    nodeData.tree.children.push(this.createPerson(nodeData, list[n].node, list[n].path, list[n].metrics, "child", n, list.length));
+                }
+
+                this._adjustPosition();
             }
-        };
+        }.bind(this));
 
 
         if (!parentNodeData) {
-            nodeData.tree.loadParents();
-            nodeData.tree.loadChildren();
+            nodeData.tree.loadParents().catch(status.printError);
+            nodeData.tree.loadChildren().catch(status.printError);
         } else {
             parentNodeData.tree.parentsVisible.subscribe((value) => {
                 if (value) {
@@ -343,7 +346,23 @@ module.exports = utils.wrapComponent(function*(params) {
     },
 
     this.zoomSet(0.8);
-    this.person = ko.pureComputed(() => this.createPerson(null, this.nodepath().node, this.nodepath().path, "me", 0, 1));
+
+    this.person = ko.asyncComputed(false, function*(setter) {
+        if (!this.nodepath()) {
+            return false;
+        }
+
+        setter(false);
+
+        let metrics = yield api.people.getMetrics(this.nodepath().path);
+
+        return this.createPerson(null, this.nodepath().node, this.nodepath().path, metrics, "me", 0, 1);
+    }.bind(this), (error) => {
+        this.loading(false);
+        status.printError(error);
+        return false;
+    });
+
 
     this.dispose = () => {
     };

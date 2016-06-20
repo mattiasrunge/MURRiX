@@ -19,14 +19,32 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(true);
 
-        let files = yield api.vfs.list(this.path() + "/files"); // TODO: Sort
-        let list = yield api.file.getPictureFilenames(files.map((file) => file.node._id), this.size, this.size);
-
-        console.log(list);
+        let files = yield api.vfs.list(this.path() + "/files");
+        let filenames = yield api.file.getPictureFilenames(files.map((file) => file.node._id), this.size, this.size);
 
         this.loading(false);
 
-        return list;
+        files = files.map((file) => {
+            let filename = filenames.filter((filename) => filename.id === file.node._id)[0];
+
+            if (filename) {
+                file.filename = filename.filename;
+            }
+
+            return file;
+        });
+
+        utils.sortNodeList(files)
+
+        console.log("files", files);
+
+        let texts = yield api.vfs.list(this.path() + "/texts");
+
+        utils.sortNodeList(texts);
+
+
+        // TODO
+        return files;
     }.bind(this), (error) => {
         this.loading(false);
         status.printError(error);

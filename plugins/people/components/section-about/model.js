@@ -2,8 +2,6 @@
 
 /* TODO:
  * Implement timeline
- * Implement labels
- * Use real images in mosaic
  */
 
 const ko = require("knockout");
@@ -13,8 +11,30 @@ const session = require("lib/session");
 const status = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.nodepath = params.nodepath;
+    this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
+    this.loading = status.create();
+
+    this.metrics = ko.asyncComputed([], function*(setter) {
+        if (!this.nodepath() || this.nodepath() === "") {
+            return {};
+        }
+
+        setter({});
+
+        this.loading(true);
+        let metrics = yield api.people.getMetrics(this.nodepath().path);
+        this.loading(false);
+
+        console.log("metrics", metrics);
+
+        return metrics;
+    }.bind(this), (error) => {
+        this.loading(false);
+        status.printError(error);
+        return {};
+    });
 
     this.dispose = () => {
+        status.destroy(this.loading);
     };
 });

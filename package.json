@@ -46,6 +46,7 @@
     "node-uuid": "1.4.7",
     "octal": "1.0.0",
     "optimist": "0.6.1",
+    "request-promise": "^3.0.0",
     "server-destroy": "1.0.1",
     "sha1": "1.1.1",
     "split": "1.0.0",

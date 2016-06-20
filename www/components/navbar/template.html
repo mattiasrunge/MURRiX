@@ -1,4 +1,4 @@
-<div class="navbar navbar-fixed-top navbar-inverse navbar-background" role="navigation">
+<div class="navbar navbar-fixed-top navbar-inverse background" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
@@ -8,8 +8,8 @@
                 <div class="form-group header-search" style="width: 600px; position: relative;">
                     <input type="text" class="form-control" placeholder="Search for anything" data-bind="nodeselect: { root: searchPaths, path: path }" style="width: 100%;">
                     <a class="star" href="#" data-bind=", attr: { title: starred() ? 'Click to unstar' : 'Click to star' }, click: toggleStar, visible: loggedIn() && path() !== ''">
-                        <i class="material-icons md-20" data-bind="visible: starred">star</i>
-                        <i class="material-icons md-20" data-bind="visible: !starred()">star_border</i>
+                        <i class="material-icons md-24" data-bind="visible: starred">star</i>
+                        <i class="material-icons md-24" data-bind="visible: !starred()">star_border</i>
                     </a>
                 </div>
             </div>

@@ -19,11 +19,12 @@ let album = api.register("album", {
         }
     }),
     mkalbum: function*(session, name, attributes) {
-        let album = yield vfs.create(session, "/albums/" + name, "a", attributes);
+        yield vfs.create(session, "/albums/" + name, "a", attributes);
 
         yield vfs.create(session, "/albums/" + name + "/files", "d");
+        yield vfs.create(session, "/albums/" + name + "/texts", "d");
 
-        return album;
+        return yield vfs.resolve(session, "/albums/" + name);
     },
     find: function*(session, name) {
         return yield vfs.resolve(session, "/albums/" + name, true);

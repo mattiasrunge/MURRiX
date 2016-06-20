@@ -8,6 +8,17 @@ const utils = require("lib/utils");
 const bindings = require("lib/bindings");
 const bootstrap = require("bootstrap");
 
+let $window = $(window);
+let resizeFlag = ko.observable(false);
+let resizeTimer = null;
+
+$window.on("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+        resizeFlag(!resizeFlag());
+    }, 250);
+});
+
 ko.asyncComputed = function(defaultValue, fn, onError, extend) {
     let promise = co.wrap(fn);
     let result = ko.observable(defaultValue);
@@ -50,5 +61,9 @@ module.exports = {
         let Model = function() {};
 
         ko.applyBindings(new Model(), document.body);
+    }),
+    windowSize: ko.pureComputed(() => {
+        resizeFlag();
+        return { width: $window.width(), height: $window.height() };
     })
 };

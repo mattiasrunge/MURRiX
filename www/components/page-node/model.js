@@ -11,12 +11,9 @@ const node = require("lib/node");
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = node.nodepath;
     this.loading = node.loading;
-    this.type = ko.pureComputed(() => {
-        return this.nodepath() ? this.nodepath().node.properties.type : false;
-    });
-    this.section = ko.pureComputed(() => {
-        return ko.unwrap(loc.current().section) || "default";
-    });
+    this.type = ko.pureComputed(() => this.nodepath() ? this.nodepath().node.properties.type : false);
+    this.section = ko.pureComputed(() => ko.unwrap(loc.current().section) || "default");
+    this.showPath = ko.pureComputed(() => ko.unwrap(loc.current().showPath));
 
     this.dispose = () => {
     };

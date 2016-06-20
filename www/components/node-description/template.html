@@ -1,3 +1,4 @@
 ﻿<div data-bind="visible: nodepath, if: nodepath">
-    <p data-bind="html: nodepath().node.attributes.description"></p>
+    <p data-bind="visible: nodepath().node.attributes.description !== '', html: nodepath().node.attributes.description"></p>
+    <a href="#" class="text-muted" data-bind="visible: nodepath().node.attributes.description === ''">Add a description</a>
 </div>

@@ -21,7 +21,7 @@ let file = api.register("file", {
             throw new Error("Source file does not exist");
         }
 
-        let metadata = yield mcs.getMetadata(attributes._source.filename);
+        let metadata = yield mcs.getMetadata(attributes._source.filename, { noChecksums: true }); // TODO: checksum
 
 //         if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
 //             throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
@@ -41,16 +41,34 @@ let file = api.register("file", {
         }
 
         for (let key of Object.keys(metadata)) {
-            if (key !== "raw" && key !== "name") {
+            if (key !== "raw" && key !== "name" && typeof attributes[key] === "undefined") {
                 attributes[key] = metadata[key];
             }
         }
 
-        let item = yield vfs.create(session, abspath, "f", attributes);
+
+        yield vfs.create(session, abspath, "f", attributes);
+        yield file.regenerate(session, abspath);
 
         yield vfs.create(session, abspath + "/tags", "d");
 
-        return item;
+        return yield vfs.resolve(session, abspath);
+    },
+    regenerate: function*(session, abspath) {
+        let node = yield vfs.resolve(session, abspath);
+        let attributes = node.attributes;
+
+        // TODO: Recache cached versions if angle, mirror changed
+
+        // TODO: connect device if we have none based on serialNumber?
+
+        // TODO: Reread metadata?
+
+        // TODO: If we have a device, send in that information with the device source when
+        // TODO: If there is a position and local device type, send in that information with the device source when
+        yield vfs.setattributes(session, node, {
+            time: yield mcs.compileTime(attributes.when || {})
+        });
     },
     getPictureFilenames: function*(session, ids, width, height) {
         let nodes = yield vfs.query(session, {

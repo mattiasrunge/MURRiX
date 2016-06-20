@@ -23,8 +23,11 @@ let mcs = api.register("mcs", {
             throw new Error("Failed to identify ourselves with the MCS, is the keys set up?");
         }
     }),
-    getMetadata: function*(filename) {
-        return yield mcsApi.metadata.get(filename);
+    getMetadata: function*(filename, options) {
+        return yield mcsApi.metadata.get(filename, options);
+    },
+    compileTime: function*(sources) {
+        return yield mcsApi.time.compile(sources);
     },
     getCached: function*(id, filename, format) {
         return yield mcsApi.cache.get(id, filename, format);

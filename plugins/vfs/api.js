@@ -101,7 +101,7 @@ let vfs = api.register("vfs", {
         if (options && options.fields) {
             options.fields["properties"] = 1;
         }
-        
+
         let node = yield db.findOne("nodes", query, options);
 
         if (node && !(yield vfs.access(session, node, "r"))) {

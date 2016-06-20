@@ -292,7 +292,7 @@ let auth = api.register("auth", {
         for (let user of users) {
             if (user.node.attributes.uid === uid) {
                 let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + user.name + "/person/profilePicture", true);
-                console.log(user, person);
+
                 if (person) {
                     return person._id;
                 }

@@ -45,6 +45,11 @@ module.exports = {
         modeStr += mode & parseInt("001", 8) ? "x" : "-";
 
         return modeStr;
+    },
+    sortNodeList: (list) => {
+        list.sort((a, b) => {
+            return a.node.attributes.time.timestamp - b.node.attributes.time.timestamp;
+        });
     }
 };
 

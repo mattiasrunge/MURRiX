@@ -1,0 +1,41 @@
+<div class="fullscreen animated zoomIn">
+    <div data-bind="if: item() && !loading()">
+        <div data-bind="picture: { item: item, height: $component.height, classes: 'resize-fit-center' }" class="resize-fit-container"></div>
+    </div>
+
+    <div data-bind="if: item" class="bottombar">
+        <a href="#">
+            <i class="material-icons md-48 pull-left">chevron_left</i>
+        </a>
+
+        <span class="middle">
+            <span>
+                <i class="material-icons md-18">access_time</i>
+                <span data-bind="datetimeUtc: item().node.attributes.time.timestamp"></span>
+            </span>
+
+            <span>
+                <i class="material-icons md-18">place</i>
+
+            </span>
+
+            <span>
+                <i class="material-icons md-18">comment</i>
+                <span data-bind="text: commentCount"></span>
+            </span>
+
+            <span>
+                <i class="material-icons md-18">face</i>
+                <span data-bind="text: tagCount"></span>
+            </span>
+        </span>
+
+        <a href="#">
+            <i class="material-icons md-48 pull-right">chevron_right</i>
+        </a>
+    </div>
+
+    <a href="#" class="exit" data-bind="location: { showPath: null }">
+        <i class="material-icons">close</i>
+    </a>
+</div>

@@ -13,12 +13,20 @@
                         <td data-bind="text: nodepath().node.attributes.birthname"></td>
                     </tr>
                     <tr>
-                        <td><strong>Birthday</strong></td>
-                        <td data-bind="text: 'abc'"></td>
+                        <td><strong>Date of birth</strong></td>
+                        <td data-bind="text: metrics().birthdate"></td>
+                    </tr>
+                    <tr data-bind="visible: metrics().deathdate">
+                        <td><strong>Date of death</strong></td>
+                        <td data-bind="text: metrics().deathdate"></td>
+                    </tr>
+                    <tr data-bind="visible: metrics().ageatdeath">
+                        <td><strong>Age at death</strong></td>
+                        <td data-bind="text: metrics().ageatdeath"></td>
                     </tr>
                     <tr>
                         <td><strong>Age</strong></td>
-                        <td data-bind="text: 'abc'"></td>
+                        <td data-bind="text: metrics().age"></td>
                     </tr>
                     <tr>
                         <td><strong>Partner</strong></td>

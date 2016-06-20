@@ -22,8 +22,9 @@ let location = api.register("location", {
         let location = yield vfs.create(session, "/locations/" + name, "l", attributes);
 
         yield vfs.create(session, "/locations/" + name + "/residents", "d");
+        yield vfs.create(session, "/locations/" + name + "/texts", "d");
 
-        return location;
+        return yield vfs.resolve(session, "/locations/" + name);
     },
     find: function*(session, name) {
         return yield vfs.resolve(session, "/locations/" + name, true);

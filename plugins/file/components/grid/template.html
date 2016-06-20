@@ -2,4 +2,6 @@
     <i class="material-icons md-48 spin">cached</i>
     <div><strong>Loading...</strong></div>
 </div>
-<div class="clearfix" data-bind="pictures: { items: list, width: size, height: size, margin: 1, classes: 'pull-left' }"></div>
+<div class="clearfix" data-bind="foreach: list">
+    <a href="#" data-bind="picture: { item: $data, width: $component.size, height: $component.size, classes: 'pull-left grid-picture' }, location: { showPath: $data.path }"></a>
+</div>

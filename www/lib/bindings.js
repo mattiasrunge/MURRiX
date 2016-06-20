@@ -151,6 +151,26 @@ ko.bindingHandlers.location = {
     }
 };
 
+
+ko.bindingHandlers.datetimeUtc = {
+    update: function(element, valueAccessor) {
+        let value = ko.unwrap(valueAccessor());
+
+        if (!value) {
+            $(element).text("Unknown");
+            return;
+        }
+
+        let dateItem = moment.utc(value * 1000);
+
+        if (!dateItem.date()) {
+            $(element).html(value);
+        } else {
+            $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
+        }
+    }
+};
+
 ko.bindingHandlers.datetimeLocal = {
     update: function(element, valueAccessor) {
         let value = ko.unwrap(valueAccessor());
@@ -401,10 +421,20 @@ ko.bindingHandlers.picture = {
         $element.empty();
 
         if (item) {
+            let css = [];
+
+            if (width) {
+                css.push("width: " + width + "px");
+            }
+
+            if (height) {
+                css.push("height: " + height + "px");
+            }
+
             if (nolazyload) {
-                $element.append($("<img src='" + item.filename + "' style='width: " + width + "px; height: " + height + "px;' class='" + classes + "'>"));
+                $element.append($("<img src='" + item.filename + "' style='" + css.join(";") + "' class='" + classes + "'>"));
             } else {
-                $element.append($("<img data-original='" + item.filename + "' style='width: " + width + "px; height: " + height + "px;' class='lazyload " + classes + "'>"));
+                $element.append($("<img data-original='" + item.filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>"));
                 lazyload.update();
             }
         }

@@ -25,12 +25,49 @@ let people = api.register("people", {
         yield vfs.create(session, "/people/" + name + "/children", "d");
         yield vfs.create(session, "/people/" + name + "/homes", "d");
         yield vfs.create(session, "/people/" + name + "/measurments", "d");
+        yield vfs.create(session, "/people/" + name + "/texts", "d");
 
-        return person;
+        return yield vfs.resolve(session, "/people/" + name);
+    },
+    getMetrics: function*(session, abspath) {
+        let node = yield vfs.resolve(session, abspath);
+        let birthdate = false;
+        let deathdate = false;
+        let age = false;
+        let ageatdeath = false;
+
+        let birth = (yield vfs.list(session, abspath + "/texts", false, {
+            "attributes.type": "birth"
+        }))[0];
+
+        let death = (yield vfs.list(session, abspath + "/texts", false, {
+            "attributes.type": "death"
+        }))[0];
+
+        if (birth) {
+            let birthUtc = moment.utc(birth.node.attributes.time.timestamp * 1000);
+
+            birthdate = birthUtc.format("YYYY-MM-DD");
+            age = moment.utc().diff(birthUtc, "years");
+        }
+
+        if (death) {
+            let deathUtc = moment.utc(death.node.attributes.time.timestamp * 1000);
+
+            deathdate = deathUtc.format("YYYY-MM-DD");
+
+            if (birth) {
+                let birthUtc = moment.utc(birth.node.attributes.time.timestamp * 1000);
+
+                ageatdeath = deathUtc.diff(birthUtc.utc(), "years");
+            }
+        }
+
+        return { birthdate: birthdate, age: age, deathdate: deathdate, ageatdeath: ageatdeath };
     },
     addMeasurement: function*(session, abspath, name, time, value, unit) {
         let node = yield vfs.resolve(session, abspath + "/measurments/" + name, true);
-
+        // TODO: Use vfs.ensure here instead
         if (!node) {
             node = yield vfs.create(session, abspath + "/measurments/" + name, "c", {
                 values: []

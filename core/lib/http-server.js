@@ -48,7 +48,7 @@ module.exports = {
         // Setup application
         app.name = "murrix-v" + version;
         app.keys = [ "murrix is tha best" ];
-        app.use(session({ key: app.name }, app));
+        app.use(session({ key: app.name, maxAge: 24 * 60 * 60 * 1000 * 30 }, app));
         app.use(compress());
         app.use(bodyParser());
         app.use(conditional());
