@@ -1414,9 +1414,9 @@ murrix.createPath = function(partIndex, primary, secondary)
   return newPath;
 };
 
-var rawImageMimeTypes = [ "image/x-canon-cr2", "image/x-raw", "image/x-canon-crw", "image/x-nikon-nef", "image/CR2" ];
+var rawImageMimeTypes = [ "image/x-canon-cr2", "image/x-raw", "image/x-canon-crw", "image/x-nikon-nef", "image/CR2", "image/x-panasonic-raw2" ];
 var imageMimeTypes = [ "image/jpeg", "image/gif", "image/tiff", "image/png", "image/bmp" ].concat(rawImageMimeTypes);
-var videoMimeTypes = [ "video/mpeg", "video/avi", "video/quicktime", "video/x-ms-wmv", "video/mp4", "video/3gpp", "video/x-msvideo" ];
+var videoMimeTypes = [ "video/mpeg", "video/avi", "video/quicktime", "video/x-ms-wmv", "video/mp4", "video/3gpp", "video/x-msvideo", "video/vnd.dlna.mpeg-tts", "video/m2ts" ];
 var audioMimeTypes = [ "audio/mpeg", "audio/x-wav", "audio/x-m4a", "audio/mp4" ];
 
 murrix.mimeIsImage = function(mimeType)

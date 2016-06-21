@@ -21,22 +21,21 @@
 
     <div style="position: fixed; top: 0px; left: 0px; bottom: 0px; right: 350px; text-align: center; background-color: black;" data-bind="if: nodeModel.overlayModel.item().what() === 'file', style: { right: nodeModel.overlayModel.autoplay() ? '0px' : '350px' }">
 
-
-
-        <div class="imgContainer" style="position: relative; display: inline-block;">
-          <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'">
-            <div data-bind="template: { name: 'imageTemplate', data: nodeModel.overlayModel.item() }"></div>
-          </div>
-
-          <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
+        <div class="imgContainer" style="position: relative; display: inline-block; height: 100%;">
+          <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'videoFile', visible: nodeModel.overlayModel.item().whatDetailed() === 'videoFile'">
             <video class="overlayVideo" style="display: inline-block; height: auto; max-height: 100%; max-width: 100%; vertical-align: middle; width: auto;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, nodeModel.overlayModel.item().angle() === 90 || nodeModel.overlayModel.item().angle() === 270 ? nodeModel.overlayModel.item().exif.ImageHeight : nodeModel.overlayModel.item().exif.ImageWidth, nodeModel.overlayModel.item().angle() === 90 || nodeModel.overlayModel.item().angle() === 270 ? nodeModel.overlayModel.item().exif.ImageWidth : nodeModel.overlayModel.item().exif.ImageHeight, nodeModel.overlayModel.item().cacheId ]" src="" alt=""></video>
           </div>
-        </div>
 
-        <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'audioFile'">
-          <div style="padding: 20px 100px 20px 100px; color: white">
-            <h3 style="text-align: center;" data-bind="text: nodeModel.overlayModel.item().name"></h3>
-            <video style="display: inline-block; width: 720px; height: 288px; vertical-align: middle;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, 720, 288 ]" src="" alt=""></video>
+
+          <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'audioFile', visible: nodeModel.overlayModel.item().whatDetailed() === 'audioFile'">
+            <div style="padding: 20px 100px 20px 100px; color: white">
+              <h3 style="text-align: center;" data-bind="text: nodeModel.overlayModel.item().name"></h3>
+              <video style="display: inline-block; width: 720px; height: 288px; vertical-align: middle;" preload="metadata" controls="true" data-bind="attr: { src: nodeModel.overlayModel.videoFile }, posterVideo: [ nodeModel.overlayModel.item()._id, 720, 288 ]" src="" alt=""></video>
+            </div>
+          </div>
+
+          <div data-bind="if: nodeModel.overlayModel.item().whatDetailed() === 'imageFile'" style="display: inline-block; height: 100%;">
+            <div data-bind="template: { name: 'imageTemplate', data: nodeModel.overlayModel.item() }" style="display: inline-block; height: 100%;"></div>
           </div>
         </div>
     </div>

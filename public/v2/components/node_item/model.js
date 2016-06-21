@@ -16,6 +16,7 @@ define([
             this.tools = tools;
             this.loading = notification.loadObservable("component/node_item", false); // TODO: Dispose!
             this.commentText = ko.observable("");
+            this.commentFocus = ko.observable(false);
             this.list = ko.pureComputed(function() {
                 return ko.unwrap(params.list);
             });
@@ -139,31 +140,24 @@ define([
                 }.bind(this));
             }.bind(this);
 
-            var s1 = this.itemId.subscribe(this.load);
-            this.load();
+            this.regenerate = function() {
+                this.loading(true);
 
-            this.dispose = function() {
-                s1.dispose();
-            };
+                socket.emit("helper_nodeToolsReReadExif", { id: this.item()._id }, function(error) {
+                    this.loading(false);
 
-            var $element = $("body");
-            this.imageUrl = ko.pureComputed(function() {
-                if (!this.item()) {
-                    return false;
-                }
+                    if (error) {
+                        notification.error(error);
+                        return;
+                    }
 
-                return "/preview?id=" + this.item()._id + "&width=1280&height=960&square=0";
-            }.bind(this));
+                    this.load();
+                }.bind(this));
+            }.bind(this);
+
+
             var videoUrl = this.videoUrl = ko.observable(false);
-            var commentText = this.commentText = ko.observable("");
-            var errorText = this.errorText = ko.observable(false);
-            var loading = this.loading = ko.observable(false);
 
-            var index = this.index = ko.observable(0);
-            var count = this.count = ko.observable(0);
-            var next = this.next = ko.observable(false);
-            var previous = this.previous = ko.observable(false);
-            var mediaList = this.mediaList = ko.observableArray();
             var fullscreen = this.fullscreen = ko.observable(false);
             var playing = this.playing = ko.observable(false);
             var timer = null;
@@ -181,7 +175,7 @@ define([
             }.bind(this);
 
             this.containerClick = function() {
-
+                playing(false);
             };
 
             this.toggleFullscreen = function() {
@@ -189,53 +183,48 @@ define([
             };
 
             this.togglePlaying = function() {
+                playing(!playing());
+            };
 
+            var scrollable = function() {
+                var $element = $("body");
+
+                if (this.item()) {
+                    $element.css("overflow-y", "hidden");
+                } else {
+                    $element.css("overflow-y", "auto");
+                }
+            }.bind(this);
+
+
+            var s1 = playing.subscribe(function(value) {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+
+                if (value) {
+                    timer = setInterval(function() {
+                        this.goNext();
+                    }.bind(this), 5000);
+                }
+            }.bind(this));
+
+            var s2 = this.itemId.subscribe(this.load);
+            this.load();
+
+            var s3 = this.item.subscribe(scrollable);
+            scrollable();
+
+            this.dispose = function() {
+                s1.dispose();
+                s2.dispose();
+                s3.dispose();
             };
 
 
 
-  var scrollable = function()
-  {
-    if (this.item())
-    {
-      $element.css("overflow-y", "hidden");
-    }
-    else
-    {
-      $element.css("overflow-y", "scroll");
-    }
-  }.bind(this);
 
-  function goNext()
-  {
-//     var parts = document.location.hash.split("/");
-//     parts.pop();
-//     document.location.hash = parts.join("/") + "/" + next();
-  }
-
-  function goPrevious()
-  {
-//     var parts = document.location.hash.split("/");
-//     parts.pop();
-//     document.location.hash = parts.join("/") + "/" + previous();
-  }
-
-  playing.subscribe(function(value)
-  {
-    if (timer)
-    {
-      clearInterval(timer);
-      timer = null;
-    }
-
-    if (value)
-    {
-      timer = setInterval(function()
-      {
-        goNext();
-      }, 5000);
-    }
-  });
 
 //   tools.document.on("fullscreen:enter", function()
 //   {
@@ -247,7 +236,7 @@ define([
 //     fullscreen(false);
 //   });
 //
-  scrollable();
+
 
 //   function LoadMedia()
 //   {
@@ -317,205 +306,8 @@ define([
 // //       });
 //     }
 //   }
-//
-//   LoadMedia.bind(this)();
 
-  this.item.subscribe(function(value)
-  {
-    scrollable();
-    //LoadMedia.bind(this)();
-  }.bind(this));
 
-  $(document).on("resize", function()
-  {
-    var $element = $(".showing-container");
-
-    $element.removeClass("showing-container");
-
-    setTimeout(function()
-    {
-      $element.addClass("showing-container");
-    }, 50);
-  });
-
-  function LoadItemEnvironment()
-  {
-    next(false);
-    previous(false);
-    index(0);
-
-    if (count() === 0 || !this.item())
-    {
-      return;
-    }
-
-    for (var n = 0; n < mediaList().length; n++)
-    {
-      if (mediaList()[n] === this.item()._id)
-      {
-        index(n + 1);
-
-        if (n === 0)
-        {
-          previous(mediaList()[mediaList().length - 1]);
-        }
-        else
-        {
-          previous(mediaList()[n - 1]);
-        }
-
-        if (n + 1 === mediaList().length)
-        {
-          next(mediaList()[0]);
-        }
-        else
-        {
-          next(mediaList()[n + 1]);
-        }
-
-        break;
-      }
-    }
-  }
-
-//   function LoadEnvironment()
-//   {
-//     if (!this.node())
-//     {
-//       index(0);
-//       count(0);
-//       next(false);
-//       previous(false);
-//       mediaList.removeAll();
-//       return;
-//     }
-//
-//     loading(true);
-//     errorText(false);
-//
-//     this.server.emit("node.getChildIdList", { _id: this.node()._id, types: [ "file" ] }, function(error, list)
-//     {
-//       loading(false);
-//
-//       if (error)
-//       {
-//         console.error(error);
-//         errorText(error);
-//         return;
-//       }
-//
-//       list.sort(function(a, b)
-//       {
-//         if (a.timestamp === b.timestamp)
-//         {
-//           return 0;
-//         }
-//         else if (!a.timestamp)
-//         {
-//           return -1;
-//         }
-//         else if (!b.timestamp)
-//         {
-//           return 1;
-//         }
-//
-//         var offset = Math.abs(Math.min(a.timestamp, b.timestamp));
-//         return (offset + a.timestamp) - (offset + b.timestamp);
-//       });
-//
-//       count(list.length);
-//       mediaList.removeAll();
-//
-//       for (var n = 0; n < list.length; n++)
-//       {
-//         mediaList.push(list[n]._id);
-//       }
-//
-//       LoadItemEnvironment();
-//     });
-//   };
-
-  this.node.subscribe(function(value)
-  {
-    //LoadEnvironment();
-  });
-
-  //LoadEnvironment();
-/*
-  return {
-    tools: tools,
-    item: this.item,
-    node: this.node,
-    user: user.user,
-    imageUrl: imageUrl,
-    videoUrl: videoUrl,
-    index: index,
-    count: count,
-    commentText: commentText,
-    errorText: errorText,
-    loading: loading,
-    fullscreen: fullscreen,
-    playing: playing,
-    submitComment: function()
-    {
-      if (commentText() === "")
-      {
-        errorText("Can not submit an empty comment.");
-        return;
-      }
-
-      loading(true);
-      errorText(false);
-
-//       this.server.emit("item.comment", { _id: this.item()._id, text: commentText() }, function(error, itemData)
-//       {
-//         loading(false);
-//
-//         if (error)
-//         {
-//           errorText(error);
-//           return;
-//         }
-//
-//         commentText("");
-//
-//         this.item(itemData);
-//       });
-    },
-    close: function()
-    {
-//       var parts = document.location.hash.split("/");
-//       parts.pop();
-//       document.location.hash = parts.join("/");
-    },
-    goNext: goNext,
-    goPrevious: goPrevious,
-    toggleFullscreen: function()
-    {
-//       event.stopPropagation();
-//       event.preventDefault();
-//
-//       if (fullscreen())
-//       {
-//         tools.document.exitFullscreen();
-//       }
-//       else
-//       {
-//         tools.document.enterFullscreen();
-//       }
-    },
-    togglePlaying: function(data, event)
-    {
-//       event.stopPropagation();
-//       event.preventDefault();
-//
-//       playing(!playing());
-    },
-    containerClick: function()
-    {
-//       playing(false);
-    }
-  };*/
         }
     }
 });

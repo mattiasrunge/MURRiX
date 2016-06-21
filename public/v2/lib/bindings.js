@@ -76,9 +76,33 @@ define([
                     $(window).off("resize", resize);
                 }
 
+                if (element.marker) {
+                    element.marker.setMap(null);
+                    delete element.marker;
+                }
+
                 $element.empty();
                 delete element.map;
             });
+        },
+        update: function(element, valueAccessor) {
+            var value = valueAccessor();
+
+            if (element.marker) {
+                element.marker.setMap(null);
+                delete element.marker;
+            }
+
+            if (value.where.longitude && value.where.latitude) {
+                var position = { lat: value.where.latitude, lng: value.where.longitude };
+
+                element.marker = new google.maps.Marker({
+                    position: position,
+                    map: element.map
+                });
+
+                element.map.panTo(position);
+            }
         }
     };
 

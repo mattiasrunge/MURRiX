@@ -24,7 +24,7 @@ var NodeModel = function(parentModel)
   {
     if (!node)
     {
-      self.groupAccessVisible(false);
+      //self.groupAccessVisible(false);
       console.log("NodeModel: Node is false, do nothing more!");
       return;
     }

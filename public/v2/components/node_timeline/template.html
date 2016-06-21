@@ -11,7 +11,7 @@
                         <div class="events-body">
                             <div data-bind="foreach: $data.texts">
                                 <h4 class="events-heading" data-bind="text: $data.name"></h4>
-                                <p data-bind="html: $data.text"></p>
+                                <p style="white-space: pre-line;" data-bind="html: $data.text"></p>
                             </div>
                             <div data-bind="if: $data.images.length > 0">
                                 <div data-bind="if: $data.images.length > 5 && !$data.imagesExpanded()">

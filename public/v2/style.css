@@ -883,15 +883,33 @@ i.icon-fixed[class*=" icon-"] {
     border: none;
     box-shadow: none;
     padding: 0;
-    padding-bottom: 6px;
+    padding-bottom: 1px;
     border-bottom: 1px solid #C9C9C9;
+    resize: none;
+    transition: border-bottom 0.8s;
 }
 
 .info-container textarea:focus {
     border: none;
     border-bottom: 2px solid #337AB7;
-    padding-bottom: 5px;
+    padding-bottom: 0;
     box-shadow: none;
+    transition: border-bottom 0.3s;
+}
+
+.info-container-comment-button {
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s;
+}
+
+.info-container-comment-button-showing {
+    pointer-events: auto;
+    display: block;
+    opacity: 1;
+    transition: opacity 0.3s;
 }
 
 .info-container-data {
@@ -901,7 +919,7 @@ i.icon-fixed[class*=" icon-"] {
     position: absolute;
     top: 0;
     right: 0;
-    bottom: 250px;
+    bottom: 400px;
     left: 0;
     background-color: white;
     padding: 30px;
@@ -909,7 +927,7 @@ i.icon-fixed[class*=" icon-"] {
 
 .info-container-map {
     position: absolute;;
-    height: 250px;
+    height: 400px;
     right: 0;
     bottom: 0;
     left: 0;
