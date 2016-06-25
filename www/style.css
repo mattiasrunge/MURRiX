@@ -6,8 +6,8 @@
 @import: "node_modules/snackbarjs/dist/snackbar.css";
 
 @keyframes spin {
-    from {transform:rotate(0deg);}
-    to {transform:rotate(360deg);}
+    from {transform:rotate(360deg);}
+    to {transform:rotate(0deg);}
 }
 
 .animated {
@@ -84,6 +84,22 @@ body {
 
 .main {
   margin-left: 200px;
+}
+
+.grid-picture-container {
+    position: relative;
+    display: inline-block;
+}
+
+.grid-picture-type {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: white;
+}
+
+.grid-picture-type:hover {
+    color: white;
 }
 
 .grid-picture {

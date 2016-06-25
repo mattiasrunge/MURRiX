@@ -12,19 +12,19 @@
                         <td><strong>Birth name</strong></td>
                         <td data-bind="text: nodepath().node.attributes.birthname"></td>
                     </tr>
-                    <tr>
-                        <td><strong>Date of birth</strong></td>
+                    <tr data-bind="visible: metrics().birthdate">
+                    <td><strong>Date of birth</strong></td>
                         <td data-bind="text: metrics().birthdate"></td>
                     </tr>
                     <tr data-bind="visible: metrics().deathdate">
                         <td><strong>Date of death</strong></td>
                         <td data-bind="text: metrics().deathdate"></td>
                     </tr>
-                    <tr data-bind="visible: metrics().ageatdeath">
+                    <tr data-bind="visible: metrics().deathdate">
                         <td><strong>Age at death</strong></td>
                         <td data-bind="text: metrics().ageatdeath"></td>
                     </tr>
-                    <tr>
+                    <tr data-bind="visible: metrics().birthdate">
                         <td><strong>Age</strong></td>
                         <td data-bind="text: metrics().age"></td>
                     </tr>

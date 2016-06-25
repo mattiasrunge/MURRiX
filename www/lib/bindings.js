@@ -152,6 +152,25 @@ ko.bindingHandlers.location = {
 };
 
 
+ko.bindingHandlers.datetimeDay = {
+    update: function(element, valueAccessor) {
+        let value = ko.unwrap(valueAccessor());
+
+        if (!value) {
+            $(element).text("Unknown");
+            return;
+        }
+
+        let dateItem = moment.utc(value * 1000);
+
+        if (!dateItem.date()) {
+            $(element).html(value);
+        } else {
+            $(element).html(dateItem.format("dddd, MMMM Do YYYY"));
+        }
+    }
+};
+
 ko.bindingHandlers.datetimeUtc = {
     update: function(element, valueAccessor) {
         let value = ko.unwrap(valueAccessor());
@@ -415,10 +434,13 @@ ko.bindingHandlers.picture = {
         let width = ko.unwrap(data.width);
         let height = ko.unwrap(data.height);
         let classes = ko.unwrap(data.classes) || "";
+        let type = ko.unwrap(data.type);
         let $element = $(element);
         let nolazyload = !!ko.unwrap(data.nolazyload);
 
         $element.empty();
+
+        $element.addClass("grid-picture-container");
 
         if (item) {
             let css = [];
@@ -437,6 +459,17 @@ ko.bindingHandlers.picture = {
                 $element.append($("<img data-original='" + item.filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>"));
                 lazyload.update();
             }
+
+            if (type === "image") {
+                $element.append($("<i class='material-icons grid-picture-type' title='Image file'>camera_alt</i>"));
+            } else if (type === "video") {
+                $element.append($("<i class='material-icons grid-picture-type' title='Video file'>videocam</i>"));
+            } else if (type === "audio") {
+                $element.append($("<i class='material-icons grid-picture-type' title='Audio file'>mic</i>"));
+            } else if (type) {
+                $element.append($("<i class='material-icons grid-picture-type' title='Unknown file'>attachment</i>"));
+            }
+
         }
     }
 };
