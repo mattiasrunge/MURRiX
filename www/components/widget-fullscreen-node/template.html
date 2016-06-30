@@ -1,6 +1,14 @@
 <div class="fullscreen animated zoomIn">
     <div data-bind="if: item() && !loading()">
-        <div data-bind="picture: { item: item, height: $component.height, classes: 'resize-fit-center' }" class="resize-fit-container"></div>
+        <div data-bind="if: item().node.attributes.type === 'image'">
+            <div data-bind="picture: { item: item, height: $component.height, classes: 'resize-fit-center' }" class="resize-fit-container"></div>
+        </div>
+        <div data-bind="if: item().node.attributes.type === 'video'" class="resize-fit-container">
+            <video autoplay controls preload="metadata" class="resize-fit-center">
+                <source src="" type="video/webm" data-bind="attr: { src: item().filename }">
+                Your browser does not support the video tag.
+            </video>
+        </div>
     </div>
 
     <div data-bind="if: item" class="bottombar">

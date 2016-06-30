@@ -325,10 +325,22 @@ ko.bindingHandlers.nodeselect = {
             "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
         });
 
+        for (let item of list) {
+            let node = yield api.vfs.resolve(item.path + "/profilePicture", true);
+
+            if (node) {
+                let filename = (yield api.file.getPictureFilenames([ node._id ], this.size, this.size))[0];
+                item.filename = filename.filename;
+            }
+        }
+
+        console.log(list);
+
         return list.map((item) => {
             return {
                 path: item.path,
-                node: item.node
+                node: item.node,
+                filename: item.filename
             };
         });
     }),
@@ -357,7 +369,9 @@ ko.bindingHandlers.nodeselect = {
             },
             templates: {
                 suggestion: (selection) => {
-                    return "<div><img src='http://lorempixel.com/16/16'>" + selection.node.attributes.name + "</div>";
+                    console.log(selection);
+                    let img = selection.filename ? "<img src='" + selection.filename + "' style='width: 16px; height: 16px;'> " : "";
+                    return "<div>" + img + selection.node.attributes.name + "</div>";
                 }
             },
             limit: limit

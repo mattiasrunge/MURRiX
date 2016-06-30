@@ -26,6 +26,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.item = ko.asyncComputed(false, function*(setter) {
         let height = ko.unwrap(this.height);
         let abspath = ko.unwrap(this.showPath);
+        let filename = "";
 
         this.loading(true);
         let node = yield api.vfs.resolve(abspath);
@@ -38,7 +39,11 @@ module.exports = utils.wrapComponent(function*(params) {
         }
 
         this.loading(true);
-        let filename = (yield api.file.getPictureFilenames([ node._id ], null, height))[0];
+        if (node.attributes.type === "image") {
+            filename = (yield api.file.getPictureFilenames([ node._id ], null, height))[0];
+        } else if (node.attributes.type === "video") {
+            filename = (yield api.file.getVideoFilenames([ node._id ], null, height))[0];
+        }
         this.loading(false);
 
         return { node: node, filename: filename.filename };

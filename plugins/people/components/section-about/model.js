@@ -34,6 +34,50 @@ module.exports = utils.wrapComponent(function*(params) {
         return {};
     });
 
+    this.events = ko.asyncComputed([], function*(setter) {
+        if (!this.nodepath() || this.nodepath() === "") {
+            return [];
+        }
+
+        setter([]);
+
+        this.loading(true);
+
+        let texts = yield api.vfs.list(this.nodepath().path + "/texts");
+
+        utils.sortNodeList(texts);
+
+        console.log("texts", texts);
+
+        return texts;/*
+
+
+
+
+        let days = {};
+
+        for (let text of texts) {
+            let day = moment.utc(text.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD");
+
+            days[day] = days[day] || { texts: [], files: [], day: text.node.attributes.time.timestamp };
+            days[day].texts.push(text);
+        }
+
+        days = Object.keys(days).map((key) => days[key]);
+
+        days.sort((a, b) => {
+            return a.day - b.day;
+        });
+
+        console.log("days", days);
+
+        return days;*/
+    }.bind(this), (error) => {
+        this.loading(false);
+        status.printError(error);
+        return [];
+    });
+
     this.dispose = () => {
         status.destroy(this.loading);
     };

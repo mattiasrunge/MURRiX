@@ -22,16 +22,27 @@ $window.on("resize", () => {
 ko.asyncComputed = function(defaultValue, fn, onError, extend) {
     let promise = co.wrap(fn);
     let result = ko.observable(defaultValue);
+    let active = 0;
     let computed = ko.pureComputed(() => {
+        let currentActive = ++active;
+
         promise((value) => {
             return result(value);
         })
         .then((data) => {
+            if (currentActive !== active) {
+                return;
+            }
+
             if (typeof data !== "undefined") {
                 result(data);
             }
         })
         .catch((error) => {
+            if (currentActive !== active) {
+                return;
+            }
+
             if (onError) {
                 let ret = onError(error, result);
 

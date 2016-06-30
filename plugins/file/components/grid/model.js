@@ -64,9 +64,12 @@ module.exports = utils.wrapComponent(function*(params) {
 
         days = Object.keys(days).map((key) => days[key]);
 
+        days.sort((a, b) => {
+            return a.day - b.day;
+        });
+
         console.log("days", days);
 
-        // TODO
         return days;
     }.bind(this), (error) => {
         this.loading(false);

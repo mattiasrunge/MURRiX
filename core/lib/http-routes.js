@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs-extra-promise");
 const glob = require("glob-promise");
 const staticFile = require("koa-static");
+const stream = require("koa-stream");
 const moment = require("moment");
 const parse = require("co-busboy");
 const CleanCSS = require("clean-css");
@@ -58,6 +59,12 @@ module.exports = {
 
         this.type = "json";
         this.body = JSON.stringify({ status: "success" }, null, 2);
+    },
+    "/media/:name": function*(name) {
+        yield stream.file(this, name, {
+            root: configuration.mcsDirectory,
+            allowDownload: true
+        });
     },
     unamed: () => [
         function*(next) {
@@ -132,7 +139,6 @@ module.exports = {
             yield next;
         },
         staticFile(configuration.cacheDirectory),
-        staticFile(wwwPath),
-        staticFile(configuration.mcsDirectory)
+        staticFile(wwwPath)
     ]
 };

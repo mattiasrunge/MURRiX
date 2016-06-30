@@ -8,6 +8,7 @@ const status = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
     this.path = ko.pureComputed(() => ko.unwrap(params.path));
+    this.classes = ko.pureComputed(() => ko.unwrap(params.classes));
     this.size = params.size;
     this.nolazyload = params.nolazyload;
 

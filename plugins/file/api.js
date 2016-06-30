@@ -99,7 +99,41 @@ let file = api.register("file", {
         let list = [];
 
         for (let n = 0; n < nodes.length; n++) {
-            list.push({ id: nodes[n]._id, filename: path.basename(filenames[n]) });
+            list.push({ id: nodes[n]._id, filename: path.join("media", path.basename(filenames[n])) });
+        }
+
+        return list;
+    },
+    getVideoFilenames: function*(session, ids, width, height) {
+        let nodes = yield vfs.query(session, {
+            _id: { $in: ids }
+        }, {
+            fields: {
+                "attributes.type": 1,
+                "attributes.diskfilename": 1,
+                "attributes.angle": 1,
+                "attributes.mirror": 1
+            }
+        });
+
+        let filenames = yield Promise.all(nodes.map((node) => {
+            if (node.attributes.type !== "image" && node.attributes.type !== "video") {
+                return ""; // TODO:
+            }
+
+            return mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                angle: node.attributes.angle,
+                mirror: node.attributes.mirror,
+                width: width,
+                height: height,
+                type: "video"
+            });
+        }));
+
+        let list = [];
+
+        for (let n = 0; n < nodes.length; n++) {
+            list.push({ id: nodes[n]._id, filename: path.join("media", path.basename(filenames[n])) });
         }
 
         return list;
