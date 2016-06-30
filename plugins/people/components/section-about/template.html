@@ -49,19 +49,19 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h3>Timeline</h3>
+            <h3 style="margin-bottom: 0; padding-bottom: 0;">Timeline</h3>
 
                 <ul class="timeline">
                     <!-- ko foreach: events -->
                         <li data-bind="css: { 'timeline-inverted': $index() % 2 !== 0 }">
                             <div class="timeline-panel">
                                 <div class="timeline-body">
+                                    <div class="timeline-date" data-bind="datetimeDay: $data.day"></div>
 
-<!--                                     <img class="img-responsive" src="http://lorempixel.com/1600/500/sports/2"> -->
-                                    <i class="text-muted" data-bind="datetimeDay: $data.node.attributes.time.timestamp"></i>
-                                    <h4 data-bind="html: $data.node.attributes.name"></h4>
-                                    <p data-bind="html: $data.node.attributes.text"></p>
-
+                                    <!-- ko foreach: $data.texts -->
+                                        <h4 data-bind="html: $data.node.attributes.name"></h4>
+                                        <p data-bind="html: $data.node.attributes.text.replace(/\n/g, '<br>')"></p>
+                                    <!-- /ko -->
                                 </div>
                             </div>
                         </li>

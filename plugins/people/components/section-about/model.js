@@ -6,6 +6,7 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
+const moment = require("moment");
 const utils = require("lib/utils");
 const session = require("lib/session");
 const status = require("lib/status");
@@ -49,17 +50,12 @@ module.exports = utils.wrapComponent(function*(params) {
 
         console.log("texts", texts);
 
-        return texts;/*
-
-
-
-
         let days = {};
 
         for (let text of texts) {
             let day = moment.utc(text.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD");
 
-            days[day] = days[day] || { texts: [], files: [], day: text.node.attributes.time.timestamp };
+            days[day] = days[day] || { texts: [], day: text.node.attributes.time.timestamp };
             days[day].texts.push(text);
         }
 
@@ -71,7 +67,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         console.log("days", days);
 
-        return days;*/
+        return days;
     }.bind(this), (error) => {
         this.loading(false);
         status.printError(error);

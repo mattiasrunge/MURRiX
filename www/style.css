@@ -774,6 +774,7 @@ body {
 .timeline > li > .timeline-panel {
   width: 95%;
   float: left;
+  background-color: #eee;
   border: 1px solid #eee;
   border-radius: 2px;
   position: relative;
@@ -781,40 +782,22 @@ body {
 
 .timeline > li > .timeline-panel:before {
   position: absolute;
-  top: 26px;
-  right: -15px;
+  top: 25px;
+  right: -7.5px;
+  width: 15px;
+  height: 15px;
   display: inline-block;
-  border-top: 15px solid transparent;
-  border-left: 15px solid #eee;
-  border-right: 0 solid #eee;
-  border-bottom: 15px solid transparent;
+  transform: rotate(45deg);
   content: " ";
+  background-color: #eee;
 }
-.timeline > li > .timeline-panel:after {
-  position: absolute;
-  top: 27px;
-  right: -14px;
-  display: inline-block;
-  border-top: 14px solid transparent;
-  border-left: 14px solid #fff;
-  border-right: 0 solid #fff;
-  border-bottom: 14px solid transparent;
-  content: " ";
-}
+
 
 .timeline > li.timeline-inverted > .timeline-panel {
   float: right;
 }
 .timeline > li.timeline-inverted > .timeline-panel:before {
-  border-left-width: 0;
-  border-right-width: 15px;
-  left: -15px;
-  right: auto;
-}
-.timeline > li.timeline-inverted > .timeline-panel:after {
-  border-left-width: 0;
-  border-right-width: 14px;
-  left: -14px;
+  left: -7.5px;
   right: auto;
 }
 
@@ -827,12 +810,22 @@ body {
 .timeline-body > p + p {
   margin-top: 5px;
 }
-.timeline-body > h4,
-.timeline-body > i {
+.timeline-body > h4 {
     padding: 20px;
+    padding-top: 0;
     padding-bottom: 0;
     display: block;
 }
+
+.timeline-body > .timeline-date {
+    font-weight: bold;
+    color: #aaa;
+    padding: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 0;
+    display: block;
+}
+
 
 
 .tooltip{
