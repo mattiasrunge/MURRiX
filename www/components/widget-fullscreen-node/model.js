@@ -1,11 +1,12 @@
 "use strict";
 
-const utils = require("lib/utils");
 const ko = require("knockout");
 const $ = require("jquery");
+const api = require("api.io-client");
+const utils = require("lib/utils");
 const status = require("lib/status");
 const ui = require("lib/ui");
-const api = require("api.io-client");
+const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
@@ -29,24 +30,24 @@ module.exports = utils.wrapComponent(function*(params) {
         let filename = "";
 
         this.loading(true);
-        let node = yield api.vfs.resolve(abspath);
+        let item = yield api.vfs.resolve(abspath);
         this.loading(false);
 
-        console.log("node", node);
+        console.log("item", item);
 
-        if (!node) {
+        if (!item) {
             return false;
         }
 
         this.loading(true);
-        if (node.attributes.type === "image") {
-            filename = (yield api.file.getPictureFilenames([ node._id ], null, height))[0];
-        } else if (node.attributes.type === "video") {
-            filename = (yield api.file.getVideoFilenames([ node._id ], null, height))[0];
+        if (item.attributes.type === "image") {
+            filename = (yield api.file.getPictureFilenames([ item._id ], null, height))[0];
+        } else if (item.attributes.type === "video") {
+            filename = (yield api.file.getVideoFilenames([ item._id ], null, height))[0];
         }
         this.loading(false);
 
-        return { node: node, filename: filename.filename };
+        return { node: item, filename: filename.filename };
     }.bind(this), (error) => {
         status.printError(error);
         return false;
@@ -73,6 +74,46 @@ module.exports = utils.wrapComponent(function*(params) {
         return 0;
     });
 
+    this.currentIndex = ko.pureComputed(() => {
+        if (!this.item()) {
+            return -1;
+        }
+
+        let item = node.list().filter((item2) => item2.node._id === this.item().node._id)[0];
+        return node.list().indexOf(item);
+    });
+
+    this.nextPath = ko.pureComputed(() => {
+        let index = this.currentIndex();
+
+        if (index === -1) {
+            return false;
+        }
+
+        index++;
+
+        if (index >= node.list().length) {
+            index = 0;
+        }
+
+        return node.list()[index].path;
+    });
+
+    this.previousPath = ko.pureComputed(() => {
+        let index = this.currentIndex();
+
+        if (index === -1) {
+            return false;
+        }
+
+        index--;
+
+        if (index < 0) {
+            index = node.list().length - 1;
+        }
+
+        return node.list()[index].path;
+    });
 
     $("body").css("overflow-y", "hidden");
 

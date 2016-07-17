@@ -35,5 +35,6 @@ module.exports = {
     }.bind(this), (error) => {
         status.printError(error);
         return false;
-    })
+    }),
+    list: ko.observableArray()
 };

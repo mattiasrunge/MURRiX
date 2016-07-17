@@ -202,6 +202,10 @@ body {
     color: white;
 }
 
+.fullscreen > .bottombar > a {
+    color: white;
+}
+
 .fullscreen > .bottombar > .middle {
     margin-top: 20px;
     display: inline-block;

@@ -1,10 +1,11 @@
 ﻿"use strict";
 
 const ko = require("knockout");
+const moment = require("moment");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const status = require("lib/status");
-const moment = require("moment");
+const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
@@ -35,7 +36,9 @@ module.exports = utils.wrapComponent(function*(params) {
             return file;
         });
 
-        utils.sortNodeList(files)
+        utils.sortNodeList(files);
+
+        node.list(files);
 
         console.log("files", files);
 

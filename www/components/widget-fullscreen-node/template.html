@@ -12,7 +12,7 @@
     </div>
 
     <div data-bind="if: item" class="bottombar">
-        <a href="#">
+        <a href="#" data-bind="location: { showPath: previousPath }, visible: previousPath() !== false">
             <i class="material-icons md-48 pull-left">chevron_left</i>
         </a>
 
@@ -38,7 +38,7 @@
             </span>
         </span>
 
-        <a href="#">
+        <a href="#" data-bind="location: { showPath: nextPath }, visible: nextPath() !== false">
             <i class="material-icons md-48 pull-right">chevron_right</i>
         </a>
     </div>
