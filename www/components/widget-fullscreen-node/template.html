@@ -9,6 +9,12 @@
                 Your browser does not support the video tag.
             </video>
         </div>
+         <div data-bind="if: item().node.attributes.type === 'audio'" style="position: absolute; left: 0; right: 0; bottom: 50px;">
+            <audio autoplay controls preload="metadata" style="width: 100%;">
+                <source src="" type="video/webm" data-bind="attr: { src: item().filename }">
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
     </div>
 
     <div data-bind="if: item" class="bottombar">
@@ -24,7 +30,7 @@
 
             <span>
                 <i class="material-icons md-18">place</i>
-
+                TODO
             </span>
 
             <span>

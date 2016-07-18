@@ -136,6 +136,34 @@ let file = api.register("file", {
         }
 
         return list;
+    },
+    getAudioFilenames: function*(session, ids) {
+        let nodes = yield vfs.query(session, {
+            _id: { $in: ids }
+        }, {
+            fields: {
+                "attributes.type": 1,
+                "attributes.diskfilename": 1
+            }
+        });
+
+        let filenames = yield Promise.all(nodes.map((node) => {
+            if (node.attributes.type !== "audio") {
+                throw new Error("Item type for (node id = " + node._id + ") is not audio");
+            }
+
+            return mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                type: "audio"
+            });
+        }));
+
+        let list = [];
+
+        for (let n = 0; n < nodes.length; n++) {
+            list.push({ id: nodes[n]._id, filename: path.join("media", path.basename(filenames[n])) });
+        }
+
+        return list;
     }
 });
 

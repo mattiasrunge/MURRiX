@@ -33,7 +33,11 @@ let comment = api.register("comment", {
             throw new Error("Permission denied");
         }
 
-        yield api.vfs.ensure(api.auth.getAdminSession(), path.join(abspath, "comments"), "d");
+        let dir = yield api.vfs.resolve(api.auth.getAdminSession(), path.join(abspath, "comments"), true);
+
+        if (!dir) {
+            return [];
+        }
 
         return yield api.vfs.list(api.auth.getAdminSession(), path.join(abspath, "comments"));
     }

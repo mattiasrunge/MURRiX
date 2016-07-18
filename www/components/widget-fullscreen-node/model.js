@@ -44,6 +44,8 @@ module.exports = utils.wrapComponent(function*(params) {
             filename = (yield api.file.getPictureFilenames([ item._id ], null, height))[0];
         } else if (item.attributes.type === "video") {
             filename = (yield api.file.getVideoFilenames([ item._id ], null, height))[0];
+        } else if (item.attributes.type === "audio") {
+            filename = (yield api.file.getAudioFilenames([ item._id ]))[0];
         }
         this.loading(false);
 

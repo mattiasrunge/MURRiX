@@ -63,20 +63,29 @@ let vfs = api.register("vfs", {
             node = yield vfs.resolve(session, abspathOrNode);
         }
 
+        if (!node || !node._id) {
+            throw new Error("Node not valid, abspathOrNode was " + JSON.stringify(abspathOrNode, null, 2));
+        }
+
         let mode = 0;
 
-        if (node.properties.uid === session.uid) {
-            mode += modestr.indexOf("r") !== -1 ? octal("400") : 0;
-            mode += modestr.indexOf("w") !== -1 ? octal("200") : 0;
-            mode += modestr.indexOf("x") !== -1 ? octal("100") : 0;
-        } else if (session.gids.indexOf(node.properties.gid) !== -1) {
-            mode += modestr.indexOf("r") !== -1 ? octal("040") : 0;
-            mode += modestr.indexOf("w") !== -1 ? octal("020") : 0;
-            mode += modestr.indexOf("x") !== -1 ? octal("010") : 0;
-        } else {
-            mode += modestr.indexOf("r") !== -1 ? octal("004") : 0;
-            mode += modestr.indexOf("w") !== -1 ? octal("002") : 0;
-            mode += modestr.indexOf("x") !== -1 ? octal("001") : 0;
+        try {
+            if (node.properties.uid === session.uid) {
+                mode += modestr.indexOf("r") !== -1 ? octal("400") : 0;
+                mode += modestr.indexOf("w") !== -1 ? octal("200") : 0;
+                mode += modestr.indexOf("x") !== -1 ? octal("100") : 0;
+            } else if (session.gids.indexOf(node.properties.gid) !== -1) {
+                mode += modestr.indexOf("r") !== -1 ? octal("040") : 0;
+                mode += modestr.indexOf("w") !== -1 ? octal("020") : 0;
+                mode += modestr.indexOf("x") !== -1 ? octal("010") : 0;
+            } else {
+                mode += modestr.indexOf("r") !== -1 ? octal("004") : 0;
+                mode += modestr.indexOf("w") !== -1 ? octal("002") : 0;
+                mode += modestr.indexOf("x") !== -1 ? octal("001") : 0;
+            }
+        } catch (e) {
+            console.error(JSON.stringify(node, null, 2));
+            throw e;
         }
 
         return (node.properties.mode & mode) > 0;
