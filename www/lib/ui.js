@@ -76,5 +76,8 @@ module.exports = {
     windowSize: ko.pureComputed(() => {
         resizeFlag();
         return { width: $window.width(), height: $window.height() };
-    })
+    }),
+    setTitle: (title) => {
+        document.title = title ? title + " | MURRiX" : "MURRiX";
+    }
 };

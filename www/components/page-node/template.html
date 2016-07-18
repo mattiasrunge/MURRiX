@@ -11,6 +11,9 @@
     <div data-bind="if: type() === 'l'">
         <location-page params="{ nodepath: nodepath, section: section }"></location-page>
     </div>
+    <div data-bind="if: type() === 'c'">
+        <camera-page params="{ nodepath: nodepath, section: section }"></camera-page>
+    </div>
 </div>
 <div data-bind="if: !nodepath() && !loading()">
     Invalid path

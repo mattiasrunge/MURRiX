@@ -1,13 +1,13 @@
 ﻿<div class="fadeInRight animated">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <file-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 128, path: nodepath().path }"></file-profile-picture>
 
             <h2 data-bind="text: nodepath().node.attributes.name"></h2>
             <node-description params="{ nodepath: nodepath }"></node-description>
             <node-labels params="{ nodepath: nodepath }"></node-labels>
         </div>
-        <div class="col-md-4 left-border">
+        <div class="col-md-6 left-border">
             <table class="table node-table text-muted">
                 <tbody>
                     <tr>
@@ -19,20 +19,28 @@
                         <td data-bind="datetimeAgo: nodepath().node.properties.mtime"></td>
                     </tr>
                     <tr>
-                        <td><strong>Address</strong></td>
-                        <td data-bind="html: nodepath().node.attributes.address.replace('\n','<br>')"></td>
+                        <td><strong>Type</strong></td>
+                        <td data-bind="text: nodepath().node.attributes.type"></td>
+                    </tr>
+                    <tr data-bind="visible: nodepath().node.attributes.type === 'offset_fixed'">
+                        <td><strong>Offset UTC</strong></td>
+                        <td data-bind="text: nodepath().node.attributes.utcOffset"></td>
+                    </tr>
+                    <tr data-bind="visible: nodepath().node.attributes.type === 'offset_fixed'">
+                        <td><strong>Offset description</strong></td>
+                        <td data-bind="text: nodepath().node.attributes.offsetDescription"></td>
                     </tr>
                     <tr>
-                        <td><strong>Longitude</strong></td>
-                        <td data-bind="text: position().longitude"></td>
+                        <td><strong>Automatic daylight savings</strong></td>
+                        <td data-bind="text: nodepath().node.attributes.deviceAutoDst ? 'Yes' : 'No'"></td>
                     </tr>
                     <tr>
-                        <td><strong>Latitude</strong></td>
-                        <td data-bind="text: position().latitude"></td>
+                        <td><strong>Serial number</strong></td>
+                        <td data-bind="text: nodepath().node.attributes.serialNumber"></td>
                     </tr>
                     <tr>
-                        <td><strong>Residents</strong></td>
-                        <td data-bind="foreach: residents">
+                        <td><strong>Owners</strong></td>
+                        <td data-bind="foreach: owners">
                             <div><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }, text: $data.node.attributes.name"></a></div>
                         </td>
                     </tr>
@@ -43,11 +51,5 @@
 
     <div class="row">
         <div class="bottom-border" style="margin-left: 15px; margin-right: 15px; margin-top: 15px; margin-bottom: 15px;"></div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div style="height: 500px; margin-bottom: 15px;" data-bind="map: { position: position, zoom: position() ? 15 : 10 }"></div>
-        </div>
     </div>
 </div>

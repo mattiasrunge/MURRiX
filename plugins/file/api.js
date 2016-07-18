@@ -12,7 +12,7 @@ const mcs = require("../mcs/api");
 let params = {};
 
 let file = api.register("file", {
-    deps: [ "vfs", "auth", "mcs" ],
+    deps: [ "vfs", "auth", "mcs", "camera" ],
     init: co(function*(config) {
         params = config;
     }),
@@ -32,12 +32,11 @@ let file = api.register("file", {
 //         }
 
         if (metadata.deviceSerialNumber) {
-            // TODO: find device
-//             let device = yield vfs.query(session, { serialNumber: metadata.deviceSerialNumber })[0];
-//
-//             if (device) {
-//
-//             }
+            let device = (yield vfs.query(session, { serialNumber: metadata.deviceSerialNumber }))[0];
+
+            if (device) {
+                yield vfs.symlink(session, device, abspath + "/createdWith");
+            }
         }
 
         for (let key of Object.keys(metadata)) {

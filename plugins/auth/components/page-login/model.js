@@ -7,6 +7,7 @@ const utils = require("lib/utils");
 const status = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");
+const ui = require("lib/ui");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.user = session.user;
@@ -77,6 +78,8 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(false);
     }.bind(this));
+
+    ui.setTitle("Login");
 
     this.dispose = () => {
         status.destroy(this.loading);

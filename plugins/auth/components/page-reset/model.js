@@ -6,6 +6,7 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const status = require("lib/status");
 const loc = require("lib/location");
+const ui = require("lib/ui");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
@@ -43,6 +44,8 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(false);
     }.bind(this));
+
+    ui.setTitle("Password reset");
 
     this.dispose = () => {
         status.destroy(this.loading);

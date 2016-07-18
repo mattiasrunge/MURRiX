@@ -9,6 +9,9 @@
 <div data-bind="if: type() === 'l'">
     <location-sidebar params="{ nodepath: nodepath, section: section }"></location-sidebar>
 </div>
+<div data-bind="if: type() === 'c'">
+    <camera-sidebar params="{ nodepath: nodepath, section: section }"></camera-sidebar>
+</div>
 <!--<div class="top-border text-muted" data-bind="if: node, visible: node" style="margin-top: 15px; padding-top: 15px; font-size: 10px;">
     <div>
         Modified <span data-bind="datetimeAgo: node().properties.mtime"></span>

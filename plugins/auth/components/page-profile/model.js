@@ -5,6 +5,7 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const status = require("lib/status");
 const session = require("lib/session");
+const ui = require("lib/ui");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.user = session.user;
@@ -15,6 +16,8 @@ module.exports = utils.wrapComponent(function*(params) {
     this.groupList = ko.observableArray();
 
     this.groupList(yield api.auth.groupList(session.username()));
+
+    ui.setTitle("Profile");
 
     this.dispose = () => {
         status.destroy(this.loading);

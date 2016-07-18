@@ -6,9 +6,10 @@
  */
 
 const ko = require("knockout");
+const api = require("api.io-client");
 const utils = require("lib/utils");
 const loc = require("lib/location");
-const api = require("api.io-client");
+const ui = require("lib/ui");
 const status = require("lib/status");
 const session = require("lib/session");
 
@@ -53,6 +54,8 @@ module.exports = utils.wrapComponent(function*(params) {
         status.printError(error);
         return [];
     }, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
+
+    ui.setTitle("Search");
 
     this.dispose = () => {
         status.destroy(this.loading);
