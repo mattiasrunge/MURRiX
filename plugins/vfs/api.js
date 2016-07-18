@@ -205,7 +205,7 @@ let vfs = api.register("vfs", {
                 let dir = path.join(abspath, child.name);
 
                 if (node) {
-                    if (node.properties.type === "s" && !optionsnofollow) {
+                    if (node.properties.type === "s" && !options.nofollow) {
                         dir = node.attributes.path;
                         node = yield vfs.resolve(session, node.attributes.path, true);
                     }
