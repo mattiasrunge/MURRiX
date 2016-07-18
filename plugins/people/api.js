@@ -36,13 +36,13 @@ let people = api.register("people", {
         let age = false;
         let ageatdeath = false;
 
-        let birth = (yield vfs.list(session, abspath + "/texts", false, {
+        let birth = (yield vfs.list(session, abspath + "/texts", { filter: {
             "attributes.type": "birth"
-        }))[0];
+        } }))[0];
 
-        let death = (yield vfs.list(session, abspath + "/texts", false, {
+        let death = (yield vfs.list(session, abspath + "/texts", { filter: {
             "attributes.type": "death"
-        }))[0];
+        } }))[0];
 
         if (birth) {
             let birthUtc = moment.utc(birth.node.attributes.time.timestamp * 1000);

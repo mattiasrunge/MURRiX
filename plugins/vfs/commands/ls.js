@@ -20,7 +20,7 @@ vorpal
     let dir = args.path || cwd;
 
     if (!args.options.l) {
-        let list = yield api.vfs.list(terminal.normalize(cwd, dir), false, null, true);
+        let list = yield api.vfs.list(terminal.normalize(cwd, dir), { nofollow: true });
 
         if (pipedOutput) {
             list = list.map((item) => item.name);
@@ -36,7 +36,7 @@ vorpal
         return;
     }
 
-    let items = yield api.vfs.list(terminal.normalize(cwd, dir), true, null, true);
+    let items = yield api.vfs.list(terminal.normalize(cwd, dir), { all: true, nofollow: true });
 
     let ucache = {};
     let gcache = {};

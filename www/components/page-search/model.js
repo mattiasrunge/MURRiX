@@ -1,10 +1,5 @@
 "use strict";
 
-/* TODO:
- * Profile pictures for nodes
- * Search for more than people and locations
- */
-
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
@@ -44,7 +39,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(true);
 
-        let list = yield api.vfs.list(session.searchPaths(), false, query);
+        let list = yield api.vfs.list(session.searchPaths(), { filter: query });
 
         this.loading(false);
 

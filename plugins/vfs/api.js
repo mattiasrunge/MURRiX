@@ -168,8 +168,10 @@ let vfs = api.register("vfs", {
 
         return node;
     },
-    list: function*(session, abspath, all, filter, nofollow) {
-        let query = filter || {};
+    list: function*(session, abspath, options) {
+        options = options || {};
+
+        let query = options.filter || {};
         let list = [];
         let abspaths = abspath instanceof Array ? abspath : [ abspath ];
 
@@ -184,9 +186,14 @@ let vfs = api.register("vfs", {
 
             query._id = { $in: ids };
 
-            let nodes = yield db.find("nodes", query);
+            let opts = {
+                limit: options.limit,
+                skip: options.skip
+            };
 
-            if (all) {
+            let nodes = yield db.find("nodes", query, opts);
+
+            if (options.all) {
                 let pparent = yield vfs.resolve(session, path.dirname(abspath));
 
                 list.push({ name: ".", node: parent, path: abspath });
@@ -198,7 +205,7 @@ let vfs = api.register("vfs", {
                 let dir = path.join(abspath, child.name);
 
                 if (node) {
-                    if (node.properties.type === "s" && !nofollow) {
+                    if (node.properties.type === "s" && !optionsnofollow) {
                         dir = node.attributes.path;
                         node = yield vfs.resolve(session, node.attributes.path, true);
                     }
@@ -213,6 +220,10 @@ let vfs = api.register("vfs", {
         list.sort((a, b) => {
             return a.name.localeCompare(b.name);
         });
+
+        if (options.limit) {
+            list = list.slice(0, options.limit);
+        }
 
         return list;
     },

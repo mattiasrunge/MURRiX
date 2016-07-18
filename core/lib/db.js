@@ -21,7 +21,17 @@ let Database = function() {
     this.find = (collectionName, query, options) => {
         let collection = db.collection(collectionName);
 
-        return collection.find(query, options).toArray();
+        let cursor = collection.find(query, options);
+
+        if (options && options.skip) {
+            cursor = cursor.skip(options.skip);
+        }
+
+        if (options && options.limit) {
+            cursor = cursor.limit(options.limit);
+        }
+
+        return cursor.toArray();
     };
 
     this.findOne = (collectionName, query, options) => {

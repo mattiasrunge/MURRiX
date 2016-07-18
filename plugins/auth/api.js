@@ -147,7 +147,7 @@ let auth = api.register("auth", {
             throw new Error("Not allowed");
         }
 
-        return yield vfs.list(auth.getAdminSession(), "/users/" + username + "/groups", false);
+        return yield vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
     },
     login: function*(session, username, password) {
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
@@ -267,7 +267,7 @@ let auth = api.register("auth", {
     },
     id: function*(session, username) {
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
-        let groups = yield vfs.list(auth.getAdminSession(), "/users/" + username + "/groups", false);
+        let groups = yield vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
 
         return {
             uid: {

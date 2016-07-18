@@ -320,19 +320,23 @@ ko.bindingHandlers.mode = {
 };
 
 ko.bindingHandlers.nodeselect = {
-    lookup: co.wrap(function*(root, querystr) {
-        let list = yield api.vfs.list(root, false, {
-            "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
+    lookup: co.wrap(function*(root, querystr, limit) {
+        console.log("lookup");
+        let list = yield api.vfs.list(root, {
+            filter: {
+                "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
+            },
+            limit: limit
         });
 
-        for (let item of list) {
-            let node = yield api.vfs.resolve(item.path + "/profilePicture", true);
-
-            if (node) {
-                let filename = (yield api.file.getPictureFilenames([ node._id ], this.size, this.size))[0];
-                item.filename = filename.filename;
-            }
-        }
+//         for (let item of list) {
+//             let node = yield api.vfs.resolve(item.path + "/profilePicture", true);
+//
+//             if (node) {
+//                 let filename = (yield api.file.getPictureFilenames([ node._id ], 16, 16))[0];
+//                 item.filename = filename.filename;
+//             }
+//         }
 
         console.log(list);
 
@@ -360,7 +364,7 @@ ko.bindingHandlers.nodeselect = {
         }, {
             display: (selection) => selection.node.attributes.name,
             source: (querystr, dummy, resolve) => {
-                ko.bindingHandlers.nodeselect.lookup(root, querystr)
+                ko.bindingHandlers.nodeselect.lookup(root, querystr, limit)
                 .then(resolve)
                 .catch((error) => {
                     status.printError(error);
@@ -370,8 +374,29 @@ ko.bindingHandlers.nodeselect = {
             templates: {
                 suggestion: (selection) => {
                     console.log(selection);
-                    let img = selection.filename ? "<img src='" + selection.filename + "' style='width: 16px; height: 16px;'> " : "";
-                    return "<div>" + img + selection.node.attributes.name + "</div>";
+
+                    let $d = $("<div>" + selection.node.attributes.name + "</div>");
+
+                    api.vfs.resolve(selection.path + "/profilePicture", true)
+                    .then((node) => {
+                        if (node) {
+                            return api.file.getPictureFilenames([ node._id ], 16, 16);
+                        }
+
+                        return false;
+                    })
+                    .then((filenames) => {
+                        if (filenames && filenames.length > 0) {
+                            let $i = $("<img src='" + filenames[0].filename + "' style='width: 16px; height: 16px;'>")
+
+                            $d.prepend($i);
+                        }
+                    })
+                    .catch((error) => {
+                        status.printError(error);
+                    });
+
+                    return $d;
                 }
             },
             limit: limit
@@ -390,7 +415,7 @@ ko.bindingHandlers.nodeselect = {
         });
         $element.on("typeahead:change typeahead:select", () => {
 	// TODO: event, selection is in parameters, nno need for a lookup!
-            ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"))
+            ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"), limit)
             .then((list) => {
                 if (list.length === 1) {
                     path(list[0].path);
