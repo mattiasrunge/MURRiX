@@ -1,9 +1,5 @@
 ﻿"use strict";
 
-/* TODO:
- * Implement timeline
- */
-
 const ko = require("knockout");
 const api = require("api.io-client");
 const moment = require("moment");
@@ -14,26 +10,6 @@ const status = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.loading = status.create();
-
-    this.metrics = ko.asyncComputed([], function*(setter) {
-        if (!this.nodepath() || this.nodepath() === "") {
-            return {};
-        }
-
-        setter({});
-
-        this.loading(true);
-        let metrics = yield api.people.getMetrics(this.nodepath().path);
-        this.loading(false);
-
-        console.log("metrics", metrics);
-
-        return metrics;
-    }.bind(this), (error) => {
-        this.loading(false);
-        status.printError(error);
-        return {};
-    });
 
     this.events = ko.asyncComputed([], function*(setter) {
         if (!this.nodepath() || this.nodepath() === "") {

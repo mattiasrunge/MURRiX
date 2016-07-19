@@ -27,7 +27,7 @@ module.exports = utils.wrapComponent(function*(params) {
         write: (path) => {
             console.log("write", path);
             if (path) {
-                loc.goto({ page: "node", path: path });
+                loc.goto({ page: "node", path: path, section: null });
             } else {
                 loc.goto({ page: "recent", path: null });
             }

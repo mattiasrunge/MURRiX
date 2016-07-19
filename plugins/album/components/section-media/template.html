@@ -1,37 +1,3 @@
 ﻿<div class="fadeInRight animated">
-    <div class="row" data-bind="if: nodepath">
-        <div class="col-md-8">
-            <widget-node-header params="{ nodepath: nodepath }"></widget-node-header>
-        </div>
-        <div class="col-md-4 left-border">
-            <table class="table node-table text-muted">
-                <tbody>
-                    <tr>
-                        <td><strong>Created</strong></td>
-                        <td data-bind="datetimeAgo: nodepath().node().properties.birthtime"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Last modified</strong></td>
-                        <td data-bind="datetimeAgo: nodepath().node().properties.mtime"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Number of files</strong></td>
-                        <td data-bind="text: count"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Download</strong></td>
-                        <td>
-                            <a href="#" data-bind="text: 'TODO: link (size)'"></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <file-grid class="top-border" style="display: block; margin-top: 15px; padding-top: 15px; padding-bottom: 15px;" params="{ path: nodepath().path, size: size }"></file-grid>
-        </div>
-    </div>
+    <file-grid style="display: block; padding-top: 15px; padding-bottom: 15px;" params="{ path: nodepath().path, size: size }"></file-grid>
 </div>

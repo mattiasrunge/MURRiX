@@ -1,35 +1,62 @@
-﻿<div style="margin-top: 15px;">
-    <div data-bind="if: section() === 'about' || section() === 'default'">
-        <camera-section-about params="{ nodepath: nodepath }"></camera-section-about>
+﻿<div class="fadeInRight animated">
+    <div class="row" data-bind="if: nodepath" style="margin-top: 15px;">
+        <div class="col-md-4">
+            <widget-node-header params="{ nodepath: nodepath }"></widget-node-header>
+        </div>
+        <div class="col-md-8 left-border">
+            <table class="table node-table text-muted">
+                <tbody>
+                    <tr>
+                        <td><strong>Created</strong></td>
+                        <td data-bind="datetimeAgo: nodepath().node().properties.birthtime"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Last modified</strong></td>
+                        <td data-bind="datetimeAgo: nodepath().node().properties.mtime"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type</strong></td>
+                        <td data-bind="text: nodepath().node().attributes.type"></td>
+                    </tr>
+                    <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
+                        <td><strong>Offset UTC</strong></td>
+                        <td data-bind="text: nodepath().node().attributes.utcOffset"></td>
+                    </tr>
+                    <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
+                        <td><strong>Offset description</strong></td>
+                        <td data-bind="text: nodepath().node().attributes.offsetDescription"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Automatic daylight savings</strong></td>
+                        <td data-bind="text: nodepath().node().attributes.deviceAutoDst ? 'Yes' : 'No'"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Serial number</strong></td>
+                        <td data-bind="text: nodepath().node().attributes.serialNumber"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Owners</strong></td>
+                        <td data-bind="foreach: owners">
+                            <div><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }, text: $data.node.attributes.name"></a></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div data-bind="if: section() === 'media'">
-        <camera-section-media params="{ nodepath: nodepath }"></camera-section-media>
-    </div>
-</div>
 
-<div class="container">
-    <div class="row">
-        <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse subnavbar-background">
-            <div class="container">
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                       <li data-bind="css: { active: section() === 'about' || section() === 'default' }">
-                            <a data-bind="location: { section: 'about' }">
-                                <i class="material-icons md-18">info_outline</i>
-                                About
-                            </a>
-                        </li>
-                        <li data-bind="css: { active: section() === 'media' }">
-                            <a data-bind="location: { section: 'media' }">
-                                <i class="material-icons md-18">photo_library</i>
-                                Media
-                            </a>
-                        </li>
-                    </ul>
-
-                    <comment-widget-navbar-link params="{ path: nodepath().path }"></comment-widget-navbar-link>
-                </div>
-            </div>
-        </nav>
-    </div>
+    <widget-node-sections params="{
+        section: section,
+        sections: [
+            {
+                name: 'media',
+                icon: 'photo_library',
+                title: 'Media',
+                component: 'camera-section-media'
+            }
+        ],
+        params: {
+            nodepath: nodepath
+        }
+    }"></widget-node-sections>
 </div>

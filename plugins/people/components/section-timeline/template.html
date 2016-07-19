@@ -1,0 +1,20 @@
+﻿<div class="fadeInRight animated">
+    <ul class="timeline">
+        <!-- ko foreach: events -->
+            <li data-bind="css: { 'timeline-inverted': $index() % 2 !== 0 }">
+                <div class="timeline-panel">
+                    <div class="timeline-body">
+                        <div class="timeline-date" data-bind="datetimeDay: $data.day"></div>
+
+                        <!-- ko foreach: $data.texts -->
+                            <h4 data-bind="html: $data.node.attributes.name"></h4>
+                            <p data-bind="html: $data.node.attributes.text.replace(/\n/g, '<br>')"></p>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </li>
+        <!-- /ko -->
+
+        <li class="clearfix" style="float: none;"></li>
+    </ul>
+</div>
