@@ -20,12 +20,12 @@
                                 About
                             </a>
                         </li>-->
-                        <li data-bind="css: { active: section() === 'media' || section() === 'default' }">
+                        <!--<li data-bind="css: { active: section() === 'media' || section() === 'default' }">
                             <a data-bind="location: { section: 'media' }">
                                 <i class="material-icons md-18">photo_library</i>
                                 Media
                             </a>
-                        </li>
+                        </li>-->
                         <!--<li data-bind="css: { active: section() === 'contact' }">
                             <a data-bind="location: { section: 'contact' }">
                                 <i class="material-icons md-18">contact_mail</i>
@@ -41,14 +41,7 @@
                     </ul>
 
 <!--                         <comment-widget-navbar-link params="{ path: nodepath().path }"></comment-widget-navbar-link> -->
-                    <ul class="nav navbar-nav navbar-right">
-                        <li data-bind="css: { active: section() === 'edit' }">
-                            <a data-bind="location: { section: 'edit' }">
-                                <i class="material-icons md-18">edit</i>
-                                Edit
-                            </a>
-                        </li>
-                    </ul>
+                    <comment-widget-navbar-link params="{ path: nodepath().path }"></comment-widget-navbar-link>
 
 
                 </div>

@@ -513,7 +513,7 @@ body {
     background-color: #ccc;
 }
 
-.node-item-panel node-description {
+.node-item-panel widget-node-description {
     height: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -522,7 +522,7 @@ body {
     font-size: 12px;
 }
 
-.node-item-panel node-labels {
+.node-item-panel widget-node-labels {
     height: 23px;
     margin-bottom: -3px;
     overflow: hidden;

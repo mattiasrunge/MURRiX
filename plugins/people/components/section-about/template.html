@@ -1,11 +1,7 @@
 ﻿<div class="fadeInRight animated">
     <div class="row" data-bind="if: nodepath">
         <div class="col-md-8">
-            <file-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 128, path: nodepath().path }"></file-profile-picture>
-
-            <h2 data-bind="text: nodepath().node().attributes.fullname ? nodepath().node().attributes.fullname : nodepath().node().attributes.name"></h2>
-            <node-description params="{ nodepath: nodepath }"></node-description>
-            <node-labels params="{ nodepath: nodepath }"></node-labels>
+            <widget-node-header params="{ nodepath: nodepath }"></widget-node-header>
         </div>
         <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
