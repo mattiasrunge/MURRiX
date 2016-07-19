@@ -22,7 +22,7 @@ module.exports = utils.wrapComponent(function*(params) {
         }
 
         let options = {
-            address: this.nodepath().node.attributes.address,
+            address: this.nodepath().node().attributes.address,
             key: "AIzaSyCSEsNChIm5df-kICUgXZLvqGRT9N_dUUY"
         };
 

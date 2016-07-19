@@ -3,7 +3,7 @@
         <div class="col-md-6">
             <file-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 128, path: nodepath().path }"></file-profile-picture>
 
-            <h2 data-bind="text: nodepath().node.attributes.name"></h2>
+            <h2 data-bind="text: nodepath().node().attributes.name"></h2>
             <node-description params="{ nodepath: nodepath }"></node-description>
             <node-labels params="{ nodepath: nodepath }"></node-labels>
         </div>
@@ -12,31 +12,31 @@
                 <tbody>
                     <tr>
                         <td><strong>Created</strong></td>
-                        <td data-bind="datetimeAgo: nodepath().node.properties.birthtime"></td>
+                        <td data-bind="datetimeAgo: nodepath().node().properties.birthtime"></td>
                     </tr>
                     <tr>
                         <td><strong>Last modified</strong></td>
-                        <td data-bind="datetimeAgo: nodepath().node.properties.mtime"></td>
+                        <td data-bind="datetimeAgo: nodepath().node().properties.mtime"></td>
                     </tr>
                     <tr>
                         <td><strong>Type</strong></td>
-                        <td data-bind="text: nodepath().node.attributes.type"></td>
+                        <td data-bind="text: nodepath().node().attributes.type"></td>
                     </tr>
-                    <tr data-bind="visible: nodepath().node.attributes.type === 'offset_fixed'">
+                    <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset UTC</strong></td>
-                        <td data-bind="text: nodepath().node.attributes.utcOffset"></td>
+                        <td data-bind="text: nodepath().node().attributes.utcOffset"></td>
                     </tr>
-                    <tr data-bind="visible: nodepath().node.attributes.type === 'offset_fixed'">
+                    <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset description</strong></td>
-                        <td data-bind="text: nodepath().node.attributes.offsetDescription"></td>
+                        <td data-bind="text: nodepath().node().attributes.offsetDescription"></td>
                     </tr>
                     <tr>
                         <td><strong>Automatic daylight savings</strong></td>
-                        <td data-bind="text: nodepath().node.attributes.deviceAutoDst ? 'Yes' : 'No'"></td>
+                        <td data-bind="text: nodepath().node().attributes.deviceAutoDst ? 'Yes' : 'No'"></td>
                     </tr>
                     <tr>
                         <td><strong>Serial number</strong></td>
-                        <td data-bind="text: nodepath().node.attributes.serialNumber"></td>
+                        <td data-bind="text: nodepath().node().attributes.serialNumber"></td>
                     </tr>
                     <tr>
                         <td><strong>Owners</strong></td>

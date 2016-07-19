@@ -3,7 +3,7 @@
         <div class="col-md-8">
             <file-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 128, path: nodepath().path }"></file-profile-picture>
 
-            <h2 data-bind="text: nodepath().node.attributes.fullname ? nodepath().node.attributes.fullname : nodepath().node.attributes.name"></h2>
+            <h2 data-bind="text: nodepath().node().attributes.fullname ? nodepath().node().attributes.fullname : nodepath().node().attributes.name"></h2>
             <node-description params="{ nodepath: nodepath }"></node-description>
             <node-labels params="{ nodepath: nodepath }"></node-labels>
         </div>
@@ -12,15 +12,15 @@
                 <tbody>
                     <tr>
                         <td><strong>Created</strong></td>
-                        <td data-bind="datetimeAgo: nodepath().node.properties.birthtime"></td>
+                        <td data-bind="datetimeAgo: nodepath().node().properties.birthtime"></td>
                     </tr>
                     <tr>
                         <td><strong>Last modified</strong></td>
-                        <td data-bind="datetimeAgo: nodepath().node.properties.mtime"></td>
+                        <td data-bind="datetimeAgo: nodepath().node().properties.mtime"></td>
                     </tr>
                     <tr>
                         <td><strong>Birth name</strong></td>
-                        <td data-bind="text: nodepath().node.attributes.birthname"></td>
+                        <td data-bind="text: nodepath().node().attributes.birthname"></td>
                     </tr>
                     <tr data-bind="visible: metrics().birthdate">
                     <td><strong>Date of birth</strong></td>
@@ -46,7 +46,7 @@
                     </tr>
                     <tr>
                         <td><strong>Allergies</strong></td>
-                        <td data-bind="html: nodepath().node.attributes.allergies"></td>
+                        <td data-bind="html: nodepath().node().attributes.allergies"></td>
                     </tr>
                 </tbody>
             </table>

@@ -13,7 +13,7 @@ const node = require("lib/node");
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = node.nodepath;
     this.type = ko.pureComputed(() => {
-        return this.nodepath() ? this.nodepath().node.properties.type : false;
+        return this.nodepath() ? this.nodepath().node().properties.type : false;
     });
     this.section = ko.pureComputed(() => {
         return ko.unwrap(loc.current().section) || "about";

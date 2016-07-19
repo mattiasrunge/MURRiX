@@ -51,9 +51,9 @@ module.exports = utils.wrapComponent(function*(params) {
             session.stars(result.stars);
 
             if (result.created) {
-                status.printSuccess(node.nodepath().node.attributes.name + " starred");
+                status.printSuccess(node.nodepath().node().attributes.name + " starred");
             } else {
-                status.printSuccess(node.nodepath().node.attributes.name + " unstarred");
+                status.printSuccess(node.nodepath().node().attributes.name + " unstarred");
             }
         })
         .catch((error) => {

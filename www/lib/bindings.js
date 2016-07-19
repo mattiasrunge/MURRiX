@@ -495,7 +495,35 @@ ko.bindingHandlers.picture = {
             if (nolazyload) {
                 $element.append($("<img src='" + item.filename + "' style='" + css.join(";") + "' class='" + classes + "'>"));
             } else {
-                $element.append($("<img data-original='" + item.filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>"));
+                let $span = $("<span style='display: inline-block; position: relative; " + css.join(";") + "' class='" + classes + "'></span>");
+
+                $span.append($("<img data-original='" + item.filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>"));
+
+                if (item.tags) {
+                    for (let tag of item.tags) {
+                        console.log(tag);
+
+                        let $frame = $("<div class='tag-frame'></div>");
+                        let $label = $("<div class='tag-label'></div>");
+                        let $text = $("<span class='tag-label-text'>" + tag.node.attributes.name + "</span>");
+
+                        let top = (tag.link.attributes.y - (tag.link.attributes.height / 2)) * 100;
+                        let left = (tag.link.attributes.x - (tag.link.attributes.width / 2)) * 100;
+                        let height = tag.link.attributes.height * 100;
+                        let width = tag.link.attributes.width * 100;
+
+                        $frame.css("top", top + "%");
+                        $frame.css("left", left + "%");
+                        $frame.css("height", height + "%");
+                        $frame.css("width", width + "%");
+
+                        $label.append($text);
+                        $frame.append($label);
+                        $span.append($frame);
+                    }
+                }
+
+                $element.append($span);
                 lazyload.update();
             }
 

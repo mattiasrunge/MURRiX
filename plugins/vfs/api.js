@@ -205,13 +205,16 @@ let vfs = api.register("vfs", {
                 let dir = path.join(abspath, child.name);
 
                 if (node) {
+                    let link = undefined;
+
                     if (node.properties.type === "s" && !options.nofollow) {
+                        link = node;
                         dir = node.attributes.path;
                         node = yield vfs.resolve(session, node.attributes.path, true);
                     }
 
                     if (node) {
-                        list.push({ name: child.name, node: node, path: dir });
+                        list.push({ name: child.name, node: node, path: dir, link: link });
                     }
                 }
             }
@@ -333,6 +336,8 @@ let vfs = api.register("vfs", {
         }
 
         yield db.updateOne("nodes", node);
+
+        return node;
     },
     setproperties: function*(session, abspath, properties) {
         if (session.username !== "admin") {

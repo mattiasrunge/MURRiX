@@ -356,7 +356,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         let metrics = yield api.people.getMetrics(this.nodepath().path);
 
-        return this.createPerson(null, this.nodepath().node, this.nodepath().path, metrics, "me", 0, 1);
+        return this.createPerson(null, this.nodepath().node(), this.nodepath().path, metrics, "me", 0, 1);
     }.bind(this), (error) => {
         this.loading(false);
         status.printError(error);

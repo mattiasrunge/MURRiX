@@ -43,7 +43,10 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(false);
 
-        return list;
+        return list.map((item) => {
+            item.node = ko.observable(item.node);
+            return item;
+        });
     }.bind(this), (error) => {
         this.loading(false);
         status.printError(error);

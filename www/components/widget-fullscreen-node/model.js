@@ -28,6 +28,7 @@ module.exports = utils.wrapComponent(function*(params) {
         let height = ko.unwrap(this.height);
         let abspath = ko.unwrap(this.showPath);
         let filename = "";
+        let tags = [];
 
         this.loading(true);
         let item = yield api.vfs.resolve(abspath);
@@ -47,9 +48,15 @@ module.exports = utils.wrapComponent(function*(params) {
         } else if (item.attributes.type === "audio") {
             filename = (yield api.file.getAudioFilenames([ item._id ]))[0];
         }
+
+        try {
+            tags = yield api.vfs.list(abspath + "/tags");
+        } catch (e) {
+        }
+
         this.loading(false);
 
-        return { node: item, filename: filename.filename };
+        return { node: item, filename: filename.filename, tags: tags };
     }.bind(this), (error) => {
         status.printError(error);
         return false;
@@ -58,19 +65,6 @@ module.exports = utils.wrapComponent(function*(params) {
     this.commentCount = ko.asyncComputed(false, function*(setter) {
         let list = yield api.comment.list(ko.unwrap(this.showPath));
         return list.length;
-    }.bind(this), (error) => {
-        status.printError(error);
-        return 0;
-    });
-
-    this.tagCount = ko.asyncComputed(false, function*(setter) {
-        try {
-            let list = yield api.vfs.list(ko.unwrap(this.showPath) + "/tags");
-            return list.length;
-        } catch (e) {
-        }
-
-        return 0;
     }.bind(this), (error) => {
         status.printError(error);
         return 0;

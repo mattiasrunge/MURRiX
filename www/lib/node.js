@@ -28,6 +28,7 @@ module.exports = {
 
         module.exports.loading(true);
         let node = yield api.vfs.resolve(path, true)
+        let editable = yield api.vfs.access(path, "w");
         module.exports.loading(false);
 
         if (!node) {
@@ -36,7 +37,7 @@ module.exports = {
 
         ui.setTitle(node.attributes.name);
 
-        return { path: path, node: node };
+        return { path: path, node: ko.observable(node), editable: ko.observable(editable) };
     }.bind(this), (error) => {
         status.printError(error);
         return false;

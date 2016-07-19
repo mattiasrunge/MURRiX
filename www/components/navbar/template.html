@@ -28,23 +28,50 @@
                     <i class="material-icons md-20">star</i>
                 </a>
                 <ul class="dropdown-menu" data-bind="foreach: stars">
-                    <li><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }"><file-profile-picture params="{ size: 16, path: $data.path, nolazyload: true }"></file-profile-picture> <span data-bind="nodename: $data.path"></span></a></li>
+                    <li>
+                        <a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }">
+                            <file-profile-picture params="{ size: 16, path: $data.path, nolazyload: true }"></file-profile-picture>
+                            &nbsp;&nbsp;
+                            <span data-bind="nodename: $data.path"></span>
+                        </a>
+                    </li>
                 </ul>
             </li>
-            <li class="dropdown hide">
+            <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-plus fa-large"></i>
+                    <i class="material-icons md-20">add</i>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="#"><i class="fa fa-book fa-fw"></i> Album</a></li>
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> Person</a></li>
-                    <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> Location</a></li>
-                    <li><a href="#"><i class="fa fa-camera-retro fa-fw"></i> Camera</a></li>
-                    <li><a href="#"><i class="fa fa-truck fa-fw"></i> Vehicle</a></li>
+                    <li>
+                        <a href="#">
+                            <i class="material-icons">photo_album</i>
+                            &nbsp;&nbsp;
+                            Album
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="material-icons">person</i>
+                            &nbsp;&nbsp;
+                            Person
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="material-icons">location_on</i>
+                            &nbsp;&nbsp;
+                            Location
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="material-icons">photo_camera</i>
+                            &nbsp;&nbsp;
+                            Camera
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>
-
-
     </div>
 </div>
