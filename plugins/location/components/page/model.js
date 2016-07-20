@@ -14,8 +14,12 @@ module.exports = utils.wrapComponent(function*(params) {
             return false;
         }
 
+        if (!this.nodepath().node().attributes.address) {
+            return false;
+        }
+
         let options = {
-            address: this.nodepath().node().attributes.address,
+            address: this.nodepath().node().attributes.address.replace("<br>", "\n"),
             key: "AIzaSyCSEsNChIm5df-kICUgXZLvqGRT9N_dUUY"
         };
 

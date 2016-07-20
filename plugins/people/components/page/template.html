@@ -16,7 +16,9 @@
                     </tr>
                     <tr>
                         <td><strong>Birth name</strong></td>
-                        <td data-bind="text: nodepath().node().attributes.birthname"></td>
+                        <td>
+                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'birthname' }"></widget-node-text-attribute>
+                        </td>
                     </tr>
                     <tr data-bind="visible: metrics().birthdate">
                     <td><strong>Date of birth</strong></td>
@@ -42,7 +44,9 @@
                     </tr>
                     <tr>
                         <td><strong>Allergies</strong></td>
-                        <td data-bind="html: nodepath().node().attributes.allergies"></td>
+                        <td>
+                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'allergies' }"></widget-node-text-attribute>
+                        </td>
                     </tr>
                 </tbody>
             </table>

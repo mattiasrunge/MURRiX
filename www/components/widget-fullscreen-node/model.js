@@ -76,6 +76,7 @@ module.exports = utils.wrapComponent(function*(params) {
         }
 
         let item = node.list().filter((item2) => item2.node._id === this.item().node._id)[0];
+
         return node.list().indexOf(item);
     });
 

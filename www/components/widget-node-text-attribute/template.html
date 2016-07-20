@@ -1,2 +1,2 @@
-﻿<span data-bind="html: value, event: { blur: change }, attr: { contenteditable: editable() ? 'true' : 'false', placeholder: 'Add ' + name() }"></span>
-<i data-bind="visible: !editable() && value() === ''" class="text-muted">No <span data-bind="text: name"></span> found</i>
+﻿<span data-bind="html: value, event: { blur: change }, attr: { contenteditable: editable() ? 'true' : 'false', placeholder: 'Add ' + nicename() }, style: { display: value() === '' ? 'inline-block' : 'inherit' }"></span>
+<i data-bind="visible: !editable() && value() === ''" class="text-muted">No <span data-bind="text: nicename"></span> found</i>

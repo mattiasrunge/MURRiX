@@ -55,7 +55,7 @@ let vfs = api.register("vfs", {
     access: function*(session, abspathOrNode, modestr) {
         let node = abspathOrNode;
 
-        if (session.almighty) {
+        if (session.almighty || session.username === "admin") {
             return true;
         }
 
@@ -285,8 +285,10 @@ let vfs = api.register("vfs", {
 
         return list;
     },
-    chmod: function*(session, abspath, mode) {
+    chmod: function*(session, abspath, mode, options) {
         let node = yield vfs.resolve(session, abspath, false, true);
+
+        options = options || {};
 
         if (!(yield vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");
@@ -297,9 +299,19 @@ let vfs = api.register("vfs", {
         node.properties.mode = octal(mode);
 
         yield db.updateOne("nodes", node);
+
+        if (options.recursive && node.properties.type !== "s") {
+            let children = yield vfs.list(session, abspath, { nofollow: true });
+
+            for (let child of children) {
+                yield vfs.chmod(session, child.path, mode, options);
+            }
+        }
     },
-    chown: function*(session, abspath, username, group) {
+    chown: function*(session, abspath, username, group, options) {
         let node = yield vfs.resolve(session, abspath, false, true);
+
+        options = options || {};
 
         if (!(yield vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");
@@ -307,13 +319,24 @@ let vfs = api.register("vfs", {
 
         node.properties.ctime = new Date();
         node.properties.cuid = session.uid;
-        node.properties.uid = yield api.auth.uid(session, username);
+
+        if (username) {
+            node.properties.uid = yield api.auth.uid(session, username);
+        }
 
         if (group) {
             node.properties.gid = yield api.auth.gid(session, group);
         }
 
         yield db.updateOne("nodes", node);
+
+        if (options.recursive && node.properties.type !== "s") {
+            let children = yield vfs.list(session, abspath, { nofollow: true });
+
+            for (let child of children) {
+                yield vfs.chown(session, child.path, username, group, options);
+            }
+        }
     },
     setattributes: function*(session, abspath, attributes) {
         let node = yield vfs.resolve(session, abspath, false, true);
@@ -413,6 +436,7 @@ let vfs = api.register("vfs", {
             } else if (source.mode === "copy") {
                 yield fs.copyAsync(source.filename, diskfilepath);
             } else {
+                // TODO: Default should be hard link?
                 yield fs.moveAsync(source.filename, diskfilepath);
             }
         }

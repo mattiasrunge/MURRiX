@@ -14,6 +14,9 @@ module.exports = utils.wrapComponent(function*(params) {
     this.searchPaths = session.searchPaths;
     this.stars = session.stars;
     this.loggedIn = session.loggedIn;
+    this.createType = ko.observable("");
+    this.createName = ko.observable("");
+    this.createDescription = ko.observable("");
     this.path = ko.pureComputed({
         read: () => {
             let page = ko.unwrap(loc.current().page);
@@ -69,6 +72,78 @@ module.exports = utils.wrapComponent(function*(params) {
             } else {
                 status.printError("No random node could be found");
             }
+        });
+    };
+
+    this.createShow = (type) => {
+        this.createType(type);
+        this.createName("")
+        this.createDescription("");
+
+        $("#createModal").modal("show");
+    };
+
+    this.create = () => {
+        console.log("type", this.createType());
+        console.log("name", this.createName());
+        console.log("description", this.createDescription());
+
+        let promise;
+        let abspath = "";
+        let attributes = {
+            name: this.createName().trim(),
+            description: this.createDescription().trim()
+        };
+
+
+        if (attributes.name === "") {
+            status.printError("Name can not be empty");
+            return;
+        }
+
+        if (this.createType() === "album") {
+            promise = node.getUniqueName("/albums", this.createName())
+            .then((name) => {
+                abspath = "/albums/" + name;
+                return api.album.mkalbum(name, attributes);
+            });
+        } else if (this.createType() === "location") {
+            promise = node.getUniqueName("/locations", this.createName())
+            .then((name) => {
+                abspath = "/locations/" + name;
+                return api.location.mklocation(name, attributes);
+            });
+        } else if (this.createType() === "person") {
+            promise = node.getUniqueName("/people", this.createName())
+            .then((name) => {
+                abspath = "/people/" + name;
+                return api.people.mkperson(name, attributes);
+            });
+        } else if (this.createType() === "camera") {
+            promise = node.getUniqueName("/cameras", this.createName())
+            .then((name) => {
+                abspath = "/cameras/" + name;
+                return api.camera.mkcamera(name, attributes);
+            });
+        } else {
+            status.printError("Unknwon create type");
+            return;
+        }
+
+        promise
+        .then(() => {
+            this.createType("");
+            this.createName("")
+            this.createDescription("");
+
+            $("#createModal").modal("hide");
+
+            loc.goto({ page: "node", path: abspath, section: null });
+
+            status.printSuccess(attributes.name + " successfully created!");
+        })
+        .catch((error) => {
+            status.printError(error);
         });
     };
 });

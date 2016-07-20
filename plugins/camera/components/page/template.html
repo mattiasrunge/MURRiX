@@ -1,9 +1,9 @@
 ﻿<div class="fadeInRight animated">
     <div class="row" data-bind="if: nodepath" style="margin-top: 15px;">
-        <div class="col-md-4">
+        <div class="col-md-8">
             <widget-node-header params="{ nodepath: nodepath }"></widget-node-header>
         </div>
-        <div class="col-md-8 left-border">
+        <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
                 <tbody>
                     <tr>
@@ -24,7 +24,9 @@
                     </tr>
                     <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset description</strong></td>
-                        <td data-bind="text: nodepath().node().attributes.offsetDescription"></td>
+                        <td>
+                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'offsetDescription' }"></widget-node-text-attribute>
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>Automatic daylight savings</strong></td>
@@ -32,7 +34,9 @@
                     </tr>
                     <tr>
                         <td><strong>Serial number</strong></td>
-                        <td data-bind="text: nodepath().node().attributes.serialNumber"></td>
+                        <td>
+                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'serialNumber' }"></widget-node-text-attribute>
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>Owners</strong></td>

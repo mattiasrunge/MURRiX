@@ -6,6 +6,7 @@ const terminal = require("../lib/terminal");
 
 vorpal
 .command("chmod <mode> <path>", "Change mode bits for node")
+.option("-r", "Recursive chmod")
 .autocomplete({
     data: function(input) {
         return terminal.autocomplete(vorpal.cliSession, input);
@@ -13,6 +14,11 @@ vorpal
 })
 .action(vorpal.wrap(function*(session, args) {
     let cwd = yield session.env("cwd");
+    let options = {};
 
-    yield api.vfs.chmod(terminal.normalize(cwd, args.path), args.mode);
+    if (args.options.r) {
+        options.recursive = true;
+    }
+
+    yield api.vfs.chmod(terminal.normalize(cwd, args.path), args.mode, options);
 }));

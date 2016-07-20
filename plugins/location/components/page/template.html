@@ -16,7 +16,9 @@
                     </tr>
                     <tr>
                         <td><strong>Address</strong></td>
-                        <td data-bind="html: nodepath().node().attributes.address.replace('\n','<br>')"></td>
+                        <td>
+                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'address' }"></widget-node-text-attribute>
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>Longitude</strong></td>

@@ -8,6 +8,7 @@ const status = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
     this.name = ko.pureComputed(() => ko.unwrap(params.name));
+    this.nicename = ko.pureComputed(() => this.name().replace(/([A-Z])/g, " $1").toLowerCase());
     this.value = ko.pureComputed(() => {
         if (!this.nodepath()) {
             return "";

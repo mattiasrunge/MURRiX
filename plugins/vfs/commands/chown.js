@@ -6,6 +6,7 @@ const terminal = require("../lib/terminal");
 
 vorpal
 .command("chown <userstring> <path>", "Change owner and group for node")
+.option("-r", "Recursive chown")
 .autocomplete({
     data: function(input) {
         return terminal.autocomplete(vorpal.cliSession, input);
@@ -15,6 +16,7 @@ vorpal
     let cwd = yield session.env("cwd");
     let group = false;
     let username = args.userstring;
+    let options = {};
 
     if (args.userstring.indexOf(":") !== -1) {
         let parts = args.userstring.split(":");
@@ -22,5 +24,9 @@ vorpal
         group = parts[1];
     }
 
-    yield api.vfs.chown(terminal.normalize(cwd, args.path), username, group);
+    if (args.options.r) {
+        options.recursive = true;
+    }
+
+    yield api.vfs.chown(terminal.normalize(cwd, args.path), username, group, options);
 }));

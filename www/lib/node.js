@@ -42,5 +42,16 @@ module.exports = {
         status.printError(error);
         return false;
     }),
-    list: ko.observableArray()
+    list: ko.observableArray(),
+    getUniqueName: co.wrap(function*(path, baseName) {
+        let name = baseName.replace(/ |\//g, "_");
+
+        let counter = 1;
+        while (yield api.vfs.resolve(path + "/" + name, true)) {
+            name = baseName.replace(/ |\//g, "_") + "_" + counter;
+            counter++;
+        };
+
+        return name;
+    })
 };

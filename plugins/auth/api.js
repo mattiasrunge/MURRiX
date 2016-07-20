@@ -75,6 +75,7 @@ let auth = api.register("auth", {
             username: "admin",
             uid: 1000,
             gid: 1000,
+            gids: [ 1000, 1002 ],
             umask: "770"
         };
     },
