@@ -1,0 +1,11 @@
+﻿<div class="dropdown">
+    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" data-bind="text: value() ? 'Yes' : 'No', css: { 'dropdown-toggle': editable }"></span>
+    <ul class="dropdown-menu">
+        <li data-bind="visible: !value()">
+            <a href="#" data-bind="click: setYes">Change to Yes</a>
+        </li>
+        <li data-bind="visible: value">
+            <a href="#" data-bind="click: setNo">Change to No</a>
+        </li>
+    </ul>
+</div>

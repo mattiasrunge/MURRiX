@@ -20,7 +20,9 @@
                     </tr>
                     <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset UTC</strong></td>
-                        <td data-bind="text: nodepath().node().attributes.utcOffset"></td>
+                        <td>
+                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'utcOffset' }"></widget-node-text-attribute>
+                        </td>
                     </tr>
                     <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset description</strong></td>
@@ -30,7 +32,9 @@
                     </tr>
                     <tr>
                         <td><strong>Automatic daylight savings</strong></td>
-                        <td data-bind="text: nodepath().node().attributes.deviceAutoDst ? 'Yes' : 'No'"></td>
+                        <td>
+                            <widget-node-boolean-attribute params="{ nodepath: nodepath, name: 'deviceAutoDst' }"></widget-node-boolean-attribute>
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>Serial number</strong></td>

@@ -21,6 +21,8 @@ module.exports = utils.wrapComponent(function*(params) {
         return [];
     });
 
+
+
     this.dispose = () => {
     };
 });

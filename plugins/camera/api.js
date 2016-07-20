@@ -19,6 +19,14 @@ let camera = api.register("camera", {
         }
     }),
     mkcamera: function*(session, name, attributes) {
+        attributes = attributes | {};
+
+        attributes.type = attributes.type || "offset_fixed";
+        attributes.utcOffset = attributes.utcOffset || 0;
+        attributes.offsetDescription = attributes.offsetDescription || "";
+        attributes.deviceAutoDst = attributes.deviceAutoDst || false;
+        attributes.serialNumber = attributes.serialNumber || "";
+
         yield vfs.create(session, "/cameras/" + name, "c", attributes);
 
         yield vfs.create(session, "/cameras/" + name + "/owners", "d");
