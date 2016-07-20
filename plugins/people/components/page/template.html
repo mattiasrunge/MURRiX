@@ -37,6 +37,21 @@
                         <td data-bind="text: metrics().age"></td>
                     </tr>
                     <tr>
+                        <td><strong>Gender</strong></td>
+                        <td>
+                            <widget-node-select-attribute params="{ nodepath: nodepath, name: 'gender', options: [
+                                {
+                                    name: 'f',
+                                    title: 'Female'
+                                },
+                                {
+                                    name: 'm',
+                                    title: 'Male'
+                                }
+                            ]}"></widget-node-select-attribute>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><strong>Partner</strong></td>
                         <td>
                             <people-widget-partner params="{ path: nodepath().path }"></people-widget-partner>
