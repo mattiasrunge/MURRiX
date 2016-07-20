@@ -1,0 +1,8 @@
+﻿<div class="dropdown">
+    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" data-bind="text: nicevalue, css: { 'dropdown-toggle': editable }"></span>
+    <ul class="dropdown-menu" data-bind="foreach: options">
+        <li>
+            <a href="#" data-bind="click: $component.change.bind($data, $data.name), text: $data.title"></a>
+        </li>
+    </ul>
+</div>

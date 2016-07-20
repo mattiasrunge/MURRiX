@@ -16,7 +16,18 @@
                     </tr>
                     <tr>
                         <td><strong>Type</strong></td>
-                        <td data-bind="text: nodepath().node().attributes.type"></td>
+                        <td>
+                            <widget-node-select-attribute params="{ nodepath: nodepath, name: 'type', options: [
+                                {
+                                    name: 'offset_fixed',
+                                    title: 'Fixed offset'
+                                },
+                                {
+                                    name: 'offset_relative_to_position',
+                                    title: 'Offset relative to the position'
+                                }
+                            ]}"></widget-node-select-attribute>
+                        </td>
                     </tr>
                     <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset UTC</strong></td>
