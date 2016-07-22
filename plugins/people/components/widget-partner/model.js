@@ -6,25 +6,38 @@ const utils = require("lib/utils");
 const status = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.item = ko.asyncComputed(false, function*(setter) {
+    this.personPath = ko.observable(false);
+    this.editing = ko.observable(false);
+    this.nodepath = ko.asyncComputed(false, function*(setter) {
         setter(false);
 
-        let path = ko.unwrap(params.path) + "/partner";
-        let node = yield api.vfs.resolve(path, true, true);
+        let nodepath = yield api.people.getPartner(ko.unwrap(params.nodepath().path));
 
-        if (node && node.properties.type === "s") {
-            path = node.attributes.path;
-            node = yield api.vfs.resolve(path, false, true);
-        } else {
+        if (!nodepath) {
             return false;
         }
 
-        return { path: path, node: node };
+        this.personPath(nodepath.path);
+
+        return { path: nodepath.path, node: ko.observable(nodepath.node), editable: ko.observable(nodepath.editable) };
     }.bind(this), (error) => {
         status.printError(error);
         return false;
     });
 
+    this.edit = () => {
+        this.editing(true);
+    };
+
+    // TODO: Check params.nodepath().editable
+
+    let subscription = this.personPath.subscribe((value) => {
+        console.log("personPath", value);
+
+        // TODO: Call setPartner and update params.nodepath().node
+    });
+
     this.dispose = () => {
+        subscription.dispose();
     };
 });

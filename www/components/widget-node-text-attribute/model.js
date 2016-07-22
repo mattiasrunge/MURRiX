@@ -25,7 +25,11 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.change = (model, event) => {
-        let value = event.target.innerHTML.replace(/(^<br>|<br>$)/g,"");
+        let value = event.target.innerText.replace(/(^\n|\n$)/g,"");
+
+        if (ko.unwrap(params.html)) {
+            value = event.target.innerHTML.replace(/(^<br>|<br>$)/g,"");
+        }
 
         if (!this.editable() || this.value() === value) {
             return;

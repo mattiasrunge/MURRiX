@@ -19,7 +19,7 @@ let camera = api.register("camera", {
         }
     }),
     mkcamera: function*(session, name, attributes) {
-        attributes = attributes | {};
+        attributes = attributes || {};
 
         attributes.type = attributes.type || "offset_fixed";
         attributes.utcOffset = attributes.utcOffset || 0;

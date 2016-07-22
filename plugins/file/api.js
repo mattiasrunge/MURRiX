@@ -17,6 +17,8 @@ let file = api.register("file", {
         params = config;
     }),
     mkfile: function*(session, abspath, attributes) {
+        attributes._source.filename = attributes._source.filename || path.join(params.uploadDirectory, attributes._source.uploadId);
+
         if (!(yield fs.existsAsync(attributes._source.filename))) {
             throw new Error("Source file does not exist");
         }
@@ -30,14 +32,6 @@ let file = api.register("file", {
 //         if (attributes.md5 && attributes.md5 !== metadata.md5) {
 //             throw new Error("md5 checksum for file does not match, is the file corrupt? " + attributes.md5 + " !== " + metadata.md5);
 //         }
-
-        if (metadata.deviceSerialNumber) {
-            let device = (yield vfs.query(session, { serialNumber: metadata.deviceSerialNumber }))[0];
-
-            if (device) {
-                yield vfs.symlink(session, device, abspath + "/createdWith");
-            }
-        }
 
         for (let key of Object.keys(metadata)) {
             if (key !== "raw" && key !== "name" && typeof attributes[key] === "undefined") {
@@ -57,14 +51,26 @@ let file = api.register("file", {
         let node = yield vfs.resolve(session, abspath);
         let attributes = node.attributes;
 
-        // TODO: Recache cached versions if angle, mirror changed
+        if (attributes.deviceSerialNumber && !(yield vfs.resolve(session, abspath + "/createdWith", true))) {
+            let device = (yield vfs.list(session, "/cameras", {
+                filter: {
+                    "attributes.serialNumber": attributes.deviceSerialNumber }
+            }))[0];
 
-        // TODO: connect device if we have none based on serialNumber?
+            if (device) {
+                yield vfs.symlink(session, device.path, abspath + "/createdWith");
+            }
+        }
+
+        // TODO: Recache cached versions if angle, mirror changed
 
         // TODO: Reread metadata?
 
         // TODO: If we have a device, send in that information with the device source when
         // TODO: If there is a position and local device type, send in that information with the device source when
+        node = yield vfs.resolve(session, abspath);
+        attributes = node.attributes;
+
         yield vfs.setattributes(session, node, {
             time: yield mcs.compileTime(attributes.when || {})
         });

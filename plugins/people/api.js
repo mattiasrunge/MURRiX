@@ -1,5 +1,6 @@
 "use strict";
 
+const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
@@ -28,6 +29,27 @@ let people = api.register("people", {
         yield vfs.create(session, "/people/" + name + "/texts", "d");
 
         return yield vfs.resolve(session, "/people/" + name);
+    },
+    getPartner: function*(session, abspath) {
+        let partnerpath = path.join(abspath, "partner");
+
+        let node = yield vfs.resolve(session, partnerpath, true);
+
+        if (!node) {
+            return false;
+        }
+
+        if (node && node.properties.type === "s") {
+            partnerpath = node.attributes.path;
+            node = yield vfs.resolve(session, partnerpath);
+        }
+
+        let editable = yield vfs.access(session, partnerpath, "w");
+
+        return { path: partnerpath, node: node, editable: editable };
+    },
+    setPartner: function*(session, abspath, partnerpath) {
+        // TODO
     },
     getMetrics: function*(session, abspath) {
         let node = yield vfs.resolve(session, abspath);

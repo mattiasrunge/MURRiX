@@ -50,6 +50,49 @@ module.exports = {
         list.sort((a, b) => {
             return a.node.attributes.time.timestamp - b.node.attributes.time.timestamp;
         });
+    },
+    seconds: () => {
+        return Math.floor(new Date().getTime() / 1000);
+    },
+    upload: (url, file, progressCallback) => {
+        return new Promise((resolve, reject) => {
+            let form = new FormData();
+            form.append("file", file);
+
+            let startTime = module.exports.seconds();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: form,
+                cache: false,
+                contentType: false,
+                processData: false,
+                xhr: () => {
+                    let xhr = $.ajaxSettings.xhr();
+
+                    let progressListener = (event) => {
+                        let progress = Math.min(Math.round((event.loaded / event.total) * 100), 100);
+                        let duration = module.exports.seconds() - startTime;
+                        let speed = event.total / (duration === 0 ? 1 : duration);
+
+                        progressCallback(progress, speed, duration);
+                    };
+
+                    xhr.upload.addEventListener("progress", progressListener, false);
+                    xhr.addEventListener("progress", progressListener, false);
+
+                    return xhr;
+                },
+                success: function(data) {
+                    resolve(data);
+                },
+                error: function(data) {
+                    console.error("Upload failed, reason: " + data.responseText, file);
+                    reject("Upload failed, reason: " + data.responseText);
+                }
+            }, "json");
+        });
     }
 };
 

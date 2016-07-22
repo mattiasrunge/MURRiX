@@ -1,3 +1,9 @@
-﻿<span data-bind="visible: item, if: item">
-    <a href="#" data-bind="location: { page: 'node', path: item().path }, text: item().node.attributes.name"></a>
+﻿<span class="partner-link" data-bind="visible: nodepath() && !editing(), if: nodepath">
+    <a href="#" data-bind="location: { page: 'node', path: nodepath().path }, text: nodepath().node().attributes.name"></a>
+    <a class="partner-edit" href="#" title="Edit" data-bind="visible: nodepath().editable, click: edit">
+        <i class="material-icons">edit</i>
+    </a>
+</span>
+<span data-bind="visible: editing, if: nodepath">
+    <input type="text" class="form-control" placeholder="Select a person" data-bind="nodeselect: { root: '/people', path: personPath }">
 </span>

@@ -8,13 +8,14 @@ const ui = require("lib/ui");
 const status = require("lib/status");
 
 let lastPath = false;
+let reloadFlag = ko.observable(false);
 
 module.exports = {
     loading: status.create(),
     nodepath: ko.asyncComputed(false, function*(setter) {
         let path = ko.unwrap(loc.current().path);
 
-        ui.setTitle(false);
+        reloadFlag();
 
         if (!path || path === "") {
             lastPath = path;
@@ -23,6 +24,7 @@ module.exports = {
             return;
         }
 
+        ui.setTitle(false);
         lastPath = path;
         setter(false);
 
@@ -43,6 +45,7 @@ module.exports = {
         return false;
     }),
     list: ko.observableArray(),
+    uploadFiles: ko.observableArray(),
     getUniqueName: co.wrap(function*(path, baseName) {
         let name = baseName.replace(/ |\//g, "_");
 
@@ -53,5 +56,9 @@ module.exports = {
         };
 
         return name;
-    })
+    }),
+    reload: () => {
+        lastPath = "";
+        reloadFlag(!reloadFlag());
+    }
 };

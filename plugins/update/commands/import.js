@@ -7,7 +7,7 @@ vorpal
 .command("update import <dbname> <filespath>", "Import old MURRiX v1 mongodb database.")
 .action(vorpal.wrap(function*(session, args) {
     if (!args.dbname) {
-        thrown new Error("Missing dbname parameter");
+        throw new Error("Missing dbname parameter");
     }
 
     if (!args.filespath) {

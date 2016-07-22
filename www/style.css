@@ -177,6 +177,62 @@ body {
     margin-bottom: 1px;
 }
 
+.partner-link .partner-edit {
+    opacity: 0.0;
+    color: #aaa;
+    transition: opacity .2s ease-in-out;
+}
+
+.partner-link:hover .partner-edit {
+    opacity: 1.0;
+    transition: opacity .1s ease-in-out;
+}
+
+.partner-link .partner-edit .material-icons {
+    font-size: inherit;
+}
+
+.upload {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1031;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.upload-box {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    bottom: 30px;
+    right: 30px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.upload-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 300px;
+    overflow: auto;
+    padding: 15px;
+}
+
+.upload-sidebar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 299px;
+    border-left: 1px solid #ccc;
+    padding: 15px;
+}
+
 .fullscreen {
     position: fixed;
     top: 0;

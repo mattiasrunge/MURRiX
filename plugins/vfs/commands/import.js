@@ -26,7 +26,7 @@ vorpal
     for (let directory of directories) {
         this.log("Importing directory " + directory + "...");
 
-        yield api.vfs.create(terminal.normalize(cwd, directory.replace(/ /g, "_")), "d");
+        yield api.vfs.create(terminal.normalize(cwd, directory.replace(/ /g, "_")), "a");
     }
 
     for (let file of files) {
