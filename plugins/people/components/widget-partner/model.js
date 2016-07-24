@@ -25,6 +25,14 @@ module.exports = utils.wrapComponent(function*(params) {
         return false;
     });
 
+    this.editable = ko.pureComputed(() => {
+        if (!this.nodepath()) {
+            return false;
+        }
+
+        return ko.unwrap(this.nodepath().editable);
+    });
+
     this.edit = () => {
         this.editing(true);
     };

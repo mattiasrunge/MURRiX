@@ -53,7 +53,7 @@ body {
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
 }
 
-[contenteditable=true]:empty:before {
+[contenteditable=true]:empty:before, .dropdown-select-empty {
     content: attr(placeholder);
     display: block; /* For Firefox */
     font-style: italic;
@@ -968,7 +968,16 @@ body {
     padding-bottom: 0;
     display: block;
 }
-
+.timeline > li.timeline-inverted{
+  float: right;
+  clear: right;
+}
+.timeline > li:nth-child(2){
+  margin-top: 60px;
+}
+.timeline > li.timeline-inverted > .timeline-badge{
+  left: -12px;
+}
 
 
 .tooltip{
@@ -1048,18 +1057,7 @@ body {
     width:0;
     height:0;
 }
-.timeline > li.timeline-inverted{
-  float: right;
-  clear: right;
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-.timeline > li:nth-child(2){
-  margin-top: 60px;
-}
-.timeline > li.timeline-inverted > .timeline-badge{
-  left: -12px;
-}
+
 
 @media (max-width: 767px) {
     ul.timeline:before {

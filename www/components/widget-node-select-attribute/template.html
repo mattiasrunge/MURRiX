@@ -1,5 +1,10 @@
 ﻿<div class="dropdown">
-    <span data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" data-bind="text: nicevalue, css: { 'dropdown-toggle': editable }"></span>
+    <span data-toggle="dropdown" data-bind="text: nicevalue, css: { 'dropdown-toggle': editable }"></span>
+
+    <span class="dropdown-select-empty" data-toggle="dropdown" data-bind="text: 'Select ' + nicename(), css: { 'dropdown-toggle': editable }, visible: value() === '' && editable()"></span>
+
+    <span class="dropdown-select-empty" data-bind="text: 'No ' + nicename(), visible: value() === '' && !editable()"></span>
+
     <ul class="dropdown-menu" data-bind="foreach: options">
         <li>
             <a href="#" data-bind="click: $component.change.bind($data, $data.name), text: $data.title"></a>

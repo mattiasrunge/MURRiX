@@ -11,6 +11,14 @@ module.exports = utils.wrapComponent(function*(params) {
     this.files = ko.observableArray();
     this.active = ko.observable(false);
 
+    this.editable = ko.pureComputed(() => {
+        if (!this.nodepath()) {
+            return false;
+        }
+
+        return ko.unwrap(this.nodepath().editable);
+    });
+
     this.finished = ko.pureComputed(() => {
         return this.files().filter((item) => item.complete()).length;
     });
@@ -71,21 +79,27 @@ module.exports = utils.wrapComponent(function*(params) {
         node.reload();
     }.bind(this));
 
-    console.log("FILES!", ko.unwrap(params.files));
+    this.close = () => {
+        params.files.removeAll();
+    };
 
-    for (let file of params.files()) {
-        let item = {
-            uploadId: yield api.vfs.allocateUploadId(),
-            progress: ko.observable(0),
-            size: file.size,
-            name: file.name,
-            active: ko.observable(false),
-            complete: ko.observable(false),
-            failed: ko.observable(false),
-            file: file
-        };
+    if (this.editable()) {
+        console.log("FILES!", ko.unwrap(params.files));
 
-        this.files.push(item);
+        for (let file of params.files()) {
+            let item = {
+                uploadId: yield api.vfs.allocateUploadId(),
+                progress: ko.observable(0),
+                size: file.size,
+                name: file.name,
+                active: ko.observable(false),
+                complete: ko.observable(false),
+                failed: ko.observable(false),
+                file: file
+            };
+
+            this.files.push(item);
+        }
     }
 
     this.dispose = () => {
