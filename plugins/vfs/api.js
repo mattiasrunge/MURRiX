@@ -159,6 +159,33 @@ let vfs = api.register("vfs", {
         pathParts.shift();
         return getchild(session, root, pathParts, noerror);
     },
+    lookup: function*(session, id) {
+        let node = yield db.findOne("nodes", { _id: id });
+
+        if (node.properties.type === "r") {
+            return [ "/" ];
+        }
+
+        let paths = [];
+        let parents = yield db.find("nodes", { "properties.children.id": id });
+
+        if (parents.length === 0) {
+            throw new Error("No parent found, this node is out of tree");
+        }
+
+        for (let parent of parents) {
+            let parentpaths = yield vfs.lookup(session, parent._id);
+            let names = parent.properties.children.filter((child) => child.id === id).map((child) => child.name);
+
+            for (let parentpath of parentpaths) {
+                for (let name of names) {
+                    paths.push(path.join(parentpath, name));
+                }
+            }
+        }
+
+        return paths;
+    },
     ensure: function*(session, abspath, type, attributes) {
         let node = yield vfs.resolve(session, abspath, true);
 

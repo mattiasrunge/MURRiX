@@ -50,9 +50,10 @@ let file = api.register("file", {
     regenerate: function*(session, abspath) {
         let node = yield vfs.resolve(session, abspath);
         let attributes = node.attributes;
+        let device = null;
 
         if (attributes.deviceSerialNumber && !(yield vfs.resolve(session, abspath + "/createdWith", true))) {
-            let device = (yield vfs.list(session, "/cameras", {
+            device = (yield vfs.list(session, "/cameras", {
                 filter: {
                     "attributes.serialNumber": attributes.deviceSerialNumber }
             }))[0];
@@ -66,10 +67,19 @@ let file = api.register("file", {
 
         // TODO: Reread metadata?
 
-        // TODO: If we have a device, send in that information with the device source when
-        // TODO: If there is a position and local device type, send in that information with the device source when
         node = yield vfs.resolve(session, abspath);
         attributes = node.attributes;
+
+        if (device && attributes.when.device) {
+            attributes.when.device.deviceType = device.attributes.type;
+            attributes.when.device.deviceUtcOffset = device.attributes.utcOffset;
+            attributes.when.device.deviceAutoDst = device.attributes.deviceAutoDst;
+
+            if (attributes.where.longitude && attributes.where.latitude) {
+                attributes.when.device.longitude = attributes.where.longitude;
+                attributes.when.device.latitude = attributes.where.latitude;
+            }
+        }
 
         yield vfs.setattributes(session, node, {
             time: yield mcs.compileTime(attributes.when || {})
