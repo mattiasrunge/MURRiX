@@ -1,6 +1,7 @@
 
 @import: "node_modules/bootstrap/dist/css/bootstrap.css";
 @import: "node_modules/typeahead.js-bootstrap-css/typeaheadjs.css";
+@import: "node_modules/bootstrap-slider/dist/css/bootstrap-slider.css";
 @import: "node_modules/mprogress/build/css/mprogress.css";
 @import: "node_modules/animate.css/animate.css";
 @import: "node_modules/snackbarjs/dist/snackbar.css";
@@ -463,6 +464,10 @@ body {
 
 .main {
   margin-left: 200px;
+}
+
+.slider.slider-horizontal {
+    width: 100%;
 }
 
 .snackbar {
@@ -979,7 +984,13 @@ body {
   left: -12px;
 }
 
+.year-slider {
+    margin-left: 80px;
+    margin-right: 80px;
+    padding-top: 10px;
+}
 
+/*
 .tooltip{
 
     position:absolute;
@@ -993,8 +1004,7 @@ body {
 
 }
 .tooltip.in{
-    /*opacity:0;
-    filter:alpha(opacity=80);*/
+
 
 }
 .tooltip.top{
@@ -1056,7 +1066,7 @@ body {
     position:absolute;
     width:0;
     height:0;
-}
+}*/
 
 
 @media (max-width: 767px) {

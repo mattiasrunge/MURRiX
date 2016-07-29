@@ -5,5 +5,5 @@
     </a>
 </span>
 <span data-bind="visible: editing, if: nodepath">
-    <input type="text" class="form-control" placeholder="Select a person" data-bind="nodeselect: { root: '/people', path: personPath }">
+    <div contenteditable="true" placeholder="Select a person" data-bind="nodeselect: { root: '/people', path: personPath }, text: nodepath().node().attributes.name"><div>
 </span>

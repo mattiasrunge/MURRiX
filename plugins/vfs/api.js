@@ -49,6 +49,26 @@ let vfs = api.register("vfs", {
                 key: {
                     "properties.type": 1
                 }
+            },
+            {
+                key : {
+                    "properties.children.name" : 1
+                }
+            },
+            {
+                key : {
+                    "properties.children.id" : 1
+                }
+            },
+            {
+                key : {
+                    "attributes.name" : 1
+                }
+            },
+            {
+                key : {
+                    "attributes.time.timestamp" : 1
+                }
             }
         ]);
     }),
@@ -159,22 +179,24 @@ let vfs = api.register("vfs", {
         pathParts.shift();
         return getchild(session, root, pathParts, noerror);
     },
-    lookup: function*(session, id) {
-        let node = yield db.findOne("nodes", { _id: id });
+    lookup: function*(session, id, cache) {
+        cache = cache || {};
 
-        if (node.properties.type === "r") {
-            return [ "/" ];
+        if (cache[id]) {
+            return cache[id];
         }
 
         let paths = [];
-        let parents = yield db.find("nodes", { "properties.children.id": id });
+        let parents = yield db.find("nodes", { "properties.children.id": id }, {
+            "properties.children": 1
+        });
 
         if (parents.length === 0) {
-            throw new Error("No parent found, this node is out of tree");
+            return [ "/" ];
         }
 
         for (let parent of parents) {
-            let parentpaths = yield vfs.lookup(session, parent._id);
+            let parentpaths = yield vfs.lookup(session, parent._id, cache);
             let names = parent.properties.children.filter((child) => child.id === id).map((child) => child.name);
 
             for (let parentpath of parentpaths) {
@@ -184,7 +206,8 @@ let vfs = api.register("vfs", {
             }
         }
 
-        return paths;
+        cache[id] = paths;
+        return cache[id];
     },
     ensure: function*(session, abspath, type, attributes) {
         let node = yield vfs.resolve(session, abspath, true);
@@ -566,47 +589,6 @@ let vfs = api.register("vfs", {
 
         srcnode.properties.count++;
         yield db.updateOne("nodes", srcnode);
-
-        /*
-        let srcparent = yield vfs.resolve(session, path.dirname(srcpath));
-        let name = path.basename(srcpath);
-        let child = srcparent.properties.children.filter((child) => child.name === name)[0];
-
-        if (!child) {
-            throw new Error(srcpath + " does not exists");
-        }
-
-        if (!(yield vfs.access(session, srcparent, "w"))) {
-            throw new Error("Permission denied");
-        }
-
-        let destparent = yield vfs.resolve(session, path.dirname(destpath));
-        let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
-
-        if (destchild) {
-            destparent = yield db.findOne("nodes", { _id: destchild.id });
-            destchild = destparent.properties.children.filter((child) => child.name === name)[0];
-
-            if (destchild) {
-                throw new Error(destpath + "/" + name + " already exists");
-            }
-        } else if (destpath !== "/") {
-            child.name = path.basename(destpath);
-        }
-
-        if (!(yield vfs.access(session, destparent, "w"))) {
-            throw new Error("Permission denied");
-        }
-
-        destparent.properties.children.push(child);
-        destparent.properties.ctime = new Date();
-        yield db.updateOne("nodes", destparent);
-
-        let node = yield db.findOne("nodes", { _id: child.id });
-
-        node.properties.count++;
-        yield db.updateOne("nodes", node);
-        */
     },
     move: function*(session, srcpath, destpath) {
         let srcparent = yield vfs.resolve(session, path.dirname(srcpath));

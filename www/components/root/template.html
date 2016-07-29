@@ -3,26 +3,36 @@
 
     <div class="container page-container">
         <div class="row" data-bind="if: page() !== 'node', visible: page() !== 'node'">
-            <div class="col-md-2 sidebar right-border">
-                <div data-bind="if: page() !== 'node'">
-                    <sidebar></sidebar>
+            <div data-bind="if: loggedIn">
+                <div class="col-md-2 sidebar right-border">
+                    <div data-bind="if: page() !== 'node'">
+                        <sidebar></sidebar>
+                    </div>
+                </div>
+                <div class="col-md-10 main">
+                    <div data-bind="if: page() === 'recent'">
+                        <page-recent></page-recent>
+                    </div>
+                    <div data-bind="if: page() === 'search'">
+                        <page-search></page-search>
+                    </div>
+                    <div data-bind="if: page() === 'year'">
+                        <page-year></page-year>
+                    </div>
+                    <div data-bind="if: page() === 'login'">
+                        <auth-page-login></auth-page-login>
+                    </div>
+                    <div data-bind="if: page() === 'profile'">
+                        <auth-page-profile></auth-page-profile>
+                    </div>
+                    <div data-bind="if: page() === 'reset'">
+                        <auth-page-reset></auth-page-reset>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-10 main">
-                <div data-bind="if: page() === 'recent'">
-                    <page-recent></page-recent>
-                </div>
-                <div data-bind="if: page() === 'search'">
-                    <page-search></page-search>
-                </div>
-                <div data-bind="if: page() === 'login'">
+             <div data-bind="if: !loggedIn()">
+                <div class="col-md-12">
                     <auth-page-login></auth-page-login>
-                </div>
-                <div data-bind="if: page() === 'profile'">
-                    <auth-page-profile></auth-page-profile>
-                </div>
-                <div data-bind="if: page() === 'reset'">
-                    <auth-page-reset></auth-page-reset>
                 </div>
             </div>
         </div>

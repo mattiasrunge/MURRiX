@@ -14,6 +14,7 @@ const utils = require("lib/utils");
 const status = require("lib/status");
 const loc = require("lib/location");
 const typeahead = require("typeahead");
+const Slider = require("slider");
 const autosize = require("autosize");
 const LazyLoad = require("lazyload");
 
@@ -133,7 +134,7 @@ ko.bindingHandlers.location = {
         if ($element.prop("tagName").toLowerCase() === "a") {
             $element.attr("href", value);
 
-            $element.on("click", function(event) {
+            $element.on("click", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
                 loc.goto(value);
@@ -142,7 +143,7 @@ ko.bindingHandlers.location = {
             $element.attr("src", value);
             $element.get(0).contentWindow.location = value;
         } else {
-            $element.on("click", function(event) {
+            $element.on("click", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
                 loc.goto(value);
@@ -151,9 +152,34 @@ ko.bindingHandlers.location = {
     }
 };
 
+ko.bindingHandlers.yearSlider = {
+    init: (element, valueAccessor) => {
+        let options = valueAccessor();
+
+        let slider = new Slider(element, {
+            value: ko.unwrap(options.year),
+            min: options.min ? options.min : 1600,
+            max: options.max ? options.max : new Date().getFullYear(),
+            step: 1,
+            selection: "none"
+        });
+
+        slider.on("slideStop", () => { options.year(slider.getValue()); });
+
+        let subscription = options.year.subscribe((value) => {
+            slider.setValue(value);
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            subscription.dispose();
+            slider.off("slideStop");
+            slider.destroy();
+        });
+    }
+};
 
 ko.bindingHandlers.datetimeDay = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
 
         if (!value) {
@@ -172,7 +198,7 @@ ko.bindingHandlers.datetimeDay = {
 };
 
 ko.bindingHandlers.datetimeUtc = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
 
         if (!value) {
@@ -191,7 +217,7 @@ ko.bindingHandlers.datetimeUtc = {
 };
 
 ko.bindingHandlers.datetimeLocal = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
 
         if (!value) {
@@ -210,7 +236,7 @@ ko.bindingHandlers.datetimeLocal = {
 };
 
 ko.bindingHandlers.datetimeAgo = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let dateItem = null;
 
@@ -232,7 +258,7 @@ ko.bindingHandlers.datetimeAgo = {
 };
 
 ko.bindingHandlers.htmlSize = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let fileSizeInBytes = ko.unwrap(valueAccessor());
         let i = -1;
         let byteUnits = [ " kB", " MB", " GB", " TB", "PB", "EB", "ZB", "YB" ];
@@ -247,7 +273,7 @@ ko.bindingHandlers.htmlSize = {
 };
 
 ko.bindingHandlers.nodename = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
@@ -263,7 +289,7 @@ ko.bindingHandlers.nodename = {
 };
 
 ko.bindingHandlers.unameNice = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
@@ -279,7 +305,7 @@ ko.bindingHandlers.unameNice = {
 };
 
 ko.bindingHandlers.uname = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
@@ -295,7 +321,7 @@ ko.bindingHandlers.uname = {
 };
 
 ko.bindingHandlers.gname = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
@@ -311,7 +337,7 @@ ko.bindingHandlers.gname = {
 };
 
 ko.bindingHandlers.mode = {
-    update: function(element, valueAccessor) {
+    update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
