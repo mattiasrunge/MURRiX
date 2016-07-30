@@ -4,6 +4,12 @@
         <i class="material-icons">edit</i>
     </a>
 </span>
-<span data-bind="visible: editing, if: nodepath">
-    <div contenteditable="true" placeholder="Select a person" data-bind="nodeselect: { root: '/people', path: personPath }, text: nodepath().node().attributes.name"><div>
+<span data-bind="visible: !nodepath() && editable() && !editing()">
+    <i data-bind="click: edit" style="cursor: pointer; color: #999;">Add a partner</a>
+</span>
+<span data-bind="visible: !nodepath() && !editable() && !editing()">
+    <i style="color: #999;">No partner set</a>
+</span>
+<span data-bind="visible: editing">
+    <input type="text" class="form-control input-sm" placeholder="Select a person" data-bind="nodeselect: { root: '/people', path: personPath }">
 </span>

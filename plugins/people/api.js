@@ -32,8 +32,7 @@ let people = api.register("people", {
     },
     getPartner: function*(session, abspath) {
         let partnerpath = path.join(abspath, "partner");
-
-        let node = yield vfs.resolve(session, partnerpath, true);
+        let node = yield vfs.resolve(session, partnerpath, true, true);
 
         if (!node) {
             return false;
@@ -49,7 +48,29 @@ let people = api.register("people", {
         return { path: partnerpath, node: node, editable: editable };
     },
     setPartner: function*(session, abspath, partnerpath) {
-        // TODO
+        let currentPartner = yield people.getPartner(session, abspath);
+
+        // Remove current partners partner symlink
+        if (currentPartner) {
+            console.log(currentPartner.path);
+            // It is assumed that the currentPartners link points to abspath
+            yield vfs.unlink(session, path.join(currentPartner.path, "partner"));
+        }
+
+        // Remove new partners existing partner
+        if (partnerpath) {
+            yield vfs.unlink(session, path.join(partnerpath, "partner"));
+        }
+
+        // Remove partner link
+        yield vfs.unlink(session, path.join(abspath, "partner"));
+
+
+        // Create new partner links
+        if (partnerpath) {
+            yield vfs.symlink(session, abspath, path.join(partnerpath, "partner"));
+            yield vfs.symlink(session, partnerpath, path.join(abspath, "partner"));
+        }
     },
     getMetrics: function*(session, abspath) {
         let node = yield vfs.resolve(session, abspath);
