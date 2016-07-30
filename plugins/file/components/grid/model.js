@@ -9,19 +9,19 @@ const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
-    this.path = params.path;
+    this.data = params.data;
     this.size = params.size;
 
     this.list = ko.asyncComputed([], function*(setter) {
-        if (!this.path() || this.path() === "") {
-            return [];
-        }
-
         setter([]);
+
+        console.log(this.data());
+
+        let files = this.data().files;
+        let texts = this.data().texts;
 
         this.loading(true);
 
-        let files = yield api.vfs.list(this.path() + "/files");
         let filenames = yield api.file.getPictureFilenames(files.map((file) => file.node._id), this.size, this.size);
 
         this.loading(false);
@@ -40,14 +40,10 @@ module.exports = utils.wrapComponent(function*(params) {
 
         node.list(files);
 
-        console.log("files", files);
-
-        let texts = yield api.vfs.list(this.path() + "/texts");
-
         utils.sortNodeList(texts);
 
+        console.log("files", files);
         console.log("texts", texts);
-
 
         let days = {};
 

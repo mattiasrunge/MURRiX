@@ -104,6 +104,62 @@ let people = api.register("people", {
     },
     find: function*(session, name) {
         return yield vfs.resolve(session, "/people/" + name, true);
+    },
+    findByTags: function*(session, abspath) {
+        console.time("people.findByTags total " + abspath);
+        console.time("people.findByTags sIds");
+
+        let list = [];
+        let cache = {};
+
+        let options = {
+            fields: {
+                "_id": 1
+            }
+        };
+
+        let query = {
+            "properties.type": { $in: [ "s" ] },
+            "attributes.path": abspath
+        };
+
+        let sNodes = yield vfs.query(session, query, options);
+        let sIds = sNodes.map((node) => node._id);
+
+        console.timeEnd("people.findByTags sIds");
+        console.time("people.findByTags dIds");
+
+        query = {
+            "properties.type": "d",
+            "properties.children.id": { $in: sIds }
+        };
+
+        let dNodes = yield vfs.query(session, query, options);
+        let dIds = dNodes.map((node) => node._id);
+
+        console.timeEnd("people.findByTags dIds");
+        console.time("people.findByTags fNodes");
+
+        query = {
+            "properties.type": "f",
+            "properties.children.id": { $in: dIds }
+        };
+
+        let fNodes = yield vfs.query(session, query);
+
+        console.timeEnd("people.findByTags fNodes");
+        console.time("people.findByTags lookup");
+
+        for (let node of fNodes) {
+            let paths = yield vfs.lookup(session, node._id, cache);
+
+            list.push({ name: path.basename(paths[0]), node: node, path: paths[0] });
+        }
+
+        console.timeEnd("people.findByTags lookup");
+        console.timeEnd("people.findByTags total " + abspath);
+
+        return list;
     }
 });
 

@@ -69,6 +69,11 @@ let vfs = api.register("vfs", {
                 key : {
                     "attributes.time.timestamp" : 1
                 }
+            },
+            {
+                key : {
+                    "attributes.path" : 1
+                }
             }
         ]);
     }),

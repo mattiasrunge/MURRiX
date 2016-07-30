@@ -239,7 +239,7 @@ module.exports = utils.wrapComponent(function*(params) {
         nodeData.tree.childrenLoaded = false;
         nodeData.tree.parents = ko.observableArray();
         nodeData.tree.children = ko.observableArray();
-        nodeData.tree.path = ko.observable(nodePath);
+        nodeData.tree.nodepath = ko.observable({ node: nodeData, path: nodePath });
         nodeData.tree.metrics = ko.observable(metrics);
 
         nodeData.tree.expandParents = () => {
