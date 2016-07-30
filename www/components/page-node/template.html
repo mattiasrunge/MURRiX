@@ -17,7 +17,83 @@
     <div data-bind="if: type() === 'c'">
         <camera-page params="{ nodepath: nodepath, section: section }"></camera-page>
     </div>
+
+    <form data-bind="submit: setAccess">
+        <div class="modal" id="nodeAccessModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">
+                            Sharing settings for <span data-bind="text: nodepath().node().attributes.name"></span>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <h5>Public access</h5>
+                                <p>
+                                    Public access can be granted on <span data-bind="text: typeNice"></span>s if needed. This will allow anyone with the link to access this <span data-bind="text: typeNice"></span>. <em>Use with care!</em>
+                                </p>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: public"> Public
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <h5>Group access</h5>
+                                <p>
+                                    A group can be given read and write access this <span data-bind="text: typeNice"></span>. This will grant the group the selected rights on this <span data-bind="text: typeNice"></span>.
+                                </p>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Select a group" data-bind="groupselect: { gid: gid }">
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label style="margin-right: 20px;">
+                                            <input type="checkbox" data-bind="checked: groupReadable"> Readable
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" data-bind="checked: groupWritable"> Writable
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <h5>Who has access</h5>
+                                <div style="max-height: 200px; overflow-y: auto;">
+                                    <table class="table table-condensed table-striped">
+                                        <tbody data-bind="foreach: whoHasAccess">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="if: $data.uid">
+                                                        <auth-picture-user params="{ size: 20, uid: $data.uid, classes: 'img-circle' }" style="margin-right: 10px;" class="pull-left"></auth-picture-user>
+                                                    </span>
+                                                    <span data-bind="text: $data.name"></span>
+                                                </td>
+                                                <td data-bind="text: $data.type"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
-<div data-bind="if: !nodepath() && !loading()">
+<div data-bind="if: !nodepath() && !nodeLoading()">
     Invalid path
 </div>

@@ -345,6 +345,120 @@ ko.bindingHandlers.mode = {
     }
 };
 
+
+ko.bindingHandlers.groupselect = {
+    lookup: co.wrap(function*(querystr, limit) {
+        let list = yield api.auth.groups({
+            filter: {
+                "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
+            },
+            limit: limit
+        });
+
+        return list.map((item) => {
+            return {
+                path: item.path,
+                node: item.node
+            };
+        });
+    }),
+    init: (element, valueAccessor) => {
+        let gid = valueAccessor().gid;
+        let limit = ko.unwrap(valueAccessor().limit) || 10;
+        let $element = $(element);
+        element.loading = status.create();
+
+        $element.addClass("typeahead");
+
+        $element.typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            display: (selection) => selection.node.attributes.name,
+            source: (querystr, dummy, resolve) => {
+                ko.bindingHandlers.groupselect.lookup(querystr, limit)
+                .then(resolve)
+                .catch((error) => {
+                    status.printError(error);
+                    resolve([]);
+                });
+            },
+            templates: {
+                suggestion: (selection) => {
+                    return $("<div>" + selection.node.attributes.name + "</div>");
+                }
+            },
+            limit: limit
+        });
+
+        $element.on("typeahead:asyncrequest", () => element.loading(true));
+        $element.on("typeahead:asynccancel", () => element.loading(false));
+        $element.on("typeahead:asyncreceive", () => element.loading(false));
+        $element.on("typeahead:active", () => {
+            $element.removeClass("valid");
+        });
+        $element.on("typeahead:idle", () => {
+            if (gid()) {
+                $element.addClass("valid");
+            }
+        });
+        $element.on("typeahead:change typeahead:select", () => {
+    // TODO: event, selection is in parameters, nno need for a lookup!
+            ko.bindingHandlers.groupselect.lookup($element.typeahead("val"), limit)
+            .then((list) => {
+                if (list.length === 1) {
+                    gid(list[0].node.attributes.gid);
+                    $element.addClass("valid");
+                } else {
+                    gid(false);
+                    $element.removeClass("valid");
+                }
+            })
+            .catch((error) => {
+                status.printError(error);
+                gid(false);
+            });
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            $element.typeahead("destroy");
+            status.destroy(element.loading);
+        });
+    },
+    update: (element, valueAccessor) => {
+        let gid = valueAccessor().gid;
+        let $element = $(element);
+
+        if (gid()) {
+            element.loading(true);
+            api.auth.groups({ filter: { "attributes.gid": gid() }, limit: 1 })
+            .then((nodes) => {
+                return nodes[0] ? nodes[0].node : false;
+            })
+            .then((node) => {
+                element.loading(false);
+
+                if (node) {
+                    $element.addClass("valid");
+                    $element.typeahead("val", node.attributes.name);
+                } else {
+                    path(false);
+                    $element.removeClass("valid");
+                    $element.typeahead("val", "");
+                }
+            })
+            .catch((error) => {
+                element.loading(false);
+                gid(false);
+            });
+        } else {
+            $element.removeClass("valid");
+            $element.typeahead("val", "");
+        }
+    }
+};
+
 ko.bindingHandlers.nodeselect = {
     lookup: co.wrap(function*(root, querystr, limit) {
         console.log("lookup");
@@ -354,17 +468,6 @@ ko.bindingHandlers.nodeselect = {
             },
             limit: limit
         });
-
-//         for (let item of list) {
-//             let node = yield api.vfs.resolve(item.path + "/profilePicture", true);
-//
-//             if (node) {
-//                 let filename = (yield api.file.getPictureFilenames([ node._id ], 16, 16))[0];
-//                 item.filename = filename.filename;
-//             }
-//         }
-
-        console.log(list);
 
         return list.map((item) => {
             return {

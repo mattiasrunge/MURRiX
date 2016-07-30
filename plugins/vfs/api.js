@@ -149,6 +149,10 @@ let vfs = api.register("vfs", {
 
         let getchild = co(function*(session, node, pathParts, noerror) {
             if (pathParts.length === 0) {
+                if (!(yield vfs.access(session, node, "r"))) {
+                    throw new Error("Permission denied");
+                }
+
                 return node;
             }
 
@@ -165,7 +169,7 @@ let vfs = api.register("vfs", {
 
             node = yield db.findOne("nodes", { _id: child.id });
 
-            if (!(yield vfs.access(session, node, "r"))) {
+            if (!(yield vfs.access(session, node, "x"))) {
                 throw new Error("Permission denied");
             }
 
@@ -371,11 +375,19 @@ let vfs = api.register("vfs", {
         node.properties.cuid = session.uid;
 
         if (username) {
-            node.properties.uid = yield api.auth.uid(session, username);
+            if (typeof username === "number") {
+                node.properties.uid = username;
+            } else {
+                node.properties.uid = yield api.auth.uid(session, username);
+            }
         }
 
         if (group) {
-            node.properties.gid = yield api.auth.gid(session, group);
+            if (typeof group === "number") {
+                node.properties.gid = group;
+            } else {
+                node.properties.gid = yield api.auth.gid(session, group);
+            }
         }
 
         yield db.updateOne("nodes", node);

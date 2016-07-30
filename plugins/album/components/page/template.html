@@ -1,6 +1,9 @@
 ﻿<div class="fadeInRight animated" data-bind="event: { dragenter: dragNoopHandler, dragexit: dragNoopHandler, dragover: dragNoopHandler, drop: dropEventHandler }">
     <div class="row" data-bind="if: nodepath" style="margin-top: 15px;">
         <div class="col-md-8">
+            <a class="pull-right" style="color: #aaa; margin-top: 5px;" href="#" title="Share settings" data-bind="visible: nodepath().editable, click: editRights.bind($data, true)">
+                <i class="material-icons">share</i>
+            </a>
             <widget-node-header params="{ nodepath: nodepath }"></widget-node-header>
         </div>
         <div class="col-md-4 left-border">

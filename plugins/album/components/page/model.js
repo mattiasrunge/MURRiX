@@ -10,6 +10,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
     this.nodepath = params.nodepath;
     this.section = params.section;
+    this.editRights = node.editRights;
     this.files = ko.observableArray();
 
     this.count = ko.asyncComputed(-1, function*(setter) {

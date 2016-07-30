@@ -178,19 +178,19 @@ body {
     margin-bottom: 1px;
 }
 
-.partner-link .partner-edit {
-    opacity: 0.0;
+.node-table .material-icons {
+    font-size: inherit;
     color: #aaa;
+}
+
+.edit-hover-container .edit-hover-link {
+    opacity: 0.0;
     transition: opacity .2s ease-in-out;
 }
 
-.partner-link:hover .partner-edit {
+.edit-hover-container:hover .edit-hover-link {
     opacity: 1.0;
     transition: opacity .1s ease-in-out;
-}
-
-.partner-link .partner-edit .material-icons {
-    font-size: inherit;
 }
 
 .upload {

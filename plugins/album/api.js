@@ -17,6 +17,7 @@ let album = api.register("album", {
         if (!(yield vfs.resolve(auth.getAdminSession(), "/albums", true))) {
             yield vfs.create(auth.getAdminSession(), "/albums", "d");
             yield vfs.chown(auth.getAdminSession(), "/albums", "admin", "users");
+            yield vfs.chmod(auth.getAdminSession(), "/albums", "771");
         }
     }),
     mkalbum: function*(session, name, attributes) {

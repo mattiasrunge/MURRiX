@@ -143,12 +143,26 @@ let auth = api.register("auth", {
 
         return { stars: stars, created: !star };
     },
+    groups: function*(session, options) {
+        if (session.username === "guest") {
+            throw new Error("Not allowed");
+        }
+
+        return yield vfs.list(auth.getAdminSession(), "/groups", options);
+    },
     groupList: function*(session, username) {
         if (username !== session.username && session.username !== "admin") {
             throw new Error("Not allowed");
         }
 
         return yield vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
+    },
+    userList: function*(session, groupname) {
+        if (session.username === "guest") {
+            throw new Error("Not allowed");
+        }
+
+        return yield vfs.list(auth.getAdminSession(), "/groups/" + groupname + "/users");
     },
     login: function*(session, username, password) {
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
