@@ -1,12 +1,6 @@
 ﻿"use strict";
 
 /* TODO:
- * Age information is missing
- * Linking to other people is not working
- * Partner information is missing
- * Sorting children on age is disabled
- * Profile pictures are missing
- * Size should be reduced
  * Should implement a fullscreen option
  * Height should be adjusted if the window is resized
  */
@@ -19,7 +13,6 @@ const status = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
     this.person = ko.observable(false);
-    this.loading = status.create();
     this.height = ko.observable(300);
     this.zoom = ko.observable(0.8);
 
@@ -358,7 +351,6 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return this.createPerson(null, this.nodepath().node(), this.nodepath().path, metrics, "me", 0, 1);
     }.bind(this), (error) => {
-        this.loading(false);
         status.printError(error);
         return false;
     });

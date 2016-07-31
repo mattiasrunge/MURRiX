@@ -12,6 +12,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.loading = status.create();
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
+    this.showSidebar = ko.observable(true);
     this.height = ko.pureComputed(() => {
         let screenHeight = ko.unwrap(ui.windowSize()).height;
         let heights = [ 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000 ];
@@ -31,16 +32,17 @@ module.exports = utils.wrapComponent(function*(params) {
         let tags = [];
 
         this.loading(true);
-        let item = yield api.vfs.resolve(abspath);
-        this.loading(false);
+        let item = yield api.vfs.resolve(abspath, true);
 
         console.log("item", item);
 
         if (!item) {
+            this.loading(false);
             return false;
         }
 
-        this.loading(true);
+        let editable = yield api.vfs.access(abspath, "w");
+
         if (item.attributes.type === "image") {
             filename = (yield api.file.getPictureFilenames([ item._id ], null, height))[0];
         } else if (item.attributes.type === "video") {
@@ -56,7 +58,46 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(false);
 
-        return { node: item, filename: filename.filename, tags: tags };
+        return { node: ko.observable(item), path: abspath, filename: filename.filename, tags: tags, editable: editable };
+    }.bind(this), (error) => {
+        this.loading(false);
+        status.printError(error);
+        return false;
+    });
+
+    this.who = ko.asyncComputed(false, function*(setter) {
+        let abspath = ko.unwrap(this.showPath) + "/createdBy";
+
+        let item = yield api.vfs.resolve(abspath, true);
+
+        console.log("who", item);
+
+        if (!item) {
+            return false;
+        }
+
+        abspath = yield api.vfs.lookup(item._id);
+
+        return { node: ko.observable(item), path: abspath };
+    }.bind(this), (error) => {
+        status.printError(error);
+        return false;
+    });
+
+    this.device = ko.asyncComputed(false, function*(setter) {
+        let abspath = ko.unwrap(this.showPath) + "/createdWith";
+
+        let item = yield api.vfs.resolve(abspath, true);
+
+        console.log("device", item);
+
+        if (!item) {
+            return false;
+        }
+
+        abspath = yield api.vfs.lookup(item._id);
+
+        return { node: ko.observable(item), path: abspath };
     }.bind(this), (error) => {
         status.printError(error);
         return false;
@@ -75,7 +116,7 @@ module.exports = utils.wrapComponent(function*(params) {
             return -1;
         }
 
-        let item = node.list().filter((item2) => item2.node._id === this.item().node._id)[0];
+        let item = node.list().filter((item2) => item2.node._id === this.item().node()._id)[0];
 
         return node.list().indexOf(item);
     });

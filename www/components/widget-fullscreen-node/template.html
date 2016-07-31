@@ -1,31 +1,101 @@
-<div class="fullscreen animated zoomIn">
-    <div data-bind="if: item() && !loading()">
-        <div data-bind="if: item().node.attributes.type === 'image'">
+<div class="fullscreen animated zoomIn" data-bind="css: { showsidebar: showSidebar }">
+    <div class="sidebar" data-bind="if: showSidebar() && item() && !loading()">
+        <!--<a href="#" class="exit" data-bind="click: showSidebar.bind($data, false)">
+            <i class="material-icons">close</i>
+        </a>-->
+
+        <h2 style="margin-top: 0;">Information</h2>
+
+        <table class="text-muted">
+            <tbody>
+                <tr>
+                    <td>
+                        <i class="material-icons">description</i>
+                    </td>
+                    <td>
+                        <widget-node-text-attribute params="{ nodepath: item, name: 'description', html: true }"></widget-node-text-attribute>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="material-icons">file_download</i>
+                    </td>
+
+                    <td>
+                        <a href="#" data-bind="text: item().node().attributes.name, attr: { href: '/file/' + item().node().attributes.diskfilename + '/' + item().node().attributes.name }"></a>
+                        (<span data-bind="htmlSize: item().node().attributes.size"></span>)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="material-icons">person</i>
+                    </td>
+
+                    <td>
+                        <div data-bind="if: who()">
+                            <a href="#" target="_blank" data-bind="text: who().node().attributes.name, location: { page: 'node', path: who().path, showPath: null }"></a>
+                        </div>
+                        <div data-bind="if: !who()">
+                            Unknown
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="material-icons">camera</i>
+                    </td>
+
+                    <td>
+                        <div data-bind="if: device()">
+                            <a href="#" target="_blank" data-bind="text: device().node().attributes.name, location: { page: 'node', path: device().path, showPath: null }"></a>
+                        </div>
+                        <div data-bind="if: !device()">
+                            Unknown
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Comments</h3>
+
+        <comment-widget-comments params="{ path: showPath }"></comment-widget-comments>
+    </div>
+
+    <div class="maincontainer" data-bind="if: item() && !loading()">
+        <div data-bind="visible: item().node().attributes.type === 'image', if: item().node().attributes.type === 'image'">
             <div data-bind="picture: { item: item, height: $component.height, classes: 'resize-fit-center' }" class="resize-fit-container"></div>
         </div>
-        <div data-bind="if: item().node.attributes.type === 'video'" class="resize-fit-container">
+        <div data-bind="visible: item().node().attributes.type === 'video', if: item().node().attributes.type === 'video'" class="resize-fit-container">
             <video autoplay controls preload="metadata" class="resize-fit-center">
                 <source src="" type="video/webm" data-bind="attr: { src: item().filename }">
                 Your browser does not support the video tag.
             </video>
         </div>
-         <div data-bind="if: item().node.attributes.type === 'audio'" style="position: absolute; left: 0; right: 0; bottom: 50px;">
+        <div data-bind="visible: item().node().attributes.type === 'audio', if: item().node().attributes.type === 'audio'" style="position: absolute; left: 0; right: 0; bottom: 0;">
             <audio autoplay controls preload="metadata" style="width: 100%;">
                 <source src="" type="video/webm" data-bind="attr: { src: item().filename }">
                 Your browser does not support the audio tag.
             </audio>
         </div>
+
+        <a href="#" class="exit" data-bind="location: { showPath: null }">
+            <i class="material-icons">close</i>
+        </a>
+        <a href="#" class="information" data-bind="click: showSidebar.bind($data, !showSidebar())">
+            <i class="material-icons">info</i>
+        </a>
     </div>
 
     <div data-bind="if: item" class="bottombar">
         <a href="#" data-bind="location: { showPath: previousPath }, visible: previousPath() !== false">
-            <i class="material-icons md-48 pull-left">chevron_left</i>
+            <i class="material-icons md-48 pull-left">arrow_back</i>
         </a>
 
         <span class="middle">
             <span>
                 <i class="material-icons md-18">access_time</i>
-                <span data-bind="datetimeUtc: item().node.attributes.time.timestamp"></span>
+                <span data-bind="datetimeUtc: item().node().attributes.time.timestamp"></span>
             </span>
 
             <span>
@@ -45,11 +115,9 @@
         </span>
 
         <a href="#" data-bind="location: { showPath: nextPath }, visible: nextPath() !== false">
-            <i class="material-icons md-48 pull-right">chevron_right</i>
+            <i class="material-icons md-48 pull-right">arrow_forward</i>
         </a>
     </div>
 
-    <a href="#" class="exit" data-bind="location: { showPath: null }">
-        <i class="material-icons">close</i>
-    </a>
+
 </div>

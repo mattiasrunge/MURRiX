@@ -134,11 +134,11 @@ ko.bindingHandlers.location = {
         if ($element.prop("tagName").toLowerCase() === "a") {
             $element.attr("href", value);
 
-            $element.on("click", (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                loc.goto(value);
-            });
+//             $element.on("click", (event) => {
+//                 event.preventDefault();
+//                 event.stopPropagation();
+//                 loc.goto(value);
+//             });
         } else if ($element.prop("tagName").toLowerCase() === "iframe") {
             $element.attr("src", value);
             $element.get(0).contentWindow.location = value;

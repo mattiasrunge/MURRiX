@@ -43,6 +43,8 @@ module.exports = utils.wrapComponent(function*(params) {
 
         console.log("days", days);
 
+        this.loading(false);
+
         return days;
     }.bind(this), (error) => {
         this.loading(false);

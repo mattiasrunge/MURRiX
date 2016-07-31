@@ -66,6 +66,10 @@ module.exports = {
             allowDownload: true
         });
     },
+    "/file/:name/:filename": function*(filename, name) {
+        this.body = fs.createReadStream(path.join(configuration.fileDirectory, path.basename(filename)));
+        this.set("Content-disposition", "attachment; filename=" + name);
+    },
     unamed: () => [
         function*(next) {
             let url = this.originalUrl;

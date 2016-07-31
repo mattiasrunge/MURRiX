@@ -244,7 +244,7 @@ body {
     background-color: black;
 }
 
-.fullscreen > .exit {
+.fullscreen .exit {
     position: absolute;
     right: 15px;
     top: 15px;
@@ -252,8 +252,65 @@ body {
     opacity: 0.8;
 }
 
-.fullscreen > .exit:hover {
+.fullscreen .exit:hover {
     opacity: 1;
+}
+
+.fullscreen .sidebar .exit {
+    color: black;
+}
+
+.fullscreen .information {
+    position: absolute;
+    right: 50px;
+    top: 15px;
+    color: white;
+    opacity: 0.8;
+}
+
+.fullscreen .information:hover {
+    opacity: 1;
+}
+
+.fullscreen > .sidebar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 400px;
+    padding: 30px;
+    background-color: white;
+    opacity: 0.0;
+    transition: opacity .4s ease-in-out;
+}
+
+.fullscreen.showsidebar > .sidebar {
+    opacity: 1.0;
+    transition: opacity .3s ease-in-out;
+}
+
+.fullscreen > .sidebar table {
+    width: 100%;
+    margin-left: 15px;
+}
+
+.fullscreen > .sidebar table td {
+    padding-bottom: 30px;
+    vertical-align: top;
+}
+
+.fullscreen > .maincontainer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 50px;
+    transition: right .2s ease-in-out;
+}
+
+.fullscreen.showsidebar > .maincontainer {
+    right: 400px;
+    transition: right .2s ease-in-out;
 }
 
 .fullscreen > .bottombar {
@@ -265,7 +322,14 @@ body {
     height: 50px;
     text-align: center;
     color: white;
+    transition: right .2s ease-in-out;
 }
+
+.fullscreen.showsidebar > .bottombar {
+    right: 400px;
+    transition: right .2s ease-in-out;
+}
+
 
 .fullscreen > .bottombar > a {
     color: white;
@@ -286,7 +350,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    bottom: 50px;
+    bottom: 0;
     right: 0;
 }
 

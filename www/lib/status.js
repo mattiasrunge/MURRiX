@@ -58,15 +58,24 @@ module.exports = {
         $.snackbar(options).snackbar("show");
     },
     create: () => {
+        let line = "unnamed"; //new Error().stack.split("\n")[2].trim().split(" ")[2];
+        //line = line.substr(1, line.length - 2);
+
         let status = ko.observable(false);
-        list.push(status);
+        list.push({ status: status, name: line });
         return status;
     },
     destroy: (status) => {
-        list.remove(status);
+        let item = list().filter((item) => item.status === status)[0];
+
+        if (item) {
+            list.remove(item);
+        }
     },
     loading: ko.computed(() => {
-        let loading = list().filter((status) => status()).length > 0;
+        let loading = list().filter((item) => item.status()).length > 0;
+
+        //console.log("status", JSON.stringify(list().map((item) => item.name + " => " + ko.unwrap(item.status)), null, 2));
 
         if (loading) {
             mprogress.start();
