@@ -463,7 +463,7 @@ let vfs = api.register("vfs", {
             _id: uuid.v4(),
             properties: {
                 type: type,
-                mode: octal(session.umask || "755"),
+                mode: octal(session.umask || parent.properties.mode),
                 birthtime: new Date(),
                 birthuid: session.uid,
                 ctime: new Date(),
@@ -471,7 +471,7 @@ let vfs = api.register("vfs", {
                 mtime: new Date(),
                 muid: session.uid,
                 uid: session.uid,
-                gid: session.gid,
+                gid: parent.properties.gid,
                 children: [],
                 count: 1
             },
