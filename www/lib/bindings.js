@@ -461,10 +461,12 @@ ko.bindingHandlers.groupselect = {
 
 ko.bindingHandlers.nodeselect = {
     lookup: co.wrap(function*(root, querystr, limit) {
-        console.log("lookup");
+        console.log("lookup", limit, querystr);
+        let filter = limit === 1 ? querystr : { $regex: ".*" + querystr + ".*", $options: "-i" };
+
         let list = yield api.vfs.list(root, {
             filter: {
-                "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
+                "attributes.name": filter
             },
             limit: limit
         });
@@ -544,7 +546,7 @@ ko.bindingHandlers.nodeselect = {
         });
         $element.on("typeahead:change typeahead:select", () => {
 	// TODO: event, selection is in parameters, nno need for a lookup!
-            ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"), limit)
+            ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"), 1)
             .then((list) => {
                 if (list.length === 1) {
                     path(list[0].path);
