@@ -1,10 +1,8 @@
 <div class="fullscreen animated zoomIn" data-bind="css: { showsidebar: showSidebar }">
-    <div class="sidebar" data-bind="if: showSidebar() && item() && !loading()">
-        <!--<a href="#" class="exit" data-bind="click: showSidebar.bind($data, false)">
-            <i class="material-icons">close</i>
-        </a>-->
-
-        <h2 style="margin-top: 0;">Information</h2>
+    <div class="sidebar" data-bind="if: showSidebar() && item()">
+        <h2 style="margin-top: 0;">
+            Information
+        </h2>
 
         <table class="text-muted">
             <tbody>
@@ -22,7 +20,7 @@
                     </td>
 
                     <td>
-                        <a href="#" data-bind="text: item().node().attributes.name, attr: { href: '/file/' + item().node().attributes.diskfilename + '/' + item().node().attributes.name }"></a>
+                        <a href="#" data-bind="text: item().node().attributes.name, attr: { href: 'file/' + item().node().attributes.diskfilename + '/' + item().node().attributes.name }"></a>
                         (<span data-bind="htmlSize: item().node().attributes.size"></span>)
                     </td>
                 </tr>
@@ -62,29 +60,22 @@
         <comment-widget-comments params="{ path: showPath }"></comment-widget-comments>
     </div>
 
-    <div class="maincontainer" data-bind="if: item() && !loading()">
+    <div class="maincontainer" data-bind="if: item() && filename()">
         <div data-bind="visible: item().node().attributes.type === 'image', if: item().node().attributes.type === 'image'">
-            <div data-bind="picture: { item: item, height: $component.height, classes: 'resize-fit-center' }" class="resize-fit-container"></div>
+            <div data-bind="picture: { item: item, filename: filename, height: $component.height, classes: 'resize-fit-center' }" class="resize-fit-container"></div>
         </div>
         <div data-bind="visible: item().node().attributes.type === 'video', if: item().node().attributes.type === 'video'" class="resize-fit-container">
             <video autoplay controls preload="metadata" class="resize-fit-center">
-                <source src="" type="video/webm" data-bind="attr: { src: item().filename }">
+                <source src="" type="video/webm" data-bind="attr: { src: filename() }">
                 Your browser does not support the video tag.
             </video>
         </div>
         <div data-bind="visible: item().node().attributes.type === 'audio', if: item().node().attributes.type === 'audio'" style="position: absolute; left: 0; right: 0; bottom: 0;">
             <audio autoplay controls preload="metadata" style="width: 100%;">
-                <source src="" type="video/webm" data-bind="attr: { src: item().filename }">
+                <source src="" type="video/webm" data-bind="attr: { src: filename() }">
                 Your browser does not support the audio tag.
             </audio>
         </div>
-
-        <a href="#" class="exit" data-bind="location: { showPath: null }">
-            <i class="material-icons">close</i>
-        </a>
-        <a href="#" class="information" data-bind="click: showSidebar.bind($data, !showSidebar())">
-            <i class="material-icons">info</i>
-        </a>
     </div>
 
     <div data-bind="if: item" class="bottombar">
@@ -119,5 +110,37 @@
         </a>
     </div>
 
+    <a href="#" class="information" data-bind="click: showSidebar.bind($data, true), visible: !showSidebar()">
+        <i class="material-icons">info</i>
+    </a>
 
+    <a href="#" class="hideinformation" data-bind="click: showSidebar.bind($data, false), visible: showSidebar()">
+        <i class="material-icons">forward</i>
+    </a>
+
+    <div class="btn-group menu">
+        <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="material-icons">more_vert</i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <li><a href="#">
+                <i class="material-icons">rotate_left</i>
+                Rotate left
+            </a></li>
+            <li><a href="#">
+                <i class="material-icons">rotate_right</i>
+                Rotate right
+            </a></li>
+            <li><a href="#">
+                <i class="material-icons">flip</i>
+                Mirror
+            </a></li>
+<!--             <li role="separator" class="divider"></li> -->
+        </ul>
+    </div>
+
+
+    <a href="#" class="exit" data-bind="location: { showPath: null }">
+        <i class="material-icons">close</i>
+    </a>
 </div>

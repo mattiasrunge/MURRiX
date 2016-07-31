@@ -601,6 +601,7 @@ ko.bindingHandlers.picture = {
     update: (element, valueAccessor) => {
         let data = ko.unwrap(valueAccessor());
         let item = ko.unwrap(data.item);
+        let filename = ko.unwrap(data.filename) || item.filename;
         let width = ko.unwrap(data.width);
         let height = ko.unwrap(data.height);
         let classes = ko.unwrap(data.classes) || "";
@@ -624,11 +625,11 @@ ko.bindingHandlers.picture = {
             }
 
             if (nolazyload) {
-                $element.append($("<img src='" + item.filename + "' style='" + css.join(";") + "' class='" + classes + "'>"));
+                $element.append($("<img src='" + filename + "' style='" + css.join(";") + "' class='" + classes + "'>"));
             } else {
                 let $span = $("<span style='display: inline-block; position: relative; " + css.join(";") + "' class='" + classes + "'></span>");
 
-                $span.append($("<img data-original='" + item.filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>"));
+                $span.append($("<img data-original='" + filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>"));
 
                 if (item.tags) {
                     for (let tag of item.tags) {

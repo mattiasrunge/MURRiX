@@ -26,9 +26,7 @@ module.exports = utils.wrapComponent(function*(params) {
         return heights[heights.length - 1];
     });
     this.item = ko.asyncComputed(false, function*(setter) {
-        let height = ko.unwrap(this.height);
         let abspath = ko.unwrap(this.showPath);
-        let filename = "";
         let tags = [];
 
         this.loading(true);
@@ -43,14 +41,6 @@ module.exports = utils.wrapComponent(function*(params) {
 
         let editable = yield api.vfs.access(abspath, "w");
 
-        if (item.attributes.type === "image") {
-            filename = (yield api.file.getPictureFilenames([ item._id ], null, height))[0];
-        } else if (item.attributes.type === "video") {
-            filename = (yield api.file.getVideoFilenames([ item._id ], null, height))[0];
-        } else if (item.attributes.type === "audio") {
-            filename = (yield api.file.getAudioFilenames([ item._id ]))[0];
-        }
-
         try {
             tags = yield api.vfs.list(abspath + "/tags");
         } catch (e) {
@@ -58,7 +48,34 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(false);
 
-        return { node: ko.observable(item), path: abspath, filename: filename.filename, tags: tags, editable: editable };
+        return { node: ko.observable(item), path: abspath, tags: tags, editable: editable };
+    }.bind(this), (error) => {
+        this.loading(false);
+        status.printError(error);
+        return false;
+    });
+
+    this.filename = ko.asyncComputed(false, function*(setter) {
+        if (!this.item()) {
+            return false;
+        }
+
+        let height = ko.unwrap(this.height);
+        let filename = false;
+
+        this.loading(true);
+
+        if (this.item().node().attributes.type === "image") {
+            filename = (yield api.file.getPictureFilenames([ this.item().node()._id ], null, height))[0];
+        } else if (this.item().node().attributes.type === "video") {
+            filename = (yield api.file.getVideoFilenames([ this.item().node()._id ], null, height))[0];
+        } else if (this.item().node().attributes.type === "audio") {
+            filename = (yield api.file.getAudioFilenames([ this.item().node()._id ]))[0];
+        }
+
+        this.loading(false);
+
+        return filename ? filename.filename : false;
     }.bind(this), (error) => {
         this.loading(false);
         status.printError(error);

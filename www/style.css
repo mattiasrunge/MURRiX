@@ -256,19 +256,50 @@ body {
     opacity: 1;
 }
 
-.fullscreen .sidebar .exit {
+.fullscreen.showsidebar .exit {
+    color: black;
+}
+
+.fullscreen .menu {
+    position: absolute;
+    right: 50px;
+    top: 15px;
+    opacity: 0.8;
+}
+
+.fullscreen .menu a {
+    color: white;
+}
+
+.fullscreen .menu:hover {
+    opacity: 1;
+}
+
+.fullscreen.showsidebar .menu a {
     color: black;
 }
 
 .fullscreen .information {
     position: absolute;
-    right: 50px;
+    right: 85px;
     top: 15px;
     color: white;
     opacity: 0.8;
 }
 
 .fullscreen .information:hover {
+    opacity: 1;
+}
+
+.fullscreen .hideinformation {
+    position: absolute;
+    right: 85px;
+    top: 15px;
+    color: black;
+    opacity: 0.8;
+}
+
+.fullscreen .hideinformation:hover {
     opacity: 1;
 }
 
