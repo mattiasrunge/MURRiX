@@ -28,7 +28,7 @@
                             Sharing settings for <span data-bind="text: nodepath().node().attributes.name"></span>
                         </h4>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" data-bind="if: editRights">
                         <div class="container-fluid">
                             <div class="row">
                                 <h5>Public access</h5>
