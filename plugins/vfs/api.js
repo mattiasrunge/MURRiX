@@ -85,7 +85,7 @@ let vfs = api.register("vfs", {
         }
 
         if (typeof node === "string") {
-            node = yield vfs.resolve(session, abspathOrNode);
+            node = yield vfs.resolve(session, abspathOrNode, true);
         }
 
         if (!node || !node._id) {
@@ -175,6 +175,10 @@ let vfs = api.register("vfs", {
             node = yield db.findOne("nodes", { _id: child.id });
 
             if (!(yield vfs.access(session, node, "x"))) {
+                if (noerror) {
+                    return false;
+                }
+
                 throw new Error("Permission denied");
             }
 
@@ -273,7 +277,11 @@ let vfs = api.register("vfs", {
                     }
 
                     if (node) {
-                        list.push({ name: child.name, node: node, path: dir, link: link });
+                        let readable = yield vfs.access(session, node, "r");
+
+                        if (readable) {
+                            list.push({ name: child.name, node: node, path: dir, link: link });
+                        }
                     }
                 }
             }
