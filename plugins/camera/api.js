@@ -1,7 +1,6 @@
 "use strict";
 
 const co = require("bluebird").coroutine;
-const moment = require("moment");
 const api = require("api.io");
 const vfs = require("../vfs/api");
 const auth = require("../auth/api");

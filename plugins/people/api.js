@@ -20,7 +20,7 @@ let people = api.register("people", {
         }
     }),
     mkperson: function*(session, name, attributes) {
-        let person = yield vfs.create(session, "/people/" + name, "p", attributes);
+        yield vfs.create(session, "/people/" + name, "p", attributes);
 
         yield vfs.create(session, "/people/" + name + "/parents", "d");
         yield vfs.create(session, "/people/" + name + "/children", "d");
@@ -73,7 +73,6 @@ let people = api.register("people", {
         }
     },
     getMetrics: function*(session, abspath) {
-        let node = yield vfs.resolve(session, abspath);
         let birthdate = false;
         let deathdate = false;
         let age = false;

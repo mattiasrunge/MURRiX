@@ -5,13 +5,13 @@ const co = require("co");
 const api = require("api.io-client");
 const loc = require("lib/location");
 const ui = require("lib/ui");
-const status = require("lib/status");
+const stat = require("lib/status");
 
 let lastPath = false;
 let reloadFlag = ko.observable(false);
 
 module.exports = {
-    loading: status.create(),
+    loading: stat.create(),
     nodepath: ko.asyncComputed(false, function*(setter) {
         let path = ko.unwrap(loc.current().path);
 
@@ -29,7 +29,7 @@ module.exports = {
         setter(false);
 
         module.exports.loading(true);
-        let node = yield api.vfs.resolve(path, true)
+        let node = yield api.vfs.resolve(path, true);
         let editable = yield api.vfs.access(path, "w");
         module.exports.loading(false);
 
@@ -40,8 +40,8 @@ module.exports = {
         ui.setTitle(node.attributes.name);
 
         return { path: path, node: ko.observable(node), editable: ko.observable(editable) };
-    }.bind(this), (error) => {
-        status.printError(error);
+    }, (error) => {
+        stat.printError(error);
         return false;
     }),
     list: ko.observableArray(),
@@ -54,7 +54,7 @@ module.exports = {
         while (yield api.vfs.resolve(path + "/" + name, true)) {
             name = baseName.replace(/ |\//g, "_") + "_" + counter;
             counter++;
-        };
+        }
 
         return name;
     }),

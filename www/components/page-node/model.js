@@ -2,17 +2,16 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
+const $ = require("jquery");
 const utils = require("lib/utils");
 const loc = require("lib/location");
-const ui = require("lib/ui");
-const status = require("lib/status");
-const session = require("lib/session");
+const stat = require("lib/status");
 const node = require("lib/node");
 
-module.exports = utils.wrapComponent(function*(params) {
+module.exports = utils.wrapComponent(function*(/*params*/) {
     this.nodepath = node.nodepath;
     this.nodeLoading = node.loading;
-    this.loading = status.create();
+    this.loading = stat.create();
     this.type = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().properties.type : false);
     this.section = ko.pureComputed(() => ko.unwrap(loc.current().section) || "default");
     this.showPath = ko.pureComputed(() => ko.unwrap(loc.current().showPath));
@@ -78,14 +77,14 @@ module.exports = utils.wrapComponent(function*(params) {
         this.saveAccess()
         .then(() => {
             this.loading(false);
-            status.printSuccess("Share settings saved successfully!");
+            stat.printSuccess("Share settings saved successfully!");
             node.editRights(false);
 
             node.reload();
         })
         .catch((error) => {
             this.loading(false);
-            status.printError(error);
+            stat.printError(error);
         });
     };
 
@@ -160,6 +159,6 @@ module.exports = utils.wrapComponent(function*(params) {
     this.dispose = () => {
         subscription.dispose();
         $("#nodeAccessModal").off("hidden.bs.modal");
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

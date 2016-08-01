@@ -5,8 +5,8 @@ const components = require("json!components.json");
 const ko = require("knockout");
 const co = require("co");
 const utils = require("lib/utils");
-const bindings = require("lib/bindings");
-const bootstrap = require("bootstrap");
+const bindings = require("lib/bindings"); // jshint ignore:line
+const bootstrap = require("bootstrap"); // jshint ignore:line
 
 let $window = $(window);
 let resizeFlag = ko.observable(false);
@@ -63,7 +63,7 @@ ko.asyncComputed = function(defaultValue, fn, onError, extend) {
         computed();
         return result();
     });
-}
+};
 
 module.exports = {
     start: utils.co(function*() {

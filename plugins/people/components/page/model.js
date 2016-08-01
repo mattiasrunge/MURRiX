@@ -3,12 +3,12 @@
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
     this.section = params.section;
-    this.loading = status.create();
+    this.loading = stat.create();
 
     this.metrics = ko.asyncComputed([], function*(setter) {
         if (!this.nodepath() || this.nodepath() === "") {
@@ -26,11 +26,11 @@ module.exports = utils.wrapComponent(function*(params) {
         return metrics;
     }.bind(this), (error) => {
         this.loading(false);
-        status.printError(error);
+        stat.printError(error);
         return {};
     });
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

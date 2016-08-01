@@ -1,6 +1,6 @@
 {
     "predef": [ "suite", "describe", "it", "test", "before", "after", "beforeEach", "afterEach", "define", "require" ],
-    "bitwise": true,
+    "bitwise": false,
     "camelcase": true,
     "curly": true,
     "eqeqeq": true,
@@ -18,7 +18,6 @@
     "unused": true,
     "strict": true,
     "maxdepth": 6,
-    "maxstatements": 65,
     "loopfunc": true,
     "node": true,
     "devel": true,

@@ -4,7 +4,6 @@
 
 const path = require("path");
 const co = require("bluebird").coroutine;
-const promisifyAll = require("bluebird").promisifyAll;
 const uuid = require("node-uuid");
 const octal = require("octal");
 const sha1 = require("sha1");
@@ -117,7 +116,7 @@ let vfs = api.register("vfs", {
     },
     query: function*(session, query, options) {
         if (options && options.fields) {
-            options.fields["properties"] = 1;
+            options.fieldsproperties = 1;
         }
 
         let nodes = yield db.find("nodes", query, options);
@@ -133,7 +132,7 @@ let vfs = api.register("vfs", {
     },
     queryOne: function*(session, query, options) {
         if (options && options.fields) {
-            options.fields["properties"] = 1;
+            options.fields.properties = 1;
         }
 
         let node = yield db.findOne("nodes", query, options);
@@ -268,7 +267,7 @@ let vfs = api.register("vfs", {
                 let dir = path.join(abspath, child.name);
 
                 if (node) {
-                    let link = undefined;
+                    let link;
 
                     if (node.properties.type === "s" && !options.nofollow) {
                         link = node;
@@ -297,7 +296,7 @@ let vfs = api.register("vfs", {
 
         return list;
     },
-    random: function*(session, abspaths, limit) {
+    random: function*(session, abspaths) {
         let list = [];
         let result = false;
 
@@ -471,7 +470,7 @@ let vfs = api.register("vfs", {
             _id: uuid.v4(),
             properties: {
                 type: type,
-                mode: octal(session.umask || parent.properties.mode),
+                mode: session.umask ? octal(session.umask) : parent.properties.mode,
                 birthtime: new Date(),
                 birthuid: session.uid,
                 ctime: new Date(),
@@ -569,7 +568,7 @@ let vfs = api.register("vfs", {
         let name = path.basename(srcpath);
 
         if (yield vfs.resolve(session, destpath, true)) {
-            destpath = destpath + "/" + name
+            destpath = destpath + "/" + name;
         }
 
         return yield vfs.create(session, destpath, "s", {
@@ -591,10 +590,10 @@ let vfs = api.register("vfs", {
             name = path.basename(destpath);
             destpath = path.dirname(destpath);
             destnode = yield vfs.resolve(session, destpath);
-        } else if (typeof srcpathOrNode !== "string") {
+        } else if (typeof srcpath !== "string") {
             throw new Error("Source node supplied, destpath must have fully qualified name");
         } else {
-            name = path.basename(srcpathOrNode);
+            name = path.basename(srcpath);
         }
 
         if (!(yield vfs.access(session, destnode, "w"))) {

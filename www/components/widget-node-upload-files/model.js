@@ -2,7 +2,7 @@
 
 const ko = require("knockout");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 const node = require("lib/node");
 const api = require("api.io-client");
 
@@ -71,7 +71,7 @@ module.exports = utils.wrapComponent(function*(params) {
         } catch (e) {
             item.active(false);
             item.failed(true);
-            status.printError(e);
+            stat.printError(e);
         }
 
         this.active(false);

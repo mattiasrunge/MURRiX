@@ -4,12 +4,12 @@ const ko = require("knockout");
 const co = require("co");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 const loc = require("lib/location");
 const ui = require("lib/ui");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.create();
+module.exports = utils.wrapComponent(function*(/*params*/) {
+    this.loading = stat.create();
     this.password1 = ko.observable();
     this.password2 = ko.observable();
     this.username = ko.pureComputed(() => {
@@ -21,9 +21,9 @@ module.exports = utils.wrapComponent(function*(params) {
 
     this.changePassword = co.wrap(function*() {
         if (this.password1() !== this.password2()) {
-            return status.printError("Password does not match!");
+            return stat.printError("Password does not match!");
         } else if (this.password1() === "") {
-            return status.printError("Password can not be empty!");
+            return stat.printError("Password can not be empty!");
         }
 
         this.loading(true);
@@ -31,7 +31,7 @@ module.exports = utils.wrapComponent(function*(params) {
         try {
             yield api.auth.passwordReset(this.username(), this.id(), this.password1());
 
-            status.printSuccess("Password reset successfully!");
+            stat.printSuccess("Password reset successfully!");
 
             this.password1("");
             this.password2("");
@@ -39,7 +39,7 @@ module.exports = utils.wrapComponent(function*(params) {
             loc.goto({ page: "login", email: null, id: null });
         } catch (e) {
             console.error(e);
-            status.printError("Failed to reset password");
+            stat.printError("Failed to reset password");
         }
 
         this.loading(false);
@@ -48,6 +48,6 @@ module.exports = utils.wrapComponent(function*(params) {
     ui.setTitle("Password reset");
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

@@ -3,7 +3,7 @@
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.reloadFlag = ko.observable(false);
@@ -24,7 +24,7 @@ module.exports = utils.wrapComponent(function*(params) {
                 console.log("Saving partner " + path + " successfull!");
             })
             .catch((error) => {
-                status.printError(error);
+                stat.printError(error);
             });
         }
     });
@@ -43,7 +43,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return { path: nodepath.path, node: ko.observable(nodepath.node), editable: ko.observable(nodepath.editable) };
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return false;
     });
 

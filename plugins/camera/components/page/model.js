@@ -3,7 +3,7 @@
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
@@ -17,7 +17,7 @@ module.exports = utils.wrapComponent(function*(params) {
         setter([]);
         return yield api.vfs.list(this.nodepath().path + "/owners");
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return [];
     });
 

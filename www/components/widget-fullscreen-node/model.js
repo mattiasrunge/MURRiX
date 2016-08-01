@@ -4,12 +4,12 @@ const ko = require("knockout");
 const $ = require("jquery");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 const ui = require("lib/ui");
 const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.create();
+    this.loading = stat.create();
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
     this.showSidebar = ko.observable(true);
@@ -28,6 +28,8 @@ module.exports = utils.wrapComponent(function*(params) {
     this.item = ko.asyncComputed(false, function*(setter) {
         let abspath = ko.unwrap(this.showPath);
         let tags = [];
+
+        setter(false);
 
         this.loading(true);
         let item = yield api.vfs.resolve(abspath, true);
@@ -51,7 +53,7 @@ module.exports = utils.wrapComponent(function*(params) {
         return { node: ko.observable(item), path: abspath, tags: tags, editable: editable };
     }.bind(this), (error) => {
         this.loading(false);
-        status.printError(error);
+        stat.printError(error);
         return false;
     });
 
@@ -59,6 +61,8 @@ module.exports = utils.wrapComponent(function*(params) {
         if (!this.item()) {
             return false;
         }
+
+        setter(false);
 
         let height = ko.unwrap(this.height);
         let filename = false;
@@ -78,12 +82,14 @@ module.exports = utils.wrapComponent(function*(params) {
         return filename ? filename.filename : false;
     }.bind(this), (error) => {
         this.loading(false);
-        status.printError(error);
+        stat.printError(error);
         return false;
     });
 
     this.who = ko.asyncComputed(false, function*(setter) {
         let abspath = ko.unwrap(this.showPath) + "/createdBy";
+
+        setter(false);
 
         let item = yield api.vfs.resolve(abspath, true);
 
@@ -97,12 +103,14 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return { node: ko.observable(item), path: abspath };
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return false;
     });
 
     this.device = ko.asyncComputed(false, function*(setter) {
         let abspath = ko.unwrap(this.showPath) + "/createdWith";
+
+        setter(false);
 
         let item = yield api.vfs.resolve(abspath, true);
 
@@ -116,15 +124,17 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return { node: ko.observable(item), path: abspath };
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return false;
     });
 
-    this.commentCount = ko.asyncComputed(false, function*(setter) {
+    this.commentCount = ko.asyncComputed(0, function*(setter) {
+        setter(0);
+        
         let list = yield api.comment.list(ko.unwrap(this.showPath));
         return list.length;
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return 0;
     });
 
@@ -173,7 +183,7 @@ module.exports = utils.wrapComponent(function*(params) {
     $("body").css("overflow-y", "hidden");
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
         $("body").css("overflow-y", "");
     };
 });

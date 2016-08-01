@@ -3,16 +3,14 @@
 const path = require("path");
 const co = require("bluebird").coroutine;
 const fs = require("fs-extra-promise");
-const moment = require("moment");
 const api = require("api.io");
 const vfs = require("../vfs/api");
-const auth = require("../auth/api");
 const mcs = require("../mcs/api");
 
 let params = {};
 
 let file = api.register("file", {
-    deps: [ "vfs", "auth", "mcs", "camera" ],
+    deps: [ "vfs", "mcs", "camera" ],
     init: co(function*(config) {
         params = config;
     }),

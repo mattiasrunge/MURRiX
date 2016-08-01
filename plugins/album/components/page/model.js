@@ -3,11 +3,11 @@
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.create();
+    this.loading = stat.create();
     this.nodepath = params.nodepath;
     this.section = params.section;
     this.editRights = node.editRights;
@@ -23,7 +23,7 @@ module.exports = utils.wrapComponent(function*(params) {
         let filesNode = yield api.vfs.resolve(this.nodepath().path + "/files");
         return filesNode.properties.children.length;
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return -1;
     });
 
@@ -48,6 +48,6 @@ module.exports = utils.wrapComponent(function*(params) {
     };
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

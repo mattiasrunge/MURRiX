@@ -5,11 +5,11 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const loc = require("lib/location");
 const ui = require("lib/ui");
-const status = require("lib/status");
+const stat = require("lib/status");
 const session = require("lib/session");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.create();
+module.exports = utils.wrapComponent(function*(/*params*/) {
+    this.loading = stat.create();
     this.query = ko.pureComputed({
         read: () => ko.unwrap(loc.current().query) || "",
         write: (value) => loc.goto( { query: value })
@@ -49,13 +49,13 @@ module.exports = utils.wrapComponent(function*(params) {
         });
     }.bind(this), (error) => {
         this.loading(false);
-        status.printError(error);
+        stat.printError(error);
         return [];
     }, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
 
     ui.setTitle("Search");
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

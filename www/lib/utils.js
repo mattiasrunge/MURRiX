@@ -2,6 +2,7 @@
 
 const ko = require("knockout");
 const co = require("co");
+const $ = require("jquery");
 
 let clipBoardContent = false;
 

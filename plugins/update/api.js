@@ -1,5 +1,7 @@
 "use strict";
 
+/* jshint -W035 */
+
 const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
@@ -7,7 +9,7 @@ const api = require("api.io");
 const vfs = require("../vfs/api");
 const auth = require("../auth/api");
 const people = require("../people/api");
-const location = require("../location/api");
+const location = require("../location/api"); // jshint ignore:line
 const album = require("../album/api");
 const file = require("../file/api");
 const text = require("../text/api");
@@ -51,11 +53,11 @@ let update = api.register("update", {
             uniqueNames[listName] = uniqueNames[listName] || [];
 
             let counter = 1;
-            let name = baseName.replace(/ |\//g, "_")
+            let name = baseName.replace(/ |\//g, "_");
             while (uniqueNames[listName].indexOf(name) !== -1) {
                 name = baseName.replace(/ |\//g, "_") + "_" + counter;
                 counter++;
-            };
+            }
 
             uniqueNames[listName].push(name);
             return name;
@@ -810,7 +812,7 @@ let update = api.register("update", {
             if (obj.when) {
                 if (obj.when.source.type === "manual") {
                     let parts = obj.when.source.datestring.split(" ");
-                    let date = parts[0].split("-")
+                    let date = parts[0].split("-");
                     let time = parts[1].split(":");
 
                     item.attributes.when.manual = {};
@@ -1104,7 +1106,7 @@ let update = api.register("update", {
                     // This should be picked up from the file
                 } else if (obj.when.source.type === "manual") {
                     let parts = obj.when.source.datestring.split(" ");
-                    let date = parts[0].split("-")
+                    let date = parts[0].split("-");
                     let time = parts[1].split(":");
 
                     item.attributes.when.manual = {};

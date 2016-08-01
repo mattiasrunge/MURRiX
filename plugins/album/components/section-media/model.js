@@ -7,10 +7,10 @@
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.create();
+    this.loading = stat.create();
     this.nodepath = params.nodepath;
     this.size = 224;
 
@@ -34,7 +34,7 @@ module.exports = utils.wrapComponent(function*(params) {
         return result;
     }.bind(this), (error) => {
         this.loading(false);
-        status.printError(error);
+        stat.printError(error);
         return {
             files: [],
             texts: []
@@ -42,6 +42,6 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

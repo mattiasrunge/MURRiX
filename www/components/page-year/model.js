@@ -5,11 +5,10 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const loc = require("lib/location");
 const ui = require("lib/ui");
-const status = require("lib/status");
-const session = require("lib/session");
+const stat = require("lib/status");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.create();
+module.exports = utils.wrapComponent(function*(/*params*/) {
+    this.loading = stat.create();
     this.year = ko.pureComputed({
         read: () => parseInt(ko.unwrap(loc.current().year), 10) || new Date().getFullYear(),
         write: (value) => loc.goto( { year: value })
@@ -18,7 +17,7 @@ module.exports = utils.wrapComponent(function*(params) {
         setter([]);
 
         this.loading(true);
-console.log(this.year());
+
         let list = yield api.album.findByYear(this.year());
 
         this.loading(false);
@@ -29,7 +28,7 @@ console.log(this.year());
         });
     }.bind(this), (error) => {
         this.loading(false);
-        status.printError(error);
+        stat.printError(error);
         return [];
     }, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
 
@@ -44,6 +43,6 @@ console.log(this.year());
     ui.setTitle("Search");
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

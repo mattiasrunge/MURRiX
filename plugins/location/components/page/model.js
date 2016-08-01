@@ -1,9 +1,10 @@
 ﻿"use strict";
 
 const ko = require("knockout");
+const $ = require("jquery");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
@@ -24,7 +25,7 @@ module.exports = utils.wrapComponent(function*(params) {
         };
 
         let data = yield new Promise((resolve) => {
-            jQuery.getJSON("https://maps.googleapis.com/maps/api/geocode/json", options, resolve);
+            $.getJSON("https://maps.googleapis.com/maps/api/geocode/json", options, resolve);
         });
 
         if (data.status !== "OK" || data.results.length === 0) {
@@ -36,7 +37,7 @@ module.exports = utils.wrapComponent(function*(params) {
             latitude: data.results[0].geometry.location.lat
         };
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return false;
     });
 
@@ -48,7 +49,7 @@ module.exports = utils.wrapComponent(function*(params) {
         setter([]);
         return yield api.vfs.list(this.nodepath().path + "/residents");
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return [];
     });
 

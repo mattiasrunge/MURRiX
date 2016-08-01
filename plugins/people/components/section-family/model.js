@@ -6,9 +6,10 @@
  */
 
 const ko = require("knockout");
+const $ = require("jquery");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
@@ -22,7 +23,6 @@ module.exports = utils.wrapComponent(function*(params) {
     let markElement = false;
     let meOffset = { top: 0, left: 0 };
     let canvasSize = { width: 0, height: 0 };
-    let loaded = false;
 
     this.startDragHandler = (data, event) => {
         dragging = { top: event.clientY, left: event.clientX };
@@ -73,7 +73,7 @@ module.exports = utils.wrapComponent(function*(params) {
         return Math.round(value * Math.pow(10, precision)) / Math.pow(10, precision);
     };
 
-    this.scrollHandler = (data, event) => {
+    this.scrollHandler = (/*data, event*/) => {
 //         let wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
 //
 //         wheelData /= 50;
@@ -250,7 +250,7 @@ module.exports = utils.wrapComponent(function*(params) {
                 nodeData.tree.parents.loaded = true;
                 nodeData.tree.parentsLoading(true);
 
-                let list = yield api.vfs.list(nodePath + "/parents")
+                let list = yield api.vfs.list(nodePath + "/parents");
 
                 nodeData.tree.parentsLoading(false);
 
@@ -312,8 +312,8 @@ module.exports = utils.wrapComponent(function*(params) {
 
 
         if (!parentNodeData) {
-            nodeData.tree.loadParents().catch(status.printError);
-            nodeData.tree.loadChildren().catch(status.printError);
+            nodeData.tree.loadParents().catch(stat.printError);
+            nodeData.tree.loadChildren().catch(stat.printError);
         } else {
             parentNodeData.tree.parentsVisible.subscribe((value) => {
                 if (value) {
@@ -336,7 +336,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this._center();
         this.zoomSet(0.8);
-    },
+    };
 
     this.zoomSet(0.8);
 
@@ -351,7 +351,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return this.createPerson(null, this.nodepath().node(), this.nodepath().path, metrics, "me", 0, 1);
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return false;
     });
 

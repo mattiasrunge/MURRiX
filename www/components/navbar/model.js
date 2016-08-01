@@ -1,15 +1,16 @@
 "use strict";
 
 const ko = require("knockout");
+const $ = require("jquery");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");
 const node = require("lib/node");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.loading;
+module.exports = utils.wrapComponent(function*(/*params*/) {
+    this.loading = stat.loading;
     this.user = session.user;
     this.searchPaths = session.searchPaths;
     this.stars = session.stars;
@@ -54,13 +55,13 @@ module.exports = utils.wrapComponent(function*(params) {
             session.stars(result.stars);
 
             if (result.created) {
-                status.printSuccess(node.nodepath().node().attributes.name + " starred");
+                stat.printSuccess(node.nodepath().node().attributes.name + " starred");
             } else {
-                status.printSuccess(node.nodepath().node().attributes.name + " unstarred");
+                stat.printSuccess(node.nodepath().node().attributes.name + " unstarred");
             }
         })
         .catch((error) => {
-            status.printError(error);
+            stat.printError(error);
         });
     };
 
@@ -70,14 +71,14 @@ module.exports = utils.wrapComponent(function*(params) {
             if (item) {
                 loc.goto({ page: "node", path: item.path, section: null });
             } else {
-                status.printError("No random node could be found");
+                stat.printError("No random node could be found");
             }
         });
     };
 
     this.createShow = (type) => {
         this.createType(type);
-        this.createName("")
+        this.createName("");
         this.createDescription("");
 
         $("#createModal").modal("show");
@@ -97,7 +98,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
 
         if (attributes.name === "") {
-            status.printError("Name can not be empty");
+            stat.printError("Name can not be empty");
             return;
         }
 
@@ -126,24 +127,24 @@ module.exports = utils.wrapComponent(function*(params) {
                 return api.camera.mkcamera(name, attributes);
             });
         } else {
-            status.printError("Unknwon create type");
+            stat.printError("Unknwon create type");
             return;
         }
 
         promise
         .then(() => {
             this.createType("");
-            this.createName("")
+            this.createName("");
             this.createDescription("");
 
             $("#createModal").modal("hide");
 
             loc.goto({ page: "node", path: abspath, section: null });
 
-            status.printSuccess(attributes.name + " successfully created!");
+            stat.printSuccess(attributes.name + " successfully created!");
         })
         .catch((error) => {
-            status.printError(error);
+            stat.printError(error);
         });
     };
 });

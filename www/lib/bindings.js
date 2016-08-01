@@ -1,5 +1,7 @@
 "use strict";
 
+/* globals google */
+
 /* TODO:
  * Cleanup of map is not done, memory leak there
  * Make map more flexible with an option to send in markers as a list
@@ -11,16 +13,16 @@ const co = require("co");
 const moment = require("moment");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 const loc = require("lib/location");
-const typeahead = require("typeahead");
 const Slider = require("slider");
 const autosize = require("autosize");
 const LazyLoad = require("lazyload");
+const typeahead = require("typeahead"); // jshint ignore:line
 
 let lazyload = new LazyLoad({
-    show_while_loading: true,
-    elements_selector: "img.lazyload"
+    show_while_loading: true, // jshint ignore:line
+    elements_selector: "img.lazyload" // jshint ignore:line
 });
 
 ko.bindingHandlers.map = {
@@ -283,7 +285,7 @@ ko.bindingHandlers.nodename = {
         })
         .catch((error) => {
             $element.html("<span class='text-error'>unknown</span>");
-            status.printError(error);
+            stat.printError(error);
         });
     }
 };
@@ -299,7 +301,7 @@ ko.bindingHandlers.unameNice = {
         })
         .catch((error) => {
             $element.html("<span class='text-error'>unknown</span>");
-            status.printError(error);
+            stat.printError(error);
         });
     }
 };
@@ -315,7 +317,7 @@ ko.bindingHandlers.uname = {
         })
         .catch((error) => {
             $element.html("<span class='text-error'>unknown</span>");
-            status.printError(error);
+            stat.printError(error);
         });
     }
 };
@@ -331,7 +333,7 @@ ko.bindingHandlers.gname = {
         })
         .catch((error) => {
             $element.html("<span class='text-error'>unknown</span>");
-            status.printError(error);
+            stat.printError(error);
         });
     }
 };
@@ -366,7 +368,7 @@ ko.bindingHandlers.groupselect = {
         let gid = valueAccessor().gid;
         let limit = ko.unwrap(valueAccessor().limit) || 10;
         let $element = $(element);
-        element.loading = status.create();
+        element.loading = stat.create();
 
         $element.addClass("typeahead");
 
@@ -380,7 +382,7 @@ ko.bindingHandlers.groupselect = {
                 ko.bindingHandlers.groupselect.lookup(querystr, limit)
                 .then(resolve)
                 .catch((error) => {
-                    status.printError(error);
+                    stat.printError(error);
                     resolve([]);
                 });
             },
@@ -416,14 +418,14 @@ ko.bindingHandlers.groupselect = {
                 }
             })
             .catch((error) => {
-                status.printError(error);
+                stat.printError(error);
                 gid(false);
             });
         });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             $element.typeahead("destroy");
-            status.destroy(element.loading);
+            stat.destroy(element.loading);
         });
     },
     update: (element, valueAccessor) => {
@@ -443,12 +445,12 @@ ko.bindingHandlers.groupselect = {
                     $element.addClass("valid");
                     $element.typeahead("val", node.attributes.name);
                 } else {
-                    path(false);
+                    gid(false);
                     $element.removeClass("valid");
                     $element.typeahead("val", "");
                 }
             })
-            .catch((error) => {
+            .catch(() => {
                 element.loading(false);
                 gid(false);
             });
@@ -484,7 +486,7 @@ ko.bindingHandlers.nodeselect = {
         let path = valueAccessor().path;
         let limit = ko.unwrap(valueAccessor().limit) || 10;
         let $element = $(element);
-        element.loading = status.create();
+        element.loading = stat.create();
 
         $element.addClass("typeahead");
 
@@ -498,7 +500,7 @@ ko.bindingHandlers.nodeselect = {
                 ko.bindingHandlers.nodeselect.lookup(root, querystr, limit)
                 .then(resolve)
                 .catch((error) => {
-                    status.printError(error);
+                    stat.printError(error);
                     resolve([]);
                 });
             },
@@ -518,13 +520,13 @@ ko.bindingHandlers.nodeselect = {
                     })
                     .then((filenames) => {
                         if (filenames && filenames.length > 0) {
-                            let $i = $("<img src='" + filenames[0].filename + "' style='width: 16px; height: 16px;'>")
+                            let $i = $("<img src='" + filenames[0].filename + "' style='width: 16px; height: 16px;'>");
 
                             $d.prepend($i);
                         }
                     })
                     .catch((error) => {
-                        status.printError(error);
+                        stat.printError(error);
                     });
 
                     return $d;
@@ -557,14 +559,14 @@ ko.bindingHandlers.nodeselect = {
                 }
             })
             .catch((error) => {
-                status.printError(error);
+                stat.printError(error);
                 path(false);
             });
         });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             $element.typeahead("destroy");
-            status.destroy(element.loading);
+            stat.destroy(element.loading);
         });
     },
     update: (element, valueAccessor) => {
@@ -586,7 +588,7 @@ ko.bindingHandlers.nodeselect = {
                     $element.typeahead("val", "");
                 }
             })
-            .catch((error) => {
+            .catch(() => {
                 element.loading(false);
                 path(false);
             });

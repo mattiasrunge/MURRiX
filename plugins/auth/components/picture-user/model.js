@@ -3,10 +3,10 @@
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.create();
+    this.loading = stat.create();
     this.uid = ko.pureComputed(() => ko.unwrap(params.uid) || false);
     this.size = params.size;
     this.classes = ko.pureComputed(() => ko.unwrap(params.classes) || "");
@@ -33,11 +33,11 @@ module.exports = utils.wrapComponent(function*(params) {
         return item;
     }.bind(this), (error) => {
         this.loading(false);
-        status.printError(error);
+        stat.printError(error);
         return false;
     });
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

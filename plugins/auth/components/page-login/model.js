@@ -4,17 +4,17 @@ const ko = require("knockout");
 const co = require("co");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");
 const ui = require("lib/ui");
 
-module.exports = utils.wrapComponent(function*(params) {
+module.exports = utils.wrapComponent(function*(/*params*/) {
     this.user = session.user;
     this.loggedIn = session.loggedIn;
     this.username = ko.observable();
     this.password = ko.observable();
-    this.loading = status.create();
+    this.loading = stat.create();
     this.loginDisallowed = ko.pureComputed(() => {
         return this.loading() || this.username() === "" || this.password() === "";
     });
@@ -30,7 +30,7 @@ module.exports = utils.wrapComponent(function*(params) {
             yield api.auth.login(this.username(), this.password());
             yield session.loadUser();
 
-            status.printSuccess("Login successfull, welcome " + session.user().attributes.name + "!");
+            stat.printSuccess("Login successfull, welcome " + session.user().attributes.name + "!");
 
             this.username("");
             this.password("");
@@ -38,7 +38,7 @@ module.exports = utils.wrapComponent(function*(params) {
             loc.goto({ page: "recent" });
         } catch (e) {
             console.error(e);
-            status.printError("Login failed");
+            stat.printError("Login failed");
         }
 
         this.loading(false);
@@ -50,12 +50,12 @@ module.exports = utils.wrapComponent(function*(params) {
         try {
             yield api.auth.logout();
             yield session.loadUser();
-            status.printSuccess("Logout successfull");
+            stat.printSuccess("Logout successfull");
 
             loc.goto({ page: "login" });
         } catch (e) {
             console.error(e);
-            status.printError("Logout failed");
+            stat.printError("Logout failed");
         }
 
         this.loading(false);
@@ -63,17 +63,17 @@ module.exports = utils.wrapComponent(function*(params) {
 
     this.reset = co.wrap(function*() {
         if (this.username() === "") {
-            return status.printError("Please enter an e-mail address to reset password");
+            return stat.printError("Please enter an e-mail address to reset password");
         }
 
         this.loading(true);
 
         try {
             yield api.auth.requestReset(this.username(), document.location.origin);
-            status.printSuccess("Password reset e-mail sent!");
+            stat.printSuccess("Password reset e-mail sent!");
         } catch (e) {
             console.error(e);
-            status.printError("Failed to send password reset e-mail");
+            stat.printError("Failed to send password reset e-mail");
         }
 
         this.loading(false);
@@ -82,6 +82,6 @@ module.exports = utils.wrapComponent(function*(params) {
     ui.setTitle("Login");
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

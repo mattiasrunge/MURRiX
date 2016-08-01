@@ -3,7 +3,7 @@
 const ko = require("knockout");
 const utils = require("lib/utils");
 const api = require("api.io-client");
-const status = require("lib/status");
+const stat = require("lib/status");
 const session = require("lib/session");
 
 module.exports = utils.wrapComponent(function*(params) {
@@ -16,7 +16,7 @@ module.exports = utils.wrapComponent(function*(params) {
         return this.user().attributes.uid;
     });
     this.path = params.path;
-    this.loading = status.create();
+    this.loading = stat.create();
     this.newFlag = ko.observable(false);
     this.list = ko.asyncComputed([], function*() {
         this.newFlag();
@@ -24,7 +24,7 @@ module.exports = utils.wrapComponent(function*(params) {
         let list = yield api.comment.list(ko.unwrap(this.path));
         return list;
     }.bind(this), (error) => {
-        status.printError(error);
+        stat.printError(error);
         return [];
     });
     this.comment = ko.observable("");
@@ -40,7 +40,7 @@ module.exports = utils.wrapComponent(function*(params) {
             })
             .catch((error) => {
                 this.loading(false);
-                status.printError(error);
+                stat.printError(error);
             });
 
             return false;
@@ -50,7 +50,6 @@ module.exports = utils.wrapComponent(function*(params) {
     };
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });
-

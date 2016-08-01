@@ -4,12 +4,12 @@ const ko = require("knockout");
 const co = require("co");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const status = require("lib/status");
+const stat = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.loading = status.create();
+    this.loading = stat.create();
     this.name = ko.observable("");
     this.username = ko.observable("");
     this.email = ko.observable("");
@@ -31,7 +31,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
     this.save = co.wrap(function*() {
         if (this.username() === "") {
-            return status.printError("Username can not be empty!");
+            return stat.printError("Username can not be empty!");
         }
 
         this.loading(true);
@@ -45,17 +45,17 @@ module.exports = utils.wrapComponent(function*(params) {
                 yield api.auth.changeUsername(params.username(), this.username());
 
                 if (params.username() === session.username()) {
-                    status.printInfo("After username change you must login again");
+                    stat.printInfo("After username change you must login again");
                     yield api.auth.logout();
                     yield session.loadUser();
                     loc.goto({ page: "login" });
                 }
             }
 
-            status.printSuccess("Profile saved successfully!");
+            stat.printSuccess("Profile saved successfully!");
         } catch (e) {
             console.error(e);
-            status.printError("Failed to save user");
+            stat.printError("Failed to save user");
         }
 
         this.loading(false);
@@ -63,9 +63,9 @@ module.exports = utils.wrapComponent(function*(params) {
 
     this.changePassword = co.wrap(function*() {
         if (this.password1() !== this.password2()) {
-            return status.printError("Password does not match!");
+            return stat.printError("Password does not match!");
         } else if (this.password1() === "") {
-            return status.printError("Password can not be empty!");
+            return stat.printError("Password can not be empty!");
         }
 
         this.loading(true);
@@ -73,13 +73,13 @@ module.exports = utils.wrapComponent(function*(params) {
         try {
             yield api.auth.passwd(params.username(), this.password1());
 
-            status.printSuccess("Password changed successfully!");
+            stat.printSuccess("Password changed successfully!");
 
             this.password1("");
             this.password2("");
         } catch (e) {
             console.error(e);
-            status.printError("Failed to change password");
+            stat.printError("Failed to change password");
         }
 
         this.loading(false);
@@ -88,7 +88,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.reset();
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
         subscription.dispose();
     };
 });
