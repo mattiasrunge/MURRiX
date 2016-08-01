@@ -136,11 +136,11 @@ ko.bindingHandlers.location = {
         if ($element.prop("tagName").toLowerCase() === "a") {
             $element.attr("href", value);
 
-//             $element.on("click", (event) => {
-//                 event.preventDefault();
-//                 event.stopPropagation();
-//                 loc.goto(value);
-//             });
+            //             $element.on("click", (event) => {
+            //                 event.preventDefault();
+            //                 event.stopPropagation();
+            //                 loc.goto(value);
+            //             });
         } else if ($element.prop("tagName").toLowerCase() === "iframe") {
             $element.attr("src", value);
             $element.get(0).contentWindow.location = value;
@@ -406,7 +406,7 @@ ko.bindingHandlers.groupselect = {
             }
         });
         $element.on("typeahead:change typeahead:select", () => {
-    // TODO: event, selection is in parameters, nno need for a lookup!
+            // TODO: event, selection is in parameters, nno need for a lookup!
             ko.bindingHandlers.groupselect.lookup($element.typeahead("val"), limit)
             .then((list) => {
                 if (list.length === 1) {
@@ -547,7 +547,7 @@ ko.bindingHandlers.nodeselect = {
             }
         });
         $element.on("typeahead:change typeahead:select", () => {
-	// TODO: event, selection is in parameters, nno need for a lookup!
+            // TODO: event, selection is in parameters, nno need for a lookup!
             ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"), 1)
             .then((list) => {
                 if (list.length === 1) {
@@ -670,7 +670,6 @@ ko.bindingHandlers.picture = {
             } else if (type) {
                 $element.append($("<i class='material-icons grid-picture-type' title='Unknown file'>attachment</i>"));
             }
-
         }
     }
 };

@@ -12,7 +12,7 @@ let mcs = api.register("mcs", {
     init: co(function*(config) {
         params = config;
 
-         yield mcsApi.connect({
+        yield mcsApi.connect({
             hostname: params.mcs.host,
             port: params.mcs.port
         });

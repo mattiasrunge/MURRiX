@@ -12,7 +12,7 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
     this.loading = stat.create();
     this.query = ko.pureComputed({
         read: () => ko.unwrap(loc.current().query) || "",
-        write: (value) => loc.goto( { query: value })
+        write: (value) => loc.goto({ query: value })
     });
     this.list = ko.asyncComputed([], function*() {
         if (this.query().length < 4) {

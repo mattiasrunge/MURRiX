@@ -74,14 +74,14 @@ module.exports = utils.wrapComponent(function*(params) {
     };
 
     this.scrollHandler = (/*data, event*/) => {
-//         let wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
-//
-//         wheelData /= 50;
-//
-//         event.preventDefault();
-//         event.stopPropagation();
-//
-//         this.zoomSet(this.round(this.zoom() + wheelData, 1));
+        //         let wheelData = event.detail ? event.detail * -1 : event.wheelDelta / 40;
+        //
+        //         wheelData /= 50;
+        //
+        //         event.preventDefault();
+        //         event.stopPropagation();
+        //
+        //         this.zoomSet(this.round(this.zoom() + wheelData, 1));
     };
 
     this.zoomSet = (value, noanimation) => {

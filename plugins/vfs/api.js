@@ -50,28 +50,28 @@ let vfs = api.register("vfs", {
                 }
             },
             {
-                key : {
-                    "properties.children.name" : 1
+                key: {
+                    "properties.children.name": 1
                 }
             },
             {
-                key : {
-                    "properties.children.id" : 1
+                key: {
+                    "properties.children.id": 1
                 }
             },
             {
-                key : {
-                    "attributes.name" : 1
+                key: {
+                    "attributes.name": 1
                 }
             },
             {
-                key : {
-                    "attributes.time.timestamp" : 1
+                key: {
+                    "attributes.time.timestamp": 1
                 }
             },
             {
-                key : {
-                    "attributes.path" : 1
+                key: {
+                    "attributes.path": 1
                 }
             }
         ]);

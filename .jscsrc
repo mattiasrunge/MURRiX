@@ -66,6 +66,7 @@
     "requireDotNotation": true,
     "requireSpaceBeforeObjectValues": true,
     "requirePaddingNewLinesAfterUseStrict": true,
+    "requireUseStrict": true,
     "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
     "requireOperatorBeforeLineBreak": true,
     "requirePaddingNewLinesBeforeExport": true,

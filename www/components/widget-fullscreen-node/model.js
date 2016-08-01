@@ -130,7 +130,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
     this.commentCount = ko.asyncComputed(0, function*(setter) {
         setter(0);
-        
+
         let list = yield api.comment.list(ko.unwrap(this.showPath));
         return list.length;
     }.bind(this), (error) => {

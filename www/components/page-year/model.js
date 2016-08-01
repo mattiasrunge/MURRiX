@@ -11,7 +11,7 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
     this.loading = stat.create();
     this.year = ko.pureComputed({
         read: () => parseInt(ko.unwrap(loc.current().year), 10) || new Date().getFullYear(),
-        write: (value) => loc.goto( { year: value })
+        write: (value) => loc.goto({ year: value })
     });
     this.list = ko.asyncComputed([], function*(setter) {
         setter([]);

@@ -1,6 +1,7 @@
 "use strict";
 
 /* jshint -W035 */
+// jscs:disable
 
 const path = require("path");
 const co = require("bluebird").coroutine;
