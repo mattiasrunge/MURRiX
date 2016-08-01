@@ -1,5 +1,5 @@
 <div class="fullscreen animated zoomIn" data-bind="css: { showsidebar: showSidebar }">
-    <div class="sidebar" data-bind="if: showSidebar() && item()">
+    <div class="sidebar" data-bind="visible: showSidebar() && item(), if: showSidebar() && item()">
         <h2 style="margin-top: 0;">
             Information
         </h2>
@@ -22,6 +22,12 @@
                     <td>
                         <a href="#" data-bind="text: item().node().attributes.name, attr: { href: 'file/' + item().node().attributes.diskfilename + '/' + item().node().attributes.name }"></a>
                         (<span data-bind="htmlSize: item().node().attributes.size"></span>)
+                        <div data-bind="if: item().versions.length > 0">
+                            <small data-bind="foreach: item().versions" style="font-size: 80%;">
+                                <a style="color: #999;" href="#" data-bind="text: $data.node.attributes.name, attr: { href: 'file/' + $data.node.attributes.diskfilename + '/' + $data.node.attributes.name }"></a>
+                                (<span data-bind="htmlSize: $data.node.attributes.size"></span>)
+                            </small>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -58,6 +64,16 @@
         <h3>Comments</h3>
 
         <comment-widget-comments params="{ path: showPath }"></comment-widget-comments>
+    </div>
+
+    <div class="sidebar" data-bind="visible: tagging() && item(), if: tagging() && item()">
+        <h2 style="margin-top: 0;">
+            Tag people
+        </h2>
+
+        <div data-bind="text: faces"></div>
+
+        <button class="btn btn-block btn-primary" data-bind="click: tagging.bind($data, false)">Finished tagging</button>
     </div>
 
     <div class="maincontainer" data-bind="if: item() && filename()">
@@ -114,31 +130,34 @@
         <i class="material-icons">info</i>
     </a>
 
-    <a href="#" class="hideinformation" data-bind="click: showSidebar.bind($data, false), visible: showSidebar()">
+    <a href="#" class="hideinformation" data-bind="click: showSidebar.bind($data, false), visible: showSidebar() && !tagging()">
         <i class="material-icons">forward</i>
     </a>
 
-    <div class="btn-group menu">
+    <div class="btn-group menu" data-bind="visible: item().editable && !tagging()">
         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="material-icons">more_vert</i>
         </a>
         <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="#">
+            <li><a href="#" data-bind="click: rotate.bind($data, 90)">
                 <i class="material-icons">rotate_left</i>
                 Rotate left
             </a></li>
-            <li><a href="#">
+            <li><a href="#" data-bind="click: rotate.bind($data, -90)">
                 <i class="material-icons">rotate_right</i>
                 Rotate right
             </a></li>
-            <li><a href="#">
+            <li><a href="#" data-bind="click: mirror">
                 <i class="material-icons">flip</i>
                 Mirror
             </a></li>
-<!--             <li role="separator" class="divider"></li> -->
+            <li role="separator" class="divider"></li>
+            <li><a href="#" data-bind="click: tagging.bind($data, true)">
+                <i class="material-icons">face</i>
+                Tag people
+            </a></li>
         </ul>
     </div>
-
 
     <a href="#" class="exit" data-bind="location: { showPath: null }">
         <i class="material-icons">close</i>

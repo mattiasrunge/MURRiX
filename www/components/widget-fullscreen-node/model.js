@@ -13,6 +13,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
     this.showSidebar = ko.observable(true);
+    this.tagging = ko.observable(false);
     this.height = ko.pureComputed(() => {
         let screenHeight = ko.unwrap(ui.windowSize()).height;
         let heights = [ 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000 ];
@@ -28,6 +29,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.item = ko.asyncComputed(false, function*(setter) {
         let abspath = ko.unwrap(this.showPath);
         let tags = [];
+        let versions = [];
 
         setter(false);
 
@@ -48,9 +50,15 @@ module.exports = utils.wrapComponent(function*(params) {
         } catch (e) {
         }
 
+        try {
+            versions = yield api.vfs.list(abspath + "/versions");
+            console.log("versions", versions);
+        } catch (e) {
+        }
+
         this.loading(false);
 
-        return { node: ko.observable(item), path: abspath, tags: tags, editable: editable };
+        return { node: ko.observable(item), path: abspath, tags: tags, versions: versions, editable: editable };
     }.bind(this), (error) => {
         this.loading(false);
         stat.printError(error);
@@ -138,6 +146,21 @@ module.exports = utils.wrapComponent(function*(params) {
         return 0;
     });
 
+    this.faces = ko.asyncComputed([], function*(setter) {
+        let abspath = ko.unwrap(this.showPath);
+
+        setter([]);
+
+        let faces = yield api.file.getFaces(abspath);
+
+        console.log("faces", faces);
+
+        return faces;
+    }.bind(this), (error) => {
+        stat.printError(error);
+        return [];
+    });
+
     this.currentIndex = ko.pureComputed(() => {
         if (!this.item()) {
             return -1;
@@ -179,6 +202,52 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return node.list()[index].path;
     });
+
+    this.rotate = (offset) => {
+        if (!this.item().editable) {
+            return;
+        }
+
+        offset = parseInt(offset, 10);
+
+        if (this.item().node().attributes.mirror) {
+            offset = -offset;
+        }
+
+        let angle = parseInt(this.item().node().attributes.angle || 0, 10) + offset;
+
+        if (angle < 0) {
+            angle += 360;
+        } else if (angle > 270) {
+            angle -= 360;
+        }
+
+        api.vfs.setattributes(this.item().path, { angle: angle })
+        .then((node) => {
+            this.item().node(node);
+            console.log("Saving angle attribute as " + angle + " successfully!", node);
+        })
+        .catch((error) => {
+            stat.printError(error);
+        });
+    };
+
+    this.mirror = () => {
+        if (!this.item().editable) {
+            return;
+        }
+
+        let mirror = !this.item().node().attributes.mirror;
+
+        api.vfs.setattributes(this.item().path, { mirror: mirror })
+        .then((node) => {
+            this.item().node(node);
+            console.log("Saving mirror attribute as " + mirror + " successfully!", node);
+        })
+        .catch((error) => {
+            stat.printError(error);
+        });
+    };
 
     $("body").css("overflow-y", "hidden");
 

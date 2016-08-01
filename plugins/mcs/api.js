@@ -26,6 +26,9 @@ let mcs = api.register("mcs", {
     getMetadata: function*(filename, options) {
         return yield mcsApi.metadata.get(filename, options);
     },
+    getFaces: function*(filename) {
+        return yield mcsApi.face.detect(filename);
+    },
     compileTime: function*(sources) {
         return yield mcsApi.time.compile(sources);
     },

@@ -262,12 +262,12 @@ body {
 
 .fullscreen .menu {
     position: absolute;
-    right: 50px;
+    right: 85px;
     top: 15px;
     opacity: 0.8;
 }
 
-.fullscreen .menu a {
+.fullscreen .menu > a {
     color: white;
 }
 
@@ -275,13 +275,13 @@ body {
     opacity: 1;
 }
 
-.fullscreen.showsidebar .menu a {
+.fullscreen.showsidebar .menu > a {
     color: black;
 }
 
 .fullscreen .information {
     position: absolute;
-    right: 85px;
+    right: 50px;
     top: 15px;
     color: white;
     opacity: 0.8;
@@ -293,7 +293,7 @@ body {
 
 .fullscreen .hideinformation {
     position: absolute;
-    right: 85px;
+    right: 50px;
     top: 15px;
     color: black;
     opacity: 0.8;

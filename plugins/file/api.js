@@ -83,6 +83,11 @@ let file = api.register("file", {
             time: yield mcs.compileTime(attributes.when || {})
         });
     },
+    getFaces: function*(session, abspath) {
+        let node = yield vfs.resolve(session, abspath);
+
+        return mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
+    },
     getPictureFilenames: function*(session, ids, width, height) {
         let nodes = yield vfs.query(session, {
             _id: { $in: ids }
@@ -100,12 +105,19 @@ let file = api.register("file", {
                 return ""; // TODO:
             }
 
-            return mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
-                angle: node.attributes.angle,
-                mirror: node.attributes.mirror,
-                width: width,
-                height: height,
-                type: "image"
+            return new Promise((resolve) => {
+                mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                    angle: node.attributes.angle,
+                    mirror: node.attributes.mirror,
+                    width: width,
+                    height: height,
+                    type: "image"
+                })
+                .then(resolve)
+                .catch((error) => {
+                    console.log(error); // TODO: Log event somewhere nicer
+                    resolve(false);
+                });
             });
         }));
 
@@ -134,12 +146,19 @@ let file = api.register("file", {
                 return ""; // TODO:
             }
 
-            return mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
-                angle: node.attributes.angle,
-                mirror: node.attributes.mirror,
-                width: width,
-                height: height,
-                type: "video"
+            return new Promise((resolve) => {
+                mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                    angle: node.attributes.angle,
+                    mirror: node.attributes.mirror,
+                    width: width,
+                    height: height,
+                    type: "video"
+                })
+                .then(resolve)
+                .catch((error) => {
+                    console.log(error); // TODO: Log event somewhere nicer
+                    resolve(false);
+                });
             });
         }));
 
@@ -166,8 +185,15 @@ let file = api.register("file", {
                 throw new Error("Item type for (node id = " + node._id + ") is not audio");
             }
 
-            return mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
-                type: "audio"
+            return new Promise((resolve) => {
+                mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                    type: "audio"
+                })
+                .then(resolve)
+                .catch((error) => {
+                    console.log(error); // TODO: Log event somewhere nicer
+                    resolve(false);
+                });
             });
         }));
 

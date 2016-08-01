@@ -39,6 +39,6 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.dispose = () => {
-        status.destroy(this.loading);
+        stat.destroy(this.loading);
     };
 });

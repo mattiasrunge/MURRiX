@@ -116,7 +116,7 @@ let vfs = api.register("vfs", {
     },
     query: function*(session, query, options) {
         if (options && options.fields) {
-            options.fieldsproperties = 1;
+            options.fields.properties = 1;
         }
 
         let nodes = yield db.find("nodes", query, options);
