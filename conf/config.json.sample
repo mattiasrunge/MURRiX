@@ -1,2 +1,18 @@
 {
+    "mongoUrl": "mongodb://localhost:27017/murrix",
+    "fileDirectory": "/usr/data/MURRiX/files",
+    "mcsDirectory": "/usr/data/MURRiX/cache",
+    "email": {
+        "user": "<email>",
+        "password": "<password>",
+        "host": "smtp.gmail.com",
+        "port": 465,
+        "ssl": true
+    },
+    "mcs": {
+        "host": "localhost",
+        "port": 8181,
+        "key": "<MCSKEY>"
+    },
+    "googleKey": "<APIKEY>"
 }
