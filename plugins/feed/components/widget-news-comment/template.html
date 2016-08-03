@@ -1,0 +1,11 @@
+<div class="well well-lg">
+<!--                        <small data-bind="datetime: nodepath.node().properties.birthtime"></small><br>-->
+    <div>
+        <span data-bind="unameNice: nodepath.node().attributes.who"></span> commented on this.
+    </div>
+
+    <h2>
+        <a href="#" data-bind="location: { page: 'node', path: nodepath.node().attributes.path }, nodename: nodepath.node().attributes.path"></a>
+    </h2>
+    <p style="white-space: pre-line;" data-bind="text: nodepath.node().attributes.text"></p>
+</div>

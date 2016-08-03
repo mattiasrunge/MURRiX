@@ -5,18 +5,8 @@
 
     <div class="row">
         <div class="col-md-12" data-bind="foreach: list">
-            <div class="well well-lg">
-                <div data-bind="if: $data.node().attributes.type === 'comment'">
-<!--                        <small data-bind="datetime: $data.node().properties.birthtime"></small><br>-->
-                    <div>
-                        <span data-bind="unameNice: $data.node().attributes.who"></span> commented on this.
-                    </div>
-
-                    <h2>
-                        <a href="#" data-bind="location: { page: 'node', path: $data.node().attributes.path }, nodename: $data.node().attributes.path"></a>
-                    </h2>
-                    <p style="white-space: pre-line;" data-bind="text: $data.node().attributes.text"></p>
-                </div>
+            <div data-bind="if: $data.node().attributes.type === 'comment'">
+                <feed-widget-news-comment params="{ nodepath: $data }"></feed-widget-news-comment>
             </div>
         </div>
     </div>
