@@ -45,16 +45,15 @@ module.exports = utils.wrapComponent(function*(params) {
 
         let editable = yield api.vfs.access(abspath, "w");
 
-        try {
-            tags = yield api.vfs.list(abspath + "/tags");
-        } catch (e) {
-        }
+        tags = yield api.vfs.list(abspath + "/tags", {
+            noerror:  true
+        });
 
-        try {
-            versions = yield api.vfs.list(abspath + "/versions");
-            console.log("versions", versions);
-        } catch (e) {
-        }
+        versions = yield api.vfs.list(abspath + "/versions", {
+            noerror:  true
+        });
+
+        console.log("versions", versions);
 
         this.loading(false);
 

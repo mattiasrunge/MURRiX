@@ -156,6 +156,10 @@ body {
     filter: drop-shadow(2px 2px 2px black);
 }
 
+.comment-picture-user {
+    margin-right: 10px;
+}
+
 .grid-picture-container {
     position: relative;
     display: inline-block;

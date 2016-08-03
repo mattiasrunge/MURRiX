@@ -1,9 +1,13 @@
 "use strict";
 
+const path = require("path");
 const co = require("bluebird").coroutine;
 const api = require("api.io").client;
 const expandvar = require("expand-var");
+const fs = require("fs-extra-promise");
 const vorpal = require("./vorpal");
+
+const sessionIdFilename = path.join(process.env.HOME, ".murrix", "cli.sessionId");
 
 module.exports = {
     environment: {
@@ -15,7 +19,20 @@ module.exports = {
     init: co(function*() {
         let session = yield api.auth.session();
 
+        if (session.sessionId) {
+            yield fs.outputFileAsync(sessionIdFilename, session.sessionId, {
+                mode: parseInt("700", 8)
+            });
+        }
+
         yield module.exports.env("username", session.username);
+    }),
+    readSessionId: co(function*() {
+        try {
+            let sessionId = yield fs.readFileAsync(sessionIdFilename);
+            return sessionId.toString();
+        } catch (e) {
+        }
     }),
     env: co(function*(name, value) {
         if (value) {

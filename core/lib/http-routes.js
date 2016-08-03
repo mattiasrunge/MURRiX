@@ -12,6 +12,7 @@ const promisifyAll = require("bluebird").promisifyAll;
 const babel = promisifyAll(require("babel-core"));
 const configuration = require("./configuration");
 const store = require("./store");
+const log = require("./log")(module);
 
 const wwwPath = path.join(__dirname, "..", "..", "www");
 
@@ -53,7 +54,10 @@ module.exports = {
 
         let part;
         while ((part = yield parse(this))) {
-            let stream = fs.createWriteStream(path.join(configuration.uploadDirectory, id));
+            let filename = path.join(configuration.uploadDirectory, id);
+            log.debug("Saving upload files to " + filename);
+
+            let stream = fs.createWriteStream(filename);
             part.pipe(stream);
         }
 

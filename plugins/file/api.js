@@ -37,11 +37,16 @@ let file = api.register("file", {
             }
         }
 
-
         yield vfs.create(session, abspath, "f", attributes);
         yield file.regenerate(session, abspath);
 
         yield vfs.create(session, abspath + "/tags", "d");
+
+        plugin.emit("file.new", {
+            uid: session.uid,
+            path: abspath,
+            type: attributes.type
+        });
 
         return yield vfs.resolve(session, abspath);
     },
@@ -60,10 +65,6 @@ let file = api.register("file", {
                 yield vfs.symlink(session, device.path, abspath + "/createdWith");
             }
         }
-
-        // TODO: Recache cached versions if angle, mirror changed
-
-        // TODO: Reread metadata?
 
         node = yield vfs.resolve(session, abspath);
         attributes = node.attributes;

@@ -27,8 +27,13 @@ let camera = api.register("camera", {
         attributes.serialNumber = attributes.serialNumber || "";
 
         yield vfs.create(session, "/cameras/" + name, "c", attributes);
-
         yield vfs.create(session, "/cameras/" + name + "/owners", "d");
+
+        plugin.emit("camera.new", {
+            uid: session.uid,
+            path: abspath,
+            name: attributes.name
+        });
 
         return yield vfs.resolve(session, "/cameras/" + name);
     },

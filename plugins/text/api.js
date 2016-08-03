@@ -17,6 +17,13 @@ let text = api.register("text", {
 
         yield text.regenerate(session, abspath);
 
+        plugin.emit("text.new", {
+            uid: session.uid,
+            path: abspath,
+            text: attributes.text,
+            type: attributes.type
+        });
+
         return yield vfs.resolve(session, abspath);
     },
     regenerate: function*(session, abspath) {

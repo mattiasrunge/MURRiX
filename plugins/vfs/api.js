@@ -10,6 +10,7 @@ const sha1 = require("sha1");
 const fs = require("fs-extra-promise");
 const api = require("api.io");
 const db = require("../../core/lib/db");
+const plugin = require("../../core/lib/plugin");
 
 let params = {};
 
@@ -78,6 +79,10 @@ let vfs = api.register("vfs", {
     }),
     access: function*(session, abspathOrNode, modestr) {
         let node = abspathOrNode;
+
+        if (!session.username) {
+            throw new Error("Corrupt session, please reinitialize");
+        }
 
         if (session.almighty || session.username === "admin") {
             return true;
@@ -238,7 +243,11 @@ let vfs = api.register("vfs", {
         let abspaths = abspath instanceof Array ? abspath : [ abspath ];
 
         for (let abspath of abspaths) {
-            let parent = yield vfs.resolve(session, abspath);
+            let parent = yield vfs.resolve(session, abspath, options.noerror);
+
+            if (!parent) {
+                continue;
+            }
 
             if (!(yield vfs.access(session, parent, "r"))) {
                 throw new Error("Permission denied");
@@ -286,9 +295,15 @@ let vfs = api.register("vfs", {
             }
         }
 
-        list.sort((a, b) => {
-            return a.name.localeCompare(b.name);
-        });
+        if (options.reverse) {
+            list.sort((a, b) => {
+                return b.name.localeCompare(a.name);
+            });
+        } else {
+            list.sort((a, b) => {
+                return a.name.localeCompare(b.name);
+            });
+        }
 
         if (options.limit) {
             list = list.slice(0, options.limit);
@@ -366,6 +381,12 @@ let vfs = api.register("vfs", {
 
         yield db.updateOne("nodes", node);
 
+        plugin.emit("vfs.chmod", {
+            uid: session.uid,
+            path: abspath,
+            mode: mode
+        });
+
         if (options.recursive && node.properties.type !== "s") {
             let children = yield vfs.list(session, abspath, { nofollow: true });
 
@@ -386,6 +407,9 @@ let vfs = api.register("vfs", {
         node.properties.ctime = new Date();
         node.properties.cuid = session.uid;
 
+        let oldUid = node.properties.uid;
+        let oldGid = node.properties.gid;
+
         if (username) {
             if (typeof username === "number") {
                 node.properties.uid = username;
@@ -403,6 +427,13 @@ let vfs = api.register("vfs", {
         }
 
         yield db.updateOne("nodes", node);
+
+        plugin.emit("vfs.chown", {
+            uid: session.uid,
+            path: abspath,
+            uid: node.properties.uid,
+            gid: node.properties.gid
+        });
 
         if (options.recursive && node.properties.type !== "s") {
             let children = yield vfs.list(session, abspath, { nofollow: true });
@@ -434,6 +465,12 @@ let vfs = api.register("vfs", {
 
         yield db.updateOne("nodes", node);
 
+        plugin.emit("vfs.attributes", {
+            uid: session.uid,
+            path: abspath,
+            attributes: attributes
+        });
+
         return node;
     },
     setproperties: function*(session, abspath, properties) {
@@ -452,9 +489,18 @@ let vfs = api.register("vfs", {
         }
 
         yield db.updateOne("nodes", node);
+
+        plugin.emit("vfs.properties", {
+            uid: session.uid,
+            path: abspath,
+            properties: properties
+        });
+
+        return node;
     },
     create: function*(session, abspath, type, attributes) {
-        let parent = yield vfs.resolve(session, path.dirname(abspath));
+        let parentPath = path.dirname(abspath);
+        let parent = yield vfs.resolve(session, parentPath);
         let name = path.basename(abspath);
         let exists = parent.properties.children.filter((child) => child.name === name).length > 0;
 
@@ -520,10 +566,23 @@ let vfs = api.register("vfs", {
         yield db.insertOne("nodes", node);
         yield db.updateOne("nodes", parent);
 
+        plugin.emit("vfs.created", {
+            uid: session.uid,
+            path: abspath,
+            node: node
+        });
+
+        plugin.emit("vfs.childAdded", {
+            uid: session.uid,
+            path: parentPath,
+            name: name
+        });
+
         return node;
     },
     unlink: function*(session, abspath) {
-        let parent = yield vfs.resolve(session, path.dirname(abspath), false, true);
+        let parentPath = path.dirname(abspath);
+        let parent = yield vfs.resolve(session, parentPath, false, true);
         let name = path.basename(abspath);
         let child = parent.properties.children.filter((child) => child.name === name)[0];
 
@@ -540,7 +599,13 @@ let vfs = api.register("vfs", {
         parent.properties.cuid = session.uid;
         yield db.updateOne("nodes", parent);
 
-        let rremove = co(function*(id) {
+        plugin.emit("vfs.childRemoved", {
+            uid: session.uid,
+            path: parentPath,
+            name: name
+        });
+
+        let rremove = co(function*(abspath, id) {
             let node = yield db.findOne("nodes", { _id: id });
 
             if (node.properties.count > 1) {
@@ -554,14 +619,19 @@ let vfs = api.register("vfs", {
                     yield fs.removeAsync(path.join(params.fileDirectory, node.attributes.diskfilename));
                 }
 
-                let ids = node.properties.children.map((child) => child.id);
-                for (let id of ids) {
-                    yield rremove(id);
+                for (let child of node.properties.children) {
+                    yield rremove(path.join(abspath, child.name), child.id);
                 }
+
+                plugin.emit("vfs.removed", {
+                    uid: session.uid,
+                    path: abspath,
+                    name: path.basename(abspath)
+                });
             }
         });
 
-        yield rremove(child.id);
+        yield rremove(abspath, child.id);
     },
     symlink: function*(session, srcpath, destpath) {
         yield vfs.resolve(session, srcpath);
@@ -613,9 +683,16 @@ let vfs = api.register("vfs", {
 
         srcnode.properties.count++;
         yield db.updateOne("nodes", srcnode);
+
+        plugin.emit("vfs.childAdded", {
+            uid: session.uid,
+            path: parentPath,
+            name: name
+        });
     },
     move: function*(session, srcpath, destpath) {
-        let srcparent = yield vfs.resolve(session, path.dirname(srcpath));
+        let srcparentPath = path.dirname(srcpath);
+        let srcparent = yield vfs.resolve(session, srcparentPath);
         let name = path.basename(srcpath);
         let child = srcparent.properties.children.filter((child) => child.name === name)[0];
 
@@ -631,6 +708,7 @@ let vfs = api.register("vfs", {
         srcparent.properties.ctime = new Date();
         srcparent.properties.cuid = session.uid;
 
+        let destparentPath = path.dirname(destpath) === path.dirname(srcpath) ? srcparentPath : path.dirname(destpath);
         let destparent = path.dirname(destpath) === path.dirname(srcpath) ? srcparent : yield vfs.resolve(session, path.dirname(destpath));
         let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
 
@@ -654,7 +732,20 @@ let vfs = api.register("vfs", {
         destparent.properties.children.push(child);
         destparent.properties.ctime = new Date();
         destparent.properties.cuid = session.uid;
+
         yield db.updateOne("nodes", destparent);
+
+        plugin.emit("vfs.childRemoved", {
+            uid: session.uid,
+            path: srcparentPath,
+            name: name
+        });
+
+        plugin.emit("vfs.childAdded", {
+            uid: session.uid,
+            path: destparentPath,
+            name: name
+        });
     },
     copy: function*(session, srcpath, destpath) {
         let srcparent = yield vfs.resolve(session, path.dirname(srcpath));
@@ -669,7 +760,8 @@ let vfs = api.register("vfs", {
             throw new Error("Permission denied");
         }
 
-        let destparent = yield vfs.resolve(session, path.dirname(destpath));
+        let destparentPath = path.dirname(destpath);
+        let destparent = yield vfs.resolve(session, destparentPath);
         let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
 
         if (destchild) {
@@ -683,7 +775,7 @@ let vfs = api.register("vfs", {
             child.name = path.basename(destpath);
         }
 
-        let rcopy = co(function*(id) {
+        let rcopy = co(function*(abspath, id) {
             let node = yield db.findOne("nodes", { _id: id });
 
             node._id = uuid.v4();
@@ -698,7 +790,7 @@ let vfs = api.register("vfs", {
             node.properties.mode = octal(session.umask || "755");
 
             for (let child of node.properties.children) {
-                child.id = yield rcopy(child.id);
+                child.id = yield rcopy(path.join(abspath, child.name), child.id);
             }
 
             if (node.properties.type === "f") {
@@ -713,6 +805,13 @@ let vfs = api.register("vfs", {
             }
 
             yield db.insertOne("nodes", node);
+
+            plugin.emit("vfs.created", {
+                uid: session.uid,
+                path: abspath,
+                node: node
+            });
+
             return node._id;
         });
 
@@ -720,10 +819,16 @@ let vfs = api.register("vfs", {
             throw new Error("Permission denied");
         }
 
-        child.id = yield rcopy(child.id);
+        child.id = yield rcopy(destpath, child.id);
 
         destparent.properties.children.push(child);
         yield db.updateOne("nodes", destparent);
+
+        plugin.emit("vfs.childAdded", {
+            uid: session.uid,
+            path: destparentPath,
+            name: name
+        });
     },
     allocateUploadId: function*(session) {
         return session.allocateUploadId();

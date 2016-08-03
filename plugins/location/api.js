@@ -23,6 +23,12 @@ let location = api.register("location", { // jshint ignore:line
         yield vfs.create(session, "/locations/" + name + "/residents", "d");
         yield vfs.create(session, "/locations/" + name + "/texts", "d");
 
+        plugin.emit("location.new", {
+            uid: session.uid,
+            path: abspath,
+            name: attributes.name
+        });
+
         return yield vfs.resolve(session, "/locations/" + name);
     },
     find: function*(session, name) {

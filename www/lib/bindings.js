@@ -199,6 +199,25 @@ ko.bindingHandlers.datetimeDay = {
     }
 };
 
+ko.bindingHandlers.datetime = {
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+
+        if (!value) {
+            $(element).text("Unknown");
+            return;
+        }
+
+        let dateItem = moment(value).local();
+
+        if (!dateItem.date()) {
+            $(element).html(value);
+        } else {
+            $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
+        }
+    }
+};
+
 ko.bindingHandlers.datetimeUtc = {
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());

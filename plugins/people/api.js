@@ -28,6 +28,12 @@ let people = api.register("people", {
         yield vfs.create(session, "/people/" + name + "/measurments", "d");
         yield vfs.create(session, "/people/" + name + "/texts", "d");
 
+        plugin.emit("people.new", {
+            uid: session.uid,
+            path: abspath,
+            name: attributes.name
+        });
+
         return yield vfs.resolve(session, "/people/" + name);
     },
     getPartner: function*(session, abspath) {
@@ -108,13 +114,9 @@ let people = api.register("people", {
         return { birthdate: birthdate, age: age, deathdate: deathdate, ageatdeath: ageatdeath };
     },
     addMeasurement: function*(session, abspath, name, time, value, unit) {
-        let node = yield vfs.resolve(session, abspath + "/measurments/" + name, true);
-        // TODO: Use vfs.ensure here instead
-        if (!node) {
-            node = yield vfs.create(session, abspath + "/measurments/" + name, "c", {
-                values: []
-            });
-        }
+        let node = yield vfs.ensure(auth.getAdminSession(), path.join(abspath, "measurments", name), "v", {
+            values: []
+        });
 
         node.attributes.values.push({ time: time, value: value, unit: unit });
 

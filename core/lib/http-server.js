@@ -46,9 +46,8 @@ module.exports = {
         store.create("uploadIds");
 
         // Setup application
-        app.name = "murrix-v" + version;
         app.keys = [ "murrix is tha best" ];
-        app.use(session({ key: app.name, maxAge: 24 * 60 * 60 * 1000 * 30 }, app));
+        app.use(session({ key: "api.io-authorization", maxAge: 24 * 60 * 60 * 1000 * 30 }, app));
         app.use(compress());
         app.use(bodyParser());
         app.use(conditional());
@@ -71,7 +70,7 @@ module.exports = {
         app.use(function *(next) {
             if (typeof this.session.sessionId === "undefined") {
                 this.session.sessionId = uuid.v4();
-                console.log("Created session " + this.session.sessionId);
+                log.info("Created session for a browser, id " + this.session.sessionId);
             }
 
             sessions[this.session.sessionId] = sessions[this.session.sessionId] || {
@@ -109,7 +108,7 @@ module.exports = {
         enableDestroy(server);
 
         // Socket.io if we have defined API
-        yield api.start(server, app.name, sessions);
+        yield api.start(server, sessions);
 
         api.on("connection", (client) => {
             client.session.uploads = client.session.uploads || {};
