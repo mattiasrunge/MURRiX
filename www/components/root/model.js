@@ -7,5 +7,6 @@ const session = require("lib/session");
 
 module.exports = utils.wrapComponent(function*(/*params*/) {
     this.loggedIn = session.loggedIn;
-    this.page = ko.pureComputed(() => ko.unwrap(loc.current().page) || "recent");
+    this.page = ko.pureComputed(() => ko.unwrap(loc.current().page) || "default");
+    this.showPath = ko.pureComputed(() => ko.unwrap(loc.current().showPath));
 });

@@ -1,11 +1,13 @@
-<div class="well well-lg">
-<!--                        <small data-bind="datetime: nodepath.node().properties.birthtime"></small><br>-->
-    <div>
-        <span data-bind="unameNice: nodepath.node().attributes.who"></span> commented on this.
+<div class="news-item">
+    <div class="news-title">
+        New comments were made on this.
     </div>
-
-    <h2>
-        <a href="#" data-bind="location: { page: 'node', path: nodepath.node().attributes.path }, nodename: nodepath.node().attributes.path"></a>
-    </h2>
-    <p style="white-space: pre-line;" data-bind="text: nodepath.node().attributes.text"></p>
+    <div class="news-media">
+        <a href="#" data-bind="location: { showPath: nodepath().node().attributes.path }">
+            <div data-bind="picture: { item: item, width: size, classes: 'img-responsive' }"></div>
+        </a>
+    </div>
+    <div class="news-comments">
+        <comment-widget-comments params="{ path: nodepath().node().attributes.path, rows: 3 }"></comment-widget-comments>
+    </div>
 </div>

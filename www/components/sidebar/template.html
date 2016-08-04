@@ -2,11 +2,11 @@
     <auth-sidebar-user></auth-sidebar-user>
 
     <ul class="nav nav-pills nav-stacked" data-bind="visible: loggedIn, if: loggedIn">
-        <li class="header">Search</li>
-        <li data-bind="css: { active: page() === 'recent' }">
-            <a data-bind="location: { page: 'recent' }">
+        <li class="header">Explore</li>
+        <li data-bind="css: { active: page() === 'news' || page() === 'default' }">
+            <a data-bind="location: { page: null }">
                 <i class="material-icons md-18">home</i>
-                Recent
+                News
             </a>
         </li>
         <li data-bind="css: { active: page() === 'search' }">
@@ -22,11 +22,4 @@
             </a>
         </li>
     </ul>
-
-    <div data-bind="visible: loggedIn, if: loggedIn">
-        <ul class="nav">
-            <li class="header">Featured</li>
-        </ul>
-
-    </div>
 </div>

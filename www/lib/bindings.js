@@ -648,7 +648,13 @@ ko.bindingHandlers.picture = {
             if (nolazyload) {
                 $element.append($("<img src='" + filename + "' style='" + css.join(";") + "' class='" + classes + "'>"));
             } else {
-                let $span = $("<span style='display: inline-block; position: relative; " + css.join(";") + "' class='" + classes + "'></span>");
+                let containerCss = css.join(";");
+
+                if (classes.indexOf("img-responsive") !== -1) { // TODO: Hack!
+                    containerCss = "";
+                }
+
+                let $span = $("<span style='display: inline-block; position: relative; " + containerCss + "' class='" + classes + "'></span>");
 
                 $span.append($("<img data-original='" + filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>"));
 

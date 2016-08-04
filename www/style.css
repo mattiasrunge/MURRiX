@@ -38,6 +38,9 @@
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
+widget-node-text-attribute {
+    display: block;
+}
 
 h1, h2, h3, h4, h5, h6, .heading {
     font-family: 'Ubuntu', Georgia, Times, serif;
@@ -549,16 +552,21 @@ body {
     color: black;
 }
 
-.sidebar .comments {
+.comments {
     font-size: 12px;
 }
 
-.sidebar .name {
+.comments .name {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-weight: bold;
     font-size: 14px;
+}
+
+.comments .show-all-link {
+    margin-bottom: 10px;
+    display: block;
 }
 
 .main {
@@ -636,6 +644,54 @@ body {
 }
 
 
+.news-container {
+    padding-top: 5px;
+}
+
+.news-container .news-item {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: block;
+    color: black;
+}
+
+.news-container .news-item .news-title {
+    padding: 10px;
+    color: #888;
+}
+
+.news-container .news-item .news-media {
+}
+
+.news-container .news-item .news-media-files a {
+    margin-right: 8px;
+}
+
+.news-container .news-item .news-media-files a:last-child {
+    margin-right: 0;
+}
+
+
+.news-container .news-item .news-name {
+    padding: 10px;
+}
+
+.news-container .news-item .news-comments {
+    padding: 10px;
+}
+
+.news-container .news-item .news-description {
+    padding: 10px;
+    padding-top: 0;
+}
+
+.news-container .news-item .news-description a {
+    margin: 0;
+}
 
 
 .node-item-panel {

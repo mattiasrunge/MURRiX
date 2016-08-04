@@ -15,7 +15,6 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
     this.editRights = node.editRights;
     this.type = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().properties.type : false);
     this.section = ko.pureComputed(() => ko.unwrap(loc.current().section) || "default");
-    this.showPath = ko.pureComputed(() => ko.unwrap(loc.current().showPath));
     this.uploadFiles = node.uploadFiles;
 
     this.typeNice = ko.pureComputed(() => {

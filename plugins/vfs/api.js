@@ -328,7 +328,7 @@ let vfs = api.register("vfs", {
         }
 
         while (!result && list.length > 0) {
-            let index = Math.floor(Math.random() * list.length) + 1;
+            let index = Math.floor(Math.random() * (list.length - 1)) + 1;
             let child = list.splice(index, 1)[0];
             let node = yield db.findOne("nodes", { _id: child.id });
 

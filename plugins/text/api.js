@@ -2,6 +2,7 @@
 
 const co = require("bluebird").coroutine;
 const api = require("api.io");
+const plugin = require("../../core/lib/plugin");
 const vfs = require("../vfs/api");
 const mcs = require("../mcs/api");
 

@@ -4,6 +4,7 @@ const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
+const plugin = require("../../core/lib/plugin");
 const vfs = require("../vfs/api");
 const auth = require("../auth/api");
 
@@ -21,12 +22,20 @@ let album = api.register("album", {
         }
     }),
     mkalbum: function*(session, name, attributes) {
-        yield vfs.create(session, "/albums/" + name, "a", attributes);
+        let abspath = path.join("/albums", name);
 
-        yield vfs.create(session, "/albums/" + name + "/files", "d");
-        yield vfs.create(session, "/albums/" + name + "/texts", "d");
+        yield vfs.create(session, abspath, "a", attributes);
 
-        return yield vfs.resolve(session, "/albums/" + name);
+        yield vfs.create(session, path.join(abspath, "files"), "d");
+        yield vfs.create(session, path.join(abspath, "texts"), "d");
+
+        plugin.emit("album.new", {
+            uid: session.uid,
+            path: abspath,
+            name: attributes.name
+        });
+
+        return yield vfs.resolve(session, abspath);
     },
     find: function*(session, name) {
         return yield vfs.resolve(session, "/albums/" + name, true);

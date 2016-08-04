@@ -7,7 +7,7 @@ const ui = require("lib/ui");
 const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(/*params*/) {
-    ui.setTitle("Recent");
+    ui.setTitle("News");
 
     this.loading = stat.create();
     this.list = ko.observableArray();
@@ -24,8 +24,11 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
     }));
 
     let subscription = api.feed.on("new", (data) => {
-        data.node = ko.observable(data.node);
-        this.list.unshift(data);
+        this.list.unshift({
+            name: data.name,
+            path: data.path,
+            node: ko.observable(data.node)
+        });
     });
 
     this.dispose = () => {

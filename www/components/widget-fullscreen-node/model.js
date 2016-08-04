@@ -10,7 +10,6 @@ const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
-    this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
     this.showSidebar = ko.observable(true);
     this.tagging = ko.observable(false);

@@ -1,7 +1,9 @@
 "use strict";
 
+const path = require("path");
 const co = require("bluebird").coroutine;
 const api = require("api.io");
+const plugin = require("../../core/lib/plugin");
 const vfs = require("../vfs/api");
 const auth = require("../auth/api");
 
@@ -18,10 +20,12 @@ let location = api.register("location", { // jshint ignore:line
         }
     }),
     mklocation: function*(session, name, attributes) {
-        yield vfs.create(session, "/locations/" + name, "l", attributes);
+        let abspath = path.join("/locations", name);
 
-        yield vfs.create(session, "/locations/" + name + "/residents", "d");
-        yield vfs.create(session, "/locations/" + name + "/texts", "d");
+        yield vfs.create(session, abspath, "l", attributes);
+
+        yield vfs.create(session, path.join(abspath, "residents"), "d");
+        yield vfs.create(session, path.join(abspath, "texts"), "d");
 
         plugin.emit("location.new", {
             uid: session.uid,
@@ -29,7 +33,7 @@ let location = api.register("location", { // jshint ignore:line
             name: attributes.name
         });
 
-        return yield vfs.resolve(session, "/locations/" + name);
+        return yield vfs.resolve(session, abspath);
     },
     find: function*(session, name) {
         return yield vfs.resolve(session, "/locations/" + name, true);

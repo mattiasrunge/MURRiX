@@ -4,6 +4,7 @@ const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
+const plugin = require("../../core/lib/plugin");
 const vfs = require("../vfs/api");
 const auth = require("../auth/api");
 
@@ -20,13 +21,15 @@ let people = api.register("people", {
         }
     }),
     mkperson: function*(session, name, attributes) {
-        yield vfs.create(session, "/people/" + name, "p", attributes);
+        let abspath = path.join("/people", name);
 
-        yield vfs.create(session, "/people/" + name + "/parents", "d");
-        yield vfs.create(session, "/people/" + name + "/children", "d");
-        yield vfs.create(session, "/people/" + name + "/homes", "d");
-        yield vfs.create(session, "/people/" + name + "/measurments", "d");
-        yield vfs.create(session, "/people/" + name + "/texts", "d");
+        yield vfs.create(session, abspath, "p", attributes);
+
+        yield vfs.create(session, path.join(abspath, "parents"), "d");
+        yield vfs.create(session, path.join(abspath, "children"), "d");
+        yield vfs.create(session, path.join(abspath, "homes"), "d");
+        yield vfs.create(session, path.join(abspath, "measurments"), "d");
+        yield vfs.create(session, path.join(abspath, "texts"), "d");
 
         plugin.emit("people.new", {
             uid: session.uid,
@@ -34,7 +37,7 @@ let people = api.register("people", {
             name: attributes.name
         });
 
-        return yield vfs.resolve(session, "/people/" + name);
+        return yield vfs.resolve(session, abspath);
     },
     getPartner: function*(session, abspath) {
         let partnerpath = path.join(abspath, "partner");

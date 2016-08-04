@@ -1,6 +1,10 @@
 <div>
     <navbar></navbar>
 
+    <div data-bind="if: showPath">
+        <widget-fullscreen-node params="{ showPath: showPath }"></widget-fullscreen-node>
+    </div>
+
     <div class="container page-container">
         <div class="row" data-bind="if: page() !== 'node', visible: page() !== 'node'">
             <div data-bind="if: loggedIn">
@@ -10,7 +14,7 @@
                     </div>
                 </div>
                 <div class="col-md-10 main">
-                    <div data-bind="if: page() === 'recent'">
+                    <div data-bind="if: page() === 'news' || page() === 'default'">
                         <feed-page></feed-page>
                     </div>
                     <div data-bind="if: page() === 'search'">

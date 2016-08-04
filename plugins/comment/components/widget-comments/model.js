@@ -7,6 +7,8 @@ const stat = require("lib/status");
 const session = require("lib/session");
 
 module.exports = utils.wrapComponent(function*(params) {
+    this.loading = stat.create();
+    this.path = ko.pureComputed(() => ko.unwrap(params.path));
     this.user = session.user;
     this.uid = ko.pureComputed(() => {
         if (!this.user()) {
@@ -15,28 +17,26 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return this.user().attributes.uid;
     });
-    this.path = params.path;
-    this.loading = stat.create();
-    this.newFlag = ko.observable(false);
-    this.list = ko.asyncComputed([], function*() {
-        this.newFlag();
-        this.newFlag(false);
-        let list = yield api.comment.list(ko.unwrap(this.path));
-        return list;
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return [];
-    });
+    this.rows = ko.pureComputed(() => ko.unwrap(params.rows) || 0);
+    this.list = ko.observableArray();
     this.comment = ko.observable("");
+    this.collapsed = ko.observable(this.rows() > 0);
+
+    this.filtered = ko.pureComputed(() => {
+       if (this.rows() === 0 || !this.collapsed()) {
+           return this.list();
+       }
+
+       return this.list().slice(-this.rows());
+    });
 
     this.post = (model, event) => {
         if (event.keyCode === 13 && !event.shiftKey) {
             this.loading(true);
-            api.comment.comment(ko.unwrap(this.path), this.comment())
+            api.comment.comment(this.path(), this.comment())
             .then(() => {
                 this.loading(false);
                 this.comment("");
-                this.newFlag(true);
             })
             .catch((error) => {
                 this.loading(false);
@@ -49,7 +49,29 @@ module.exports = utils.wrapComponent(function*(params) {
         return true;
     };
 
+    this.loading(true);
+    let list = yield api.comment.list(this.path());
+    this.loading(false);
+
+    console.log("comments", list);
+
+    this.list(list.map((item) => {
+        item.node = ko.observable(item.node);
+        return item;
+    }));
+
+    let subscription = api.comment.on("new", (data) => {
+        if (data.path.indexOf(this.path()) !== -1) {
+            this.list.push({
+                name: data.name,
+                path: data.path,
+                node: ko.observable(data.node)
+            });
+        }
+    });
+
     this.dispose = () => {
+        api.comment.off(subscription);
         stat.destroy(this.loading);
     };
 });

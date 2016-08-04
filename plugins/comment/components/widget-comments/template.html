@@ -1,11 +1,13 @@
 <div class="comments">
-    <div data-bind="foreach: list">
+    <a class="show-all-link" href="#" data-bind="visible: list().length > filtered().length, click: collapsed.bind($data, false)">Show all comments</a>
+
+    <div data-bind="foreach: filtered">
         <div class="row">
             <div class="col-md-12">
-                <auth-picture-user class="pull-left" params="{ size: 30, uid: $data.node.properties.birthuid, classes: 'img-circle comment-picture-user' }"></auth-picture-user>
-                <div class="name" data-bind="unameNice: $data.node.properties.birthuid"></div>
-                <small class="text-muted" data-bind="datetimeAgo: $data.node.properties.birthtime"></small>
-                <p style="white-space: pre-line;" data-bind="text: $data.node.attributes.text"></p>
+                <auth-picture-user class="pull-left" params="{ size: 30, uid: $data.node().properties.birthuid, classes: 'img-circle comment-picture-user' }"></auth-picture-user>
+                <div class="name" data-bind="unameNice: $data.node().properties.birthuid"></div>
+                <small class="text-muted" data-bind="datetimeAgo: $data.node().properties.birthtime"></small>
+                <p style="white-space: pre-line;" data-bind="text: $data.node().attributes.text"></p>
             </div>
         </div>
     </div>
