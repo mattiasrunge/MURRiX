@@ -19,4 +19,7 @@
     <div class="news-description text-muted" data-bind="visible: item() && item().attributes.description !== '', if: item() && item().attributes.description !== ''">
         <p data-bind="html: item().attributes.description"></p>
     </div>
+    <div class="news-comments">
+        <comment-widget-comments params="{ path: nodepath().node().attributes.path, rows: 3 }"></comment-widget-comments>
+    </div>
 </div>
