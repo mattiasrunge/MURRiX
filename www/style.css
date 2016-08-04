@@ -450,6 +450,10 @@ body {
     z-index: 10;
 }
 
+.header-search {
+    width: 600px;
+    position: relative;
+}
 
 .navbar-background {
     background-color: #327DE6;
