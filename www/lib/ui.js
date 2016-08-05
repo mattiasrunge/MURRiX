@@ -86,6 +86,6 @@ module.exports = {
         return { width: $window.width(), height: $window.height() };
     }),
     setTitle: (title) => {
-        document.title = title ? title + " | MURRiX" : "MURRiX";
+        document.title = title ? title : "MURRiX";
     }
 };

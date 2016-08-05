@@ -8,7 +8,7 @@ const stat = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
-    this.size = 445;
+    this.size = 454;
 
      this.pictureItem = ko.asyncComputed(false, function*(setter) {
         if (!this.item()) {

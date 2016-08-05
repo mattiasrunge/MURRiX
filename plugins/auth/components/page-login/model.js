@@ -35,7 +35,7 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
             this.username("");
             this.password("");
 
-            loc.goto({ page: "recent" });
+            loc.goto({ page: null });
         } catch (e) {
             console.error(e);
             stat.printError("Login failed");
