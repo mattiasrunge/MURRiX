@@ -529,7 +529,7 @@ ko.bindingHandlers.nodeselect = {
 
                     let $d = $("<div>" + selection.node.attributes.name + "</div>");
 
-                    api.vfs.resolve(selection.path + "/profilePicture", true)
+                    api.vfs.resolve(selection.path + "/profilePicture", { noerror: true })
                     .then((node) => {
                         if (node) {
                             return api.file.getPictureFilenames([ node._id ], 16, 16);

@@ -44,7 +44,7 @@ let comment = api.register("comment", {
             throw new Error("Permission denied");
         }
 
-        let dir = yield vfs.resolve(auth.getAdminSession(), path.join(abspath, "comments"), true);
+        let dir = yield vfs.resolve(auth.getAdminSession(), path.join(abspath, "comments"), { noerror: true });
 
         if (!dir) {
             return [];

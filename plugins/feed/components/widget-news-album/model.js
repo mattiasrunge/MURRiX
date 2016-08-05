@@ -53,7 +53,7 @@ module.exports = utils.wrapComponent(function*(params) {
         setter(false);
 
         this.loading(true);
-        let item = yield api.vfs.resolve(this.nodepath().node().attributes.path, true);
+        let item = yield api.vfs.resolve(this.nodepath().node().attributes.path, { noerror: true });
         this.loading(false);
 
         console.log("item", item);

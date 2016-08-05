@@ -89,7 +89,7 @@ let vfs = api.register("vfs", {
         }
 
         if (typeof node === "string") {
-            node = yield vfs.resolve(session, abspathOrNode, true);
+            node = yield vfs.resolve(session, abspathOrNode, { noerror: true });
         }
 
         if (!node || !node._id) {
@@ -148,7 +148,9 @@ let vfs = api.register("vfs", {
 
         return node;
     },
-    resolve: function*(session, abspath, noerror, nofollow) {
+    resolve: function*(session, abspath, options) {
+        options = options || {};
+
         if (typeof abspath !== "string") {
             return abspath;
         }
@@ -156,7 +158,7 @@ let vfs = api.register("vfs", {
         let pathParts = abspath.replace(/\/$/g, "").split("/");
         let root = yield db.findOne("nodes", { "properties.type": "r" });
 
-        let getchild = co(function*(session, node, pathParts, noerror) {
+        let getchild = co(function*(session, node, pathParts, options) {
             if (pathParts.length === 0) {
                 if (!(yield vfs.access(session, node, "r"))) {
                     throw new Error("Permission denied");
@@ -169,7 +171,7 @@ let vfs = api.register("vfs", {
             let child = node.properties.children.filter((child) => child.name === name)[0];
 
             if (!child) {
-                if (noerror) {
+                if (options.noerror) {
                     return false;
                 }
 
@@ -179,22 +181,22 @@ let vfs = api.register("vfs", {
             node = yield db.findOne("nodes", { _id: child.id });
 
             if (!(yield vfs.access(session, node, "x"))) {
-                if (noerror) {
+                if (options.noerror) {
                     return false;
                 }
 
                 throw new Error("Permission denied");
             }
 
-            if (node.properties.type === "s" && !nofollow) {
-                return vfs.resolve(session, path.join(node.attributes.path, pathParts.join("/")), noerror);
+            if (node.properties.type === "s" && !options.nofollow) {
+                return vfs.resolve(session, path.join(node.attributes.path, pathParts.join("/")), options);
             }
 
-            return getchild(session, node, pathParts, noerror);
+            return getchild(session, node, pathParts, options);
         });
 
         pathParts.shift();
-        return getchild(session, root, pathParts, noerror);
+        return getchild(session, root, pathParts, options);
     },
     lookup: function*(session, id, cache) {
         cache = cache || {};
@@ -227,7 +229,7 @@ let vfs = api.register("vfs", {
         return cache[id];
     },
     ensure: function*(session, abspath, type, attributes) {
-        let node = yield vfs.resolve(session, abspath, true);
+        let node = yield vfs.resolve(session, abspath, { noerror: true });
 
         if (!node) {
             node = yield vfs.create(session, abspath, type, attributes || {});
@@ -244,7 +246,7 @@ let vfs = api.register("vfs", {
         let abspaths = abspath instanceof Array ? abspath : [ abspath ];
 
         for (let abspath of abspaths) {
-            let parent = yield vfs.resolve(session, abspath, options.noerror);
+            let parent = yield vfs.resolve(session, abspath, options);
 
             if (!parent) {
                 continue;
@@ -298,7 +300,7 @@ let vfs = api.register("vfs", {
                     if (node.properties.type === "s" && !options.nofollow) {
                         link = node;
                         dir = node.attributes.path;
-                        node = yield vfs.resolve(session, node.attributes.path, true);
+                        node = yield vfs.resolve(session, node.attributes.path, { noerror: true });
                     }
 
                     if (node) {
@@ -384,7 +386,7 @@ let vfs = api.register("vfs", {
         return list;
     },
     chmod: function*(session, abspath, mode, options) {
-        let node = yield vfs.resolve(session, abspath, false, true);
+        let node = yield vfs.resolve(session, abspath, { nofollow: true });
 
         options = options || {};
 
@@ -415,7 +417,7 @@ let vfs = api.register("vfs", {
         }
     },
     chown: function*(session, abspath, username, group, options) {
-        let node = yield vfs.resolve(session, abspath, false, true);
+        let node = yield vfs.resolve(session, abspath, { nofollow: true });
 
         options = options || {};
 
@@ -465,7 +467,7 @@ let vfs = api.register("vfs", {
         }
     },
     setattributes: function*(session, abspath, attributes) {
-        let node = yield vfs.resolve(session, abspath, false, true);
+        let node = yield vfs.resolve(session, abspath, { nofollow: true });
 
         if (!(yield vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");
@@ -501,7 +503,7 @@ let vfs = api.register("vfs", {
             throw new Error("Permission denied");
         }
 
-        let node = yield vfs.resolve(session, abspath, false, true);
+        let node = yield vfs.resolve(session, abspath, { nofollow: true });
 
         for (let key of Object.keys(properties)) {
             if (properties[key] !== null) {
@@ -610,7 +612,7 @@ let vfs = api.register("vfs", {
     },
     unlink: function*(session, abspath) {
         let parentPath = path.dirname(abspath);
-        let parent = yield vfs.resolve(session, parentPath, false, true);
+        let parent = yield vfs.resolve(session, parentPath, { nofollow: true });
         let name = path.basename(abspath);
         let child = parent.properties.children.filter((child) => child.name === name)[0];
 
@@ -669,7 +671,7 @@ let vfs = api.register("vfs", {
         yield vfs.resolve(session, srcpath);
         let name = path.basename(srcpath);
 
-        if (yield vfs.resolve(session, destpath, true)) {
+        if (yield vfs.resolve(session, destpath, { noerror: true })) {
             destpath = destpath + "/" + name;
         }
 
@@ -678,7 +680,7 @@ let vfs = api.register("vfs", {
         });
     },
     link: function*(session, srcpath, destpath) {
-        let srcnode = yield vfs.resolve(session, srcpath, false, true);
+        let srcnode = yield vfs.resolve(session, srcpath, { nofollow: true });
 
         if (!(yield vfs.access(session, srcnode, "r"))) {
             throw new Error("Permission denied");
@@ -686,7 +688,7 @@ let vfs = api.register("vfs", {
 
         let name = "_unamed_";
 
-        let destnode = yield vfs.resolve(session, destpath, true);
+        let destnode = yield vfs.resolve(session, destpath, { noerror: true });
 
         if (!destnode) {
             name = path.basename(destpath);

@@ -16,16 +16,16 @@ let auth = api.register("auth", {
         params = config;
 
         // Create folders
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/users", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/users", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/users", "d");
         }
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/groups", "d");
         }
 
         // Create admin group
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/admin", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/admin", { noerror: true }))) {
             yield auth.mkgroup(auth.getAdminSession(), "admin", "Administrators", "");
             yield vfs.setattributes(auth.getAdminSession(), "/groups/admin", {
                 gid: 1000
@@ -33,7 +33,7 @@ let auth = api.register("auth", {
         }
 
         // Create guest group
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/guest", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/guest", { noerror: true }))) {
             yield auth.mkgroup(auth.getAdminSession(), "guest", "Guest", "");
             yield vfs.setattributes(auth.getAdminSession(), "/groups/guest", {
                 gid: 1001
@@ -41,7 +41,7 @@ let auth = api.register("auth", {
         }
 
         // Create users group
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/users", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/users", { noerror: true }))) {
             yield auth.mkgroup(auth.getAdminSession(), "users", "Users", "");
             yield vfs.setattributes(auth.getAdminSession(), "/groups/users", {
                 gid: 1002
@@ -49,7 +49,7 @@ let auth = api.register("auth", {
         }
 
         // Create admin user
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/users/admin", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/users/admin", { noerror: true }))) {
             yield auth.mkuser(auth.getAdminSession(), "admin", "Administrator");
             yield vfs.setattributes(auth.getAdminSession(), "/users/admin", {
                 uid: 1000,
@@ -60,7 +60,7 @@ let auth = api.register("auth", {
         }
 
         // Create guest user
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/users/guest", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/users/guest", { noerror: true }))) {
             yield auth.mkuser(auth.getAdminSession(), "guest", "Guest");
             yield vfs.setattributes(auth.getAdminSession(), "/users/guest", {
                 uid: 1001,
@@ -93,7 +93,7 @@ let auth = api.register("auth", {
 
         let personPath = false;
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
-        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", true, true);
+        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", { noerror: true, nofollow: true });
         let stars = yield auth.getStars(session);
 
         if (person) {
@@ -107,7 +107,7 @@ let auth = api.register("auth", {
             return [];
         }
 
-        if (yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/stars", true, true)) {
+        if (yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/stars", { noerror: true, nofollow: true })) {
             let list = yield vfs.list(auth.getAdminSession(), "/users/" + session.username + "/stars");
 
             return list.map((item) => {
@@ -249,7 +249,7 @@ let auth = api.register("auth", {
 
         yield vfs.setattributes(auth.getAdminSession(), "/users/" + username, attributes);
 
-        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + username + "/person", true, true);
+        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + username + "/person", { noerror: true, nofollow: true });
 
         if (person && person.attributes.path !== personPath) {
             yield vfs.unlink(auth.getAdminSession(), "/users/" + username + "/person");
@@ -306,7 +306,7 @@ let auth = api.register("auth", {
 
         for (let user of users) {
             if (user.node.attributes.uid === uid) {
-                let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + user.name + "/person/profilePicture", true);
+                let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + user.name + "/person/profilePicture", { noerror: true });
 
                 if (person) {
                     return person._id;

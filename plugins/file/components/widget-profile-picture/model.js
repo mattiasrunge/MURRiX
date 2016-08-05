@@ -23,7 +23,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(true);
 
-        let node = yield api.vfs.resolve(this.path() + "/profilePicture", true);
+        let node = yield api.vfs.resolve(this.path() + "/profilePicture", { noerror: true });
 
         if (node) {
             item = (yield api.file.getPictureFilenames([ node._id ], this.size, this.size))[0];

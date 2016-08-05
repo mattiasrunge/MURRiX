@@ -56,7 +56,7 @@ let file = api.register("file", {
         let attributes = node.attributes;
         let device = null;
 
-        if (attributes.deviceSerialNumber && !(yield vfs.resolve(session, abspath + "/createdWith", true))) {
+        if (attributes.deviceSerialNumber && !(yield vfs.resolve(session, abspath + "/createdWith", { noerror: true }))) {
             device = (yield vfs.list(session, "/cameras", {
                 filter: {
                     "attributes.serialNumber": attributes.deviceSerialNumber }

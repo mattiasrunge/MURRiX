@@ -20,7 +20,7 @@ let feed = api.register("feed", {
         plugin.on("location.new", feed.onNewLocation);
         plugin.on("people.new", feed.onNewPerson);
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/news", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/news", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/news", "d");
             yield vfs.chown(auth.getAdminSession(), "/news", "admin", "users");
             yield vfs.chmod(auth.getAdminSession(), "/news", "770");

@@ -33,7 +33,7 @@ module.exports = utils.wrapComponent(function*(params) {
         setter(false);
 
         this.loading(true);
-        let item = yield api.vfs.resolve(abspath, true);
+        let item = yield api.vfs.resolve(abspath, { noerror: true });
 
         console.log("item", item);
 
@@ -97,7 +97,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         setter(false);
 
-        let item = yield api.vfs.resolve(abspath, true);
+        let item = yield api.vfs.resolve(abspath, { noerror: true });
 
         console.log("who", item);
 
@@ -118,7 +118,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         setter(false);
 
-        let item = yield api.vfs.resolve(abspath, true);
+        let item = yield api.vfs.resolve(abspath, { noerror: true });
 
         console.log("device", item);
 

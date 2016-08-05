@@ -556,6 +556,32 @@ body {
     color: black;
 }
 
+
+
+/*widget-node-sections ul.nav {
+  margin-top: 15px;
+}
+
+widget-node-sections .nav-pills > li > a {
+    padding: 5px;
+    padding-bottom: 7px;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    color: rgba(0, 0, 0, 0.54);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 15px;
+}
+
+widget-node-sections .nav-pills > li.active > a,
+widget-node-sections .nav-pills > li.active > a:hover,
+widget-node-sections .nav-pills > li > a:hover {
+    background-color: white;
+    border-color: black;
+    color: black;
+}*/
+
 .comments {
     font-size: 12px;
 }

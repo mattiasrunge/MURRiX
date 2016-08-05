@@ -29,7 +29,7 @@ module.exports = {
         setter(false);
 
         module.exports.loading(true);
-        let node = yield api.vfs.resolve(path, true);
+        let node = yield api.vfs.resolve(path, { noerror: true });
         let editable = yield api.vfs.access(path, "w");
         module.exports.loading(false);
 
@@ -51,7 +51,7 @@ module.exports = {
         let name = baseName.replace(/ |\//g, "_");
 
         let counter = 1;
-        while (yield api.vfs.resolve(path + "/" + name, true)) {
+        while (yield api.vfs.resolve(path + "/" + name, { noerror: true })) {
             name = baseName.replace(/ |\//g, "_") + "_" + counter;
             counter++;
         }

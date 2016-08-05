@@ -15,7 +15,7 @@ let people = api.register("people", {
     init: co(function*(config) {
         params = config;
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/people", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/people", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/people", "d");
             yield vfs.chown(auth.getAdminSession(), "/people", "admin", "users");
         }
@@ -41,7 +41,7 @@ let people = api.register("people", {
     },
     getPartner: function*(session, abspath) {
         let partnerpath = path.join(abspath, "partner");
-        let node = yield vfs.resolve(session, partnerpath, true, true);
+        let node = yield vfs.resolve(session, partnerpath, { noerror: true, nofollow: true });
 
         if (!node) {
             return false;
@@ -128,7 +128,7 @@ let people = api.register("people", {
         });
     },
     find: function*(session, name) {
-        return yield vfs.resolve(session, "/people/" + name, true);
+        return yield vfs.resolve(session, "/people/" + name, { noerror: true });
     },
     findByTags: function*(session, abspath) {
         console.time("people.findByTags total " + abspath);

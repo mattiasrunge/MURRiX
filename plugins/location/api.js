@@ -14,7 +14,7 @@ let location = api.register("location", { // jshint ignore:line
     init: co(function*(config) {
         params = config;
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/locations", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/locations", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/locations", "d");
             yield vfs.chown(auth.getAdminSession(), "/locations", "admin", "users");
         }
@@ -36,7 +36,7 @@ let location = api.register("location", { // jshint ignore:line
         return yield vfs.resolve(session, abspath);
     },
     find: function*(session, name) {
-        return yield vfs.resolve(session, "/locations/" + name, true);
+        return yield vfs.resolve(session, "/locations/" + name, { noerror: true });
     }
 });
 

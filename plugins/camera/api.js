@@ -13,7 +13,7 @@ let camera = api.register("camera", {
     init: co(function*(config) {
         params = config;
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/cameras", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/cameras", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/cameras", "d");
             yield vfs.chown(auth.getAdminSession(), "/cameras", "admin", "users");
         }
@@ -39,7 +39,7 @@ let camera = api.register("camera", {
         return yield vfs.resolve(session, "/cameras/" + name);
     },
     find: function*(session, name) {
-        return yield vfs.resolve(session, "/cameras/" + name, true);
+        return yield vfs.resolve(session, "/cameras/" + name, { noerror: true });
     }
 });
 

@@ -15,7 +15,7 @@ let album = api.register("album", {
     init: co(function*(config) {
         params = config;
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/albums", true))) {
+        if (!(yield vfs.resolve(auth.getAdminSession(), "/albums", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/albums", "d");
             yield vfs.chown(auth.getAdminSession(), "/albums", "admin", "users");
             yield vfs.chmod(auth.getAdminSession(), "/albums", "771");
@@ -38,7 +38,7 @@ let album = api.register("album", {
         return yield vfs.resolve(session, abspath);
     },
     find: function*(session, name) {
-        return yield vfs.resolve(session, "/albums/" + name, true);
+        return yield vfs.resolve(session, "/albums/" + name, { noerror: true });
     },
     findByYear: function*(session, year) {
         console.time("album.findByYear total " + year);
