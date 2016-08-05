@@ -16,29 +16,6 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
     this.type = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().properties.type : false);
     this.section = ko.pureComputed(() => ko.unwrap(loc.current().section) || "default");
     this.uploadFiles = node.uploadFiles;
-
-    this.typeNice = ko.pureComputed(() => {
-        if (!this.nodepath()) {
-            return "";
-        }
-
-        if (this.nodepath().node().properties.type === "a") {
-            return "album";
-        } else if (this.nodepath().node().properties.type === "l") {
-            return "location";
-        } else if (this.nodepath().node().properties.type === "p") {
-            return "person";
-        } else if (this.nodepath().node().properties.type === "c") {
-            return "camera";
-        } else if (this.nodepath().node().properties.type === "d") {
-            return "directory";
-        } else if (this.nodepath().node().properties.type === "f") {
-            return "file";
-        } else if (this.nodepath().node().properties.type === "s") {
-            return "symlink";
-        }
-    });
-
     this.gid = ko.observable(false);
     this.public = ko.observable(false);
     this.groupReadable = ko.observable(false);

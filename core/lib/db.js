@@ -23,6 +23,10 @@ let Database = function() {
 
         let cursor = collection.find(query, options);
 
+        if (options && options.sort) {
+            cursor = cursor.sort(options.sort);
+        }
+
         if (options && options.skip) {
             cursor = cursor.skip(options.skip);
         }

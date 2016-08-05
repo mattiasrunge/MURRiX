@@ -30,7 +30,7 @@
                             <div class="row">
                                 <h5>Public access</h5>
                                 <p>
-                                    Public access can be granted on <span data-bind="text: typeNice"></span>s if needed. This will allow anyone with the link to access this <span data-bind="text: typeNice"></span>. <em>Use with care!</em>
+                                    Public access can be granted on <widget-node-type params="{ type: nodepath().node().properties.type }"></widget-node-type>s if needed. This will allow anyone with the link to access this <widget-node-type params="{ type: nodepath().node().properties.type }"></widget-node-type>. <em>Use with care!</em>
                                 </p>
                                 <div class="form-group">
                                     <div class="checkbox">
@@ -44,7 +44,7 @@
                             <div class="row">
                                 <h5>Group access</h5>
                                 <p>
-                                    A group can be given read and write access this <span data-bind="text: typeNice"></span>. This will grant the group the selected rights on this <span data-bind="text: typeNice"></span>.
+                                    A group can be given read and write access this <widget-node-type params="{ type: nodepath().node().properties.type }"></widget-node-type>. This will grant the group the selected rights on this <widget-node-type params="{ type: nodepath().node().properties.type }"></widget-node-type>.
                                 </p>
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="Select a group" data-bind="groupselect: { gid: gid }">
@@ -69,7 +69,7 @@
                                             <tr>
                                                 <td>
                                                     <span data-bind="if: $data.uid">
-                                                        <auth-picture-user params="{ size: 20, uid: $data.uid, classes: 'img-circle' }" style="margin-right: 10px;" class="pull-left"></auth-picture-user>
+                                                        <auth-widget-picture-user params="{ size: 20, uid: $data.uid, classes: 'img-circle' }" style="margin-right: 10px;" class="pull-left"></auth-widget-picture-user>
                                                     </span>
                                                     <span data-bind="text: $data.name"></span>
                                                 </td>

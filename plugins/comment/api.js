@@ -24,7 +24,7 @@ let comment = api.register("comment", {
         yield vfs.ensure(auth.getAdminSession(), path.join(abspath, "comments"), "d");
 
         session.almighty = true;
-        let item = yield vfs.create(session, path.join(abspath, "comments", name), "c", {
+        let item = yield vfs.create(session, path.join(abspath, "comments", name), "k", {
             text: text
         });
         session.almighty = false;
@@ -35,7 +35,7 @@ let comment = api.register("comment", {
             text: item.attributes.text
         });
 
-        comment.emit("new", { name: name, node: item, path: path.join(abspath, "comments", name) });
+        comment.emit("new", { name: name, node: item, path: abspath });
 
         return comment;
     },

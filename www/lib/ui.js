@@ -21,10 +21,12 @@ $window.on("resize", () => {
 
 ko.asyncComputed = function(defaultValue, fn, onError, extend) {
     let promise = co.wrap(fn);
+    let reloadFlag = ko.observable(false);
     let result = ko.observable(defaultValue);
     let active = 0;
     let computed = ko.pureComputed(() => {
         let currentActive = ++active;
+        reloadFlag();
 
         promise((value) => {
             return result(value);
@@ -59,10 +61,16 @@ ko.asyncComputed = function(defaultValue, fn, onError, extend) {
         computed.extend(extend);
     }
 
-    return ko.pureComputed(() => {
+    let pure = ko.pureComputed(() => {
         computed();
         return result();
     });
+
+    pure.reload = () => {
+        reloadFlag(!reloadFlag());
+    };
+
+    return pure;
 };
 
 module.exports = {

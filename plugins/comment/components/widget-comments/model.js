@@ -61,7 +61,10 @@ module.exports = utils.wrapComponent(function*(params) {
     }));
 
     let subscription = api.comment.on("new", (data) => {
-        if (data.path.indexOf(this.path()) !== -1) {
+        console.log(data);
+        console.log(data.path, this.path());
+
+        if (data.path === this.path()) {
             this.list.push({
                 name: data.name,
                 path: data.path,

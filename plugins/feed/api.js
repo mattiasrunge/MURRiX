@@ -36,7 +36,7 @@ let feed = api.register("feed", {
 
         let news = yield vfs.create(auth.getAdminSession(), abspath, "n", {
             events: [ data._id ],
-            type: "person",
+            type: "p",
             action: "created",
             path: data.path,
             uid: data.uid
@@ -50,7 +50,7 @@ let feed = api.register("feed", {
 
         let news = yield vfs.create(auth.getAdminSession(), abspath, "n", {
             events: [ data._id ],
-            type: "location",
+            type: "l",
             action: "created",
             path: data.path,
             uid: data.uid
@@ -64,7 +64,7 @@ let feed = api.register("feed", {
 
         let news = yield vfs.create(auth.getAdminSession(), abspath, "n", {
             events: [ data._id ],
-            type: "album",
+            type: "a",
             action: "created",
             path: data.path,
             uid: data.uid
@@ -74,9 +74,10 @@ let feed = api.register("feed", {
     }),
     onNewComment: co(function*(event, data) {
         let latest = yield feed.getLatest();
+        let node = yield vfs.resolve(auth.getAdminSession(), data.path);
 
         if (latest &&
-            latest.node.attributes.type === "comment" &&
+            latest.node.attributes.type === node.properties.type &&
             latest.node.attributes.path === data.path) {
             return;
         }
@@ -86,8 +87,10 @@ let feed = api.register("feed", {
 
         let news = yield vfs.create(auth.getAdminSession(), abspath, "n", {
             events: [ data._id ],
-            type: "comment",
-            path: data.path
+            type: node.properties.type,
+            action: "comment",
+            path: data.path,
+            uid: data.uid
         });
 
         feed.emit("new", { name: name, node: news, path: abspath });

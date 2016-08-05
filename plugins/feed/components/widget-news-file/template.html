@@ -1,0 +1,8 @@
+<div class="news-media">
+    <a href="#" data-bind="location: { showPath: nodepath().node().attributes.path }">
+        <div data-bind="picture: { item: pictureItem, width: size, classes: 'img-responsive' }"></div>
+    </a>
+</div>
+<div class="news-description" data-bind="visible: item() && item().attributes.description !== '', if: item() && item().attributes.description !== ''">
+    <span data-bind="html: item().attributes.description"></span>
+</div>

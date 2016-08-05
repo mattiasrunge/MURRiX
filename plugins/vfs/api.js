@@ -238,6 +238,7 @@ let vfs = api.register("vfs", {
     list: function*(session, abspath, options) {
         options = options || {};
 
+        let hasFilter = !!options.filter;
         let query = options.filter || {};
         let list = [];
         let abspaths = abspath instanceof Array ? abspath : [ abspath ];
@@ -253,14 +254,30 @@ let vfs = api.register("vfs", {
                 throw new Error("Permission denied");
             }
 
+            if (options.reverse) {
+                parent.properties.children.sort((a, b) => {
+                    return b.name.localeCompare(a.name);
+                });
+            } else {
+                parent.properties.children.sort((a, b) => {
+                    return a.name.localeCompare(b.name);
+                });
+            }
+
             let ids = parent.properties.children.map((child) => child.id);
+
+            if (options.limit && !hasFilter) {
+                ids = ids.slice(options.skip || 0, options.limit);
+            }
 
             query._id = { $in: ids };
 
-            let opts = {
-                limit: options.limit,
-                skip: options.skip
-            };
+            let opts = {};
+
+            if (options.limit && hasFilter) {
+                opts.limit = options.limit;
+                opts.skip = options.skip;
+            }
 
             let nodes = yield db.find("nodes", query, opts);
 
@@ -306,7 +323,7 @@ let vfs = api.register("vfs", {
         }
 
         if (options.limit) {
-            list = list.slice(0, options.limit);
+            list = list.slice(options.skip || 0, options.limit);
         }
 
         return list;
@@ -387,6 +404,8 @@ let vfs = api.register("vfs", {
             mode: mode
         });
 
+        this.emit("update", { path: abspath });
+
         if (options.recursive && node.properties.type !== "s") {
             let children = yield vfs.list(session, abspath, { nofollow: true });
 
@@ -435,6 +454,8 @@ let vfs = api.register("vfs", {
             gid: node.properties.gid
         });
 
+        this.emit("update", { path: abspath });
+
         if (options.recursive && node.properties.type !== "s") {
             let children = yield vfs.list(session, abspath, { nofollow: true });
 
@@ -471,6 +492,8 @@ let vfs = api.register("vfs", {
             attributes: attributes
         });
 
+        this.emit("update", { path: abspath });
+
         return node;
     },
     setproperties: function*(session, abspath, properties) {
@@ -495,6 +518,8 @@ let vfs = api.register("vfs", {
             path: abspath,
             properties: properties
         });
+
+        this.emit("update", { path: abspath });
 
         return node;
     },
@@ -578,6 +603,9 @@ let vfs = api.register("vfs", {
             name: name
         });
 
+        this.emit("new", { path: abspath });
+        this.emit("update", { path: parentPath });
+
         return node;
     },
     unlink: function*(session, abspath) {
@@ -605,6 +633,8 @@ let vfs = api.register("vfs", {
             name: name
         });
 
+        this.emit("update", { path: parentPath });
+
         let rremove = co(function*(abspath, id) {
             let node = yield db.findOne("nodes", { _id: id });
 
@@ -628,6 +658,8 @@ let vfs = api.register("vfs", {
                     path: abspath,
                     name: path.basename(abspath)
                 });
+
+                this.emit("removed", { path: abspath });
             }
         });
 
@@ -689,6 +721,8 @@ let vfs = api.register("vfs", {
             path: parentPath,
             name: name
         });
+
+        this.emit("update", { path: parentPath });
     },
     move: function*(session, srcpath, destpath) {
         let srcparentPath = path.dirname(srcpath);
@@ -746,6 +780,9 @@ let vfs = api.register("vfs", {
             path: destparentPath,
             name: name
         });
+
+        this.emit("update", { path: srcparentPath });
+        this.emit("update", { path: destparentPath });
     },
     copy: function*(session, srcpath, destpath) {
         let srcparent = yield vfs.resolve(session, path.dirname(srcpath));
@@ -812,6 +849,8 @@ let vfs = api.register("vfs", {
                 node: node
             });
 
+            this.emit("new", { path: abspath });
+
             return node._id;
         });
 
@@ -829,6 +868,8 @@ let vfs = api.register("vfs", {
             path: destparentPath,
             name: name
         });
+
+        this.emit("update", { path: destparentPath });
     },
     allocateUploadId: function*(session) {
         return session.allocateUploadId();

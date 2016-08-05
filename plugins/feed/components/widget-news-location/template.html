@@ -1,21 +1,11 @@
-<div class="news-item">
-    <div class="news-title">
-        <span data-bind="visible: nodepath().node().attributes.action === 'created'"></span>
-            <span data-bind="unameNice: nodepath().node().attributes.uid"></span> added a new location.
-        </span>
-    </div>
-    <div class="news-media" data-bind="visible: position, if: position">
-        <div style="height: 350px; margin-right: 1px;" data-bind="map: { position: position, zoom: position() ? 15 : 10 }"></div>
-    </div>
-    <div class="news-name" data-bind="visible: item, if: item">
-        <a href="#" data-bind="location: { page: 'node', path: nodepath().node().attributes.path }">
-            <h4 data-bind="text: item().attributes.name"></h4>
-        </a>
-    </div>
-    <div class="news-description text-muted" data-bind="visible: item() && item().attributes.description !== '', if: item() && item().attributes.description !== ''">
-        <p data-bind="html: item().attributes.description"></p>
-    </div>
-    <div class="news-comments">
-        <comment-widget-comments params="{ path: nodepath().node().attributes.path, rows: 3 }"></comment-widget-comments>
-    </div>
+<div class="news-media" data-bind="visible: position, if: position">
+    <div style="height: 340px; margin-right: 1px;" data-bind="map: { position: position, zoom: position() ? 15 : 10 }"></div>
+</div>
+<div class="news-name" data-bind="visible: item, if: item">
+    <a href="#" data-bind="location: { page: 'node', path: nodepath().node().attributes.path }">
+        <h4 data-bind="text: item().attributes.name"></h4>
+    </a>
+</div>
+<div class="news-description" data-bind="visible: item() && item().attributes.description !== '', if: item() && item().attributes.description !== ''">
+    <span data-bind="html: item().attributes.description"></span>
 </div>

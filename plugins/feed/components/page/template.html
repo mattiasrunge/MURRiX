@@ -1,21 +1,43 @@
 <div class="fadeInRight animated">
-    <div class="row" style="margin-top: 15px;">
-        <div class="col-md-8 right-border news-container" data-bind="foreach: list">
-            <div data-bind="if: $data.node().attributes.type === 'comment'">
-                <feed-widget-news-comment params="{ nodepath: $data }"></feed-widget-news-comment>
-            </div>
-            <div data-bind="if: $data.node().attributes.type === 'album'">
-                <feed-widget-news-album params="{ nodepath: $data }"></feed-widget-news-album>
-            </div>
-            <div data-bind="if: $data.node().attributes.type === 'location'">
-                <feed-widget-news-location params="{ nodepath: $data }"></feed-widget-news-location>
-            </div>
-            <div data-bind="if: $data.node().attributes.type === 'person'">
-                <feed-widget-news-person params="{ nodepath: $data }"></feed-widget-news-person>
+    <div class="page-header">
+        <h1>News</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6 right-border">
+            <h4>Latest</h4>
+
+            <div class="news-container" data-bind="foreach: list">
+                <div class="news-item">
+                    <div class="news-title">
+                        <span data-bind="if: $data.node().attributes.action === 'comment'">
+                            New comments were made on this <widget-node-type params="{ type: $data.node().attributes.type }"></widget-node-type>.
+                        </span>
+                        <span data-bind="if: $data.node().attributes.action === 'created'">
+                            <span data-bind="unameNice: $data.node().attributes.uid"></span> added a new <widget-node-type params="{ type: $data.node().attributes.type }"></widget-node-type>
+                        </span>
+                    </div>
+
+                    <div data-bind="if: $data.node().attributes.type === 'f'">
+                        <feed-widget-news-file params="{ nodepath: $data }"></feed-widget-news-file>
+                    </div>
+                    <div data-bind="if: $data.node().attributes.type === 'a'">
+                        <feed-widget-news-album params="{ nodepath: $data }"></feed-widget-news-album>
+                    </div>
+                    <div data-bind="if: $data.node().attributes.type === 'l'">
+                        <feed-widget-news-location params="{ nodepath: $data }"></feed-widget-news-location>
+                    </div>
+                    <div data-bind="if: $data.node().attributes.type === 'p'">
+                        <feed-widget-news-person params="{ nodepath: $data }"></feed-widget-news-person>
+                    </div>
+
+                    <div class="news-comments">
+                        <comment-widget-comments params="{ path: $data.node().attributes.path, rows: 3 }"></comment-widget-comments>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <h3>Today in history</h4>
+        <div class="col-md-6">
+            <h4>Today in history</h4>
 
         </div>
     </div>

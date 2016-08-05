@@ -8,8 +8,8 @@ const stat = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
-    this.width = 200;
-    this.height = 350;
+    this.width = 150;
+    this.height = 340;
 
      this.files = ko.asyncComputed([], function*(setter) {
         if (!this.nodepath()) {
@@ -65,7 +65,16 @@ module.exports = utils.wrapComponent(function*(params) {
         return false;
     });
 
+    let subscription = api.vfs.on("update", (data) => {
+        if (data.path === this.nodepath().node().attributes.path) {
+            this.item.reload();
+        } else if (data.path === this.nodepath().node().attributes.path + "/files") {
+            this.files.reload();
+        }
+    });
+
     this.dispose = () => {
+        api.vfs.off(subscription);
         stat.destroy(this.loading);
     };
 });

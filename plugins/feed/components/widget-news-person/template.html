@@ -1,21 +1,11 @@
-<div class="news-item">
-    <div class="news-title">
-        <span data-bind="visible: nodepath().node().attributes.action === 'created'"></span>
-            <span data-bind="unameNice: nodepath().node().attributes.uid"></span> added a new person.
-        </span>
-    </div>
-    <div class="news-media">
-        <file-profile-picture style="margin-right: 15px;" params="{ size: 350, path: nodepath().node().attributes.path }"></file-profile-picture>
-    </div>
-    <div class="news-name" data-bind="visible: item, if: item">
-        <a href="#" data-bind="location: { page: 'node', path: nodepath().node().attributes.path }">
-            <h4 data-bind="text: item().attributes.name"></h4>
-        </a>
-    </div>
-    <div class="news-description text-muted" data-bind="visible: item() && item().attributes.description !== '', if: item() && item().attributes.description !== ''">
-        <p data-bind="html: item().attributes.description"></p>
-    </div>
-    <div class="news-comments">
-        <comment-widget-comments params="{ path: nodepath().node().attributes.path, rows: 3 }"></comment-widget-comments>
-    </div>
+<div class="news-media">
+    <file-widget-profile-picture style="margin-right: 15px;" params="{ size: 200, path: nodepath().node().attributes.path }"></file-widget-profile-picture>
+</div>
+<div class="news-name" data-bind="visible: item, if: item">
+    <a href="#" data-bind="location: { page: 'node', path: nodepath().node().attributes.path }">
+        <h4 data-bind="text: item().attributes.name"></h4>
+    </a>
+</div>
+<div class="news-description text-muted" data-bind="visible: item() && item().attributes.description !== '', if: item() && item().attributes.description !== ''">
+    <p data-bind="html: item().attributes.description"></p>
 </div>

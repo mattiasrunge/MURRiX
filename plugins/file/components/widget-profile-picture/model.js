@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 
 const ko = require("knockout");
 const api = require("api.io-client");
@@ -7,11 +7,13 @@ const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
-    this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
-    this.size = 620;
+    this.path = ko.pureComputed(() => ko.unwrap(params.path));
+    this.classes = ko.pureComputed(() => ko.unwrap(params.classes));
+    this.size = params.size;
+    this.nolazyload = params.nolazyload;
 
-     this.item = ko.asyncComputed(false, function*(setter) {
-        if (!this.nodepath()) {
+    this.item = ko.asyncComputed(false, function*(setter) {
+        if (!this.path() || this.path() === "") {
             return false;
         }
 
@@ -21,13 +23,11 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(true);
 
-        let node = yield api.vfs.resolve(this.nodepath().node().attributes.path, true);
+        let node = yield api.vfs.resolve(this.path() + "/profilePicture", true);
 
         if (node) {
-            item = (yield api.file.getPictureFilenames([ node._id ], this.size))[0];
+            item = (yield api.file.getPictureFilenames([ node._id ], this.size, this.size))[0];
         }
-
-        console.log(item);
 
         this.loading(false);
 
