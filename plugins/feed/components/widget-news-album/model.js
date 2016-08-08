@@ -9,7 +9,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.width = 150;
-    this.height = 340;
+    this.height = 270;
 
      this.files = ko.asyncComputed([], function*(setter) {
         if (!this.nodepath()) {

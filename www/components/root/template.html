@@ -8,7 +8,7 @@
     <div class="container page-container">
         <div class="row" data-bind="if: page() !== 'node', visible: page() !== 'node'">
             <div data-bind="if: loggedIn">
-                <div class="col-md-2 sidebar right-border">
+                <div class="col-md-2 sidebar">
                     <div data-bind="if: page() !== 'node'">
                         <sidebar></sidebar>
                     </div>
@@ -42,7 +42,7 @@
         </div>
 
         <div class="row" data-bind="if: page() === 'node', visible: page() === 'node'">
-            <div class="col-md-12" style="margin-bottom: 50px;">
+            <div class="col-md-12 page-node">
                 <page-node></page-node>
             </div>
         </div>

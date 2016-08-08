@@ -55,6 +55,7 @@ body {
     overflow-y: scroll;
     overflow-x: hidden;
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    background-color: #efefef;
 }
 
 [contenteditable=true]:empty:before, .dropdown-select-empty {
@@ -85,20 +86,24 @@ body {
   top: 50px;
 }
 
+.page-header {
+    border-bottom: 1px solid #ccc;
+}
+
 .left-border {
-  border-left: 1px solid #eee;
+  border-left: 1px solid #ccc;
 }
 
 .right-border {
-  border-right: 1px solid #eee;
+  border-right: 1px solid #ccc;
 }
 
 .top-border {
-  border-top: 1px solid #eee;
+  border-top: 1px solid #ccc;
 }
 
 .bottom-border {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ccc;
 }
 
 .media>.pull-left {
@@ -497,6 +502,21 @@ body {
     margin-left: -15px;
 }
 
+.box {
+    border: 1px solid #ccc;
+    background-color: white;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.page-node {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    background-color: white;
+    display: block;
+}
+
 .sidebar {
   position: fixed;
   top: 51px;
@@ -504,10 +524,13 @@ body {
   bottom: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  background-color: white;
 }
 
 .sidebar .profile {
-  margin-top: 30px;
+  margin-top: 15px;
   font-size: 12px;
   margin-bottom: 15px;
 }
@@ -678,10 +701,11 @@ widget-node-sections .nav-pills > li > a:hover {
 }
 
 .news-container .news-item {
+    background-color: white;
     border: 1px solid #ccc;
-    border-radius: 4px;
+/*     border-radius: 4px; */
     position: relative;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+/*     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175); */
     margin-bottom: 15px;
     overflow: hidden;
     display: block;
@@ -728,15 +752,16 @@ widget-node-sections .nav-pills > li > a:hover {
 
 
 .node-item-panel {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  position: relative;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
-  margin-right: 15px;
-  margin-bottom: 15px;
-  overflow: hidden;
-  display: block;
-  color: black;
+    background-color: white;
+    border: 1px solid #ccc;
+/*   border-radius: 4px; */
+    position: relative;
+/*   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175); */
+    margin-right: 15px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    display: block;
+    color: black;
 }
 
 .node-item-panel:hover {
@@ -1080,7 +1105,7 @@ widget-node-sections .nav-pills > li > a:hover {
   position: absolute;
   content: " ";
   width: 3px;
-  background-color: #eeeeee;
+  background-color: #eee;
   left: 50%;
   margin-left: -1.5px;
 }
