@@ -223,7 +223,6 @@ body {
     right: 30px;
     background-color: white;
     border: 1px solid #ccc;
-    border-radius: 3px;
 }
 
 .upload-main {
@@ -462,8 +461,8 @@ body {
 
 .navbar-background {
     background-color: #327DE6;
-    background: linear-gradient(0, #2966BC 0%, #327DE6 100%);
-    box-shadow: 0 1px 6px rgba(0,0,0,.8);
+/*     background: linear-gradient(0, #2966BC 0%, #327DE6 100%); */
+    box-shadow: 0 1px 3px rgba(0,0,0,.6);
     border-bottom: none;
 }
 
@@ -502,6 +501,13 @@ body {
     margin-left: -15px;
 }
 
+.form-control,
+.navbar-nav>li>.dropdown-menu,
+.btn,
+.modal-content {
+    border-radius: 0;
+}
+
 .box {
     border: 1px solid #ccc;
     background-color: white;
@@ -515,6 +521,20 @@ body {
     border-bottom: 1px solid #ccc;
     background-color: white;
     display: block;
+    padding: 0;
+}
+
+.node-header {
+    margin: 15px;
+}
+
+.node-content {
+    margin: 15px;
+}
+
+.box-content {
+    padding: 15px;
+    padding-bottom: 0;
 }
 
 .sidebar {
@@ -581,14 +601,13 @@ body {
 
 
 
-/*widget-node-sections ul.nav {
-  margin-top: 15px;
+widget-node-sections ul.nav {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 widget-node-sections .nav-pills > li > a {
-    padding: 5px;
-    padding-bottom: 7px;
-    border-bottom: 3px solid transparent;
+    padding: 10px 20px 10px 20px;
     border-radius: 0;
     color: rgba(0, 0, 0, 0.54);
     white-space: nowrap;
@@ -597,13 +616,18 @@ widget-node-sections .nav-pills > li > a {
     font-size: 15px;
 }
 
+widget-node-sections .nav-pills>li+li {
+    margin-left: 0;
+}
+
 widget-node-sections .nav-pills > li.active > a,
 widget-node-sections .nav-pills > li.active > a:hover,
-widget-node-sections .nav-pills > li > a:hover {
-    background-color: white;
-    border-color: black;
+widget-node-sections .nav-pills > li > a:hover,
+widget-node-sections .nav-pills > li.active > a:focus,
+widget-node-sections .nav-pills > li > a:focus {
+    background-color: #efefef;
     color: black;
-}*/
+}*
 
 .comments {
     font-size: 12px;
@@ -635,7 +659,7 @@ widget-node-sections .nav-pills > li > a:hover {
   color: rgba(255,255,255, 0.84);
   font-size: 16px;
   font-weight: bold;
-  border-radius: 2px;
+  border-radius: 1px;
   -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
           box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
   height: 0;

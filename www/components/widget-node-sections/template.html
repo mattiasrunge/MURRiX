@@ -1,5 +1,5 @@
 <div class="row">
-    <ul class="nav nav-tabs" style="margin-left: 15px; margin-right: 15px; margin-top: 15px;" data-bind="foreach: sections">
+    <ul class="nav nav-pills" style="margin-left: 15px; margin-right: 15px; margin-top: 15px;" data-bind="foreach: sections">
         <li data-bind="css: { active: $component.section() === $data.name || ($index() === 0 && $component.section() === 'default') }">
             <a data-bind="location: { section: $data.name }">
                 <i class="material-icons md-18" data-bind="text: $data.icon"></i>
@@ -9,7 +9,7 @@
     </ul>
 </div>
 
-<div style="margin-top: 15px;" data-bind="foreach: sections">
+<div data-bind="foreach: sections">
     <div data-bind="if: $component.section() === $data.name || ($index() === 0 && $component.section() === 'default')">
         <div data-bind="component: { name: $data.component, params: $component.params }"></div>
     </div>

@@ -1,30 +1,26 @@
 <div class="fadeInRight animated">
-    <div class="page-header">
+    <div class="box box-content">
         <h1>Search by year</h1>
-    </div>
 
-    <div class="row">
-        <div class="col-md-12">
-           <div style="margin-bottom: 25px;">
-                <div style="text-align: center;">
-                    <span data-bind="visible: !loading()">
-                    Showing <span data-bind="text: year"></span>
-                    </span>
+        <div style="margin-bottom: 25px;">
+            <div style="text-align: center;">
+                <span data-bind="visible: !loading()">
+                Showing <span data-bind="text: year"></span>
+                </span>
 
-                    <span data-bind="visible: loading" style="display: none;">
-                    Loading <span data-bind="text: year"></span>...
-                    </span>
-                </div>
-
-                <a class="pull-right btn btn-primary" data-bind="click: yearIncClicked, clickKey: 'right'"><i class="material-icons">add</i></a>
-                <a class="pull-left btn btn-primary" data-bind="click: yearDecClicked, clickKey: 'left'"><i class="material-icons">remove</i></a>
-
-                <div class="year-slider">
-                    <div data-bind="yearSlider: { year: year }"></div>
-                </div>
+                <span data-bind="visible: loading" style="display: none;">
+                Loading <span data-bind="text: year"></span>...
+                </span>
             </div>
 
-            <widget-list-nodes params="{ list: list }"></widget-list-nodes>
+            <a class="pull-right btn btn-primary" data-bind="click: yearIncClicked, clickKey: 'right'"><i class="material-icons">add</i></a>
+            <a class="pull-left btn btn-primary" data-bind="click: yearDecClicked, clickKey: 'left'"><i class="material-icons">remove</i></a>
+
+            <div class="year-slider">
+                <div data-bind="yearSlider: { year: year }"></div>
+            </div>
         </div>
     </div>
+
+    <widget-list-nodes params="{ list: list }"></widget-list-nodes>
 </div>

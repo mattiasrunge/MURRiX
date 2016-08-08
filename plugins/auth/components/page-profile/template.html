@@ -4,30 +4,34 @@
     </div>
 
     <div class="row" data-bind="visible: loggedIn">
-        <div class="col-md-5 right-border">
-            <auth-widget-edit-user params="{ user: user, username: username, personPath: personPath }"></auth-widget-edit-user>
+        <div class="col-md-5" style="padding-right: 0;">
+            <div class="box box-content" style="margin-top: 0; padding-bottom: 0;">
+                <auth-widget-edit-user params="{ user: user, username: username, personPath: personPath }"></auth-widget-edit-user>
+            </div>
         </div>
         <div class="col-md-7" data-bind="if: user">
-            <h3>Properties</h3>
-            <table class="table table-striped" style="font-size: 12px;">
-                <tbody>
-                    <tr>
-                        <td><strong>Last login</strong></td>
-                        <td data-bind="datetimeAgo: user().attributes.loginTime"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Created</strong></td>
-                        <td data-bind="datetimeAgo: user().properties.birthtime"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Modified</strong></td>
-                        <td data-bind="datetimeAgo: user().properties.mtime"></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="box box-content" style="margin-top: 0; padding-bottom: 0;">
+                <h3>Properties</h3>
+                <table class="table table-striped" style="font-size: 12px;">
+                    <tbody>
+                        <tr>
+                            <td><strong>Last login</strong></td>
+                            <td data-bind="datetimeAgo: user().attributes.loginTime"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Created</strong></td>
+                            <td data-bind="datetimeAgo: user().properties.birthtime"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Modified</strong></td>
+                            <td data-bind="datetimeAgo: user().properties.mtime"></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <h3>Group memberships</h3>
-            <auth-widget-list-groups params="{ list: groupList }"></auth-widget-list-groups>
+                <h3>Group memberships</h3>
+                <auth-widget-list-groups params="{ list: groupList }"></auth-widget-list-groups>
+            </div>
         </div>
     </div>
 </div>

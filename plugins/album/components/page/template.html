@@ -1,5 +1,5 @@
-﻿<div class="fadeInRight animated" data-bind="event: { dragenter: dragNoopHandler, dragexit: dragNoopHandler, dragover: dragNoopHandler, drop: dropEventHandler }">
-    <div class="row" data-bind="if: nodepath" style="margin-top: 15px;">
+﻿<div class="fadeInDown animated" data-bind="event: { dragenter: dragNoopHandler, dragexit: dragNoopHandler, dragover: dragNoopHandler, drop: dropEventHandler }">
+    <div class="row node-header" data-bind="if: nodepath" style="margin-top: 15px;">
         <div class="col-md-8">
             <a class="pull-right" style="color: #aaa; margin-top: 5px; margin-left: 15px;" href="#" title="Share settings" data-bind="visible: nodepath().editable, click: editRights.bind($data, true)">
                 <i class="material-icons">share</i>
