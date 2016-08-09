@@ -7,12 +7,14 @@ const utils = require("lib/utils");
 const stat = require("lib/status");
 const ui = require("lib/ui");
 const node = require("lib/node");
+const loc = require("lib/location");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
     this.showSidebar = ko.observable(true);
-    this.tagging = ko.observable(false);
+    this.tagging = ko.observable(true);
+    this.personPath = ko.observable(false);
     this.height = ko.pureComputed(() => {
         let screenHeight = ko.unwrap(ui.windowSize()).height;
         let heights = [ 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000 ];
@@ -47,6 +49,8 @@ module.exports = utils.wrapComponent(function*(params) {
         tags = yield api.vfs.list(abspath + "/tags", {
             noerror:  true
         });
+
+        console.log("tags", tags);
 
         versions = yield api.vfs.list(abspath + "/versions", {
             noerror:  true
@@ -247,9 +251,44 @@ module.exports = utils.wrapComponent(function*(params) {
         });
     };
 
+    this.exit = () => {
+        if (this.tagging()) {
+            this.tagging(false);
+        } else {
+            loc.goto({ showPath: null });
+        }
+    };
+
+    this.removeTag = (tag) => {
+        api.vfs.unlink(this.showPath() + "/tags/" + tag.name)
+        .then((link) => {
+            this.item.reload();
+        })
+        .catch((error) => {
+            stat.printError(error);
+        });
+    };
+
+    let subscription = this.personPath.subscribe((value) => {
+        if (!value) {
+            return;
+        }
+
+        this.personPath(false);
+
+        api.vfs.symlink(value, this.showPath() + "/tags")
+        .then((link) => {
+            this.item.reload();
+        })
+        .catch((error) => {
+            stat.printError(error);
+        });
+    });
+
     $("body").css("overflow-y", "hidden");
 
     this.dispose = () => {
+        subscription.dispose();
         stat.destroy(this.loading);
         $("body").css("overflow-y", "");
     };

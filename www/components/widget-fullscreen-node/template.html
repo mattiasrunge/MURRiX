@@ -71,9 +71,20 @@
             Tag people
         </h2>
 
-        <div data-bind="text: faces"></div>
+        <input type="text" class="form-control" style="margin-top: 15px;" placeholder="Add a person" data-bind="nodeselect: { root: '/people', path: personPath }">
 
-        <button class="btn btn-block btn-primary" data-bind="click: tagging.bind($data, false)">Finished tagging</button>
+        <div data-bind="foreach: item().tags">
+            <div class="tag-item">
+                <div class="clearfix">
+                    <div class="btn-group btn-group-sm pull-right" role="group">
+                        <button type="button" class="btn btn-primary">Edit</button>
+                        <button type="button" class="btn btn-danger" data-bind="click: $component.removeTag.bind($data, $data)">Remove</button>
+                    </div>
+                    <file-widget-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 32, path: $data.path }"></file-widget-profile-picture>
+                    <div class="title" data-bind="text: $data.node.attributes.name"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="maincontainer" data-bind="if: item() && filename()">
@@ -159,7 +170,7 @@
         </ul>
     </div>
 
-    <a href="#" class="exit" data-bind="location: { showPath: null }">
+    <a href="#" class="exit" data-bind="click: exit">
         <i class="material-icons">close</i>
     </a>
 </div>

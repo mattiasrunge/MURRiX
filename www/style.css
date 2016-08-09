@@ -401,6 +401,19 @@ body {
     vertical-align: middle;
 }
 
+.fullscreen .tag-item {
+    margin-top: 15px;
+}
+
+.fullscreen .tag-item .title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #327DE6;
+    font-size: 14px;
+    padding-top: 6px;
+}
+
 .fullscreen .tag-frame {
     position: absolute;
     z-index: 10;
