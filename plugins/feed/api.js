@@ -101,6 +101,73 @@ let feed = api.register("feed", {
         options.reverse = true;
 
         return yield vfs.list(session, "/news", options);
+    },
+    eventThisDay: function*(session, datestr) {
+        let start = moment.utc(datestr);
+        let end = start.clone().add(1, "day");
+        let result = [];
+        let cache = {};
+
+        // TODO: this does not scale very well, can we select more directly in mongodb?
+        let events = yield vfs.query(session, {
+            "properties.type": "t",
+            "attributes.type": { $in: [ "birth", "marriage", "engagement" ] },
+            "attributes.time.timestamp": { $exists: true },
+            "attributes.time.timestamp": { $ne: null }
+        });
+
+        for (let event of events) {
+            let eventDate = moment.unix(event.attributes.time.timestamp).utc();
+            let testDate = eventDate.clone().year(start.year());
+
+            if (testDate.isBetween(start, end, "date", "[)")) {
+                let data = {
+                    node: event
+                };
+
+                let people = [];
+                let paths = yield vfs.lookup(session, event._id, cache);
+                for (let p of paths) {
+                    p = path.resolve(path.join(p, "..", ".."));
+
+                    people.push({
+                        path: p,
+                        node: yield vfs.resolve(session, p)
+                    });
+                }
+
+                if (event.attributes.type === "marriage") {
+                    data.type = "marriage";
+                    data.person1 = people[0];
+                    data.person2 = people[1];
+                    data.years = start.year() - eventDate.year();
+                } else if (event.attributes.type === "engagement") {
+                    data.type = "engagement";
+                    data.person1 = people[0];
+                    data.person2 = people[1];
+                    data.years = start.year() - eventDate.year();
+                } else if (event.attributes.type === "birth") {
+                    data.type = "birthday";
+                    data.person = people[0];
+                    data.ageNow = start.year() - eventDate.year();
+                    data.ageAtDeath = false;
+
+                    let death = (yield vfs.list(session, people[0].path + "/texts", { filter: {
+                        "attributes.type": "death"
+                    } }))[0];
+
+                    if (death) {
+                        let deathDate = moment.unix(death.node.attributes.time.timestamp).utc();
+
+                        data.ageAtDeath = deathDate.year() - eventDate.year();
+                    }
+                }
+
+                result.push(data);
+            }
+        }
+
+        return result;
     }
 });
 

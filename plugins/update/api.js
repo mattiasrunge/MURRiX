@@ -816,39 +816,41 @@ let update = api.register("update", {
                     let date = parts[0].split("-");
                     let time = parts[1].split(":");
 
-                    item.attributes.when.manual = {};
+                    if (date[0] !== "XXXX") {
+                        item.attributes.when.manual = {};
 
-                    item.attributes.when.manual.year = date[0];
+                        item.attributes.when.manual.year = date[0];
 
-                    if (typeof item.attributes.when.manual.year !== "undefined" && date[1] !== "XX") {
-                        item.attributes.when.manual.month = date[1];
+                        if (typeof item.attributes.when.manual.year !== "undefined" && date[1] !== "XX") {
+                            item.attributes.when.manual.month = date[1];
+                        }
+
+                        if (typeof item.attributes.when.manual.month !== "undefined" && date[2] !== "XX") {
+                            item.attributes.when.manual.day = date[2];
+                        }
+
+                        if (typeof item.attributes.when.manual.day !== "undefined" && time[0] !== "XX") {
+                            item.attributes.when.manual.hour = time[0];
+                        }
+
+                        if (typeof item.attributes.when.manual.hour !== "undefined" && time[1] !== "XX") {
+                            item.attributes.when.manual.minute = time[1];
+                        }
+
+                        if (typeof item.attributes.when.manual.minute !== "undefined" && time[2] !== "XX") {
+                            item.attributes.when.manual.second = time[2];
+                        }
+
+                        if (typeof item.attributes.when.manual.hour !== "undefined" && obj.when.source.timezone && obj.when.source.timezone !== "Unknown") {
+                            item.attributes.when.manual.timezone = obj.when.source.timezone.match(/\(GMT(.*?)\).*/)[1] || "+00:00";
+                        }
+
+                        item.attributes.when.manual.comment = obj.when.source.comment;
+
+                        // { "datestring" : "1984-04-20 XX:XX:XX", "type" : "manual", "timezone" : "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna", "daylightSavings" : true }
+                        // { "type" : "manual", "datestring" : "1956-XX-XX XX:XX:XX", "daylightSavings" : false, "timezone" : "Unknown", "comment" : "" }
+                        // { "datestring" : "1984-09-26 XX:XX:XX", "timezone" : "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna", "daylightSavings" : true, "type" : "manual", "comment" : "" }
                     }
-
-                    if (typeof item.attributes.when.manual.month !== "undefined" && date[2] !== "XX") {
-                        item.attributes.when.manual.day = date[2];
-                    }
-
-                    if (typeof item.attributes.when.manual.day !== "undefined" && time[0] !== "XX") {
-                        item.attributes.when.manual.hour = time[0];
-                    }
-
-                    if (typeof item.attributes.when.manual.hour !== "undefined" && time[1] !== "XX") {
-                        item.attributes.when.manual.minute = time[1];
-                    }
-
-                    if (typeof item.attributes.when.manual.minute !== "undefined" && time[2] !== "XX") {
-                        item.attributes.when.manual.second = time[2];
-                    }
-
-                    if (typeof item.attributes.when.manual.hour !== "undefined" && obj.when.source.timezone && obj.when.source.timezone !== "Unknown") {
-                        item.attributes.when.manual.timezone = obj.when.source.timezone.match(/\(GMT(.*?)\).*/)[1] || "+00:00";
-                    }
-
-                    item.attributes.when.manual.comment = obj.when.source.comment;
-
-                    // { "datestring" : "1984-04-20 XX:XX:XX", "type" : "manual", "timezone" : "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna", "daylightSavings" : true }
-                    // { "type" : "manual", "datestring" : "1956-XX-XX XX:XX:XX", "daylightSavings" : false, "timezone" : "Unknown", "comment" : "" }
-                    // { "datestring" : "1984-09-26 XX:XX:XX", "timezone" : "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna", "daylightSavings" : true, "type" : "manual", "comment" : "" }
                 }
             }
 
@@ -1110,39 +1112,41 @@ let update = api.register("update", {
                     let date = parts[0].split("-");
                     let time = parts[1].split(":");
 
-                    item.attributes.when.manual = {};
+                    if (date[0] !== "XXXX") {
+                        item.attributes.when.manual = {};
 
-                    item.attributes.when.manual.year = date[0];
+                        item.attributes.when.manual.year = date[0];
 
-                    if (typeof item.attributes.when.manual.year !== "undefined" && date[1] !== "XX") {
-                        item.attributes.when.manual.month = date[1];
+                        if (typeof item.attributes.when.manual.year !== "undefined" && date[1] !== "XX") {
+                            item.attributes.when.manual.month = date[1];
+                        }
+
+                        if (typeof item.attributes.when.manual.month !== "undefined" && date[2] !== "XX") {
+                            item.attributes.when.manual.day = date[2];
+                        }
+
+                        if (typeof item.attributes.when.manual.day !== "undefined" && time[0] !== "XX") {
+                            item.attributes.when.manual.hour = time[0];
+                        }
+
+                        if (typeof item.attributes.when.manual.hour !== "undefined" && time[1] !== "XX") {
+                            item.attributes.when.manual.minute = time[1];
+                        }
+
+                        if (typeof item.attributes.when.manual.minute !== "undefined" && time[2] !== "XX") {
+                            item.attributes.when.manual.second = time[2];
+                        }
+
+                        if (typeof item.attributes.when.manual.hour !== "undefined" && obj.when.source.timezone && obj.when.source.timezone !== "Unknown") {
+                            item.attributes.when.manual.timezone = obj.when.source.timezone.match(/\(GMT(.*?)\).*/)[1] || "+00:00";
+                        }
+
+                        item.attributes.when.manual.comment = obj.when.source.comment;
+
+                        // { "datestring" : "1984-04-20 XX:XX:XX", "type" : "manual", "timezone" : "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna", "daylightSavings" : true }
+                        // { "type" : "manual", "datestring" : "1956-XX-XX XX:XX:XX", "daylightSavings" : false, "timezone" : "Unknown", "comment" : "" }
+                        // { "datestring" : "1984-09-26 XX:XX:XX", "timezone" : "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna", "daylightSavings" : true, "type" : "manual", "comment" : "" }
                     }
-
-                    if (typeof item.attributes.when.manual.month !== "undefined" && date[2] !== "XX") {
-                        item.attributes.when.manual.day = date[2];
-                    }
-
-                    if (typeof item.attributes.when.manual.day !== "undefined" && time[0] !== "XX") {
-                        item.attributes.when.manual.hour = time[0];
-                    }
-
-                    if (typeof item.attributes.when.manual.hour !== "undefined" && time[1] !== "XX") {
-                        item.attributes.when.manual.minute = time[1];
-                    }
-
-                    if (typeof item.attributes.when.manual.minute !== "undefined" && time[2] !== "XX") {
-                        item.attributes.when.manual.second = time[2];
-                    }
-
-                    if (typeof item.attributes.when.manual.hour !== "undefined" && obj.when.source.timezone && obj.when.source.timezone !== "Unknown") {
-                        item.attributes.when.manual.timezone = obj.when.source.timezone.match(/\(GMT(.*?)\).*/)[1] || "+00:00";
-                    }
-
-                    item.attributes.when.manual.comment = obj.when.source.comment;
-
-                    // { "datestring" : "1984-04-20 XX:XX:XX", "type" : "manual", "timezone" : "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna", "daylightSavings" : true }
-                    // { "type" : "manual", "datestring" : "1956-XX-XX XX:XX:XX", "daylightSavings" : false, "timezone" : "Unknown", "comment" : "" }
-                    // { "datestring" : "1984-09-26 XX:XX:XX", "timezone" : "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna", "daylightSavings" : true, "type" : "manual", "comment" : "" }
                 }
             }
 

@@ -170,7 +170,6 @@ body {
 
 .grid-picture-container {
     position: relative;
-    display: inline-block;
 }
 
 .grid-picture-type {
@@ -504,7 +503,8 @@ body {
 .form-control,
 .navbar-nav>li>.dropdown-menu,
 .btn,
-.modal-content {
+.modal-content,
+.well {
     border-radius: 0;
 }
 
@@ -526,6 +526,8 @@ body {
 
 .node-header {
     margin: 15px;
+    margin-left: 0;
+    margin-bottom: 0;
 }
 
 .node-content {
@@ -722,6 +724,7 @@ widget-node-sections .nav-pills > li > a:focus {
 
 
 .news-container {
+    margin-top: 15px;
 }
 
 .news-container .news-item {
@@ -772,6 +775,38 @@ widget-node-sections .nav-pills > li > a:focus {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.today-container {
+    color: black;
+}
+
+.today-container small {
+    margin-left: 10px;
+    color: #777;
+    font-size: 50%;
+}
+
+.today-container .today-item {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    min-height: 24px;
+}
+
+.today-container .today-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.today-container .today-item .today-title {
+    margin-left: 40px;
+}
+
+.today-container .today-item .material-icons {
+    vertical-align: bottom;
+    float: left;
 }
 
 

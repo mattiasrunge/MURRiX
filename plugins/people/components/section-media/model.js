@@ -12,7 +12,7 @@ const stat = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.nodepath = params.nodepath;
-    this.size = 224;
+    this.size = 226;
 
     this.data = ko.asyncComputed([], function*(setter) {
         let result = {

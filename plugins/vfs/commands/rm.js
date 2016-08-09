@@ -14,5 +14,9 @@ vorpal
 .action(vorpal.wrap(function*(session, args) {
     let cwd = yield session.env("cwd");
 
+    if (args.path.indexOf("*") !== -1) {
+        // TODO
+    }
+
     yield api.vfs.unlink(terminal.normalize(cwd, args.path));
 }));

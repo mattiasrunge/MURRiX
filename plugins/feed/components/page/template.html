@@ -1,10 +1,6 @@
 <div class="fadeInRight animated">
     <div class="row">
         <div class="col-md-6" style="padding-right: 0;">
-            <div class="box box-content">
-                <h1>Latest</h1>
-            </div>
-
             <div class="news-container" data-bind="foreach: list">
                 <div class="news-item">
                     <div class="news-title">
@@ -36,10 +32,30 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="box box-content">
-                <h1>Today in history</h1>
-            </div>
+            <div class="today-container box box-content">
+                <h2>
+                    <small class="pull-right" style="margin-top: 10px;">
+                        <i class="material-icons" data-bind="click: prevDay" style="cursor: pointer;">arrow_back</i>
+                        <i class="material-icons" data-bind="click: nextDay" style="cursor: pointer;">arrow_forward</i>
+                    </small>
+                    Today
+                    <small data-bind="datetimeDay: date().unix()"></small>
+                </h2>
 
+                <div data-bind="foreach: events">
+                    <div class="today-item">
+                        <div data-bind="if: $data.type === 'birthday'">
+                            <feed-widget-today-birthday params="{ nodepath: $data }"></feed-widget-today-birthday>
+                        </div>
+                        <div data-bind="if: $data.type === 'marriage'">
+                            <feed-widget-today-marriage params="{ nodepath: $data }"></feed-widget-today-marriage>
+                        </div>
+                        <div data-bind="if: $data.type === 'engagement'">
+                            <feed-widget-today-engagement params="{ nodepath: $data }"></feed-widget-today-engagement>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -46,7 +46,6 @@ module.exports = {
     }),
     list: ko.observableArray(),
     uploadFiles: ko.observableArray(),
-    editRights: ko.observable(false),
     getUniqueName: co.wrap(function*(path, baseName) {
         let name = baseName.replace(/ |\//g, "_");
 

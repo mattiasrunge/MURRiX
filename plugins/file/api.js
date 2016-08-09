@@ -126,7 +126,9 @@ let file = api.register("file", {
         let list = [];
 
         for (let n = 0; n < nodes.length; n++) {
-            list.push({ id: nodes[n]._id, filename: path.join("media", path.basename(filenames[n])) });
+            if (filenames[n]) {
+                list.push({ id: nodes[n]._id, filename: path.join("media", path.basename(filenames[n])) });
+            }
         }
 
         return list;

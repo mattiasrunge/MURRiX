@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "ansi-regex": "2.0.0",
-    "api.io": "0.0.23",
+    "api.io": "0.0.24",
     "babel-core": "6.11.4",
     "babel-plugin-transform-es2015-modules-amd": "6.8.0",
     "bluebird": "3.4.1",
@@ -44,7 +44,7 @@
     "mongodb": "2.2.5",
     "node-uuid": "1.4.7",
     "octal": "1.0.0",
-    "pauseable": "^0.1.6",
+    "pauseable": "0.1.6",
     "server-destroy": "1.0.1",
     "sha1": "1.1.1",
     "strip-ansi": "3.0.1",
