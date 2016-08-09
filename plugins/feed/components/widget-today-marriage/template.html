@@ -4,7 +4,7 @@
         <a href="#" data-bind="location: { page: 'node', path: nodepath().person1.path }, text: nodepath().person1.node.attributes.name"></a>
         celebrates
         <span data-bind="text: nodepath().person1.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
-        <span data-bind="number: nodepath().years"></span> wedding day anniversary
+        <span data-bind="number: nodepath().years"></span> wedding anniversary
     </span>
     <span data-bind="if: nodepath().person2">
         <a href="#" data-bind="location: { page: 'node', path: nodepath().person1.path }, text: nodepath().person1.node.attributes.name"></a>
@@ -12,6 +12,6 @@
         <a href="#" data-bind="location: { page: 'node', path: nodepath().person2.path }, text: nodepath().person2.node.attributes.name"></a>
         celebrates
         their
-        <span data-bind="number: nodepath().years"></span> wedding day anniversary
+        <span data-bind="number: nodepath().years"></span> wedding anniversary
     </span>
 </div>

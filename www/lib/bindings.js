@@ -180,6 +180,28 @@ ko.bindingHandlers.yearSlider = {
     }
 };
 
+ko.bindingHandlers.datetimeDayString = {
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+
+        if (!value) {
+            $(element).text("Unknown");
+            return;
+        }
+
+        let dateItem = moment.utc(value * 1000).calendar(null, {
+            sameDay: "[Today]",
+            nextDay: "[Tomorrow]",
+            nextWeek: "dddd",
+            lastDay: "[Yesterday]",
+            lastWeek: "[Last] dddd",
+            sameElse: "dddd, MMMM Do YYYY"
+        });
+
+        $(element).html(dateItem);
+    }
+};
+
 ko.bindingHandlers.datetimeDay = {
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());

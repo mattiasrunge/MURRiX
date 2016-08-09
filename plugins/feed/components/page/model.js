@@ -10,12 +10,30 @@ const stat = require("lib/status");
 module.exports = utils.wrapComponent(function*(/*params*/) {
     ui.setTitle("News");
 
-    this.date = ko.observable(moment());
+    this.today = ko.observable(moment());
+    this.tomorrow = ko.pureComputed(() => this.today().clone().add(1, "day"));
     this.loading = stat.create();
     this.list = ko.observableArray();
-    this.events = ko.asyncComputed([], function*() {
+    this.eventsToday = ko.asyncComputed([], function*() {
         this.loading(true);
-        let result = yield api.feed.eventThisDay(this.date().format("YYYY-MM-DD"));
+        let result = yield api.feed.eventThisDay(this.today().format("YYYY-MM-DD"));
+        this.loading(false);
+
+        console.log(result);
+
+        return result.map((item) => {
+            item.node = ko.observable(item.node);
+            return item;
+        });
+    }.bind(this), (error) => {
+        this.loading(false);
+        stat.printError(error);
+        return [];
+    });
+
+    this.eventsTomorrow = ko.asyncComputed([], function*() {
+        this.loading(true);
+        let result = yield api.feed.eventThisDay(this.tomorrow().format("YYYY-MM-DD"));
         this.loading(false);
 
         console.log(result);
@@ -31,17 +49,17 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
     });
 
     this.nextDay = () => {
-        this.date().add(1, "day");
-        this.date.valueHasMutated();
+        this.today().add(1, "day");
+        this.today.valueHasMutated();
     };
 
     this.prevDay = () => {
-        this.date().subtract(1, "day");
-        this.date.valueHasMutated();
+        this.today().subtract(1, "day");
+        this.today.valueHasMutated();
     };
 
     this.loading(true);
-    let list = [];//yield api.feed.list({ limit: 30 });
+    let list = yield api.feed.list({ limit: 30 });
     this.loading(false);
 
     console.log("news", list);

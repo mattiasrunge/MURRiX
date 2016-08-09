@@ -5,7 +5,7 @@
                 <div class="news-item">
                     <div class="news-title">
                         <span data-bind="if: $data.node().attributes.action === 'comment'">
-                            New comments were made on this <widget-node-type params="{ type: $data.node().attributes.type }"></widget-node-type>.
+                            New comments were made on this <widget-node-type params="{ type: $data.node().attributes.type }"></widget-node-type>
                         </span>
                         <span data-bind="if: $data.node().attributes.action === 'created'">
                             <strong data-bind="unameNice: $data.node().attributes.uid"></strong> added a new <widget-node-type params="{ type: $data.node().attributes.type }"></widget-node-type>
@@ -33,16 +33,11 @@
         </div>
         <div class="col-md-6">
             <div class="today-container box box-content">
-                <h2>
-                    <small class="pull-right" style="margin-top: 10px;">
-                        <i class="material-icons" data-bind="click: prevDay" style="cursor: pointer;">arrow_back</i>
-                        <i class="material-icons" data-bind="click: nextDay" style="cursor: pointer;">arrow_forward</i>
-                    </small>
-                    Today
-                    <small data-bind="datetimeDay: date().unix()"></small>
-                </h2>
+                <i class="material-icons md-14 text-muted pull-left" data-bind="click: prevDay" style="cursor: pointer;">arrow_back</i>
+                <i class="material-icons md-14 text-muted pull-right" data-bind="click: nextDay" style="cursor: pointer;">arrow_forward</i>
+                <h2 data-bind="datetimeDayString: today().unix()"></h2>
 
-                <div data-bind="foreach: events">
+                <div data-bind="foreach: eventsToday">
                     <div class="today-item">
                         <div data-bind="if: $data.type === 'birthday'">
                             <feed-widget-today-birthday params="{ nodepath: $data }"></feed-widget-today-birthday>
@@ -54,6 +49,33 @@
                             <feed-widget-today-engagement params="{ nodepath: $data }"></feed-widget-today-engagement>
                         </div>
                     </div>
+                </div>
+                <div data-bind="visible: eventsToday().length === 0">
+                    <p class="text-muted">
+                        No events found
+                    </p>
+                </div>
+            </div>
+
+            <div class="today-container box box-content">
+                <h2 data-bind="datetimeDayString: tomorrow().unix()"></h2>
+                <div data-bind="foreach: eventsTomorrow">
+                    <div class="today-item">
+                        <div data-bind="if: $data.type === 'birthday'">
+                            <feed-widget-today-birthday params="{ nodepath: $data }"></feed-widget-today-birthday>
+                        </div>
+                        <div data-bind="if: $data.type === 'marriage'">
+                            <feed-widget-today-marriage params="{ nodepath: $data }"></feed-widget-today-marriage>
+                        </div>
+                        <div data-bind="if: $data.type === 'engagement'">
+                            <feed-widget-today-engagement params="{ nodepath: $data }"></feed-widget-today-engagement>
+                        </div>
+                    </div>
+                </div>
+                <div data-bind="visible: eventsTomorrow().length === 0">
+                    <p class="text-muted">
+                        No events found
+                    </p>
                 </div>
             </div>
         </div>
