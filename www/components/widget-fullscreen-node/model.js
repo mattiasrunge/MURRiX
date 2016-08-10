@@ -148,20 +148,20 @@ module.exports = utils.wrapComponent(function*(params) {
         return 0;
     });
 
-    this.faces = ko.asyncComputed([], function*(setter) {
-        let abspath = ko.unwrap(this.showPath);
-
-        setter([]);
-
-        let faces = yield api.file.getFaces(abspath);
-
-        console.log("faces", faces);
-
-        return faces;
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return [];
-    });
+//     this.faces = ko.asyncComputed([], function*(setter) {
+//         let abspath = ko.unwrap(this.showPath);
+//
+//         setter([]);
+//
+//         let faces = yield api.file.getFaces(abspath);
+//
+//         console.log("faces", faces);
+//
+//         return faces;
+//     }.bind(this), (error) => {
+//         stat.printError(error);
+//         return [];
+//     });
 
     this.currentIndex = ko.pureComputed(() => {
         if (!this.item()) {

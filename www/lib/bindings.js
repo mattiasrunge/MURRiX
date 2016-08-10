@@ -19,6 +19,7 @@ const Slider = require("slider");
 const autosize = require("autosize");
 const LazyLoad = require("lazyload");
 const typeahead = require("typeahead"); // jshint ignore:line
+const imgareaselect = require("jquery.imgareaselect"); // jshint ignore:line
 
 let lazyload = new LazyLoad({
     show_while_loading: true, // jshint ignore:line
@@ -687,48 +688,54 @@ ko.bindingHandlers.picture = {
                 css.push("height: " + height + "px");
             }
 
-            if (nolazyload) {
-                $element.append($("<img src='" + filename + "' style='" + css.join(";") + "' class='" + classes + "'>"));
-            } else {
-                let containerCss = css.join(";");
+            let containerCss = css.join(";");
 
-                if (classes.indexOf("img-responsive") !== -1) { // TODO: Hack!
-                    containerCss = "";
-                }
-
-                let $span = $("<span style='display: inline-block; position: relative; " + containerCss + "' class='" + classes + "'></span>");
-
-                $span.append($("<img data-original='" + filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>"));
-
-                if (item.tags) {
-                    for (let tag of item.tags) {
-                        console.log(tag);
-
-                        let $frame = $("<div class='tag-frame'></div>");
-                        let $label = $("<div class='tag-label'></div>");
-                        let $text = $("<span class='tag-label-text'>" + tag.node.attributes.name + "</span>");
-
-                        let top = (tag.link.attributes.y - (tag.link.attributes.height / 2)) * 100;
-                        let left = (tag.link.attributes.x - (tag.link.attributes.width / 2)) * 100;
-                        let height = tag.link.attributes.height * 100;
-                        let width = tag.link.attributes.width * 100;
-
-                        $frame.css("top", top + "%");
-                        $frame.css("left", left + "%");
-                        $frame.css("height", height + "%");
-                        $frame.css("width", width + "%");
-
-                        $label.append($text);
-                        $frame.append($label);
-                        $span.append($frame);
-                    }
-                }
-
-                $element.append($span);
-                lazyload.update();
-
-                $element = $span;
+            if (classes.indexOf("img-responsive") !== -1) { // TODO: Hack!
+                containerCss = "";
             }
+
+            let $span = $("<span style='display: inline-block; position: relative; " + containerCss + "' class='" + classes + "'></span>");
+            let $img;
+
+            if (nolazyload) {
+                $img = $("<img src='" + filename + "' style='" + css.join(";") + "' class='" + classes + "'>");
+            } else {
+                $img = $("<img data-original='" + filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>");
+            }
+
+            $span.append($img);
+
+            $element.append($span);
+
+            if (item.tags) {
+                for (let tag of item.tags) {
+                    console.log(tag);
+
+                    let $frame = $("<div class='tag-frame'></div>");
+                    let $label = $("<div class='tag-label'></div>");
+                    let $text = $("<span class='tag-label-text'>" + tag.node.attributes.name + "</span>");
+
+                    let top = (tag.link.attributes.y - (tag.link.attributes.height / 2)) * 100;
+                    let left = (tag.link.attributes.x - (tag.link.attributes.width / 2)) * 100;
+                    let height = tag.link.attributes.height * 100;
+                    let width = tag.link.attributes.width * 100;
+
+                    $frame.css("top", top + "%");
+                    $frame.css("left", left + "%");
+                    $frame.css("height", height + "%");
+                    $frame.css("width", width + "%");
+
+                    $label.append($text);
+                    $frame.append($label);
+                    $span.append($frame);
+
+                    console.log($span.imgAreaSelect);
+                    $span.imgAreaSelect({ x1: top, y1: left, x2: left + width, y2: top + height, handles: true });
+                }
+            }
+
+            lazyload.update();
+            $element = $span;
 
             if (type === "image") {
                 $element.append($("<i class='material-icons grid-picture-type' title='Image file'>camera_alt</i>"));

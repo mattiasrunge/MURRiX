@@ -20,6 +20,7 @@
     "requirejs-text": "2.0.12",
     "snackbarjs": "1.1.0",
     "typeahead.js-bootstrap-css": "1.2.1",
-    "vanilla-lazyload": "1.5.7"
+    "vanilla-lazyload": "1.5.7",
+    "jdomizio-imgareaselect": "https://github.com/jdomizio/imgareaselect.git"
   }
 }

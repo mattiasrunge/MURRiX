@@ -67,7 +67,7 @@
     </div>
 
     <div class="sidebar" data-bind="visible: tagging() && item(), if: tagging() && item()">
-        <h2 style="margin-top: 0;">
+        <h2 style="margin: 0;">
             Tag people
         </h2>
 
@@ -89,7 +89,7 @@
 
     <div class="maincontainer" data-bind="if: item() && filename()">
         <div data-bind="visible: item().node().attributes.type === 'image', if: item().node().attributes.type === 'image'">
-            <div data-bind="picture: { item: item, filename: filename, height: $component.height, classes: 'resize-fit-center' }" class="resize-fit-container"></div>
+            <div data-bind="picture: { item: item, filename: filename, height: $component.height, classes: 'resize-fit-center', nolazyload: true }" class="resize-fit-container"></div>
         </div>
         <div data-bind="visible: item().node().attributes.type === 'video', if: item().node().attributes.type === 'video'" class="resize-fit-container">
             <video autoplay controls preload="metadata" class="resize-fit-center">
