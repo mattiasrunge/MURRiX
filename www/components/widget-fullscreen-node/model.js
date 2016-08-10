@@ -13,7 +13,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
     this.showSidebar = ko.observable(true);
-    this.tagging = ko.observable(true);
+    this.tagging = ko.observable(false);
     this.personPath = ko.observable(false);
     this.height = ko.pureComputed(() => {
         let screenHeight = ko.unwrap(ui.windowSize()).height;
@@ -29,7 +29,6 @@ module.exports = utils.wrapComponent(function*(params) {
     });
     this.item = ko.asyncComputed(false, function*(setter) {
         let abspath = ko.unwrap(this.showPath);
-        let tags = [];
         let versions = [];
 
         setter(false);
@@ -46,12 +45,6 @@ module.exports = utils.wrapComponent(function*(params) {
 
         let editable = yield api.vfs.access(abspath, "w");
 
-        tags = yield api.vfs.list(abspath + "/tags", {
-            noerror:  true
-        });
-
-        console.log("tags", tags);
-
         versions = yield api.vfs.list(abspath + "/versions", {
             noerror:  true
         });
@@ -60,7 +53,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(false);
 
-        return { node: ko.observable(item), path: abspath, tags: tags, versions: versions, editable: editable };
+        return { node: ko.observable(item), path: abspath, versions: versions, editable: editable };
     }.bind(this), (error) => {
         this.loading(false);
         stat.printError(error);
@@ -94,6 +87,25 @@ module.exports = utils.wrapComponent(function*(params) {
         this.loading(false);
         stat.printError(error);
         return false;
+    });
+
+    this.tags = ko.asyncComputed([], function*(setter) {
+        if (!this.item()) {
+            return [];
+        }
+
+        setter([]);
+
+        let tags = yield api.vfs.list(this.item().path + "/tags", {
+            noerror:  true
+        });
+
+        console.log("tags", tags);
+
+        return tags;
+    }.bind(this), (error) => {
+        stat.printError(error);
+        return [];
     });
 
     this.who = ko.asyncComputed(false, function*(setter) {
@@ -262,7 +274,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.removeTag = (tag) => {
         api.vfs.unlink(this.showPath() + "/tags/" + tag.name)
         .then((link) => {
-            this.item.reload();
+            this.tags.reload();
         })
         .catch((error) => {
             stat.printError(error);
@@ -278,7 +290,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         api.vfs.symlink(value, this.showPath() + "/tags")
         .then((link) => {
-            this.item.reload();
+            this.tags.reload();
         })
         .catch((error) => {
             stat.printError(error);

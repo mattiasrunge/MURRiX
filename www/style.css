@@ -517,6 +517,8 @@ body {
 .form-control,
 .navbar-nav>li>.dropdown-menu,
 .btn,
+.btn-group-sm>.btn,
+.btn-sm
 .modal-content,
 .well {
     border-radius: 0;
@@ -734,6 +736,22 @@ widget-node-sections .nav-pills > li > a:focus {
     border-radius: 2px;
     margin-right: 10px;
     vertical-align: middle;
+}
+
+.node-select-text {
+    border: 0;
+    outline: none;
+    background-color: #FFFEDF;
+    padding: 0;
+}
+
+.node-select-text:focus {
+    border: 0;
+    outline: none;
+}
+
+.node-select-text:placeholder-shown {
+    font-style: italic;
 }
 
 

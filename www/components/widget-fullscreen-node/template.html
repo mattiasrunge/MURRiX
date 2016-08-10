@@ -7,16 +7,16 @@
         <table class="text-muted">
             <tbody>
                 <tr>
-                    <td>
-                        <i class="material-icons">description</i>
+                    <td style="width: 44px;">
+                        <i class="material-icons" title="Description">description</i>
                     </td>
                     <td>
                         <widget-node-text-attribute params="{ nodepath: item, name: 'description', html: true }"></widget-node-text-attribute>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <i class="material-icons">file_download</i>
+                    <td style="width: 44px;">
+                        <i class="material-icons" title="File">file_download</i>
                     </td>
 
                     <td>
@@ -31,22 +31,27 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <i class="material-icons">person</i>
+                    <td style="width: 44px;">
+                        <i class="material-icons" title="Created by">person</i>
                     </td>
 
                     <td>
-                        <div data-bind="if: who()">
+                        <widget-node-link-node params="{ nodepath: item, name: 'createdBy', niceName: 'person', searchPaths: [ '/people' ] }"></widget-node-link-node>
+
+                        <!--<div data-bind="if: who()">
                             <a href="#" target="_blank" data-bind="text: who().node().attributes.name, location: { page: 'node', path: who().path, showPath: null }"></a>
+
+
+
                         </div>
                         <div data-bind="if: !who()">
                             Unknown
-                        </div>
+                        </div>-->
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <i class="material-icons">camera</i>
+                    <td style="width: 44px;">
+                        <i class="material-icons" title="Created with">camera</i>
                     </td>
 
                     <td>
@@ -73,7 +78,7 @@
 
         <input type="text" class="form-control" style="margin-top: 15px;" placeholder="Add a person" data-bind="nodeselect: { root: '/people', path: personPath }">
 
-        <div data-bind="foreach: item().tags">
+        <div data-bind="foreach: tags">
             <div class="tag-item">
                 <div class="clearfix">
                     <div class="btn-group btn-group-sm pull-right" role="group">
@@ -89,7 +94,7 @@
 
     <div class="maincontainer" data-bind="if: item() && filename()">
         <div data-bind="visible: item().node().attributes.type === 'image', if: item().node().attributes.type === 'image'">
-            <div data-bind="picture: { item: item, filename: filename, height: $component.height, classes: 'resize-fit-center', nolazyload: true }" class="resize-fit-container"></div>
+            <div data-bind="picture: { item: item, filename: filename, tags: tags, height: $component.height, classes: 'resize-fit-center', nolazyload: true }" class="resize-fit-container"></div>
         </div>
         <div data-bind="visible: item().node().attributes.type === 'video', if: item().node().attributes.type === 'video'" class="resize-fit-container">
             <video autoplay controls preload="metadata" class="resize-fit-center">
@@ -128,7 +133,7 @@
 
             <span>
                 <i class="material-icons md-18">face</i>
-                <span data-bind="text: item().tags.length"></span>
+                <span data-bind="text: tags().length"></span>
             </span>
         </span>
 

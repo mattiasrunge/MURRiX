@@ -601,11 +601,15 @@ ko.bindingHandlers.nodeselect = {
         $element.on("typeahead:asynccancel", () => element.loading(false));
         $element.on("typeahead:asyncreceive", () => element.loading(false));
         $element.on("typeahead:active", () => {
+            console.log("valid");
             $element.removeClass("valid");
         });
         $element.on("typeahead:idle", () => {
+            console.log("idle");
             if (path()) {
                 $element.addClass("valid");
+            } else {
+                path.valueHasMutated();
             }
         });
         $element.on("typeahead:change typeahead:select", () => {
@@ -666,6 +670,7 @@ ko.bindingHandlers.picture = {
         let data = ko.unwrap(valueAccessor());
         let item = ko.unwrap(data.item);
         let filename = ko.unwrap(data.filename) || item.filename;
+        let tags = ko.unwrap(data.tags);
         let width = ko.unwrap(data.width);
         let height = ko.unwrap(data.height);
         let classes = ko.unwrap(data.classes) || "";
@@ -707,10 +712,8 @@ ko.bindingHandlers.picture = {
 
             $element.append($span);
 
-            if (item.tags) {
-                for (let tag of item.tags) {
-                    console.log(tag);
-
+            if (tags) {
+                for (let tag of tags) {
                     let $frame = $("<div class='tag-frame'></div>");
                     let $label = $("<div class='tag-label'></div>");
                     let $text = $("<span class='tag-label-text'>" + tag.node.attributes.name + "</span>");
@@ -729,8 +732,7 @@ ko.bindingHandlers.picture = {
                     $frame.append($label);
                     $span.append($frame);
 
-                    console.log($span.imgAreaSelect);
-                    $span.imgAreaSelect({ x1: top, y1: left, x2: left + width, y2: top + height, handles: true });
+//                     $span.imgAreaSelect({ x1: top, y1: left, x2: left + width, y2: top + height, handles: true });
                 }
             }
 

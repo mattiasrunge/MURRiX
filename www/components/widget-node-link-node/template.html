@@ -1,0 +1,17 @@
+﻿<span class="edit-hover-container" data-bind="visible: item() && !editing(), if: item">
+    <a href="#" data-bind="location: { page: 'node', path: item().path }, text: item().node().attributes.name"></a>
+    <a class="edit-hover-link" href="#" title="Edit" data-bind="visible: nodepath().editable, click: edit">
+        <i class="material-icons">edit</i>
+    </a>
+</span>
+
+<span data-bind="visible: !item() && !editing()" style="color: #999;">
+    <i data-bind="visible: nodepath().editable, click: editing.bind($data, true)">
+        Select a <span data-bind="text: niceName"></span>
+    </i>
+    <i data-bind="visible: !nodepath().editable">Unknown</i>
+</span>
+
+<span data-bind="visible: editing">
+    <input type="text" class="node-select-text" data-bind="attr: { placeholder: 'Select a ' + niceName() }, nodeselect: { root: searchPaths, path: linkToPath }, hasFocus: true">
+</span>
