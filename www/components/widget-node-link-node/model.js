@@ -19,23 +19,37 @@ module.exports = utils.wrapComponent(function*(params) {
 
         setter(false);
 
-        let item = yield api.vfs.resolve(abspath, { noerror: true });
+        let link = yield api.vfs.resolve(abspath, { noerror: true, nofollow: true });
 
-        console.log(abspath, item);
-
-        if (!item) {
+        if (!link) {
             return false;
         }
 
-        abspath = yield api.vfs.lookup(item._id);
+        let item = yield api.vfs.resolve(link.attributes.path);
 
-        this.linkToPath(abspath);
+        this.linkToPath(link.attributes.path);
 
-        return { node: ko.observable(item), path: abspath };
+        return { node: ko.observable(item), path: link.attributes.path };
     }.bind(this), (error) => {
         stat.printError(error);
         return false;
     });
+
+    let save = utils.co(function*(targetpath) {
+        if (this.item() && targetpath === this.item().path) {
+            return;
+        }
+
+        let abspath = this.nodepath().path + "/" + this.name();
+
+        yield api.vfs.unlink(abspath);
+
+        if (targetpath) {
+            yield api.vfs.symlink(targetpath, abspath);
+        }
+
+        this.item.reload();
+    }.bind(this));
 
     let subscription = this.linkToPath.subscribe((value) => {
         if (!this.editing()) {
@@ -45,7 +59,10 @@ module.exports = utils.wrapComponent(function*(params) {
         console.log(value);
         this.editing(false);
 
-        // TODO:
+        save(value)
+        .catch((error) => {
+            stat.printError(error);
+        });
     });
 
     this.dispose = () => {

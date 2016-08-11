@@ -20,7 +20,7 @@
     animation-duration: 0.2s;
 }
 
-.material-icons { vertical-align: middle; }
+.material-icons { vertical-align: middle; font-size: inherit; }
 .material-icons.spin { animation: spin 1s infinite linear; }
 
 /* Rules for sizing the icon. */
@@ -751,7 +751,7 @@ widget-node-sections .nav-pills > li > a:focus {
 }
 
 .node-select-text:placeholder-shown {
-    font-style: italic;
+/*     font-style: italic; */
 }
 
 
