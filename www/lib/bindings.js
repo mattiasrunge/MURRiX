@@ -695,6 +695,7 @@ ko.bindingHandlers.picture = {
     update: (element, valueAccessor) => {
         let data = ko.unwrap(valueAccessor());
         let item = ko.unwrap(data.item);
+        let selectTag = ko.unwrap(data.selectTag);
         let filename = ko.unwrap(data.filename) || item.filename;
         let tags = ko.unwrap(data.tags);
         let width = ko.unwrap(data.width);
@@ -703,6 +704,10 @@ ko.bindingHandlers.picture = {
         let type = ko.unwrap(data.type);
         let $element = $(element);
         let nolazyload = !!ko.unwrap(data.nolazyload);
+
+        if (element.$img) {
+            element.$img.imgAreaSelect({ "remove": true });
+        }
 
         $element.empty();
 
@@ -749,18 +754,71 @@ ko.bindingHandlers.picture = {
                     let height = tag.link.attributes.height * 100;
                     let width = tag.link.attributes.width * 100;
 
-                    $frame.css("top", top + "%");
-                    $frame.css("left", left + "%");
-                    $frame.css("height", height + "%");
-                    $frame.css("width", width + "%");
 
-                    $label.append($text);
-                    $frame.append($label);
-                    $span.append($frame);
+                    if (!isNaN(top) && !isNaN(left) && !isNaN(height) && !isNaN(width)) {
+                        $frame.css("top", top + "%");
+                        $frame.css("left", left + "%");
+                        $frame.css("height", height + "%");
+                        $frame.css("width", width + "%");
 
-//                     $span.imgAreaSelect({ x1: top, y1: left, x2: left + width, y2: top + height, handles: true });
+                        $label.append($text);
+                        $frame.append($label);
+                        $span.append($frame);
+                    }
                 }
             }
+
+            if (selectTag) {
+                console.log("selectTag", selectTag);
+
+                let imgWidth = $img.width();
+                let imgHeight = $img.height();
+
+                let onSelectEnd = (img, selection) => {
+                    if (selection.width === 0 || selection.height === 0) {
+                        return data.selectTag(false);
+                    }
+
+                    let result = {};
+                    let x = selection.x1 + (selection.width / 2);
+                    let y = selection.y1 + (selection.height / 2);
+
+                    result.x = x / imgWidth;
+                    result.y = y / imgHeight;
+
+                    result.width = selection.width / imgWidth;
+                    result.height = selection.height / imgHeight;
+
+                    data.selectTag(result);
+                };
+
+                let options = {
+                    minWidth      : 32,
+                    minHeight     : 32,
+                    instance      : true,
+                    movable       : true,
+                    resizable     : true,
+                    handles       : true,
+                    keys          : false,
+                    onSelectEnd   : onSelectEnd
+                };
+
+                if (isNaN(selectTag.y) || isNaN(selectTag.x) || isNaN(selectTag.height) || isNaN(selectTag.width)) {
+                    $img.imgAreaSelect(options);
+                } else {
+                    options.show = true;
+
+                    options.x1 = imgWidth * (selectTag.x - selectTag.width / 2);
+                    options.x2 = imgWidth * (selectTag.x + selectTag.width / 2);
+
+                    options.y1 = imgHeight * (selectTag.y - selectTag.height / 2);
+                    options.y2 = imgHeight * (selectTag.y + selectTag.height / 2);
+
+                    $img.imgAreaSelect(options);
+                }
+            }
+
+            element.$img = $img;
 
             lazyload.update();
             $element = $span;

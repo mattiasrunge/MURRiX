@@ -61,14 +61,15 @@
             Tags
         </h2>
 
-        <input type="text" class="form-control" style="margin-top: 15px;" placeholder="Add a person" data-bind="nodeselect: { root: '/people', path: personPath }, visible: nodepath().editable">
+        <input type="text" class="form-control" style="margin-top: 15px;" placeholder="Add a person" data-bind="nodeselect: { root: '/people', path: personPath }, visible: nodepath().editable, disable: selectedTag">
 
         <div data-bind="foreach: tags">
             <div class="tag-item">
                 <div class="clearfix">
                     <div class="btn-group btn-group-sm pull-right" role="group" data-bind="visible: $component.nodepath().editable">
-                        <button type="button" class="btn btn-primary">Edit</button>
-                        <button type="button" class="btn btn-danger" data-bind="click: $component.removeTag.bind($data, $data)">Remove</button>
+                        <button type="button" class="btn btn-primary" data-bind="click: $component.selectedTag.bind($data, $data), visible: !$component.selectedTag() && $component.nodepath().node().attributes.type === 'image'">Edit</button>
+                        <button type="button" class="btn btn-success" data-bind="click: $component.selectDone, visible: $component.selectedTag() === $data && $component.nodepath().node().attributes.type === 'image'">Done</button>
+                        <button type="button" class="btn btn-danger" data-bind="click: $component.removeTag.bind($data, $data), disable: $component.selectedTag">Remove</button>
                     </div>
                     <file-widget-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 32, path: $data.path }"></file-widget-profile-picture>
                     <div class="title" data-bind="text: $data.node.attributes.name"></div>
@@ -79,7 +80,7 @@
 
     <div class="maincontainer" data-bind="if: nodepath() && filename()">
         <div data-bind="visible: nodepath().node().attributes.type === 'image', if: nodepath().node().attributes.type === 'image'">
-            <div data-bind="picture: { item: nodepath, filename: filename, tags: tags, height: $component.height, classes: 'resize-fit-center', nolazyload: true }" class="resize-fit-container"></div>
+            <div data-bind="picture: { item: nodepath, filename: filename, tags: tags, height: $component.height, classes: 'resize-fit-center', nolazyload: true, selectTag: selectTag }" class="resize-fit-container"></div>
         </div>
         <div data-bind="visible: nodepath().node().attributes.type === 'video', if: nodepath().node().attributes.type === 'video'" class="resize-fit-container">
             <video autoplay controls preload="metadata" class="resize-fit-center">

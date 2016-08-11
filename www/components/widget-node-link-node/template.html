@@ -1,5 +1,5 @@
 ﻿<span class="edit-hover-container" data-bind="visible: item() && !editing(), if: item">
-    <a href="#" data-bind="location: { page: 'node', path: item().path }, text: item().node().attributes.name"></a>
+    <a href="#" data-bind="location: { page: 'node', path: item().path, showPath: null }, text: item().node().attributes.name"></a>
     <a class="edit-hover-link" href="#" title="Edit" data-bind="visible: nodepath().editable, click: editing.bind($data, true)">
         <i class="material-icons">edit</i>
     </a>

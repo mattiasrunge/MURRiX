@@ -15,6 +15,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.showSidebar = ko.observable(true);
     this.tagging = ko.observable(false);
     this.personPath = ko.observable(false);
+    this.selectedTag = ko.observable(false);
     this.height = ko.pureComputed(() => {
         let screenHeight = ko.unwrap(ui.windowSize()).height;
         let heights = [ 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000 ];
@@ -113,6 +114,52 @@ module.exports = utils.wrapComponent(function*(params) {
         .map((tag) => tag.node.attributes.name)
         .join("<br>");
     });
+
+    this.selectTag = ko.pureComputed({
+        read: () => {
+            if (!this.selectedTag()) {
+                return false;
+            }
+
+            if (!this.selectedTag().link.attributes.y || !this.selectedTag().link.attributes.x || !this.selectedTag().link.attributes.width || !this.selectedTag().link.attributes.height) {
+                return { x1: false, x2: false, width: false, height: false };
+            }
+
+            return { x: this.selectedTag().link.attributes.x, y: this.selectedTag().link.attributes.y, width: this.selectedTag().link.attributes.width, height: this.selectedTag().link.attributes.height };
+        },
+        write: (value) => {
+            let attributes;
+
+            if (!this.selectedTag().link.attributes.x && !value) {
+                return;
+            } else if (!value) {
+                attributes = {
+                    x: null,
+                    y: null,
+                    width: null,
+                    height: null
+                };
+            } else if (this.selectedTag().link.attributes.y !== value.y ||this.selectedTag().link.attributes.x !== value.x || this.selectedTag().link.attributes.width !== value.width || this.selectedTag().link.attributes.height !== value.height) {
+                attributes = value;
+            } else {
+                return;
+            }
+
+            api.vfs.lookup(this.selectedTag().link._id)
+            .then((abspaths) => {
+                return api.vfs.setattributes(abspaths[0], attributes);
+            })
+            .catch((error) => {
+                stat.printError(error);
+            });
+        },
+        owner: this
+    });
+
+    this.selectDone = () => {
+        this.selectedTag(false);
+        this.tags.reload();
+    };
 
     this.commentCount = ko.asyncComputed(0, function*(setter) {
         setter(0);
