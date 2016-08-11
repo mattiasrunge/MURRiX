@@ -1,5 +1,5 @@
 <div class="fullscreen animated zoomIn" data-bind="css: { showsidebar: showSidebar }">
-    <div class="sidebar" data-bind="visible: showSidebar() && item(), if: showSidebar() && item()">
+    <div class="sidebar" data-bind="visible: showSidebar() && nodepath(), if: showSidebar() && nodepath()">
         <h2 style="margin-top: 0;">
             Information
         </h2>
@@ -11,7 +11,7 @@
                         <i class="material-icons" title="Description">description</i>
                     </td>
                     <td style="padding-top: 1px;">
-                        <widget-node-text-attribute params="{ nodepath: item, name: 'description', html: true }"></widget-node-text-attribute>
+                        <widget-node-text-attribute params="{ nodepath: nodepath, name: 'description', html: true }"></widget-node-text-attribute>
                     </td>
                 </tr>
                 <tr>
@@ -20,10 +20,10 @@
                     </td>
 
                     <td style="padding-top: 1px;">
-                        <a href="#" data-bind="text: item().node().attributes.name, attr: { href: 'file/' + item().node().attributes.diskfilename + '/' + item().node().attributes.name }"></a>
-                        (<span data-bind="htmlSize: item().node().attributes.size"></span>)
-                        <div data-bind="if: item().versions.length > 0">
-                            <small data-bind="foreach: item().versions" style="font-size: 80%;">
+                        <a href="#" data-bind="text: nodepath().node().attributes.name, attr: { href: 'file/' + nodepath().node().attributes.diskfilename + '/' + nodepath().node().attributes.name }"></a>
+                        (<span data-bind="htmlSize: nodepath().node().attributes.size"></span>)
+                        <div data-bind="if: nodepath().versions.length > 0">
+                            <small data-bind="foreach: nodepath().versions" style="font-size: 80%;">
                                 <a style="color: #999;" href="#" data-bind="text: $data.node.attributes.name, attr: { href: 'file/' + $data.node.attributes.diskfilename + '/' + $data.node.attributes.name }"></a>
                                 (<span data-bind="htmlSize: $data.node.attributes.size"></span>)
                             </small>
@@ -36,7 +36,7 @@
                     </td>
 
                     <td style="padding-top: 1px;">
-                        <widget-node-link-node params="{ nodepath: item, name: 'createdBy', placeholder: 'Select who created this file', searchPaths: [ '/people' ] }"></widget-node-link-node>
+                        <widget-node-link-node params="{ nodepath: nodepath, name: 'createdBy', placeholder: 'Select who created this file', searchPaths: [ '/people' ] }"></widget-node-link-node>
                     </td>
                 </tr>
                 <tr>
@@ -45,7 +45,7 @@
                     </td>
 
                     <td style="padding-top: 1px;">
-                        <widget-node-link-node params="{ nodepath: item, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ] }"></widget-node-link-node>
+                        <widget-node-link-node params="{ nodepath: nodepath, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ] }"></widget-node-link-node>
                     </td>
                 </tr>
             </tbody>
@@ -56,17 +56,17 @@
         <comment-widget-comments params="{ path: showPath }"></comment-widget-comments>
     </div>
 
-    <div class="sidebar" data-bind="visible: tagging() && item(), if: tagging() && item()">
+    <div class="sidebar" data-bind="visible: tagging() && nodepath(), if: tagging() && nodepath()">
         <h2 style="margin: 0;">
-            Tag people
+            Tags
         </h2>
 
-        <input type="text" class="form-control" style="margin-top: 15px;" placeholder="Add a person" data-bind="nodeselect: { root: '/people', path: personPath }">
+        <input type="text" class="form-control" style="margin-top: 15px;" placeholder="Add a person" data-bind="nodeselect: { root: '/people', path: personPath }, visible: nodepath().editable">
 
         <div data-bind="foreach: tags">
             <div class="tag-item">
                 <div class="clearfix">
-                    <div class="btn-group btn-group-sm pull-right" role="group">
+                    <div class="btn-group btn-group-sm pull-right" role="group" data-bind="visible: $component.nodepath().editable">
                         <button type="button" class="btn btn-primary">Edit</button>
                         <button type="button" class="btn btn-danger" data-bind="click: $component.removeTag.bind($data, $data)">Remove</button>
                     </div>
@@ -77,17 +77,17 @@
         </div>
     </div>
 
-    <div class="maincontainer" data-bind="if: item() && filename()">
-        <div data-bind="visible: item().node().attributes.type === 'image', if: item().node().attributes.type === 'image'">
-            <div data-bind="picture: { item: item, filename: filename, tags: tags, height: $component.height, classes: 'resize-fit-center', nolazyload: true }" class="resize-fit-container"></div>
+    <div class="maincontainer" data-bind="if: nodepath() && filename()">
+        <div data-bind="visible: nodepath().node().attributes.type === 'image', if: nodepath().node().attributes.type === 'image'">
+            <div data-bind="picture: { item: nodepath, filename: filename, tags: tags, height: $component.height, classes: 'resize-fit-center', nolazyload: true }" class="resize-fit-container"></div>
         </div>
-        <div data-bind="visible: item().node().attributes.type === 'video', if: item().node().attributes.type === 'video'" class="resize-fit-container">
+        <div data-bind="visible: nodepath().node().attributes.type === 'video', if: nodepath().node().attributes.type === 'video'" class="resize-fit-container">
             <video autoplay controls preload="metadata" class="resize-fit-center">
                 <source src="" type="video/webm" data-bind="attr: { src: filename() }">
                 Your browser does not support the video tag.
             </video>
         </div>
-        <div data-bind="visible: item().node().attributes.type === 'audio', if: item().node().attributes.type === 'audio'" style="position: absolute; left: 0; right: 0; bottom: 0;">
+        <div data-bind="visible: nodepath().node().attributes.type === 'audio', if: nodepath().node().attributes.type === 'audio'" style="position: absolute; left: 0; right: 0; bottom: 0;">
             <audio autoplay controls preload="metadata" style="width: 100%;">
                 <source src="" type="video/webm" data-bind="attr: { src: filename() }">
                 Your browser does not support the audio tag.
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <div data-bind="if: item" class="bottombar">
+    <div data-bind="if: nodepath" class="bottombar">
         <a href="#" data-bind="location: { showPath: previousPath }, visible: previousPath() !== false">
             <i class="material-icons md-48 pull-left">arrow_back</i>
         </a>
@@ -103,7 +103,7 @@
         <span class="middle">
             <span>
                 <i class="material-icons md-18">access_time</i>
-                <span data-bind="datetimeUtc: item().node().attributes.time.timestamp"></span>
+                <span data-bind="datetimeUtc: nodepath().node().attributes.time.timestamp"></span>
             </span>
 
             <span>
@@ -116,7 +116,7 @@
                 <span data-bind="text: commentCount"></span>
             </span>
 
-            <span data-bind="tooltip: tagNames">
+            <span data-bind="tooltip: tagNames, click: tagging.bind($data, true)" style="cursor: pointer;">
                 <i class="material-icons md-18">face</i>
                 <span data-bind="text: tags().length"></span>
             </span>
@@ -135,7 +135,7 @@
         <i class="material-icons">forward</i>
     </a>
 
-    <div class="btn-group menu" data-bind="visible: item().editable && !tagging()">
+    <div class="btn-group menu" data-bind="visible: nodepath().editable && !tagging()">
         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="material-icons">more_vert</i>
         </a>

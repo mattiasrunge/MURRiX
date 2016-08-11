@@ -92,10 +92,10 @@ ko.bindingHandlers.tooltip = {
     init: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
-console.log("VALUE", value);
+
         $element.tooltip({
             html: true,
-            title: "abc"
+            title: value
         });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
@@ -104,12 +104,8 @@ console.log("VALUE", value);
     },
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
-        let $element = $(element);
-console.log(value);
-//         $element.tooltip({
-//             html: true,
-//             title: value
-//         });
+
+        $(element).data("bs.tooltip").options.title = value;
     }
 };
 

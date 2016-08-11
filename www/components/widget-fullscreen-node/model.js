@@ -27,18 +27,18 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return heights[heights.length - 1];
     });
-    this.item = ko.asyncComputed(false, function*(setter) {
+    this.nodepath = ko.asyncComputed(false, function*(setter) {
         let abspath = ko.unwrap(this.showPath);
         let versions = [];
 
         setter(false);
 
         this.loading(true);
-        let item = yield api.vfs.resolve(abspath, { noerror: true });
+        let nodepath = yield api.vfs.resolve(abspath, { noerror: true });
 
-        console.log("item", item);
+        console.log("nodepath", nodepath);
 
-        if (!item) {
+        if (!nodepath) {
             this.loading(false);
             return false;
         }
@@ -53,7 +53,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(false);
 
-        return { node: ko.observable(item), path: abspath, versions: versions, editable: editable };
+        return { node: ko.observable(nodepath), path: abspath, versions: versions, editable: editable };
     }.bind(this), (error) => {
         this.loading(false);
         stat.printError(error);
@@ -61,7 +61,7 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.filename = ko.asyncComputed(false, function*(setter) {
-        if (!this.item()) {
+        if (!this.nodepath()) {
             return false;
         }
 
@@ -72,12 +72,12 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(true);
 
-        if (this.item().node().attributes.type === "image") {
-            filename = (yield api.file.getPictureFilenames([ this.item().node()._id ], null, height))[0];
-        } else if (this.item().node().attributes.type === "video") {
-            filename = (yield api.file.getVideoFilenames([ this.item().node()._id ], null, height))[0];
-        } else if (this.item().node().attributes.type === "audio") {
-            filename = (yield api.file.getAudioFilenames([ this.item().node()._id ]))[0];
+        if (this.nodepath().node().attributes.type === "image") {
+            filename = (yield api.file.getPictureFilenames([ this.nodepath().node()._id ], null, height))[0];
+        } else if (this.nodepath().node().attributes.type === "video") {
+            filename = (yield api.file.getVideoFilenames([ this.nodepath().node()._id ], null, height))[0];
+        } else if (this.nodepath().node().attributes.type === "audio") {
+            filename = (yield api.file.getAudioFilenames([ this.nodepath().node()._id ]))[0];
         }
 
         this.loading(false);
@@ -90,13 +90,13 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.tags = ko.asyncComputed([], function*(setter) {
-        if (!this.item()) {
+        if (!this.nodepath()) {
             return [];
         }
 
         setter([]);
 
-        let tags = yield api.vfs.list(this.item().path + "/tags", {
+        let tags = yield api.vfs.list(this.nodepath().path + "/tags", {
             noerror:  true
         });
 
@@ -140,13 +140,13 @@ module.exports = utils.wrapComponent(function*(params) {
 //     });
 
     this.currentIndex = ko.pureComputed(() => {
-        if (!this.item()) {
+        if (!this.nodepath()) {
             return -1;
         }
 
-        let item = node.list().filter((item2) => item2.node._id === this.item().node()._id)[0];
+        let nodepath = node.list().filter((nodepath2) => nodepath2.node._id === this.nodepath().node()._id)[0];
 
-        return node.list().indexOf(item);
+        return node.list().indexOf(nodepath);
     });
 
     this.nextPath = ko.pureComputed(() => {
@@ -182,17 +182,17 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.rotate = (offset) => {
-        if (!this.item().editable) {
+        if (!this.nodepath().editable) {
             return;
         }
 
         offset = parseInt(offset, 10);
 
-        if (this.item().node().attributes.mirror) {
+        if (this.nodepath().node().attributes.mirror) {
             offset = -offset;
         }
 
-        let angle = parseInt(this.item().node().attributes.angle || 0, 10) + offset;
+        let angle = parseInt(this.nodepath().node().attributes.angle || 0, 10) + offset;
 
         if (angle < 0) {
             angle += 360;
@@ -200,9 +200,9 @@ module.exports = utils.wrapComponent(function*(params) {
             angle -= 360;
         }
 
-        api.vfs.setattributes(this.item().path, { angle: angle })
+        api.vfs.setattributes(this.nodepath().path, { angle: angle })
         .then((node) => {
-            this.item().node(node);
+            this.nodepath().node(node);
             console.log("Saving angle attribute as " + angle + " successfully!", node);
         })
         .catch((error) => {
@@ -211,15 +211,15 @@ module.exports = utils.wrapComponent(function*(params) {
     };
 
     this.mirror = () => {
-        if (!this.item().editable) {
+        if (!this.nodepath().editable) {
             return;
         }
 
-        let mirror = !this.item().node().attributes.mirror;
+        let mirror = !this.nodepath().node().attributes.mirror;
 
-        api.vfs.setattributes(this.item().path, { mirror: mirror })
+        api.vfs.setattributes(this.nodepath().path, { mirror: mirror })
         .then((node) => {
-            this.item().node(node);
+            this.nodepath().node(node);
             console.log("Saving mirror attribute as " + mirror + " successfully!", node);
         })
         .catch((error) => {
@@ -291,7 +291,7 @@ define(["durandal/composition", "knockout", "jquery", "murrix", "tools"], functi
 
   function scrollable()
   {
-    if (murrix.item())
+    if (murrix.nodepath())
     {
       $element.css("overflow-y", "hidden");
     }
@@ -346,15 +346,15 @@ define(["durandal/composition", "knockout", "jquery", "murrix", "tools"], functi
 
   function LoadMedia()
   {
-    if (!murrix.item())
+    if (!murrix.nodepath())
     {
       playing(false);
       return;
     }
 
-    if (murrix.item().what === "file")
+    if (murrix.nodepath().what === "file")
     {
-      murrix.server.emit("item.identifyMimetype", { mimetype: murrix.item().exif.MIMEType }, function(error, type)
+      murrix.server.emit("nodepath.identifyMimetype", { mimetype: murrix.nodepath().exif.MIMEType }, function(error, type)
       {
         if (error)
         {
@@ -367,30 +367,30 @@ define(["durandal/composition", "knockout", "jquery", "murrix", "tools"], functi
 
         if (type !== "audio")
         {
-          width = murrix.item().exif.ImageWidth;
-          height = murrix.item().exif.ImageHeight;
+          width = murrix.nodepath().exif.ImageWidth;
+          height = murrix.nodepath().exif.ImageHeight;
         }
 
-        var url = "/media/" + murrix.item()._id + "/image/" + width + "/" + height + "?";
+        var url = "/media/" + murrix.nodepath()._id + "/image/" + width + "/" + height + "?";
 
-        if (murrix.item().angle)
+        if (murrix.nodepath().angle)
         {
-          url += "angle=" + murrix.item().angle + "&";
+          url += "angle=" + murrix.nodepath().angle + "&";
         }
 
-        if (murrix.item().mirror)
+        if (murrix.nodepath().mirror)
         {
           url += "mirror=true&";
         }
 
-        if (murrix.item().exif.Compression === "dvsd")
+        if (murrix.nodepath().exif.Compression === "dvsd")
         {
           url += "deinterlace=true&";
         }
 
-        if (murrix.item().thumbPosition)
+        if (murrix.nodepath().thumbPosition)
         {
-          url += "timeindex=" + murrix.item().thumbPosition + "&";
+          url += "timeindex=" + murrix.nodepath().thumbPosition + "&";
         }
 
         imageUrl(url);
@@ -413,7 +413,7 @@ define(["durandal/composition", "knockout", "jquery", "murrix", "tools"], functi
 
   LoadMedia();
 
-  murrix.item.subscribe(function(value)
+  murrix.nodepath.subscribe(function(value)
   {
     scrollable();
     LoadMedia();
@@ -437,14 +437,14 @@ define(["durandal/composition", "knockout", "jquery", "murrix", "tools"], functi
     previous(false);
     index(0);
 
-    if (count() === 0 || !murrix.item())
+    if (count() === 0 || !murrix.nodepath())
     {
       return;
     }
 
     for (var n = 0; n < mediaList().length; n++)
     {
-      if (mediaList()[n] === murrix.item()._id)
+      if (mediaList()[n] === murrix.nodepath()._id)
       {
         index(n + 1);
 
@@ -537,7 +537,7 @@ define(["durandal/composition", "knockout", "jquery", "murrix", "tools"], functi
 
   return {
     tools: tools,
-    item: murrix.item,
+    nodepath: murrix.nodepath,
     node: murrix.node,
     user: murrix.user,
     imageUrl: imageUrl,
@@ -560,7 +560,7 @@ define(["durandal/composition", "knockout", "jquery", "murrix", "tools"], functi
       loading(true);
       errorText(false);
 
-      murrix.server.emit("item.comment", { _id: murrix.item()._id, text: commentText() }, function(error, itemData)
+      murrix.server.emit("nodepath.comment", { _id: murrix.nodepath()._id, text: commentText() }, function(error, nodepathData)
       {
         loading(false);
 
@@ -572,7 +572,7 @@ define(["durandal/composition", "knockout", "jquery", "murrix", "tools"], functi
 
         commentText("");
 
-        murrix.item(itemData);
+        murrix.nodepath(nodepathData);
       });
     },
     close: function()
