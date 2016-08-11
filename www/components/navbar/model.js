@@ -33,7 +33,7 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
             if (path) {
                 loc.goto({ page: "node", path: path, section: null });
             } else {
-                loc.goto({ page: "recent", path: null });
+                loc.goto({ page: null, path: null });
             }
         }
     });

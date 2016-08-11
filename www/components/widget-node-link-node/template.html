@@ -6,12 +6,10 @@
 </span>
 
 <span data-bind="visible: !item() && !editing()" style="color: #999;">
-    <i data-bind="visible: nodepath().editable, click: editing.bind($data, true)">
-        Select a <span data-bind="text: niceName"></span>
-    </i>
+    <i data-bind="visible: nodepath().editable, click: editing.bind($data, true), text: placeholder"></i>
     <i data-bind="visible: !nodepath().editable">Unknown</i>
 </span>
 
 <span data-bind="visible: editing, if: editing">
-    <input type="text" class="node-select-text" data-bind="attr: { placeholder: 'Select a ' + niceName() }, nodeselect: { root: searchPaths, path: linkToPath }, hasFocus: true">
+    <input type="text" class="node-select-text" data-bind="attr: { placeholder: placeholder }, nodeselect: { root: searchPaths, path: linkToPath }, hasFocus: true">
 </span>

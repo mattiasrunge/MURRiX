@@ -20,7 +20,7 @@
     animation-duration: 0.2s;
 }
 
-.material-icons { vertical-align: middle; font-size: inherit; }
+.material-icons { vertical-align: middle; }
 .material-icons.spin { animation: spin 1s infinite linear; }
 
 /* Rules for sizing the icon. */
@@ -203,6 +203,10 @@ body {
 .edit-hover-container:hover .edit-hover-link {
     opacity: 1.0;
     transition: opacity .1s ease-in-out;
+}
+
+.edit-hover-container .edit-hover-link .material-icons {
+    font-size: inherit;
 }
 
 .upload {

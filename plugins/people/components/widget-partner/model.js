@@ -12,11 +12,15 @@ module.exports = utils.wrapComponent(function*(params) {
             return this.nodepath().path;
         },
         write: (path) => {
-            if (!this.editing() || path === this.nodepath().path) {
+            if (!this.editing()) {
                 return;
             }
 
             this.editing(false);
+
+            if (path === this.nodepath().path) {
+                return;
+            }
 
             api.people.setPartner(ko.unwrap(params.nodepath().path), path)
             .then(() => {

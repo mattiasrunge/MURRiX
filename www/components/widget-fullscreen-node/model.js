@@ -108,48 +108,6 @@ module.exports = utils.wrapComponent(function*(params) {
         return [];
     });
 
-    this.who = ko.asyncComputed(false, function*(setter) {
-        let abspath = ko.unwrap(this.showPath) + "/createdBy";
-
-        setter(false);
-
-        let item = yield api.vfs.resolve(abspath, { noerror: true });
-
-        console.log("who", item);
-
-        if (!item) {
-            return false;
-        }
-
-        abspath = yield api.vfs.lookup(item._id);
-
-        return { node: ko.observable(item), path: abspath };
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return false;
-    });
-
-    this.device = ko.asyncComputed(false, function*(setter) {
-        let abspath = ko.unwrap(this.showPath) + "/createdWith";
-
-        setter(false);
-
-        let item = yield api.vfs.resolve(abspath, { noerror: true });
-
-        console.log("device", item);
-
-        if (!item) {
-            return false;
-        }
-
-        abspath = yield api.vfs.lookup(item._id);
-
-        return { node: ko.observable(item), path: abspath };
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return false;
-    });
-
     this.commentCount = ko.asyncComputed(0, function*(setter) {
         setter(0);
 

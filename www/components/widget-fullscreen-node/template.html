@@ -10,7 +10,7 @@
                     <td style="width: 44px;">
                         <i class="material-icons" title="Description">description</i>
                     </td>
-                    <td>
+                    <td style="padding-top: 1px;">
                         <widget-node-text-attribute params="{ nodepath: item, name: 'description', html: true }"></widget-node-text-attribute>
                     </td>
                 </tr>
@@ -19,7 +19,7 @@
                         <i class="material-icons" title="File">file_download</i>
                     </td>
 
-                    <td>
+                    <td style="padding-top: 1px;">
                         <a href="#" data-bind="text: item().node().attributes.name, attr: { href: 'file/' + item().node().attributes.diskfilename + '/' + item().node().attributes.name }"></a>
                         (<span data-bind="htmlSize: item().node().attributes.size"></span>)
                         <div data-bind="if: item().versions.length > 0">
@@ -35,18 +35,8 @@
                         <i class="material-icons" title="Created by">person</i>
                     </td>
 
-                    <td>
-                        <widget-node-link-node params="{ nodepath: item, name: 'createdBy', niceName: 'person', searchPaths: [ '/people' ] }"></widget-node-link-node>
-
-                        <!--<div data-bind="if: who()">
-                            <a href="#" target="_blank" data-bind="text: who().node().attributes.name, location: { page: 'node', path: who().path, showPath: null }"></a>
-
-
-
-                        </div>
-                        <div data-bind="if: !who()">
-                            Unknown
-                        </div>-->
+                    <td style="padding-top: 1px;">
+                        <widget-node-link-node params="{ nodepath: item, name: 'createdBy', placeholder: 'Select who created this file', searchPaths: [ '/people' ] }"></widget-node-link-node>
                     </td>
                 </tr>
                 <tr>
@@ -54,13 +44,8 @@
                         <i class="material-icons" title="Created with">camera</i>
                     </td>
 
-                    <td>
-                        <div data-bind="if: device()">
-                            <a href="#" target="_blank" data-bind="text: device().node().attributes.name, location: { page: 'node', path: device().path, showPath: null }"></a>
-                        </div>
-                        <div data-bind="if: !device()">
-                            Unknown
-                        </div>
+                    <td style="padding-top: 1px;">
+                        <widget-node-link-node params="{ nodepath: item, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ] }"></widget-node-link-node>
                     </td>
                 </tr>
             </tbody>

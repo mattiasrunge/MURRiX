@@ -9,7 +9,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.name = ko.pureComputed(() => ko.unwrap(params.name));
-    this.niceName = ko.pureComputed(() => ko.unwrap(params.niceName));
+    this.placeholder = ko.pureComputed(() => ko.unwrap(params.placeholder));
     this.searchPaths = ko.pureComputed(() => ko.unwrap(params.searchPaths));
     this.editing = ko.observable(false);
     this.linkToPath = ko.observable(false);
@@ -56,7 +56,6 @@ module.exports = utils.wrapComponent(function*(params) {
             return;
         }
 
-        console.log(value);
         this.editing(false);
 
         save(value)

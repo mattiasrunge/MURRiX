@@ -525,7 +525,6 @@ ko.bindingHandlers.groupselect = {
 
 ko.bindingHandlers.nodeselect = {
     lookup: co.wrap(function*(root, querystr, limit) {
-        console.log("lookup", limit, querystr);
         let filter = limit === 1 ? querystr : { $regex: ".*" + querystr + ".*", $options: "-i" };
 
         let list = yield api.vfs.list(root, {
@@ -559,7 +558,6 @@ ko.bindingHandlers.nodeselect = {
         }, {
             display: (selection) => selection.node.attributes.name,
             source: (querystr, dummy, resolve) => {
-                console.log("path", path());
                 ko.bindingHandlers.nodeselect.lookup(root, querystr, limit)
                 .then(resolve)
                 .catch((error) => {
@@ -602,21 +600,19 @@ ko.bindingHandlers.nodeselect = {
         $element.on("typeahead:asynccancel", () => element.loading(false));
         $element.on("typeahead:asyncreceive", () => element.loading(false));
         $element.on("typeahead:active", () => {
-            console.log("valid");
             $element.removeClass("valid");
         });
         $element.on("typeahead:idle", () => {
-            console.log("idle");
             if (path()) {
-                $element.addClass("valid");
-            } else {
-//                 $element.typeahead("val", "");
-                path.valueHasMutated();
+                if ($element.typeahead("val") === "") {
+                    path("");
+                } else if (path.valueHasMutated) {
+                    path.valueHasMutated();
+                }
             }
         });
 
         let select = () => {
-            console.log("selectfunc", arguments);
             // TODO: event, selection is in parameters, nno need for a lookup!
             ko.bindingHandlers.nodeselect.lookup(root, $element.typeahead("val"), 1)
             .then((list) => {
@@ -655,11 +651,9 @@ ko.bindingHandlers.nodeselect = {
                 element.loading(false);
 
                 if (node) {
-                    console.log("SET");
                     $element.addClass("valid");
                     $element.typeahead("val", node.attributes.name);
                 } else {
-                    console.log("UNSET");
                     path(false);
                     $element.removeClass("valid");
                     $element.typeahead("val", "");
