@@ -88,6 +88,31 @@ ko.bindingHandlers.map = {
     }
 };
 
+ko.bindingHandlers.tooltip = {
+    init: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+console.log("VALUE", value);
+        $element.tooltip({
+            html: true,
+            title: "abc"
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            $element.tooltip("destroy");
+        });
+    },
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+console.log(value);
+//         $element.tooltip({
+//             html: true,
+//             title: value
+//         });
+    }
+};
+
 ko.bindingHandlers.autosize = {
     init: (element) => {
         autosize(element);

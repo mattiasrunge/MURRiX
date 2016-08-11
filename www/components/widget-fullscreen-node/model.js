@@ -108,6 +108,12 @@ module.exports = utils.wrapComponent(function*(params) {
         return [];
     });
 
+    this.tagNames = ko.pureComputed(() => {
+        return this.tags()
+        .map((tag) => tag.node.attributes.name)
+        .join("<br>");
+    });
+
     this.commentCount = ko.asyncComputed(0, function*(setter) {
         setter(0);
 
