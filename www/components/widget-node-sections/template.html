@@ -14,6 +14,11 @@
                 <i class="material-icons md-18" style="width: 18px;">comments</i>
             </a>
         </li>
+        <li class="pull-right" data-bind="visible: showUpload, css: { active: $component.section() === 'upload' }">
+            <a data-bind="location: { section: 'upload' }" title="Upload">
+                <i class="material-icons md-18" style="width: 18px;">file_upload</i>
+            </a>
+        </li>
         <li class="pull-right" data-bind="visible: showShareSettings, css: { active: $component.section() === 'share' }">
             <a data-bind="location: { section: 'share' }" title="Share settings">
                 <i class="material-icons md-18" style="width: 18px;">share</i>
@@ -29,6 +34,9 @@
 </div>
 <div data-bind="if: $component.section() === 'comments'">
     <div data-bind="component: { name: 'section-node-comments', params: $component.params }"></div>
+</div>
+<div data-bind="if: $component.section() === 'upload' && showUpload()">
+    <div data-bind="component: { name: 'section-node-upload', params: $component.params }"></div>
 </div>
 <div data-bind="if: $component.section() === 'share' && showShareSettings">
     <div data-bind="component: { name: 'section-node-share', params: $component.params }"></div>

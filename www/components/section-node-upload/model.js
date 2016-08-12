@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 const ko = require("knockout");
+const $ = require("jquery");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 const node = require("lib/node");
@@ -8,8 +9,48 @@ const api = require("api.io-client");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
-    this.files = ko.observableArray();
     this.active = ko.observable(false);
+    this.fileInput = ko.observableArray();
+
+    this.files = ko.asyncComputed([], function*() {
+        let files = [];
+
+        for (let file of this.fileInput()) {
+            files.push({
+                uploadId: yield api.vfs.allocateUploadId(),
+                progress: ko.observable(0),
+                size: file.size,
+                name: file.name,
+                active: ko.observable(false),
+                complete: ko.observable(false),
+                failed: ko.observable(false),
+                file: file
+            });
+        }
+
+        return files;
+    }.bind(this), (error) => {
+        stat.printError(error);
+        return [];
+    });
+
+    this.dragNoopHandler = (element, event) => {
+        event.stopPropagation();
+        event.preventDefault();
+    };
+
+    this.dropEventHandler = utils.co(function*(element, event) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        console.log("files", event.originalEvent.dataTransfer.files);
+
+        this.fileInput(event.originalEvent.dataTransfer.files);
+    }.bind(this));
+
+    this.selectHandler = (id) => {
+        $("#" + id).trigger("click");
+    };
 
     this.editable = ko.pureComputed(() => {
         if (!this.nodepath()) {
@@ -75,32 +116,12 @@ module.exports = utils.wrapComponent(function*(params) {
         }
 
         this.active(false);
-        params.files.removeAll();
-        node.reload();
-    }.bind(this));
 
-    this.close = () => {
-        params.files.removeAll();
-    };
-
-    if (this.editable()) {
-        console.log("FILES!", ko.unwrap(params.files));
-
-        for (let file of params.files()) {
-            let item = {
-                uploadId: yield api.vfs.allocateUploadId(),
-                progress: ko.observable(0),
-                size: file.size,
-                name: file.name,
-                active: ko.observable(false),
-                complete: ko.observable(false),
-                failed: ko.observable(false),
-                file: file
-            };
-
-            this.files.push(item);
+        if (!item.failed()) {
+            stat.printSuccess("Uploaded " + this.files().length + " files succesfully!");
+            this.fileInput([]);
         }
-    }
+    }.bind(this));
 
     this.dispose = () => {
     };

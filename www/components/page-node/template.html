@@ -1,7 +1,4 @@
 <div data-bind="if: nodepath">
-    <div data-bind="if: uploadFiles().length > 0">
-        <widget-node-upload-files params="{ nodepath: nodepath, files: uploadFiles }"></widget-node-upload-files>
-    </div>
     <div data-bind="if: type() === 'p'">
         <people-page params="{ nodepath: nodepath, section: section }"></people-page>
     </div>
