@@ -720,11 +720,11 @@ let vfs = api.register("vfs", {
 
         plugin.emit("vfs.childAdded", {
             uid: session.uid,
-            path: parentPath,
+            path: destpath,
             name: name
         });
 
-        vfs.emit("update", { path: parentPath });
+        vfs.emit("update", { path: destpath });
     },
     move: function*(session, srcpath, destpath) {
         let srcparentPath = path.dirname(srcpath);

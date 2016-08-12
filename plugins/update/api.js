@@ -1080,7 +1080,7 @@ let update = api.register("update", {
                 yield vfs.symlink(session, idTransNodes[obj._who], path.join(abspath, "createdBy"));
             }
 
-            if (obj._with) {
+            if (obj._with && !(yield vfs.resolve(session, path.join(abspath, "createdWith"), { noerror: true }))) {
                 yield vfs.symlink(session, idTransNodes[obj._with], path.join(abspath, "createdWith"));
             }
 

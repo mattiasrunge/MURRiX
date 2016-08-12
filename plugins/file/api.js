@@ -54,9 +54,9 @@ let file = api.register("file", {
     regenerate: function*(session, abspath) {
         let node = yield vfs.resolve(session, abspath);
         let attributes = node.attributes;
-        let device = null;
+        let device = yield vfs.resolve(session, abspath + "/createdWith", { noerror: true });
 
-        if (attributes.deviceSerialNumber && !(yield vfs.resolve(session, abspath + "/createdWith", { noerror: true }))) {
+        if (attributes.deviceSerialNumber && !device) {
             device = (yield vfs.list(session, "/cameras", {
                 filter: {
                     "attributes.serialNumber": attributes.deviceSerialNumber }
@@ -64,6 +64,7 @@ let file = api.register("file", {
 
             if (device) {
                 yield vfs.symlink(session, device.path, abspath + "/createdWith");
+                device = device.node;
             }
         }
 

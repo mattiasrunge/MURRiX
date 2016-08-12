@@ -35,11 +35,11 @@ module.exports = utils.wrapComponent(function*(params) {
         setter(false);
 
         this.loading(true);
-        let nodepath = yield api.vfs.resolve(abspath, { noerror: true });
+        let item = yield api.vfs.resolve(abspath, { noerror: true });
 
-        console.log("nodepath", nodepath);
+        console.log("item", item);
 
-        if (!nodepath) {
+        if (!item) {
             this.loading(false);
             return false;
         }
@@ -54,7 +54,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(false);
 
-        return { node: ko.observable(nodepath), path: abspath, versions: versions, editable: editable };
+        return { node: ko.observable(item), path: abspath, versions: versions, editable: editable };
     }.bind(this), (error) => {
         this.loading(false);
         stat.printError(error);
@@ -228,6 +228,52 @@ module.exports = utils.wrapComponent(function*(params) {
         return node.list()[index].path;
     });
 
+    let nextFile = ko.computed(utils.co(function*() {
+        let abspath = this.nextPath();
+
+        if (!abspath) {
+            return;
+        }
+
+        let node = yield api.vfs.resolve(abspath, { noerror: true });
+
+        if (!node) {
+            return;
+        }
+
+        let height = ko.unwrap(this.height);
+
+        if (node.attributes.type === "image") {
+            let filenames = (yield api.file.getPictureFilenames([ node._id ], null, height))[0];
+
+            let image = new Image();
+            image.src = filenames.filename;
+        }
+    }.bind(this)));
+
+    let previousFile = ko.computed(utils.co(function*() {
+        let abspath = this.previousPath();
+
+        if (!abspath) {
+            return;
+        }
+
+        let node = yield api.vfs.resolve(abspath, { noerror: true });
+
+        if (!node) {
+            return;
+        }
+
+        let height = ko.unwrap(this.height);
+
+        if (node.attributes.type === "image") {
+            let filenames = (yield api.file.getPictureFilenames([ node._id ], null, height))[0];
+
+            let image = new Image();
+            image.src = filenames.filename;
+        }
+    }.bind(this)));
+
     this.rotate = (offset) => {
         if (!this.nodepath().editable) {
             return;
@@ -311,6 +357,8 @@ module.exports = utils.wrapComponent(function*(params) {
     $("body").css("overflow-y", "hidden");
 
     this.dispose = () => {
+        nextFile.dispose();
+        previousFile.dispose();
         subscription.dispose();
         stat.destroy(this.loading);
         $("body").css("overflow-y", "");

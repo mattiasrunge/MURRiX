@@ -78,7 +78,7 @@
         </div>
     </div>
 
-    <div class="maincontainer" data-bind="if: nodepath() && filename()">
+    <div class="maincontainer animated fadeIn" data-bind="if: nodepath() && filename()">
         <div data-bind="visible: nodepath().node().attributes.type === 'image', if: nodepath().node().attributes.type === 'image'">
             <div data-bind="picture: { item: nodepath, filename: filename, tags: tags, height: $component.height, classes: 'resize-fit-center', nolazyload: true, selectTag: selectTag }" class="resize-fit-container"></div>
         </div>
@@ -117,7 +117,7 @@
                 <span data-bind="text: commentCount"></span>
             </span>
 
-            <span data-bind="tooltip: tagNames, click: tagging.bind($data, true)" style="cursor: pointer;">
+            <span data-bind="tooltip: tagNames, click: tagging.bind($data, !tagging())" style="cursor: pointer;">
                 <i class="material-icons md-18">face</i>
                 <span data-bind="text: tags().length"></span>
             </span>
