@@ -3,9 +3,9 @@
         <div class="row">
             <h3>Upload files</h3>
 
-            <div class="text-muted text-center" style="padding: 50px; font-size: 20px; border: 2px dashed #ccc;" data-bind="visible: files().length === 0">
+            <div class="text-muted text-center" style="padding-top: 100px; padding-bottom: 100px; font-size: 20px; border: 2px dashed #ccc;" data-bind="visible: files().length === 0">
                 Drop files here or
-                <button id="id" data-bind="click: selectHandler.bind($data, 'file-select')">Select files</button>
+                <button class="btn btn-lg btn-primary" id="id" data-bind="click: selectHandler.bind($data, 'file-select')">Select files</button>
                 <input id="file-select" type="file" multiple style="display: none;" data-bind="fileUpload: fileInput">
             </div>
             <div data-bind="visible: files().length > 0">

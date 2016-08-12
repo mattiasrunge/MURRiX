@@ -19,9 +19,9 @@
                         <td data-bind="text: count"></td>
                     </tr>
                     <tr>
-                        <td><strong>Download</strong></td>
+                        <td><strong>Download files</strong></td>
                         <td>
-                            <a href="#" data-bind="text: 'TODO: link (size)'"></a>
+                            <a href="#" data-bind="text: nodepath().node().attributes.name.replace(' ', '_') + '.zip'"></a> (size) <-- TODO
                         </td>
                     </tr>
                 </tbody>
