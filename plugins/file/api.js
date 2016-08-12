@@ -71,7 +71,7 @@ let file = api.register("file", {
         node = yield vfs.resolve(session, abspath);
         attributes = node.attributes;
 
-        if (device && attributes.when.device) {
+        if (device && attributes.when && attributes.when.device) {
             attributes.when.device.deviceType = device.attributes.type;
             attributes.when.device.deviceUtcOffset = device.attributes.utcOffset;
             attributes.when.device.deviceAutoDst = device.attributes.deviceAutoDst;
