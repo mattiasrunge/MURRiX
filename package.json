@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "ansi-regex": "2.0.0",
-    "api.io": "0.0.24",
+    "api.io": "0.1.1",
     "babel-core": "6.11.4",
     "babel-plugin-transform-es2015-modules-amd": "6.8.0",
     "bluebird": "3.4.1",
@@ -36,10 +36,8 @@
     "koa-conditional-get": "1.0.3",
     "koa-etag": "2.1.1",
     "koa-route": "2.4.2",
-    "koa-session": "3.3.1",
     "koa-static": "2.0.0",
     "koa-stream": "0.2.0",
-    "koa.io": "0.0.3",
     "moment": "2.14.1",
     "mongodb": "2.2.5",
     "node-uuid": "1.4.7",
@@ -65,6 +63,6 @@
     "tmp": "0.0.28"
   },
   "engines": {
-    "node": ">= 5.7.0"
+    "node": ">= 6.3.1"
   }
 }

@@ -8,7 +8,6 @@ const koa = require("koa.io");
 const bodyParser = require("koa-bodyparser");
 const route = require("koa-route");
 const compress = require("koa-compress");
-const session = require("koa-session");
 const conditional = require("koa-conditional-get");
 const etag = require("koa-etag");
 const enableDestroy = require("server-destroy");
@@ -16,7 +15,7 @@ const uuid = require("node-uuid");
 const configuration = require("./configuration");
 const routes = require("./http-routes");
 const api = require("api.io");
-const sessionStore = require("./session");
+const session = require("./session");
 const log = require("./log")(module);
 
 let server;
@@ -27,15 +26,15 @@ module.exports = {
         params = config;
 
         let app = koa();
-        let sessions = sessionStore.getSessions();
+        let sessions = session.getSessions();
+        let sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
+        let sessionName = "api.io-authorization";
 
         if (params.cacheDirectory) {
             yield fs.removeAsync(params.cacheDirectory);
         }
 
         // Setup application
-        app.keys = [ "murrix is tha best" ];
-        app.use(session({ key: "api.io-authorization", maxAge: 24 * 60 * 60 * 1000 * 30 }, app));
         app.use(compress());
         app.use(bodyParser());
         app.use(conditional());
@@ -55,19 +54,35 @@ module.exports = {
         });
 
         // Configure sessions
-        app.use(function *(next) {
-            if (!this.session.sessionId) {
-                this.session.sessionId = uuid.v4();
-                log.info("Created session for a browser, id " + this.session.sessionId);
+        app.use(function*(next) {
+            let sessionId = false;
+
+            try {
+                let cookieString = this.cookies.get(sessionName)
+                let body = new Buffer(cookieString, "base64").toString("utf8");
+                let cookieData = JSON.parse(body);
+
+                if (cookieData && cookieData.sessionId) {
+                    sessionId = cookieData.sessionId;
+                }
+            } catch (e) {
             }
 
-            if (!sessions[this.session.sessionId]) {
-                sessions[this.session.sessionId] = {
-                    sessionId: this.session.sessionId
+            if (!sessionId || !sessions[sessionId]) {
+                sessionId = uuid.v4();
+
+                sessions[sessionId] = {
+                    _id: sessionId
                 };
             }
 
-            this.sessionData = sessions[this.session.sessionId];
+            this.session = sessions[sessionId];
+            this.session._expires = new Date(new Date().getTime() + sessionMaxAge);
+
+            let body = JSON.stringify({ sessionId: sessionId });
+            let cookieString = new Buffer(body).toString("base64");
+
+            this.cookies.set(sessionName, cookieString, { maxAge: sessionMaxAge });
 
             yield next;
         });
@@ -98,7 +113,7 @@ module.exports = {
         enableDestroy(server);
 
         // Socket.io if we have defined API
-        yield api.start(server, sessions);
+        yield api.start(server, { sessionName: sessionName, sessionMaxAge: sessionMaxAge }, sessions);
 
         server.listen(configuration.port);
     }),
