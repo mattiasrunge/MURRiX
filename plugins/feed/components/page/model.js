@@ -59,7 +59,7 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
     };
 
     this.loading(true);
-    let list = yield api.feed.list({ limit: 30 });
+    let list = yield api.feed.list();
     this.loading(false);
 
     console.log("news", list);

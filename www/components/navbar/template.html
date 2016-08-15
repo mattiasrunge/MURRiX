@@ -21,7 +21,7 @@
 
             <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
                 <li>
-                    <a href="#" data-bind="click: random, visible: loggedIn()">
+                    <a href="#" title="Go to random" data-bind="click: random, visible: loggedIn()">
                         <i class="material-icons md-20">explore</i>
                     </a>
                 </li>
@@ -40,7 +40,7 @@
                     </ul>
                 </li>
                 <li class="dropdown" data-bind="visible: loggedIn">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <a class="dropdown-toggle" title="Add new" data-toggle="dropdown" href="#">
                         <i class="material-icons md-20">add</i>
                     </a>
                     <ul class="dropdown-menu">

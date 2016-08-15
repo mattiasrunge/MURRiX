@@ -12,6 +12,7 @@ let params = {};
 
 let feed = api.register("feed", {
     deps: [ "vfs", "auth" ],
+    limit: 50,
     init: co(function*(config) {
         params = config;
 
@@ -26,51 +27,71 @@ let feed = api.register("feed", {
             yield vfs.chmod(auth.getAdminSession(), "/news", "770");
         }
     }),
+    mknews: co(function*(attributes) {
+        let baseName = moment().format();
+        let name = baseName.replace(/ |\//g, "_");
+
+        let counter = 1;
+        while (yield vfs.resolve(auth.getAdminSession(), path.join("/news", name), { noerror: true })) {
+            name = baseName.replace(/ |\//g, "_") + "_" + counter;
+            counter++;
+
+            if (counter > 1000) {
+                throw new Error("Could not allocate a good name");
+            }
+        }
+
+        let abspath = path.join("/news", name);
+
+        let news = yield vfs.create(auth.getAdminSession(), abspath, "n", attributes);
+
+        feed.emit("new", { node: news, path: abspath });
+
+        yield feed.cleanup();
+    }),
+    cleanup: co(function*() {
+        let parent = yield vfs.resolve(auth.getAdminSession(), "/news");
+
+        parent.properties.children.sort((a, b) => {
+            return b.name.localeCompare(a.name);
+        });
+
+        let children = parent.properties.children.slice(feed.limit);
+
+        for (let child of children) {
+            yield vfs.unlink(auth.getAdminSession(), path.join("/news", child.name));
+        }
+    }),
     getLatest: co(function*() {
         let list = yield feed.list(auth.getAdminSession(), { limit: 1 });
         return list[0];
     }),
     onNewPerson: co(function*(event, data) {
-        let name = moment().format();
-        let abspath = path.join("/news", name);
-
-        let news = yield vfs.create(auth.getAdminSession(), abspath, "n", {
+        yield feed.mknews({
             events: [ data._id ],
             type: "p",
             action: "created",
             path: data.path,
             uid: data.uid
         });
-
-        feed.emit("new", { name: name, node: news, path: abspath });
     }),
     onNewLocation: co(function*(event, data) {
-        let name = moment().format();
-        let abspath = path.join("/news", name);
-
-        let news = yield vfs.create(auth.getAdminSession(), abspath, "n", {
+        yield feed.mknews({
             events: [ data._id ],
             type: "l",
             action: "created",
             path: data.path,
             uid: data.uid
         });
-
-        feed.emit("new", { name: name, node: news, path: abspath });
     }),
     onNewAlbum: co(function*(event, data) {
-        let name = moment().format();
-        let abspath = path.join("/news", name);
-
-        let news = yield vfs.create(auth.getAdminSession(), abspath, "n", {
+        yield feed.mknews({
             events: [ data._id ],
             type: "a",
             action: "created",
             path: data.path,
             uid: data.uid
         });
-
-        feed.emit("new", { name: name, node: news, path: abspath });
     }),
     onNewComment: co(function*(event, data) {
         let latest = yield feed.getLatest();
@@ -82,23 +103,19 @@ let feed = api.register("feed", {
             return;
         }
 
-        let name = moment().format();
-        let abspath = path.join("/news", name);
-
-        let news = yield vfs.create(auth.getAdminSession(), abspath, "n", {
+        yield feed.mknews({
             events: [ data._id ],
             type: node.properties.type,
             action: "comment",
             path: data.path,
             uid: data.uid
         });
-
-        feed.emit("new", { name: name, node: news, path: abspath });
     }),
     list: function*(session, options) {
         options = options || {};
 
-        options.reverse = true;
+        options.reverse = options.reverse || true;
+        options.limit = options.limit || feed.limit;
 
         return yield vfs.list(session, "/news", options);
     },
