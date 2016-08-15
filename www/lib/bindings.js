@@ -37,7 +37,7 @@ ko.bindingHandlers.map = {
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             streetViewControl: false,
             panControl: false,
-            mapTypeControl: false,
+            mapTypeControl: true,
             zoomControl: true,
             zoomControlOptions: {
                 style: google.maps.ZoomControlStyle.DEFAULT,
@@ -50,6 +50,11 @@ ko.bindingHandlers.map = {
         };
 
         element.map = new google.maps.Map(element, options);
+        element.zoom = zoom;
+
+        google.maps.event.addListener(element.map, "click", (data) =>{
+            value.position({ latitude: data.latLng.lat(), longitude: data.latLng.lng() });
+        });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             $(element).off("click");
@@ -58,33 +63,40 @@ ko.bindingHandlers.map = {
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let position = ko.unwrap(value.position);
+        let hasPosition = !!position;
         let zoom = ko.unwrap(value.zoom) || 10;
 
-        if (position) {
-            element.map.setCenter(new google.maps.LatLng(position.latitude, position.longitude));
-
-            if (element.marker) {
-                element.marker.setMap(null);
-                delete element.marker;
-            }
-
-            element.marker = new google.maps.Marker({
-                position: {
-                    lat: position.latitude,
-                    lng: position.longitude
-                },
-                map: element.map
-            });
-        } else {
-            if (element.marker) {
-                element.marker.setMap(null);
-                delete element.marker;
-            }
-
-            element.map.setCenter(new google.maps.LatLng(57.6706907666667, 11.9375348333333));
+        if (!position) {
+            position = {
+                latitude: 57.6706907666667,
+                longitude: 11.9375348333333
+            };
         }
 
-        element.map.setZoom(zoom);
+        element.map.panTo(new google.maps.LatLng(position.latitude, position.longitude));
+
+        if (element.marker) {
+            element.marker.setMap(null);
+            delete element.marker;
+        }
+
+        element.marker = new google.maps.Marker({
+            position: {
+                lat: position.latitude,
+                lng: position.longitude
+            },
+            map: element.map,
+            draggable: value.editable,
+            visible: hasPosition
+        });
+
+        google.maps.event.addListener(element.marker, "dragend", (data) => {
+            value.position({ latitude: data.latLng.lat(), longitude: data.latLng.lng() });
+        });
+
+        if (element.zoom !== zoom) {
+            element.map.setZoom(zoom);
+        }
     }
 };
 
@@ -369,6 +381,38 @@ ko.bindingHandlers.htmlSize = {
         } while (fileSizeInBytes > 1024);
 
         $(element).html(fileSizeInBytes.toFixed(1) + byteUnits[i]);
+    }
+};
+
+ko.bindingHandlers.positionAddress = {
+    update: (element, valueAccessor) => {
+        let value = valueAccessor();
+        let where = ko.unwrap(value) || false;
+
+        if (!where) {
+            return $(element).text("Unknown");
+        }
+
+        let longitude = where.longitude;
+        let latitude = where.latitude;
+
+        if (!longitude || !latitude) {
+            return $(element).text("Unknown");
+        }
+
+        // TODO: Look in our own database first
+        let options = {
+            sensor: false,
+            latlng: latitude + "," + longitude
+        };
+
+        $.getJSON("https://maps.googleapis.com/maps/api/geocode/json", options, (data) => {
+            if (data.status !== "OK" || data.results.length === 0) {
+                return $(element).text("Unknown");
+            }
+
+            $(element).text(data.results[0].formatted_address);
+        });
     }
 };
 

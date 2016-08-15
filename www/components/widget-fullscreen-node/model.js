@@ -14,6 +14,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
     this.showSidebar = ko.observable(true);
     this.tagging = ko.observable(false);
+    this.positioning = ko.observable(false);
     this.personPath = ko.observable(false);
     this.selectedTag = ko.observable(false);
     this.height = ko.pureComputed(() => {
@@ -28,6 +29,53 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return heights[heights.length - 1];
     });
+
+    this.position = ko.pureComputed({
+        read: () => {
+            if (!this.nodepath()) {
+                return false;
+            }
+
+            if (this.nodepath().node().attributes.where.gps) {
+                return this.nodepath().node().attributes.where.gps;
+            } else if (this.nodepath().node().attributes.where.manual) {
+                return this.nodepath().node().attributes.where.manual;
+            }
+
+            return false;
+        },
+        write: (position) => {
+            let where = this.nodepath().node().attributes.where;
+
+            where.manual = position;
+
+            api.vfs.setattributes(this.nodepath().path, { where: where })
+            .then((node) => {
+                this.nodepath().node(node);
+            })
+            .catch((error) => {
+                stat.printError(error);
+            });
+        }
+    });
+
+    this.location = ko.asyncComputed(false, function*(setter) {
+        if (!this.nodepath()) {
+            return false;
+        }
+
+        setter(false);
+
+        let node = yield api.vfs.resolve(this.nodepath().path + "/location", { noerror: true });
+
+        console.log("location", node);
+
+        return node;
+    }.bind(this), (error) => {
+        stat.printError(error);
+        return false;
+    });
+
     this.nodepath = ko.asyncComputed(false, function*(setter) {
         let abspath = ko.unwrap(this.showPath);
         let versions = [];
@@ -323,6 +371,8 @@ module.exports = utils.wrapComponent(function*(params) {
     this.exit = () => {
         if (this.tagging()) {
             this.tagging(false);
+        } else if (this.positioning()) {
+            this.positioning(false);
         } else {
             loc.goto({ showPath: null });
         }

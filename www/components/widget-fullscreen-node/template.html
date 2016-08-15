@@ -80,6 +80,27 @@
         </div>
     </div>
 
+    <div class="sidebar" data-bind="visible: positioning() && nodepath(), if: positioning() && nodepath()">
+        <h2 style="margin: 0;">
+            Location
+        </h2>
+
+        <table class="text-muted" style="margin-top: 30px;">
+            <tbody>
+                <tr>
+                    <td style="width: 44px;">
+                        <i class="material-icons" title="Location">place</i>
+                    </td>
+                    <td style="padding-top: 1px;">
+                        <widget-node-link-node params="{ nodepath: nodepath, name: 'location', placeholder: 'Select location', searchPaths: [ '/locations' ], input: true }"></widget-node-link-node>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="position: absolute; top: 160px; left: 0; right: 0; bottom: 0;" data-bind="map: { position: position, zoom: position() ? 15 : 10, editable: nodepath().editable }"></div>
+    </div>
+
     <div class="maincontainer animated fadeIn" data-bind="if: nodepath() && filename()">
         <div data-bind="visible: nodepath().node().attributes.type === 'image', if: nodepath().node().attributes.type === 'image'">
             <div data-bind="picture: { item: nodepath, filename: filename, tags: tags, height: $component.height, classes: 'resize-fit-center', nolazyload: true, selectTag: selectTag }" class="resize-fit-container"></div>
@@ -109,9 +130,14 @@
                 <span data-bind="datetimeUtc: nodepath().node().attributes.time.timestamp"></span>
             </span>
 
-            <span>
+            <span data-bind="click: positioning.bind($data, !positioning())" style="cursor: pointer;">
                 <i class="material-icons md-18">place</i>
-                TODO
+                <span data-bind="if: location">
+                    <span data-bind="text: location().attributes.name"></span>
+                </span>
+                <span data-bind="if: !location()">
+                    <span data-bind="positionAddress: position"></span>
+                </span>
             </span>
 
             <span>
@@ -134,11 +160,11 @@
         <i class="material-icons">info</i>
     </a>
 
-    <a href="#" class="hideinformation" data-bind="click: showSidebar.bind($data, false), visible: showSidebar() && !tagging()">
+    <a href="#" class="hideinformation" data-bind="click: showSidebar.bind($data, false), visible: showSidebar() && !tagging() && !positioning()">
         <i class="material-icons">forward</i>
     </a>
 
-    <div class="btn-group menu" data-bind="visible: nodepath().editable && !tagging()">
+    <div class="btn-group menu" data-bind="visible: nodepath().editable && !tagging() && !positioning()">
         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="material-icons">more_vert</i>
         </a>
@@ -159,6 +185,10 @@
             <li><a href="#" data-bind="click: tagging.bind($data, true)">
                 <i class="material-icons">face</i>
                 Tag people
+            </a></li>
+            <li><a href="#" data-bind="click: positioning.bind($data, true)">
+                <i class="material-icons">place</i>
+                Set location
             </a></li>
         </ul>
     </div>
