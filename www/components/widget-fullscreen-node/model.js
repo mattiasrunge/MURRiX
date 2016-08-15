@@ -47,7 +47,7 @@ module.exports = utils.wrapComponent(function*(params) {
         let editable = yield api.vfs.access(abspath, "w");
 
         versions = yield api.vfs.list(abspath + "/versions", {
-            noerror:  true
+            noerror: true
         });
 
         console.log("versions", versions);
@@ -98,7 +98,7 @@ module.exports = utils.wrapComponent(function*(params) {
         setter([]);
 
         let tags = yield api.vfs.list(this.nodepath().path + "/tags", {
-            noerror:  true
+            noerror: true
         });
 
         console.log("tags", tags);
@@ -139,7 +139,7 @@ module.exports = utils.wrapComponent(function*(params) {
                     width: null,
                     height: null
                 };
-            } else if (this.selectedTag().link.attributes.y !== value.y ||this.selectedTag().link.attributes.x !== value.x || this.selectedTag().link.attributes.width !== value.width || this.selectedTag().link.attributes.height !== value.height) {
+            } else if (this.selectedTag().link.attributes.y !== value.y || this.selectedTag().link.attributes.x !== value.x || this.selectedTag().link.attributes.width !== value.width || this.selectedTag().link.attributes.height !== value.height) {
                 attributes = value;
             } else {
                 return;
@@ -330,7 +330,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
     this.removeTag = (tag) => {
         api.vfs.unlink(this.showPath() + "/tags/" + tag.name)
-        .then((link) => {
+        .then(() => {
             this.tags.reload();
         })
         .catch((error) => {
@@ -346,7 +346,7 @@ module.exports = utils.wrapComponent(function*(params) {
         this.personPath(false);
 
         api.vfs.symlink(value, this.showPath() + "/tags")
-        .then((link) => {
+        .then(() => {
             this.tags.reload();
         })
         .catch((error) => {

@@ -428,9 +428,6 @@ let vfs = api.register("vfs", {
         node.properties.ctime = new Date();
         node.properties.cuid = session.uid;
 
-        let oldUid = node.properties.uid;
-        let oldGid = node.properties.gid;
-
         if (username) {
             if (typeof username === "number") {
                 node.properties.uid = username;
@@ -450,7 +447,6 @@ let vfs = api.register("vfs", {
         yield db.updateOne("nodes", node);
 
         plugin.emit("vfs.chown", {
-            uid: session.uid,
             path: abspath,
             uid: node.properties.uid,
             gid: node.properties.gid
@@ -874,7 +870,14 @@ let vfs = api.register("vfs", {
         vfs.emit("update", { path: destparentPath });
     },
     allocateUploadId: function*(session) {
-        return session.allocateUploadId();
+        let id = uuid.v4();
+
+        if (!session.uploads) {
+            session.uploads = [];
+        }
+
+        session.uploads[id] = true;
+        return id;
     }
 });
 

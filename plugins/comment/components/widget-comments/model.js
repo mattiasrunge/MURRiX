@@ -23,11 +23,11 @@ module.exports = utils.wrapComponent(function*(params) {
     this.collapsed = ko.observable(this.rows() > 0);
 
     this.filtered = ko.pureComputed(() => {
-       if (this.rows() === 0 || !this.collapsed()) {
-           return this.list();
-       }
+        if (this.rows() === 0 || !this.collapsed()) {
+            return this.list();
+        }
 
-       return this.list().slice(-this.rows());
+        return this.list().slice(-this.rows());
     });
 
     this.post = (model, event) => {

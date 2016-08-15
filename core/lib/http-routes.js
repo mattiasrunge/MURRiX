@@ -11,7 +11,6 @@ const CleanCSS = require("clean-css");
 const promisifyAll = require("bluebird").promisifyAll;
 const babel = promisifyAll(require("babel-core"));
 const configuration = require("./configuration");
-const store = require("./store");
 const log = require("./log")(module);
 
 const wwwPath = path.join(__dirname, "..", "..", "www");
@@ -46,11 +45,11 @@ module.exports = {
         this.body = JSON.stringify(components);
     },
     "post/upload/:id": function*(id) {
-        if (!store.get("uploadIds", id)) {
+        if (!this.sessionData.uploads || !this.sessionData.uploads[id]) {
             throw new Error("Invalid upload id");
         }
 
-        store.unset("uploadIds", id);
+        delete this.sessionData.uploads[id];
 
         let part;
         while ((part = yield parse(this))) {

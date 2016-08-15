@@ -1,7 +1,6 @@
 "use strict";
 
 const fs = require("fs-extra-promise");
-const path = require("path");
 const http = require("http");
 const co = require("bluebird").coroutine;
 const promisify = require("bluebird").promisify;
@@ -14,36 +13,25 @@ const conditional = require("koa-conditional-get");
 const etag = require("koa-etag");
 const enableDestroy = require("server-destroy");
 const uuid = require("node-uuid");
-const moment = require("moment");
 const configuration = require("./configuration");
 const routes = require("./http-routes");
-const store = require("./store");
 const api = require("api.io");
-const db = require("./db");
+const sessionStore = require("./session");
 const log = require("./log")(module);
 
 let server;
-let sessions = {};
 let params = {};
-let timer = null;
 
 module.exports = {
-    init: co(function*(config, version) {
+    init: co(function*(config) {
         params = config;
 
         let app = koa();
+        let sessions = sessionStore.getSessions();
 
         if (params.cacheDirectory) {
             yield fs.removeAsync(params.cacheDirectory);
         }
-
-        yield module.exports.loadSessions();
-
-        timer = setInterval(() => {
-            module.exports.persistSessions();
-        }, 1000 * 60 * 5);
-
-        store.create("uploadIds");
 
         // Setup application
         app.keys = [ "murrix is tha best" ];
@@ -68,14 +56,16 @@ module.exports = {
 
         // Configure sessions
         app.use(function *(next) {
-            if (typeof this.session.sessionId === "undefined") {
+            if (!this.session.sessionId) {
                 this.session.sessionId = uuid.v4();
                 log.info("Created session for a browser, id " + this.session.sessionId);
             }
 
-            sessions[this.session.sessionId] = sessions[this.session.sessionId] || {
-                sessionId: this.session.sessionId
-            };
+            if (!sessions[this.session.sessionId]) {
+                sessions[this.session.sessionId] = {
+                    sessionId: this.session.sessionId
+                };
+            }
 
             this.sessionData = sessions[this.session.sessionId];
 
@@ -110,44 +100,11 @@ module.exports = {
         // Socket.io if we have defined API
         yield api.start(server, sessions);
 
-        api.on("connection", (client) => {
-            client.session.uploads = client.session.uploads || {};
-            client.session.allocateUploadId = () => {
-                let id = uuid.v4();
-                store.set("uploadIds", id, moment());
-                client.session.uploads[id] = path.join(params.uploadDirectory, id);
-                return id;
-            };
-        });
-
         server.listen(configuration.port);
     }),
-    loadSessions: co(function*() {
-        let list = yield db.find("sessions");
-
-        log.info("Loading " + list.length + " sessions");
-
-        for (let session of list) {
-            sessions[session._id] = session;
-        }
-    }),
-    persistSessions: co(function*() {
-        log.info("Persisting " + Object.keys(sessions).length + " sessions");
-
-        for (let sessionId of Object.keys(sessions)) {
-            sessions[sessionId]._id = sessionId;
-            yield db.updateOne("sessions", sessions[sessionId], { upsert: true });
-        }
-    }),
     stop: co(function*() {
-        if (timer) {
-            clearInterval(timer);
-            timer = null;
-        }
-
         if (server) {
             yield promisify(server.destroy, { context: server })();
-            yield module.exports.persistSessions();
         }
     })
 };

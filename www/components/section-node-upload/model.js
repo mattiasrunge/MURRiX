@@ -4,7 +4,6 @@ const ko = require("knockout");
 const $ = require("jquery");
 const utils = require("lib/utils");
 const stat = require("lib/status");
-const node = require("lib/node");
 const api = require("api.io-client");
 
 module.exports = utils.wrapComponent(function*(params) {

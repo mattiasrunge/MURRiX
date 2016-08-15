@@ -129,7 +129,6 @@ let feed = api.register("feed", {
         let events = yield vfs.query(session, {
             "properties.type": "t",
             "attributes.type": { $in: [ "birth", "marriage", "engagement" ] },
-            "attributes.time.timestamp": { $exists: true },
             "attributes.time.timestamp": { $ne: null }
         });
 

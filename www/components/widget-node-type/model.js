@@ -16,5 +16,5 @@ const types = {
 };
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.type = ko.pureComputed(() => types[ko.unwrap(params.type)] || "unknown" );
+    this.type = ko.pureComputed(() => types[ko.unwrap(params.type)] || "unknown");
 });

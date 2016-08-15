@@ -2,9 +2,7 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const $ = require("jquery");
 const utils = require("lib/utils");
-const loc = require("lib/location");
 const stat = require("lib/status");
 const node = require("lib/node");
 

@@ -10,7 +10,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.size = 470;
 
-     this.pictureItem = ko.asyncComputed(false, function*(setter) {
+    this.pictureItem = ko.asyncComputed(false, function*(setter) {
         if (!this.item()) {
             return false;
         }

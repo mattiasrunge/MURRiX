@@ -11,7 +11,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.width = 155;
     this.height = 270;
 
-     this.files = ko.asyncComputed([], function*(setter) {
+    this.files = ko.asyncComputed([], function*(setter) {
         if (!this.nodepath()) {
             return [];
         }

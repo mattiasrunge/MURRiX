@@ -142,12 +142,12 @@ ko.bindingHandlers.fileUpload = {
     init: function (element, valueAccessor) {
         let $element = $(element);
 
-        $(element).on("change", () => {
+        $element.on("change", () => {
             valueAccessor()(element.files);
         });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-            $(element).off("change");
+            $element.off("change");
         });
     }
 };
@@ -337,7 +337,7 @@ ko.bindingHandlers.datetimeAgo = {
     }
 };
 
-http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+//http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
 ko.bindingHandlers.number = {
     update: (element, valueAccessor) => {
         let number = ko.unwrap(valueAccessor());
@@ -345,11 +345,11 @@ ko.bindingHandlers.number = {
         let k = number % 100;
         let str = number + "th";
 
-        if (j == 1 && k != 11) {
+        if (j === 1 && k !== 11) {
             str = number + "st";
-        } else if (j == 2 && k != 12) {
+        } else if (j === 2 && k !== 12) {
             str = number + "nd";
-        } else if (j == 3 && k != 13) {
+        } else if (j === 3 && k !== 13) {
             str = number + "rd";
         }
 

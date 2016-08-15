@@ -2,7 +2,6 @@
 
 const path = require("path");
 const main = require("./lib/main");
-const packageData = require("../package.json");
 const argv = require("yargs")
 .usage("Usage: $0 -c [config]")
 .example("$0 -c ../conf/config.json", "Start server with specific configuration file")
@@ -25,7 +24,7 @@ process
 .on("SIGINT", () => { main.stop().then(process.exit); })
 .on("SIGTERM", () => { main.stop().then(process.exit); });
 
-main.start(argv, packageData.version)
+main.start(argv)
 .catch(function(error) {
     console.error("FATAL ERROR");
     console.error(error);
