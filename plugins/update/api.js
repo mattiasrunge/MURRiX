@@ -1037,6 +1037,7 @@ let update = api.register("update", {
                 labels: obj.tags || [],
                 angle: obj.angle,
                 mirror: obj.mirror,
+                timeindex: obj.thumbPosition,
                 md5: obj.checksum
             };
 

@@ -99,7 +99,8 @@ let file = api.register("file", {
                 "attributes.type": 1,
                 "attributes.diskfilename": 1,
                 "attributes.angle": 1,
-                "attributes.mirror": 1
+                "attributes.mirror": 1,
+                "attributes.timeindex": 1
             }
         });
 
@@ -112,6 +113,7 @@ let file = api.register("file", {
                 mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
                     angle: node.attributes.angle,
                     mirror: node.attributes.mirror,
+                    timeindex: node.attributes.timeindex,
                     width: width,
                     height: height,
                     type: "image"
