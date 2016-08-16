@@ -75,7 +75,9 @@ module.exports = utils.wrapComponent(function*(params) {
             this.aclGroupAccess("read")
         }
 
-        this.nodepath.reload();
+        let node = yield api.vfs.resolve(this.nodepath().path);
+
+        this.nodepath().node(node);
     }.bind(this));
 
     let saving = true;
