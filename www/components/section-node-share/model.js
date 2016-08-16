@@ -41,18 +41,58 @@ module.exports = utils.wrapComponent(function*(params) {
         if (mode !== this.nodepath().node().properties.mode) {
             yield api.vfs.chmod(this.nodepath().path, mode.toString(8), { recursive: true });
         }
+
+        for (let ac of this.aclGroupList()) {
+            let mode = 0;
+
+            if (ac.access() === "write") {
+                mode |= parseInt("004", 8);
+                mode |= parseInt("002", 8);
+                mode |= parseInt("001", 8);
+            } else if (ac.access() === "read") {
+                mode |= parseInt("004", 8);
+                mode |= parseInt("001", 8);
+            }
+
+            yield api.vfs.setfacl(this.nodepath().path, { gid: ac.gid, mode: mode }, { recursive: true });
+        }
+
+        if (this.aclGid()) {
+            let mode = 0;
+
+            if (this.aclGroupAccess() === "write") {
+                mode |= parseInt("004", 8);
+                mode |= parseInt("002", 8);
+                mode |= parseInt("001", 8);
+            } else if (this.aclGroupAccess() === "read") {
+                mode |= parseInt("004", 8);
+                mode |= parseInt("001", 8);
+            }
+
+            yield api.vfs.setfacl(this.nodepath().path, { gid: this.aclGid(), mode: mode }, { recursive: true });
+
+            this.aclGid(false);
+            this.aclGroupAccess("read")
+        }
+
+        this.nodepath.reload();
     }.bind(this));
 
+    let saving = true;
+
     this.setAccess = () => {
+        saving = true;
         this.loading(true);
         this.saveAccess()
         .then(() => {
+            saving = false;
             this.loading(false);
             stat.printSuccess("Share settings saved successfully!");
 
             node.reload();
         })
         .catch((error) => {
+            saving = false;
             this.loading(false);
             stat.printError(error);
         });
@@ -82,6 +122,23 @@ module.exports = utils.wrapComponent(function*(params) {
         return list;
     });
 
+    this.changed = ko.computed(() => {
+        this.gid();
+        this.groupAccess();
+        this.public();
+        this.aclGid();
+        this.aclGroupAccess();
+        for (let ac of this.aclGroupList()) {
+            ac.access();
+        }
+
+        console.log("CHANGED");
+
+        if (!saving) {
+            console.log("SAVE");
+            this.setAccess();
+        }
+    }).extend({ notify: "always" });
 
     this.whoHasAccess = ko.asyncComputed([], function*() {
         if (!this.nodepath()) {
@@ -91,12 +148,7 @@ module.exports = utils.wrapComponent(function*(params) {
         let list = [];
 
         // Ko must subscribe before first yield
-        this.gid();
-        this.groupAccess();
-        this.public();
-        for (let ac of this.aclGroupList()) {
-            ac.access();
-        }
+        this.changed();
 
         this.loading(true);
 
@@ -127,10 +179,10 @@ module.exports = utils.wrapComponent(function*(params) {
             }
         }
 
-        for (let ac of this.aclGroupList()) {
-            let groupname = yield api.auth.gname(ac.gid);
+        if (this.aclGid()) {
+            let groupname = yield api.auth.gname(this.aclGid());
             let users = yield api.auth.userList(groupname);
-            let type = ac.access() === "write" ? "Read and write" : "Read";
+            let type = this.aclGroupAccess() === "write" ? "Read and write" : "Read";
 
             for (let user of users) {
                 list.push({
@@ -138,6 +190,22 @@ module.exports = utils.wrapComponent(function*(params) {
                     uid: user.node.attributes.uid,
                     type: type
                 });
+            }
+        }
+
+        for (let ac of this.aclGroupList()) {
+            if (ac.access() !== "none") {
+                let groupname = yield api.auth.gname(ac.gid);
+                let users = yield api.auth.userList(groupname);
+                let type = ac.access() === "write" ? "Read and write" : "Read";
+
+                for (let user of users) {
+                    list.push({
+                        name: user.node.attributes.name,
+                        uid: user.node.attributes.uid,
+                        type: type
+                    });
+                }
             }
         }
 
@@ -151,7 +219,10 @@ module.exports = utils.wrapComponent(function*(params) {
     this.groupAccess(this.nodepath().node().properties.mode & parseInt("040", 8) ? "read" : this.groupAccess());
     this.groupAccess(this.nodepath().node().properties.mode & parseInt("020", 8) ? "write" : this.groupAccess());
 
+    saving = false;
+
     this.dispose = () => {
+        this.changed.dispose();
         stat.destroy(this.loading);
     };
 });
