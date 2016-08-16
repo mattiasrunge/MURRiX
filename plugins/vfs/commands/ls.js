@@ -59,11 +59,12 @@ vorpal
         }
 
         let mode = terminal.modeString(item.node.properties.mode);
+        let acl = item.node.properties.acl && item.node.properties.acl.length > 0 ? "+" : "";
         let uid = ucache[item.node.properties.uid] ? ucache[item.node.properties.uid] : item.node.properties.uid.toString();
         let gid = gcache[item.node.properties.gid] ? gcache[item.node.properties.gid] : item.node.properties.gid.toString();
 
         return {
-            mode: item.node.properties.type + mode,
+            mode: item.node.properties.type + mode + acl,
             count: item.node.properties.count,
             uid: uid.cyan,
             gid: gid.cyan,

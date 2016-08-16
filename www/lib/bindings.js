@@ -480,6 +480,22 @@ ko.bindingHandlers.gname = {
     }
 };
 
+ko.bindingHandlers.gnameNice = {
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        api.auth.gnameNice(value)
+        .then((name) => {
+            $element.text(name);
+        })
+        .catch((error) => {
+            $element.html("<span class='text-error'>unknown</span>");
+            stat.printError(error);
+        });
+    }
+};
+
 ko.bindingHandlers.mode = {
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());

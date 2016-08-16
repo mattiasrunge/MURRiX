@@ -35,6 +35,7 @@ let vfs = api.register("vfs", {
                     muid: 1000,
                     uid: 1000,
                     gid: 1000,
+                    acl: [],
                     children: [],
                     count: 0
                 },
@@ -117,7 +118,26 @@ let vfs = api.register("vfs", {
             throw e;
         }
 
-        return (node.properties.mode & mode) > 0;
+        if ((node.properties.mode & mode) > 0) {
+            return true;
+        }
+
+        if (node.properties.acl && node.properties.acl.length > 0) {
+            for (let ac of node.properties.acl) {
+                if ((ac.uid && ac.uid === session.uid) || (ac.gid && session.gids.indexOf(ac.gid) !== -1)) {
+                    mode = 0;
+                    mode += modestr.indexOf("r") !== -1 ? octal("004") : 0;
+                    mode += modestr.indexOf("w") !== -1 ? octal("002") : 0;
+                    mode += modestr.indexOf("x") !== -1 ? octal("001") : 0;
+
+                    if ((ac.mode & mode) > 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     },
     query: function*(session, query, options) {
         if (options && options.fields) {
@@ -385,6 +405,57 @@ let vfs = api.register("vfs", {
 
         return list;
     },
+    setfacl: function*(session, abspath, ac, options) {
+        let node = yield vfs.resolve(session, abspath, { nofollow: true });
+
+        options = options || {};
+
+        if (!(yield vfs.access(session, node, "w"))) {
+            throw new Error("Permission denied");
+        }
+
+        node.properties.ctime = new Date();
+        node.properties.cuid = session.uid;
+
+        if (!ac) {
+            node.properties.acl = [];
+        } else {
+            node.properties.acl = node.properties.acl || [];
+
+            let current = node.properties.acl.filter((item) => item.uid === ac.uid || item.gid === ac.gid)[0];
+
+            if (current) {
+                let index = node.properties.acl.indexOf(current);
+                node.properties.acl.splice(index, 1);
+            }
+
+            if (ac.mode > 0) {
+                node.properties.acl.push({
+                    gid: ac.gid,
+                    uid: ac.uid,
+                    mode: ac.mode
+                });
+            }
+        }
+
+        yield db.updateOne("nodes", node);
+
+        plugin.emit("vfs.setfacl", {
+            uid: session.uid,
+            path: abspath,
+            ac: ac
+        });
+
+        vfs.emit("update", { path: abspath });
+
+        if (options.recursive && node.properties.type !== "s") {
+            let children = yield vfs.list(session, abspath, { nofollow: true });
+
+            for (let child of children) {
+                yield vfs.setfacl(session, child.path, ac, options);
+            }
+        }
+    },
     chmod: function*(session, abspath, mode, options) {
         let node = yield vfs.resolve(session, abspath, { nofollow: true });
 
@@ -548,6 +619,7 @@ let vfs = api.register("vfs", {
                 muid: session.uid,
                 uid: session.uid,
                 gid: parent.properties.gid,
+                acl: parent.properties.acl || [],
                 children: [],
                 count: 1
             },

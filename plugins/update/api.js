@@ -3,6 +3,7 @@
 /* jshint -W035 */
 // jscs:disable
 
+const octal = require("octal");
 const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
@@ -44,6 +45,7 @@ let update = api.register("update", {
         let idTransNodes = {};
         let idTransItems = {};
         let idTransGroups = {};
+        let idTransGroupsGid = {};
         let idTransUsers = {};
         let idTransUsersUid = {};
         let index = 0;
@@ -102,12 +104,13 @@ let update = api.register("update", {
 
             console.log(index + "/" + groupList.length + ": Importing group " + name);
 
-            yield auth.mkgroup(session, name, obj.name, obj.description);
+            let group = yield auth.mkgroup(session, name, obj.name, obj.description);
             yield vfs.setproperties(session, "/groups/" + name, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate()
             });
 
             idTransGroups[obj._id] = name;
+            idTransGroupsGid[obj._id] = group.attributes.gid;
             result.groups++;
         }
 
@@ -622,10 +625,40 @@ let update = api.register("update", {
 
             console.log(index + "/" + albumList.length + ": Importing album " + name);
 
+            let acl = [];
+
+            for (let readerId of obj._readers) {
+                let gid = idTransGroupsGid[readerId];
+
+                let ac = acl.filter((item) => item.gid === gid)[0];
+
+                if (!ac) {
+                    ac = { gid: gid, mode: 0 };
+                }
+
+                ac.mode |= octal("004");
+                ac.mode |= octal("001");
+            }
+
+            for (let adminId of obj._readers) {
+                let gid = idTransGroupsGid[adminId];
+
+                let ac = acl.filter((item) => item.gid === gid)[0];
+
+                if (!ac) {
+                    ac = { gid: gid, mode: 0 };
+                }
+
+                ac.mode |= octal("004");
+                ac.mode |= octal("002");
+                ac.mode |= octal("001");
+            }
+
             yield album.mkalbum(session, name, attributes);
             yield vfs.setproperties(session, "/albums/" + name, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate(),
-                birthuid: idTransUsersUid[obj.added._by]
+                birthuid: idTransUsersUid[obj.added._by],
+                acl: acl
             });
 
             if (obj.comments && obj.comments.length > 0) {

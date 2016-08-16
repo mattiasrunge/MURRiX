@@ -349,6 +349,17 @@ let auth = api.register("auth", {
 
         return false;
     },
+    gnameNice: function*(session, gid) {
+        let groups = yield vfs.list(auth.getAdminSession(), "/groups");
+
+        for (let group of groups) {
+            if (group.node.attributes.gid === gid) {
+                return group.node.attributes.name;
+            }
+        }
+
+        return false;
+    },
     uid: function*(session, uname) {
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + uname);
 

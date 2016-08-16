@@ -57,18 +57,36 @@ module.exports = {
 
         return name;
     },
-    modeString: (mode) => {
+    modeString: (mode, options) => {
         let modeStr = "";
 
-        modeStr += mode & octal("400") ? "r" : "-";
-        modeStr += mode & octal("200") ? "w" : "-";
-        modeStr += mode & octal("100") ? "x" : "-";
-        modeStr += mode & octal("040") ? "r" : "-";
-        modeStr += mode & octal("020") ? "w" : "-";
-        modeStr += mode & octal("010") ? "x" : "-";
-        modeStr += mode & octal("004") ? "r" : "-";
-        modeStr += mode & octal("002") ? "w" : "-";
-        modeStr += mode & octal("001") ? "x" : "-";
+        let user = true;
+        let group = true;
+        let other = true;
+
+        if (options) {
+            user = options.user;
+            group = options.group;
+            other = options.other;
+        }
+
+        if (user) {
+            modeStr += mode & octal("400") ? "r" : "-";
+            modeStr += mode & octal("200") ? "w" : "-";
+            modeStr += mode & octal("100") ? "x" : "-";
+        }
+
+        if (group) {
+            modeStr += mode & octal("040") ? "r" : "-";
+            modeStr += mode & octal("020") ? "w" : "-";
+            modeStr += mode & octal("010") ? "x" : "-";
+        }
+
+        if (other) {
+            modeStr += mode & octal("004") ? "r" : "-";
+            modeStr += mode & octal("002") ? "w" : "-";
+            modeStr += mode & octal("001") ? "x" : "-";
+        }
 
         return modeStr;
     }
