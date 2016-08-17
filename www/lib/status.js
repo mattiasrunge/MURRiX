@@ -11,6 +11,7 @@ let list = ko.observableArray();
 module.exports = {
     printError: (text) => {
         console.error(text);
+        console.error(new Error().stack);
 
         let options = {
             content: text,

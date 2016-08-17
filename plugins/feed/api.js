@@ -9,6 +9,7 @@ const vfs = require("../vfs/api");
 const auth = require("../auth/api");
 
 let params = {};
+let isCleaning = false;
 
 let feed = api.register("feed", {
     deps: [ "vfs", "auth" ],
@@ -28,12 +29,12 @@ let feed = api.register("feed", {
         }
     }),
     mknews: co(function*(attributes) {
-        let baseName = moment().format();
-        let name = baseName.replace(/ |\//g, "_");
+        let baseName = moment()..valueOf().toString();
+        let name = baseName;
 
         let counter = 1;
         while (yield vfs.resolve(auth.getAdminSession(), path.join("/news", name), { noerror: true })) {
-            name = baseName.replace(/ |\//g, "_") + "_" + counter;
+            name = baseName + "_" + counter;
             counter++;
 
             if (counter > 1000) {
@@ -50,16 +51,29 @@ let feed = api.register("feed", {
         yield feed.cleanup();
     }),
     cleanup: co(function*() {
-        let parent = yield vfs.resolve(auth.getAdminSession(), "/news");
+        if (isCleaning) {
+            return;
+        }
 
-        parent.properties.children.sort((a, b) => {
-            return b.name.localeCompare(a.name);
-        });
+        isCleaning = true;
 
-        let children = parent.properties.children.slice(feed.limit);
+        try {
+            let parent = yield vfs.resolve(auth.getAdminSession(), "/news");
 
-        for (let child of children) {
-            yield vfs.unlink(auth.getAdminSession(), path.join("/news", child.name));
+            parent.properties.children.sort((a, b) => {
+                return b.name.localeCompare(a.name);
+            });
+
+            let children = parent.properties.children.slice(feed.limit);
+
+            for (let child of children) {
+                yield vfs.unlink(auth.getAdminSession(), path.join("/news", child.name));
+            }
+
+            isCleaning = false;
+        } catch (e) {
+            isCleaning = false;
+            throw e;
         }
     }),
     getLatest: co(function*() {

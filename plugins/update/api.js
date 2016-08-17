@@ -614,9 +614,12 @@ let update = api.register("update", {
                 continue;
             }
 
-            let name = getUniqueName("albums", obj.name);
+            let match = obj.name.match(/^[0-9]{0,4}-[0-9]{0,2}-[0-9]{0,2} (.*)/);
+            let nameNice = match ? match[1] : obj.name;
+
+            let name = getUniqueName("albums", nameNice);
             let attributes = {
-                name: obj.name,
+                name: nameNice,
                 description: obj.description,
                 idV0: obj.oldNodeId,
                 idV1: obj._id,
@@ -629,29 +632,39 @@ let update = api.register("update", {
 
             for (let readerId of obj._readers) {
                 let gid = idTransGroupsGid[readerId];
-
+                let push = false;
                 let ac = acl.filter((item) => item.gid === gid)[0];
 
                 if (!ac) {
                     ac = { gid: gid, mode: 0 };
+                    push = true;
                 }
 
                 ac.mode |= octal("004");
                 ac.mode |= octal("001");
+
+                if (push) {
+                    acl.push(ac);
+                }
             }
 
-            for (let adminId of obj._readers) {
+            for (let adminId of obj._admins) {
                 let gid = idTransGroupsGid[adminId];
-
+                let push = false;
                 let ac = acl.filter((item) => item.gid === gid)[0];
 
                 if (!ac) {
                     ac = { gid: gid, mode: 0 };
+                    push = true;
                 }
 
                 ac.mode |= octal("004");
                 ac.mode |= octal("002");
                 ac.mode |= octal("001");
+
+                if (push) {
+                    acl.push(ac);
+                }
             }
 
             yield album.mkalbum(session, name, attributes);

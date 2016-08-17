@@ -50,7 +50,7 @@ module.exports = {
         emitter.on(event, (data) => {
             handler(event, data)
             .catch((error) => {
-                log.error("Failed to handle event, error: " + error);
+                log.error("Failed to handle event, error: ", error);
             });
         });
     },

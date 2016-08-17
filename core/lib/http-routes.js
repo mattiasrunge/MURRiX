@@ -45,11 +45,11 @@ module.exports = {
         this.body = JSON.stringify(components);
     },
     "post/upload/:id": function*(id) {
-        if (!this.sessionData.uploads || !this.sessionData.uploads[id]) {
+        if (!this.session.uploads || !this.session.uploads[id]) {
             throw new Error("Invalid upload id");
         }
 
-        delete this.sessionData.uploads[id];
+        delete this.session.uploads[id];
 
         let part;
         while ((part = yield parse(this))) {

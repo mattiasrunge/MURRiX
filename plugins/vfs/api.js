@@ -708,6 +708,10 @@ let vfs = api.register("vfs", {
         let rremove = co(function*(abspath, id) {
             let node = yield db.findOne("nodes", { _id: id });
 
+            if (!node) {
+                throw new Error("Could not find node with id " + id + " and abspath " + abspath + " while removing");
+            }
+
             if (node.properties.count > 1) {
                 node.properties.count--;
 

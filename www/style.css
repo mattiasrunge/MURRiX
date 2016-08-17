@@ -493,7 +493,6 @@ body {
 }
 
 .navbar .profile .picture {
-  border-radius: 1px;
   margin-right: 5px;
   vertical-align: top;
   display: inline-block;
@@ -583,7 +582,6 @@ body {
 }
 
 .sidebar .profile .picture {
-  border-radius: 1px;
   margin-right: 10px;
   vertical-align: top;
 }

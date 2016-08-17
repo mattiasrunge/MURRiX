@@ -155,7 +155,7 @@ ko.bindingHandlers.fileUpload = {
         let $element = $(element);
 
         $element.on("change", () => {
-            valueAccessor()(element.files);
+            valueAccessor()(Array.from(element.files));
         });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
