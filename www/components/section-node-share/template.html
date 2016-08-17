@@ -31,7 +31,7 @@
                                 <input type="text" class="form-control" placeholder="Select a group" data-bind="groupselect: { gid: gid }">
                             </td>
                             <td style="width: 30%;">
-                                <select class="form-control" data-bind="value: groupAccess">
+                                <select class="form-control" data-bind="value: groupAccess, disable: saving">
                                     <option value="none">None</option>
                                     <option value="read">Read</option>
                                     <option value="write">Read and write</option>
@@ -56,7 +56,7 @@
                         <tr>
                             <td style="font-weight: 700; color: #2d6ca2; padding: 12px;" data-bind="gnameNice: $data.gid"></td>
                             <td style="width: 30%;">
-                                <select class="form-control" data-bind="value: $data.access">
+                                <select class="form-control" data-bind="value: $data.access, disable: $component.saving">
                                     <option value="none">None</option>
                                     <option value="read">Read</option>
                                     <option value="write">Read and write</option>
@@ -67,10 +67,10 @@
                     <tbody>
                         <tr>
                             <td>
-                                <input type="text" class="form-control" placeholder="Add a group" data-bind="groupselect: { gid: aclGid }">
+                                <input type="text" class="form-control" placeholder="Add a group" data-bind="groupselect: { gid: aclGid }, disable: saving">
                             </td>
                             <td style="width: 30%;">
-                                <select class="form-control" data-bind="value: aclGroupAccess">
+                                <select class="form-control" data-bind="value: aclGroupAccess, disable: saving">
                                     <option value="read">Read</option>
                                     <option value="write">Read and write</option>
                                 </select>
@@ -95,7 +95,11 @@
                                     </span>
                                     <span data-bind="text: $data.name"></span>
                                 </td>
-                                <td data-bind="text: $data.type"></td>
+                                <td>
+                                    <span data-bind="visible: $data.type == 'read'">Read access</span>
+                                    <span data-bind="visible: $data.type == 'write'">Read and write access</span>
+                                    <span data-bind="text: $data.reason"></span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

@@ -9,11 +9,14 @@ const node = require("lib/node");
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
     this.loading = stat.create();
+    this.saving = stat.create();
     this.gid = ko.observable(false);
     this.public = ko.observable(false);
     this.groupAccess = ko.observable("none");
     this.aclGid = ko.observable(false);
     this.aclGroupAccess = ko.observable("read");
+
+    this.saving(true); // While we load we don't want so save
 
     this.saveAccess = utils.co(function*() {
         if (this.gid() === false) {
@@ -80,26 +83,6 @@ module.exports = utils.wrapComponent(function*(params) {
         this.nodepath().node(node);
     }.bind(this));
 
-    let saving = true;
-
-    this.setAccess = () => {
-        saving = true;
-        this.loading(true);
-        this.saveAccess()
-        .then(() => {
-            saving = false;
-            this.loading(false);
-            stat.printSuccess("Share settings saved successfully!");
-
-            node.reload();
-        })
-        .catch((error) => {
-            saving = false;
-            this.loading(false);
-            stat.printError(error);
-        });
-    };
-
     this.aclGroupList = ko.pureComputed(() => {
         if (!this.nodepath()) {
             return [];
@@ -129,16 +112,21 @@ module.exports = utils.wrapComponent(function*(params) {
         this.groupAccess();
         this.public();
         this.aclGid();
-        this.aclGroupAccess();
         for (let ac of this.aclGroupList()) {
             ac.access();
         }
 
-        console.log("CHANGED");
-
-        if (!saving) {
-            console.log("SAVE");
-            this.setAccess();
+        if (!this.saving.peek()) {
+            this.saving(true);
+            this.saveAccess()
+            .then(() => {
+                this.saving(false);
+                stat.printSuccess("Share settings saved successfully!");
+            })
+            .catch((error) => {
+                this.saving(false);
+                stat.printError(error);
+            });
         }
     }).extend({ notify: "always" });
 
@@ -149,79 +137,90 @@ module.exports = utils.wrapComponent(function*(params) {
 
         let list = [];
 
-        // Ko must subscribe before first yield
-        this.changed();
-
         this.loading(true);
 
         list.push({
             name: yield api.auth.name(this.nodepath().node().properties.uid),
             uid: this.nodepath().node().properties.uid,
-            type: "Owner"
+            type: "write",
+            reason: "as owner"
         });
 
         if (this.public()) {
             list.push({
                 name: "Everyone",
-                type: "Read"
+                type: "read",
+                reason: "since node is public"
             });
         }
 
         if (this.gid() && this.groupAccess() !== "none") {
-            let groupname = yield api.auth.gname(this.gid());
-            let users = yield api.auth.userList(groupname);
-            let type = this.groupAccess() === "write" ? "Read and write" : "Read";
+            let name = yield api.auth.gname(this.gid());
+            let niceName = yield api.auth.gnameNice(this.gid());
+            let users = yield api.auth.userList(name);
 
             for (let user of users) {
                 list.push({
                     name: user.node.attributes.name,
                     uid: user.node.attributes.uid,
-                    type: type
-                });
-            }
-        }
-
-        if (this.aclGid()) {
-            let groupname = yield api.auth.gname(this.aclGid());
-            let users = yield api.auth.userList(groupname);
-            let type = this.aclGroupAccess() === "write" ? "Read and write" : "Read";
-
-            for (let user of users) {
-                list.push({
-                    name: user.node.attributes.name,
-                    uid: user.node.attributes.uid,
-                    type: type
+                    type: this.groupAccess(),
+                    reason: "as member of " + niceName
                 });
             }
         }
 
         for (let ac of this.aclGroupList()) {
             if (ac.access() !== "none") {
-                let groupname = yield api.auth.gname(ac.gid);
-                let users = yield api.auth.userList(groupname);
-                let type = ac.access() === "write" ? "Read and write" : "Read";
+                let name = yield api.auth.gname(ac.gid);
+                let niceName = yield api.auth.gnameNice(ac.gid);
+                let users = yield api.auth.userList(name);
 
                 for (let user of users) {
                     list.push({
                         name: user.node.attributes.name,
                         uid: user.node.attributes.uid,
-                        type: type
+                        type: ac.access(),
+                        reason: "as member of " + niceName
                     });
                 }
             }
         }
 
+        list.sort((a, b) => {
+            if (a.type === "write" && b.type === "read") {
+                return -1;
+            } else if (b.type === "write" && a.type === "read") {
+                return 1;
+            }
+
+            return 0;
+        });
+
+        let uidList = [];
+
+        list = list.filter((item) => {
+            if (uidList.indexOf(item.uid) === -1) {
+                uidList.push(item.uid);
+                return true;
+            }
+
+            return false;
+        });
+
         this.loading(false);
 
         return list;
-    }.bind(this));
+    }.bind(this), (error) => {
+        this.loading(false);
+        stat.printError(error);
+    });
 
     this.gid(this.nodepath().node().properties.gid);
     this.public(this.nodepath().node().properties.mode & parseInt("004", 8));
     this.groupAccess(this.nodepath().node().properties.mode & parseInt("040", 8) ? "read" : this.groupAccess());
     this.groupAccess(this.nodepath().node().properties.mode & parseInt("020", 8) ? "write" : this.groupAccess());
 
-    saving = false;
+    this.saving(false);
 
     this.dispose = () => {
         this.changed.dispose();
