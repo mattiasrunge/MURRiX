@@ -1,7 +1,7 @@
 <div class="navbar navbar-fixed-top navbar-inverse navbar-background" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="#" data-bind="tooltip: 'Go to start'" data-placement="bottom" data-trigger="hover">
                 <i class="material-icons md-20">home</i>
             </a>
         </div>
@@ -9,7 +9,8 @@
         <div class="navbar-form navbar-left collapse navbar-collapse">
             <div class="form-group header-search">
                 <input type="text" class="form-control" placeholder="Search for anything" data-bind="nodeselect: { root: searchPaths, path: path }" style="width: 100%;">
-                <a class="star" href="#" data-bind=", attr: { title: starred() ? 'Click to unstar' : 'Click to star' }, click: toggleStar, visible: loggedIn() && path() !== ''">
+
+                <a class="star" href="#" data-bind=", attr: { title: starred() ? 'Click to unstar' : 'Click to star' }, click: toggleStar, visible: loggedIn() && path() !== '', tooltip: starred() ? 'Click to unstar' : 'Click to star'" data-placement="bottom" data-trigger="hover">
                     <i class="material-icons md-24" data-bind="visible: starred">star</i>
                     <i class="material-icons md-24" data-bind="visible: !starred()">star_border</i>
                 </a>
@@ -21,12 +22,12 @@
 
             <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
                 <li>
-                    <a href="#" title="Go to random" data-bind="click: random, visible: loggedIn()">
+                    <a href="#" data-bind="click: random, visible: loggedIn(), tooltip: 'Go to random'" data-placement="bottom" data-trigger="hover">
                         <i class="material-icons md-20">explore</i>
                     </a>
                 </li>
                 <li class="dropdown" data-bind="visible: stars().length > 0 && loggedIn()">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-bind="tooltip: 'Starred'" data-placement="bottom" data-trigger="hover">
                         <i class="material-icons md-20">star</i>
                     </a>
                     <ul class="dropdown-menu" data-bind="foreach: stars">
@@ -40,7 +41,7 @@
                     </ul>
                 </li>
                 <li class="dropdown" data-bind="visible: loggedIn">
-                    <a class="dropdown-toggle" title="Add new" data-toggle="dropdown" href="#">
+                    <a class="dropdown-toggle" title="Create" data-toggle="dropdown" href="#" data-bind="tooltip: 'Create'" data-placement="bottom" data-trigger="hover">
                         <i class="material-icons md-20">add</i>
                     </a>
                     <ul class="dropdown-menu">

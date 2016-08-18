@@ -776,6 +776,7 @@ ko.bindingHandlers.picture = {
         let width = ko.unwrap(data.width);
         let height = ko.unwrap(data.height);
         let classes = ko.unwrap(data.classes) || "";
+        let title = ko.unwrap(data.title);
         let type = ko.unwrap(data.type);
         let $element = $(element);
         let nolazyload = !!ko.unwrap(data.nolazyload);
@@ -906,6 +907,16 @@ ko.bindingHandlers.picture = {
                 $element.append($("<i class='material-icons grid-picture-type' title='Audio file'>mic</i>"));
             } else if (type) {
                 $element.append($("<i class='material-icons grid-picture-type' title='Unknown file'>attachment</i>"));
+            }
+
+            if (title) {
+                var $title = $("<span class='grid-picture-title'>" + title + "</span>");
+
+                if (type) {
+                    $title.css("right", "40px");
+                }
+
+                $element.append($title);
             }
         }
     }

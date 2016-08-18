@@ -105,10 +105,6 @@ let file = api.register("file", {
         });
 
         let filenames = yield Promise.all(nodes.map((node) => {
-            if (node.attributes.type !== "image" && node.attributes.type !== "video") {
-                return ""; // TODO:
-            }
-
             return new Promise((resolve) => {
                 mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
                     angle: node.attributes.angle,

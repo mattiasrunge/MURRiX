@@ -9,18 +9,18 @@
             </li>
         <!-- /ko -->
 
-        <li class="pull-right" data-bind="css: { active: $component.section() === 'comments' }">
-            <a data-bind="location: { section: 'comments' }" title="Comments">
+        <li class="pull-right" data-bind="css: { active: $component.section() === 'comments' }, tooltip: 'Comments'">
+            <a data-bind="location: { section: 'comments' }">
                 <i class="material-icons md-18" style="width: 18px;">comments</i>
             </a>
         </li>
-        <li class="pull-right" data-bind="visible: showUpload, css: { active: $component.section() === 'upload' }">
-            <a data-bind="location: { section: 'upload' }" title="Upload">
+        <li class="pull-right" data-bind="visible: showUpload, css: { active: $component.section() === 'upload' }, tooltip: 'Upload files'">
+            <a data-bind="location: { section: 'upload' }">
                 <i class="material-icons md-18" style="width: 18px;">file_upload</i>
             </a>
         </li>
-        <li class="pull-right" data-bind="visible: showShareSettings, css: { active: $component.section() === 'share' }">
-            <a data-bind="location: { section: 'share' }" title="Share settings">
+        <li class="pull-right" data-bind="visible: showShareSettings, css: { active: $component.section() === 'share' }, tooltip: 'Share settings'">
+            <a data-bind="location: { section: 'share' }">
                 <i class="material-icons md-18" style="width: 18px;">share</i>
             </a>
         </li>

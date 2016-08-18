@@ -29,7 +29,7 @@ let feed = api.register("feed", {
         }
     }),
     mknews: co(function*(attributes) {
-        let baseName = moment()..valueOf().toString();
+        let baseName = moment().valueOf().toString();
         let name = baseName;
 
         let counter = 1;

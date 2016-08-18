@@ -36,10 +36,12 @@ module.exports = utils.wrapComponent(function*(params) {
                 return false;
             }
 
-            if (this.nodepath().node().attributes.where.gps) {
-                return this.nodepath().node().attributes.where.gps;
-            } else if (this.nodepath().node().attributes.where.manual) {
-                return this.nodepath().node().attributes.where.manual;
+            if (this.nodepath().node().attributes.where) {
+                if (this.nodepath().node().attributes.where.gps) {
+                    return this.nodepath().node().attributes.where.gps;
+                } else if (this.nodepath().node().attributes.where.manual) {
+                    return this.nodepath().node().attributes.where.manual;
+                }
             }
 
             return false;
