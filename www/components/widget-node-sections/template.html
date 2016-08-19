@@ -9,17 +9,17 @@
             </li>
         <!-- /ko -->
 
-        <li class="pull-right" data-bind="css: { active: $component.section() === 'comments' }, tooltip: 'Comments'">
+        <li class="pull-right" data-bind="css: { active: $component.section() === 'comments' }, tooltip: 'Comments'" data-trigger="hover">
             <a data-bind="location: { section: 'comments' }">
                 <i class="material-icons md-18" style="width: 18px;">comments</i>
             </a>
         </li>
-        <li class="pull-right" data-bind="visible: showUpload, css: { active: $component.section() === 'upload' }, tooltip: 'Upload files'">
+        <li class="pull-right" data-bind="visible: showUpload, css: { active: $component.section() === 'upload' }, tooltip: 'Upload files'" data-trigger="hover">
             <a data-bind="location: { section: 'upload' }">
                 <i class="material-icons md-18" style="width: 18px;">file_upload</i>
             </a>
         </li>
-        <li class="pull-right" data-bind="visible: showShareSettings, css: { active: $component.section() === 'share' }, tooltip: 'Share settings'">
+        <li class="pull-right" data-bind="visible: showShareSettings, css: { active: $component.section() === 'share' }, tooltip: 'Share settings'" data-trigger="hover">
             <a data-bind="location: { section: 'share' }">
                 <i class="material-icons md-18" style="width: 18px;">share</i>
             </a>

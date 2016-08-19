@@ -13,7 +13,7 @@ let isCleaning = false;
 
 let feed = api.register("feed", {
     deps: [ "vfs", "auth" ],
-    limit: 50,
+    limit: 20,
     init: co(function*(config) {
         params = config;
 
