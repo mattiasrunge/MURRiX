@@ -5,28 +5,40 @@
 const path = require("path");
 const co = require("bluebird").coroutine;
 const uuid = require("node-uuid");
-const octal = require("octal");
 const sha1 = require("sha1");
 const fs = require("fs-extra-promise");
 const api = require("api.io");
 const db = require("../../core/lib/db");
 const plugin = require("../../core/lib/plugin");
+const log = require("../../core/lib/log")(module);
 
 let params = {};
 
 let vfs = api.register("vfs", {
-    deps: [ ],
+    deps: [],
+    MASK_OWNER_READ: parseInt("400", 8),
+    MASK_OWNER_WRITE: parseInt("200", 8),
+    MASK_OWNER_EXEC: parseInt("100", 8),
+    MASK_GROUP_READ: parseInt("040", 8),
+    MASK_GROUP_WRITE: parseInt("020", 8),
+    MASK_GROUP_EXEC: parseInt("010", 8),
+    MASK_OTHER_READ: parseInt("004", 8),
+    MASK_OTHER_WRITE: parseInt("002", 8),
+    MASK_OTHER_EXEC: parseInt("001", 8),
+    MASK_ACL_READ: parseInt("004", 8),
+    MASK_ACL_WRITE: parseInt("002", 8),
+    MASK_ACL_EXEC: parseInt("001", 8),
     init: co(function*(config) {
         params = config;
 
         if (!(yield db.findOne("nodes", { "properties.type": "r" }))) {
-            console.log("No root node found, creating...");
+            log.info("No root node found, creating...");
 
             let root = {
                 _id: uuid.v4(),
                 properties: {
                     type: "r",
-                    mode: octal("775"),
+                    mode: parseInt("775", 8),
                     birthtime: new Date(),
                     birthuid: 1000,
                     ctime: new Date(),
@@ -101,17 +113,17 @@ let vfs = api.register("vfs", {
 
         try {
             if (node.properties.uid === session.uid) {
-                mode += modestr.indexOf("r") !== -1 ? octal("400") : 0;
-                mode += modestr.indexOf("w") !== -1 ? octal("200") : 0;
-                mode += modestr.indexOf("x") !== -1 ? octal("100") : 0;
-            } else if (session.gids.indexOf(node.properties.gid) !== -1) {
-                mode += modestr.indexOf("r") !== -1 ? octal("040") : 0;
-                mode += modestr.indexOf("w") !== -1 ? octal("020") : 0;
-                mode += modestr.indexOf("x") !== -1 ? octal("010") : 0;
+                mode += modestr.includes("r") ? vfs.MASK_OWNER_READ : 0;
+                mode += modestr.includes("w") ? vfs.MASK_OWNER_WRITE : 0;
+                mode += modestr.includes("x") ? vfs.MASK_OWNER_EXEC : 0;
+            } else if (session.gids.includes(node.properties.gid)) {
+                mode += modestr.includes("r") ? vfs.MASK_GROUP_READ : 0;
+                mode += modestr.includes("w") ? vfs.MASK_GROUP_WRITE : 0;
+                mode += modestr.includes("x") ? vfs.MASK_GROUP_EXEC : 0;
             } else {
-                mode += modestr.indexOf("r") !== -1 ? octal("004") : 0;
-                mode += modestr.indexOf("w") !== -1 ? octal("002") : 0;
-                mode += modestr.indexOf("x") !== -1 ? octal("001") : 0;
+                mode += modestr.includes("r") ? vfs.MASK_OTHER_READ : 0;
+                mode += modestr.includes("w") ? vfs.MASK_OTHER_WRITE : 0;
+                mode += modestr.includes("x") ? vfs.MASK_OTHER_EXEC : 0;
             }
         } catch (e) {
             console.error(JSON.stringify(node, null, 2));
@@ -124,11 +136,11 @@ let vfs = api.register("vfs", {
 
         if (node.properties.acl && node.properties.acl.length > 0) {
             for (let ac of node.properties.acl) {
-                if ((ac.uid && ac.uid === session.uid) || (ac.gid && session.gids.indexOf(ac.gid) !== -1)) {
+                if ((ac.uid && ac.uid === session.uid) || (ac.gid && session.gids.includes(ac.gid))) {
                     mode = 0;
-                    mode += modestr.indexOf("r") !== -1 ? octal("004") : 0;
-                    mode += modestr.indexOf("w") !== -1 ? octal("002") : 0;
-                    mode += modestr.indexOf("x") !== -1 ? octal("001") : 0;
+                    mode += modestr.includes("r") ? vfs.MASK_ACL_READ : 0;
+                    mode += modestr.includes("w") ? vfs.MASK_ACL_WRITE : 0;
+                    mode += modestr.includes("x") ? vfs.MASK_ACL_EXEC : 0;
 
                     if ((ac.mode & mode) > 0) {
                         return true;
@@ -386,12 +398,12 @@ let vfs = api.register("vfs", {
         let rfind = co(function*(dir, node) {
             if ((yield vfs.access(session, node, "r"))) {
                 for (let child of node.properties.children) {
-                    if (guard.indexOf(child.id) === -1) {
+                    if (!guard.includes(child.id)) {
                         guard.push(child.id);
 
                         let node = yield db.findOne("nodes", { _id: child.id });
 
-                        if (child.name.indexOf(search) !== -1) {
+                        if (child.name.includes(search)) {
                             list.push(path.join(dir, child.name));
                         }
 
@@ -467,7 +479,7 @@ let vfs = api.register("vfs", {
 
         node.properties.ctime = new Date();
         node.properties.cuid = session.uid;
-        node.properties.mode = octal(mode);
+        node.properties.mode = parseInt(mode, 8);
 
         yield db.updateOne("nodes", node);
 
@@ -610,7 +622,7 @@ let vfs = api.register("vfs", {
             _id: uuid.v4(),
             properties: {
                 type: type,
-                mode: session.umask ? octal(session.umask) : parent.properties.mode,
+                mode: session.umask ? parseInt(session.umask, 8) : parent.properties.mode,
                 birthtime: new Date(),
                 birthuid: session.uid,
                 ctime: new Date(),
@@ -630,9 +642,9 @@ let vfs = api.register("vfs", {
 
         if (type === "u") {
             node.attributes.password = sha1(name);
-            node.properties.mode = octal("770");
+            node.properties.mode = parseInt("770", 8);
         } else if (type === "g") {
-            node.properties.mode = octal("770");
+            node.properties.mode = parseInt("770", 8);
         } else if (type === "f") {
             if (!node.attributes.name) {
                 throw new Error("File must have a filename attribute");
@@ -898,7 +910,7 @@ let vfs = api.register("vfs", {
             node.properties.uid = session.uid;
             node.properties.gid = session.gid;
             node.properties.count = 1;
-            node.properties.mode = octal(session.umask || "755");
+            node.properties.mode = parseInt(session.umask || "755", 8);
 
             for (let child of node.properties.children) {
                 child.id = yield rcopy(path.join(abspath, child.name), child.id);

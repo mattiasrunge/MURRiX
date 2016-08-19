@@ -802,7 +802,7 @@ ko.bindingHandlers.picture = {
 
             let containerCss = css.join(";");
 
-            if (classes.indexOf("img-responsive") !== -1) { // TODO: Hack!
+            if (classes.includes("img-responsive")) { // TODO: Hack!
                 containerCss = "";
             }
 

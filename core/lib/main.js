@@ -18,6 +18,7 @@ module.exports = {
         yield plugin.init(configuration);
         yield server.init(configuration);
 
+        log.info("Initialization complete, core running.");
         plugin.resumeEvents();
     }),
     stop: co(function*() {

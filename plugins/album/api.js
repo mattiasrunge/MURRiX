@@ -7,6 +7,7 @@ const api = require("api.io");
 const plugin = require("../../core/lib/plugin");
 const vfs = require("../vfs/api");
 const auth = require("../auth/api");
+const log = require("../../core/lib/log")(module);
 
 let params = {};
 
@@ -25,6 +26,7 @@ let album = api.register("album", {
         let abspath = path.join("/albums", name);
 
         yield vfs.create(session, abspath, "a", attributes);
+        yield vfs.chmod(session, abspath, "750");
 
         yield vfs.create(session, path.join(abspath, "files"), "d");
         yield vfs.create(session, path.join(abspath, "texts"), "d");
@@ -41,8 +43,8 @@ let album = api.register("album", {
         return yield vfs.resolve(session, "/albums/" + name, { noerror: true });
     },
     findByYear: function*(session, year) {
-        console.time("album.findByYear total " + year);
-        console.time("album.findByYear ftIds");
+        log.profile("album.findByYear total " + year);
+        log.profile("album.findByYear ftIds");
         year = parseInt(year, 10);
 
         let list = [];
@@ -65,8 +67,8 @@ let album = api.register("album", {
         let ftNodes = yield vfs.query(session, query, options);
         let ftIds = ftNodes.map((node) => node._id);
 
-        console.timeEnd("album.findByYear ftIds");
-        console.time("album.findByYear dIds");
+        log.profile("album.findByYear ftIds");
+        log.profile("album.findByYear dIds");
 
         query = {
             "properties.type": "d",
@@ -76,8 +78,8 @@ let album = api.register("album", {
         let dNodes = yield vfs.query(session, query, options);
         let dIds = dNodes.map((node) => node._id);
 
-        console.timeEnd("album.findByYear dIds");
-        console.time("album.findByYear aNodes");
+        log.profile("album.findByYear dIds");
+        log.profile("album.findByYear aNodes");
 
         query = {
             "properties.type": "a",
@@ -86,8 +88,8 @@ let album = api.register("album", {
 
         let aNodes = yield vfs.query(session, query);
 
-        console.timeEnd("album.findByYear aNodes");
-        console.time("album.findByYear lookup");
+        log.profile("album.findByYear aNodes");
+        log.profile("album.findByYear lookup");
 
         for (let node of aNodes) {
             let paths = yield vfs.lookup(session, node._id, cache);
@@ -95,8 +97,8 @@ let album = api.register("album", {
             list.push({ name: path.basename(paths[0]), node: node, path: paths[0] });
         }
 
-        console.timeEnd("album.findByYear lookup");
-        console.timeEnd("album.findByYear total " + year);
+        log.profile("album.findByYear lookup");
+        log.profile("album.findByYear total " + year);
 
         return list;
     }

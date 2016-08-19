@@ -27,11 +27,10 @@ module.exports = {
             uninitializedApis.push(require(filename));
         }
 
-        // TODO: Create safeguard for circular dependencies
         while (uninitializedApis.length > 0) {
             let apiInstance = uninitializedApis.shift();
 
-            if (apiInstance.deps.filter((namespace) => initializedApiNames.indexOf(namespace) === -1).length > 0) {
+            if (apiInstance.deps.filter((namespace) => !initializedApiNames.includes(namespace)).length > 0) {
                 uninitializedApis.push(apiInstance);
             } else {
                 log.info("Initializing " + apiInstance.namespace);

@@ -29,15 +29,15 @@ module.exports = utils.wrapComponent(function*(params) {
 
         let mode = 0;
 
-        mode += this.nodepath().node().properties.mode & parseInt("400", 8) ? parseInt("400", 8) : 0;
-        mode += this.nodepath().node().properties.mode & parseInt("200", 8) ? parseInt("200", 8) : 0;
-        mode += this.nodepath().node().properties.mode & parseInt("100", 8) ? parseInt("100", 8) : 0;
+        mode += this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_READ ? api.vfs.MASK_OWNER_READ : 0;
+        mode += this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_WRITE ? api.vfs.MASK_OWNER_WRITE : 0;
+        mode += this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_EXEC ? api.vfs.MASK_OWNER_EXEC : 0;
         mode += this.groupAccess() === "read" || this.groupAccess() === "write" ? parseInt("040", 8) : 0;
-        mode += this.groupAccess() === "write" ? parseInt("020", 8) : 0;
-        mode += this.groupAccess() === "read" || this.groupAccess() === "write" ? parseInt("010", 8) : 0;
-        mode += this.public() ? parseInt("004", 8) : 0;
-        mode += this.nodepath().node().properties.mode & parseInt("002", 8) ? parseInt("002", 8) : 0;
-        mode += this.public() ? parseInt("001", 8) : 0;
+        mode += this.groupAccess() === "write" ? api.vfs.MASK_GROUP_WRITE : 0;
+        mode += this.groupAccess() === "read" || this.groupAccess() === "write" ? api.vfs.MASK_GROUP_EXEC : 0;
+        mode += this.public() ? api.vfs.MASK_OTHER_READ : 0;
+        mode += this.nodepath().node().properties.mode & api.vfs.MASK_OTHER_WRITE ? api.vfs.MASK_OTHER_WRITE : 0;
+        mode += this.public() ? api.vfs.MASK_OTHER_EXEC : 0;
 
         console.log(utils.modeString(this.nodepath().node().properties.mode), "=>", utils.modeString(mode));
 
@@ -49,12 +49,12 @@ module.exports = utils.wrapComponent(function*(params) {
             let mode = 0;
 
             if (ac.access() === "write") {
-                mode |= parseInt("004", 8);
-                mode |= parseInt("002", 8);
-                mode |= parseInt("001", 8);
+                mode |= api.vfs.MASK_ACL_READ;
+                mode |= api.vfs.MASK_ACL_WRITE;
+                mode |= api.vfs.MASK_ACL_;
             } else if (ac.access() === "read") {
-                mode |= parseInt("004", 8);
-                mode |= parseInt("001", 8);
+                mode |= api.vfs.MASK_ACL_READ;
+                mode |= api.vfs.MASK_ACL_EXEC;
             }
 
             yield api.vfs.setfacl(this.nodepath().path, { gid: ac.gid, mode: mode }, { recursive: true });
@@ -64,12 +64,12 @@ module.exports = utils.wrapComponent(function*(params) {
             let mode = 0;
 
             if (this.aclGroupAccess() === "write") {
-                mode |= parseInt("004", 8);
-                mode |= parseInt("002", 8);
-                mode |= parseInt("001", 8);
+                mode |= api.vfs.MASK_ACL_READ
+                mode |= api.vfs.MASK_ACL_WRITE;
+                mode |= api.vfs.MASK_ACL_EXEC;
             } else if (this.aclGroupAccess() === "read") {
-                mode |= parseInt("004", 8);
-                mode |= parseInt("001", 8);
+                mode |= api.vfs.MASK_ACL_READ;
+                mode |= api.vfs.MASK_ACL_EXEC;
             }
 
             yield api.vfs.setfacl(this.nodepath().path, { gid: this.aclGid(), mode: mode }, { recursive: true });
@@ -97,8 +97,8 @@ module.exports = utils.wrapComponent(function*(params) {
         for (let ac of this.nodepath().node().properties.acl) {
             if (ac.gid) {
                 let access = "none";
-                access = ac.mode & parseInt("004", 8) ? "read" : access;
-                access = ac.mode & parseInt("002", 8) ? "write" : access;
+                access = ac.mode & api.vfs.MASK_ACL_READ ? "read" : access;
+                access = ac.mode & api.vfs.MASK_ACL_WRITE ? "write" : access;
 
                 list.push({ gid: ac.gid, access: ko.observable(access) });
             }
@@ -199,7 +199,7 @@ module.exports = utils.wrapComponent(function*(params) {
         let uidList = [];
 
         list = list.filter((item) => {
-            if (uidList.indexOf(item.uid) === -1) {
+            if (!uidList.includes(item.uid)) {
                 uidList.push(item.uid);
                 return true;
             }
@@ -216,9 +216,9 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.gid(this.nodepath().node().properties.gid);
-    this.public(this.nodepath().node().properties.mode & parseInt("004", 8));
-    this.groupAccess(this.nodepath().node().properties.mode & parseInt("040", 8) ? "read" : this.groupAccess());
-    this.groupAccess(this.nodepath().node().properties.mode & parseInt("020", 8) ? "write" : this.groupAccess());
+    this.public(this.nodepath().node().properties.mode & api.vfs.MASK_OTHER_READ);
+    this.groupAccess(this.nodepath().node().properties.mode & api.vfs.MASK_GROUP_READ ? "read" : this.groupAccess());
+    this.groupAccess(this.nodepath().node().properties.mode & api.vfs.MASK_GROUP_WRITE ? "write" : this.groupAccess());
 
     this.saving(false);
 

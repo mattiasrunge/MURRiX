@@ -18,7 +18,7 @@ vorpal
     let username = args.userstring;
     let options = {};
 
-    if (args.userstring.indexOf(":") !== -1) {
+    if (args.userstring.includes(":")) {
         let parts = args.userstring.split(":");
         username = parts[0];
         group = parts[1];

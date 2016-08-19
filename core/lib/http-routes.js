@@ -87,7 +87,7 @@ module.exports = {
 
             // Preprocess
 
-            if (this.originalUrl.indexOf("node_modules") !== -1 || this.originalUrl.indexOf("index.js") !== -1) {
+            if (this.originalUrl.includes("node_modules") || this.originalUrl.includes("index.js")) {
                 // No processing required
                 return yield next;
             }

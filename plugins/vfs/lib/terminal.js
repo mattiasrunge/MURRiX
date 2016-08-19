@@ -3,7 +3,6 @@
 /* jslint bitwise: true */
 
 const path = require("path");
-const octal = require("octal");
 const co = require("bluebird").coroutine;
 const api = require("api.io").client;
 
@@ -60,32 +59,40 @@ module.exports = {
     modeString: (mode, options) => {
         let modeStr = "";
 
-        let user = true;
+        let owner = true;
         let group = true;
         let other = true;
+        let acl = false;
 
         if (options) {
-            user = options.user;
+            owner = options.owner;
             group = options.group;
             other = options.other;
+            acl = options.acl;
         }
 
-        if (user) {
-            modeStr += mode & octal("400") ? "r" : "-";
-            modeStr += mode & octal("200") ? "w" : "-";
-            modeStr += mode & octal("100") ? "x" : "-";
+        if (acl) {
+            modeStr += mode & api.vfs.MASK_ACL_READ ? "r" : "-";
+            modeStr += mode & api.vfs.MASK_ACL_WRITE ? "w" : "-";
+            modeStr += mode & api.vfs.MASK_ACL_EXEC ? "x" : "-";
+        }
+
+        if (owner) {
+            modeStr += mode & api.vfs.MASK_OWNER_READ ? "r" : "-";
+            modeStr += mode & api.vfs.MASK_OWNER_WRITE ? "w" : "-";
+            modeStr += mode & api.vfs.MASK_OWNER_EXEC ? "x" : "-";
         }
 
         if (group) {
-            modeStr += mode & octal("040") ? "r" : "-";
-            modeStr += mode & octal("020") ? "w" : "-";
-            modeStr += mode & octal("010") ? "x" : "-";
+            modeStr += mode & api.vfs.MASK_GROUP_READ ? "r" : "-";
+            modeStr += mode & api.vfs.MASK_GROUP_WRITE ? "w" : "-";
+            modeStr += mode & api.vfs.MASK_GROUP_EXEC ? "x" : "-";
         }
 
         if (other) {
-            modeStr += mode & octal("004") ? "r" : "-";
-            modeStr += mode & octal("002") ? "w" : "-";
-            modeStr += mode & octal("001") ? "x" : "-";
+            modeStr += mode & api.vfs.MASK_OTHER_READ ? "r" : "-";
+            modeStr += mode & api.vfs.MASK_OTHER_WRITE ? "w" : "-";
+            modeStr += mode & api.vfs.MASK_OTHER_EXEC ? "x" : "-";
         }
 
         return modeStr;

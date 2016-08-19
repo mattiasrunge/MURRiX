@@ -12,7 +12,6 @@ const conditional = require("koa-conditional-get");
 const etag = require("koa-etag");
 const enableDestroy = require("server-destroy");
 const uuid = require("node-uuid");
-const configuration = require("./configuration");
 const routes = require("./http-routes");
 const api = require("api.io");
 const session = require("./session");
@@ -115,7 +114,9 @@ module.exports = {
         // Socket.io if we have defined API
         yield api.start(server, { sessionName: sessionName, sessionMaxAge: sessionMaxAge }, sessions);
 
-        server.listen(configuration.port);
+        server.listen(params.port);
+
+        log.info("Now listening for http request on port " + params.port);
     }),
     stop: co(function*() {
         if (server) {

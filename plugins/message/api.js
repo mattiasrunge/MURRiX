@@ -97,7 +97,7 @@ let message = api.register("message", {
 
         messages.forEach((item, index) => {
             item.index = index;
-            item.unread = unreadIds.indexOf(item.node._id) !== -1;
+            item.unread = unreadIds.includes(item.node._id);
         });
 
         return messages;

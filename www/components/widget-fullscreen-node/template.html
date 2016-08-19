@@ -16,22 +16,6 @@
                 </tr>
                 <tr>
                     <td style="width: 44px;">
-                        <i class="material-icons" title="File">file_download</i>
-                    </td>
-
-                    <td style="padding-top: 1px;">
-                        <a href="#" data-bind="text: nodepath().node().attributes.name, attr: { href: 'file/' + nodepath().node().attributes.diskfilename + '/' + nodepath().node().attributes.name }"></a>
-                        (<span data-bind="htmlSize: nodepath().node().attributes.size"></span>)
-                        <div data-bind="if: nodepath().versions.length > 0">
-                            <small data-bind="foreach: nodepath().versions" style="font-size: 80%;">
-                                <a style="color: #999;" href="#" data-bind="text: $data.node.attributes.name, attr: { href: 'file/' + $data.node.attributes.diskfilename + '/' + $data.node.attributes.name }"></a>
-                                (<span data-bind="htmlSize: $data.node.attributes.size"></span>)
-                            </small>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 44px;">
                         <i class="material-icons" title="Created by">person</i>
                     </td>
 
@@ -46,6 +30,22 @@
 
                     <td style="padding-top: 1px;">
                         <widget-node-link-node params="{ nodepath: nodepath, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ] }"></widget-node-link-node>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 44px;">
+                        <i class="material-icons" title="File">file_download</i>
+                    </td>
+
+                    <td style="padding-top: 1px;">
+                        <a href="#" data-bind="text: nodepath().node().attributes.name, attr: { href: 'file/' + nodepath().node().attributes.diskfilename + '/' + nodepath().node().attributes.name }"></a>
+                        (<span data-bind="htmlSize: nodepath().node().attributes.size"></span>)
+                        <div data-bind="if: nodepath().versions.length > 0">
+                            <small data-bind="foreach: nodepath().versions" style="font-size: 80%;">
+                                <a style="color: #999;" href="#" data-bind="text: $data.node.attributes.name, attr: { href: 'file/' + $data.node.attributes.diskfilename + '/' + $data.node.attributes.name }"></a>
+                                (<span data-bind="htmlSize: $data.node.attributes.size"></span>)
+                            </small>
+                        </div>
                     </td>
                 </tr>
             </tbody>

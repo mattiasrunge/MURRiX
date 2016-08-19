@@ -14,7 +14,7 @@ vorpal
 .action(vorpal.wrap(function*(session, args) {
     let cwd = yield session.env("cwd");
 
-    if (args.path.indexOf("*") !== -1) {
+    if (args.path.includes("*")) {
         // TODO
     }
 

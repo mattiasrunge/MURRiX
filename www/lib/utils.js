@@ -3,6 +3,7 @@
 const ko = require("knockout");
 const co = require("co");
 const $ = require("jquery");
+const api = require("api.io-client");
 
 let clipBoardContent = false;
 
@@ -35,15 +36,15 @@ module.exports = {
     modeString: (mode) => {
         let modeStr = "";
 
-        modeStr += mode & parseInt("400", 8) ? "r" : "-";
-        modeStr += mode & parseInt("200", 8) ? "w" : "-";
-        modeStr += mode & parseInt("100", 8) ? "x" : "-";
-        modeStr += mode & parseInt("040", 8) ? "r" : "-";
-        modeStr += mode & parseInt("020", 8) ? "w" : "-";
-        modeStr += mode & parseInt("010", 8) ? "x" : "-";
-        modeStr += mode & parseInt("004", 8) ? "r" : "-";
-        modeStr += mode & parseInt("002", 8) ? "w" : "-";
-        modeStr += mode & parseInt("001", 8) ? "x" : "-";
+        modeStr += mode & api.vfs.MASK_OWNER_READ ? "r" : "-";
+        modeStr += mode & api.vfs.MASK_OWNER_WRITE ? "w" : "-";
+        modeStr += mode & api.vfs.MASK_OWNER_EXEC ? "x" : "-";
+        modeStr += mode & api.vfs.MASK_GROUP_READ ? "r" : "-";
+        modeStr += mode & api.vfs.MASK_GROUP_WRITE ? "w" : "-";
+        modeStr += mode & api.vfs.MASK_GROUP_EXEC ? "x" : "-";
+        modeStr += mode & api.vfs.MASK_OTHER_READ ? "r" : "-";
+        modeStr += mode & api.vfs.MASK_OTHER_WRITE ? "w" : "-";
+        modeStr += mode & api.vfs.MASK_OTHER_EXEC ? "x" : "-";
 
         return modeStr;
     },

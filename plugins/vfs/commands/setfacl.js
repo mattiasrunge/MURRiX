@@ -1,6 +1,5 @@
 "use strict";
 
-const octal = require("octal");
 const vorpal = require("../../../cli/lib/vorpal");
 const api = require("api.io").client;
 const terminal = require("../lib/terminal");
@@ -45,17 +44,9 @@ vorpal
     ac.mode = 0;
 
     if (modestr) {
-        if (modestr.indexOf("r") !== -1) {
-            ac.mode += octal("004");
-        }
-
-        if (modestr.indexOf("w") !== -1) {
-            ac.mode += octal("002");
-        }
-
-        if (modestr.indexOf("x") !== -1) {
-            ac.mode += octal("001");
-        }
+        ac.mode += modestr.includes("r") ? api.vfs.MASK_ACL_READ : 0;
+        ac.mode += modestr.includes("w") ? api.vfs.MASK_ACL_WRITE : 0;
+        ac.mode += modestr.includes("x") ? api.vfs.MASK_ACL_EXEC : 0;
     }
 
     yield api.vfs.setfacl(abspath, ac, { recursive: args.options.r });

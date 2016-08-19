@@ -3,7 +3,6 @@
 /* jshint -W035 */
 // jscs:disable
 
-const octal = require("octal");
 const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
@@ -57,7 +56,7 @@ let update = api.register("update", {
 
             let counter = 1;
             let name = baseName.replace(/ |\//g, "_");
-            while (uniqueNames[listName].indexOf(name) !== -1) {
+            while (uniqueNames[listName].includes(name)) {
                 name = baseName.replace(/ |\//g, "_") + "_" + counter;
                 counter++;
             }
@@ -640,8 +639,8 @@ let update = api.register("update", {
                     push = true;
                 }
 
-                ac.mode |= octal("004");
-                ac.mode |= octal("001");
+                ac.mode |= vfs.MASK_ACL_READ;
+                ac.mode |= vfs.MASK_ACL_EXEC;
 
                 if (push) {
                     acl.push(ac);
@@ -658,9 +657,9 @@ let update = api.register("update", {
                     push = true;
                 }
 
-                ac.mode |= octal("004");
-                ac.mode |= octal("002");
-                ac.mode |= octal("001");
+                ac.mode |= vfs.MASK_ACL_READ;
+                ac.mode |= vfs.MASK_ACL_WRITE;
+                ac.mode |= vfs.MASK_ACL_EXEC;
 
                 if (push) {
                     acl.push(ac);
@@ -1302,6 +1301,7 @@ let update = api.register("update", {
             }
 
             if (obj._profilePicture) {
+                yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
                 yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
             }
 
@@ -1340,6 +1340,7 @@ let update = api.register("update", {
         // Process locations
         for (let obj of locationList) {
             if (obj._profilePicture) {
+                yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
                 yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
             }
 
@@ -1348,6 +1349,7 @@ let update = api.register("update", {
 
         for (let obj of cameraList) {
             if (obj._profilePicture) {
+                yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
                 yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
             }
 
@@ -1357,6 +1359,7 @@ let update = api.register("update", {
         // Process album
         for (let obj of albumList) {
             if (obj._profilePicture) {
+                yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
                 yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
             }
 

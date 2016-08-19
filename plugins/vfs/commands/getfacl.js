@@ -19,12 +19,12 @@ vorpal
     this.log("# owner: " + (yield api.auth.uname(node.properties.uid)));
     this.log("# group: " + (yield api.auth.gname(node.properties.gid)));
 
-    this.log("user::" + terminal.modeString(node.properties.mode, { user: true }));
+    this.log("user::" + terminal.modeString(node.properties.mode, { owner: true }));
 
     if (node.properties.acl && node.properties.acl.length > 0) {
         for (let ac of node.properties.acl) {
             if (ac.uid) {
-                this.log("user:" + (yield api.auth.uname(ac.uid)) + ":" + terminal.modeString(ac.mode, { other: true }));
+                this.log("user:" + (yield api.auth.uname(ac.uid)) + ":" + terminal.modeString(ac.mode, { acl: true }));
             }
         }
     }
@@ -34,7 +34,7 @@ vorpal
     if (node.properties.acl && node.properties.acl.length > 0) {
         for (let ac of node.properties.acl) {
             if (ac.gid) {
-                this.log("group:" + (yield api.auth.gname(ac.gid)) + ":" + terminal.modeString(ac.mode, { other: true }));
+                this.log("group:" + (yield api.auth.gname(ac.gid)) + ":" + terminal.modeString(ac.mode, { acl: true }));
             }
         }
     }
