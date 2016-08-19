@@ -15,8 +15,12 @@ vorpal
     let cwd = yield session.env("cwd");
 
     if (args.path.includes("*")) {
-        // TODO
-    }
+        let list = yield api.vfs.list(cwd);
 
-    yield api.vfs.unlink(terminal.normalize(cwd, args.path));
+        for (let item of list) {
+            yield api.vfs.unlink(item.path);
+        }
+    } else {
+        yield api.vfs.unlink(terminal.normalize(cwd, args.path));
+    }
 }));

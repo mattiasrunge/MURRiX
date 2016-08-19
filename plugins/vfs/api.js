@@ -125,7 +125,6 @@ let vfs = api.register("vfs", {
                 mode |= modestr.includes("w") ? vfs.MASK_OTHER_WRITE : 0;
                 mode |= modestr.includes("x") ? vfs.MASK_OTHER_EXEC : 0;
             }
-
         } catch (e) {
             console.error(JSON.stringify(node, null, 2));
             throw e;

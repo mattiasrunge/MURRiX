@@ -57,7 +57,7 @@ module.exports = {
             let sessionId = false;
 
             try {
-                let cookieString = this.cookies.get(sessionName)
+                let cookieString = this.cookies.get(sessionName);
                 let body = new Buffer(cookieString, "base64").toString("utf8");
                 let cookieData = JSON.parse(body);
 

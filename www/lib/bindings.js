@@ -52,7 +52,7 @@ ko.bindingHandlers.map = {
         element.map = new google.maps.Map(element, options);
         element.zoom = zoom;
 
-        google.maps.event.addListener(element.map, "click", (data) =>{
+        google.maps.event.addListener(element.map, "click", (data) => {
             value.position({ latitude: data.latLng.lat(), longitude: data.latLng.lng() });
         });
 
@@ -411,7 +411,7 @@ ko.bindingHandlers.positionAddress = {
                 return $(element).text("Unknown");
             }
 
-            $(element).text(data.results[0].formatted_address);
+            $(element).text(data.results[0].formatted_address); // jshint ignore:line
         });
     }
 };
@@ -663,8 +663,6 @@ ko.bindingHandlers.nodeselect = {
             },
             templates: {
                 suggestion: (selection) => {
-//                     console.log(selection);
-
                     let $d = $("<div>" + selection.node.attributes.name + "</div>");
 
                     api.vfs.resolve(selection.path + "/profilePicture", { noerror: true })
@@ -726,10 +724,8 @@ ko.bindingHandlers.nodeselect = {
             });
         };
 
-        $element.on("typeahead:change", () => { console.log("change"); select(); });
-        $element.on("typeahead:select", () => { console.log("select"); select(); });
-
-//         $element.on("typeahead:change typeahead:select", );
+        $element.on("typeahead:change", () => { select(); });
+        $element.on("typeahead:select", () => { select(); });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             $element.typeahead("destroy");
@@ -845,8 +841,6 @@ ko.bindingHandlers.picture = {
             }
 
             if (selectTag) {
-                console.log("selectTag", selectTag);
-
                 let imgWidth = $img.width();
                 let imgHeight = $img.height();
 
@@ -869,14 +863,14 @@ ko.bindingHandlers.picture = {
                 };
 
                 let options = {
-                    minWidth      : 32,
-                    minHeight     : 32,
-                    instance      : true,
-                    movable       : true,
-                    resizable     : true,
-                    handles       : true,
-                    keys          : false,
-                    onSelectEnd   : onSelectEnd
+                    minWidth: 32,
+                    minHeight: 32,
+                    instance: true,
+                    movable: true,
+                    resizable: true,
+                    handles: true,
+                    keys: false,
+                    onSelectEnd: onSelectEnd
                 };
 
                 if (isNaN(selectTag.y) || isNaN(selectTag.x) || isNaN(selectTag.height) || isNaN(selectTag.width)) {

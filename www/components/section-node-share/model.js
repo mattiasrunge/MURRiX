@@ -4,7 +4,6 @@ const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
-const node = require("lib/node");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
@@ -66,7 +65,7 @@ module.exports = utils.wrapComponent(function*(params) {
             let mode = 0;
 
             if (this.aclGroupAccess() === "write") {
-                mode |= api.vfs.MASK_ACL_READ
+                mode |= api.vfs.MASK_ACL_READ;
                 mode |= api.vfs.MASK_ACL_WRITE;
                 mode |= api.vfs.MASK_ACL_EXEC;
             } else if (this.aclGroupAccess() === "read") {
@@ -77,7 +76,7 @@ module.exports = utils.wrapComponent(function*(params) {
             yield api.vfs.setfacl(this.nodepath().path, { gid: this.aclGid(), mode: mode }, { recursive: true });
 
             this.aclGid(false);
-            this.aclGroupAccess("read")
+            this.aclGroupAccess("read");
         }
 
         let node = yield api.vfs.resolve(this.nodepath().path);

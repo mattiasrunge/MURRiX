@@ -50,5 +50,4 @@ vorpal
     }
 
     yield api.vfs.setfacl(abspath, ac, { recursive: args.options.r });
-
 }));
