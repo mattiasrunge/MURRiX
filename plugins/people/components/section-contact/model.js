@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 /* TODO:
  * Homes should have a date interval on them, store as attributes on the symlink

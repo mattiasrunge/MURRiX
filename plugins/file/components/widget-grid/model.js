@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 const ko = require("knockout");
 const moment = require("moment");

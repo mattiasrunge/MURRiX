@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 /* TODO:
  * Load real images

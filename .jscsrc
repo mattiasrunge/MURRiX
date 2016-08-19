@@ -81,5 +81,7 @@
     },
     "validateIndentation": 4,
     "validateParameterSeparator": ", ",
-    "validateQuoteMarks": "\""
+    "validateQuoteMarks": "\"",
+    "validateLineBreaks": "LF",
+    "maxErrors": 10000
 }

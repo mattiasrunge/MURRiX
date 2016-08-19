@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 /* TODO:
  * Should implement a fullscreen option

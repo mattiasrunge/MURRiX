@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 const ko = require("knockout");
 const api = require("api.io-client");

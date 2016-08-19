@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 /* TODO:
  * Allow drag and drop to set profile picture
