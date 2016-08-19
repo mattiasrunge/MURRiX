@@ -6,7 +6,6 @@ const pauseable = require("pauseable");
 const glob = require("glob-promise");
 const uuid = require("node-uuid");
 const co = require("bluebird").coroutine;
-const extend = require("extend");
 const log = require("./log")(module);
 const db = require("./db");
 
@@ -69,7 +68,7 @@ module.exports = {
         });
 
         process.nextTick(() => {
-            emitter.emit(event, extend(true, {}, data, { _id: id }));
+            emitter.emit(event, Object.assign({}, data, { _id: id }));
         });
     }
 };

@@ -29,20 +29,22 @@ module.exports = utils.wrapComponent(function*(params) {
 
         let mode = 0;
 
-        mode += this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_READ ? api.vfs.MASK_OWNER_READ : 0;
-        mode += this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_WRITE ? api.vfs.MASK_OWNER_WRITE : 0;
-        mode += this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_EXEC ? api.vfs.MASK_OWNER_EXEC : 0;
-        mode += this.groupAccess() === "read" || this.groupAccess() === "write" ? parseInt("040", 8) : 0;
-        mode += this.groupAccess() === "write" ? api.vfs.MASK_GROUP_WRITE : 0;
-        mode += this.groupAccess() === "read" || this.groupAccess() === "write" ? api.vfs.MASK_GROUP_EXEC : 0;
-        mode += this.public() ? api.vfs.MASK_OTHER_READ : 0;
-        mode += this.nodepath().node().properties.mode & api.vfs.MASK_OTHER_WRITE ? api.vfs.MASK_OTHER_WRITE : 0;
-        mode += this.public() ? api.vfs.MASK_OTHER_EXEC : 0;
+        mode |= this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_READ ? api.vfs.MASK_OWNER_READ : 0;
+        mode |= this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_WRITE ? api.vfs.MASK_OWNER_WRITE : 0;
+        mode |= this.nodepath().node().properties.mode & api.vfs.MASK_OWNER_EXEC ? api.vfs.MASK_OWNER_EXEC : 0;
+
+        mode |= this.groupAccess() === "read" || this.groupAccess() === "write" ? api.vfs.MASK_GROUP_READ : 0;
+        mode |= this.groupAccess() === "write" ? api.vfs.MASK_GROUP_WRITE : 0;
+        mode |= this.groupAccess() === "read" || this.groupAccess() === "write" ? api.vfs.MASK_GROUP_EXEC : 0;
+
+        mode |= this.public() ? api.vfs.MASK_OTHER_READ : 0;
+        mode |= this.nodepath().node().properties.mode & api.vfs.MASK_OTHER_WRITE ? api.vfs.MASK_OTHER_WRITE : 0;
+        mode |= this.public() ? api.vfs.MASK_OTHER_EXEC : 0;
 
         console.log(utils.modeString(this.nodepath().node().properties.mode), "=>", utils.modeString(mode));
 
         if (mode !== this.nodepath().node().properties.mode) {
-            yield api.vfs.chmod(this.nodepath().path, mode.toString(8), { recursive: true });
+            yield api.vfs.chmod(this.nodepath().path, mode, { recursive: true });
         }
 
         for (let ac of this.aclGroupList()) {

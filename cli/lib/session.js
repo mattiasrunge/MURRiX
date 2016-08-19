@@ -21,7 +21,7 @@ module.exports = {
 
         if (session.sessionId) {
             yield fs.outputFileAsync(sessionIdFilename, session.sessionId, {
-                mode: parseInt("700", 8)
+                mode: 0o700
             });
         }
 

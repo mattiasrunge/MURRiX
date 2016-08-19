@@ -2,7 +2,7 @@
 
 const winston = require("winston");
 
-let getLabel = (callingModule) => {
+const getLabel = (callingModule) => {
     let filename = typeof callingModule === "string" ? callingModule : callingModule.filename;
     let parts = filename.split("/").reverse();
     return parts[1] + "/" + parts[0];

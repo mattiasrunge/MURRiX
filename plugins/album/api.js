@@ -19,14 +19,14 @@ let album = api.register("album", {
         if (!(yield vfs.resolve(auth.getAdminSession(), "/albums", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/albums", "d");
             yield vfs.chown(auth.getAdminSession(), "/albums", "admin", "users");
-            yield vfs.chmod(auth.getAdminSession(), "/albums", "771");
+            yield vfs.chmod(auth.getAdminSession(), "/albums", 0o771);
         }
     }),
     mkalbum: function*(session, name, attributes) {
         let abspath = path.join("/albums", name);
 
         yield vfs.create(session, abspath, "a", attributes);
-        yield vfs.chmod(session, abspath, "750");
+        yield vfs.chmod(session, abspath, 0o750);
 
         yield vfs.create(session, path.join(abspath, "files"), "d");
         yield vfs.create(session, path.join(abspath, "texts"), "d");

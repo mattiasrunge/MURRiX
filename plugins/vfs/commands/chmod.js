@@ -20,5 +20,5 @@ vorpal
         options.recursive = true;
     }
 
-    yield api.vfs.chmod(terminal.normalize(cwd, args.path), args.mode, options);
+    yield api.vfs.chmod(terminal.normalize(cwd, args.path), parseInt(args.mode, 8), options);
 }));

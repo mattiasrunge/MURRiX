@@ -197,7 +197,7 @@ let update = api.register("update", {
         /* From here we start importing content and should use a different umask */
 
         let umask = session.umask;
-        session.umask = "770";
+        session.umask = 0o770;
 
 
         // Import persons

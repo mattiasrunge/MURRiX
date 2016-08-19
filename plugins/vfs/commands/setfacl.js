@@ -44,9 +44,9 @@ vorpal
     ac.mode = 0;
 
     if (modestr) {
-        ac.mode += modestr.includes("r") ? api.vfs.MASK_ACL_READ : 0;
-        ac.mode += modestr.includes("w") ? api.vfs.MASK_ACL_WRITE : 0;
-        ac.mode += modestr.includes("x") ? api.vfs.MASK_ACL_EXEC : 0;
+        ac.mode |= modestr.includes("r") ? api.vfs.MASK_ACL_READ : 0;
+        ac.mode |= modestr.includes("w") ? api.vfs.MASK_ACL_WRITE : 0;
+        ac.mode |= modestr.includes("x") ? api.vfs.MASK_ACL_EXEC : 0;
     }
 
     yield api.vfs.setfacl(abspath, ac, { recursive: args.options.r });

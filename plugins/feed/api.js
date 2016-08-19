@@ -25,7 +25,7 @@ let feed = api.register("feed", {
         if (!(yield vfs.resolve(auth.getAdminSession(), "/news", { noerror: true }))) {
             yield vfs.create(auth.getAdminSession(), "/news", "d");
             yield vfs.chown(auth.getAdminSession(), "/news", "admin", "users");
-            yield vfs.chmod(auth.getAdminSession(), "/news", "770");
+            yield vfs.chmod(auth.getAdminSession(), "/news", 0o770);
         }
     }),
     mknews: co(function*(attributes) {

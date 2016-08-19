@@ -76,7 +76,7 @@ let auth = api.register("auth", {
             uid: 1000,
             gid: 1000,
             gids: [ 1000, 1002 ],
-            umask: "770"
+            umask: 0o770
         };
     },
     session: function*(session) {
