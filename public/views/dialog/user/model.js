@@ -14,6 +14,8 @@ function DialogUserModel()
 
   self.username = ko.observable("");
 
+  self.email = ko.observable("");
+
   self.personModel = new DialogComponentNodeListModel(self);
   self.personModel.max(1);
   self.personModel.types([ "person" ]);
@@ -34,6 +36,7 @@ function DialogUserModel()
     self.disabled(false);
     self.name("");
     self.username("");
+    self.email("");
     self.personModel.reset();
 
     self.finishCallback = null;
@@ -83,6 +86,7 @@ function DialogUserModel()
       self.id(userData._id);
       self.name(userData.name);
       self.username(userData.username);
+      self.email(userData.email);
 
       if (userData._person && userData._person !== false)
       {
@@ -100,6 +104,7 @@ function DialogUserModel()
 
     userData.name = self.name();
     userData.username = self.username();
+    userData.email = self.email();
     userData._person = false;
 
     if (self.personModel.value().length > 0)
