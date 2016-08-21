@@ -7,6 +7,7 @@ const uuid = require("node-uuid");
 const email = require("emailjs");
 const api = require("api.io");
 const vfs = require("../vfs/api");
+const log = require("../../core/lib/log")(module);
 
 let params = {};
 
@@ -168,7 +169,13 @@ let auth = api.register("auth", {
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
 
         if (!user) {
-            throw new Error("No user called " + username + " found");
+            log.error("login: No user called " + username + " found");
+            throw new Error("Authentication failed");
+        }
+
+        if (!user.attributes.password) {
+            log.error("login: User " + username + " is disabled");
+            throw new Error("Authentication failed");
         }
 
         if (user.attributes.password !== sha1(password)) {
@@ -229,6 +236,8 @@ let auth = api.register("auth", {
                 { data: text.replace("\n", "<br>") + "<a href=\"" + url + "\">" + url + "</a>", alternative: true }
             ]
         });
+
+        log.info("User " + username + " requested a password reset");
     },
     passwordReset: function*(session, username, resetId, password) {
         let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
@@ -241,6 +250,8 @@ let auth = api.register("auth", {
             resetId: null,
             password: sha1(password)
         });
+
+        log.info("User " + username + " reset their password");
     },
     saveProfile: function*(session, username, attributes, personPath) {
         if (username !== session.username && session.username !== "admin") {
@@ -264,12 +275,11 @@ let auth = api.register("auth", {
             throw new Error("System account can not change name");
         }
 
-        if (oldusername !== session.username && session.username !== "admin") {
+        if (oldusername !== session.username && session.username !== "admin" && session.username !== "guest") {
             throw new Error("Not allowed");
         }
 
         yield vfs.move(auth.getAdminSession(), "/users/" + oldusername, "/users/" + newusername);
-        // TODO: symlinks to groups needs to be updated if username changed
     },
     passwd: function*(session, username, password) {
         if (username !== session.username && session.username !== "admin") {

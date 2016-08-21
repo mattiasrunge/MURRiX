@@ -85,6 +85,8 @@ let file = api.register("file", {
         yield vfs.setattributes(session, node, {
             time: yield mcs.compileTime(attributes.when || {})
         });
+
+        return yield vfs.resolve(session, abspath);
     },
     getFaces: function*(session, abspath) {
         let node = yield vfs.resolve(session, abspath);

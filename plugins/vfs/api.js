@@ -867,6 +867,19 @@ let vfs = api.register("vfs", {
             name: name
         });
 
+        session.almighty = true;
+        let symlinks = yield vfs.query(session, {
+            "properties.type": "s",
+            "attributes.path": srcpath
+        });
+
+        for (let symlink of symlinks) {
+            yield vfs.setattributes(session, symlink, {
+                path: path.join(destparentPath, child.name)
+            });
+        }
+        session.almighty = false;
+
         vfs.emit("update", { path: srcparentPath });
         vfs.emit("update", { path: destparentPath });
     },

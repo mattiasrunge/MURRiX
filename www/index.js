@@ -17,6 +17,7 @@ if (!isChrome) {
             slider: "node_modules/bootstrap-slider/dist/bootstrap-slider.min",
             mprogress: "node_modules/mprogress/build/js/mprogress.min",
             moment: "node_modules/moment/min/moment.min",
+            "moment-duration-format": "node_modules/moment-duration-format/lib/moment-duration-format",
             snackbar: "node_modules/snackbarjs/dist/snackbar.min",
             autosize: "node_modules/autosize/dist/autosize.min",
             lazyload: "node_modules/vanilla-lazyload/dist/lazyload",
@@ -41,6 +42,9 @@ if (!isChrome) {
             },
             "jquery.imgareaselect": {
                 deps: [ "jquery" ]
+            },
+            "moment-duration-format": {
+                deps: [ "moment" ]
             }
         }
     });

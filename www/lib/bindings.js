@@ -21,6 +21,8 @@ const LazyLoad = require("lazyload");
 const typeahead = require("typeahead"); // jshint ignore:line
 const imgareaselect = require("jquery.imgareaselect"); // jshint ignore:line
 
+require("moment-duration-format");
+
 let lazyload = new LazyLoad({
     show_while_loading: true, // jshint ignore:line
     elements_selector: "img.lazyload" // jshint ignore:line
@@ -226,6 +228,14 @@ ko.bindingHandlers.yearSlider = {
             slider.off("slideStop");
             slider.destroy();
         });
+    }
+};
+
+ko.bindingHandlers.duration = {
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+
+        $(element).text(moment.duration(value, "seconds").format());
     }
 };
 
@@ -502,6 +512,57 @@ ko.bindingHandlers.mode = {
         let $element = $(element);
 
         $element.text(utils.modeString(value));
+    }
+};
+
+
+ko.bindingHandlers.timeInput = {
+    init: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+        let $parent = $element.parent();
+
+        $element.attr("maxlength", 25);
+        $element.attr("placeholder", "YYYY-MM-DD HH:mm:ssZ");
+
+        let $error = $("<span class='text-danger'></span>");
+        $error.hide();
+        $parent.append($error);
+
+        $element.on("keyup", () => {
+            try {
+                utils.str2time($element.val());
+                $element.parent().removeClass("has-error");
+                $error.hide();
+            } catch (e) {
+                $error.text(e.message);
+                $error.show();
+                $element.parent().addClass("has-error");
+            }
+        });
+
+        $element.on("blur", () => {
+            $error.hide();
+        });
+
+        $element.on("change", () => {
+            try {
+                valueAccessor()(utils.str2time($element.val()));
+            } catch (e) {
+            }
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            $element.off("blur");
+            $element.off("change");
+            $error.remove();
+        });
+    },
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        $element.val(utils.time2str(value || {}));
     }
 };
 

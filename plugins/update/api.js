@@ -160,6 +160,13 @@ let update = api.register("update", {
                 continue;
             }
 
+            if (obj.username === "anonymous") {
+                idTransUsers[obj._id] = "guest";
+                idTransUsersUid[obj._id] = 1001;
+                result.users++;
+                continue;
+            }
+
             let name = obj.email ? obj.email : obj.username;
 
             console.log(index + "/" + userList.length + ": Importing user " + name);
@@ -365,6 +372,8 @@ let update = api.register("update", {
                 continue;
             }
 
+            obj.name = obj.name.trim();
+
             let name = getUniqueName("locations", obj.name);
             let attributes = {
                 name: obj.name,
@@ -500,6 +509,8 @@ let update = api.register("update", {
                 continue;
             }
 
+            obj.name = obj.name.trim();
+
             let name = getUniqueName("cameras", obj.name);
             let abspath = "/cameras/" + name;
             let attributes = {
@@ -612,6 +623,8 @@ let update = api.register("update", {
             if (obj.removed) {
                 continue;
             }
+
+            obj.name = obj.name.trim();
 
             let match = obj.name.match(/^[0-9]{0,4}-[0-9]{0,2}-[0-9]{0,2} (.*)/);
             let nameNice = match ? match[1] : obj.name;
@@ -795,6 +808,8 @@ let update = api.register("update", {
             }
 
             let dir = path.join(idTransNodes[obj._parents[0]], "texts");
+
+            obj.name = obj.name.trim();
 
             let name = getUniqueName(dir, obj.name);
             let attributes = {
@@ -996,7 +1011,7 @@ let update = api.register("update", {
 
 
         // Import files
-        let fileList = yield db.find("items", { what: "file" });
+        let fileList = yield db.find("items", { what: "file" }/*, { sort: { "_parents.0": 1 } }*/);
 
         /*
         {
@@ -1071,6 +1086,8 @@ let update = api.register("update", {
             }
 
             let dir = path.join(idTransNodes[obj._parents[0]], "files");
+
+            obj.name = obj.name.trim();
 
             let name = getUniqueName(dir, obj.name);
             let attributes = {
@@ -1277,6 +1294,7 @@ let update = api.register("update", {
         // Second pass
         console.log("Second pass!");
 
+        console.log("Linking people to users!");
         // Process users
         for (let obj of userList) {
             if (obj.username === "admin") {
@@ -1291,6 +1309,7 @@ let update = api.register("update", {
         }
 
         // Process people
+        console.log("Processing people!");
         for (let obj of peopleList) {
             // TODO: public
 
@@ -1338,29 +1357,47 @@ let update = api.register("update", {
 
 
         // Process locations
+        console.log("Processing locations!");
         for (let obj of locationList) {
             if (obj._profilePicture) {
-                yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
-                yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                if (!idTransItems[obj._profilePicture]) {
+                    console.error("Could not find imported item which is specified as profilePicture");
+                    console.error(obj._id, obj._profilePicture, idTransNodes[obj._id]);
+                } else {
+                    yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
+                    yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                }
             }
 
             yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
         }
 
+        console.log("Processing cameras!");
         for (let obj of cameraList) {
             if (obj._profilePicture) {
-                yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
-                yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                if (!idTransItems[obj._profilePicture]) {
+                    console.error("Could not find imported item which is specified as profilePicture");
+                    console.error(obj._id, obj._profilePicture, idTransNodes[obj._id]);
+                } else {
+                    yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
+                    yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                }
             }
 
             yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
         }
 
         // Process album
+        console.log("Processing albums!");
         for (let obj of albumList) {
             if (obj._profilePicture) {
-                yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
-                yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                if (!idTransItems[obj._profilePicture]) {
+                    console.error("Could not find imported item which is specified as profilePicture");
+                    console.error(obj._id, obj._profilePicture, idTransNodes[obj._id]);
+                } else {
+                    yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
+                    yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                }
             }
 
             yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });

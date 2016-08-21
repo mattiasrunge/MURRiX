@@ -1,10 +1,10 @@
-<div class="fullscreen animated zoomIn" data-bind="css: { showsidebar: showSidebar }">
-    <div class="sidebar" data-bind="visible: showSidebar() && nodepath(), if: showSidebar() && nodepath()">
+<div class="fullscreen animated zoomIn" data-bind="css: { showsidebar: sidebarView }, if: nodepath">
+    <div class="sidebar" data-bind="visible: sidebarView() === 'main', if: sidebarView() === 'main'">
         <h2 style="margin-top: 0;">
             Information
         </h2>
 
-        <table class="text-muted">
+        <table class="text-muted list">
             <tbody>
                 <tr>
                     <td style="width: 44px;">
@@ -32,6 +32,27 @@
                         <widget-node-link-node params="{ nodepath: nodepath, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ] }"></widget-node-link-node>
                     </td>
                 </tr>
+
+                <tr data-bind="visible: nodepath().node().attributes.fileinfo.width">
+                    <td style="width: 44px;">
+                        <i class="material-icons" title="Resolution">photo_size_select_large</i>
+                    </td>
+
+                    <td style="padding-top: 1px;">
+                        <span data-bind="text: nodepath().node().attributes.fileinfo.width"></span>x<span data-bind="text: nodepath().node().attributes.fileinfo.height"></span>
+                    </td>
+                </tr>
+
+                <tr data-bind="visible: nodepath().node().attributes.fileinfo.duration">
+                    <td style="width: 44px;">
+                        <i class="material-icons" title="Duration">timelapse</i>
+                    </td>
+
+                    <td style="padding-top: 1px;">
+                        <span data-bind="duration: nodepath().node().attributes.fileinfo.duration"></span>
+                    </td>
+                </tr>
+
                 <tr>
                     <td style="width: 44px;">
                         <i class="material-icons" title="File">file_download</i>
@@ -58,7 +79,7 @@
         <comment-widget-comments params="{ path: showPath }"></comment-widget-comments>
     </div>
 
-    <div class="sidebar" data-bind="visible: tagging() && nodepath(), if: tagging() && nodepath()">
+    <div class="sidebar" data-bind="visible: sidebarView() === 'tag', if: sidebarView() === 'tag'">
         <h2 style="margin: 0;">
             Tags
         </h2>
@@ -80,12 +101,12 @@
         </div>
     </div>
 
-    <div class="sidebar" data-bind="visible: positioning() && nodepath(), if: positioning() && nodepath()">
+    <div class="sidebar" data-bind="visible: sidebarView() === 'position', if: sidebarView() === 'position'">
         <h2 style="margin: 0;">
             Location
         </h2>
 
-        <table class="text-muted" style="margin-top: 30px;">
+        <table class="text-muted list" style="margin-top: 30px;">
             <tbody>
                 <tr>
                     <td style="width: 44px;">
@@ -101,7 +122,46 @@
         <div style="position: absolute; top: 160px; left: 0; right: 0; bottom: 0;" data-bind="map: { position: position, zoom: position() ? 15 : 10, editable: nodepath().editable }"></div>
     </div>
 
-    <div class="maincontainer animated fadeIn" data-bind="if: nodepath() && filename()">
+    <div class="sidebar" data-bind="visible: sidebarView() === 'time', if: sidebarView() === 'time'">
+        <h2 style="margin: 0;">
+            Set time
+        </h2>
+
+        <p class="text-muted" style="font-size: 12px;">
+            Here it is possible to specifiy the time for when the content in this file was created, e.g. the time when a picture was taken. Dates can end after any part when the maximum know accuracy is reached. It is also possible to specify ranges when information is uncertain.
+        </p>
+        <p class="text-muted" style="font-size: 12px;">
+            Some examples:
+            <table class="table table-condensed" style="font-size: 10px;">
+                <tbody>
+                    <tr>
+                        <td>2002-03-04 13:45:03+01:00</td>
+                        <td>Exact time</td>
+                    </tr>
+                    <tr>
+                        <td>2002-03-04 13:45:03</td>
+                        <td>Exact local time</td>
+                    </tr>
+                    <tr>
+                        <td>2002-03-04 13</td>
+                        <td>Exact date with hour</td>
+                    </tr>
+                    <tr>
+                        <td>2002-03</td>
+                        <td>Exact year and month</td>
+                    </tr>
+                    <tr>
+                        <td>2002-03|04</td>
+                        <td>Exact year but month range</td>
+                    </tr>
+                </tbody>
+            </table>
+        </p>
+
+        <widget-node-when-attribute params="{ nodepath: nodepath }"></widget-node-when-attribute>
+    </div>
+
+    <div class="maincontainer animated fadeIn" data-bind="if: filename">
         <div data-bind="visible: nodepath().node().attributes.type === 'image', if: nodepath().node().attributes.type === 'image'">
             <div data-bind="picture: { item: nodepath, filename: filename, tags: tags, height: $component.height, classes: 'resize-fit-center', nolazyload: true, selectTag: selectTag }" class="resize-fit-container"></div>
         </div>
@@ -119,18 +179,18 @@
         </div>
     </div>
 
-    <div data-bind="if: nodepath" class="bottombar">
+    <div class="bottombar">
         <a href="#" data-bind="location: { showPath: previousPath }, visible: previousPath() !== false">
             <i class="material-icons md-48 pull-left">arrow_back</i>
         </a>
 
         <span class="middle">
-            <span>
+            <span data-bind="click: sidebarView.bind($data, 'time')" style="cursor: pointer;">
                 <i class="material-icons md-18">access_time</i>
                 <span data-bind="datetimeUtc: nodepath().node().attributes.time.timestamp"></span>
             </span>
 
-            <span data-bind="click: positioning.bind($data, !positioning())" style="cursor: pointer;">
+            <span data-bind="click: sidebarView.bind($data, 'position')" style="cursor: pointer;">
                 <i class="material-icons md-18">place</i>
                 <span data-bind="if: location">
                     <span data-bind="text: location().attributes.name"></span>
@@ -140,12 +200,7 @@
                 </span>
             </span>
 
-            <span>
-                <i class="material-icons md-18">comment</i>
-                <span data-bind="text: commentCount"></span>
-            </span>
-
-            <span data-bind="tooltip: tagNames, click: tagging.bind($data, !tagging())" style="cursor: pointer;">
+            <span data-bind="tooltip: tagNames, click: sidebarView.bind($data, 'tag')" style="cursor: pointer;">
                 <i class="material-icons md-18">face</i>
                 <span data-bind="text: tags().length"></span>
             </span>
@@ -156,15 +211,15 @@
         </a>
     </div>
 
-    <a href="#" class="information" data-bind="click: showSidebar.bind($data, true), visible: !showSidebar()">
+    <a href="#" class="information" data-bind="click: sidebarView.bind($data, 'main'), visible: !sidebarView()">
         <i class="material-icons">info</i>
     </a>
 
-    <a href="#" class="hideinformation" data-bind="click: showSidebar.bind($data, false), visible: showSidebar() && !tagging() && !positioning()">
+    <a href="#" class="hideinformation" data-bind="click: sidebarView.bind($data, false), visible: sidebarView">
         <i class="material-icons">forward</i>
     </a>
 
-    <div class="btn-group menu" data-bind="visible: nodepath().editable && !tagging() && !positioning()">
+    <div class="btn-group menu" data-bind="visible: nodepath().editable && sidebarView() === 'main'">
         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="material-icons">more_vert</i>
         </a>
@@ -182,13 +237,17 @@
                 Mirror
             </a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#" data-bind="click: tagging.bind($data, true)">
+            <li><a href="#" data-bind="click: sidebarView.bind($data, 'tag')">
                 <i class="material-icons">face</i>
                 Tag people
             </a></li>
-            <li><a href="#" data-bind="click: positioning.bind($data, true)">
+            <li><a href="#" data-bind="click: sidebarView.bind($data, 'position')">
                 <i class="material-icons">place</i>
                 Set location
+            </a></li>
+            <li><a href="#" data-bind="click: sidebarView.bind($data, 'time')">
+                <i class="material-icons">access_time</i>
+                Set time
             </a></li>
         </ul>
     </div>

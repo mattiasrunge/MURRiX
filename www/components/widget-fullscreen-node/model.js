@@ -12,9 +12,9 @@ const loc = require("lib/location");
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
-    this.showSidebar = ko.observable(true);
-    this.tagging = ko.observable(false);
-    this.positioning = ko.observable(false);
+
+    this.sidebarView = ko.observable("main");
+
     this.personPath = ko.observable(false);
     this.selectedTag = ko.observable(false);
     this.height = ko.pureComputed(() => {
@@ -211,16 +211,6 @@ module.exports = utils.wrapComponent(function*(params) {
         this.tags.reload();
     };
 
-    this.commentCount = ko.asyncComputed(0, function*(setter) {
-        setter(0);
-
-        let list = yield api.comment.list(ko.unwrap(this.showPath));
-        return list.length;
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return 0;
-    });
-
     //     this.faces = ko.asyncComputed([], function*(setter) {
     //         let abspath = ko.unwrap(this.showPath);
     //
@@ -371,10 +361,8 @@ module.exports = utils.wrapComponent(function*(params) {
     };
 
     this.exit = () => {
-        if (this.tagging()) {
-            this.tagging(false);
-        } else if (this.positioning()) {
-            this.positioning(false);
+        if (this.sidebarView() === "time" || this.sidebarView() === "tag" || this.sidebarView() === "position") {
+            this.sidebarView("main");
         } else {
             loc.goto({ showPath: null });
         }

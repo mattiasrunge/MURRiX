@@ -13,6 +13,12 @@ module.exports = {
         console.error(text);
         console.error(new Error().stack);
 
+        if (typeof text === "string") {
+            text = text.split("\n")[0];
+        } else if (text instanceof Error) {
+            text = "Error: " + text.message;
+        }
+
         let options = {
             content: text,
             style: "alert-danger",

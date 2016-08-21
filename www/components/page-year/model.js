@@ -22,6 +22,8 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
 
         this.loading(false);
 
+        ui.setTitle("Browsing " + this.year());
+
         return list.map((item) => {
             item.node = ko.observable(item.node);
             return item;
@@ -40,7 +42,7 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
         this.year(this.year() - 1);
     };
 
-    ui.setTitle("Search");
+    ui.setTitle("Browse year");
 
     this.dispose = () => {
         stat.destroy(this.loading);

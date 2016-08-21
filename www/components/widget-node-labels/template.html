@@ -1,4 +1,4 @@
-﻿<div data-bind="visible: nodepath, if: nodepath">
+﻿<div data-bind="visible: nodepath() && nodepath().node().attributes.labels.length > 0, if: nodepath">
     <div data-bind="foreach: nodepath().node().attributes.labels">
         <a href="#" class="label label-primary" data-bind="text: $data, location: { page: 'search', query: 'label:' + $data }"></a>
     </div>

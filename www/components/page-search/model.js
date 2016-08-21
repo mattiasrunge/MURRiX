@@ -43,6 +43,8 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
 
         this.loading(false);
 
+        ui.setTitle("Search for " + this.query());
+
         return list.map((item) => {
             item.node = ko.observable(item.node);
             return item;

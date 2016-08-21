@@ -45,9 +45,9 @@ widget-node-text-attribute {
 
 h1, h2, h3, h4, h5, h6, .heading {
     font-family: 'Ubuntu', Georgia, Times, serif;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+/*     overflow: hidden; */
+/*     white-space: nowrap; */
+/*     text-overflow: ellipsis; */
     color: #327DE6;
     padding-bottom: 10px;
 }
@@ -345,12 +345,12 @@ body {
     transition: opacity .3s ease-in-out;
 }
 
-.fullscreen > .sidebar table {
+.fullscreen > .sidebar table.list {
     width: 100%;
     margin-left: 15px;
 }
 
-.fullscreen > .sidebar table td {
+.fullscreen > .sidebar table.list td {
     padding-bottom: 30px;
     vertical-align: top;
 }
@@ -873,12 +873,17 @@ widget-node-sections .nav-pills > li > a:focus {
     text-decoration: none;
 }
 
-.node-item-panel h4 {
-    margin: 0;
-    padding-bottom: 5px;
-    margin-bottom: -5px;
+.node-item-panel .title-text {
+    font-size: 16px;
+    font-weight: bold;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    padding: 15px;
     color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+    text-shadow: 1px 1px 2px black;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .node-item-panel file-widget-profile-picture {
