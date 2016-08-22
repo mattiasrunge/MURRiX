@@ -4,6 +4,7 @@ const ko = require("knockout");
 const $ = require("jquery");
 const utils = require("lib/utils");
 const stat = require("lib/status");
+const node = require("lib/node");
 const api = require("api.io-client");
 
 module.exports = utils.wrapComponent(function*(params) {
@@ -75,51 +76,88 @@ module.exports = utils.wrapComponent(function*(params) {
         return Math.round(progress / (this.files().length || 1));
     });
 
-    this.start = utils.co(function*() {
-        let item;
+    this.import = utils.co(function*(abspath, item) {
+        let file = yield api.file.mkfile(abspath, {
+            name: item.name,
+            _source: {
+                uploadId: item.uploadId
+            }
+        });
 
+        item.active(false);
+        item.complete(true);
+
+        console.log(item.name + " imported as " + abspath, item, file);
+    }.bind(this));
+
+    this.start = utils.co(function*() {
         this.active(true);
 
-        try {
-            for (item of this.files()) {
-                item.active(true);
-                item.failed(false);
+        let delayed = [];
+        let parentPath = this.nodepath().path + "/files";
 
-                let result = yield utils.upload("/upload/" + item.uploadId, item.file, (progress, speed) => {
-                    item.progress(progress);
-                    this.speed(speed);
-                });
+        // Pass 1: Check duplicate names
+        // TODO
 
-                if (result.status !== "success") {
-                    throw new Error("Status was not success but " + result.status);
-                }
+        // Pass 2: Upload all files and import non-raw
+        for (let item of this.files()) {
+            item.active(true);
+            item.failed(false);
 
-                let abspath = this.nodepath().path + "/files/" + item.name.replace(/ |\//g, "_");
+            let result = yield utils.upload("/upload/" + item.uploadId, item.file, (progress, speed) => {
+                item.progress(progress);
+                this.speed(speed);
+            });
 
-                let file = yield api.file.mkfile(abspath, {
-                    name: item.name,
-                    _source: {
-                        uploadId: item.uploadId
-                    }
-                });
-
-                item.active(false);
-                item.complete(true);
-
-                console.log(item.name + " uploaded", item, result, file);
+            if (result.status !== "success") {
+                throw new Error("Status was not success but " + result.status + " for ", item);
             }
-        } catch (e) {
-            item.active(false);
-            item.failed(true);
-            stat.printError(e);
+
+            console.log(result.metadata);
+
+            if (result.metadata.rawImage) {
+                delayed.push({
+                    metadata: result.metadata,
+                    item: item
+                });
+            } else {
+                let name = yield node.getUniqueName(parentPath, item.name);
+                yield this.import(parentPath + "/" + name, item);
+            }
         }
+
+        console.log("First run of files imported, " + delayed.length + " files delayed");
+
+        let parent = yield api.vfs.resolve(parentPath);
+        let children = [];
+        for (let child of parent.properties.children) {
+            let name = child.name.substr(0, child.name.lastIndexOf(".")) || child.name;
+            children[name] = child;
+        }
+
+
+        // Pass 3: Import delayed (raw) files
+        for (let file of delayed) {
+            let basename = file.item.name.substr(0, file.item.name.lastIndexOf(".")) || file.item.name;
+
+            if (children[basename]) {
+                let versionPath = parentPath + "/" + children[basename].name + "/versions";
+
+                yield api.vfs.ensure(versionPath, "d");
+
+                let name = yield node.getUniqueName(versionPath, file.item.name);
+
+                yield this.import(versionPath + "/" + name, file.item);
+            } else {
+                let name = yield node.getUniqueName(parentPath, file.item.name);
+                yield this.import(parentPath + "/" + name, file.item);
+            }
+        }
+
 
         this.active(false);
-
-        if (!item.failed()) {
-            stat.printSuccess("Uploaded " + this.files().length + " files succesfully!");
-            this.fileInput([]);
-        }
+        stat.printSuccess("Uploaded " + this.files().length + " files successfully!")
+        this.fileInput([]);
     }.bind(this));
 
     this.dispose = () => {

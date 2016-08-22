@@ -45,12 +45,16 @@ module.exports = {
         return false;
     }),
     list: ko.observableArray(),
-    getUniqueName: co.wrap(function*(path, baseName) {
-        let name = baseName.replace(/ |\//g, "_");
-
+    escapeName: (name) => {
+        return name.replace(/ |\//g, "_");
+    },
+    getUniqueName: co.wrap(function*(parent, baseName) {
+        parent = typeof parent === "string" ? yield api.vfs.resolve(parent) : parent;
+        let name = module.exports.escapeName(baseName);
         let counter = 1;
-        while (yield api.vfs.resolve(path + "/" + name, { noerror: true })) {
-            name = baseName.replace(/ |\//g, "_") + "_" + counter;
+
+        while (parent.properties.children.filter((child) => child.name === name).length > 0) {
+            name = module.exports.escapeName(baseName) + "_" + counter;
             counter++;
         }
 

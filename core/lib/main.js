@@ -6,6 +6,7 @@ const logger = require("./log");
 const log = logger(module);
 const server = require("./http-server");
 const db = require("./db");
+const mcs = require("./mcs");
 const session = require("./session");
 const plugin = require("./plugin");
 
@@ -14,6 +15,7 @@ module.exports = {
         yield logger.init(args.level);
         yield configuration.init(args);
         yield db.init(configuration);
+        yield mcs.init(configuration);
         yield session.init(configuration);
         yield plugin.init(configuration);
         yield server.init(configuration);

@@ -20,14 +20,24 @@ module.exports = {
         let filenames = yield glob(pattern);
         let uninitializedApis = [];
         let initializedApiNames = [];
+        let namespaces = [];
 
         for (let filename of filenames) {
             log.info("Loading plugin from " + filename);
-            uninitializedApis.push(require(filename));
+
+            let apiInstance = require(filename);
+            uninitializedApis.push(apiInstance);
+            namespaces.push(apiInstance.namespace);
         }
 
         while (uninitializedApis.length > 0) {
             let apiInstance = uninitializedApis.shift();
+
+            for (let dep of apiInstance.deps) {
+                if (!namespaces.includes(dep)) {
+                    throw new Error("Plugin " + apiInstance.namespace + " specifies a dependency toward " + dep + " which was not found");
+                }
+            }
 
             if (apiInstance.deps.filter((namespace) => !initializedApiNames.includes(namespace)).length > 0) {
                 uninitializedApis.push(apiInstance);

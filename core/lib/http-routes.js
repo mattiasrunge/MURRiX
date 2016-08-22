@@ -11,6 +11,7 @@ const CleanCSS = require("clean-css");
 const promisifyAll = require("bluebird").promisifyAll;
 const babel = promisifyAll(require("babel-core"));
 const configuration = require("./configuration");
+const mcs = require("./mcs");
 const log = require("./log")(module);
 
 const wwwPath = path.join(__dirname, "..", "..", "www");
@@ -51,17 +52,25 @@ module.exports = {
 
         delete this.session.uploads[id];
 
-        let part;
-        while ((part = yield parse(this))) {
-            let filename = path.join(configuration.uploadDirectory, id);
-            log.debug("Saving upload files to " + filename);
+        let part = yield parse(this);
+        let filename = path.join(configuration.uploadDirectory, id);
+        log.debug("Saving uploaded file as " + filename);
 
-            let stream = fs.createWriteStream(filename);
-            part.pipe(stream);
-        }
+        let stream = fs.createWriteStream(filename);
+
+        part.pipe(stream);
+
+        yield new Promise((resolve, reject) => {
+            stream.on("finish", resolve);
+            stream.on("error", reject);
+        });
+
+        let metadata = yield mcs.getMetadata(filename, { noChecksums: true });
+
+        log.debug("Uploaded file " + filename + " saved!");
 
         this.type = "json";
-        this.body = JSON.stringify({ status: "success" }, null, 2);
+        this.body = JSON.stringify({ status: "success", metadata: metadata }, null, 2);
     },
     "/media/:name": function*(name) {
         yield stream.file(this, name, {
@@ -70,8 +79,8 @@ module.exports = {
         });
     },
     "/file/:name/:filename": function*(filename, name) {
-        this.body = fs.createReadStream(path.join(configuration.fileDirectory, path.basename(filename)));
         this.set("Content-disposition", "attachment; filename=" + name);
+        this.body = fs.createReadStream(path.join(configuration.fileDirectory, path.basename(filename)));
     },
     unamed: () => [
         function*(next) {

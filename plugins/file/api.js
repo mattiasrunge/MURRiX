@@ -6,12 +6,12 @@ const fs = require("fs-extra-promise");
 const api = require("api.io");
 const plugin = require("../../core/lib/plugin");
 const vfs = require("../vfs/api");
-const mcs = require("../mcs/api");
+const mcs = require("../../core/lib/mcs");
 
 let params = {};
 
 let file = api.register("file", {
-    deps: [ "vfs", "mcs", "camera" ],
+    deps: [ "vfs", "camera" ],
     init: co(function*(config) {
         params = config;
     }),
