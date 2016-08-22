@@ -8,6 +8,7 @@ const stat = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
+    this.initial = ko.pureComputed(() => ko.unwrap(params.initial) || "");
     this.name = ko.pureComputed(() => ko.unwrap(params.name));
     this.placeholder = ko.pureComputed(() => ko.unwrap(params.placeholder));
     this.searchPaths = ko.pureComputed(() => ko.unwrap(params.searchPaths));

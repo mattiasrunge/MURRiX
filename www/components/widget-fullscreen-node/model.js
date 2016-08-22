@@ -111,6 +111,18 @@ module.exports = utils.wrapComponent(function*(params) {
         return false;
     });
 
+    this.initialCameraName = ko.pureComputed(() => {
+        if (!this.nodepath()) {
+            return "";
+        }
+
+        if (this.nodepath().node().attributes.deviceinfo) {
+            return this.nodepath().node().attributes.deviceinfo.model || "";
+        }
+
+        return "";
+    });
+
     this.filename = ko.asyncComputed(false, function*(setter) {
         if (!this.nodepath()) {
             return false;

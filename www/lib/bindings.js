@@ -795,6 +795,7 @@ ko.bindingHandlers.nodeselect = {
     },
     update: (element, valueAccessor) => {
         let path = valueAccessor().path;
+        let initial = ko.unwrap(valueAccessor().initial) || "";
         let $element = $(element);
 
         if (path()) {
@@ -818,7 +819,7 @@ ko.bindingHandlers.nodeselect = {
             });
         } else {
             $element.removeClass("valid");
-            $element.typeahead("val", "");
+            $element.typeahead("val", initial);
         }
     }
 };
