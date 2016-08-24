@@ -7,20 +7,12 @@ const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
-const vfs = require("../vfs/api");
-const auth = require("../auth/api");
-const people = require("../people/api");
-const location = require("../location/api"); // jshint ignore:line
-const album = require("../album/api");
-const file = require("../file/api");
-const text = require("../text/api");
-const camera = require("../camera/api");
 const database = require("../../core/lib/db");
 
 let params = {};
 
 let update = api.register("update", {
-    deps: [ "vfs", "auth", "people", "location", "album", "file", "text" ],
+    deps: [ "vfs", "auth", "people", "location", "album", "file", "text", "camera" ],
     init: co(function*(config) {
         params = config;
     }),
@@ -103,8 +95,8 @@ let update = api.register("update", {
 
             console.log(index + "/" + groupList.length + ": Importing group " + name);
 
-            let group = yield auth.mkgroup(session, name, obj.name, obj.description);
-            yield vfs.setproperties(session, "/groups/" + name, {
+            let group = yield api.auth.mkgroup(session, name, obj.name, obj.description);
+            yield api.vfs.setproperties(session, "/groups/" + name, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate()
             });
 
@@ -171,20 +163,20 @@ let update = api.register("update", {
 
             console.log(index + "/" + userList.length + ": Importing user " + name);
 
-            let user = yield auth.mkuser(session, name, obj.name);
-            yield vfs.setattributes(session, "/users/" + name, {
+            let user = yield api.auth.mkuser(session, name, obj.name);
+            yield api.vfs.setattributes(session, "/users/" + name, {
                 password: obj.password,
                 usernameV1: obj.username,
                 loginTime: moment(obj.lastLogin * 1000).toDate()
             });
-            yield vfs.setproperties(session, "/users/" + name, {
+            yield api.vfs.setproperties(session, "/users/" + name, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate()
             });
 
             for (let groupId of obj._groups) {
                 if (idTransGroups[groupId] !== "users") {
                     try {
-                        yield auth.connect(session, name, idTransGroups[groupId]);
+                        yield api.auth.connect(session, name, idTransGroups[groupId]);
                     } catch (e) {
                         console.error(e);
                     }
@@ -192,7 +184,7 @@ let update = api.register("update", {
             }
 
             if (obj.admin) {
-                yield auth.connect(session, name, "admin");
+                yield api.auth.connect(session, name, "admin");
             }
 
             idTransUsers[obj._id] = name;
@@ -301,8 +293,8 @@ let update = api.register("update", {
 
             console.log(index + "/" + peopleList.length + ": Importing person " + name);
 
-            yield people.mkperson(session, name, attributes);
-            yield vfs.setproperties(session, "/people/" + name, {
+            yield api.people.mkperson(session, name, attributes);
+            yield api.vfs.setproperties(session, "/people/" + name, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate(),
                 birthuid: idTransUsersUid[obj.added._by]
             });
@@ -316,7 +308,7 @@ let update = api.register("update", {
                     yield api.vfs.create(session, "/people/" + name + "/comments/" + name2, "c", {
                         text: comment.text
                     });
-                    yield vfs.setproperties(session, "/people/" + name + "/comments/" + name2, {
+                    yield api.vfs.setproperties(session, "/people/" + name + "/comments/" + name2, {
                         birthtime: moment(comment.added.timestamp * 1000).toDate(),
                         birthuid: idTransUsersUid[comment.added._by]
                     });
@@ -386,8 +378,8 @@ let update = api.register("update", {
 
             console.log(index + "/" + locationList.length + ": Importing location " + name);
 
-            yield location.mklocation(session, name, attributes);
-            yield vfs.setproperties(session, "/locations/" + name, {
+            yield api.location.mklocation(session, name, attributes);
+            yield api.vfs.setproperties(session, "/locations/" + name, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate(),
                 birthuid: idTransUsersUid[obj.added._by]
             });
@@ -401,7 +393,7 @@ let update = api.register("update", {
                     yield api.vfs.create(session, "/locations/" + name + "/comments/" + name2, "c", {
                         text: comment.text
                     });
-                    yield vfs.setproperties(session, "/locations/" + name + "/comments/" + name2, {
+                    yield api.vfs.setproperties(session, "/locations/" + name + "/comments/" + name2, {
                         birthtime: moment(comment.added.timestamp * 1000).toDate(),
                         birthuid: idTransUsersUid[comment.added._by]
                     });
@@ -544,15 +536,15 @@ let update = api.register("update", {
 
             console.log(index + "/" + cameraList.length + ": Importing camera " + name + " abspath=" + abspath);
 
-            yield camera.mkcamera(session, name, attributes);
-            yield vfs.setproperties(session, abspath, {
+            yield api.camera.mkcamera(session, name, attributes);
+            yield api.vfs.setproperties(session, abspath, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate(),
                 birthuid: idTransUsersUid[obj.added._by]
             });
 
             if (obj._owners) {
                 for (let owner of obj._owners) {
-                    yield vfs.symlink(session, idTransNodes[owner], abspath + "/owners");
+                    yield api.vfs.symlink(session, idTransNodes[owner], abspath + "/owners");
                 }
             }
 
@@ -565,7 +557,7 @@ let update = api.register("update", {
                     yield api.vfs.create(session, abspath + "/comments/" + name2, "c", {
                         text: comment.text
                     });
-                    yield vfs.setproperties(session, abspath + "/comments/" + name2, {
+                    yield api.vfs.setproperties(session, abspath + "/comments/" + name2, {
                         birthtime: moment(comment.added.timestamp * 1000).toDate(),
                         birthuid: idTransUsersUid[comment.added._by]
                     });
@@ -652,8 +644,8 @@ let update = api.register("update", {
                     push = true;
                 }
 
-                ac.mode |= vfs.MASK_ACL_READ;
-                ac.mode |= vfs.MASK_ACL_EXEC;
+                ac.mode |= api.vfs.MASK_ACL_READ;
+                ac.mode |= api.vfs.MASK_ACL_EXEC;
 
                 if (push) {
                     acl.push(ac);
@@ -670,17 +662,17 @@ let update = api.register("update", {
                     push = true;
                 }
 
-                ac.mode |= vfs.MASK_ACL_READ;
-                ac.mode |= vfs.MASK_ACL_WRITE;
-                ac.mode |= vfs.MASK_ACL_EXEC;
+                ac.mode |= api.vfs.MASK_ACL_READ;
+                ac.mode |= api.vfs.MASK_ACL_WRITE;
+                ac.mode |= api.vfs.MASK_ACL_EXEC;
 
                 if (push) {
                     acl.push(ac);
                 }
             }
 
-            yield album.mkalbum(session, name, attributes);
-            yield vfs.setproperties(session, "/albums/" + name, {
+            yield api.album.mkalbum(session, name, attributes);
+            yield api.vfs.setproperties(session, "/albums/" + name, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate(),
                 birthuid: idTransUsersUid[obj.added._by],
                 acl: acl
@@ -695,7 +687,7 @@ let update = api.register("update", {
                     yield api.vfs.create(session, "/albums/" + name + "/comments/" + name2, "c", {
                         text: comment.text
                     });
-                    yield vfs.setproperties(session, "/albums/" + name + "/comments/" + name2, {
+                    yield api.vfs.setproperties(session, "/albums/" + name + "/comments/" + name2, {
                         birthtime: moment(comment.added.timestamp * 1000).toDate(),
                         birthuid: idTransUsersUid[comment.added._by]
                     });
@@ -822,7 +814,7 @@ let update = api.register("update", {
                 text: obj.text
             };
 
-            yield vfs.ensure(session, dir, "d");
+            yield api.vfs.ensure(session, dir, "d");
 
             console.log(index + "/" + textList.length + ": Resulting name " + name);
 
@@ -830,8 +822,8 @@ let update = api.register("update", {
 
             console.log(index + "/" + textList.length + ": Importing text " + abspath);
 
-            yield text.mktext(session, abspath, attributes);
-            yield vfs.setproperties(session, abspath, {
+            yield api.text.mktext(session, abspath, attributes);
+            yield api.vfs.setproperties(session, abspath, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate(),
                 birthuid: idTransUsersUid[obj.added._by]
             });
@@ -845,7 +837,7 @@ let update = api.register("update", {
                     yield api.vfs.create(session, path.join(abspath, "comments", name2), "c", {
                         text: comment.text
                     });
-                    yield vfs.setproperties(session, path.join(abspath, "comments", name2), {
+                    yield api.vfs.setproperties(session, path.join(abspath, "comments", name2), {
                         birthtime: moment(comment.added.timestamp * 1000).toDate(),
                         birthuid: idTransUsersUid[comment.added._by]
                     });
@@ -853,20 +845,20 @@ let update = api.register("update", {
             }
 
             if (obj._who) {
-                yield vfs.symlink(session, idTransNodes[obj._who], path.join(abspath, "createdBy"));
+                yield api.vfs.symlink(session, idTransNodes[obj._who], path.join(abspath, "createdBy"));
             }
 
 //             for (let showing of obj.showing) {
-//                 let link = yield vfs.symlink(session, idTransNodes[showing._id], path.join(abspath, "tags"));
+//                 let link = yield api.vfs.symlink(session, idTransNodes[showing._id], path.join(abspath, "tags"));
 //
 //                 console.log("Created tag to " + idTransNodes[showing._id] + " in " + path.join(abspath, "tags"));
 //
-//                 yield vfs.setattributes(session, link, {
+//                 yield api.vfs.setattributes(session, link, {
 //                     type: "tag"
 //                 });
 //             }
 
-            let item = yield vfs.resolve(session, abspath);
+            let item = yield api.vfs.resolve(session, abspath);
 
             item.attributes.when = item.attributes.when || {};
 
@@ -933,15 +925,15 @@ let update = api.register("update", {
             }
 
 
-            yield vfs.setattributes(session, abspath, item.attributes);
+            yield api.vfs.setattributes(session, abspath, item.attributes);
 
-            yield text.regenerate(session, abspath);
+            yield api.text.regenerate(session, abspath);
 
             if (obj.where) {
                 if (obj.where.source === "manual") {
                    // Done in first pass above
                 } else if (typeof obj.where._id === "string") {
-                    yield vfs.symlink(session, idTransNodes[obj.where._id], path.join(abspath, "location"));
+                    yield api.vfs.symlink(session, idTransNodes[obj.where._id], path.join(abspath, "location"));
                 }
             }
 
@@ -949,7 +941,7 @@ let update = api.register("update", {
                 let dir = path.join(idTransNodes[obj._parents[n]], "texts");
                 let name = getUniqueName(dir, obj.name);
 
-                yield vfs.link(session, abspath, path.join(dir, name));
+                yield api.vfs.link(session, abspath, path.join(dir, name));
             }
 
             idTransItems[obj._id] = abspath;
@@ -1003,7 +995,7 @@ let update = api.register("update", {
             }
 
             for (let id of obj._parents) {
-                yield people.addMeasurement(session, idTransNodes[id], obj.name, obj.when.source.datestring.split(" ")[0], obj.value, obj.unit);
+                yield api.people.addMeasurement(session, idTransNodes[id], obj.name, obj.when.source.datestring.split(" ")[0], obj.value, obj.unit);
             }
 
             result.measurments++;
@@ -1104,7 +1096,7 @@ let update = api.register("update", {
             };
 
 
-            yield vfs.ensure(session, dir, "d");
+            yield api.vfs.ensure(session, dir, "d");
 
             console.log(index + "/" + fileList.length + ": Resulting name " + name);
 
@@ -1117,8 +1109,8 @@ let update = api.register("update", {
                 filename: path.join(filepath, obj._id)
             };
 
-            yield file.mkfile(session, abspath, attributes);
-            yield vfs.setproperties(session, abspath, {
+            yield api.file.mkfile(session, abspath, attributes);
+            yield api.vfs.setproperties(session, abspath, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate(),
                 birthuid: idTransUsersUid[obj.added._by]
             });
@@ -1132,7 +1124,7 @@ let update = api.register("update", {
                     yield api.vfs.create(session, path.join(abspath, "comments", name2), "c", {
                         text: comment.text
                     });
-                    yield vfs.setproperties(session, path.join(abspath, "comments", name2), {
+                    yield api.vfs.setproperties(session, path.join(abspath, "comments", name2), {
                         birthtime: moment(comment.added.timestamp * 1000).toDate(),
                         birthuid: idTransUsersUid[comment.added._by]
                     });
@@ -1140,19 +1132,19 @@ let update = api.register("update", {
             }
 
             if (obj._who) {
-                yield vfs.symlink(session, idTransNodes[obj._who], path.join(abspath, "createdBy"));
+                yield api.vfs.symlink(session, idTransNodes[obj._who], path.join(abspath, "createdBy"));
             }
 
-            if (obj._with && !(yield vfs.resolve(session, path.join(abspath, "createdWith"), { noerror: true }))) {
-                yield vfs.symlink(session, idTransNodes[obj._with], path.join(abspath, "createdWith"));
+            if (obj._with && !(yield api.vfs.resolve(session, path.join(abspath, "createdWith"), { noerror: true }))) {
+                yield api.vfs.symlink(session, idTransNodes[obj._with], path.join(abspath, "createdWith"));
             }
 
             for (let showing of obj.showing) {
                 console.log("Creating tag to " + idTransNodes[showing._id] + " in " + path.join(abspath, "tags", path.basename(idTransNodes[showing._id])));
 
-                let link = yield vfs.symlink(session, idTransNodes[showing._id], path.join(abspath, "tags", path.basename(idTransNodes[showing._id])));
+                let link = yield api.vfs.symlink(session, idTransNodes[showing._id], path.join(abspath, "tags", path.basename(idTransNodes[showing._id])));
 
-                yield vfs.setattributes(session, link, {
+                yield api.vfs.setattributes(session, link, {
                     type: "tag",
                     width: showing.width,
                     height: showing.height,
@@ -1161,7 +1153,7 @@ let update = api.register("update", {
                 });
             }
 
-            let item = yield vfs.resolve(session, abspath);
+            let item = yield api.vfs.resolve(session, abspath);
 
             item.attributes.when = item.attributes.when || {};
 
@@ -1234,9 +1226,9 @@ let update = api.register("update", {
             }
 
 
-            yield vfs.setattributes(session, abspath, item.attributes);
+            yield api.vfs.setattributes(session, abspath, item.attributes);
 
-            yield file.regenerate(session, abspath);
+            yield api.file.regenerate(session, abspath);
 
             if (obj.where) {
                 if (obj.where.source === "gps") {
@@ -1244,7 +1236,7 @@ let update = api.register("update", {
                 } else if (obj.where.source === "manual") {
                     // Done in pass above
                 } else if (typeof obj.where._id === "string") {
-                    yield vfs.symlink(session, idTransNodes[obj.where._id], path.join(abspath, "location"));
+                    yield api.vfs.symlink(session, idTransNodes[obj.where._id], path.join(abspath, "location"));
                 }
             }
 
@@ -1260,7 +1252,7 @@ let update = api.register("update", {
             if (obj.versions && obj.versions.length > 0) {
                 let versionsdir = path.join(abspath, "versions");
 
-                yield vfs.ensure(session, versionsdir, "d");
+                yield api.vfs.ensure(session, versionsdir, "d");
 
                 for (let version of obj.versions) {
                     let attributes = {
@@ -1277,8 +1269,8 @@ let update = api.register("update", {
                         filename: path.join(filepath, version.id)
                     };
 
-                    yield file.mkfile(session, versionabspath, attributes);
-                    yield vfs.setproperties(session, versionabspath, {
+                    yield api.file.mkfile(session, versionabspath, attributes);
+                    yield api.vfs.setproperties(session, versionabspath, {
                         birthtime: moment(obj.added.timestamp * 1000).toDate(),
                         birthuid: idTransUsersUid[obj.added._by]
                     });
@@ -1304,7 +1296,7 @@ let update = api.register("update", {
 //             console.log("Users...");
 
             if (obj._person) {
-                yield vfs.symlink(session, idTransNodes[obj._person], "/users/" + idTransUsers[obj._id] + "/person");
+                yield api.vfs.symlink(session, idTransNodes[obj._person], "/users/" + idTransUsers[obj._id] + "/person");
             }
         }
 
@@ -1316,12 +1308,12 @@ let update = api.register("update", {
 //             console.log("People...");
 
             if (obj.family._partner) {
-                yield vfs.symlink(session, idTransNodes[obj.family._partner], idTransNodes[obj._id] + "/partner");
+                yield api.vfs.symlink(session, idTransNodes[obj.family._partner], idTransNodes[obj._id] + "/partner");
             }
 
             if (obj._profilePicture) {
-                yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
-                yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                yield api.vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
+                yield api.vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
             }
 
             for (let parent of obj.family.parents) {
@@ -1334,7 +1326,7 @@ let update = api.register("update", {
 //                     name = "father";
 //                 }
 
-                yield vfs.symlink(session, idTransNodes[parent._id], idTransNodes[obj._id] + "/parents");
+                yield api.vfs.symlink(session, idTransNodes[parent._id], idTransNodes[obj._id] + "/parents");
 
 //                 name = "child";
 //
@@ -1344,15 +1336,15 @@ let update = api.register("update", {
 //                     name = "son";
 //                 }
 
-                yield vfs.symlink(session, idTransNodes[obj._id], idTransNodes[parent._id] + "/children");
+                yield api.vfs.symlink(session, idTransNodes[obj._id], idTransNodes[parent._id] + "/children");
             }
 
             for (let locationId of obj._homes) {
-                yield vfs.symlink(session, idTransNodes[locationId], idTransNodes[obj._id] + "/homes");
-                yield vfs.symlink(session, idTransNodes[obj._id], idTransNodes[locationId] + "/residents");
+                yield api.vfs.symlink(session, idTransNodes[locationId], idTransNodes[obj._id] + "/homes");
+                yield api.vfs.symlink(session, idTransNodes[obj._id], idTransNodes[locationId] + "/residents");
             }
 
-            yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
+            yield api.vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
         }
 
 
@@ -1364,12 +1356,12 @@ let update = api.register("update", {
                     console.error("Could not find imported item which is specified as profilePicture");
                     console.error(obj._id, obj._profilePicture, idTransNodes[obj._id]);
                 } else {
-                    yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
-                    yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                    yield api.vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
+                    yield api.vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
                 }
             }
 
-            yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
+            yield api.vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
         }
 
         console.log("Processing cameras!");
@@ -1379,12 +1371,12 @@ let update = api.register("update", {
                     console.error("Could not find imported item which is specified as profilePicture");
                     console.error(obj._id, obj._profilePicture, idTransNodes[obj._id]);
                 } else {
-                    yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
-                    yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                    yield api.vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
+                    yield api.vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
                 }
             }
 
-            yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
+            yield api.vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
         }
 
         // Process album
@@ -1395,21 +1387,21 @@ let update = api.register("update", {
                     console.error("Could not find imported item which is specified as profilePicture");
                     console.error(obj._id, obj._profilePicture, idTransNodes[obj._id]);
                 } else {
-                    yield vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
-                    yield vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                    yield api.vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
+                    yield api.vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
                 }
             }
 
-            yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
+            yield api.vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
         }
 
         // This is already done by album and such above
 //         for (let obj of textList) {
-//             yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
+//             yield api.vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
 //         }
 //
 //         for (let obj of fileList) {
-//             yield vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
+//             yield api.vfs.chown(session, idTransNodes[obj._id], idTransUsers[obj.added._by], "users", { recursive: true });
 //         }
 
 

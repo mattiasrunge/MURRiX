@@ -3,7 +3,6 @@
 const co = require("bluebird").coroutine;
 const api = require("api.io");
 const plugin = require("../../core/lib/plugin");
-const vfs = require("../vfs/api");
 const mcs = require("../../core/lib/mcs");
 
 let params = {};
@@ -14,7 +13,7 @@ let text = api.register("text", {
         params = config;
     }),
     mktext: function*(session, abspath, attributes) {
-        yield vfs.create(session, abspath, "t", attributes);
+        yield api.vfs.create(session, abspath, "t", attributes);
 
         yield text.regenerate(session, abspath);
 
@@ -25,13 +24,13 @@ let text = api.register("text", {
             type: attributes.type
         });
 
-        return yield vfs.resolve(session, abspath);
+        return yield api.vfs.resolve(session, abspath);
     },
     regenerate: function*(session, abspath) {
-        let node = yield vfs.resolve(session, abspath);
+        let node = yield api.vfs.resolve(session, abspath);
         let attributes = node.attributes;
 
-        yield vfs.setattributes(session, node, {
+        yield api.vfs.setattributes(session, node, {
             time: yield mcs.compileTime(attributes.when || {})
         });
     }

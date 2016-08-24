@@ -5,8 +5,6 @@ const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
 const plugin = require("../../core/lib/plugin");
-const vfs = require("../vfs/api");
-const auth = require("../auth/api");
 
 let params = {};
 let isCleaning = false;
@@ -22,10 +20,10 @@ let feed = api.register("feed", {
         plugin.on("location.new", feed.onNewLocation);
         plugin.on("people.new", feed.onNewPerson);
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/news", { noerror: true }))) {
-            yield vfs.create(auth.getAdminSession(), "/news", "d");
-            yield vfs.chown(auth.getAdminSession(), "/news", "admin", "users");
-            yield vfs.chmod(auth.getAdminSession(), "/news", 0o770);
+        if (!(yield api.vfs.resolve(api.auth.getAdminSession(), "/news", { noerror: true }))) {
+            yield api.vfs.create(api.auth.getAdminSession(), "/news", "d");
+            yield api.vfs.chown(api.auth.getAdminSession(), "/news", "admin", "users");
+            yield api.vfs.chmod(api.auth.getAdminSession(), "/news", 0o770);
         }
     }),
     mknews: co(function*(attributes) {
@@ -33,7 +31,7 @@ let feed = api.register("feed", {
         let name = baseName;
 
         let counter = 1;
-        while (yield vfs.resolve(auth.getAdminSession(), path.join("/news", name), { noerror: true })) {
+        while (yield api.vfs.resolve(api.auth.getAdminSession(), path.join("/news", name), { noerror: true })) {
             name = baseName + "_" + counter;
             counter++;
 
@@ -44,7 +42,7 @@ let feed = api.register("feed", {
 
         let abspath = path.join("/news", name);
 
-        let news = yield vfs.create(auth.getAdminSession(), abspath, "n", attributes);
+        let news = yield api.vfs.create(api.auth.getAdminSession(), abspath, "n", attributes);
 
         feed.emit("new", { node: news, path: abspath });
 
@@ -58,7 +56,7 @@ let feed = api.register("feed", {
         isCleaning = true;
 
         try {
-            let parent = yield vfs.resolve(auth.getAdminSession(), "/news");
+            let parent = yield api.vfs.resolve(api.auth.getAdminSession(), "/news");
 
             parent.properties.children.sort((a, b) => {
                 return b.name.localeCompare(a.name);
@@ -67,7 +65,7 @@ let feed = api.register("feed", {
             let children = parent.properties.children.slice(feed.limit);
 
             for (let child of children) {
-                yield vfs.unlink(auth.getAdminSession(), path.join("/news", child.name));
+                yield api.vfs.unlink(api.auth.getAdminSession(), path.join("/news", child.name));
             }
 
             isCleaning = false;
@@ -77,7 +75,7 @@ let feed = api.register("feed", {
         }
     }),
     getLatest: co(function*() {
-        let list = yield feed.list(auth.getAdminSession(), { limit: 1 });
+        let list = yield feed.list(api.auth.getAdminSession(), { limit: 1 });
         return list[0];
     }),
     onNewPerson: co(function*(event, data) {
@@ -109,7 +107,7 @@ let feed = api.register("feed", {
     }),
     onNewComment: co(function*(event, data) {
         let latest = yield feed.getLatest();
-        let node = yield vfs.resolve(auth.getAdminSession(), data.path);
+        let node = yield api.vfs.resolve(api.auth.getAdminSession(), data.path);
 
         if (latest &&
             latest.node.attributes.type === node.properties.type &&
@@ -131,7 +129,7 @@ let feed = api.register("feed", {
         options.reverse = options.reverse || true;
         options.limit = options.limit || feed.limit;
 
-        return yield vfs.list(session, "/news", options);
+        return yield api.vfs.list(session, "/news", options);
     },
     eventThisDay: function*(session, datestr) {
         let start = moment.utc(datestr);
@@ -140,7 +138,7 @@ let feed = api.register("feed", {
         let cache = {};
 
         // TODO: this does not scale very well, can we select more directly in mongodb?
-        let events = yield vfs.query(session, {
+        let events = yield api.vfs.query(session, {
             "properties.type": "t",
             "attributes.type": { $in: [ "birth", "marriage", "engagement" ] },
             "attributes.time.timestamp": { $ne: null }
@@ -156,13 +154,13 @@ let feed = api.register("feed", {
                 };
 
                 let people = [];
-                let paths = yield vfs.lookup(session, event._id, cache);
+                let paths = yield api.vfs.lookup(session, event._id, cache);
                 for (let p of paths) {
                     p = path.resolve(path.join(p, "..", ".."));
 
                     people.push({
                         path: p,
-                        node: yield vfs.resolve(session, p)
+                        node: yield api.vfs.resolve(session, p)
                     });
                 }
 
@@ -182,7 +180,7 @@ let feed = api.register("feed", {
                     data.ageNow = start.year() - eventDate.year();
                     data.ageAtDeath = false;
 
-                    let death = (yield vfs.list(session, people[0].path + "/texts", { filter: {
+                    let death = (yield api.vfs.list(session, people[0].path + "/texts", { filter: {
                         "attributes.type": "death"
                     } }))[0];
 

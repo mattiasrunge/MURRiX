@@ -104,7 +104,7 @@ module.exports = utils.wrapComponent(function*(params) {
             item.active(true);
             item.failed(false);
 
-            let result = yield utils.upload("/upload/" + item.uploadId, item.file, (progress, speed) => {
+            let result = yield utils.upload("/file/upload/" + item.uploadId, item.file, (progress, speed) => {
                 item.progress(progress);
                 this.speed(speed);
             });

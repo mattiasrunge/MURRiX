@@ -5,7 +5,6 @@ const co = require("bluebird").coroutine;
 const fs = require("fs-extra-promise");
 const api = require("api.io");
 const plugin = require("../../core/lib/plugin");
-const vfs = require("../vfs/api");
 const mcs = require("../../core/lib/mcs");
 
 let params = {};
@@ -38,10 +37,10 @@ let file = api.register("file", {
             }
         }
 
-        yield vfs.create(session, abspath, "f", attributes);
+        yield api.vfs.create(session, abspath, "f", attributes);
         yield file.regenerate(session, abspath);
 
-        yield vfs.create(session, abspath + "/tags", "d");
+        yield api.vfs.create(session, abspath + "/tags", "d");
 
         plugin.emit("file.new", {
             uid: session.uid,
@@ -49,26 +48,26 @@ let file = api.register("file", {
             type: attributes.type
         });
 
-        return yield vfs.resolve(session, abspath);
+        return yield api.vfs.resolve(session, abspath);
     },
     regenerate: function*(session, abspath) {
-        let node = yield vfs.resolve(session, abspath);
+        let node = yield api.vfs.resolve(session, abspath);
         let attributes = node.attributes;
-        let device = yield vfs.resolve(session, abspath + "/createdWith", { noerror: true });
+        let device = yield api.vfs.resolve(session, abspath + "/createdWith", { noerror: true });
 
         if (attributes.deviceSerialNumber && !device) {
-            device = (yield vfs.list(session, "/cameras", {
+            device = (yield api.vfs.list(session, "/cameras", {
                 filter: {
                     "attributes.serialNumber": attributes.deviceSerialNumber }
             }))[0];
 
             if (device) {
-                yield vfs.symlink(session, device.path, abspath + "/createdWith");
+                yield api.vfs.symlink(session, device.path, abspath + "/createdWith");
                 device = device.node;
             }
         }
 
-        node = yield vfs.resolve(session, abspath);
+        node = yield api.vfs.resolve(session, abspath);
         attributes = node.attributes;
 
         if (device && attributes.when && attributes.when.device) {
@@ -82,19 +81,19 @@ let file = api.register("file", {
             }
         }
 
-        yield vfs.setattributes(session, node, {
+        yield api.vfs.setattributes(session, node, {
             time: yield mcs.compileTime(attributes.when || {})
         });
 
-        return yield vfs.resolve(session, abspath);
+        return yield api.vfs.resolve(session, abspath);
     },
     getFaces: function*(session, abspath) {
-        let node = yield vfs.resolve(session, abspath);
+        let node = yield api.vfs.resolve(session, abspath);
 
         return mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
     },
     getPictureFilenames: function*(session, ids, width, height) {
-        let nodes = yield vfs.query(session, {
+        let nodes = yield api.vfs.query(session, {
             _id: { $in: ids }
         }, {
             fields: {
@@ -128,14 +127,14 @@ let file = api.register("file", {
 
         for (let n = 0; n < nodes.length; n++) {
             if (filenames[n]) {
-                list.push({ id: nodes[n]._id, filename: path.join("media", path.basename(filenames[n])) });
+                list.push({ id: nodes[n]._id, filename: path.join("file", "media", path.basename(filenames[n])) });
             }
         }
 
         return list;
     },
     getVideoFilenames: function*(session, ids, width, height) {
-        let nodes = yield vfs.query(session, {
+        let nodes = yield api.vfs.query(session, {
             _id: { $in: ids }
         }, {
             fields: {
@@ -170,13 +169,13 @@ let file = api.register("file", {
         let list = [];
 
         for (let n = 0; n < nodes.length; n++) {
-            list.push({ id: nodes[n]._id, filename: path.join("media", path.basename(filenames[n])) });
+            list.push({ id: nodes[n]._id, filename: path.join("file", "media", path.basename(filenames[n])) });
         }
 
         return list;
     },
     getAudioFilenames: function*(session, ids) {
-        let nodes = yield vfs.query(session, {
+        let nodes = yield api.vfs.query(session, {
             _id: { $in: ids }
         }, {
             fields: {
@@ -205,7 +204,7 @@ let file = api.register("file", {
         let list = [];
 
         for (let n = 0; n < nodes.length; n++) {
-            list.push({ id: nodes[n]._id, filename: path.join("media", path.basename(filenames[n])) });
+            list.push({ id: nodes[n]._id, filename: path.join("file", "media", path.basename(filenames[n])) });
         }
 
         return list;

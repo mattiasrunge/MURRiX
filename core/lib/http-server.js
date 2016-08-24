@@ -14,6 +14,7 @@ const enableDestroy = require("server-destroy");
 const uuid = require("node-uuid");
 const routes = require("./http-routes");
 const api = require("api.io");
+const plugin = require("./plugin");
 const session = require("./session");
 const log = require("./log")(module);
 
@@ -85,6 +86,13 @@ module.exports = {
 
             yield next;
         });
+
+        // Create plugin routes
+        let pluginRoutes = plugin.getRoutes();
+
+        for (let pluginRoute of pluginRoutes) {
+            app.use(route[pluginRoute.method.toLowerCase()](pluginRoute.route, pluginRoute.handler));
+        }
 
         // Create routes
         for (let name of Object.keys(routes)) {

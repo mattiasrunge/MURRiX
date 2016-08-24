@@ -4,8 +4,6 @@ const path = require("path");
 const co = require("bluebird").coroutine;
 const api = require("api.io");
 const plugin = require("../../core/lib/plugin");
-const vfs = require("../vfs/api");
-const auth = require("../auth/api");
 
 let params = {};
 
@@ -14,9 +12,9 @@ let camera = api.register("camera", {
     init: co(function*(config) {
         params = config;
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/cameras", { noerror: true }))) {
-            yield vfs.create(auth.getAdminSession(), "/cameras", "d");
-            yield vfs.chown(auth.getAdminSession(), "/cameras", "admin", "users");
+        if (!(yield api.vfs.resolve(api.auth.getAdminSession(), "/cameras", { noerror: true }))) {
+            yield api.vfs.create(api.auth.getAdminSession(), "/cameras", "d");
+            yield api.vfs.chown(api.auth.getAdminSession(), "/cameras", "admin", "users");
         }
     }),
     mkcamera: function*(session, name, attributes) {
@@ -30,8 +28,8 @@ let camera = api.register("camera", {
         attributes.deviceAutoDst = attributes.deviceAutoDst || false;
         attributes.serialNumber = attributes.serialNumber || "";
 
-        yield vfs.create(session, abspath, "c", attributes);
-        yield vfs.create(session, path.join(abspath, "owners"), "d");
+        yield api.vfs.create(session, abspath, "c", attributes);
+        yield api.vfs.create(session, path.join(abspath, "owners"), "d");
 
         plugin.emit("camera.new", {
             uid: session.uid,
@@ -39,10 +37,10 @@ let camera = api.register("camera", {
             name: attributes.name
         });
 
-        return yield vfs.resolve(session, abspath);
+        return yield api.vfs.resolve(session, abspath);
     },
     find: function*(session, name) {
-        return yield vfs.resolve(session, "/cameras/" + name, { noerror: true });
+        return yield api.vfs.resolve(session, "/cameras/" + name, { noerror: true });
     }
 });
 

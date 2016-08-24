@@ -6,7 +6,6 @@ const sha1 = require("sha1");
 const uuid = require("node-uuid");
 const email = require("emailjs");
 const api = require("api.io");
-const vfs = require("../vfs/api");
 const log = require("../../core/lib/log")(module);
 
 let params = {};
@@ -17,42 +16,42 @@ let auth = api.register("auth", {
         params = config;
 
         // Create folders
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/users", { noerror: true }))) {
-            yield vfs.create(auth.getAdminSession(), "/users", "d");
+        if (!(yield api.vfs.resolve(auth.getAdminSession(), "/users", { noerror: true }))) {
+            yield api.vfs.create(auth.getAdminSession(), "/users", "d");
         }
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups", { noerror: true }))) {
-            yield vfs.create(auth.getAdminSession(), "/groups", "d");
+        if (!(yield api.vfs.resolve(auth.getAdminSession(), "/groups", { noerror: true }))) {
+            yield api.vfs.create(auth.getAdminSession(), "/groups", "d");
         }
 
         // Create admin group
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/admin", { noerror: true }))) {
+        if (!(yield api.vfs.resolve(auth.getAdminSession(), "/groups/admin", { noerror: true }))) {
             yield auth.mkgroup(auth.getAdminSession(), "admin", "Administrators", "");
-            yield vfs.setattributes(auth.getAdminSession(), "/groups/admin", {
+            yield api.vfs.setattributes(auth.getAdminSession(), "/groups/admin", {
                 gid: 1000
             });
         }
 
         // Create guest group
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/guest", { noerror: true }))) {
+        if (!(yield api.vfs.resolve(auth.getAdminSession(), "/groups/guest", { noerror: true }))) {
             yield auth.mkgroup(auth.getAdminSession(), "guest", "Guest", "");
-            yield vfs.setattributes(auth.getAdminSession(), "/groups/guest", {
+            yield api.vfs.setattributes(auth.getAdminSession(), "/groups/guest", {
                 gid: 1001
             });
         }
 
         // Create users group
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/groups/users", { noerror: true }))) {
+        if (!(yield api.vfs.resolve(auth.getAdminSession(), "/groups/users", { noerror: true }))) {
             yield auth.mkgroup(auth.getAdminSession(), "users", "Users", "");
-            yield vfs.setattributes(auth.getAdminSession(), "/groups/users", {
+            yield api.vfs.setattributes(auth.getAdminSession(), "/groups/users", {
                 gid: 1002
             });
         }
 
         // Create admin user
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/users/admin", { noerror: true }))) {
+        if (!(yield api.vfs.resolve(auth.getAdminSession(), "/users/admin", { noerror: true }))) {
             yield auth.mkuser(auth.getAdminSession(), "admin", "Administrator");
-            yield vfs.setattributes(auth.getAdminSession(), "/users/admin", {
+            yield api.vfs.setattributes(auth.getAdminSession(), "/users/admin", {
                 uid: 1000,
                 gid: 1000,
                 password: sha1("admin")
@@ -61,9 +60,9 @@ let auth = api.register("auth", {
         }
 
         // Create guest user
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/users/guest", { noerror: true }))) {
+        if (!(yield api.vfs.resolve(auth.getAdminSession(), "/users/guest", { noerror: true }))) {
             yield auth.mkuser(auth.getAdminSession(), "guest", "Guest");
-            yield vfs.setattributes(auth.getAdminSession(), "/users/guest", {
+            yield api.vfs.setattributes(auth.getAdminSession(), "/users/guest", {
                 uid: 1001,
                 gid: 1001,
                 password: sha1("guest")
@@ -93,8 +92,8 @@ let auth = api.register("auth", {
         }
 
         let personPath = false;
-        let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
-        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", { noerror: true, nofollow: true });
+        let user = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
+        let person = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", { noerror: true, nofollow: true });
         let stars = yield auth.getStars(session);
 
         if (person) {
@@ -108,8 +107,8 @@ let auth = api.register("auth", {
             return [];
         }
 
-        if (yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/stars", { noerror: true, nofollow: true })) {
-            let list = yield vfs.list(auth.getAdminSession(), "/users/" + session.username + "/stars");
+        if (yield api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/stars", { noerror: true, nofollow: true })) {
+            let list = yield api.vfs.list(auth.getAdminSession(), "/users/" + session.username + "/stars");
 
             return list.map((item) => {
                 delete item.node;
@@ -124,13 +123,13 @@ let auth = api.register("auth", {
             throw new Error("Not allowed");
         }
 
-        yield vfs.ensure(auth.getAdminSession(), "/users/" + session.username + "/stars", "d");
+        yield api.vfs.ensure(auth.getAdminSession(), "/users/" + session.username + "/stars", "d");
 
         let stars = yield auth.getStars(session);
         let star = stars.filter((star) => star.path === abspath)[0];
 
         if (star) {
-            yield vfs.unlink(auth.getAdminSession(), "/users/" + session.username + "/stars/" + star.name);
+            yield api.vfs.unlink(auth.getAdminSession(), "/users/" + session.username + "/stars/" + star.name);
 
             let index = stars.indexOf(star);
 
@@ -138,7 +137,7 @@ let auth = api.register("auth", {
                 stars.splice(index, 1);
             }
         } else {
-            yield vfs.symlink(auth.getAdminSession(), abspath, "/users/" + session.username + "/stars");
+            yield api.vfs.symlink(auth.getAdminSession(), abspath, "/users/" + session.username + "/stars");
             stars = yield auth.getStars(session);
         }
 
@@ -149,24 +148,24 @@ let auth = api.register("auth", {
             throw new Error("Not allowed");
         }
 
-        return yield vfs.list(auth.getAdminSession(), "/groups", options);
+        return yield api.vfs.list(auth.getAdminSession(), "/groups", options);
     },
     groupList: function*(session, username) {
         if (username !== session.username && session.username !== "admin") {
             throw new Error("Not allowed");
         }
 
-        return yield vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
+        return yield api.vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
     },
     userList: function*(session, groupname) {
         if (session.username === "guest") {
             throw new Error("Not allowed");
         }
 
-        return yield vfs.list(auth.getAdminSession(), "/groups/" + groupname + "/users");
+        return yield api.vfs.list(auth.getAdminSession(), "/groups/" + groupname + "/users");
     },
     login: function*(session, username, password) {
-        let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
+        let user = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + username);
 
         if (!user) {
             log.error("login: No user called " + username + " found");
@@ -182,7 +181,7 @@ let auth = api.register("auth", {
             throw new Error("Authentication failed");
         }
 
-        let groups = yield vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
+        let groups = yield api.vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
 
         session.username = username;
         session.uid = user.attributes.uid;
@@ -191,20 +190,20 @@ let auth = api.register("auth", {
 
         user.attributes.loginTime = new Date();
 
-        yield vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
+        yield api.vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
             loginTime: user.attributes.loginTime
         });
 
         return user;
     },
     logout: function*(session) {
-        let user = yield vfs.resolve(auth.getAdminSession(), "/users/guest");
+        let user = yield api.vfs.resolve(auth.getAdminSession(), "/users/guest");
 
         if (!user) {
             throw new Error("No user called guest found");
         }
 
-        let groups = yield vfs.list(auth.getAdminSession(), "/users/guest/groups");
+        let groups = yield api.vfs.list(auth.getAdminSession(), "/users/guest/groups");
 
         session.username = "guest";
         session.uid = user.attributes.uid;
@@ -214,13 +213,13 @@ let auth = api.register("auth", {
         return user;
     },
     requestReset: function*(session, username, baseUrl) {
-        let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
+        let user = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + username);
         let text = "";
         let server = promisifyAll(email.server.connect(params.email));
         let resetId = uuid.v4();
         let url = baseUrl + "#page=reset&email=" + username + "&id=" + resetId;
 
-        yield vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
+        yield api.vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
             resetId: resetId
         });
 
@@ -240,13 +239,13 @@ let auth = api.register("auth", {
         log.info("User " + username + " requested a password reset");
     },
     passwordReset: function*(session, username, resetId, password) {
-        let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
+        let user = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + username);
 
         if (user.attributes.resetId !== resetId) {
             throw new Error("Invalid reset id");
         }
 
-        let result = vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
+        let result = api.vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
             resetId: null,
             password: sha1(password)
         });
@@ -259,16 +258,16 @@ let auth = api.register("auth", {
             throw new Error("Not allowed");
         }
 
-        yield vfs.setattributes(auth.getAdminSession(), "/users/" + username, attributes);
+        yield api.vfs.setattributes(auth.getAdminSession(), "/users/" + username, attributes);
 
-        let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + username + "/person", { noerror: true, nofollow: true });
+        let person = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + username + "/person", { noerror: true, nofollow: true });
 
         if (person && person.attributes.path !== personPath) {
-            yield vfs.unlink(auth.getAdminSession(), "/users/" + username + "/person");
+            yield api.vfs.unlink(auth.getAdminSession(), "/users/" + username + "/person");
         }
 
         if (personPath && (!person || person.attributes.path !== personPath)) {
-            yield vfs.symlink(auth.getAdminSession(), personPath, "/users/" + username + "/person");
+            yield api.vfs.symlink(auth.getAdminSession(), personPath, "/users/" + username + "/person");
         }
     },
     changeUsername: function*(session, oldusername, newusername) {
@@ -280,20 +279,20 @@ let auth = api.register("auth", {
             throw new Error("Not allowed");
         }
 
-        yield vfs.move(auth.getAdminSession(), "/users/" + oldusername, "/users/" + newusername);
+        yield api.vfs.move(auth.getAdminSession(), "/users/" + oldusername, "/users/" + newusername);
     },
     passwd: function*(session, username, password) {
         if (username !== session.username && session.username !== "admin") {
             throw new Error("Not allowed");
         }
 
-        return vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
+        return api.vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
             password: sha1(password)
         });
     },
     id: function*(session, username) {
-        let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
-        let groups = yield vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
+        let user = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + username);
+        let groups = yield api.vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
 
         return {
             uid: {
@@ -313,11 +312,11 @@ let auth = api.register("auth", {
         };
     },
     picture: function*(session, uid) {
-        let users = yield vfs.list(auth.getAdminSession(), "/users");
+        let users = yield api.vfs.list(auth.getAdminSession(), "/users");
 
         for (let user of users) {
             if (user.node.attributes.uid === uid) {
-                let person = yield vfs.resolve(auth.getAdminSession(), "/users/" + user.name + "/person/profilePicture", { noerror: true });
+                let person = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + user.name + "/person/profilePicture", { noerror: true });
 
                 if (person) {
                     return person._id;
@@ -328,7 +327,7 @@ let auth = api.register("auth", {
         return false;
     },
     name: function*(session, uid) {
-        let users = yield vfs.list(auth.getAdminSession(), "/users");
+        let users = yield api.vfs.list(auth.getAdminSession(), "/users");
 
         for (let user of users) {
             if (user.node.attributes.uid === uid) {
@@ -339,7 +338,7 @@ let auth = api.register("auth", {
         return false;
     },
     uname: function*(session, uid) {
-        let users = yield vfs.list(auth.getAdminSession(), "/users");
+        let users = yield api.vfs.list(auth.getAdminSession(), "/users");
 
         for (let user of users) {
             if (user.node.attributes.uid === uid) {
@@ -350,7 +349,7 @@ let auth = api.register("auth", {
         return false;
     },
     gname: function*(session, gid) {
-        let groups = yield vfs.list(auth.getAdminSession(), "/groups");
+        let groups = yield api.vfs.list(auth.getAdminSession(), "/groups");
 
         for (let group of groups) {
             if (group.node.attributes.gid === gid) {
@@ -361,7 +360,7 @@ let auth = api.register("auth", {
         return false;
     },
     gnameNice: function*(session, gid) {
-        let groups = yield vfs.list(auth.getAdminSession(), "/groups");
+        let groups = yield api.vfs.list(auth.getAdminSession(), "/groups");
 
         for (let group of groups) {
             if (group.node.attributes.gid === gid) {
@@ -372,17 +371,17 @@ let auth = api.register("auth", {
         return false;
     },
     uid: function*(session, uname) {
-        let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + uname);
+        let user = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + uname);
 
         return user.attributes.uid;
     },
     gid: function*(session, gname) {
-        let group = yield vfs.resolve(auth.getAdminSession(), "/groups/" + gname);
+        let group = yield api.vfs.resolve(auth.getAdminSession(), "/groups/" + gname);
 
         return group.attributes.gid;
     },
     allocateuid: function*(/*session*/) {
-        let users = yield vfs.list(auth.getAdminSession(), "/users");
+        let users = yield api.vfs.list(auth.getAdminSession(), "/users");
         let uid = 0;
 
         for (let user of users) {
@@ -394,7 +393,7 @@ let auth = api.register("auth", {
         return uid + 1;
     },
     allocategid: function*(/*session*/) {
-        let groups = yield vfs.list(auth.getAdminSession(), "/groups");
+        let groups = yield api.vfs.list(auth.getAdminSession(), "/groups");
         let gid = 0;
 
         for (let group of groups) {
@@ -406,24 +405,24 @@ let auth = api.register("auth", {
         return gid + 1;
     },
     mkgroup: function*(session, name, fullname, description) {
-        let group = yield vfs.create(session, "/groups/" + name, "g", {
+        let group = yield api.vfs.create(session, "/groups/" + name, "g", {
             gid: yield auth.allocategid(),
             name: fullname,
             description: description || ""
         });
 
-        yield vfs.create(session, "/groups/" + name + "/users", "d");
+        yield api.vfs.create(session, "/groups/" + name + "/users", "d");
 
         return group;
     },
     mkuser: function*(session, username, fullname) {
-        let user = yield vfs.create(session, "/users/" + username, "u", {
+        let user = yield api.vfs.create(session, "/users/" + username, "u", {
             uid: yield auth.allocateuid(),
             gid: username === "guest" ? 1001 : 1002,
             name: fullname
         });
 
-        yield vfs.create(session, "/users/" + username + "/groups", "d");
+        yield api.vfs.create(session, "/users/" + username + "/groups", "d");
 
         if (username !== "guest") {
             yield auth.connect(session, username, "users");
@@ -432,8 +431,8 @@ let auth = api.register("auth", {
         return user;
     },
     connect: function*(session, username, groupname) {
-        yield vfs.symlink(session, "/groups/" + groupname, "/users/" + username + "/groups");
-        yield vfs.symlink(session, "/users/" + username, "/groups/" + groupname + "/users");
+        yield api.vfs.symlink(session, "/groups/" + groupname, "/users/" + username + "/groups");
+        yield api.vfs.symlink(session, "/users/" + username, "/groups/" + groupname + "/users");
     }
 });
 

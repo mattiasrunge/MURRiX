@@ -3,8 +3,6 @@
 const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
-const vfs = require("../vfs/api");
-const auth = require("../auth/api");
 
 let params = {};
 
@@ -14,23 +12,23 @@ let message = api.register("message", {
         params = config;
     }),
     send: function*(session, username, text, metadata) {
-        let user = yield vfs.resolve(auth.getAdminSession(), "/users/" + username);
+        let user = yield api.vfs.resolve(api.auth.getAdminSession(), "/users/" + username);
 
         if (!user) {
             throw new Error("No such user");
         }
 
         let name = moment().format();
-        yield vfs.ensure(auth.getAdminSession(), "/users/" + username + "/all_messages", "d");
-        yield vfs.ensure(auth.getAdminSession(), "/users/" + username + "/new_messages", "d");
+        yield api.vfs.ensure(api.auth.getAdminSession(), "/users/" + username + "/all_messages", "d");
+        yield api.vfs.ensure(api.auth.getAdminSession(), "/users/" + username + "/new_messages", "d");
 
-        let item = yield vfs.create(auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "m", {
-            from: yield auth.uid(session, session.username),
+        let item = yield api.vfs.create(api.auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "m", {
+            from: yield api.auth.uid(session, session.username),
             text: text,
             metadata: metadata || {}
         });
 
-        yield vfs.link(auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "/users/" + username + "/new_messages");
+        yield api.vfs.link(api.auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "/users/" + username + "/new_messages");
 
         message.emit("new", item, { username: username });
     },
@@ -39,11 +37,11 @@ let message = api.register("message", {
         let newMessages = [];
 
         try {
-            allMessages = yield vfs.list(auth.getAdminSession(), "/users/" + session.username + "/all_messages");
+            allMessages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
         } catch (e) {}
 
         try {
-            newMessages = yield vfs.list(auth.getAdminSession(), "/users/" + session.username + "/new_messages");
+            newMessages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
         } catch (e) {}
 
         allMessages = allMessages || [];
@@ -59,13 +57,13 @@ let message = api.register("message", {
 
         if (typeof index === "undefined") {
             try {
-                messages = yield vfs.list(auth.getAdminSession(), "/users/" + session.username + "/new_messages");
+                messages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
             } catch (e) {}
 
             index = Math.max(messages.length - 1, 0);
         } else {
             try {
-                messages = yield vfs.list(auth.getAdminSession(), "/users/" + session.username + "/all_messages");
+                messages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
             } catch (e) {}
         }
 
@@ -73,7 +71,7 @@ let message = api.register("message", {
             throw new Error("No message with that index");
         }
 
-        vfs.unlink(auth.getAdminSession(), "/users/" + session.username + "/new_messages/" + messages[index].name);
+        api.vfs.unlink(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages/" + messages[index].name);
 
         return messages[index];
     },
@@ -82,11 +80,11 @@ let message = api.register("message", {
         let unreadIds = [];
 
         try {
-            messages = yield vfs.list(auth.getAdminSession(), "/users/" + session.username + "/all_messages");
+            messages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
         } catch (e) {}
 
         try {
-            let node = yield vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/new_messages");
+            let node = yield api.vfs.resolve(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
 
             if (node) {
                 unreadIds = node.properties.children.map((child) => child.id);

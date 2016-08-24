@@ -5,8 +5,6 @@ const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
 const plugin = require("../../core/lib/plugin");
-const vfs = require("../vfs/api");
-const auth = require("../auth/api");
 
 let params = {};
 
@@ -16,15 +14,15 @@ let comment = api.register("comment", {
         params = config;
     }),
     comment: function*(session, abspath, text) {
-        if (!(yield api.vfs.access(session, abspath, "r"))) {
+        if (!(yield api.api.vfs.access(session, abspath, "r"))) {
             throw new Error("Permission denied");
         }
 
         let name = moment().format();
-        yield vfs.ensure(auth.getAdminSession(), path.join(abspath, "comments"), "d");
+        yield api.vfs.ensure(api.auth.getAdminSession(), path.join(abspath, "comments"), "d");
 
         session.almighty = true;
-        let item = yield vfs.create(session, path.join(abspath, "comments", name), "k", {
+        let item = yield api.vfs.create(session, path.join(abspath, "comments", name), "k", {
             text: text
         });
         session.almighty = false;
@@ -40,17 +38,17 @@ let comment = api.register("comment", {
         return comment;
     },
     list: function*(session, abspath) {
-        if (!(yield vfs.access(session, abspath, "r"))) {
+        if (!(yield api.vfs.access(session, abspath, "r"))) {
             throw new Error("Permission denied");
         }
 
-        let dir = yield vfs.resolve(auth.getAdminSession(), path.join(abspath, "comments"), { noerror: true });
+        let dir = yield api.vfs.resolve(api.auth.getAdminSession(), path.join(abspath, "comments"), { noerror: true });
 
         if (!dir) {
             return [];
         }
 
-        return yield vfs.list(auth.getAdminSession(), path.join(abspath, "comments"));
+        return yield api.vfs.list(api.auth.getAdminSession(), path.join(abspath, "comments"));
     }
 });
 

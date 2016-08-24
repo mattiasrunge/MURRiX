@@ -5,8 +5,6 @@ const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
 const plugin = require("../../core/lib/plugin");
-const vfs = require("../vfs/api");
-const auth = require("../auth/api");
 
 let params = {};
 
@@ -15,21 +13,21 @@ let people = api.register("people", {
     init: co(function*(config) {
         params = config;
 
-        if (!(yield vfs.resolve(auth.getAdminSession(), "/people", { noerror: true }))) {
-            yield vfs.create(auth.getAdminSession(), "/people", "d");
-            yield vfs.chown(auth.getAdminSession(), "/people", "admin", "users");
+        if (!(yield api.vfs.resolve(api.auth.getAdminSession(), "/people", { noerror: true }))) {
+            yield api.vfs.create(api.auth.getAdminSession(), "/people", "d");
+            yield api.vfs.chown(api.auth.getAdminSession(), "/people", "admin", "users");
         }
     }),
     mkperson: function*(session, name, attributes) {
         let abspath = path.join("/people", name);
 
-        yield vfs.create(session, abspath, "p", attributes);
+        yield api.vfs.create(session, abspath, "p", attributes);
 
-        yield vfs.create(session, path.join(abspath, "parents"), "d");
-        yield vfs.create(session, path.join(abspath, "children"), "d");
-        yield vfs.create(session, path.join(abspath, "homes"), "d");
-        yield vfs.create(session, path.join(abspath, "measurments"), "d");
-        yield vfs.create(session, path.join(abspath, "texts"), "d");
+        yield api.vfs.create(session, path.join(abspath, "parents"), "d");
+        yield api.vfs.create(session, path.join(abspath, "children"), "d");
+        yield api.vfs.create(session, path.join(abspath, "homes"), "d");
+        yield api.vfs.create(session, path.join(abspath, "measurments"), "d");
+        yield api.vfs.create(session, path.join(abspath, "texts"), "d");
 
         plugin.emit("people.new", {
             uid: session.uid,
@@ -37,11 +35,11 @@ let people = api.register("people", {
             name: attributes.name
         });
 
-        return yield vfs.resolve(session, abspath);
+        return yield api.vfs.resolve(session, abspath);
     },
     getPartner: function*(session, abspath) {
         let partnerpath = path.join(abspath, "partner");
-        let node = yield vfs.resolve(session, partnerpath, { noerror: true, nofollow: true });
+        let node = yield api.vfs.resolve(session, partnerpath, { noerror: true, nofollow: true });
 
         if (!node) {
             return false;
@@ -49,10 +47,10 @@ let people = api.register("people", {
 
         if (node && node.properties.type === "s") {
             partnerpath = node.attributes.path;
-            node = yield vfs.resolve(session, partnerpath);
+            node = yield api.vfs.resolve(session, partnerpath);
         }
 
-        let editable = yield vfs.access(session, partnerpath, "w");
+        let editable = yield api.vfs.access(session, partnerpath, "w");
 
         return { path: partnerpath, node: node, editable: editable };
     },
@@ -63,22 +61,22 @@ let people = api.register("people", {
         if (currentPartner) {
             console.log(currentPartner.path);
             // It is assumed that the currentPartners link points to abspath
-            yield vfs.unlink(session, path.join(currentPartner.path, "partner"));
+            yield api.vfs.unlink(session, path.join(currentPartner.path, "partner"));
         }
 
         // Remove new partners existing partner
         if (partnerpath) {
-            yield vfs.unlink(session, path.join(partnerpath, "partner"));
+            yield api.vfs.unlink(session, path.join(partnerpath, "partner"));
         }
 
         // Remove partner link
-        yield vfs.unlink(session, path.join(abspath, "partner"));
+        yield api.vfs.unlink(session, path.join(abspath, "partner"));
 
 
         // Create new partner links
         if (partnerpath) {
-            yield vfs.symlink(session, abspath, path.join(partnerpath, "partner"));
-            yield vfs.symlink(session, partnerpath, path.join(abspath, "partner"));
+            yield api.vfs.symlink(session, abspath, path.join(partnerpath, "partner"));
+            yield api.vfs.symlink(session, partnerpath, path.join(abspath, "partner"));
         }
     },
     getMetrics: function*(session, abspath) {
@@ -87,11 +85,11 @@ let people = api.register("people", {
         let age = false;
         let ageatdeath = false;
 
-        let birth = (yield vfs.list(session, abspath + "/texts", { filter: {
+        let birth = (yield api.vfs.list(session, abspath + "/texts", { filter: {
             "attributes.type": "birth"
         } }))[0];
 
-        let death = (yield vfs.list(session, abspath + "/texts", { filter: {
+        let death = (yield api.vfs.list(session, abspath + "/texts", { filter: {
             "attributes.type": "death"
         } }))[0];
 
@@ -117,18 +115,18 @@ let people = api.register("people", {
         return { birthdate: birthdate, age: age, deathdate: deathdate, ageatdeath: ageatdeath };
     },
     addMeasurement: function*(session, abspath, name, time, value, unit) {
-        let node = yield vfs.ensure(auth.getAdminSession(), path.join(abspath, "measurments", name), "v", {
+        let node = yield api.vfs.ensure(api.auth.getAdminSession(), path.join(abspath, "measurments", name), "v", {
             values: []
         });
 
         node.attributes.values.push({ time: time, value: value, unit: unit });
 
-        yield vfs.setattributes(session, abspath + "/measurments/" + name, {
+        yield api.vfs.setattributes(session, abspath + "/measurments/" + name, {
             values: node.attributes.values
         });
     },
     find: function*(session, name) {
-        return yield vfs.resolve(session, "/people/" + name, { noerror: true });
+        return yield api.vfs.resolve(session, "/people/" + name, { noerror: true });
     },
     findByTags: function*(session, abspath) {
         console.time("people.findByTags total " + abspath);
@@ -148,7 +146,7 @@ let people = api.register("people", {
             "attributes.path": abspath
         };
 
-        let sNodes = yield vfs.query(session, query, options);
+        let sNodes = yield api.vfs.query(session, query, options);
         let sIds = sNodes.map((node) => node._id);
 
         console.timeEnd("people.findByTags sIds");
@@ -159,7 +157,7 @@ let people = api.register("people", {
             "properties.children.id": { $in: sIds }
         };
 
-        let dNodes = yield vfs.query(session, query, options);
+        let dNodes = yield api.vfs.query(session, query, options);
         let dIds = dNodes.map((node) => node._id);
 
         console.timeEnd("people.findByTags dIds");
@@ -170,13 +168,13 @@ let people = api.register("people", {
             "properties.children.id": { $in: dIds }
         };
 
-        let fNodes = yield vfs.query(session, query);
+        let fNodes = yield api.vfs.query(session, query);
 
         console.timeEnd("people.findByTags fNodes");
         console.time("people.findByTags lookup");
 
         for (let node of fNodes) {
-            let paths = yield vfs.lookup(session, node._id, cache);
+            let paths = yield api.vfs.lookup(session, node._id, cache);
 
             list.push({ name: path.basename(paths[0]), node: node, path: paths[0] });
         }
