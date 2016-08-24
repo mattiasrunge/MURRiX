@@ -21,7 +21,7 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
 
         let query = {};
 
-        if (this.query().indexOf("label:") === 0) {
+        if (this.query().startsWith("label:")) {
             let labels = this.query().replace(/label:/, "").split("+");
 
             if (labels.length === 0) {

@@ -24,7 +24,7 @@ module.exports = {
 
             names = items
             .map((item) => item.name)
-            .filter((name) => name.indexOf(match) === 0)
+            .filter((name) => name.startsWith(match))
             .map((name) => input[0] === "/" ? path.join(parentDir, name) : name);
         } catch (e) {
             console.error(e.red);
@@ -33,11 +33,11 @@ module.exports = {
         return names;
     }),
     normalize: (cwd, dir) => {
-        if (dir.indexOf(".") === 0 && dir[1] !== ".") {
+        if (dir.startsWith(".") && dir[1] !== ".") {
             dir = dir.replace(/\./, cwd);
-        } else if (dir.indexOf("..") === 0) {
+        } else if (dir.startsWith("..")) {
             dir = dir.replace(/\.\./, path.dirname(cwd));
-        } else if (dir.indexOf("/") !== 0) {
+        } else if (!dir.startsWith("/")) {
             dir = path.join(cwd, dir);
         }
 

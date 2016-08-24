@@ -101,7 +101,7 @@ module.exports = {
                 return yield next;
             }
 
-            if (this.originalUrl.indexOf("/components/") === 0) {
+            if (this.originalUrl.startsWith("/components/")) {
                 let parts = this.originalUrl.match(/\/components\/(.*)\/(.*)/);
                 let name = parts[1];
                 let file = parts[2];

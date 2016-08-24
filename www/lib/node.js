@@ -41,6 +41,7 @@ module.exports = {
 
         return { path: path, node: ko.observable(node), editable: ko.observable(editable) };
     }, (error) => {
+        module.exports.loading(false);
         stat.printError(error);
         return false;
     }),

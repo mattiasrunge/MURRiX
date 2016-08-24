@@ -83,7 +83,6 @@ module.exports = {
 
             if (type === "timezone") {
                 module.exports.assert(data.length === 6, type + " must be 6 letters and digits");
-                let sign = data.substr(0, 1);
                 let hours = data.substr(1, 2);
                 let separator = data.substr(3, 1);
                 let minutes = data.substr(4, 2);
@@ -232,7 +231,7 @@ module.exports = {
         if (str.length > 0 && !foundRange) {
             // Second
             if (str[0] === "Z") {
-                result.timezone = "+00:00"
+                result.timezone = "+00:00";
                 str = str.slice(1);
             } else if (str[0] === "-" || str[0] === "+") {
                 let parts = module.exports.splitAt(str, 6);

@@ -246,12 +246,13 @@ let auth = api.register("auth", {
             throw new Error("Invalid reset id");
         }
 
-        return vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
+        let result = vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
             resetId: null,
             password: sha1(password)
         });
 
         log.info("User " + username + " reset their password");
+        return result;
     },
     saveProfile: function*(session, username, attributes, personPath) {
         if (username !== session.username && session.username !== "admin") {

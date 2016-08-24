@@ -52,7 +52,7 @@ module.exports = {
     goto: (url) => {
         if (typeof url !== "string") {
             url = module.exports.constructUrl(url, true);
-        } else if (url[0] !== "#" && url.indexOf("http") !== 0 && url.indexOf("mailto") !== 0) {
+        } else if (url[0] !== "#" && !url.startsWith("http") && !url.startsWith("mailto")) {
             url = "#" + url;
         }
 

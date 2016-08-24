@@ -180,7 +180,7 @@ ko.bindingHandlers.location = {
 
         if (typeof value !== "string") {
             value = loc.constructUrl(value, true);
-        } else if (value[0] !== "#" && value.indexOf("http") !== 0 && value.indexOf("mailto") !== 0) {
+        } else if (value[0] !== "#" && !value.startsWith("http") && !value.startsWith("mailto")) {
             value = "#" + value;
         }
 
@@ -518,7 +518,6 @@ ko.bindingHandlers.mode = {
 
 ko.bindingHandlers.timeInput = {
     init: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
         let $element = $(element);
         let $parent = $element.parent();
 

@@ -156,7 +156,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
 
         this.active(false);
-        stat.printSuccess("Uploaded " + this.files().length + " files successfully!")
+        stat.printSuccess("Uploaded " + this.files().length + " files successfully!");
         this.fileInput([]);
     }.bind(this));
 
