@@ -337,9 +337,14 @@ let vfs = api.register("vfs", {
 
                     if (node) {
                         let readable = yield vfs.access(session, node, "r");
+                        let editable;
+
+                        if (options.checkwritable) {
+                            editable = yield vfs.access(session, node, "w");
+                        }
 
                         if (readable) {
-                            list.push({ name: child.name, node: node, path: dir, link: link });
+                            list.push({ name: child.name, node: node, path: dir, link: link, editable: editable });
                         }
                     }
                 }

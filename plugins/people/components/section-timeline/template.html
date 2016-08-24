@@ -8,14 +8,16 @@
 
                         <!-- ko foreach: $data.texts -->
                             <h4>
-                                <i class="material-icons" data-bind="visible: $data.node.attributes.type === 'birth'">child_friendly</i>
-                                <i class="material-icons" data-bind="visible: $data.node.attributes.type === 'engagement'">favorite_border</i>
-                                <i class="material-icons" data-bind="visible: $data.node.attributes.type === 'marriage'">favorite</i>
-                                <i class="material-icons" data-bind="visible: $data.node.attributes.type === 'death'">sentiment_dissatisfied</i>
+                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'birth'">child_friendly</i>
+                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'engagement'">favorite_border</i>
+                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'marriage'">favorite</i>
+                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'death'">sentiment_dissatisfied</i>
 
-                                <span data-bind="html: $data.node.attributes.name"></span>
+                                <widget-node-text-attribute style="display: inline;" params="{ nodepath: $parent.texts[$index()], name: 'name' }"></widget-node-text-attribute>
                             </h4>
-                            <p data-bind="html: $data.node.attributes.text.replace(/\n/g, '<br>')"></p>
+                            <p>
+                                <widget-node-text-attribute params="{ nodepath: $parent.texts[$index()], name: 'text', html: true }"></widget-node-text-attribute>
+                            </p>
                         <!-- /ko -->
                     </div>
                 </div>
