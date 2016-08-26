@@ -81,6 +81,14 @@ let file = api.register("file", {
             }
         }
 
+        // TODO: Use chron (chron does not support pos->timezone)
+//         let time = chron.select(attributes.when || {});
+//         let timestamp = chron.time2timestamp(time);
+//
+//         yield api.vfs.setattributes(session, node, {
+//             time: timestamp
+//         });
+
         yield api.vfs.setattributes(session, node, {
             time: yield mcs.compileTime(attributes.when || {})
         });

@@ -20,6 +20,7 @@ const autosize = require("autosize");
 const LazyLoad = require("lazyload");
 const typeahead = require("typeahead"); // jshint ignore:line
 const imgareaselect = require("jquery.imgareaselect"); // jshint ignore:line
+const chron = require("chron");
 
 require("moment-duration-format");
 
@@ -530,7 +531,7 @@ ko.bindingHandlers.timeInput = {
 
         $element.on("keyup", () => {
             try {
-                utils.str2time($element.val());
+                chron.str2time($element.val());
                 $element.parent().removeClass("has-error");
                 $error.hide();
             } catch (e) {
@@ -546,7 +547,7 @@ ko.bindingHandlers.timeInput = {
 
         $element.on("change", () => {
             try {
-                valueAccessor()(utils.str2time($element.val()));
+                valueAccessor()(chron.str2time($element.val()));
             } catch (e) {
             }
         });
@@ -561,7 +562,7 @@ ko.bindingHandlers.timeInput = {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
-        $element.val(utils.time2str(value || {}));
+        $element.val(chron.time2str(value || {}));
     }
 };
 

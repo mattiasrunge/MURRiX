@@ -18,11 +18,12 @@ if (!isChrome) {
             mprogress: "node_modules/mprogress/build/js/mprogress.min",
             moment: "node_modules/moment/min/moment.min",
             "moment-duration-format": "node_modules/moment-duration-format/lib/moment-duration-format",
+            "moment-timezone": "node_modules/moment-timezone/builds/moment-timezone.min",
             snackbar: "node_modules/snackbarjs/dist/snackbar.min",
             autosize: "node_modules/autosize/dist/autosize.min",
             lazyload: "node_modules/vanilla-lazyload/dist/lazyload",
             "jquery.imgareaselect": "node_modules/jdomizio-imgareaselect/jquery.imgareaselect.dev",
-            //"jquery.imgareaselect": "node_modules/jdomizio-imgareaselect/distfiles/scripts/jquery.imgareaselect.min",
+            "chron": "node_modules/chron-time/browser/index",
             "socket.io-client": "/socket.io/socket.io",
             "api.io-client": "/api.io/api.io-client",
             "co": "/api.io/co"
@@ -45,6 +46,12 @@ if (!isChrome) {
             },
             "moment-duration-format": {
                 deps: [ "moment" ]
+            },
+            "moment-timezone": {
+                deps: [ "moment" ]
+            },
+            "chron": {
+                deps: [ "moment-timezone" ]
             }
         }
     });

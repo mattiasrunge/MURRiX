@@ -2,8 +2,8 @@
 
 const co = require("bluebird").coroutine;
 const api = require("api.io");
+const chron = require("chron-time");
 const plugin = require("../../core/lib/plugin");
-const mcs = require("../../core/lib/mcs");
 
 let params = {};
 
@@ -30,8 +30,11 @@ let text = api.register("text", {
         let node = yield api.vfs.resolve(session, abspath);
         let attributes = node.attributes;
 
+        let time = chron.select(attributes.when || {});
+        let timestamp = chron.time2timestamp(time);
+
         yield api.vfs.setattributes(session, node, {
-            time: yield mcs.compileTime(attributes.when || {})
+            time: timestamp
         });
     }
 });

@@ -2,6 +2,7 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
+const chron = require("chron");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 
@@ -29,7 +30,7 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.change = (value) => {
-        if (!this.editable() || utils.time2str(this.value()) === utils.time2str(value || {})) {
+        if (!this.editable() || chron.time2str(this.value() || {}) === chron.time2str(value || {})) {
             return;
         }
 
