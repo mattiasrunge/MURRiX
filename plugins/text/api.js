@@ -28,9 +28,8 @@ let text = api.register("text", {
     },
     regenerate: function*(session, abspath) {
         let node = yield api.vfs.resolve(session, abspath);
-        let attributes = node.attributes;
 
-        let time = chron.select(attributes.when || {});
+        let time = chron.select(node.attributes.when || {});
         let timestamp = chron.time2timestamp(time);
 
         yield api.vfs.setattributes(session, node, {

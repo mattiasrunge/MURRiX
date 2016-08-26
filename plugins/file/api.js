@@ -4,6 +4,8 @@ const path = require("path");
 const co = require("bluebird").coroutine;
 const fs = require("fs-extra-promise");
 const api = require("api.io");
+const chron = require("chron-time");
+const request = require("request-promise-native");
 const plugin = require("../../core/lib/plugin");
 const mcs = require("../../core/lib/mcs");
 
@@ -52,13 +54,13 @@ let file = api.register("file", {
     },
     regenerate: function*(session, abspath) {
         let node = yield api.vfs.resolve(session, abspath);
-        let attributes = node.attributes;
+
         let device = yield api.vfs.resolve(session, abspath + "/createdWith", { noerror: true });
 
-        if (attributes.deviceSerialNumber && !device) {
+        if (node.attributes.deviceSerialNumber && !device) {
             device = (yield api.vfs.list(session, "/cameras", {
                 filter: {
-                    "attributes.serialNumber": attributes.deviceSerialNumber }
+                    "attributes.serialNumber": node.attributes.deviceSerialNumber }
             }))[0];
 
             if (device) {
@@ -68,30 +70,54 @@ let file = api.register("file", {
         }
 
         node = yield api.vfs.resolve(session, abspath);
-        attributes = node.attributes;
 
-        if (device && attributes.when && attributes.when.device) {
-            attributes.when.device.deviceType = device.attributes.type;
-            attributes.when.device.deviceUtcOffset = device.attributes.utcOffset;
-            attributes.when.device.deviceAutoDst = device.attributes.deviceAutoDst;
+        let options = {};
+        let time = chron.select(node.attributes.when || {});
 
-            if (attributes.where.longitude && attributes.where.latitude) {
-                attributes.when.device.longitude = attributes.where.longitude;
-                attributes.when.device.latitude = attributes.where.latitude;
+        if (time) {
+            if (time.type === "device" && device) {
+                if (device.attributes.type === "offset_relative_to_position") {
+                    options.deviceUtcOffset = 0;
+
+                    if (node.attributes.where.longitude && node.attributes.where.latitude) {
+                        let opts = {
+                            uri: "https://maps.googleapis.com/maps/api/timezone/json",
+                            qs: {
+                                location: node.attributes.where.latitude + "," + node.attributes.where.longitude,
+                                timestamp: 0,
+                                key: params.googleKey
+                            },
+                            json: true
+                        };
+
+                        let data = yield request(opts);
+                        /*{
+                            "dstOffset" : 3600,
+                            "rawOffset" : 0,
+                            "status" : "OK",
+                            "timeZoneId" : "America/New_York",
+                            "timeZoneName" : "Eastern Standard Time"
+                        }*/
+
+                        if (data.status !== "OK") {
+                            throw new Error(data.errorMessage);
+                        }
+
+                        options.deviceUtcOffset = data.rawOffset;
+                    }
+                } else if (device.attributes.type === "offset_fixed") {
+                    options.deviceUtcOffset = device.attributes.utcOffset;
+                }
+
+                options.deviceAutoDst = device.attributes.deviceAutoDst;
             }
+
+            let timestamp = chron.time2timestamp(time, options);
+
+            yield api.vfs.setattributes(session, node, {
+                time: timestamp
+            });
         }
-
-        // TODO: Use chron (chron does not support pos->timezone)
-//         let time = chron.select(attributes.when || {});
-//         let timestamp = chron.time2timestamp(time);
-//
-//         yield api.vfs.setattributes(session, node, {
-//             time: timestamp
-//         });
-
-        yield api.vfs.setattributes(session, node, {
-            time: yield mcs.compileTime(attributes.when || {})
-        });
 
         return yield api.vfs.resolve(session, abspath);
     },
