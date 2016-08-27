@@ -1,5 +1,8 @@
-﻿<div class="dropdown">
-    <span data-toggle="dropdown" data-bind="text: nicevalue, css: { 'dropdown-toggle': editable }"></span>
+﻿<span class="dropdown">
+    <span data-toggle="dropdown" data-bind="css: { 'dropdown-toggle': editable }">
+        <i class="material-icons" data-bind="visible: icon, text: icon"></i>
+        <span data-bind="visible: !onlyicon(), text: nicevalue"></span>
+    </span>
 
     <span class="dropdown-select-empty" data-toggle="dropdown" data-bind="text: 'Select ' + nicename(), css: { 'dropdown-toggle': editable }, visible: value() === '' && editable()"></span>
 
@@ -7,7 +10,10 @@
 
     <ul class="dropdown-menu" data-bind="foreach: options">
         <li>
-            <a href="#" data-bind="click: $component.change.bind($data, $data.name), text: $data.title"></a>
+            <a href="#" data-bind="click: $component.change.bind($data, $data.name)">
+                <i class="material-icons" data-bind="visible: $data.icon, text: $data.icon" style="margin-right: 10px;"></i>
+                <span data-bind="text: $data.title"></span>
+            </a>
         </li>
     </ul>
-</div>
+</span>

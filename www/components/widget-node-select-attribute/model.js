@@ -7,6 +7,7 @@ const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
+    this.onlyicon = ko.pureComputed(() => ko.unwrap(params.onlyicon));
     this.name = ko.pureComputed(() => ko.unwrap(params.name));
     this.nicename = ko.pureComputed(() => this.name().replace(/([A-Z])/g, " $1").toLowerCase());
     this.options = params.options;
@@ -25,6 +26,15 @@ module.exports = utils.wrapComponent(function*(params) {
         }
 
         return this.value();
+    });
+    this.icon = ko.pureComputed(() => {
+        for (let option of ko.unwrap(this.options)) {
+            if (option.name === this.value()) {
+                return option.icon;
+            }
+        }
+
+        return false;
     });
     this.editable = ko.pureComputed(() => {
         if (!this.nodepath()) {

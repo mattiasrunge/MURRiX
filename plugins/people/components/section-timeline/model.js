@@ -15,6 +15,8 @@ module.exports = utils.wrapComponent(function*(params) {
             return [];
         }
 
+        params.reload();
+
         setter([]);
 
         this.loading(true);
@@ -54,6 +56,12 @@ module.exports = utils.wrapComponent(function*(params) {
         stat.printError(error);
         return [];
     });
+
+    this.createShow = () => {
+        $("#createPeopleEventModal").modal("show");
+    };
+
+
 
     this.dispose = () => {
         stat.destroy(this.loading);

@@ -69,11 +69,15 @@ let file = api.register("file", {
             }
         }
 
-        let options = {};
-        let time = chron.select(node.attributes.when || {});
 
-        if (time) {
-            if (time.type === "device" && device) {
+        let source = chron.select(node.attributes.when || {});
+
+        if (source) {
+            let options = {
+                type: source.type
+            };
+
+            if (source.type === "device" && device) {
                 if (device.attributes.type === "offset_relative_to_position") {
                     options.deviceUtcOffset = 0;
 
@@ -110,7 +114,7 @@ let file = api.register("file", {
                 options.deviceAutoDst = device.attributes.deviceAutoDst;
             }
 
-            let timestamp = chron.time2timestamp(time, options);
+            let timestamp = chron.time2timestamp(source.time, options);
 
             yield api.vfs.setattributes(session, node, {
                 time: timestamp

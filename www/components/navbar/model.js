@@ -103,25 +103,25 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
         }
 
         if (this.createType() === "album") {
-            promise = node.getUniqueName("/albums", this.createName())
+            promise = node.getUniqueName("/albums", attributes.name)
             .then((name) => {
                 abspath = "/albums/" + name;
                 return api.album.mkalbum(name, attributes);
             });
         } else if (this.createType() === "location") {
-            promise = node.getUniqueName("/locations", this.createName())
+            promise = node.getUniqueName("/locations", attributes.name)
             .then((name) => {
                 abspath = "/locations/" + name;
                 return api.location.mklocation(name, attributes);
             });
         } else if (this.createType() === "person") {
-            promise = node.getUniqueName("/people", this.createName())
+            promise = node.getUniqueName("/people", attributes.name)
             .then((name) => {
                 abspath = "/people/" + name;
                 return api.people.mkperson(name, attributes);
             });
         } else if (this.createType() === "camera") {
-            promise = node.getUniqueName("/cameras", this.createName())
+            promise = node.getUniqueName("/cameras", attributes.name)
             .then((name) => {
                 abspath = "/cameras/" + name;
                 return api.camera.mkcamera(name, attributes);

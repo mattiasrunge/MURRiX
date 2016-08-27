@@ -540,7 +540,7 @@ body {
 .navbar-nav>li>.dropdown-menu,
 .btn,
 .btn-group-sm>.btn,
-.btn-sm
+.btn-sm,
 .modal-content,
 .well {
     border-radius: 0;
@@ -1212,71 +1212,80 @@ widget-node-sections .nav-pills > li > a:focus {
 }
 
 .timeline {
-  list-style: none;
-  padding: 20px 0 20px;
-  position: relative;
+    list-style: none;
+    padding: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    position: relative;
+    margin: 0;
 }
+
 .timeline:before {
-  top: 0;
-  bottom: 0;
-  position: absolute;
-  content: " ";
-  width: 3px;
-  background-color: #eee;
-  left: 50%;
-  margin-left: -1.5px;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 3px;
+    background-color: #eee;
+    left: 50%;
+    margin-left: -1.5px;
 }
+
 .timeline > li {
-  margin-bottom: 20px;
-  position: relative;
-  width: 50%;
-  float: left;
-  clear: left;
+    margin-bottom: 20px;
+    position: relative;
+    width: 50%;
+    float: left;
+    clear: left;
 }
+
 .timeline > li:before,
 .timeline > li:after {
-  content: " ";
-  display: table;
+    content: " ";
+    display: table;
 }
+
 .timeline > li:after {
-  clear: both;
+    clear: both;
 }
+
 .timeline > li:before,
 .timeline > li:after {
-  content: " ";
-  display: table;
+    content: " ";
+    display: table;
 }
+
 .timeline > li:after {
-  clear: both;
+    clear: both;
 }
 .timeline > li > .timeline-panel {
-  width: 95%;
-  float: left;
-  background-color: #eee;
-  border: 1px solid #eee;
-  border-radius: 2px;
-  position: relative;
+    width: 95%;
+    float: left;
+    background-color: #eee;
+    border: 1px solid #eee;
+    border-radius: 2px;
+    position: relative;
 }
 
 .timeline > li > .timeline-panel:before {
-  position: absolute;
-  top: 25px;
-  right: -7.5px;
-  width: 15px;
-  height: 15px;
-  display: inline-block;
-  transform: rotate(45deg);
-  content: " ";
-  background-color: #eee;
+    position: absolute;
+    top: 25px;
+    right: -7.5px;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    transform: rotate(45deg);
+    content: " ";
+    background-color: #eee;
 }
-
 
 .timeline > li.timeline-inverted > .timeline-panel {
-  float: right;
+    float: right;
 }
+
 .timeline > li.timeline-inverted > .timeline-panel:before {
-  left: -7.5px;
-  right: auto;
+    left: -7.5px;
+    right: auto;
 }
 
 .timeline-body > p,
@@ -1285,9 +1294,11 @@ widget-node-sections .nav-pills > li > a:focus {
     padding-top: 0;
     margin-bottom: 0;
 }
+
 .timeline-body > p + p {
-  margin-top: 5px;
+    margin-top: 5px;
 }
+
 .timeline-body > h4 {
     padding: 20px;
     padding-top: 0;
@@ -1303,15 +1314,18 @@ widget-node-sections .nav-pills > li > a:focus {
     padding-bottom: 0;
     display: block;
 }
-.timeline > li.timeline-inverted{
-  float: right;
-  clear: right;
+
+.timeline > li.timeline-inverted {
+    float: right;
+    clear: right;
 }
-.timeline > li:nth-child(2){
-  margin-top: 60px;
+
+.timeline > li:nth-child(2) {
+    margin-top: 60px;
 }
-.timeline > li.timeline-inverted > .timeline-badge{
-  left: -12px;
+
+.timeline > li.timeline-inverted > .timeline-badge {
+    left: -12px;
 }
 
 .year-slider {

@@ -8,10 +8,39 @@
 
                         <!-- ko foreach: $data.texts -->
                             <h4>
-                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'birth'">child_friendly</i>
+                               <!-- <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'birth'">child_friendly</i>
                                 <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'engagement'">favorite_border</i>
                                 <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'marriage'">favorite</i>
                                 <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'death'">sentiment_dissatisfied</i>
+                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'generic'">event</i>-->
+
+                                <widget-node-select-attribute params="{ nodepath: $parent.texts[$index()], name: 'type', onlyicon: true, options: [
+                                    {
+                                        name: 'generic',
+                                        icon: 'event',
+                                        title: 'Generic'
+                                    },
+                                    {
+                                        name: 'birth',
+                                        icon: 'child_friendly',
+                                        title: 'Birth'
+                                    },
+                                    {
+                                        name: 'engagement',
+                                        icon: 'favorite_border',
+                                        title: 'Engagement'
+                                    },
+                                    {
+                                        name: 'marriage',
+                                        icon: 'favorite',
+                                        title: 'Marriage'
+                                    },
+                                    {
+                                        name: 'death',
+                                        icon: 'sentiment_dissatisfied',
+                                        title: 'Death'
+                                    }
+                                ]}"></widget-node-select-attribute>
 
                                 <widget-node-text-attribute style="display: inline;" params="{ nodepath: $parent.texts[$index()], name: 'name' }"></widget-node-text-attribute>
                             </h4>
@@ -26,4 +55,10 @@
 
         <li class="clearfix" style="float: none;"></li>
     </ul>
+
+    <div class="text-center" style="padding-bottom: 15px; margin-top: -10px; position: relative; z-index: 2;">
+        <a href="#" data-bind="click: createShow">
+            <i class="material-icons md-48">add_circle</i>
+        </a>
+    </div>
 </div>
