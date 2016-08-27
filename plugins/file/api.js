@@ -69,8 +69,6 @@ let file = api.register("file", {
             }
         }
 
-        node = yield api.vfs.resolve(session, abspath);
-
         let options = {};
         let time = chron.select(node.attributes.when || {});
 
