@@ -281,6 +281,40 @@ ko.bindingHandlers.datetimeDay = {
     }
 };
 
+ko.bindingHandlers.displayTime = {
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        if (!value.timestamp) {
+            return $element.text("Unknown");
+        }
+
+        let time = moment().utc(value * 1000);
+
+        let format = "";
+        // TODO: Fix formats
+
+        if (value.accuracy === "second") {
+            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+        } else if (value.accuracy === "minute") {
+            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+        } else if (value.accuracy === "hour") {
+            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+        } else if (value.accuracy === "day") {
+            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+        } else if (value.accuracy === "month") {
+            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+        } else if (value.accuracy === "year") {
+            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+        } else {
+            return console.error("Unknown accuracy type ", value);
+        }
+
+        $element.text(time.format(format));
+    }
+};
+
 ko.bindingHandlers.datetime = {
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());

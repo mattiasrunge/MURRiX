@@ -187,7 +187,7 @@
         <span class="middle">
             <span data-bind="click: sidebarView.bind($data, 'time')" style="cursor: pointer;">
                 <i class="material-icons md-18">access_time</i>
-                <span data-bind="datetimeUtc: nodepath().node().attributes.time.timestamp"></span>
+                <span data-bind="displayTime: nodepath().node().attributes.time"></span>
             </span>
 
             <span data-bind="click: sidebarView.bind($data, 'position')" style="cursor: pointer;">

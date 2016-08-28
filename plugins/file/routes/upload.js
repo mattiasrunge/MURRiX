@@ -5,7 +5,7 @@ const fs = require("fs-extra-promise");
 const parse = require("co-busboy");
 const co = require("bluebird").coroutine;
 const log = require("../../../core/lib/log")(module);
-const mcs = require("../../../core/lib/mcs");
+const api = require("api.io");
 
 let params = {};
 
@@ -35,7 +35,7 @@ module.exports = {
             stream.on("error", reject);
         });
 
-        let metadata = yield mcs.getMetadata(filename, { noChecksums: true });
+        let metadata = yield api.mcs.getMetadata(filename, { noChecksums: true });
 
         log.debug("Uploaded file " + filename + " saved!");
 

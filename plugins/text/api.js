@@ -30,11 +30,14 @@ let text = api.register("text", {
         let node = yield api.vfs.resolve(session, abspath);
 
         let source = chron.select(node.attributes.when || {});
-        let timestamp = chron.time2timestamp(source.time, { type: source.type });
 
-        yield api.vfs.setattributes(session, node, {
-            time: timestamp
-        });
+        if (source) {
+            let timestamp = chron.time2timestamp(source.time, { type: source.type });
+
+            yield api.vfs.setattributes(session, node, {
+                time: timestamp
+            });
+        }
     }
 });
 

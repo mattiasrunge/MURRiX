@@ -7,12 +7,11 @@ const api = require("api.io");
 const chron = require("chron-time");
 const request = require("request-promise-native");
 const plugin = require("../../core/lib/plugin");
-const mcs = require("../../core/lib/mcs");
 
 let params = {};
 
 let file = api.register("file", {
-    deps: [ "vfs", "camera" ],
+    deps: [ "vfs", "camera", "mcs" ],
     init: co(function*(config) {
         params = config;
     }),
@@ -23,7 +22,7 @@ let file = api.register("file", {
             throw new Error("Source file does not exist");
         }
 
-        let metadata = yield mcs.getMetadata(attributes._source.filename, { noChecksums: true }); // TODO: checksum
+        let metadata = yield api.mcs.getMetadata(attributes._source.filename, { noChecksums: true }); // TODO: checksum
 
         //         if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
         //             throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
@@ -68,7 +67,6 @@ let file = api.register("file", {
                 device = device.node;
             }
         }
-
 
         let source = chron.select(node.attributes.when || {});
 
@@ -126,7 +124,7 @@ let file = api.register("file", {
     getFaces: function*(session, abspath) {
         let node = yield api.vfs.resolve(session, abspath);
 
-        return mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
+        return api.mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
     },
     getPictureFilenames: function*(session, ids, width, height) {
         let nodes = yield api.vfs.query(session, {
@@ -143,7 +141,7 @@ let file = api.register("file", {
 
         let filenames = yield Promise.all(nodes.map((node) => {
             return new Promise((resolve) => {
-                mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                api.mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
                     angle: node.attributes.angle,
                     mirror: node.attributes.mirror,
                     timeindex: node.attributes.timeindex,
@@ -187,7 +185,7 @@ let file = api.register("file", {
             }
 
             return new Promise((resolve) => {
-                mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                api.mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
                     angle: node.attributes.angle,
                     mirror: node.attributes.mirror,
                     width: width,
@@ -226,7 +224,7 @@ let file = api.register("file", {
             }
 
             return new Promise((resolve) => {
-                mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                api.mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
                     type: "audio"
                 })
                 .then(resolve)
