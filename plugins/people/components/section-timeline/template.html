@@ -1,64 +1,60 @@
 ﻿<div class="fadeInDown animated">
-    <ul class="timeline">
-        <!-- ko foreach: events -->
-            <li data-bind="css: { 'timeline-inverted': $index() % 2 !== 0 }">
-                <div class="timeline-panel">
-                    <div class="timeline-body">
-                        <div class="timeline-date" data-bind="datetimeDay: $data.day"></div>
+    <a href="#" data-bind="click: createShow" style="position: absolute; right: 20px; top: 20px; z-index: 5;">
+        <i class="material-icons md-48">add_circle</i>
+    </a>
 
-                        <!-- ko foreach: $data.texts -->
-                            <h4>
-                               <!-- <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'birth'">child_friendly</i>
-                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'engagement'">favorite_border</i>
-                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'marriage'">favorite</i>
-                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'death'">sentiment_dissatisfied</i>
-                                <i class="material-icons" data-bind="visible: $data.node().attributes.type === 'generic'">event</i>-->
-
-                                <widget-node-select-attribute params="{ nodepath: $parent.texts[$index()], name: 'type', onlyicon: true, options: [
-                                    {
-                                        name: 'generic',
-                                        icon: 'event',
-                                        title: 'Generic'
-                                    },
-                                    {
-                                        name: 'birth',
-                                        icon: 'child_friendly',
-                                        title: 'Birth'
-                                    },
-                                    {
-                                        name: 'engagement',
-                                        icon: 'favorite_border',
-                                        title: 'Engagement'
-                                    },
-                                    {
-                                        name: 'marriage',
-                                        icon: 'favorite',
-                                        title: 'Marriage'
-                                    },
-                                    {
-                                        name: 'death',
-                                        icon: 'sentiment_dissatisfied',
-                                        title: 'Death'
-                                    }
-                                ]}"></widget-node-select-attribute>
-
-                                <widget-node-text-attribute style="display: inline;" params="{ nodepath: $parent.texts[$index()], name: 'name' }"></widget-node-text-attribute>
-                            </h4>
-                            <p>
-                                <widget-node-text-attribute params="{ nodepath: $parent.texts[$index()], name: 'text', html: true }"></widget-node-text-attribute>
-                            </p>
-                        <!-- /ko -->
-                    </div>
-                </div>
-            </li>
-        <!-- /ko -->
-
-        <li class="clearfix" style="float: none;"></li>
-    </ul>
-
-    <div class="text-center" style="padding-bottom: 15px; margin-top: -10px; position: relative; z-index: 2;">
-        <a href="#" data-bind="click: createShow">
-            <i class="material-icons md-48">add_circle</i>
-        </a>
-    </div>
+    <table>
+        <tbody data-bind="foreach: texts">
+            <tr>
+                <td style="padding: 50px; border-right: 1px solid #ccc; background-color: #EFEFEF; width: 200px; vertical-align: top; text-align: right; padding-bottom: 0; font-weight: bold;" class="text-muted">
+                    <div data-bind="datetime: $data.node().attributes.time.timestamp * 1000" data-format="YYYY" style="font-size: 26px;"></div>
+                    <div data-bind="datetime: $data.node().attributes.time.timestamp * 1000" data-format="Do MMMM"></div>
+                </td>
+                <td style="padding: 50px; vertical-align: top; position: relative; padding-bottom: 0;">
+                    <div style="position: absolute; top: 45px; left: -25px; background-color: white; border: 1px solid #ccc; border-radius: 50%;padding: 10px; color: #777;"><widget-node-select-attribute params="{ nodepath: $parent.texts()[$index()], name: 'type', onlyicon: true, options: [
+                            {
+                                name: 'generic',
+                                icon: 'event',
+                                title: 'Generic'
+                            },
+                            {
+                                name: 'birth',
+                                icon: 'child_friendly',
+                                title: 'Birth'
+                            },
+                            {
+                                name: 'engagement',
+                                icon: 'favorite_border',
+                                title: 'Engagement'
+                            },
+                            {
+                                name: 'marriage',
+                                icon: 'favorite',
+                                title: 'Marriage'
+                            },
+                            {
+                                name: 'death',
+                                icon: 'sentiment_dissatisfied',
+                                title: 'Death'
+                            }
+                        ]}"></widget-node-select-attribute></div>
+                    <h4 style="margin-top: 6px;">
+                        <widget-node-text-attribute style="display: inline;" params="{ nodepath: $parent.texts()[$index()], name: 'name' }"></widget-node-text-attribute>
+                    </h4>
+                    <p class="text-muted" data-bind="visible: $data.withPaths.length > 0, if: $data.withPaths.length > 0" style="padding-bottom: 0; margin-top: -10px; font-size: 12px;">
+                        <em>
+                            &dash;
+                            with
+                            <span data-bind="foreach: $data.withPaths">
+                                <a href="#" data-bind="location: { page: 'node', path: $data }, nodename: $data"></a>
+                            </span>
+                        </em>
+                    </p>
+                    <p>
+                        <widget-node-text-attribute params="{ nodepath: $parent.texts()[$index()], name: 'text', html: true }"></widget-node-text-attribute>
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

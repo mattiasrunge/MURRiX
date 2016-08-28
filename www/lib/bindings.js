@@ -290,12 +290,18 @@ ko.bindingHandlers.datetime = {
             return;
         }
 
+        let format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+
+        if ($(element).data("format")) {
+            format = $(element).data("format");
+        }
+
         let dateItem = moment(value).local();
 
         if (!dateItem.date()) {
             $(element).html(value);
         } else {
-            $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
+            $(element).html(dateItem.format(format));
         }
     }
 };

@@ -10,6 +10,46 @@ module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.loading = stat.create();
 
+    this.texts = ko.asyncComputed([], function*(setter) {
+        if (!this.nodepath() || this.nodepath() === "") {
+            return [];
+        }
+
+        params.reload();
+
+        setter([]);
+
+        this.loading(true);
+
+        let texts = yield api.vfs.list(this.nodepath().path + "/texts", { checkwritable: true });
+
+        utils.sortNodeList(texts);
+
+        console.log("texts", texts);
+
+        let list = [];
+
+        for (let text of texts) {
+            let paths = yield api.vfs.lookup(text.node._id);
+            let withPaths = paths.filter((path) => path !== text.path).map((path) => path.split("/", 3).join("/"));
+
+            list.push(ko.observable({
+                path: text.path,
+                node: ko.observable(text.node),
+                editable: text.editable,
+                withPaths: withPaths
+            }));
+        }
+
+        this.loading(false);
+
+        return list;
+    }.bind(this), (error) => {
+        this.loading(false);
+        stat.printError(error);
+        return [];
+    });
+
     this.events = ko.asyncComputed([], function*(setter) {
         if (!this.nodepath() || this.nodepath() === "") {
             return [];
@@ -32,11 +72,15 @@ module.exports = utils.wrapComponent(function*(params) {
         for (let text of texts) {
             let day = moment.utc(text.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD");
 
+            let paths = yield api.vfs.lookup(text.node._id);
+            let withPaths = paths.filter((path) => path !== text.path).map((path) => path.split("/", 3).join("/"));
+
             days[day] = days[day] || { texts: [], day: text.node.attributes.time.timestamp };
             days[day].texts.push(ko.observable({
                 path: text.path,
                 node: ko.observable(text.node),
-                editable: text.editable
+                editable: text.editable,
+                withPaths: withPaths
             }));
         }
 
