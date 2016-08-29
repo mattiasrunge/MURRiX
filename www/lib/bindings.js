@@ -24,10 +24,17 @@ const chron = require("chron");
 
 require("moment-duration-format");
 
-let lazyload = new LazyLoad({
-    show_while_loading: true, // jshint ignore:line
-    elements_selector: "img.lazyload" // jshint ignore:line
-});
+let lazyload;
+
+ko.bindingHandlers.lazyload = {
+    init: (element) => {
+        lazyload = new LazyLoad({
+            container: element,
+            show_while_loading: true, // jshint ignore:line
+            elements_selector: "img.lazyload" // jshint ignore:line
+        });
+    }
+};
 
 ko.bindingHandlers.map = {
     init: (element, valueAccessor) => {
