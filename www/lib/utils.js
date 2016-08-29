@@ -50,6 +50,12 @@ module.exports = {
     },
     sortNodeList: (list) => {
         list.sort((a, b) => {
+            if (!a.node.attributes.time) {
+                return -1;
+            } else if (!b.node.attributes.time) {
+                return 1;
+            }
+
             return a.node.attributes.time.timestamp - b.node.attributes.time.timestamp;
         });
     },

@@ -3,7 +3,7 @@
 const path = require("path");
 const co = require("bluebird").coroutine;
 const api = require("api.io");
-const plugin = require("../../core/lib/plugin");
+const bus = require("../../core/lib/bus");
 
 let params = {};
 
@@ -25,7 +25,7 @@ let location = api.register("location", { // jshint ignore:line
         yield api.vfs.create(session, path.join(abspath, "residents"), "d");
         yield api.vfs.create(session, path.join(abspath, "texts"), "d");
 
-        plugin.emit("location.new", {
+        bus.emit("location.new", {
             uid: session.uid,
             path: abspath,
             name: attributes.name

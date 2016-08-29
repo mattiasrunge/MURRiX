@@ -9,7 +9,7 @@ const sha1 = require("sha1");
 const fs = require("fs-extra-promise");
 const api = require("api.io");
 const db = require("../../core/lib/db");
-const plugin = require("../../core/lib/plugin");
+const bus = require("../../core/lib/bus");
 const log = require("../../core/lib/log")(module);
 
 let params = {};
@@ -457,7 +457,7 @@ let vfs = api.register("vfs", {
 
         yield db.updateOne("nodes", node);
 
-        plugin.emit("vfs.setfacl", {
+        bus.emit("vfs.setfacl", {
             uid: session.uid,
             path: abspath,
             ac: ac
@@ -488,7 +488,7 @@ let vfs = api.register("vfs", {
 
         yield db.updateOne("nodes", node);
 
-        plugin.emit("vfs.chmod", {
+        bus.emit("vfs.chmod", {
             uid: session.uid,
             path: abspath,
             mode: mode
@@ -534,7 +534,7 @@ let vfs = api.register("vfs", {
 
         yield db.updateOne("nodes", node);
 
-        plugin.emit("vfs.chown", {
+        bus.emit("vfs.chown", {
             path: abspath,
             uid: node.properties.uid,
             gid: node.properties.gid
@@ -572,7 +572,7 @@ let vfs = api.register("vfs", {
 
         yield db.updateOne("nodes", node);
 
-        plugin.emit("vfs.attributes", {
+        bus.emit("vfs.attributes", {
             uid: session.uid,
             path: abspath,
             attributes: attributes
@@ -599,7 +599,7 @@ let vfs = api.register("vfs", {
 
         yield db.updateOne("nodes", node);
 
-        plugin.emit("vfs.properties", {
+        bus.emit("vfs.properties", {
             uid: session.uid,
             path: abspath,
             properties: properties
@@ -678,13 +678,13 @@ let vfs = api.register("vfs", {
         yield db.insertOne("nodes", node);
         yield db.updateOne("nodes", parent);
 
-        plugin.emit("vfs.created", {
+        bus.emit("vfs.created", {
             uid: session.uid,
             path: abspath,
             node: node
         });
 
-        plugin.emit("vfs.childAdded", {
+        bus.emit("vfs.childAdded", {
             uid: session.uid,
             path: parentPath,
             name: name
@@ -714,7 +714,7 @@ let vfs = api.register("vfs", {
         parent.properties.cuid = session.uid;
         yield db.updateOne("nodes", parent);
 
-        plugin.emit("vfs.childRemoved", {
+        bus.emit("vfs.childRemoved", {
             uid: session.uid,
             path: parentPath,
             name: name
@@ -744,7 +744,7 @@ let vfs = api.register("vfs", {
                     yield rremove(path.join(abspath, child.name), child.id);
                 }
 
-                plugin.emit("vfs.removed", {
+                bus.emit("vfs.removed", {
                     uid: session.uid,
                     path: abspath,
                     name: path.basename(abspath)
@@ -807,7 +807,7 @@ let vfs = api.register("vfs", {
         srcnode.properties.count++;
         yield db.updateOne("nodes", srcnode);
 
-        plugin.emit("vfs.childAdded", {
+        bus.emit("vfs.childAdded", {
             uid: session.uid,
             path: destpath,
             name: name
@@ -860,13 +860,13 @@ let vfs = api.register("vfs", {
 
         yield db.updateOne("nodes", destparent);
 
-        plugin.emit("vfs.childRemoved", {
+        bus.emit("vfs.childRemoved", {
             uid: session.uid,
             path: srcparentPath,
             name: name
         });
 
-        plugin.emit("vfs.childAdded", {
+        bus.emit("vfs.childAdded", {
             uid: session.uid,
             path: destparentPath,
             name: name
@@ -947,7 +947,7 @@ let vfs = api.register("vfs", {
 
             yield db.insertOne("nodes", node);
 
-            plugin.emit("vfs.created", {
+            bus.emit("vfs.created", {
                 uid: session.uid,
                 path: abspath,
                 node: node
@@ -967,7 +967,7 @@ let vfs = api.register("vfs", {
         destparent.properties.children.push(child);
         yield db.updateOne("nodes", destparent);
 
-        plugin.emit("vfs.childAdded", {
+        bus.emit("vfs.childAdded", {
             uid: session.uid,
             path: destparentPath,
             name: name

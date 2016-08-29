@@ -5,10 +5,10 @@
     </a>
 </span>
 <span data-bind="visible: !nodepath() && editable() && !editing()">
-    <i data-bind="click: edit" style="color: #999;">Add a partner</a>
+    <i data-bind="click: edit" style="color: #999;">Add a partner</i>
 </span>
 <span data-bind="visible: !nodepath() && !editable() && !editing()">
-    <i style="color: #999;">No partner set</a>
+    <i style="color: #999;">No partner set</i>
 </span>
 <span data-bind="visible: editing">
     <input type="text" class="node-select-text" placeholder="Select a person" data-bind="nodeselect: { root: '/people', path: personPath }">

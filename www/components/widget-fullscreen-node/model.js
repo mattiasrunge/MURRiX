@@ -406,13 +406,10 @@ module.exports = utils.wrapComponent(function*(params) {
         });
     });
 
-    $("body").css("overflow-y", "hidden");
-
     this.dispose = () => {
         nextFile.dispose();
         previousFile.dispose();
         subscription.dispose();
         stat.destroy(this.loading);
-        $("body").css("overflow-y", "");
     };
 });

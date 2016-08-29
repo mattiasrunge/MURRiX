@@ -1,16 +1,11 @@
 "use strict";
 
 const path = require("path");
-const events = require("events");
-const pauseable = require("pauseable");
 const glob = require("glob-promise");
-const uuid = require("node-uuid");
 const co = require("bluebird").coroutine;
 const log = require("./log")(module);
-const db = require("./db");
 
 let params = {};
-let emitter = new events.EventEmitter();
 let apis = {};
 
 module.exports = {
@@ -103,40 +98,5 @@ module.exports = {
         }
 
         return routes;
-    },
-    pauseEvents: () => {
-        pauseable.pause(emitter);
-    },
-    resumeEvents: () => {
-        pauseable.resume(emitter);
-    },
-    on: (event, handler) => {
-        emitter.on(event, (data) => {
-            handler(event, data)
-            .catch((error) => {
-                log.error("Failed to handle event, error: ", error);
-            });
-        });
-    },
-    emit: (event, data) => {
-        let id = uuid.v4();
-
-        log.debug("plugin-event[" + event + "]: " + JSON.stringify(data, null, 2));
-
-        db.insertOne("eventlog", {
-            _id: id,
-            when: new Date(),
-            event: event,
-            data: data
-        })
-        .catch((error) => {
-            log.error("Failed to add to event log, error:" + error);
-        });
-
-        process.nextTick(() => {
-            emitter.emit(event, Object.assign({}, data, { _id: id }));
-        });
     }
 };
-
-module.exports.pauseEvents();

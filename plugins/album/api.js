@@ -4,7 +4,7 @@ const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
-const plugin = require("../../core/lib/plugin");
+const bus = require("../../core/lib/bus");
 const log = require("../../core/lib/log")(module);
 
 let params = {};
@@ -29,7 +29,7 @@ let album = api.register("album", {
         yield api.vfs.create(session, path.join(abspath, "files"), "d");
         yield api.vfs.create(session, path.join(abspath, "texts"), "d");
 
-        plugin.emit("album.new", {
+        bus.emit("album.new", {
             uid: session.uid,
             path: abspath,
             name: attributes.name

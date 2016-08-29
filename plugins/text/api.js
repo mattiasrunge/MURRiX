@@ -3,7 +3,7 @@
 const co = require("bluebird").coroutine;
 const api = require("api.io");
 const chron = require("chron-time");
-const plugin = require("../../core/lib/plugin");
+const bus = require("../../core/lib/bus");
 
 let params = {};
 
@@ -17,7 +17,7 @@ let text = api.register("text", {
 
         yield text.regenerate(session, abspath);
 
-        plugin.emit("text.new", {
+        bus.emit("text.new", {
             uid: session.uid,
             path: abspath,
             text: attributes.text,

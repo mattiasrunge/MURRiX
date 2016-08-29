@@ -6,7 +6,7 @@ const fs = require("fs-extra-promise");
 const api = require("api.io");
 const chron = require("chron-time");
 const request = require("request-promise-native");
-const plugin = require("../../core/lib/plugin");
+const bus = require("../../core/lib/bus");
 
 let params = {};
 
@@ -43,7 +43,7 @@ let file = api.register("file", {
 
         yield api.vfs.create(session, abspath + "/tags", "d");
 
-        plugin.emit("file.new", {
+        bus.emit("file.new", {
             uid: session.uid,
             path: abspath,
             type: attributes.type

@@ -4,7 +4,7 @@ const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
-const plugin = require("../../core/lib/plugin");
+const bus = require("../../core/lib/bus");
 
 let params = {};
 
@@ -14,7 +14,7 @@ let comment = api.register("comment", {
         params = config;
     }),
     comment: function*(session, abspath, text) {
-        if (!(yield api.api.vfs.access(session, abspath, "r"))) {
+        if (!(yield api.vfs.access(session, abspath, "r"))) {
             throw new Error("Permission denied");
         }
 
@@ -27,7 +27,7 @@ let comment = api.register("comment", {
         });
         session.almighty = false;
 
-        plugin.emit("comment.new", {
+        bus.emit("comment.new", {
             uid: session.uid,
             path: abspath,
             text: item.attributes.text

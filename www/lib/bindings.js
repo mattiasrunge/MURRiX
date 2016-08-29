@@ -281,6 +281,93 @@ ko.bindingHandlers.datetimeDay = {
     }
 };
 
+
+ko.bindingHandlers.displayTimeDay = {
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        if (!value.timestamp) {
+            return $element.text("Unknown");
+        }
+
+        let time = moment.utc(value.timestamp * 1000);
+
+        let format = "";
+
+        if (value.accuracy === "second") {
+            format = "dddd, MMMM Do YYYY";
+        } else if (value.accuracy === "minute") {
+            format = "dddd, MMMM Do YYYY";
+        } else if (value.accuracy === "hour") {
+            format = "dddd, MMMM Do YYYY";
+        } else if (value.accuracy === "day") {
+            format = "dddd, MMMM Do YYYY";
+        } else if (value.accuracy === "month") {
+            format = "MMMM YYYY";
+        } else if (value.accuracy === "year") {
+            format = "YYYY";
+        } else {
+            return console.error("Unknown accuracy type ", value);
+        }
+
+        $element.text(time.format(format));
+    }
+};
+
+ko.bindingHandlers.displayTimeline = {
+    update: (element, valueAccessor) => {
+        let value = ko.unwrap(valueAccessor());
+        let $element = $(element);
+
+        if (!value.timestamp) {
+            return $element.text("Unknown");
+        }
+
+        let time = moment(value.timestamp * 1000);
+
+        let year = false;
+        let date = false;
+        let clock = false;
+
+        if (value.quality === "utc") {
+            year = time.format("YYYY");
+            date = time.format("dddd, MMMM Do");
+            clock = time.format("HH:mm:ss");
+        } else if (value.accuracy === "minute") {
+            year = time.format("YYYY");
+            date = time.format("dddd, MMMM Do");
+            clock = time.format("HH:mm");
+        } else if (value.accuracy === "hour") {
+            year = time.format("YYYY");
+            date = time.format("dddd, MMMM Do");
+            clock = time.format("HH");
+        } else if (value.accuracy === "day") {
+            year = time.format("YYYY");
+            date = time.format("dddd, MMMM Do");
+        } else if (value.accuracy === "month") {
+            year = time.format("YYYY");
+            date = time.format("MMMM");
+        } else if (value.accuracy === "year") {
+            year = time.format("YYYY");
+        } else {
+            return console.error("Unknown accuracy type ", value);
+        }
+
+        if (year) {
+            $element.append($("<div style='font-size: 26px;'>" + year + "</div>"));
+        }
+
+        if (date) {
+            $element.append($("<div>" + date + "</div>"));
+        }
+
+        if (clock) {
+            $element.append($("<div style='font-size: 12px; margin-top: 5px;'>" + clock + "</div>"));
+        }
+    }
+};
+
 ko.bindingHandlers.displayTime = {
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
@@ -290,23 +377,22 @@ ko.bindingHandlers.displayTime = {
             return $element.text("Unknown");
         }
 
-        let time = moment().utc(value * 1000);
+        let time = moment.utc(value.timestamp * 1000);
 
         let format = "";
-        // TODO: Fix formats
 
-        if (value.accuracy === "second") {
+         if (value.quality === "utc") {
             format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
         } else if (value.accuracy === "minute") {
-            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+            format = "dddd, MMMM Do YYYY, HH:mm";
         } else if (value.accuracy === "hour") {
-            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+            format = "dddd, MMMM Do YYYY, HH";
         } else if (value.accuracy === "day") {
-            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+            format = "dddd, MMMM Do YYYY";
         } else if (value.accuracy === "month") {
-            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+            format = "MMMM YYYY";
         } else if (value.accuracy === "year") {
-            format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+            format = "YYYY";
         } else {
             return console.error("Unknown accuracy type ", value);
         }

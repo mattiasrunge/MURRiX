@@ -48,16 +48,16 @@ module.exports = utils.wrapComponent(function*(params) {
         let days = {};
 
         for (let text of texts) {
-            let day = moment.utc(text.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD");
+            let day = text.node.attributes.time ? moment.utc(text.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
 
-            days[day] = days[day] || { texts: [], files: [], day: text.node.attributes.time.timestamp };
+            days[day] = days[day] || { texts: [], files: [], time: text.node.attributes.time };
             days[day].texts.push(text);
         }
 
         for (let file of files) {
-            let day = moment.utc(file.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD");
+            let day = file.node.attributes.time ? moment.utc(file.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
 
-            days[day] = days[day] || { texts: [], files: [], day: file.node.attributes.time.timestamp };
+            days[day] = days[day] || { texts: [], files: [], time: file.node.attributes.time };
             days[day].files.push(file);
         }
 

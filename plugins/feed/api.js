@@ -4,7 +4,7 @@ const path = require("path");
 const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
-const plugin = require("../../core/lib/plugin");
+const bus = require("../../core/lib/bus");
 
 let params = {};
 let isCleaning = false;
@@ -15,10 +15,10 @@ let feed = api.register("feed", {
     init: co(function*(config) {
         params = config;
 
-        plugin.on("comment.new", feed.onNewComment);
-        plugin.on("album.new", feed.onNewAlbum);
-        plugin.on("location.new", feed.onNewLocation);
-        plugin.on("people.new", feed.onNewPerson);
+        bus.on("comment.new", feed.onNewComment);
+        bus.on("album.new", feed.onNewAlbum);
+        bus.on("location.new", feed.onNewLocation);
+        bus.on("people.new", feed.onNewPerson);
 
         if (!(yield api.vfs.resolve(api.auth.getAdminSession(), "/news", { noerror: true }))) {
             yield api.vfs.create(api.auth.getAdminSession(), "/news", "d");

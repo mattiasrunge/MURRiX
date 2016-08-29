@@ -5,8 +5,8 @@
 <div class="clearfix" data-bind="foreach: list">
     <div style="margin-left: 15px; margin-right: 15px;">
         <div>
-            <div data-bind="visible: $data.day !== false">
-                <h3 data-bind="datetimeDay: $data.day"></h3>
+            <div data-bind="visible: $data.time, if: $data.time">
+                <h3 data-bind="displayTimeDay: $data.time"></h3>
             </div>
 
             <div data-bind="foreach: $data.texts">

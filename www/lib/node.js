@@ -49,6 +49,9 @@ module.exports = {
     escapeName: (name) => {
         return name.replace(/ |\//g, "_");
     },
+    basename: (path) => {
+        return path.split("/").reverse()[0];
+    },
     getUniqueName: co.wrap(function*(parent, baseName) {
         parent = typeof parent === "string" ? yield api.vfs.resolve(parent) : parent;
         let name = module.exports.escapeName(baseName);

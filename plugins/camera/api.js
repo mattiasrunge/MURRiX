@@ -3,7 +3,7 @@
 const path = require("path");
 const co = require("bluebird").coroutine;
 const api = require("api.io");
-const plugin = require("../../core/lib/plugin");
+const bus = require("../../core/lib/bus");
 
 let params = {};
 
@@ -31,7 +31,7 @@ let camera = api.register("camera", {
         yield api.vfs.create(session, abspath, "c", attributes);
         yield api.vfs.create(session, path.join(abspath, "owners"), "d");
 
-        plugin.emit("camera.new", {
+        bus.emit("camera.new", {
             uid: session.uid,
             path: abspath,
             name: attributes.name

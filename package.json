@@ -41,8 +41,8 @@
     "mongodb": "2.2.6",
     "node-uuid": "1.4.7",
     "pauseable": "0.1.6",
-    "request": "^2.74.0",
-    "request-promise-native": "^1.0.3",
+    "request": "2.74.0",
+    "request-promise-native": "1.0.3",
     "server-destroy": "1.0.1",
     "sha1": "1.1.1",
     "strip-ansi": "3.0.1",
@@ -54,8 +54,10 @@
     "yargs": "5.0.0"
   },
   "devDependencies": {
+    "csslint": "1.0.2",
     "jshint": "2.9.3",
     "jscs": "3.0.7",
+    "htmlhint": "0.9.13",
     "mocha": "3.0.2",
     "timemachine": "0.2.6",
     "chai": "3.5.0",

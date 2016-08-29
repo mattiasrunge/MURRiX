@@ -6,10 +6,7 @@
     <table>
         <tbody data-bind="foreach: texts">
             <tr>
-                <td style="padding: 50px; border-right: 1px solid #ccc; background-color: #EFEFEF; width: 200px; vertical-align: top; text-align: right; padding-bottom: 0; font-weight: bold;" class="text-muted">
-                    <div data-bind="datetime: $data.node().attributes.time.timestamp * 1000" data-format="YYYY" style="font-size: 26px;"></div>
-                    <div data-bind="datetime: $data.node().attributes.time.timestamp * 1000" data-format="Do MMMM"></div>
-                </td>
+                <td style="padding: 50px; border-right: 1px solid #ccc; background-color: #EFEFEF; width: 250px; vertical-align: top; text-align: right; padding-bottom: 0; padding-left: 0; font-weight: bold;" class="text-muted" data-bind="displayTimeline: $data.node().attributes.time"></td>
                 <td style="padding: 50px; vertical-align: top; position: relative; padding-bottom: 0;">
                     <div style="position: absolute; top: 45px; left: -25px; background-color: white; border: 1px solid #ccc; border-radius: 50%; padding: 10px; color: #777;"><widget-node-select-attribute params="{ nodepath: $parent.texts()[$index()], name: 'type', onlyicon: true, options: [
                             {

@@ -53,13 +53,12 @@ h1, h2, h3, h4, h5, h6, .heading {
 }
 
 body {
-    overflow-y: scroll;
-    overflow-x: hidden;
+    overflow: hidden;
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
     background-color: #efefef;
 }
 
-#browserWarning {
+#browser-warning {
     position: absolute;
     top: 0;
     left: 0;
@@ -92,8 +91,13 @@ body {
 }
 
 .page-container {
-  position: relative;
-  top: 50px;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .page-header {
@@ -101,77 +105,27 @@ body {
 }
 
 .left-border {
-  border-left: 1px solid #ccc;
+    border-left: 1px solid #ccc;
 }
 
 .right-border {
-  border-right: 1px solid #ccc;
+    border-right: 1px solid #ccc;
 }
 
 .top-border {
-  border-top: 1px solid #ccc;
+    border-top: 1px solid #ccc;
 }
 
 .bottom-border {
-  border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .media>.pull-left {
-  margin-right: 15px;
+    margin-right: 15px;
 }
 
 .main {
-  margin-left: 200px;
-}
-
-.blur {
-    -webkit-filter: blur(4px);
-    filter: blur(4px);
-}
-
-.brightness {
-    -webkit-filter: brightness(0.30);
-    filter: brightness(0.30);
-}
-
-.contrast {
-    -webkit-filter: contrast(180%);
-    filter: contrast(180%);
-}
-
-.grayscale {
-    -webkit-filter: grayscale(100%);
-    filter: grayscale(100%);
-}
-
-.huerotate {
-    -webkit-filter: hue-rotate(180deg);
-    filter: hue-rotate(180deg);
-}
-
-.invert {
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-}
-
-.opacity {
-    -webkit-filter: opacity(50%);
-    filter: opacity(50%);
-}
-
-.saturate {
-    -webkit-filter: saturate(7);
-    filter: saturate(7);
-}
-
-.sepia {
-    -webkit-filter: sepia(100%);
-    filter: sepia(100%);
-}
-
-.shadow {
-    -webkit-filter: drop-shadow(2px 2px 2px black);
-    filter: drop-shadow(2px 2px 2px black);
+    margin-left: 200px;
 }
 
 .comment-picture-user {
@@ -511,9 +465,9 @@ body {
 }
 
 .navbar .profile .picture {
-  margin-right: 5px;
-  vertical-align: top;
-  display: inline-block;
+    margin-right: 5px;
+    vertical-align: top;
+    display: inline-block;
 }
 
 .navbar .star {
@@ -521,19 +475,6 @@ body {
     top: 4px;
     right: 4px;
     color: #FAB400;
-}
-
-.subnavbar-background {
-    background-color: #327DE6;
-    background: linear-gradient(0, #327DE6 0%, #2966BC 100%);
-    box-shadow: 0 1px 6px rgba(0,0,0,.8);
-    border-top: none;
-    position: fixed;
-    left: auto;
-    right: auto;
-    border-top-right-radius: 3px;
-    border-top-left-radius: 3px;
-    margin-left: -15px;
 }
 
 .form-control,
@@ -578,21 +519,21 @@ body {
 }
 
 .sidebar {
-  position: fixed;
-  top: 51px;
-  width: 200px;
-  bottom: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  border-right: 1px solid #ccc;
-  border-left: 1px solid #ccc;
-  background-color: white;
+    position: fixed;
+    top: 51px;
+    width: 200px;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    background-color: white;
 }
 
 .sidebar .profile {
-  margin-top: 15px;
-  font-size: 12px;
-  margin-bottom: 15px;
+    margin-top: 15px;
+    font-size: 12px;
+    margin-bottom: 15px;
 }
 
 .sidebar .material-icons {
@@ -600,20 +541,20 @@ body {
 }
 
 .sidebar .profile .picture {
-  margin-right: 10px;
-  vertical-align: top;
+    margin-right: 10px;
+    vertical-align: top;
 }
 
 .sidebar ul.nav {
-  margin-top: 15px;
+    margin-top: 15px;
 }
 
 .sidebar li.header {
-  font-family: 'Ubuntu', Georgia, Times, serif;
-  color: #327DE6;
-  font-size: 20px;
-  padding-bottom: 5px;
-  margin-top: 15px;
+    font-family: 'Ubuntu', Georgia, Times, serif;
+    color: #327DE6;
+    font-size: 20px;
+    padding-bottom: 5px;
+    margin-top: 15px;
 }
 
 .sidebar .nav-pills > li > a {
@@ -623,7 +564,7 @@ body {
     border-radius: 0;
     color: rgba(0, 0, 0, 0.54);
 
-        width: 169px;
+    width: 169px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -637,8 +578,6 @@ body {
     border-color: black;
     color: black;
 }
-
-
 
 widget-node-sections ul.nav {
     border-top: 1px solid #ccc;
@@ -666,7 +605,7 @@ widget-node-sections .nav-pills > li.active > a:focus,
 widget-node-sections .nav-pills > li > a:focus {
     background-color: #efefef;
     color: black;
-}*
+}
 
 .comments {
     font-size: 12px;
@@ -686,7 +625,7 @@ widget-node-sections .nav-pills > li > a:focus {
 }
 
 .main {
-  margin-left: 200px;
+    margin-left: 200px;
 }
 
 .slider.slider-horizontal {
@@ -694,37 +633,37 @@ widget-node-sections .nav-pills > li > a:focus {
 }
 
 .snackbar {
-  background-color: #323232;
-  color: rgba(255,255,255, 0.84);
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 1px;
-  -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
-          box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
-  height: 0;
-  -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
-       -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
-          transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
-  -webkit-transform: translateY(200%);
-      -ms-transform: translateY(200%);
-       -o-transform: translateY(200%);
-          transform: translateY(200%);
+    background-color: #323232;
+    color: rgba(255,255,255, 0.84);
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 1px;
+    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+            box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+    height: 0;
+    -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
+        -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
+    -webkit-transform: translateY(200%);
+        -ms-transform: translateY(200%);
+        -o-transform: translateY(200%);
+            transform: translateY(200%);
 }
 .snackbar.snackbar-opened {
-  padding: 14px 15px;
-  margin-bottom: 20px;
-  height: auto;
-  -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
-       -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
-          transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
-  -webkit-transform: none;
-      -ms-transform: none;
-       -o-transform: none;
-          transform: none;
+    padding: 14px 15px;
+    margin-bottom: 20px;
+    height: auto;
+    -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
+        -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
+    -webkit-transform: none;
+        -ms-transform: none;
+        -o-transform: none;
+            transform: none;
 }
 .snackbar.toast {
-  border-radius: 200px;
-}l
+    border-radius: 200px;
+}
 
 .snackbar.alert {
     color: rgba(255,255,255,.84);
@@ -862,7 +801,6 @@ widget-node-sections .nav-pills > li > a:focus {
     float: left;
 }
 
-
 .node-item-panel {
     background-color: white;
     border: 1px solid #ccc;
@@ -924,291 +862,287 @@ widget-node-sections .nav-pills > li > a:focus {
 }
 
 .relation-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  padding: 0;
-  overflow: hidden;
-  cursor: move;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    padding: 0;
+    overflow: hidden;
+    cursor: move;
 }
 
 .relation-person-box {
-  text-align: left;
-  border: 1px solid #ccc;
-  border-radius: 3px 3px 3px 3px;
-  background-color: white;
+    text-align: left;
+    border: 1px solid #ccc;
+    border-radius: 3px 3px 3px 3px;
+    background-color: white;
 }
 
 .relation-person-box-small {
-  text-align: center;
+    text-align: center;
 }
 
 .relation-horizontal-line-left {
-  height: 2px;
-  background-color: #ccc;
-  display: inline-block;
-  width: 50%;
+    height: 2px;
+    background-color: #ccc;
+    display: inline-block;
+    width: 50%;
 }
 
 .relation-horizontal-line-right {
-  height: 2px;
-  background-color: #ccc;
-  display: inline-block;
-  width: 50%;
+    height: 2px;
+    background-color: #ccc;
+    display: inline-block;
+    width: 50%;
 }
 
 .relation-horizontal-line-hide {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 .relation-person-image {
-  position: absolute;
-  width: 88px;
-  height: 88px;
-  top: 0px;
-  left: 0px;
-  border-radius: 3px 0px 0px 3px;
-  z-index: 3;
+    position: absolute;
+    width: 88px;
+    height: 88px;
+    top: 0px;
+    left: 0px;
+    border-radius: 3px 0px 0px 3px;
+    z-index: 3;
 }
 
 .relation-person-image img {
-  width: 88px;
-  height: 88px;
-  border-radius: 3px 0px 0px 3px;
+    width: 88px;
+    height: 88px;
+    border-radius: 3px 0px 0px 3px;
 }
 
 .relation-person-image-small {
-  width: 90px;
-  height: 90px;
-  vertical-align: top;
-  margin-left: auto;
-  margin-right: auto;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  display: inline-block;
-  z-index: 3;
+    width: 90px;
+    height: 90px;
+    vertical-align: top;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    display: inline-block;
+    z-index: 3;
 }
 
 .relation-person-image-small img {
-  width: 90px;
-  height: 90px;
-  border-radius: 3px;
-  background-color: #555;
+    width: 90px;
+    height: 90px;
+    border-radius: 3px;
+    background-color: #555;
 }
 
 .relation-person-image-small-title {
-  padding: 5px;
-  text-align: center;
-  margin: 0px 30px;
-  border-radius: 3px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 200px;
-  cursor: pointer;
-  font-size: 20px;
+    padding: 5px;
+    text-align: center;
+    margin: 0px 30px;
+    border-radius: 3px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    cursor: pointer;
+    font-size: 20px;
 }
 
 .relation-person-image-small-title a {
-  color: black;
-  cursor: pointer;
+    color: black;
+    cursor: pointer;
 }
 
 .relation-person-title {
-  padding: 5px 10px;
-  z-index: 2;
-  position: relative;
-  margin-bottom: 10px;
-  font-weight: bold;
+    padding: 5px 10px;
+    z-index: 2;
+    position: relative;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .relation-person-title a {
-  color: black;
-  cursor: pointer;
-  margin-left: 88px;
+    color: black;
+    cursor: pointer;
+    margin-left: 88px;
 }
 
 .relation-person-partner {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .relation-person-title-background {
-  z-index: -1;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  opacity: 0.7;
-  background-color: white;
-  border-radius: 3px 3px 0px 0px;
+    z-index: -1;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    opacity: 0.7;
+    background-color: white;
+    border-radius: 3px 3px 0px 0px;
 }
 
 .relation-person-title-male {
-  background-color: #0088CC;
+    background-color: #0088CC;
 }
 
 .relation-person-title-female {
-  background-color: #FF9999;
+    background-color: #FF9999;
 }
 
 .relation-expand {
-  width: 20px;
-  height: 20px;
-  padding: 0px;
-  margin: 0;
-  margin-left: -9px;
-  z-index: 1;
-  position: relative;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  color: #0088CC;
-  background-color: white;
-  font-size: 10px;
+    width: 20px;
+    height: 20px;
+    padding: 0px;
+    margin: 0;
+    margin-left: -9px;
+    z-index: 1;
+    position: relative;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    color: #0088CC;
+    background-color: white;
+    font-size: 10px;
 }
 
 .relation-child-expand {
-  margin-top: 29px;
+    margin-top: 29px;
 }
 
 .relation-parent-expand {
-  top: -8px;
-  position: relative;
+    top: -8px;
+    position: relative;
 }
 
-
-
 .relation-cut {
-  width: 16px;
-  height: 16px;
-  padding: 0px;
-  margin: 0;
-  margin-left: -7px;
-  z-index: 1;
-  position: relative;
-  font-size: 8px;
-  border-radius: 16px;
+    width: 16px;
+    height: 16px;
+    padding: 0px;
+    margin: 0;
+    margin-left: -7px;
+    z-index: 1;
+    position: relative;
+    font-size: 8px;
+    border-radius: 16px;
 }
 
 .relation-cut i {
-  line-height: normal !important;
-  display: block !important;
+    line-height: normal !important;
+    display: block !important;
 }
 
 .relation-parent-cut {
-  margin-top: 2px;
+    margin-top: 2px;
 }
 
 .relation-child-cut {
-  margin-bottom: -42px;
+    margin-bottom: -42px;
 }
 
-
-
 .relation-add {
-  width: 16px;
-  height: 16px;
-  padding: 0px;
-  margin: 0;
-  margin-left: -7px;
-  z-index: 1;
-  position: relative;
-  font-size: 8px;
-  border-radius: 16px;
+    width: 16px;
+    height: 16px;
+    padding: 0px;
+    margin: 0;
+    margin-left: -7px;
+    z-index: 1;
+    position: relative;
+    font-size: 8px;
+    border-radius: 16px;
 }
 
 .relation-add i {
-  line-height: normal !important;
-  display: block !important;
+    line-height: normal !important;
+    display: block !important;
 }
 
 .relation-parent-add {
-  margin-top: -28px;
-  margin-left: -22px;
+    margin-top: -28px;
+    margin-left: -22px;
 }
 
 .relation-child-add {
-  margin-bottom: -42px;
-  margin-left: -22px;
+    margin-bottom: -42px;
+    margin-left: -22px;
 }
 
 
 .relation-zoom-control {
-  position: absolute;
-  top: 10px;
-  right: 8px;
-  width: 20px;
-  height: 208px;
-  cursor: pointer;
-  z-index: 10;
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    width: 20px;
+    height: 208px;
+    cursor: pointer;
+    z-index: 10;
 }
 
 .relation-zoom-control .line {
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 8px;
-  background-color: white;
-  width: 2px;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 8px;
+    background-color: white;
+    width: 2px;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
 }
 
 .relation-zoom-control .mark-container {
-  position: absolute;
-  top: 20px;
-  left: 0px;
-  right: 0px;
-  bottom: 20px;
-  z-index: 2;
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    right: 0px;
+    bottom: 20px;
+    z-index: 2;
 }
 
 .relation-zoom-control .mark {
-  position: absolute;
-  left: 0px;
-  width: 18px;
-  height: 10px;
-  z-index: 2;
-  padding: 0px;
-  margin: 0;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  color: #ccc;
-  background-color: white;
-  font-size: 10px;
+    position: absolute;
+    left: 0px;
+    width: 18px;
+    height: 10px;
+    z-index: 2;
+    padding: 0px;
+    margin: 0;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    color: #ccc;
+    background-color: white;
+    font-size: 10px;
 }
 
 .relation-zoom-control .inc {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 18px;
-  height: 18px;
-  z-index: 2;
-  padding: 0px;
-  margin: 0;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  color: #ccc;
-  background-color: white;
-  font-size: 10px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 18px;
+    height: 18px;
+    z-index: 2;
+    padding: 0px;
+    margin: 0;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    color: #ccc;
+    background-color: white;
+    font-size: 10px;
 }
 
 .relation-zoom-control .dec {
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 18px;
-  height: 18px;
-  z-index: 2;
-  padding: 0;
-  margin: 0;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  color: #ccc;
-  background-color: white;
-  font-size: 10px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 18px;
+    height: 18px;
+    z-index: 2;
+    padding: 0;
+    margin: 0;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    color: #ccc;
+    background-color: white;
+    font-size: 10px;
 }
 
 .node-table {
