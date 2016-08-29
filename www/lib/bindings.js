@@ -294,7 +294,7 @@ ko.bindingHandlers.displayTimeDay = {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
-        if (!value.timestamp) {
+        if (!value || !value.timestamp) {
             return $element.text("Unknown");
         }
 
@@ -327,7 +327,7 @@ ko.bindingHandlers.displayTimeline = {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
-        if (!value.timestamp) {
+        if (!value || !value.timestamp) {
             return $element.text("Unknown");
         }
 
@@ -380,7 +380,7 @@ ko.bindingHandlers.displayTime = {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
-        if (!value.timestamp) {
+        if (!value || !value.timestamp) {
             return $element.text("Unknown");
         }
 

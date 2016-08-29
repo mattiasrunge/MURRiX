@@ -4,19 +4,22 @@
         <li>
             <a href="#" data-bind="location: { page: 'profile' }">
                 <i class="material-icons">account_box</i>
+                &nbsp;&nbsp;
                 Profile
             </a>
         </li>
         <li data-bind="visible: personPath, if: personPath">
             <a href="#" data-bind="location: { page: 'node', path: personPath }">
-                <i class="material-icons md-18">person</i>
+                <i class="material-icons">person</i>
+                &nbsp;&nbsp;
                 Me
             </a>
         </li>
         <li class="divider"></li>
         <li>
             <a href="#" data-bind="click: logout">
-                <i class="material-icons md-18">exit_to_app</i>
+                <i class="material-icons">exit_to_app</i>
+                &nbsp;&nbsp;
                 Logout
             </a>
         </li>

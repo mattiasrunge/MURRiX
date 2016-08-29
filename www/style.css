@@ -1145,6 +1145,12 @@ widget-node-sections .nav-pills > li > a:focus {
     font-size: 10px;
 }
 
+.year-slider {
+    margin-left: 80px;
+    margin-right: 80px;
+    padding-top: 10px;
+}
+
 .node-table {
     font-size: 12px;
     margin-bottom: auto;
