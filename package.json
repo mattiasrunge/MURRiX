@@ -40,7 +40,6 @@
     "moment": "2.14.1",
     "mongodb": "2.2.6",
     "node-uuid": "1.4.7",
-    "pauseable": "0.1.6",
     "request": "2.74.0",
     "request-promise-native": "1.0.3",
     "server-destroy": "1.0.1",
