@@ -33,7 +33,7 @@ let mcs = api.register("mcs", {
         return mcsApi.time.compile(sources);
     },
     getCached: (id, filename, format) => {
-        return mcsApi.cache.get(id, filename, format);
+        return mcsApi.cache.get(id, filename, format, params.mcsDirectory);
     }
 });
 
