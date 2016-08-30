@@ -190,10 +190,16 @@ let vfs = api.register("vfs", {
         let pathParts = abspath.replace(/\/$/g, "").split("/");
         let root = yield db.findOne("nodes", { "properties.type": "r" });
 
-        let getchild = co(function*(session, node, pathParts, options) {
+        let getchild = co(function*(session, node, pathParts, childName, options) {
             if (pathParts.length === 0) {
                 if (!(yield vfs.access(session, node, "r"))) {
                     throw new Error("Permission denied");
+                }
+
+                if (options.nodepath) {
+                    let editable = yield vfs.access(session, node, "w");
+
+                    return { name: childName, node: node, path: abspath, editable: editable };
                 }
 
                 return node;
@@ -224,11 +230,11 @@ let vfs = api.register("vfs", {
                 return vfs.resolve(session, path.join(node.attributes.path, pathParts.join("/")), options);
             }
 
-            return getchild(session, node, pathParts, options);
+            return getchild(session, node, pathParts, child.name, options);
         });
 
         pathParts.shift();
-        return getchild(session, root, pathParts, options);
+        return getchild(session, root, pathParts, "", options);
     },
     lookup: function*(session, id, cache) {
         cache = cache || {};

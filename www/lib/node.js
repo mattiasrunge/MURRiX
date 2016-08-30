@@ -10,6 +10,92 @@ const stat = require("lib/status");
 let lastPath = false;
 let reloadFlag = ko.observable(false);
 
+ko.nodepath = function(path, options) {
+    options = options || {};
+
+    let loading = stat.create();
+    let result = ko.observable(false);
+    let active = 0;
+    let lastPath = false;
+    let reloadFlag = ko.observable(false);
+    let isReloading = false;
+    let computed = ko.pureComputed(() => {
+        let newPath = ko.unwrap(path);
+
+        reloadFlag();
+
+        if (newPath === lastPath && !isReloading) {
+            return;
+        }
+
+        lastPath = newPath;
+
+        let currentActive = ++active;
+
+        loading(true);
+
+        api.vfs.resolve(newPath, { nodepath: true, noerror: options.noerror })
+        .then((data) => {
+            if (currentActive !== active) {
+                return;
+            }
+
+            isReloading = false;
+            loading(false);
+
+            if (data) {
+                data.node = ko.observable(data.node);
+                result(data);
+            } else {
+                result(false);
+            }
+        })
+        .catch((error) => {
+            if (currentActive !== active) {
+                return;
+            }
+
+            isReloading = false;
+            loading(false);
+
+            stat.printError(error);
+
+            result(false);
+        });
+    });
+
+    let subscription1 = api.vfs.on("new", (event) => {
+        if (event.path === lastPath) {
+            pure.reload();
+        }
+    });
+
+    let subscription2 = api.vfs.on("removed", (event) => {
+        if (event.path === lastPath) {
+            pure.reload();
+        }
+    });
+
+    let pure = ko.pureComputed(() => {
+        computed();
+        return result();
+    });
+
+    pure.dispose = () => {
+        api.vfs.off(subscription1);
+        api.vfs.off(subscription2);
+        stat.destroy(loading);
+        computed.dispose();
+    };
+
+    pure.reload = () => {
+        isReloading = true;
+        reloadFlag(!reloadFlag());
+    };
+
+    return pure;
+};
+
 module.exports = {
     loading: stat.create(),
     nodepath: ko.asyncComputed(false, function*(setter) {
@@ -20,7 +106,7 @@ module.exports = {
         if (!path || path === "") {
             lastPath = path;
             return false;
-        } else if (path === lastPath) {
+        } else if (path === lastPath && !this.triggeredByReload) {
             return;
         }
 
@@ -63,6 +149,10 @@ module.exports = {
         }
 
         return name;
+    }),
+    setProfilePicture: co.wrap(function*(abspath, picturePath) {
+        yield api.vfs.unlink(abspath + "/profilePicture");
+        yield api.vfs.symlink(picturePath, abspath + "/profilePicture");
     }),
     reload: () => {
         lastPath = "";

@@ -7,6 +7,67 @@ const api = require("api.io-client");
 
 let clipBoardContent = false;
 
+ko.asyncComputed = function(defaultValue, fn, onError, extend) {
+    let self = {};
+    let promise = co.wrap(fn.bind(self));
+    let reloadFlag = ko.observable(false);
+    let result = ko.observable(defaultValue);
+    let active = 0;
+    let computed = ko.pureComputed(() => {
+        let currentActive = ++active;
+        reloadFlag();
+
+        promise((value) => {
+            return result(value);
+        })
+        .then((data) => {
+            if (currentActive !== active) {
+                return;
+            }
+
+            delete self.triggeredByReload;
+
+            if (typeof data !== "undefined") {
+                result(data);
+            }
+        })
+        .catch((error) => {
+            if (currentActive !== active) {
+                return;
+            }
+
+            delete self.triggeredByReload;
+
+            if (onError) {
+                let ret = onError(error, result);
+
+                if (typeof ret !== "undefined") {
+                    result(ret);
+                }
+            } else {
+                result(defaultValue);
+            }
+        });
+    });
+
+    if (extend) {
+        computed.extend(extend);
+    }
+
+    let pure = ko.pureComputed(() => {
+        computed();
+        return result();
+    });
+
+    pure.reload = () => {
+        self.triggeredByReload = true;
+        reloadFlag(!reloadFlag());
+    };
+
+    return pure;
+};
+
+
 module.exports = {
     registerComponents: (list) => {
         for (let name of list) {

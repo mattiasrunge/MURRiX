@@ -12,6 +12,9 @@ module.exports = utils.wrapComponent(function*(params) {
     this.size = params.size;
     this.nolazyload = params.nolazyload;
 
+    this.picturePath = ko.pureComputed(() => this.path() + "/profilePicture");
+    this.pictureNodePath = ko.nodepath(this.picturePath, { noerror: true });
+
     this.item = ko.asyncComputed(false, function*(setter) {
         if (!this.path() || this.path() === "") {
             return false;
@@ -23,7 +26,7 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(true);
 
-        let node = yield api.vfs.resolve(this.path() + "/profilePicture", { noerror: true });
+        let node = this.pictureNodePath() ? this.pictureNodePath().node() : false;
 
         if (!node) {
             let files = yield api.vfs.list(this.path() + "/files", { noerror: true, limit: 1 });
@@ -44,6 +47,7 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.dispose = () => {
+        this.pictureNodePath.dispose();
         stat.destroy(this.loading);
     };
 });

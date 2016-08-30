@@ -14,10 +14,12 @@ const moment = require("moment");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
+const node = require("lib/node");
 const loc = require("lib/location");
 const Slider = require("slider");
 const autosize = require("autosize");
 const LazyLoad = require("lazyload");
+const dragula = require("dragula");
 const typeahead = require("typeahead"); // jshint ignore:line
 const imgareaselect = require("jquery.imgareaselect"); // jshint ignore:line
 const chron = require("chron");
@@ -32,6 +34,72 @@ ko.bindingHandlers.lazyload = {
             container: element,
             show_while_loading: true, // jshint ignore:line
             elements_selector: "img.lazyload" // jshint ignore:line
+        });
+    }
+};
+
+ko.bindingHandlers.dragula = {
+    init: (element, valueAccessor) => {
+        let nodepath = valueAccessor();
+
+        if (!ko.unwrap(nodepath().editable)) {
+            return;
+        }
+
+        let targetContainer = $("#dropTargetContainer");
+        let targetProfilePicture = $("#dropTargetProfilePicture");
+        let targetDelete = $("#dropTargetDelete");
+
+        let drake = dragula({
+            containers: [ element, targetProfilePicture.get(0), targetDelete.get(0), targetContainer.get(0) ],
+            copy: true,
+            revertOnSpill: true,
+            mirrorContainer: targetContainer.get(0)
+        });
+
+        drake.on("drag", () => {
+            targetContainer.addClass("show");
+        });
+
+        drake.on("dragend", () => {
+            targetContainer.removeClass("show");
+        });
+
+        drake.on("over", (el, container) => {
+            $(container).addClass("over");
+        });
+
+        drake.on("out", (el, container) => {
+            $(container).removeClass("over");
+        });
+
+        drake.on("drop", (el, target) => {
+            let abspath = $(el).data("path");
+
+            drake.cancel(el);
+
+            if (target === targetDelete.get(0)) {
+//                 node.setProfilePicture(nodepath().path, abspath)
+//                 .then(() => {
+//                     console.log("Profile picture set to " + abspath + " for " + nodepath().path);
+//                     nodepath.reload();
+//                 })
+//                 .catch((error) => {
+//                     stat.printError(error);
+//                 });
+            } else if (target === targetProfilePicture.get(0)) {
+                node.setProfilePicture(nodepath().path, abspath)
+                .then(() => {
+                    stat.printSuccess("Profile picture set");
+                })
+                .catch((error) => {
+                    stat.printError(error);
+                });
+            }
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            drake.destroy();
         });
     }
 };
@@ -337,7 +405,7 @@ ko.bindingHandlers.displayTimeline = {
         let date = false;
         let clock = false;
 
-        if (value.quality === "utc") {
+        if (value.quality === "utc" || value.accuracy === "second") {
             year = time.format("YYYY");
             date = time.format("dddd, MMMM Do");
             clock = time.format("HH:mm:ss");
@@ -390,6 +458,8 @@ ko.bindingHandlers.displayTime = {
 
          if (value.quality === "utc") {
             format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
+         } else if (value.accuracy === "second") {
+            format = "dddd, MMMM Do YYYY, HH:mm:ss";
         } else if (value.accuracy === "minute") {
             format = "dddd, MMMM Do YYYY, HH:mm";
         } else if (value.accuracy === "hour") {

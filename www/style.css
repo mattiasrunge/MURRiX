@@ -6,6 +6,7 @@
 @import: "node_modules/animate.css/animate.css";
 @import: "node_modules/snackbarjs/dist/snackbar.css";
 @import: "node_modules/jdomizio-imgareaselect/distfiles/css/imgareaselect-default.css";
+@import: "node_modules/dragula/dist/dragula.css";
 
 @keyframes spin {
     from {transform:rotate(360deg);}
@@ -30,6 +31,7 @@
 .material-icons.md-24 { font-size: 24px; }
 .material-icons.md-36 { font-size: 36px; }
 .material-icons.md-48 { font-size: 48px; }
+.material-icons.md-96 { font-size: 96px; }
 
 /* Rules for using icons as black on a light background. */
 .material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
@@ -96,8 +98,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    overflow: auto;
 }
 
 .page-header {
@@ -133,7 +134,8 @@ body {
 }
 
 .grid-picture-container {
-    position: relative;
+/*     position: relative; */
+    display: block;
 }
 
 .grid-picture-type {
@@ -1158,4 +1160,65 @@ widget-node-sections .nav-pills > li > a:focus {
 
 .node-table > tbody > tr:first-child > td {
     border-top: none;
+}
+
+
+#dropTargetContainer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 60px;
+    overflow: hidden;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.2s ease-in-out;
+}
+
+#dropTargetContainer.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+#dropTargetContainer table {
+    width: 860px;
+    height: 100%;
+    border-spacing: 60px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#dropTargetContainer td {
+    width: 50%;
+    padding: 15px;
+    overflow: hidden;
+}
+
+.dropTarget {
+    background-color: white;
+    height: 400px;
+    width: 400px;
+    font-size: 18px;
+    vertical-align: middle;
+    display: table-cell;
+    border-radius: 50%;
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.dropTarget.over {
+    opacity: 1;
+    transition: opacity 0.1s ease-in-out;
+}
+
+.gu-transit {
+    display: none;
+}
+
+.gu-mirror {
+    width: 64px !important;
+    height: 64px !important;
 }

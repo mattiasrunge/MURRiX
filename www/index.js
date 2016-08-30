@@ -23,7 +23,8 @@ if (!isChrome) {
             autosize: "node_modules/autosize/dist/autosize.min",
             lazyload: "node_modules/vanilla-lazyload/dist/lazyload",
             "jquery.imgareaselect": "node_modules/jdomizio-imgareaselect/jquery.imgareaselect.dev",
-            "chron": "node_modules/chron-time/browser/index",
+            chron: "node_modules/chron-time/browser/index",
+            dragula: "node_modules/dragula/dist/dragula.min",
             "socket.io-client": "/socket.io/socket.io",
             "api.io-client": "/api.io/api.io-client",
             "co": "/api.io/co"

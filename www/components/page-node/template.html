@@ -12,7 +12,39 @@
         <camera-page params="{ nodepath: nodepath, section: section }"></camera-page>
     </div>
 
+
+    <div id="dropTargetContainer">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="text-center">
+                        <div id="dropTargetProfilePicture" class="dropTarget text-muted text-uppercase">
+                            Drop here
+                            <br>
+                            <br>
+                            <i class="material-icons md-96">wallpaper</i>
+                            <br>
+                            <br>
+                            Use as profile picture
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div id="dropTargetDelete" class="dropTarget text-muted text-uppercase" style="background-color: #FFAEAE;">
+                            Drop here
+                            <br>
+                            <br>
+                            <i class="material-icons md-96">delete</i>
+                            <br>
+                            <br>
+                            Delete
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 <div data-bind="if: !nodepath() && !nodeLoading()">
     Invalid path
 </div>
+

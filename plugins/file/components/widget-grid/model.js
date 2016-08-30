@@ -11,6 +11,7 @@ module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.data = params.data;
     this.size = params.size;
+    this.nodepath = params.nodepath;
 
     this.list = ko.asyncComputed([], function*(setter) {
         setter([]);

@@ -5,7 +5,7 @@ const components = require("json!components.json");
 const ko = require("knockout");
 const co = require("co");
 const utils = require("lib/utils");
-const bindings = require("lib/bindings"); // jshint ignore:line
+
 const bootstrap = require("bootstrap"); // jshint ignore:line
 
 let $window = $(window);
@@ -18,60 +18,6 @@ $window.on("resize", () => {
         resizeFlag(!resizeFlag());
     }, 250);
 });
-
-ko.asyncComputed = function(defaultValue, fn, onError, extend) {
-    let promise = co.wrap(fn);
-    let reloadFlag = ko.observable(false);
-    let result = ko.observable(defaultValue);
-    let active = 0;
-    let computed = ko.pureComputed(() => {
-        let currentActive = ++active;
-        reloadFlag();
-
-        promise((value) => {
-            return result(value);
-        })
-        .then((data) => {
-            if (currentActive !== active) {
-                return;
-            }
-
-            if (typeof data !== "undefined") {
-                result(data);
-            }
-        })
-        .catch((error) => {
-            if (currentActive !== active) {
-                return;
-            }
-
-            if (onError) {
-                let ret = onError(error, result);
-
-                if (typeof ret !== "undefined") {
-                    result(ret);
-                }
-            } else {
-                result(null);
-            }
-        });
-    });
-
-    if (extend) {
-        computed.extend(extend);
-    }
-
-    let pure = ko.pureComputed(() => {
-        computed();
-        return result();
-    });
-
-    pure.reload = () => {
-        reloadFlag(!reloadFlag());
-    };
-
-    return pure;
-};
 
 module.exports = {
     start: utils.co(function*() {
