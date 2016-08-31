@@ -31,7 +31,7 @@
                     <tr>
                         <td><strong>Residents</strong></td>
                         <td data-bind="foreach: residents">
-                            <div><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }, text: $data.node.attributes.name"></a></div>
+                            <div><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }, text: $data.node().attributes.name"></a></div>
                         </td>
                     </tr>
                 </tbody>

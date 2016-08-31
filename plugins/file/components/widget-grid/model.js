@@ -34,12 +34,20 @@ module.exports = utils.wrapComponent(function*(params) {
                 file.filename = filename.filename;
             }
 
+            file.node = ko.observable(file.node);
+
             return file;
         });
 
         utils.sortNodeList(files);
 
         node.list(files);
+
+        texts = texts.map((text) => {
+            text.node = ko.observable(text.node);
+
+            return text;
+        });
 
         utils.sortNodeList(texts);
 
@@ -49,16 +57,16 @@ module.exports = utils.wrapComponent(function*(params) {
         let days = {};
 
         for (let text of texts) {
-            let day = text.node.attributes.time ? moment.utc(text.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
+            let day = text.node().attributes.time ? moment.utc(text.node().attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
 
-            days[day] = days[day] || { texts: [], files: [], time: text.node.attributes.time };
+            days[day] = days[day] || { texts: [], files: [], time: text.node().attributes.time };
             days[day].texts.push(text);
         }
 
         for (let file of files) {
-            let day = file.node.attributes.time ? moment.utc(file.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
+            let day = file.node().attributes.time ? moment.utc(file.node().attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
 
-            days[day] = days[day] || { texts: [], files: [], time: file.node.attributes.time };
+            days[day] = days[day] || { texts: [], files: [], time: file.node().attributes.time };
             days[day].files.push(file);
         }
 

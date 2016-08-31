@@ -9,20 +9,10 @@ module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
     this.section = params.section;
 
-    this.owners = ko.asyncComputed([], function*(setter) {
-        if (!this.nodepath()) {
-            return [];
-        }
-
-        setter([]);
-        return yield api.vfs.list(this.nodepath().path + "/owners");
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return [];
-    });
-
-
+    this.ownersPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/owners" : false);
+    this.owners = ko.nodepathList(this.ownersPath, { noerror: true });
 
     this.dispose = () => {
+        this.owners.dispose();
     };
 });

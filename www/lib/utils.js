@@ -7,66 +7,6 @@ const api = require("api.io-client");
 
 let clipBoardContent = false;
 
-ko.asyncComputed = function(defaultValue, fn, onError, extend) {
-    let self = {};
-    let promise = co.wrap(fn.bind(self));
-    let reloadFlag = ko.observable(false);
-    let result = ko.observable(defaultValue);
-    let active = 0;
-    let computed = ko.pureComputed(() => {
-        let currentActive = ++active;
-        reloadFlag();
-
-        promise((value) => {
-            return result(value);
-        })
-        .then((data) => {
-            if (currentActive !== active) {
-                return;
-            }
-
-            delete self.triggeredByReload;
-
-            if (typeof data !== "undefined") {
-                result(data);
-            }
-        })
-        .catch((error) => {
-            if (currentActive !== active) {
-                return;
-            }
-
-            delete self.triggeredByReload;
-
-            if (onError) {
-                let ret = onError(error, result);
-
-                if (typeof ret !== "undefined") {
-                    result(ret);
-                }
-            } else {
-                result(defaultValue);
-            }
-        });
-    });
-
-    if (extend) {
-        computed.extend(extend);
-    }
-
-    let pure = ko.pureComputed(() => {
-        computed();
-        return result();
-    });
-
-    pure.reload = () => {
-        self.triggeredByReload = true;
-        reloadFlag(!reloadFlag());
-    };
-
-    return pure;
-};
-
 
 module.exports = {
     registerComponents: (list) => {
@@ -111,13 +51,13 @@ module.exports = {
     },
     sortNodeList: (list) => {
         list.sort((a, b) => {
-            if (!a.node.attributes.time) {
+            if (!ko.unwrap(a.node).attributes.time) {
                 return -1;
-            } else if (!b.node.attributes.time) {
+            } else if (!ko.unwrap(b.node).attributes.time) {
                 return 1;
             }
 
-            return a.node.attributes.time.timestamp - b.node.attributes.time.timestamp;
+            return ko.unwrap(a.node).attributes.time.timestamp - ko.unwrap(b.node).attributes.time.timestamp;
         });
     },
     seconds: () => {

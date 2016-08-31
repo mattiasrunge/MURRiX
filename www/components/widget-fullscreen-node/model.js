@@ -11,10 +11,7 @@ const loc = require("lib/location");
 
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
-    this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
-
     this.sidebarView = ko.observable("main");
-
     this.personPath = ko.observable(false);
     this.selectedTag = ko.observable(false);
     this.height = ko.pureComputed(() => {
@@ -30,86 +27,17 @@ module.exports = utils.wrapComponent(function*(params) {
         return heights[heights.length - 1];
     });
 
-    this.position = ko.pureComputed({
-        read: () => {
-            if (!this.nodepath()) {
-                return false;
-            }
+    this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
+    this.nodepath = ko.nodepath(this.showPath);
 
-            if (this.nodepath().node().attributes.where) {
-                if (this.nodepath().node().attributes.where.gps) {
-                    return this.nodepath().node().attributes.where.gps;
-                } else if (this.nodepath().node().attributes.where.manual) {
-                    return this.nodepath().node().attributes.where.manual;
-                }
-            }
+    this.locationPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/location" : false);
+    this.location = ko.nodepath(this.locationPath, { noerror: true });
 
-            return false;
-        },
-        write: (position) => {
-            let where = this.nodepath().node().attributes.where;
+    this.versionsPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/versions" : false);
+    this.versions = ko.nodepathList(this.versionsPath, { noerror: true });
 
-            where.manual = position;
-
-            api.vfs.setattributes(this.nodepath().path, { where: where })
-            .then((node) => {
-                this.nodepath().node(node);
-            })
-            .catch((error) => {
-                stat.printError(error);
-            });
-        }
-    });
-
-    this.location = ko.asyncComputed(false, function*(setter) {
-        if (!this.nodepath()) {
-            return false;
-        }
-
-        setter(false);
-
-        let node = yield api.vfs.resolve(this.nodepath().path + "/location", { noerror: true });
-
-        console.log("location", node);
-
-        return node;
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return false;
-    });
-
-    this.nodepath = ko.asyncComputed(false, function*(setter) {
-        let abspath = ko.unwrap(this.showPath);
-        let versions = [];
-
-        setter(false);
-
-        this.loading(true);
-        let item = yield api.vfs.resolve(abspath, { noerror: true });
-
-        console.log("item", item);
-
-        if (!item) {
-            this.loading(false);
-            return false;
-        }
-
-        let editable = yield api.vfs.access(abspath, "w");
-
-        versions = yield api.vfs.list(abspath + "/versions", {
-            noerror: true
-        });
-
-        console.log("versions", versions);
-
-        this.loading(false);
-
-        return { node: ko.observable(item), path: abspath, versions: versions, editable: editable };
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
-        return false;
-    });
+    this.tagsPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/tags" : false);
+    this.tags = ko.nodepathList(this.tagsPath, { noerror: true });
 
     this.initialCameraName = ko.pureComputed(() => {
         if (!this.nodepath()) {
@@ -152,29 +80,41 @@ module.exports = utils.wrapComponent(function*(params) {
         return false;
     });
 
-    this.tags = ko.asyncComputed([], function*(setter) {
-        if (!this.nodepath()) {
-            return [];
-        }
-
-        setter([]);
-
-        let tags = yield api.vfs.list(this.nodepath().path + "/tags", {
-            noerror: true
-        });
-
-        console.log("tags", tags);
-
-        return tags;
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return [];
-    });
-
     this.tagNames = ko.pureComputed(() => {
         return this.tags()
-        .map((tag) => tag.node.attributes.name)
+        .map((tag) => tag.node().attributes.name)
         .join("<br>");
+    });
+
+    this.position = ko.pureComputed({
+        read: () => {
+            if (!this.nodepath()) {
+                return false;
+            }
+
+            if (this.nodepath().node().attributes.where) {
+                if (this.nodepath().node().attributes.where.gps) {
+                    return this.nodepath().node().attributes.where.gps;
+                } else if (this.nodepath().node().attributes.where.manual) {
+                    return this.nodepath().node().attributes.where.manual;
+                }
+            }
+
+            return false;
+        },
+        write: (position) => {
+            let where = this.nodepath().node().attributes.where;
+
+            where.manual = position;
+
+            api.vfs.setattributes(this.nodepath().path, { where: where })
+            .then((node) => {
+                this.nodepath().node(node);
+            })
+            .catch((error) => {
+                stat.printError(error);
+            });
+        }
     });
 
     this.selectTag = ko.pureComputed({
@@ -183,11 +123,24 @@ module.exports = utils.wrapComponent(function*(params) {
                 return false;
             }
 
-            if (!this.selectedTag().link.attributes.y || !this.selectedTag().link.attributes.x || !this.selectedTag().link.attributes.width || !this.selectedTag().link.attributes.height) {
-                return { x1: false, x2: false, width: false, height: false };
+            if (!this.selectedTag().link.attributes.y ||
+                !this.selectedTag().link.attributes.x ||
+                !this.selectedTag().link.attributes.width ||
+                !this.selectedTag().link.attributes.height) {
+                return {
+                    x: false,
+                    y: false,
+                    width: false,
+                    height: false
+                };
             }
 
-            return { x: this.selectedTag().link.attributes.x, y: this.selectedTag().link.attributes.y, width: this.selectedTag().link.attributes.width, height: this.selectedTag().link.attributes.height };
+            return {
+                x: this.selectedTag().link.attributes.x,
+                y: this.selectedTag().link.attributes.y,
+                width: this.selectedTag().link.attributes.width,
+                height: this.selectedTag().link.attributes.height
+            };
         },
         write: (value) => {
             let attributes;
@@ -201,7 +154,10 @@ module.exports = utils.wrapComponent(function*(params) {
                     width: null,
                     height: null
                 };
-            } else if (this.selectedTag().link.attributes.y !== value.y || this.selectedTag().link.attributes.x !== value.x || this.selectedTag().link.attributes.width !== value.width || this.selectedTag().link.attributes.height !== value.height) {
+            } else if (this.selectedTag().link.attributes.y !== value.y ||
+                       this.selectedTag().link.attributes.x !== value.x ||
+                       this.selectedTag().link.attributes.width !== value.width ||
+                       this.selectedTag().link.attributes.height !== value.height) {
                 attributes = value;
             } else {
                 return;
@@ -211,6 +167,9 @@ module.exports = utils.wrapComponent(function*(params) {
             .then((abspaths) => {
                 return api.vfs.setattributes(abspaths[0], attributes);
             })
+            .then(() => {
+                this.selectedTag(false);
+            })
             .catch((error) => {
                 stat.printError(error);
             });
@@ -218,111 +177,46 @@ module.exports = utils.wrapComponent(function*(params) {
         owner: this
     });
 
-    this.selectDone = () => {
-        this.selectedTag(false);
-        this.tags.reload();
-    };
-
-    //     this.faces = ko.asyncComputed([], function*(setter) {
-    //         let abspath = ko.unwrap(this.showPath);
-    //
-    //         setter([]);
-    //
-    //         let faces = yield api.file.getFaces(abspath);
-    //
-    //         console.log("faces", faces);
-    //
-    //         return faces;
-    //     }.bind(this), (error) => {
-    //         stat.printError(error);
-    //         return [];
-    //     });
-
-    this.currentIndex = ko.pureComputed(() => {
+    this.surroundings = ko.pureComputed(() => {
         if (!this.nodepath()) {
-            return -1;
+            return false;
         }
 
-        let nodepath = node.list().filter((nodepath2) => nodepath2.node._id === this.nodepath().node()._id)[0];
-
-        return node.list().indexOf(nodepath);
-    });
-
-    this.nextPath = ko.pureComputed(() => {
-        let index = this.currentIndex();
+        let index = node.list()
+        .map((nodepath) => nodepath.path)
+        .indexOf(this.nodepath().path);
 
         if (index === -1) {
             return false;
         }
 
-        index++;
+        let result = {};
 
-        if (index >= node.list().length) {
-            index = 0;
+        if (index + 1 >= node.list().length) {
+            result.next = node.list()[0];
+        } else {
+            result.next = node.list()[index + 1];
         }
 
-        return node.list()[index].path;
+        if (index - 1 < 0) {
+            result.previous = node.list()[node.list().length - 1];
+        } else {
+            result.previous = node.list()[index - 1];
+        }
+
+        return result;
     });
 
-    this.previousPath = ko.pureComputed(() => {
-        let index = this.currentIndex();
-
-        if (index === -1) {
-            return false;
-        }
-
-        index--;
-
-        if (index < 0) {
-            index = node.list().length - 1;
-        }
-
-        return node.list()[index].path;
-    });
-
-    let nextFile = ko.computed(utils.co(function*() {
-        let abspath = this.nextPath();
-
-        if (!abspath) {
+    let surroundingsLoad = ko.computed(utils.co(function*() {
+        if (!this.surroundings()) {
             return;
         }
 
-        let node = yield api.vfs.resolve(abspath, { noerror: true });
+        let ids = [ this.surroundings().previous.node()._id, this.surroundings().next.node()._id ];
+        let filenames = yield api.file.getPictureFilenames(ids, null, ko.unwrap(this.height));
 
-        if (!node) {
-            return;
-        }
-
-        let height = ko.unwrap(this.height);
-
-        if (node.attributes.type === "image") {
-            let filenames = (yield api.file.getPictureFilenames([ node._id ], null, height))[0];
-
-            let image = new Image();
-            image.src = filenames.filename;
-        }
-    }.bind(this)));
-
-    let previousFile = ko.computed(utils.co(function*() {
-        let abspath = this.previousPath();
-
-        if (!abspath) {
-            return;
-        }
-
-        let node = yield api.vfs.resolve(abspath, { noerror: true });
-
-        if (!node) {
-            return;
-        }
-
-        let height = ko.unwrap(this.height);
-
-        if (node.attributes.type === "image") {
-            let filenames = (yield api.file.getPictureFilenames([ node._id ], null, height))[0];
-
-            let image = new Image();
-            image.src = filenames.filename;
+        for (let filename of filenames) {
+            (new Image()).src = filename.filename;
         }
     }.bind(this)));
 
@@ -347,7 +241,6 @@ module.exports = utils.wrapComponent(function*(params) {
 
         api.vfs.setattributes(this.nodepath().path, { angle: angle })
         .then((node) => {
-            this.nodepath().node(node);
             console.log("Saving angle attribute as " + angle + " successfully!", node);
         })
         .catch((error) => {
@@ -364,7 +257,6 @@ module.exports = utils.wrapComponent(function*(params) {
 
         api.vfs.setattributes(this.nodepath().path, { mirror: mirror })
         .then((node) => {
-            this.nodepath().node(node);
             console.log("Saving mirror attribute as " + mirror + " successfully!", node);
         })
         .catch((error) => {
@@ -382,9 +274,6 @@ module.exports = utils.wrapComponent(function*(params) {
 
     this.removeTag = (tag) => {
         api.vfs.unlink(this.showPath() + "/tags/" + tag.name)
-        .then(() => {
-            this.tags.reload();
-        })
         .catch((error) => {
             stat.printError(error);
         });
@@ -398,17 +287,17 @@ module.exports = utils.wrapComponent(function*(params) {
         this.personPath(false);
 
         api.vfs.symlink(value, this.showPath() + "/tags")
-        .then(() => {
-            this.tags.reload();
-        })
         .catch((error) => {
             stat.printError(error);
         });
     });
 
     this.dispose = () => {
-        nextFile.dispose();
-        previousFile.dispose();
+        this.nodepath.dispose();
+        this.location.dispose();
+        this.versions.dispose();
+        this.tags.dispose();
+        surroundingsLoad.dispose();
         subscription.dispose();
         stat.destroy(this.loading);
     };

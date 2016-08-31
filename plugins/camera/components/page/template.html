@@ -56,7 +56,7 @@
                     <tr>
                         <td><strong>Owners</strong></td>
                         <td data-bind="foreach: owners">
-                            <div><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }, text: $data.node.attributes.name"></a></div>
+                            <div><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }, text: $data.node().attributes.name"></a></div>
                         </td>
                     </tr>
                 </tbody>

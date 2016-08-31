@@ -55,9 +55,9 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
             session.stars(result.stars);
 
             if (result.created) {
-                stat.printSuccess(node.nodepath().node().attributes.name + " starred");
+                stat.printSuccess("Star created");
             } else {
-                stat.printSuccess(node.nodepath().node().attributes.name + " unstarred");
+                stat.printSuccess("Star removed");
             }
         })
         .catch((error) => {

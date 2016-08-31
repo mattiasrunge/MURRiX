@@ -1084,7 +1084,7 @@ ko.bindingHandlers.picture = {
                 for (let tag of tags) {
                     let $frame = $("<div class='tag-frame'></div>");
                     let $label = $("<div class='tag-label'></div>");
-                    let $text = $("<span class='tag-label-text'>" + tag.node.attributes.name + "</span>");
+                    let $text = $("<span class='tag-label-text'>" + tag.node().attributes.name + "</span>");
 
                     let top = (tag.link.attributes.y - (tag.link.attributes.height / 2)) * 100;
                     let left = (tag.link.attributes.x - (tag.link.attributes.width / 2)) * 100;

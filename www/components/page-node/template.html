@@ -1,14 +1,14 @@
 <div data-bind="if: nodepath">
-    <div data-bind="if: type() === 'p'">
+    <div data-bind="if: nodepath().node().properties.type === 'p'">
         <people-page params="{ nodepath: nodepath, section: section }"></people-page>
     </div>
-    <div data-bind="if: type() === 'a'">
+    <div data-bind="if: nodepath().node().properties.type === 'a'">
         <album-page params="{ nodepath: nodepath, section: section }"></album-page>
     </div>
-    <div data-bind="if: type() === 'l'">
+    <div data-bind="if: nodepath().node().properties.type === 'l'">
         <location-page params="{ nodepath: nodepath, section: section }"></location-page>
     </div>
-    <div data-bind="if: type() === 'c'">
+    <div data-bind="if: nodepath().node().properties.type === 'c'">
         <camera-page params="{ nodepath: nodepath, section: section }"></camera-page>
     </div>
 
@@ -44,7 +44,7 @@
         </table>
     </div>
 </div>
-<div data-bind="if: !nodepath() && !nodeLoading()">
+<!--<div data-bind="if: !nodepath() && !nodeLoading()">
     Invalid path
-</div>
+</div>-->
 

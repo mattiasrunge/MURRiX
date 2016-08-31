@@ -41,18 +41,10 @@ module.exports = utils.wrapComponent(function*(params) {
         return false;
     });
 
-    this.residents = ko.asyncComputed([], function*(setter) {
-        if (!this.nodepath()) {
-            return [];
-        }
-
-        setter([]);
-        return yield api.vfs.list(this.nodepath().path + "/residents");
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return [];
-    });
+    this.residentsPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/residents" : false);
+    this.residents = ko.nodepathList(this.residentsPath, { noerror: true });
 
     this.dispose = () => {
+        this.residents.dispose();
     };
 });

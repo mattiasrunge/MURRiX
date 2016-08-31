@@ -1,31 +1,22 @@
 "use strict";
 
 const ko = require("knockout");
-const api = require("api.io-client");
 const utils = require("lib/utils");
-const stat = require("lib/status");
 
 module.exports = utils.wrapComponent(function*(params) {
-    this.loading = stat.create();
     this.nodepath = params.nodepath;
     this.section = params.section;
-    this.files = ko.observableArray();
-
-    this.count = ko.asyncComputed(-1, function*(setter) {
-        if (!this.nodepath()) {
-            return [];
+    this.filesPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/files" : false);
+    this.filesNodepath = ko.nodepath(this.filesPath, { noerror: true });
+    this.count = ko.pureComputed(() => {
+        if (!this.filesNodepath()) {
+            return 0;
         }
 
-        setter([]);
-
-        let filesNode = yield api.vfs.resolve(this.nodepath().path + "/files");
-        return filesNode.properties.children.length;
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return -1;
+        return this.filesNodepath().node().properties.children.length;
     });
 
     this.dispose = () => {
-        stat.destroy(this.loading);
+        this.filesNodepath.dispose();
     };
 });
