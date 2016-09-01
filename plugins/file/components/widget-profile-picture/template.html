@@ -2,4 +2,6 @@
     <i class="material-icons md-20 spin">cached</i>
     <div>Loading...</div>
 </div>
-<div data-bind="picture: { item: item, width: size, height: size, nolazyload: nolazyload, classes: classes }"></div>
+<div data-bind="if: profileUrl">
+    <div data-bind="picture: { filename: profileUrl, width: size, height: size, nolazyload: nolazyload, classes: classes }"></div>
+</div>

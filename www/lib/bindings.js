@@ -1025,7 +1025,7 @@ ko.bindingHandlers.picture = {
         let data = ko.unwrap(valueAccessor());
         let item = ko.unwrap(data.item);
         let selectTag = ko.unwrap(data.selectTag);
-        let filename = ko.unwrap(data.filename) || item.filename;
+        let filename = ko.unwrap(data.filename) || (item ? item.filename : false);
         let tags = ko.unwrap(data.tags);
         let width = ko.unwrap(data.width);
         let height = ko.unwrap(data.height);
@@ -1043,7 +1043,7 @@ ko.bindingHandlers.picture = {
 
         $element.addClass("grid-picture-container");
 
-        if (item) {
+        if (filename) {
             let css = [];
 
             if (width) {

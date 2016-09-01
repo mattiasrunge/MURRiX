@@ -11,7 +11,7 @@ ko.nodepath = function(path, options) {
     options.nodepath = true;
 
     let loading = stat.create();
-    let result = ko.observable(false);
+    let result = ko.observable();
     let active = 0;
     let lastPath = false;
     let hasLoaded = false;

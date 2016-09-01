@@ -126,6 +126,67 @@ let file = api.register("file", {
 
         return api.mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
     },
+    getMediaUrl: function*(session, ids, format) {
+        format = format || {};
+
+        if (typeof format.type === "undefined") {
+            throw new Error("Missing type from format");
+        }
+
+        if (format.type === "image" || format.type === "video") {
+            if (typeof format.width === "undefined") {
+                throw new Error("Missing width from format");
+            }
+
+            if (typeof format.height === "undefined") {
+                throw new Error("Missing height from format");
+            }
+        }
+
+        let idQuery = ids instanceof Array ? { $in: ids } : ids;
+        let nodes = yield api.vfs.query(session, {
+            _id: idQuery
+        }, {
+            fields: {
+                "attributes.type": 1,
+                "attributes.diskfilename": 1,
+                "attributes.angle": 1,
+                "attributes.mirror": 1,
+                "attributes.timeindex": 1
+            }
+        });
+
+        let results = yield Promise.all(nodes.map((node) => {
+            return new Promise((resolve) => {
+                api.mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
+                    angle: node.attributes.angle,
+                    mirror: node.attributes.mirror,
+                    timeindex: node.attributes.timeindex,
+                    width: format.width,
+                    height: format.height,
+                    type: format.type
+                })
+                .then((filename) => {
+                    resolve({ id: node._id, url: path.join("file", "media", path.basename(filename)) });
+                })
+                .catch((error) => {
+                    console.log(error); // TODO: Log event somewhere nicer
+                    resolve(false);
+                });
+            });
+        }));
+
+        results = results.filter((result) => result);
+
+        let result = {};
+
+        for (let n = 0; n < results.length; n++) {
+            result[results[n].id] = results[n].url;
+        }
+
+        return ids instanceof Array ? result : (result[ids] || false);
+    },
+
     getPictureFilenames: function*(session, ids, width, height) {
         let nodes = yield api.vfs.query(session, {
             _id: { $in: ids }
