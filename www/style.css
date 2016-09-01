@@ -1,12 +1,12 @@
 
-@import: "node_modules/bootstrap/dist/css/bootstrap.css";
-@import: "node_modules/typeahead.js-bootstrap-css/typeaheadjs.css";
-@import: "node_modules/bootstrap-slider/dist/css/bootstrap-slider.css";
-@import: "node_modules/mprogress/build/css/mprogress.css";
-@import: "node_modules/animate.css/animate.css";
-@import: "node_modules/snackbarjs/dist/snackbar.css";
-@import: "node_modules/jdomizio-imgareaselect/distfiles/css/imgareaselect-default.css";
-@import: "node_modules/dragula/dist/dragula.css";
+@import "node_modules/bootstrap/dist/css/bootstrap.css";
+@import "node_modules/typeahead.js-bootstrap-css/typeaheadjs.css";
+@import "node_modules/bootstrap-slider/dist/css/bootstrap-slider.css";
+@import "node_modules/mprogress/build/css/mprogress.css";
+@import "node_modules/animate.css/animate.css";
+@import "node_modules/snackbarjs/dist/snackbar.css";
+@import "node_modules/jdomizio-imgareaselect/distfiles/css/imgareaselect-default.css";
+@import "node_modules/dragula/dist/dragula.css";
 
 @keyframes spin {
     from {transform:rotate(360deg);}
@@ -32,14 +32,6 @@
 .material-icons.md-36 { font-size: 36px; }
 .material-icons.md-48 { font-size: 48px; }
 .material-icons.md-96 { font-size: 96px; }
-
-/* Rules for using icons as black on a light background. */
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
-
-/* Rules for using icons as white on a dark background. */
-.material-icons.md-light { color: rgba(255, 255, 255, 1); }
-.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
 widget-node-text-attribute {
     display: block;
@@ -143,7 +135,7 @@ body {
     right: 10px;
     bottom: 10px;
     color: white;
-    text-shadow: 0px 0px 8px black;
+    text-shadow: 0 0 8px black;
 }
 
 .grid-picture-title {
@@ -152,7 +144,7 @@ body {
     right: 10px;
     bottom: 10px;
     color: #777;
-    text-shadow: 0px 0px 8px white;
+    text-shadow: 0 0 8px white;
 }
 
 .grid-picture-type:hover {
@@ -640,28 +632,17 @@ widget-node-sections .nav-pills > li > a:focus {
     font-size: 16px;
     font-weight: bold;
     border-radius: 1px;
-    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
-            box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
     height: 0;
-    -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
-        -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
-            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
-    -webkit-transform: translateY(200%);
-        -ms-transform: translateY(200%);
-        -o-transform: translateY(200%);
-            transform: translateY(200%);
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
+    transform: translateY(200%);
 }
 .snackbar.snackbar-opened {
     padding: 14px 15px;
     margin-bottom: 20px;
     height: auto;
-    -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
-        -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
-            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
-    -webkit-transform: none;
-        -ms-transform: none;
-        -o-transform: none;
-            transform: none;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
+    transform: none;
 }
 .snackbar.toast {
     border-radius: 200px;
@@ -712,10 +693,6 @@ widget-node-sections .nav-pills > li > a:focus {
     outline: none;
 }
 
-.node-select-text:placeholder-shown {
-/*     font-style: italic; */
-}
-
 
 .news-container {
     margin-top: 15px;
@@ -736,9 +713,6 @@ widget-node-sections .nav-pills > li > a:focus {
 .news-container .news-item .news-title {
     margin: 10px;
     color: #888;
-}
-
-.news-container .news-item .news-media {
 }
 
 .news-container .news-item .news-media-files a {
@@ -858,7 +832,6 @@ widget-node-sections .nav-pills > li > a:focus {
     margin-bottom: -3px;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: block;
     margin-top: 10px;
     display: block;
 }
@@ -907,16 +880,16 @@ widget-node-sections .nav-pills > li > a:focus {
     position: absolute;
     width: 88px;
     height: 88px;
-    top: 0px;
-    left: 0px;
-    border-radius: 3px 0px 0px 3px;
+    top: 0;
+    left: 0;
+    border-radius: 3px 0 0 3px;
     z-index: 3;
 }
 
 .relation-person-image img {
     width: 88px;
     height: 88px;
-    border-radius: 3px 0px 0px 3px;
+    border-radius: 3px 0 0 3px;
 }
 
 .relation-person-image-small {
@@ -941,7 +914,7 @@ widget-node-sections .nav-pills > li > a:focus {
 .relation-person-image-small-title {
     padding: 5px;
     text-align: center;
-    margin: 0px 30px;
+    margin: 0 30px;
     border-radius: 3px;
     margin-left: auto;
     margin-right: auto;
@@ -976,13 +949,13 @@ widget-node-sections .nav-pills > li > a:focus {
 .relation-person-title-background {
     z-index: -1;
     position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     opacity: 0.7;
     background-color: white;
-    border-radius: 3px 3px 0px 0px;
+    border-radius: 3px 3px 0 0;
 }
 
 .relation-person-title-male {
@@ -996,7 +969,7 @@ widget-node-sections .nav-pills > li > a:focus {
 .relation-expand {
     width: 20px;
     height: 20px;
-    padding: 0px;
+    padding: 0;
     margin: 0;
     margin-left: -9px;
     z-index: 1;
@@ -1020,7 +993,7 @@ widget-node-sections .nav-pills > li > a:focus {
 .relation-cut {
     width: 16px;
     height: 16px;
-    padding: 0px;
+    padding: 0;
     margin: 0;
     margin-left: -7px;
     z-index: 1;
@@ -1045,7 +1018,7 @@ widget-node-sections .nav-pills > li > a:focus {
 .relation-add {
     width: 16px;
     height: 16px;
-    padding: 0px;
+    padding: 0;
     margin: 0;
     margin-left: -7px;
     z-index: 1;
@@ -1082,8 +1055,8 @@ widget-node-sections .nav-pills > li > a:focus {
 
 .relation-zoom-control .line {
     position: absolute;
-    top: 0px;
-    bottom: 0px;
+    top: 0;
+    bottom: 0;
     left: 8px;
     background-color: white;
     width: 2px;
@@ -1094,19 +1067,19 @@ widget-node-sections .nav-pills > li > a:focus {
 .relation-zoom-control .mark-container {
     position: absolute;
     top: 20px;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     bottom: 20px;
     z-index: 2;
 }
 
 .relation-zoom-control .mark {
     position: absolute;
-    left: 0px;
+    left: 0;
     width: 18px;
     height: 10px;
     z-index: 2;
-    padding: 0px;
+    padding: 0;
     margin: 0;
     border-radius: 3px;
     border: 1px solid #ccc;
@@ -1117,12 +1090,12 @@ widget-node-sections .nav-pills > li > a:focus {
 
 .relation-zoom-control .inc {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 18px;
     height: 18px;
     z-index: 2;
-    padding: 0px;
+    padding: 0;
     margin: 0;
     border-radius: 3px;
     border: 1px solid #ccc;
@@ -1133,8 +1106,8 @@ widget-node-sections .nav-pills > li > a:focus {
 
 .relation-zoom-control .dec {
     position: absolute;
-    bottom: 0px;
-    left: 0px;
+    bottom: 0;
+    left: 0;
     width: 18px;
     height: 18px;
     z-index: 2;
@@ -1216,9 +1189,4 @@ widget-node-sections .nav-pills > li > a:focus {
 
 .gu-transit {
     display: none;
-}
-
-.gu-mirror {
-    width: 64px !important;
-    height: 64px !important;
 }

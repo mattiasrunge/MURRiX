@@ -3,6 +3,6 @@
         <div data-bind="picture: { item: pictureItem, width: size, classes: 'img-responsive' }"></div>
     </a>
 </div>
-<div class="news-description" data-bind="visible: item() && item().attributes.description !== '', if: item() && item().attributes.description !== ''">
-    <span data-bind="html: item().attributes.description"></span>
+<div class="news-description" data-bind="visible: item() && item().node().attributes.description !== '', if: item() && item().node().attributes.description !== ''">
+    <span data-bind="html: item().node().attributes.description"></span>
 </div>

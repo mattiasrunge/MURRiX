@@ -23,18 +23,16 @@ module.exports = utils.wrapComponent(function*(params) {
 
         this.loading(true);
 
-        let filenames = yield api.file.getPictureFilenames(files.map((file) => file.node._id), this.size, this.size);
+        let filenames = yield api.file.getPictureFilenames(files.map((file) => file.node()._id), this.size, this.size);
 
         this.loading(false);
 
         files = files.map((file) => {
-            let filename = filenames.filter((filename) => filename.id === file.node._id)[0];
+            let filename = filenames.filter((filename) => filename.id === file.node()._id)[0];
 
             if (filename) {
                 file.filename = filename.filename;
             }
-
-            file.node = ko.observable(file.node);
 
             return file;
         });
@@ -42,12 +40,6 @@ module.exports = utils.wrapComponent(function*(params) {
         utils.sortNodeList(files);
 
         node.list(files);
-
-        texts = texts.map((text) => {
-            text.node = ko.observable(text.node);
-
-            return text;
-        });
 
         utils.sortNodeList(texts);
 

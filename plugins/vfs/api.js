@@ -90,9 +90,19 @@ let vfs = api.register("vfs", {
             }
         ]);
     }),
-    access: function*(session, abspathOrNode, modestr) {
-        let node = abspathOrNode;
+    emitEvent: co(function*(session, event, abspathOrNode) {
+        if (event === "update") {
+            let node = yield vfs.resolve(session, abspathOrNode);
+            let paths = yield vfs.lookup(session, node._id);
 
+            for (let abspath of paths) {
+                vfs.emit("update", { path: abspath });
+            }
+        } else {
+            vfs.emit(event, { path: abspathOrNode });
+        }
+    }),
+    access: function*(session, abspathOrNode, modestr) {
         if (!session.username) {
             throw new Error("Corrupt session, please reinitialize");
         }
@@ -101,9 +111,7 @@ let vfs = api.register("vfs", {
             return true;
         }
 
-        if (typeof node === "string") {
-            node = yield vfs.resolve(session, abspathOrNode, { noerror: true });
-        }
+        let node = yield vfs.resolve(session, abspathOrNode, { noerror: true });
 
         if (!node || !node._id) {
             throw new Error("Node not valid, abspathOrNode was " + JSON.stringify(abspathOrNode, null, 2));
@@ -469,7 +477,7 @@ let vfs = api.register("vfs", {
             ac: ac
         });
 
-        vfs.emit("update", { path: abspath });
+        yield vfs.emitEvent(session, "update", abspath);
 
         if (options.recursive && node.properties.type !== "s") {
             let children = yield vfs.list(session, abspath, { nofollow: true });
@@ -500,7 +508,7 @@ let vfs = api.register("vfs", {
             mode: mode
         });
 
-        vfs.emit("update", { path: abspath });
+        yield vfs.emitEvent(session, "update", abspath);
 
         if (options.recursive && node.properties.type !== "s") {
             let children = yield vfs.list(session, abspath, { nofollow: true });
@@ -546,7 +554,7 @@ let vfs = api.register("vfs", {
             gid: node.properties.gid
         });
 
-        vfs.emit("update", { path: abspath });
+        yield vfs.emitEvent(session, "update", abspath);
 
         if (options.recursive && node.properties.type !== "s") {
             let children = yield vfs.list(session, abspath, { nofollow: true });
@@ -584,7 +592,7 @@ let vfs = api.register("vfs", {
             attributes: attributes
         });
 
-        vfs.emit("update", { path: abspath });
+        yield vfs.emitEvent(session, "update", abspath);
 
         return node;
     },
@@ -611,7 +619,7 @@ let vfs = api.register("vfs", {
             properties: properties
         });
 
-        vfs.emit("update", { path: abspath });
+        yield vfs.emitEvent(session, "update", abspath);
 
         return node;
     },
@@ -696,8 +704,8 @@ let vfs = api.register("vfs", {
             name: name
         });
 
-        vfs.emit("new", { path: abspath });
-        vfs.emit("update", { path: parentPath });
+        yield vfs.emitEvent(session, "new", abspath);
+        yield vfs.emitEvent(session, "update", parentPath);
 
         return node;
     },
@@ -726,7 +734,7 @@ let vfs = api.register("vfs", {
             name: name
         });
 
-        vfs.emit("update", { path: parentPath });
+        yield vfs.emitEvent(session, "update", parentPath);
 
         let rremove = co(function*(abspath, id) {
             let node = yield db.findOne("nodes", { _id: id });
@@ -756,7 +764,7 @@ let vfs = api.register("vfs", {
                     name: path.basename(abspath)
                 });
 
-                vfs.emit("removed", { path: abspath });
+                yield vfs.emitEvent(session, "removed", abspath);
             }
         });
 
@@ -819,7 +827,7 @@ let vfs = api.register("vfs", {
             name: name
         });
 
-        vfs.emit("update", { path: destpath });
+        yield vfs.emitEvent(session, "update", destpath);
     },
     move: function*(session, srcpath, destpath) {
         let srcparentPath = path.dirname(srcpath);
@@ -891,8 +899,8 @@ let vfs = api.register("vfs", {
         }
         session.almighty = false;
 
-        vfs.emit("update", { path: srcparentPath });
-        vfs.emit("update", { path: destparentPath });
+        yield vfs.emitEvent(session, "update", srcparentPath);
+        yield vfs.emitEvent(session, "update", destparentPath);
     },
     copy: function*(session, srcpath, destpath) {
         let srcparent = yield vfs.resolve(session, path.dirname(srcpath));
@@ -959,7 +967,7 @@ let vfs = api.register("vfs", {
                 node: node
             });
 
-            vfs.emit("new", { path: abspath });
+            yield vfs.emitEvent(session, "new", abspath);
 
             return node._id;
         });
@@ -979,7 +987,7 @@ let vfs = api.register("vfs", {
             name: name
         });
 
-        vfs.emit("update", { path: destparentPath });
+        yield vfs.emitEvent(session, "update", destparentPath);
     },
     allocateUploadId: function*(session) {
         let id = uuid.v4();

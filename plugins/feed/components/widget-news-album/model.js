@@ -11,21 +11,24 @@ module.exports = utils.wrapComponent(function*(params) {
     this.width = 155;
     this.height = 270;
 
+    this.fileListPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().attributes.path + "/files" : false);
+    this.fileList = ko.nodepathList(this.fileListPath, { limit: 3, noerror: true });
+
+
     this.files = ko.asyncComputed([], function*(setter) {
-        if (!this.nodepath()) {
+        if (this.fileList().length === 0) {
             return [];
         }
 
         setter([]);
 
         this.loading(true);
-        let files = yield api.vfs.list(this.nodepath().node().attributes.path + "/files", { limit: 3 });
-        let filenames = yield api.file.getPictureFilenames(files.map((file) => file.node._id), this.width, this.height);
+        let filenames = yield api.file.getPictureFilenames(this.fileList().map((file) => file.node()._id), this.width, this.height);
 
         this.loading(false);
 
-        files = files.map((file) => {
-            let filename = filenames.filter((filename) => filename.id === file.node._id)[0];
+        let files = this.fileList().map((file) => {
+            let filename = filenames.filter((filename) => filename.id === file.node()._id)[0];
 
             if (filename) {
                 file.filename = filename.filename;
@@ -45,36 +48,12 @@ module.exports = utils.wrapComponent(function*(params) {
         return [];
     });
 
-    this.item = ko.asyncComputed(false, function*(setter) {
-        if (!this.nodepath()) {
-            return false;
-        }
-
-        setter(false);
-
-        this.loading(true);
-        let item = yield api.vfs.resolve(this.nodepath().node().attributes.path, { noerror: true });
-        this.loading(false);
-
-        console.log("item", item);
-
-        return item;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
-        return false;
-    });
-
-    let subscription = api.vfs.on("update", (data) => {
-        if (data.path === this.nodepath().node().attributes.path) {
-            this.item.reload();
-        } else if (data.path === this.nodepath().node().attributes.path + "/files") {
-            this.files.reload();
-        }
-    });
+    this.itemPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().attributes.path : false);
+    this.item = ko.nodepath(this.itemPath, { noerror: true });
 
     this.dispose = () => {
-        api.vfs.off(subscription);
+        this.fileList.dispose();
+        this.item.dispose();
         stat.destroy(this.loading);
     };
 });

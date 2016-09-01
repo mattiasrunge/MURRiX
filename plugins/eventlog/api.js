@@ -2,7 +2,6 @@
 
 const co = require("bluebird").coroutine;
 const api = require("api.io");
-const chron = require("chron-time");
 const bus = require("../../core/lib/bus");
 const db = require("../../core/lib/db");
 
@@ -13,7 +12,7 @@ let eventlog = api.register("eventlog", {
     init: co(function*(config) {
         params = config;
 
-        bus.on("*", eventlog._save)
+        bus.on("*", eventlog._save);
     }),
     _save: co(function*(event, data) {
         yield db.insertOne("eventlog", {

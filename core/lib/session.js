@@ -67,7 +67,7 @@ module.exports = {
         let saveList = Array.from(updatedSessions);
         updatedSessions.clear();
 
-        let now = new Date().getTime();
+        let now = Date.now();
         let expiredList = [];
 
         for (let sessionId of Object.keys(sessions)) {

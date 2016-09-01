@@ -61,7 +61,7 @@ module.exports = {
         });
     },
     seconds: () => {
-        return Math.floor(new Date().getTime() / 1000);
+        return Math.floor(Date.now() / 1000);
     },
     upload: (url, file, progressCallback) => {
         return new Promise((resolve, reject) => {

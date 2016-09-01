@@ -8,11 +8,13 @@ const node = require("lib/node");
 
 ko.nodepath = function(path, options) {
     options = options || {};
+    options.nodepath = true;
 
     let loading = stat.create();
     let result = ko.observable(false);
     let active = 0;
     let lastPath = false;
+    let hasLoaded = false;
 
     let load = co.wrap(function*(path) {
         let data = false;
@@ -21,10 +23,7 @@ ko.nodepath = function(path, options) {
         let currentActive = ++active;
 
         try {
-            data = (yield api.vfs.resolve(path, {
-                nodepath: true,
-                noerror: options.noerror
-            })) || false;
+            data = (yield api.vfs.resolve(path, options)) || false;
 
             if (data) {
                 data.node = ko.observable(data.node);
@@ -37,10 +36,10 @@ ko.nodepath = function(path, options) {
             return;
         }
 
+        hasLoaded = true;
         loading(false);
         result(data);
     });
-
 
     let computed = ko.pureComputed(() => {
         let newPath = ko.unwrap(path);
@@ -48,12 +47,6 @@ ko.nodepath = function(path, options) {
         if (newPath !== lastPath) {
             lastPath = newPath;
             load(newPath);
-        }
-    });
-
-    let subscription = api.vfs.on("new|removed|update", (event) => {
-        if (event.path === lastPath) {
-            pure.reload();
         }
     });
 
@@ -65,6 +58,14 @@ ko.nodepath = function(path, options) {
     pure.reload = () => {
         load(lastPath);
     };
+
+    pure.hasLoaded = () => hasLoaded;
+
+    let subscription = api.vfs.on("new|removed|update", (event) => {
+        if (event.path === lastPath) {
+            pure.reload();
+        }
+    });
 
     pure.dispose = () => {
         stat.destroy(loading);
@@ -81,6 +82,7 @@ ko.nodepathList = function(path, options) {
     let result = ko.observableArray([]);
     let active = 0;
     let lastPath = false;
+    let hasLoaded = false;
 
     let load = co.wrap(function*(path) {
         let data = [];
@@ -89,9 +91,7 @@ ko.nodepathList = function(path, options) {
         let currentActive = ++active;
 
         try {
-            data = (yield api.vfs.list(path, {
-                noerror: options.noerror
-            })) || [];
+            data = (yield api.vfs.list(path, options)) || [];
 
             for (let item of data) {
                 item.node = ko.observable(item.node);
@@ -104,10 +104,10 @@ ko.nodepathList = function(path, options) {
             return;
         }
 
+        hasLoaded = true;
         loading(false);
         result(data);
     });
-
 
     let computed = ko.pureComputed(() => {
         let newPath = ko.unwrap(path);
@@ -115,12 +115,6 @@ ko.nodepathList = function(path, options) {
         if (newPath !== lastPath) {
             lastPath = newPath;
             load(newPath);
-        }
-    });
-
-    let subscription = api.vfs.on("update", (event) => {
-        if (event.path === lastPath || node.dirname(event.path) === lastPath) {
-            pure.reload();
         }
     });
 
@@ -132,6 +126,14 @@ ko.nodepathList = function(path, options) {
     pure.reload = () => {
         load(lastPath);
     };
+
+    pure.hasLoaded = () => hasLoaded;
+
+    let subscription = api.vfs.on("update", (event) => {
+        if (event.path === lastPath || node.dirname(event.path) === lastPath) {
+            pure.reload();
+        }
+    });
 
     pure.dispose = () => {
         stat.destroy(loading);

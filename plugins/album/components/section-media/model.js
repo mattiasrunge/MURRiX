@@ -10,34 +10,25 @@ module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = params.nodepath;
     this.size = 226;
 
-    this.data = ko.asyncComputed([], function*(setter) {
-        let result = {
-            files: [],
-            texts: []
-        };
+    this.filesPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/files" : false);
+    this.files = ko.nodepathList(this.filesPath, { noerror: true });
 
-        if (!this.nodepath()) {
-            return result;
-        }
+    this.textsPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/texts" : false);
+    this.texts = ko.nodepathList(this.textsPath, { noerror: true });
 
-        setter(result);
+    this.data = ko.pureComputed(() => {
+        let files = this.files();
+        let texts = this.texts();
 
-        this.loading(true);
-        result.files = yield api.vfs.list(this.nodepath().path + "/files");
-        result.texts = yield api.vfs.list(this.nodepath().path + "/texts");
-        this.loading(false);
-
-        return result;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
         return {
-            files: [],
-            texts: []
+            files: this.files.hasLoaded() ? files : [],
+            texts: this.texts.hasLoaded() ? texts : []
         };
     });
 
     this.dispose = () => {
+        this.files.dispose();
+        this.texts.dispose();
         stat.destroy(this.loading);
     };
 });

@@ -1,9 +1,5 @@
 "use strict";
 
-/* TODO:
- * Allow drag and drop to set profile picture
- */
-
 const ko = require("knockout");
 const api = require("api.io-client");
 const utils = require("lib/utils");
@@ -29,6 +25,11 @@ module.exports = utils.wrapComponent(function*(params) {
         this.loading(true);
         result.files = yield api.people.findByTags(this.nodepath().path);
         this.loading(false);
+
+        result.files = result.files.map((file) => {
+            file.node = ko.observable(file.node);
+            return file;
+        });
 
         return result;
     }.bind(this), (error) => {

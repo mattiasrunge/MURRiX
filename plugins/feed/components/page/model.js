@@ -64,16 +64,16 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
 
     console.log("news", list);
 
-    let filterd = [];
+    let filtered = [];
     for (let item of list) {
         let readable = yield api.vfs.access(item.node.attributes.path, "r");
 
         if (readable) {
-            filterd.push(item);
+            filtered.push(item);
         }
     }
 
-    this.list(filterd.map((item) => {
+    this.list(filtered.map((item) => {
         item.node = ko.observable(item.node);
         return item;
     }));

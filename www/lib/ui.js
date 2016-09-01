@@ -3,7 +3,6 @@
 const $ = require("jquery");
 const components = require("json!components.json");
 const ko = require("knockout");
-const co = require("co");
 const utils = require("lib/utils");
 
 const bootstrap = require("bootstrap"); // jshint ignore:line

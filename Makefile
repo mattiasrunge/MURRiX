@@ -14,9 +14,9 @@ test: $(DEPS)
 	./node_modules/.bin/mocha $(DEFAULT_FLAGS)
 
 lint: $(DEPS)
-	./node_modules/.bin/csslint $(SRC_CSS)
-	./node_modules/.bin/htmlhint --config .htmlhintrc $(SRC_HTML)
 	./node_modules/.bin/jshint --verbose $(SRC_JS)
+	./node_modules/.bin/htmlhint --config .htmlhintrc $(SRC_HTML)
+	./node_modules/.bin/csslint --config .csslintrc $(SRC_CSS)
 
 style: $(DEPS)
 	./node_modules/.bin/jscs -e --verbose $(SRC_JS)

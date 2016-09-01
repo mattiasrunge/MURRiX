@@ -78,16 +78,7 @@ ko.bindingHandlers.dragula = {
 
             drake.cancel(el);
 
-            if (target === targetDelete.get(0)) {
-//                 node.setProfilePicture(nodepath().path, abspath)
-//                 .then(() => {
-//                     console.log("Profile picture set to " + abspath + " for " + nodepath().path);
-//                     nodepath.reload();
-//                 })
-//                 .catch((error) => {
-//                     stat.printError(error);
-//                 });
-            } else if (target === targetProfilePicture.get(0)) {
+            if (target === targetProfilePicture.get(0)) {
                 node.setProfilePicture(nodepath().path, abspath)
                 .then(() => {
                     stat.printSuccess("Profile picture set");
@@ -95,7 +86,9 @@ ko.bindingHandlers.dragula = {
                 .catch((error) => {
                     stat.printError(error);
                 });
-            }
+            } /*else if (target === targetDelete.get(0)) {
+                // TODO
+            }*/
         });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
@@ -456,9 +449,9 @@ ko.bindingHandlers.displayTime = {
 
         let format = "";
 
-         if (value.quality === "utc") {
+        if (value.quality === "utc") {
             format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
-         } else if (value.accuracy === "second") {
+        } else if (value.accuracy === "second") {
             format = "dddd, MMMM Do YYYY, HH:mm:ss";
         } else if (value.accuracy === "minute") {
             format = "dddd, MMMM Do YYYY, HH:mm";

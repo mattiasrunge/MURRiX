@@ -15,12 +15,12 @@ module.exports = utils.wrapComponent(function*(params) {
             return false;
         }
 
-        if (!this.item().attributes.address) {
+        if (!this.item().node().attributes.address) {
             return false;
         }
 
         let options = {
-            address: this.item().attributes.address.replace("<br>", "\n"),
+            address: this.item().node().attributes.address.replace("<br>", "\n"),
             key: "AIzaSyCSEsNChIm5df-kICUgXZLvqGRT9N_dUUY"
         };
 
@@ -41,36 +41,11 @@ module.exports = utils.wrapComponent(function*(params) {
         return false;
     });
 
-    this.item = ko.asyncComputed(false, function*(setter) {
-        if (!this.nodepath()) {
-            return false;
-        }
-
-        setter(false);
-
-        this.loading(true);
-        let item = yield api.vfs.resolve(this.nodepath().node().attributes.path, { noerror: true });
-        this.loading(false);
-
-        console.log("item", item);
-
-        return item;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
-        return false;
-    });
-
-    let subscription = api.vfs.on("update", (data) => {
-        if (data.path !== this.nodepath().node().attributes.path) {
-            return;
-        }
-
-        this.item.reload();
-    });
+    this.itemPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().attributes.path : false);
+    this.item = ko.nodepath(this.itemPath, { noerror: true });
 
     this.dispose = () => {
-        api.vfs.off(subscription);
+        this.item.dispose();
         stat.destroy(this.loading);
     };
 });

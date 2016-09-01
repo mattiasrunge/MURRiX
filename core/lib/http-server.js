@@ -77,7 +77,7 @@ module.exports = {
             }
 
             this.session = sessions[sessionId];
-            this.session._expires = new Date(new Date().getTime() + sessionMaxAge);
+            this.session._expires = new Date(Date.now() + sessionMaxAge);
 
             let body = JSON.stringify({ sessionId: sessionId });
             let cookieString = new Buffer(body).toString("base64");

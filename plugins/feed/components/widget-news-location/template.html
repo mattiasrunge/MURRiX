@@ -3,9 +3,9 @@
 </div>
 <div class="news-name" data-bind="visible: item, if: item">
     <a href="#" data-bind="location: { page: 'node', path: nodepath().node().attributes.path }">
-        <h4 data-bind="text: item().attributes.name"></h4>
+        <h4 data-bind="text: item().node().attributes.name"></h4>
     </a>
 </div>
-<div class="news-description" data-bind="visible: item() && item().attributes.description !== '', if: item() && item().attributes.description !== ''">
-    <span data-bind="html: item().attributes.description"></span>
+<div class="news-description" data-bind="visible: item() && item().node().attributes.description !== '', if: item() && item().node().attributes.description !== ''">
+    <span data-bind="html: item().node().attributes.description"></span>
 </div>

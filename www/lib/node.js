@@ -3,9 +3,6 @@
 const ko = require("knockout");
 const co = require("co");
 const api = require("api.io-client");
-const loc = require("lib/location");
-const ui = require("lib/ui");
-const stat = require("lib/status");
 
 module.exports = {
     list: ko.observableArray(),
