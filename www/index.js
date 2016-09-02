@@ -23,6 +23,7 @@ if (!isChrome) {
             autosize: "node_modules/autosize/dist/autosize.min",
             lazyload: "node_modules/vanilla-lazyload/dist/lazyload",
             "jquery.imgareaselect": "node_modules/jdomizio-imgareaselect/jquery.imgareaselect.dev",
+            "contextmenu": "node_modules/jquery-contextmenu/dist/jquery.contextMenu.min",
             chron: "node_modules/chron-time/browser/index",
             dragula: "node_modules/dragula/dist/dragula.min",
             "socket.io-client": "/socket.io/socket.io",
@@ -37,6 +38,9 @@ if (!isChrome) {
                 deps: [ "jquery" ]
             },
             snackbar: {
+                deps: [ "jquery" ]
+            },
+            contextmenu: {
                 deps: [ "jquery" ]
             },
             slider: {

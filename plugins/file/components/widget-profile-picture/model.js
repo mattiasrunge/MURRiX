@@ -15,8 +15,10 @@ module.exports = utils.wrapComponent(function*(params) {
     this.picturePath = ko.pureComputed(() => this.path() + "/profilePicture");
     this.picture = ko.nodepath(this.picturePath, { noerror: true });
 
-    this.profileUrl = ko.asyncComputed(undefined, function*() {
+    this.profileUrl = ko.asyncComputed(undefined, function*(setter) {
         let id = false;
+
+        setter(undefined);
 
         if (this.picture()) {
             id = this.picture().node()._id;

@@ -22,6 +22,7 @@ const LazyLoad = require("lazyload");
 const dragula = require("dragula");
 const typeahead = require("typeahead"); // jshint ignore:line
 const imgareaselect = require("jquery.imgareaselect"); // jshint ignore:line
+const contextmenu = require("contextmenu"); // jshint ignore:line
 const chron = require("chron");
 
 require("moment-duration-format");
@@ -34,6 +35,40 @@ ko.bindingHandlers.lazyload = {
             container: element,
             show_while_loading: true, // jshint ignore:line
             elements_selector: "img.lazyload" // jshint ignore:line
+        });
+    }
+};
+
+ko.bindingHandlers.contextmenu = {
+    init: (element, valueAccessor) => {
+        let nodepath = valueAccessor();
+
+        if (!ko.unwrap(nodepath().editable)) {
+            return;
+        }
+
+        $(element).contextMenu({
+            selector: ".context-menu",
+            callback: function(key, options) {
+                let abspath = $(this).data("path");
+
+                if (key === "profilePicture") {
+                    node.setProfilePicture(nodepath().path, abspath)
+                    .then(() => {
+                        stat.printSuccess("Profile picture set");
+                    })
+                    .catch((error) => {
+                        stat.printError(error);
+                    });
+                }
+            },
+            items: {
+                "profilePicture": { name: "Set as profile picture" }
+            }
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            $(element).contextMenu("destroy");
         });
     }
 };

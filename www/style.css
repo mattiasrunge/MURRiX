@@ -7,6 +7,7 @@
 @import "node_modules/snackbarjs/dist/snackbar.css";
 @import "node_modules/jdomizio-imgareaselect/distfiles/css/imgareaselect-default.css";
 @import "node_modules/dragula/dist/dragula.css";
+@import "node_modules/jquery-contextmenu/dist/jquery.contextMenu.css";
 
 @keyframes spin {
     from {transform:rotate(360deg);}
@@ -477,7 +478,8 @@ body {
 .btn-group-sm>.btn,
 .btn-sm,
 .modal-content,
-.well {
+.well,
+.context-menu-list {
     border-radius: 0;
 }
 

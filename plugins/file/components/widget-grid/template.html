@@ -17,6 +17,6 @@
             </div>
         </div>
 
-        <div class="clearfix" data-bind="foreach: $data.files, dragula: $component.nodepath" style="margin-right: -1px; margin-bottom: -1px;"><a href="#" class="pull-left" data-bind="picture: { item: $data, width: $component.size, height: $component.size, classes: 'grid-picture', type: $data.node().attributes.type, title: $data.node().attributes.type === 'audio' ? $data.node().attributes.name : false }, location: { showPath: $data.path }, attr: { title: $data.node().attributes.name, 'data-path': $data.path }"></a></div>
+        <div class="clearfix" data-bind="foreach: $data.files, contextmenu: $component.nodepath" style="margin-right: -1px; margin-bottom: -1px;"><a href="#" class="context-menu pull-left" data-bind="picture: { item: $data, width: $component.size, height: $component.size, classes: 'grid-picture', type: $data.node().attributes.type, title: $data.node().attributes.type === 'audio' ? $data.node().attributes.name : false }, location: { showPath: $data.path }, attr: { title: $data.node().attributes.name, 'data-path': $data.path }"></a></div>
     </div>
 </div>
