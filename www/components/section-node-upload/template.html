@@ -1,66 +1,67 @@
 ﻿<div class="fadeInDown animated node-content" data-bind="event: { dragenter: dragNoopHandler, dragexit: dragNoopHandler, dragover: dragNoopHandler, drop: dropEventHandler }">
-    <div class="container-fluid">
-        <div class="row">
-            <h3>Upload files</h3>
+    <div style="position: absolute; right: 0; top: 0; z-index: 5;" data-bind="visible: fileInput().length > 0">
+        <table style="display: inline-block;">
+            <tbody>
+                <tr>
+                    <td style="font-weight: bold; padding-right: 5px;">
+                        Speed:
+                    </td>
+                    <td style="width: 100px;">
+                        <span data-bind="htmlSize: speed"></span>/s
+                    </td>
+                    <td style="font-weight: bold; padding-right: 5px;">
+                        Progress:
+                    </td>
+                    <td style="width: 100px;">
+                        <span data-bind="text: progress"></span>%
+                    </td>
+                    <td style="font-weight: bold; padding-right: 5px;">
+                        Files:
+                    </td>
+                    <td style="width: 100px;">
+                        <span data-bind="text: files().length"></span>
+                    </td>
+                    <td style="font-weight: bold; padding-right: 5px;">
+                        Total size:
+                    </td>
+                    <td style="width: 100px;;">
+                        <span data-bind="htmlSize: size"></span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bind="click: start, disabled: active">Upload</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-            <div class="text-muted text-center" style="padding-top: 100px; padding-bottom: 100px; font-size: 20px; border: 2px dashed #ccc;" data-bind="visible: files().length === 0">
-                Drop files here or
-                <button class="btn btn-lg btn-primary" id="id" data-bind="click: selectHandler.bind($data, 'file-select')">Select files</button>
-                <input id="file-select" type="file" multiple style="display: none;" data-bind="fileUpload: fileInput">
-            </div>
-            <div data-bind="visible: files().length > 0">
-                <div class="col-md-8">
-                    <table class="table table-striped table-hover table-condensed" style="width: 100%; margin-bottom: 0">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th style="width: 100px;">Size</th>
-                                <th style="width: 500px;">Progress</th>
-                            </tr>
-                        </thead>
-                        <tbody data-bind="foreach: files">
-                            <tr>
-                                <td data-bind="text: $data.name"></td>
-                                <td data-bind="htmlSize: $data.size"></td>
-                                <td>
-                                    <div class="progress" style="margin-bottom: 0;">
-                                        <div class="progress-bar progress-bar-striped" role="progressbar" data-bind="style: { width: $data.progress() + '%' }, css: { active: $data.active, 'progress-bar-success': $data.complete, 'progress-bar-danger': $data.failed }, text: $data.progress() + '%'"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-4">
-                    <table class="table table-striped table-hover table-condensed" style="width: 100%">
-                        <tbody>
-                            <tr>
-                                <td>Uploaded</td>
-                                <td>
-                                    <span data-bind="text: finished"></span>
-                                    of
-                                    <span data-bind="text: files().length"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Total size</td>
-                                <td data-bind="htmlSize: size"></td>
-                            </tr>
-                            <tr>
-                                <td>Speed</td>
-                                <td>
-                                    <span data-bind="htmlSize: speed"></span>/s
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+    <h3>Upload files</h3>
 
-                    <div class="progress" style="margin-bottom: 0;" data-bind="visible: active">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" data-bind="style: { width: progress() + '%' }, text: $data.progress() + '%'"></div>
-                    </div>
-                    <button type="button" class="btn btn-primary btn-lg btn-block" data-bind="click: start, visible: !active()">Upload</button>
-                </div>
-            </div>
-        </div>
+    <div class="text-muted text-center" style="padding-top: 100px; padding-bottom: 100px; font-size: 20px; border: 2px dashed #ccc;" data-bind="visible: files().length === 0">
+        Drop files here or
+        <button class="btn btn-lg btn-primary" id="id" data-bind="click: selectHandler.bind($data, 'file-select')">Select files</button>
+        <input id="file-select" type="file" multiple style="display: none;" data-bind="fileUpload: fileInput">
+    </div>
+    <div data-bind="visible: files().length > 0">
+        <table class="table table-striped table-hover table-condensed" style="width: 100%; margin-bottom: 0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th style="width: 100px;">Size</th>
+                    <th style="width: 500px;">Progress</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: files">
+                <tr>
+                    <td data-bind="text: $data.name"></td>
+                    <td data-bind="htmlSize: $data.size"></td>
+                    <td>
+                        <div class="progress" style="margin-bottom: 0;">
+                            <div class="progress-bar progress-bar-striped" role="progressbar" data-bind="style: { width: $data.progress() + '%' }, css: { active: $data.active, 'progress-bar-success': $data.complete, 'progress-bar-danger': $data.failed }, text: $data.progress() + '%'"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

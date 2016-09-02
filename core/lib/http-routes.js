@@ -89,7 +89,6 @@ module.exports = {
                 return yield next;
             }
 
-
             if (ext === ".js") {
                 let result = yield babel.transformFileAsync(filename, {
                     plugins: [
@@ -107,6 +106,11 @@ module.exports = {
                 }
 
                 yield fs.outputFileAsync(compiledFilename, compiled.styles);
+            } else if (url === "/index.html") {
+                let source = yield fs.readFileAsync(filename);
+                let compiled = source.toString().replace("GOOGLE_API_KEY", configuration.googleKey);
+
+                yield fs.outputFileAsync(compiledFilename, compiled);
             } else {
                 yield fs.copyAsync(filename, compiledFilename);
             }

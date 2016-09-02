@@ -63,16 +63,26 @@ module.exports = utils.wrapComponent(function*(params) {
         this.loading(true);
 
         if (this.nodepath().node().attributes.type === "image") {
-            filename = (yield api.file.getPictureFilenames([ this.nodepath().node()._id ], null, height))[0];
+            filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
+                height: height,
+                type: "image"
+            });
         } else if (this.nodepath().node().attributes.type === "video") {
-            filename = (yield api.file.getVideoFilenames([ this.nodepath().node()._id ], null, height))[0];
+            ffilename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
+                height: height,
+                type: "video"
+            });
         } else if (this.nodepath().node().attributes.type === "audio") {
-            filename = (yield api.file.getAudioFilenames([ this.nodepath().node()._id ]))[0];
+            filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
+                type: "audio"
+            });
+        } else if (this.nodepath().node().attributes.type === "pdf") {
+            filename = "file/view/" + this.nodepath().node().attributes.diskfilename;
         }
 
         this.loading(false);
 
-        return filename ? filename.filename : false;
+        return filename ? filename : false;
     }.bind(this), (error) => {
         this.loading(false);
         stat.printError(error);

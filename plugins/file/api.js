@@ -5,7 +5,6 @@ const co = require("bluebird").coroutine;
 const fs = require("fs-extra-promise");
 const api = require("api.io");
 const chron = require("chron-time");
-const request = require("request-promise-native");
 const bus = require("../../core/lib/bus");
 
 let params = {};
@@ -80,30 +79,9 @@ let file = api.register("file", {
                     options.deviceUtcOffset = 0;
 
                     if (node.attributes.where.longitude && node.attributes.where.latitude) {
-                        let opts = {
-                            uri: "https://maps.googleapis.com/maps/api/timezone/json",
-                            qs: {
-                                location: node.attributes.where.latitude + "," + node.attributes.where.longitude,
-                                timestamp: 0,
-                                key: params.googleKey
-                            },
-                            json: true
-                        };
+                        let data = yield api.lookup.getTimezoneFromPosition(session, node.attributes.where.latitude, node.attributes.where.longitude);
 
-                        let data = yield request(opts);
-                        /*{
-                            "dstOffset" : 3600,
-                            "rawOffset" : 0,
-                            "status" : "OK",
-                            "timeZoneId" : "America/New_York",
-                            "timeZoneName" : "Eastern Standard Time"
-                        }*/
-
-                        if (data.status !== "OK") {
-                            throw new Error(data.errorMessage);
-                        }
-
-                        options.deviceUtcOffset = data.rawOffset;
+                        options.deviceUtcOffset = data.utcOffset;
                     }
                 } else if (device.attributes.type === "offset_fixed") {
                     options.deviceUtcOffset = device.attributes.utcOffset;

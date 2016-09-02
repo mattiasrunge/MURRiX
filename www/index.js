@@ -15,7 +15,6 @@ if (!isChrome) {
             bootstrap: "node_modules/bootstrap/dist/js/bootstrap.min",
             typeahead: "node_modules/corejs-typeahead/dist/typeahead.jquery",
             slider: "node_modules/bootstrap-slider/dist/bootstrap-slider.min",
-            mprogress: "node_modules/mprogress/build/js/mprogress.min",
             moment: "node_modules/moment/min/moment.min",
             "moment-duration-format": "node_modules/moment-duration-format/lib/moment-duration-format",
             "moment-timezone": "node_modules/moment-timezone/builds/moment-timezone.min",

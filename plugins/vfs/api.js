@@ -384,6 +384,7 @@ let vfs = api.register("vfs", {
     random: function*(session, abspaths) {
         let list = [];
         let result = false;
+        let tries = 0;
 
         for (let abspath of abspaths) {
             let parent = yield vfs.resolve(session, abspath);
@@ -397,7 +398,7 @@ let vfs = api.register("vfs", {
             }
         }
 
-        while (!result && list.length > 0) {
+        while (!result && list.length > tries) {
             let index = Math.floor(Math.random() * (list.length - 1)) + 1;
             let child = list.splice(index, 1)[0];
             let node = yield db.findOne("nodes", { _id: child.id });
@@ -405,6 +406,12 @@ let vfs = api.register("vfs", {
             if (yield vfs.access(session, node, "r")) {
                 result = { name: child.name, node: node, path: child.path };
             }
+
+            tries++;
+        }
+
+        if (!result) {
+            throw new Error("Could not find a readable random node");
         }
 
         return result;

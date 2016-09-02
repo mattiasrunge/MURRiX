@@ -642,18 +642,17 @@ ko.bindingHandlers.positionAddress = {
             return $(element).text("Unknown");
         }
 
-        // TODO: Look in our own database first
-        let options = {
-            sensor: false,
-            latlng: latitude + "," + longitude
-        };
-
-        $.getJSON("https://maps.googleapis.com/maps/api/geocode/json", options, (data) => {
-            if (data.status !== "OK" || data.results.length === 0) {
-                return $(element).text("Unknown");
+        api.lookup.getAddressFromPosition(longitude, latitude)
+        .then((address) => {
+            if (address) {
+                $(element).text(address);
+            } else {
+                $(element).text("Unknown");
             }
-
-            $(element).text(data.results[0].formatted_address); // jshint ignore:line
+        })
+        .catch((error) => {
+            $(element).text("Unknown");
+            stat.printError(error);
         });
     }
 };
@@ -1069,6 +1068,7 @@ ko.bindingHandlers.picture = {
         let type = ko.unwrap(data.type);
         let $element = $(element);
         let nolazyload = !!ko.unwrap(data.nolazyload);
+        let $span = $element;
 
         if (element.$img) {
             element.$img.imgAreaSelect({ "remove": true });
@@ -1078,7 +1078,21 @@ ko.bindingHandlers.picture = {
 
         $element.addClass("grid-picture-container");
 
-        if (filename) {
+        if (!filename) {
+            let css = [];
+
+            if (width) {
+                css.push("width: " + width + "px");
+            }
+
+            if (height) {
+                css.push("height: " + height + "px");
+            }
+
+            $span = $("<div style='position: relative; " + css.join(";") + "; background-color: black;' class='" + classes + "'></div>");
+
+            $element.append($span);
+        } else {
             let css = [];
 
             if (width) {
@@ -1095,7 +1109,7 @@ ko.bindingHandlers.picture = {
                 containerCss = "";
             }
 
-            let $span = $("<span style='display: inline-block; position: relative; " + containerCss + "' class='" + classes + "'></span>");
+            $span = $("<span style='display: inline-block; position: relative; " + containerCss + "' class='" + classes + "'></span>");
             let $img;
 
             if (nolazyload) {
@@ -1184,27 +1198,28 @@ ko.bindingHandlers.picture = {
             element.$img = $img;
 
             lazyload.update();
-            $element = $span;
+        }
 
-            if (type === "image") {
-                $element.append($("<i class='material-icons grid-picture-type' title='Image file'>camera_alt</i>"));
-            } else if (type === "video") {
-                $element.append($("<i class='material-icons grid-picture-type' title='Video file'>videocam</i>"));
-            } else if (type === "audio") {
-                $element.append($("<i class='material-icons grid-picture-type' title='Audio file'>mic</i>"));
-            } else if (type) {
-                $element.append($("<i class='material-icons grid-picture-type' title='Unknown file'>attachment</i>"));
+        $element = $span;
+
+        if (type === "image") {
+            $element.append($("<i class='material-icons grid-picture-type' title='Image file'>camera_alt</i>"));
+        } else if (type === "video") {
+            $element.append($("<i class='material-icons grid-picture-type' title='Video file'>videocam</i>"));
+        } else if (type === "audio") {
+            $element.append($("<i class='material-icons grid-picture-type' title='Audio file'>mic</i>"));
+        } else if (type) {
+            $element.append($("<i class='material-icons grid-picture-type' title='Unknown file'>attachment</i>"));
+        }
+
+        if (title) {
+            var $title = $("<span class='grid-picture-title'>" + title + "</span>");
+
+            if (type) {
+                $title.css("right", "40px");
             }
 
-            if (title) {
-                var $title = $("<span class='grid-picture-title'>" + title + "</span>");
-
-                if (type) {
-                    $title.css("right", "40px");
-                }
-
-                $element.append($title);
-            }
+            $element.append($title);
         }
     }
 };

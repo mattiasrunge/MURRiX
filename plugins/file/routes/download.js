@@ -8,7 +8,7 @@ let params = {};
 
 module.exports = {
     method: "GET",
-    route: "/:name/:filename",
+    route: "/:filename/:name",
     init: co(function*(config) {
         params = config;
     }),

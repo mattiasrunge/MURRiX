@@ -1,11 +1,8 @@
 "use strict";
 
 const ko = require("knockout");
-const Mprogress = require("mprogress");
-const $ = require("jquery");
 require("snackbar");
 
-let mprogress = new Mprogress({ template: 4 });
 let list = ko.observableArray();
 
 module.exports = {
@@ -79,17 +76,9 @@ module.exports = {
             list.remove(item);
         }
     },
-    loading: ko.computed(() => {
-        let loading = list().filter((item) => item.status()).length > 0;
-
+    loading: ko.pureComputed(() => {
         //console.log("status", JSON.stringify(list().map((item) => item.name + " => " + ko.unwrap(item.status)), null, 2));
 
-        if (loading) {
-            mprogress.start();
-        } else {
-            mprogress.end();
-        }
-
-        return loading;
+        return list().filter((item) => item.status()).length > 0;
     })
 };

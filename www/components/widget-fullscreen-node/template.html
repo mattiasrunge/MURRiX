@@ -176,6 +176,9 @@
                 Your browser does not support the audio tag.
             </audio>
         </div>
+        <div data-bind="visible: nodepath().node().attributes.type === 'pdf', if: nodepath().node().attributes.type === 'pdf'" style="position: absolute; left: 0; right: 0; bottom: 0; top: 0;">
+            <iframe style="width: 100%; height: 100%; border: none;" src="" data-bind="attr: { src: filename() }"></iframe>
+        </div>
     </div>
 
     <div class="bottombar">
