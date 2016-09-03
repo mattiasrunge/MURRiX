@@ -10,24 +10,25 @@ module.exports = utils.wrapComponent(function*(params) {
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
     this.size = 470;
 
-    this.pictureItem = ko.asyncComputed(false, function*(setter) {
+    this.filename = ko.asyncComputed(false, function*(setter) {
         if (!this.item()) {
             return false;
         }
-
-        let item = false;
 
         setter(false);
 
         this.loading(true);
 
-        item = (yield api.file.getPictureFilenames([ this.item().node()._id ], this.size))[0];
+        let filename = yield api.file.getMediaUrl(this.item().node()._id, {
+            width: this.size,
+            type: "image"
+        });
 
-        console.log("file-item", item);
+        console.log("filename", filename);
 
         this.loading(false);
 
-        return item;
+        return filename;
     }.bind(this), (error) => {
         this.loading(false);
         stat.printError(error);

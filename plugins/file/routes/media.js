@@ -7,12 +7,13 @@ let params = {};
 
 module.exports = {
     method: "GET",
-    route: "/:name",
+    route: "/:filename/:name",
     init: co(function*(config) {
         params = config;
     }),
-    handler: function*(name) {
-        yield stream.file(this, name, {
+    handler: function*(filename, name) {
+        this.set("Content-disposition", "filename=" + name);
+        yield stream.file(this, filename, {
             root: params.mcsDirectory,
             allowDownload: true
         });

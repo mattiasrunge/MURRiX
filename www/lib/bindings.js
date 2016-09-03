@@ -959,14 +959,18 @@ ko.bindingHandlers.nodeselect = {
                     api.vfs.resolve(selection.path + "/profilePicture", { noerror: true })
                     .then((node) => {
                         if (node) {
-                            return api.file.getPictureFilenames([ node._id ], 16, 16);
+                            return api.file.getMediaUrl(node._id, {
+                                width: 16,
+                                height: 16,
+                                type: "image"
+                            });
                         }
 
                         return false;
                     })
-                    .then((filenames) => {
-                        if (filenames && filenames.length > 0) {
-                            let $i = $("<img src='" + filenames[0].filename + "' style='width: 16px; height: 16px;'>");
+                    .then((filename) => {
+                        if (filename) {
+                            let $i = $("<img src='" + filename + "' style='width: 16px; height: 16px;'>");
 
                             $d.prepend($i);
                         }
@@ -1208,6 +1212,8 @@ ko.bindingHandlers.picture = {
             $element.append($("<i class='material-icons grid-picture-type' title='Video file'>videocam</i>"));
         } else if (type === "audio") {
             $element.append($("<i class='material-icons grid-picture-type' title='Audio file'>mic</i>"));
+        } else if (type === "document") {
+            $element.append($("<i class='material-icons grid-picture-type' title='Document file'>description</i>"));
         } else if (type) {
             $element.append($("<i class='material-icons grid-picture-type' title='Unknown file'>attachment</i>"));
         }
@@ -1216,7 +1222,7 @@ ko.bindingHandlers.picture = {
             var $title = $("<span class='grid-picture-title'>" + title + "</span>");
 
             if (type) {
-                $title.css("right", "40px");
+                $title.css("padding-right", "40px");
             }
 
             $element.append($title);

@@ -166,18 +166,18 @@
         </div>
         <div data-bind="visible: nodepath().node().attributes.type === 'video', if: nodepath().node().attributes.type === 'video'" class="resize-fit-container">
             <video autoplay controls preload="metadata" class="resize-fit-center">
-                <source src="" type="video/webm" data-bind="attr: { src: filename() }">
+                <source src="" type="video/webm" data-bind="attr: { src: filename }">
                 Your browser does not support the video tag.
             </video>
         </div>
         <div data-bind="visible: nodepath().node().attributes.type === 'audio', if: nodepath().node().attributes.type === 'audio'" style="position: absolute; left: 0; right: 0; bottom: 0;">
             <audio autoplay controls preload="metadata" style="width: 100%;">
-                <source src="" type="video/webm" data-bind="attr: { src: filename() }">
+                <source src="" type="video/webm" data-bind="attr: { src: filename }">
                 Your browser does not support the audio tag.
             </audio>
         </div>
-        <div data-bind="visible: nodepath().node().attributes.type === 'pdf', if: nodepath().node().attributes.type === 'pdf'" style="position: absolute; left: 0; right: 0; bottom: 0; top: 0;">
-            <iframe style="width: 100%; height: 100%; border: none;" src="" data-bind="attr: { src: filename() }"></iframe>
+        <div data-bind="visible: nodepath().node().attributes.type === 'document', if: nodepath().node().attributes.type === 'document'" style="position: absolute; left: 0; right: 0; bottom: 0; top: 0;">
+            <iframe style="width: 100%; height: 100%; border: none;" src="" data-bind="attr: { src: filename }"></iframe>
         </div>
     </div>
 

@@ -111,21 +111,12 @@ let file = api.register("file", {
             throw new Error("Missing type from format");
         }
 
-        if (format.type === "image" || format.type === "video") {
-            if (typeof format.width === "undefined") {
-                throw new Error("Missing width from format");
-            }
-
-            if (typeof format.height === "undefined") {
-                throw new Error("Missing height from format");
-            }
-        }
-
         let idQuery = ids instanceof Array ? { $in: ids } : ids;
         let nodes = yield api.vfs.query(session, {
             _id: idQuery
         }, {
             fields: {
+                "attributes.name": 1,
                 "attributes.type": 1,
                 "attributes.diskfilename": 1,
                 "attributes.angle": 1,
@@ -145,10 +136,10 @@ let file = api.register("file", {
                     type: format.type
                 })
                 .then((filename) => {
-                    resolve({ id: node._id, url: path.join("file", "media", path.basename(filename)) });
+                    resolve({ id: node._id, url: path.join("file", "media", path.basename(filename), node.attributes.name) });
                 })
                 .catch((error) => {
-                    console.log(error); // TODO: Log event somewhere nicer
+                    console.error("Failed to cache file", error); // TODO: Log event somewhere nicer
                     resolve(false);
                 });
             });
@@ -163,124 +154,6 @@ let file = api.register("file", {
         }
 
         return ids instanceof Array ? result : (result[ids] || false);
-    },
-
-    getPictureFilenames: function*(session, ids, width, height) {
-        let nodes = yield api.vfs.query(session, {
-            _id: { $in: ids }
-        }, {
-            fields: {
-                "attributes.type": 1,
-                "attributes.diskfilename": 1,
-                "attributes.angle": 1,
-                "attributes.mirror": 1,
-                "attributes.timeindex": 1
-            }
-        });
-
-        let filenames = yield Promise.all(nodes.map((node) => {
-            return new Promise((resolve) => {
-                api.mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
-                    angle: node.attributes.angle,
-                    mirror: node.attributes.mirror,
-                    timeindex: node.attributes.timeindex,
-                    width: width,
-                    height: height,
-                    type: "image"
-                })
-                .then(resolve)
-                .catch((error) => {
-                    console.log(error); // TODO: Log event somewhere nicer
-                    resolve(false);
-                });
-            });
-        }));
-
-        let list = [];
-
-        for (let n = 0; n < nodes.length; n++) {
-            if (filenames[n]) {
-                list.push({ id: nodes[n]._id, filename: path.join("file", "media", path.basename(filenames[n])) });
-            }
-        }
-
-        return list;
-    },
-    getVideoFilenames: function*(session, ids, width, height) {
-        let nodes = yield api.vfs.query(session, {
-            _id: { $in: ids }
-        }, {
-            fields: {
-                "attributes.type": 1,
-                "attributes.diskfilename": 1,
-                "attributes.angle": 1,
-                "attributes.mirror": 1
-            }
-        });
-
-        let filenames = yield Promise.all(nodes.map((node) => {
-            if (node.attributes.type !== "image" && node.attributes.type !== "video") {
-                return ""; // TODO:
-            }
-
-            return new Promise((resolve) => {
-                api.mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
-                    angle: node.attributes.angle,
-                    mirror: node.attributes.mirror,
-                    width: width,
-                    height: height,
-                    type: "video"
-                })
-                .then(resolve)
-                .catch((error) => {
-                    console.log(error); // TODO: Log event somewhere nicer
-                    resolve(false);
-                });
-            });
-        }));
-
-        let list = [];
-
-        for (let n = 0; n < nodes.length; n++) {
-            list.push({ id: nodes[n]._id, filename: path.join("file", "media", path.basename(filenames[n])) });
-        }
-
-        return list;
-    },
-    getAudioFilenames: function*(session, ids) {
-        let nodes = yield api.vfs.query(session, {
-            _id: { $in: ids }
-        }, {
-            fields: {
-                "attributes.type": 1,
-                "attributes.diskfilename": 1
-            }
-        });
-
-        let filenames = yield Promise.all(nodes.map((node) => {
-            if (node.attributes.type !== "audio") {
-                throw new Error("Item type for (node id = " + node._id + ") is not audio");
-            }
-
-            return new Promise((resolve) => {
-                api.mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
-                    type: "audio"
-                })
-                .then(resolve)
-                .catch((error) => {
-                    console.log(error); // TODO: Log event somewhere nicer
-                    resolve(false);
-                });
-            });
-        }));
-
-        let list = [];
-
-        for (let n = 0; n < nodes.length; n++) {
-            list.push({ id: nodes[n]._id, filename: path.join("file", "media", path.basename(filenames[n])) });
-        }
-
-        return list;
     }
 });
 

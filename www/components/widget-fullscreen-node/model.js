@@ -68,7 +68,7 @@ module.exports = utils.wrapComponent(function*(params) {
                 type: "image"
             });
         } else if (this.nodepath().node().attributes.type === "video") {
-            ffilename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
+            filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
                 height: height,
                 type: "video"
             });
@@ -76,9 +76,13 @@ module.exports = utils.wrapComponent(function*(params) {
             filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
                 type: "audio"
             });
-        } else if (this.nodepath().node().attributes.type === "pdf") {
-            filename = "file/view/" + this.nodepath().node().attributes.diskfilename;
+        } else if (this.nodepath().node().attributes.type === "document") {
+            filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
+                type: "document"
+            });
         }
+
+        console.log("filename", filename);
 
         this.loading(false);
 
@@ -222,10 +226,15 @@ module.exports = utils.wrapComponent(function*(params) {
         }
 
         let ids = [ this.surroundings().previous.node()._id, this.surroundings().next.node()._id ];
-        let filenames = yield api.file.getPictureFilenames(ids, null, ko.unwrap(this.height));
+        let filenames = yield api.file.getMediaUrl(ids, {
+            height: ko.unwrap(this.height),
+            type: "image"
+        });
 
-        for (let filename of filenames) {
-            (new Image()).src = filename.filename;
+        for (let id of ids) {
+            if (filenames[id]) {
+                (new Image()).src = filenames[id];
+            }
         }
     }.bind(this)));
 

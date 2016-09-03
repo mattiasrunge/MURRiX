@@ -22,18 +22,20 @@ module.exports = utils.wrapComponent(function*(params) {
 
         setter([]);
 
+        let ids = this.fileList().map((file) => file.node()._id);
+
         this.loading(true);
-        let filenames = yield api.file.getPictureFilenames(this.fileList().map((file) => file.node()._id), this.width, this.height);
+        let filenames = yield api.file.getMediaUrl(ids, {
+            width: this.width,
+            height: this.height,
+            type: "image"
+        });
+
 
         this.loading(false);
 
         let files = this.fileList().map((file) => {
-            let filename = filenames.filter((filename) => filename.id === file.node()._id)[0];
-
-            if (filename) {
-                file.filename = filename.filename;
-            }
-
+            file.filename = filenames[file.node()._id] || false;
             return file;
         });
 

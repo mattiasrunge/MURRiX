@@ -11,12 +11,12 @@ module.exports = utils.wrapComponent(function*(params) {
     this.size = params.size;
     this.classes = ko.pureComputed(() => ko.unwrap(params.classes) || "");
 
-    this.item = ko.asyncComputed(false, function*(setter) {
+    this.filename = ko.asyncComputed(false, function*(setter) {
         if (!this.uid()) {
             return false;
         }
 
-        let item = false;
+        let filename = false;
 
         setter(false);
 
@@ -25,12 +25,16 @@ module.exports = utils.wrapComponent(function*(params) {
         let id = yield api.auth.picture(this.uid());
 
         if (id) {
-            item = (yield api.file.getPictureFilenames([ id ], this.size, this.size))[0];
+            filename = yield api.file.getMediaUrl(id, {
+                width: this.size,
+                height: this.size,
+                type: "image"
+            });
         }
 
         this.loading(false);
 
-        return item;
+        return filename;
     }.bind(this), (error) => {
         this.loading(false);
         stat.printError(error);
