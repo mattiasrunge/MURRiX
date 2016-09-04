@@ -29,6 +29,20 @@ require("moment-duration-format");
 
 let lazyload;
 
+ko.bindingHandlers.moveToBody = {
+    init: (element) => {
+        let $element = $(element);
+        let $parent = $element.parent();
+
+        $element.detach();
+        $("body").append($element);
+
+        ko.utils.domNodeDisposal.addDisposeCallback($parent.get(0), () => {
+            $element.remove();
+        });
+    }
+};
+
 ko.bindingHandlers.lazyload = {
     init: (element) => {
         lazyload = new LazyLoad({
