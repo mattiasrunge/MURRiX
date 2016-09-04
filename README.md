@@ -19,6 +19,7 @@ sudo apt-get install -y nodejs
 ```
 
 ## Install and run mcs
+*Tip: Run both mcs and MURRiX in [https://www.npmjs.com/package/pm2](PM2).*
 ```bash
 git clone https://github.com/mattiasrunge/mcs
 cd mcs
@@ -55,6 +56,13 @@ nano -w conf/config.json
 Now you can start your brower and access MURRiX at port 8080 if the configuration was not changed. The default admin username and password are: admin/admin
 
 ## Import from old MURRiX
+This command assumes that the mongodb instance is the same on new and old. Three are four options for copy mode:
+symlink - Create a symlink from the old file to the new location
+rsymlink - Move the file to new location and create a symlink in the old location to the new file
+link - Create a hard link from old file to new location (requires new and old locations to be on the same filesystem)
+copy - Copy the old file to the new location (taking double the amount of space)
+move - Move the old file to the new location (breaks the old system)
+
 ```bash
-./bin/cli update import <old_mongodb_name> <path_to_old_files_directory>
+./bin/cli update import <old_mongodb_name> <path_to_old_files_directory> <copymode>
 ```

@@ -688,8 +688,12 @@ let vfs = api.register("vfs", {
                 yield fs.ensureSymlinkAsync(source.filename, diskfilepath);
             } else if (source.mode === "copy") {
                 yield fs.copyAsync(source.filename, diskfilepath);
+            } else if (source.mode === "link") {
+                yield fs.ensureLinkAsync(source.filename, diskfilepath);
+            } else if (source.mode === "rsymlink") {
+                yield fs.moveAsync(source.filename, diskfilepath);
+                yield fs.ensureSymlinkAsync(diskfilepath, source.filename);
             } else {
-                // TODO: Default should be hard link?
                 yield fs.moveAsync(source.filename, diskfilepath);
             }
         }
