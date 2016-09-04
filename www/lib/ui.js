@@ -21,10 +21,7 @@ $window.on("resize", () => {
 module.exports = {
     start: utils.co(function*() {
         utils.registerComponents(components);
-
-        let Model = function() {};
-
-        ko.applyBindings(new Model(), document.body);
+        ko.applyBindings({}, document.body);
     }),
     windowSize: ko.pureComputed(() => {
         resizeFlag();

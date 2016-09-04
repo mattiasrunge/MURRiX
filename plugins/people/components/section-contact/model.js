@@ -3,11 +3,9 @@
 /* TODO:
  * Homes should have a date interval on them, store as attributes on the symlink
  * Contact information should have icons and emails be clickable etc
- * Google API key should be placed in a configuration file and the call should be done from serverside
  */
 
 const ko = require("knockout");
-const $ = require("jquery");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");

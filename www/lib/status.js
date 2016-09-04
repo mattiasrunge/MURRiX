@@ -1,5 +1,6 @@
 "use strict";
 
+const $ = require("jquery");
 const ko = require("knockout");
 require("snackbar");
 

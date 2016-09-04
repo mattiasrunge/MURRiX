@@ -49,7 +49,7 @@ ko.bindingHandlers.contextmenu = {
 
         $(element).contextMenu({
             selector: ".context-menu",
-            callback: function(key, options) {
+            callback: function(key/*, options*/) {
                 let abspath = $(this).data("path");
 
                 if (key === "profilePicture") {
