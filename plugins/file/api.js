@@ -21,15 +21,15 @@ let file = api.register("file", {
             throw new Error("Source file does not exist");
         }
 
-        let metadata = yield api.mcs.getMetadata(attributes._source.filename, { noChecksums: true }); // TODO: checksum
+        let metadata = yield api.mcs.getMetadata(attributes._source.filename, { });
 
-        //         if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
-        //             throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
-        //         }
+        if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
+            throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
+        }
 
-        //         if (attributes.md5 && attributes.md5 !== metadata.md5) {
-        //             throw new Error("md5 checksum for file does not match, is the file corrupt? " + attributes.md5 + " !== " + metadata.md5);
-        //         }
+        if (attributes.md5 && attributes.md5 !== metadata.md5) {
+            throw new Error("md5 checksum for file does not match, is the file corrupt? " + attributes.md5 + " !== " + metadata.md5);
+        }
 
         for (let key of Object.keys(metadata)) {
             if (key !== "raw" && key !== "name" && typeof attributes[key] === "undefined") {
