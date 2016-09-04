@@ -1,5 +1,5 @@
 {
-    "mongoUrl": "mongodb://localhost:27017/murrix",
+    "mongoUrl": "mongodb://localhost:27017/murrix_v3",
     "fileDirectory": "/usr/data/MURRiX/files",
     "mcsDirectory": "/usr/data/MURRiX/cache",
     "email": {
@@ -12,7 +12,7 @@
     "mcs": {
         "host": "localhost",
         "port": 8181,
-        "key": "<MCSKEY>"
+        "key": "let-me-in"
     },
     "googleKey": "<APIKEY>"
 }

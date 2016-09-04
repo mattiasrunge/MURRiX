@@ -93,7 +93,7 @@
                         <button type="button" class="btn btn-primary" data-bind="click: $component.selectedTag.bind($data, $data), visible: !$component.selectedTag() && $component.nodepath().node().attributes.type === 'image'">Edit</button>
                         <button type="button" class="btn btn-danger" data-bind="click: $component.removeTag.bind($data, $data), disable: $component.selectedTag">Remove</button>
                     </div>
-                    <file-widget-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 32, path: $data.path }"></file-widget-profile-picture>
+                    <file-widget-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 32, path: $data.path, nolazyload: true }"></file-widget-profile-picture>
                     <div class="title" data-bind="text: $data.node().attributes.name"></div>
                 </div>
             </div>

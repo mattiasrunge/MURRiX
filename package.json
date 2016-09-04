@@ -1,6 +1,6 @@
 {
   "name": "murrix",
-  "version": "0.0.0",
+  "version": "3.0.0",
   "description": "MURRiX is a specialized Content Management System",
   "main": "index.js",
   "author": "Mattias Runge <mattias@runge.se>",

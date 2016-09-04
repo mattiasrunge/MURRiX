@@ -2,6 +2,7 @@
 
 const co = require("bluebird").coroutine;
 const api = require("api.io");
+const log = require("../../core/lib/log")(module);
 
 const mcsApi = api.client.create();
 
@@ -15,8 +16,21 @@ let mcs = api.register("mcs", {
         yield mcsApi.connect({
             hostname: params.mcs.host,
             port: params.mcs.port
+        }, (status, message) => {
+            if (status === "timeout") {
+                log.error(message);
+                process.exit(255);
+            } else if (status === "disconnect") {
+                log.error("Disconnected from server, will attempt to reconnect...");
+            } else if (status === "reconnect") {
+                log.info("Reconnected to server, will re-authenticate");
+                mcs.authenticate();
+            }
         });
 
+        yield mcs.authenticate();
+    }),
+    authenticate: co(function*() {
         let result = yield mcsApi.auth.identify(params.mcs.key);
 
         if (!result) {
