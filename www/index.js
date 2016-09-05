@@ -68,7 +68,7 @@ if (!isChrome) {
         };
 
         main.start(args)
-        .catch((error) => {
+        .catch(function(error) {
             console.error("FATAL ERROR");
             console.error(error);
             console.error(error.stack);
