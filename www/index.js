@@ -3,7 +3,7 @@
 var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
 if (!isChrome) {
-    document.getElementById("browserWarning").className = "";
+    document.getElementById("browser-warning").className = "";
 } else {
     require.config({
         baseUrl: ".",
