@@ -28,7 +28,7 @@ module.exports = {
         let app = koa();
         let sessions = session.getSessions();
         let sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
-        let sessionName = "api.io-authorization";
+        let sessionName = "apiio";
 
         if (params.cacheDirectory) {
             yield fs.removeAsync(params.cacheDirectory);
@@ -58,13 +58,7 @@ module.exports = {
             let sessionId = false;
 
             try {
-                let cookieString = this.cookies.get(sessionName);
-                let body = new Buffer(cookieString, "base64").toString("utf8");
-                let cookieData = JSON.parse(body);
-
-                if (cookieData && cookieData.sessionId) {
-                    sessionId = cookieData.sessionId;
-                }
+                sessionId = this.cookies.get(sessionName);
             } catch (e) {
             }
 
@@ -79,10 +73,7 @@ module.exports = {
             this.session = sessions[sessionId];
             this.session._expires = new Date(Date.now() + sessionMaxAge);
 
-            let body = JSON.stringify({ sessionId: sessionId });
-            let cookieString = new Buffer(body).toString("base64");
-
-            this.cookies.set(sessionName, cookieString, { maxAge: sessionMaxAge });
+            this.cookies.set(sessionName, sessionId, { maxAge: sessionMaxAge });
 
             yield next;
         });

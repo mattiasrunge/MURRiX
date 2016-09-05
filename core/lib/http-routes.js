@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require("path");
+const zlib = require("zlib");
 const fs = require("fs-extra-promise");
 const glob = require("glob-promise");
 const staticFile = require("koa-static");
@@ -11,6 +12,20 @@ const babel = promisifyAll(require("babel-core"));
 const configuration = require("./configuration");
 
 const wwwPath = path.join(__dirname, "..", "..", "www");
+const maxage = 3600 * 1000 * 60;
+
+const gzip = (filename) => {
+    return new Promise((resolve, reject) => {
+        let rstream = fs.createReadStream(filename);
+        let wstream = fs.createWriteStream(filename + ".gz");
+
+        let pipe = rstream
+        .pipe(zlib.createGzip())
+        .pipe(wstream);
+        pipe.on("error", reject);
+        pipe.on("finish", resolve);
+    });
+};
 
 module.exports = {
     "/components.json": function*() {
@@ -52,14 +67,21 @@ module.exports = {
             let ext = path.extname(url);
             let filename = path.join(wwwPath, url);
             let compiledFilename = path.join(configuration.cacheDirectory, url);
-
+            let processJs = true;
             // Preprocess
 
             if (this.originalUrl.includes("node_modules") || this.originalUrl.includes("index.js")) {
                 // No processing required
-                return yield next;
+                processJs = false;
             }
 
+//             if (this.originalUrl.startsWith("/components/")) {
+//                 if (!(yield fs.existsAsync(filename))) {
+//                     let { d1, name, file } = this.originalUrl.match(/\/components\/(.*)\/(.*)/);
+//                     let { d2, plugin, component } = name.match(/(.*?)-(.*)/);
+//                     filename = path.join(__dirname, "..", "..", "plugins", plugin, "components", component, file);
+//                 }
+//             }
             if (this.originalUrl.startsWith("/components/")) {
                 let parts = this.originalUrl.match(/\/components\/(.*)\/(.*)/);
                 let name = parts[1];
@@ -89,7 +111,7 @@ module.exports = {
                 return yield next;
             }
 
-            if (ext === ".js") {
+            if (processJs && ext === ".js") {
                 let result = yield babel.transformFileAsync(filename, {
                     plugins: [
                         "transform-es2015-modules-amd"
@@ -115,9 +137,10 @@ module.exports = {
                 yield fs.copyAsync(filename, compiledFilename);
             }
 
+            yield gzip(compiledFilename);
+
             yield next;
         },
-        staticFile(configuration.cacheDirectory),
-        staticFile(wwwPath)
+        staticFile(configuration.cacheDirectory, { maxage: maxage })
     ]
 };
