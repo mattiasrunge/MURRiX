@@ -64,7 +64,7 @@ if (!isChrome) {
         let args = {
             hostname: location.hostname,
             port: location.port,
-            secure: secure: location.protocol.includes("https")
+            secure: location.protocol.includes("https")
         };
 
         main.start(args)
