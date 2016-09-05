@@ -73,11 +73,6 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
         }
     }
 
-    this.list(filtered.map((item) => {
-        item.node = ko.observable(item.node);
-        return item;
-    }));
-
     let subscription = api.feed.on("new", (data) => {
         api.vfs.access(data.path, "r")
         .then((readable) => {
@@ -93,6 +88,20 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
             console.error(error);
         });
     });
+
+    const delayAdd = (item) => {
+        return new Promise((resolve) => {
+            item.node = ko.observable(item.node);
+
+            this.list.push(item);
+
+            setTimeout(resolve, 300);
+        });
+    };
+
+    for (let item of filtered) {
+        yield delayAdd(item);
+    }
 
     this.dispose = () => {
         api.feed.off(subscription);
