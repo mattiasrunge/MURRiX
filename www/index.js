@@ -60,8 +60,8 @@ if (!isChrome) {
         }
     });
 
-    define([ "lib/main" ], (main) => {
-        let args = {
+    define([ "lib/main" ], function(main) {
+        var args = {
             hostname: location.hostname,
             port: location.port,
             secure: location.protocol.includes("https")
