@@ -96,9 +96,7 @@ module.exports = {
                 let routeName = name;
 
                 if (name[0] !== "/") {
-                    let parts = name.match(/(.+?)(\/.*)/);
-                    method = parts[1];
-                    routeName = parts[2];
+                    [ , method, routeName ] = name.match(/(.+?)(\/.*)/);
                 }
 
                 app.use(route[method](routeName, routes[name]));

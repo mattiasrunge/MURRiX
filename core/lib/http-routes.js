@@ -68,29 +68,16 @@ module.exports = {
             let filename = path.join(wwwPath, url);
             let compiledFilename = path.join(configuration.cacheDirectory, url);
             let processJs = true;
-            // Preprocess
 
             if (this.originalUrl.includes("node_modules") || this.originalUrl.includes("index.js")) {
                 // No processing required
                 processJs = false;
             }
 
-//             if (this.originalUrl.startsWith("/components/")) {
-//                 if (!(yield fs.existsAsync(filename))) {
-//                     let { d1, name, file } = this.originalUrl.match(/\/components\/(.*)\/(.*)/);
-//                     let { d2, plugin, component } = name.match(/(.*?)-(.*)/);
-//                     filename = path.join(__dirname, "..", "..", "plugins", plugin, "components", component, file);
-//                 }
-//             }
             if (this.originalUrl.startsWith("/components/")) {
-                let parts = this.originalUrl.match(/\/components\/(.*)\/(.*)/);
-                let name = parts[1];
-                let file = parts[2];
-
                 if (!(yield fs.existsAsync(filename))) {
-                    let parts = name.match(/(.*?)-(.*)/);
-                    let plugin = parts[1];
-                    let component = parts[2];
+                    let [ , name, file ] = this.originalUrl.match(/\/components\/(.*)\/(.*)/);
+                    let [ , plugin, component ] = name.match(/(.*?)-(.*)/);
                     filename = path.join(__dirname, "..", "..", "plugins", plugin, "components", component, file);
                 }
             }
