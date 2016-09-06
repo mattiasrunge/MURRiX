@@ -117,7 +117,7 @@ module.exports = {
                 yield fs.outputFileAsync(compiledFilename, compiled.styles);
             } else if (url === "/index.html") {
                 let source = yield fs.readFileAsync(filename);
-                let compiled = source.toString().replace("GOOGLE_API_KEY", configuration.googleKey);
+                let compiled = source.toString().replace("GOOGLE_API_KEY", configuration.googleBrowserKey);
 
                 yield fs.outputFileAsync(compiledFilename, compiled);
             } else {

@@ -17,7 +17,7 @@ let lookup = api.register("lookup", {
             qs: {
                 location: latitude + "," + longitude,
                 timestamp: 0,
-                key: params.googleKey
+                key: params.googleServerKey
             },
             json: true
         };
@@ -46,7 +46,7 @@ let lookup = api.register("lookup", {
             qs: {
                 sensor: false,
                 latlng: latitude + "," + longitude,
-                key: params.googleKey
+                key: params.googleServerKey
             },
             json: true
         };
@@ -66,7 +66,7 @@ let lookup = api.register("lookup", {
             uri: "https://maps.googleapis.com/maps/api/geocode/json",
             qs: {
                 address: address,
-                key: params.googleKey
+                key: params.googleServerKey
             },
             json: true
         };
