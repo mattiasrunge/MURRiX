@@ -7,6 +7,7 @@ const glob = require("glob-promise");
 const staticFile = require("koa-static");
 const moment = require("moment");
 const CleanCSS = require("clean-css");
+const co = require("bluebird").coroutine;
 const promisifyAll = require("bluebird").promisifyAll;
 const babel = promisifyAll(require("babel-core"));
 const configuration = require("./configuration");
@@ -27,34 +28,63 @@ const gzip = (filename) => {
     });
 };
 
-module.exports = {
-    "/components.json": function*() {
-        let components = [];
-        let dir = path.join(wwwPath, "components");
-        let items = yield fs.readdirAsync(dir);
+const getComponents = co(function*() {
+    let components = [];
+    let dir = path.join(wwwPath, "components");
+    let items = yield fs.readdirAsync(dir);
+
+    for (let item of items) {
+        let dirname = path.join(dir, item);
+        if (yield fs.isDirectoryAsync(dirname)) {
+            components.push({ name: item, path: dirname });
+        }
+    }
+
+    let pattern = path.join(__dirname, "..", "..", "plugins", "**", "components");
+    let list = yield glob(pattern);
+
+    for (let name of list) {
+        let items = yield fs.readdirAsync(name);
+        let plugin = path.basename(path.dirname(name));
 
         for (let item of items) {
-            if (yield fs.isDirectoryAsync(path.join(dir, item))) {
-                components.push(item);
+            let dirname = path.join(name, item);
+            if (yield fs.isDirectoryAsync(dirname)) {
+                components.push({ name: plugin + "-" + item, path: dirname });
             }
         }
+    }
 
-        let pattern = path.join(__dirname, "..", "..", "plugins", "**", "components");
-        let list = yield glob(pattern);
+    return components;
+});
 
-        for (let name of list) {
-            let items = yield fs.readdirAsync(name);
-            let plugin = path.basename(path.dirname(name));
+module.exports = {
+    "/templates.html": function*() {
+        let components = yield getComponents();
+        let data = "";
 
-            for (let item of items) {
-                if (yield fs.isDirectoryAsync(path.join(name, item))) {
-                    components.push(plugin + "-" + item);
-                }
+        for (let component of components) {
+            let body = yield fs.readFileAsync(path.join(component.path, "template.html"));
+
+            body = body.toString();
+
+            if (body.charCodeAt(0) === 0xFEFF) {
+                body = body.slice(1);
             }
+
+            data += "<template id=\"" + component.name + "\">";
+            data += body;
+            data += "</template>\n";
         }
+
+        this.type = "text/html";
+        this.body = data;
+    },
+    "/components.json": function*() {
+        let components = yield getComponents();
 
         this.type = "application/json";
-        this.body = JSON.stringify(components);
+        this.body = JSON.stringify(components.map((component) => component.name));
     },
     unamed: () => [
         function*(next) {

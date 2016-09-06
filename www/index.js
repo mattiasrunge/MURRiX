@@ -1,5 +1,9 @@
 "use strict";
 
+function abc123() {
+    console.error("abc123", arguments);
+}
+
 var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
 if (!isChrome) {

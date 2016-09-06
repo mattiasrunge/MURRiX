@@ -12,8 +12,12 @@ module.exports = {
     registerComponents: (list) => {
         for (let name of list) {
             ko.components.register(name, {
-                viewModel: { require: "components/" + name + "/model" },
-                template: { require: "text!components/" + name + "/template.html" }
+                viewModel: {
+                    require: "components/" + name + "/model"
+                },
+                template: {
+                    element: document.querySelector("link[rel=\"import\"]").import.querySelector("#" + name)
+                }
             });
         }
     },
