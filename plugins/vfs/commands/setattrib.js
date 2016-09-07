@@ -18,5 +18,5 @@ vorpal
 
     attributes[args.name] = args.value;
 
-    yield api.vfs.setAttributes(terminal.normalize(cwd, dir), attributes);
+    yield api.vfs.setattributes(terminal.normalize(cwd, dir), attributes);
 }));
