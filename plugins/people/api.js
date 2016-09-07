@@ -93,14 +93,14 @@ let people = api.register("people", {
             "attributes.type": "death"
         } }))[0];
 
-        if (birth) {
+        if (birth && birth.node.attributes.time) {
             let birthUtc = moment.utc(birth.node.attributes.time.timestamp * 1000);
 
             birthdate = birthUtc.format("YYYY-MM-DD");
             age = moment.utc().diff(birthUtc, "years");
         }
 
-        if (death) {
+        if (death && death.node.attributes.time) {
             let deathUtc = moment.utc(death.node.attributes.time.timestamp * 1000);
 
             deathdate = deathUtc.format("YYYY-MM-DD");
