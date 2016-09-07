@@ -14,16 +14,26 @@ module.exports = utils.wrapComponent(function*(params) {
     this.personPath = ko.observable(false);
     this.selectedTag = ko.observable(false);
     this.height = ko.pureComputed(() => {
-        let screenHeight = ko.unwrap(ui.windowSize()).height;
-        let heights = [ 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000 ];
-
-        for (let height of heights) {
-            if (screenHeight < height) {
-                return height;
-            }
+        if (!this.nodepath()) {
+            return 0;
         }
 
-        return heights[heights.length - 1];
+        if (this.nodepath().node().attributes.type === "image") {
+            let screenHeight = ko.unwrap(ui.windowSize()).height;
+            let heights = [ 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000 ];
+
+            for (let height of heights) {
+                if (screenHeight < height) {
+                    return height;
+                }
+            }
+
+            return heights[heights.length - 1];
+        } else if (this.nodepath().node().attributes.type === "video") {
+            return this.nodepath().node().attributes.fileinfo.height;
+        }
+
+        return 0
     });
 
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
