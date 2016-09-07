@@ -197,7 +197,7 @@
             <span data-bind="click: sidebarView.bind($data, 'position')" style="cursor: pointer;">
                 <i class="material-icons md-18">place</i>
                 <span data-bind="if: location">
-                    <span data-bind="text: location().attributes.name"></span>
+                    <span data-bind="text: location().node().attributes.name"></span>
                 </span>
                 <span data-bind="if: !location()">
                     <span data-bind="positionAddress: position"></span>
