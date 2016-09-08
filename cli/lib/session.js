@@ -19,8 +19,8 @@ module.exports = {
     init: co(function*() {
         let session = yield api.auth.session();
 
-        if (session.sessionId) {
-            yield fs.outputFileAsync(sessionIdFilename, session.sessionId, {
+        if (session._id) {
+            yield fs.outputFileAsync(sessionIdFilename, session._id, {
                 mode: 0o700
             });
         }
