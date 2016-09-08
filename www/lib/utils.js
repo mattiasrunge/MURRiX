@@ -55,13 +55,16 @@ module.exports = {
     },
     sortNodeList: (list) => {
         list.sort((a, b) => {
-            if (!ko.unwrap(a.node).attributes.time) {
-                return -1;
-            } else if (!ko.unwrap(b.node).attributes.time) {
-                return 1;
+            a = ko.unwrap(a.node);
+            b = ko.unwrap(b.node);
+
+            if (!a.attributes.time) {
+                return a.attributes.name.localeCompare(b.attributes.name);
+            } else if (!b.attributes.time) {
+                return b.attributes.name.localeCompare(a.attributes.name);
             }
 
-            return ko.unwrap(a.node).attributes.time.timestamp - ko.unwrap(b.node).attributes.time.timestamp;
+            return a.attributes.time.timestamp - b.attributes.time.timestamp;
         });
     },
     seconds: () => {
