@@ -10,7 +10,7 @@ const bus = require("../../core/lib/bus");
 let params = {};
 
 let file = api.register("file", {
-    deps: [ "vfs", "camera", "mcs" ],
+    deps: [ "vfs", "camera", "mcs", "auth", "lookup" ],
     init: co(function*(config) {
         params = config;
     }),
@@ -21,7 +21,7 @@ let file = api.register("file", {
             throw new Error("Source file does not exist");
         }
 
-        let metadata = yield api.mcs.getMetadata(attributes._source.filename, { });
+        let metadata = yield api.mcs.getMetadata(attributes._source.filename, {});
 
         if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
             throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
@@ -29,12 +29,6 @@ let file = api.register("file", {
 
         if (attributes.md5 && attributes.md5 !== metadata.md5) {
             throw new Error("md5 checksum for file does not match, is the file corrupt? " + attributes.md5 + " !== " + metadata.md5);
-        }
-
-        for (let key of Object.keys(metadata)) {
-            if (key !== "raw" && key !== "name" && typeof attributes[key] === "undefined") {
-                attributes[key] = metadata[key];
-            }
         }
 
         yield api.vfs.create(session, abspath, "f", attributes);
@@ -53,6 +47,24 @@ let file = api.register("file", {
     regenerate: function*(session, abspath) {
         let node = yield api.vfs.resolve(session, abspath);
 
+
+
+        // Update metadata
+        let attributes = {};
+        let metadata = yield api.mcs.getMetadata(path.join(params.fileDirectory, node.attributes.diskfilename), { noChecksums: true });
+
+        for (let key of Object.keys(metadata)) {
+            if (key !== "raw" && key !== "name" && typeof attributes[key] === "undefined") {
+                attributes[key] = metadata[key];
+            }
+        }
+
+        yield api.vfs.setattributes(session, node, attributes);
+        node = yield api.vfs.resolve(session, abspath);
+
+
+
+        // Update device
         let device = yield api.vfs.resolve(session, abspath + "/createdWith", { noerror: true });
 
         if (node.attributes.deviceSerialNumber && !device) {
@@ -67,6 +79,9 @@ let file = api.register("file", {
             }
         }
 
+
+
+        // Update time
         let source = chron.select(node.attributes.when || {});
 
         if (source) {
@@ -90,14 +105,31 @@ let file = api.register("file", {
                 options.deviceAutoDst = device.attributes.deviceAutoDst;
             }
 
-            let timestamp = chron.time2timestamp(source.time, options);
-
-            yield api.vfs.setattributes(session, node, {
-                time: timestamp
+            yield api.vfs.setattributes(session, abspath, {
+                time: chron.time2timestamp(source.time, options)
             });
         }
 
+
+
         return yield api.vfs.resolve(session, abspath);
+    },
+    regenerateOther: function*(session) {
+        let cache = {};
+        let nodes = yield api.vfs.query(api.auth.getAdminSession(), {
+            "attributes.type": "other"
+        }, {
+            fields: {
+                "_id": 1
+            }
+        });
+
+        for (let node of nodes) {
+            let paths = yield api.vfs.lookup(api.auth.getAdminSession(), node._id, cache);
+            yield api.file.regenerate(api.auth.getAdminSession(), paths[0]);
+        }
+
+        return nodes.length;
     },
     getFaces: function*(session, abspath) {
         let node = yield api.vfs.resolve(session, abspath);
