@@ -1,9 +1,5 @@
 "use strict";
 
-function abc123() {
-    console.error("abc123", arguments);
-}
-
 var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
 if (!isChrome) {
@@ -29,6 +25,7 @@ if (!isChrome) {
             "contextmenu": "node_modules/jquery-contextmenu/dist/jquery.contextMenu.min",
             chron: "node_modules/chron-time/browser/index",
             dragula: "node_modules/dragula/dist/dragula.min",
+            chart: "node_modules/chart.js/dist/Chart.min",
             "socket.io-client": "/socket.io/socket.io",
             "api.io-client": "/api.io/api.io-client",
             "co": "/api.io/co"
@@ -51,6 +48,9 @@ if (!isChrome) {
             },
             "jquery.imgareaselect": {
                 deps: [ "jquery" ]
+            },
+            chart: {
+                deps: [ "moment" ]
             },
             "moment-duration-format": {
                 deps: [ "moment" ]

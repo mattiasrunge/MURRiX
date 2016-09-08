@@ -10,6 +10,7 @@
     "autosize": "3.0.17",
     "bootstrap": "3.3.7",
     "bootstrap-slider": "9.1.3",
+    "chart.js": "^2.2.2",
     "chron-time": "0.0.2",
     "corejs-typeahead": "https://github.com/mattiasrunge/typeahead.js",
     "dragula": "^3.7.1",
