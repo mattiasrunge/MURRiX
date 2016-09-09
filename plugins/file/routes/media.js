@@ -12,7 +12,7 @@ module.exports = {
         params = config;
     }),
     handler: function*(filename, name) {
-        this.set("Content-disposition", "filename=" + name);
+        this.set("Content-disposition", "filename=" + encodeURIComponent(name));
         yield stream.file(this, filename, {
             root: params.mcsDirectory,
             allowDownload: true
