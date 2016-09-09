@@ -33,7 +33,7 @@ module.exports = utils.wrapComponent(function*(params) {
             return this.nodepath().node().attributes.fileinfo.height;
         }
 
-        return 0
+        return 0;
     });
 
     this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));

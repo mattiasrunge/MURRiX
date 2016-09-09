@@ -4,7 +4,6 @@ const ko = require("knockout");
 const moment = require("moment");
 const api = require("api.io-client");
 const utils = require("lib/utils");
-const loc = require("lib/location");
 const ui = require("lib/ui");
 const stat = require("lib/status");
 

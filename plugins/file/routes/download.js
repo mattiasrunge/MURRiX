@@ -13,7 +13,7 @@ module.exports = {
         params = config;
     }),
     handler: function*(filename, name) {
-        this.set("Content-disposition", "attachment; filename=" + name);
+        this.set("Content-disposition", "attachment; filename=" + encodeURIComponent(name));
         this.body = fs.createReadStream(path.join(params.fileDirectory, path.basename(filename)));
     }
 };

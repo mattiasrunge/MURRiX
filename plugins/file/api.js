@@ -114,7 +114,7 @@ let file = api.register("file", {
 
         return yield api.vfs.resolve(session, abspath);
     },
-    regenerateOther: function*(session) {
+    regenerateOther: function*(/*session*/) {
         let cache = {};
         let nodes = yield api.vfs.query(api.auth.getAdminSession(), {
             "attributes.type": "other"

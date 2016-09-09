@@ -1,12 +1,8 @@
 "use strict";
 
-const path = require("path");
 const moment = require("moment");
 const co = require("bluebird").coroutine;
-const fs = require("fs-extra-promise");
 const api = require("api.io");
-const chron = require("chron-time");
-const bus = require("../../core/lib/bus");
 
 let params = {};
 
@@ -15,7 +11,7 @@ let statistics = api.register("statistics", {
     init: co(function*(config) {
         params = config;
     }),
-    getEventData: function*(session) {
+    getEventData: function*(/*session*/) {
         let nodes = yield api.vfs.query(api.auth.getAdminSession(), {
             "properties.type": "t",
             "attributes.type": { $in: [ "birth", "death", "engagement", "marriage" ] }

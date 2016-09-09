@@ -23,7 +23,7 @@ const dragula = require("dragula");
 const typeahead = require("typeahead"); // jshint ignore:line
 const imgareaselect = require("jquery.imgareaselect"); // jshint ignore:line
 const contextmenu = require("contextmenu"); // jshint ignore:line
-const chart = require("chart");
+const Chart = require("chart");
 const chron = require("chron");
 
 require("moment-duration-format");
@@ -148,11 +148,9 @@ ko.bindingHandlers.dragula = {
 };
 
 ko.bindingHandlers.barchart = {
-    init: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-
+    init: (element/*, valueAccessor*/) => {
         element.chart = new Chart(element, {
-            type: 'bar',
+            type: "bar",
             data: {
                 labels: [],
                 label: "",
@@ -166,11 +164,13 @@ ko.bindingHandlers.barchart = {
                     display: false
                 },
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true
+                            }
                         }
-                    }]
+                    ]
                 }
             }
         });
