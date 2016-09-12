@@ -1134,6 +1134,7 @@ ko.bindingHandlers.nodeselect = {
     }
 };
 
+// TODO: Clean this mess upp
 ko.bindingHandlers.picture = {
     update: (element, valueAccessor) => {
         let data = ko.unwrap(valueAccessor());
@@ -1188,6 +1189,8 @@ ko.bindingHandlers.picture = {
             if (classes.includes("img-responsive")) { // TODO: Hack!
                 containerCss = "";
             }
+
+            css = [];
 
             $span = $("<span style='display: inline-block; position: relative; " + containerCss + "' class='" + classes + "'></span>");
             let $img;
@@ -1303,26 +1306,5 @@ ko.bindingHandlers.picture = {
 
             $element.append($title);
         }
-    }
-};
-
-ko.bindingHandlers.pictures = {
-    update: (element, valueAccessor) => {
-        let data = ko.unwrap(valueAccessor());
-        let items = ko.unwrap(data.items);
-        let width = ko.unwrap(data.width);
-        let height = ko.unwrap(data.height);
-        let margin = ko.unwrap(data.margin) || 0;
-        let classes = ko.unwrap(data.classes) || "";
-        let $element = $(element);
-
-        $element.empty();
-
-        for (let item of items) {
-            let $image = $("<img data-original='" + item.filename + "' style='width: " + width + "px; height: " + height + "px; background-color: black; margin-right: " + margin + "px; margin-bottom: " + margin + "px;' class='lazyload " + classes + "'>");
-            $element.append($image);
-        }
-
-        lazyload.update();
     }
 };
