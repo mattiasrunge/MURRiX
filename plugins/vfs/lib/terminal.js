@@ -14,18 +14,26 @@ module.exports = {
         try {
             if (input === "") {
                 let items = yield api.vfs.list(cwd);
-                return items.map((item) => item.name);
+                return items.map((item) => item.name + "/");
             }
 
             let dir = module.exports.normalize(cwd, input);
-            let parentDir = path.dirname(dir);
-            let match = path.basename(dir);
-            let items = yield api.vfs.list(parentDir);
+            let parentDir = dir;
+            let match = "";
 
+            if (!dir.endsWith("/")) {
+                parentDir = path.dirname(dir);
+                match = path.basename(dir);
+            }
+
+            let items = yield api.vfs.list(parentDir);
             names = items
             .map((item) => item.name)
             .filter((name) => name.startsWith(match))
-            .map((name) => input[0] === "/" ? path.join(parentDir, name) : name);
+            .map((name) => input[0] === "/" ? path.join(parentDir, name) : name)
+            .map((dir) => dir[dir.length - 1] === "/" ? dir : dir + "/");
+
+//             console.log("\n" + JSON.stringify(names));
         } catch (e) {
             console.error(e.red);
         }
@@ -33,13 +41,18 @@ module.exports = {
         return names;
     }),
     normalize: (cwd, dir) => {
-        if (dir.startsWith(".") && dir[1] !== ".") {
-            dir = dir.replace(/\./, cwd);
-        } else if (dir.startsWith("..")) {
-            dir = dir.replace(/\.\./, path.dirname(cwd));
-        } else if (!dir.startsWith("/")) {
-            dir = path.join(cwd, dir);
-        }
+        let trailingSlash = dir[dir.length - 1] === "/";
+        dir = path.resolve(cwd, dir);
+
+        dir += trailingSlash ? "/" : "";
+
+//         if (dir.startsWith(".") && dir[1] !== ".") {
+//             dir = dir.replace(/\./, cwd);
+//         } else if (dir.startsWith("..")) {
+//             dir = dir.replace(/\.\./, path.dirname(cwd));
+//         } else if (!dir.startsWith("/")) {
+//             dir = path.join(cwd, dir);
+//         }
 
         return dir.replace(/\/+/g, "/");
     },

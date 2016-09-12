@@ -38,6 +38,8 @@ module.exports = {
         if (value) {
             if (value === null) {
                 delete module.exports.environment[name];
+            } else if (name === "cwd") {
+                module.exports.environment[name] = value.length > 1 && value[value.length - 1] === "/" ? value.slice(0, value.length - 1) : value;
             } else {
                 module.exports.environment[name] = value;
             }

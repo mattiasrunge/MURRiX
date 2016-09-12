@@ -24,6 +24,8 @@ module.exports = utils.wrapComponent(function*(/*params*/) {
 
         ui.setTitle("Browsing " + this.year());
 
+        console.log(list[0].node);
+
         return list.map((item) => {
             item.node = ko.observable(item.node);
             return item;
