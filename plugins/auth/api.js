@@ -100,6 +100,10 @@ let auth = api.register("auth", {
             personPath = person.attributes.path;
         }
 
+        delete user.attributes.password;
+        delete user.attributes.resetId;
+        // TODO: Invert this
+
         return { username: session.username, user: user, personPath: personPath, stars: stars };
     },
     getStars: function*(session) {
