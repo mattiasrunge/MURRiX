@@ -41,7 +41,12 @@
                 </div>
                 <div data-bind="if: !loggedIn()">
                     <div class="col-md-12">
-                        <auth-page-login></auth-page-login>
+                        <div data-bind="if: page() === 'reset'">
+                            <auth-page-reset></auth-page-reset>
+                        </div>
+                        <div data-bind="if: page() !== 'reset'">
+                            <auth-page-login></auth-page-login>
+                        </div>
                     </div>
                 </div>
             </div>
