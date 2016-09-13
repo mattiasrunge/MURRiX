@@ -4,6 +4,7 @@ const co = require("bluebird").coroutine;
 const api = require("api.io").client;
 const session = require("./session");
 const shell = require("./shell");
+const vorpal = require("./vorpal");
 
 module.exports = {
     start: co(function*(args) {
@@ -14,13 +15,25 @@ module.exports = {
                 console.error(message);
                 process.exit(255);
             } else if (status === "disconnect") {
-                console.error("Disconnected from server, will attempt to reconnect...");
+                let message = "Disconnected from server, will attempt to reconnect...";
+
+                if (vorpal) {
+                    vorpal.log(message.red);
+                } else {
+                    console.error(message);
+                }
             } else if (status === "reconnect") {
                 // If the session was new this time the header we reconnected with
                 // will be wrong and a new session will be created
                 session.init()
                 .then(() => {
-                    console.log("Reconnected to server.");
+                    let message = "Reconnected to server.";
+
+                    if (vorpal) {
+                        vorpal.log(message.green);
+                    } else {
+                        console.log(message);
+                    }
                 })
                 .catch((error) => {
                     console.error("Failed to reinitialize session");

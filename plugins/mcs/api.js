@@ -48,6 +48,9 @@ let mcs = api.register("mcs", {
     },
     getCached: (id, filename, format) => {
         return mcsApi.cache.get(id, filename, format, params.mcsDirectory);
+    },
+    getStatus: function*() {
+        return mcsApi.cache.status();
     }
 });
 

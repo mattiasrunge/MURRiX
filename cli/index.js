@@ -18,6 +18,12 @@ const argv = require("yargs")
     describe: "Server port",
     type: "number"
 })
+.option("s", {
+    alias: "secure",
+    default: false,
+    describe: "Server uses https",
+    type: "boolean"
+})
 .argv;
 
 process
