@@ -88,9 +88,14 @@ module.exports = {
                     let xhr = $.ajaxSettings.xhr();
 
                     let progressListener = (event) => {
-                        let progress = Math.min(Math.round((event.loaded / event.total) * 100), 100);
                         let duration = module.exports.seconds() - startTime;
-                        let speed = event.total / (duration === 0 ? 1 : duration);
+
+                        if (event.total === 0) {
+                            return progressCallback(100, 0, duration);
+                        }
+
+                        let progress = Math.min(Math.round((event.loaded / event.total) * 100), 100);
+                        let speed = event.loaded / (duration === 0 ? 1 : duration);
 
                         progressCallback(progress, speed, duration);
                     };
