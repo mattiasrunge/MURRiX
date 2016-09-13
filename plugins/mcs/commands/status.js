@@ -21,7 +21,7 @@ vorpal
 
         let columns = columnify(jobs.map((job) => {
             return {
-                state: (job.running ? "O".green : "Q".red),
+                state: (job.running ? "A".green : "Q".red),
                 format: job.format.type.bold,
                 size: (job.format.width || 0) + "x" + (job.format.height || 0),
                 path: job.path.bold,

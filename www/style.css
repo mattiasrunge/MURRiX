@@ -755,7 +755,7 @@ widget-node-sections .nav-pills > li > a:focus {
 }
 
 .news-container .news-item .news-media-files a {
-    margin-right: 2px;
+    margin-right: 1px;
 }
 
 .news-container .news-item .news-media-files a:last-child {

@@ -8,7 +8,7 @@ const stat = require("lib/status");
 module.exports = utils.wrapComponent(function*(params) {
     this.loading = stat.create();
     this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
-    this.width = 155;
+    this.width = 156;
     this.height = 270;
 
     this.fileListPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().attributes.path + "/files" : false);
@@ -38,8 +38,6 @@ module.exports = utils.wrapComponent(function*(params) {
             file.filename = filenames[file.node()._id] || false;
             return file;
         });
-
-        utils.sortNodeList(files);
 
         console.log("files", files);
 

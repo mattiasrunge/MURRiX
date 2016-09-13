@@ -366,12 +366,24 @@ let vfs = api.register("vfs", {
         }
 
         if (options.reverse) {
-            list.sort((a, b) => {
-                return b.name.localeCompare(a.name);
+            list.sort((b, a) => {
+                if (!a.node.attributes.time) {
+                    return a.name.localeCompare(b.name);
+                } else if (!b.node.attributes.time) {
+                    return b.name.localeCompare(a.name);
+                }
+
+                return a.node.attributes.time.timestamp - b.node.attributes.time.timestamp;
             });
         } else {
             list.sort((a, b) => {
-                return a.name.localeCompare(b.name);
+                if (!a.node.attributes.time) {
+                    return a.name.localeCompare(b.name);
+                } else if (!b.node.attributes.time) {
+                    return b.name.localeCompare(a.name);
+                }
+
+                return a.node.attributes.time.timestamp - b.node.attributes.time.timestamp;
             });
         }
 
