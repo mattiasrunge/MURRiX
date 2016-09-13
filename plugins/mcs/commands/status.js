@@ -31,7 +31,7 @@ vorpal
             showHeaders: true
         });
 
-        this.log(columns.length);
+        this.log(columns);
     }
 
     this.log("total " + jobs.length);
