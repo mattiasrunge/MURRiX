@@ -12,8 +12,13 @@ module.exports = utils.wrapComponent(function*(params) {
     this.data = params.data;
     this.size = params.size;
     this.nodepath = params.nodepath;
+    this.requestId = Date.now();
+    this.progress = ko.observable(false);
 
     this.list = ko.asyncComputed([], function*(setter) {
+        this.requestId = Date.now();
+        let requestId = this.requestId;
+
         setter([]);
 
         console.log(this.data());
@@ -22,13 +27,23 @@ module.exports = utils.wrapComponent(function*(params) {
         let texts = this.data().texts;
         let ids = files.map((file) => file.node()._id);
 
+        this.progress({
+            total: ids.length,
+            complete: 0,
+            progress: 0
+        });
+
         this.loading(true);
 
         let filenames = yield api.file.getMediaUrl(ids, {
             width: this.size,
             height: this.size,
             type: "image"
-        });
+        }, this.requestId);
+
+        if (this.requestId !== requestId) {
+            return [];
+        }
 
         this.loading(false);
 
@@ -78,12 +93,30 @@ module.exports = utils.wrapComponent(function*(params) {
 
         return days;
     }.bind(this), (error) => {
+        this.progress(false);
         this.loading(false);
         stat.printError(error);
         return [];
     });
 
+    console.log("SUBSCRIBE", this.requestId);
+    let subscription = api.file.on("media-progress", (event) => {
+        if (this.requestId !== event.requestId) {
+            return;
+        }
+
+        console.log("event", event);
+
+        this.progress({
+            total: event.total,
+            complete: event.complete,
+            progress: Math.min((event.complete / event.total) * 100, 100)
+        });
+    });
+
     this.dispose = () => {
+        console.log("UNSUBSCRIBE", this.requestId);
+        api.file.off(subscription);
         stat.destroy(this.loading);
     };
 });

@@ -136,7 +136,7 @@ let file = api.register("file", {
 
         return api.mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
     },
-    getMediaUrl: function*(session, ids, format) {
+    getMediaUrl: function*(session, ids, format, requestId) {
         format = format || {};
 
         if (typeof format.type === "undefined") {
@@ -156,6 +156,19 @@ let file = api.register("file", {
                 "attributes.timeindex": 1
             }
         });
+        let complete = 0;
+        let timer = null;
+
+        const notify = () => {
+            complete++;
+
+            if (requestId && !timer) {
+                timer = setTimeout(() => {
+                    this.emit("media-progress", { requestId: requestId, total: nodes.length, complete: complete });
+                    timer = null;
+                }, 1000);
+            }
+        };
 
         let results = yield Promise.all(nodes.map((node) => {
             return new Promise((resolve) => {
@@ -168,10 +181,12 @@ let file = api.register("file", {
                     type: format.type
                 })
                 .then((filename) => {
+                    notify();
                     resolve({ id: node._id, url: path.join("file", "media", path.basename(filename), node.attributes.name) });
                 })
                 .catch((error) => {
                     console.error("Failed to cache file", error); // TODO: Log event somewhere nicer
+                    notify();
                     resolve(false);
                 });
             });
