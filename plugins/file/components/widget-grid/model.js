@@ -99,13 +99,10 @@ module.exports = utils.wrapComponent(function*(params) {
         return [];
     });
 
-    console.log("SUBSCRIBE", this.requestId);
     let subscription = api.file.on("media-progress", (event) => {
         if (this.requestId !== event.requestId) {
             return;
         }
-
-        console.log("event", event);
 
         this.progress({
             total: event.total,
@@ -115,7 +112,6 @@ module.exports = utils.wrapComponent(function*(params) {
     });
 
     this.dispose = () => {
-        console.log("UNSUBSCRIBE", this.requestId);
         api.file.off(subscription);
         stat.destroy(this.loading);
     };
