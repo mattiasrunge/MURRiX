@@ -1,11 +1,8 @@
 "use strict";
 
 const $ = require("jquery");
-const components = require("json!components.json");
 const ko = require("knockout");
 const utils = require("lib/utils");
-
-const bootstrap = require("bootstrap"); // jshint ignore:line
 
 let $window = $(window);
 let resizeFlag = ko.observable(false);
@@ -20,7 +17,6 @@ $window.on("resize", () => {
 
 module.exports = {
     start: utils.co(function*() {
-        utils.registerComponents(components);
         ko.applyBindings({}, document.body);
     }),
     windowSize: ko.pureComputed(() => {

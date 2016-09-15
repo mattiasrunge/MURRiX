@@ -2,10 +2,5 @@
 
 const utils = require("lib/utils");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.nodepath = params.nodepath;
-    this.position = params.position;
-
-    this.dispose = () => {
-    };
-});
+model.nodepath = params.nodepath;
+model.position = params.position;

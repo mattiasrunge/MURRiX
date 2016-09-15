@@ -11,75 +11,73 @@ const utils = require("lib/utils");
 const stat = require("lib/status");
 const node = require("lib/node");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.nodepath = params.nodepath;
-    this.selectedHome = ko.observable(false);
-    this.locationPath = ko.observable();
+model.nodepath = params.nodepath;
+model.selectedHome = ko.observable(false);
+model.locationPath = ko.observable();
 
-    this.position = ko.asyncComputed(false, function*() {
-        if (!this.selectedHome()) {
-            return false;
-        }
-
-        return yield api.lookup.getPositionFromAddress(this.selectedHome().node.attributes.address.replace("<br>", "\n"));
-    }.bind(this), (error) => {
-        stat.printError(error);
+model.position = ko.asyncComputed(false, function*() {
+    if (!model.selectedHome()) {
         return false;
-    });
+    }
 
-    this.homes = ko.asyncComputed(false, function*() {
-        let list = yield api.vfs.list(this.nodepath().path + "/homes");
-
-        if (list.length > 0) {
-            if (!this.selectedHome()) {
-                this.selectedHome(list[0]);
-            }
-        } else {
-            this.selectedHome(false);
-        }
-
-        return list;
-    }.bind(this), (error) => {
-        stat.printError(error);
-        return [];
-    });
-
-    this.remove = (data) => {
-        // TODO: This is not really safe, the path name of the location might have changed but the link names have not changed. As after a move operation on the location. Better to find relevant links based on path they point to and remove them.
-
-        api.vfs.unlink(this.nodepath().path + "/homes/" + node.basename(data.path))
-        .then(() => {
-            return api.vfs.unlink(data.path + "/residents/" + node.basename(this.nodepath().path));
-        })
-        .then(() => {
-            this.selectedHome(false);
-            this.homes.reload();
-        })
-        .catch((error) => {
-            stat.printError(error);
-        });
-    };
-
-    let subscription = this.locationPath.subscribe((abspath) => {
-        if (!abspath) {
-            return;
-        }
-
-        api.vfs.symlink(abspath, this.nodepath().path + "/homes")
-        .then(() => {
-            return api.vfs.symlink(this.nodepath().path, abspath + "/residents");
-        })
-        .then(() => {
-            this.selectedHome(false);
-            this.homes.reload();
-            this.locationPath(false);
-        })
-        .catch((error) => {
-            stat.printError(error);
-        });
-    });
-
-    this.dispose = () => {
-        subscription.dispose();
-    };
+    return yield api.lookup.getPositionFromAddress(model.selectedHome().node.attributes.address.replace("<br>", "\n"));
+}, (error) => {
+    stat.printError(error);
+    return false;
 });
+
+model.homes = ko.asyncComputed(false, function*() {
+    let list = yield api.vfs.list(model.nodepath().path + "/homes");
+
+    if (list.length > 0) {
+        if (!model.selectedHome()) {
+            model.selectedHome(list[0]);
+        }
+    } else {
+        model.selectedHome(false);
+    }
+
+    return list;
+}, (error) => {
+    stat.printError(error);
+    return [];
+});
+
+model.remove = (data) => {
+    // TODO: This is not really safe, the path name of the location might have changed but the link names have not changed. As after a move operation on the location. Better to find relevant links based on path they point to and remove them.
+
+    api.vfs.unlink(model.nodepath().path + "/homes/" + node.basename(data.path))
+    .then(() => {
+        return api.vfs.unlink(data.path + "/residents/" + node.basename(model.nodepath().path));
+    })
+    .then(() => {
+        model.selectedHome(false);
+        model.homes.reload();
+    })
+    .catch((error) => {
+        stat.printError(error);
+    });
+};
+
+let subscription = model.locationPath.subscribe((abspath) => {
+    if (!abspath) {
+        return;
+    }
+
+    api.vfs.symlink(abspath, model.nodepath().path + "/homes")
+    .then(() => {
+        return api.vfs.symlink(model.nodepath().path, abspath + "/residents");
+    })
+    .then(() => {
+        model.selectedHome(false);
+        model.homes.reload();
+        model.locationPath(false);
+    })
+    .catch((error) => {
+        stat.printError(error);
+    });
+});
+
+const dispose = () => {
+    subscription.dispose();
+};

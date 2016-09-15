@@ -7,94 +7,92 @@ const utils = require("lib/utils");
 const stat = require("lib/status");
 const node = require("lib/node");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.nodepath = params.nodepath;
-    this.section = params.section;
-    this.loading = stat.create();
-    this.reload = ko.observable(false);
+model.nodepath = params.nodepath;
+model.section = params.section;
+model.loading = stat.create();
+model.reload = ko.observable(false);
 
-    this.createTitle = ko.observable("");
-    this.createType = ko.observable("generic");
-    this.createText = ko.observable("");
-    this.createTime = ko.observable(false);
-    this.createPersonPath = ko.observable(false);
+model.createTitle = ko.observable("");
+model.createType = ko.observable("generic");
+model.createText = ko.observable("");
+model.createTime = ko.observable(false);
+model.createPersonPath = ko.observable(false);
 
-    this.metrics = ko.asyncComputed([], function*(setter) {
-        if (!this.nodepath() || this.nodepath() === "") {
-            return {};
-        }
-
-        setter({});
-
-        this.loading(true);
-        let metrics = yield api.people.getMetrics(this.nodepath().path);
-        this.loading(false);
-
-        console.log("metrics", metrics);
-
-        return metrics;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
+model.metrics = ko.asyncComputed([], function*(setter) {
+    if (!model.nodepath() || model.nodepath() === "") {
         return {};
-    });
+    }
 
-    this.createEvent = () => {
-        console.log("type", this.createType());
-        console.log("title", this.createTitle());
-        console.log("time", this.createTime());
-        console.log("person", this.createPersonPath());
-        console.log("text", this.createText());
+    setter({});
 
-        let basepath = this.nodepath().path + "/texts";
-        let abspath = "";
-        let attributes = {
-            type: this.createType(),
-            name: this.createTitle().trim(),
-            text: this.createText().trim(),
-            when: {
-                manual: this.createTime()
-            }
-        };
+    model.loading(true);
+    let metrics = yield api.people.getMetrics(model.nodepath().path);
+    model.loading(false);
 
-        if (attributes.name === "") {
-            stat.printError("Name can not be empty");
-            return;
-        }
+    console.log("metrics", metrics);
 
-        if (!attributes.when.manual) {
-            throw new Error("An event must must have date/time set");
-        }
-
-        node.getUniqueName(basepath, attributes.name)
-        .then((name) => {
-            abspath = basepath + "/" + name;
-            return api.text.mktext(abspath, attributes);
-        })
-        .then(() => {
-            if (this.createPersonPath()) {
-                return api.vfs.link(abspath, this.createPersonPath() + "/texts");
-            }
-        })
-        .then(() => {
-            this.createType("generic");
-            this.createTitle("");
-            this.createTime(false);
-            this.createPersonPath(false);
-            this.createText("");
-
-            $("#createPeopleEventModal").modal("hide");
-
-            this.reload(!this.reload());
-
-            stat.printSuccess(attributes.name + " successfully created!");
-        })
-        .catch((error) => {
-            stat.printError(error);
-        });
-    };
-
-    this.dispose = () => {
-        stat.destroy(this.loading);
-    };
+    return metrics;
+}, (error) => {
+    model.loading(false);
+    stat.printError(error);
+    return {};
 });
+
+model.createEvent = () => {
+    console.log("type", model.createType());
+    console.log("title", model.createTitle());
+    console.log("time", model.createTime());
+    console.log("person", model.createPersonPath());
+    console.log("text", model.createText());
+
+    let basepath = model.nodepath().path + "/texts";
+    let abspath = "";
+    let attributes = {
+        type: model.createType(),
+        name: model.createTitle().trim(),
+        text: model.createText().trim(),
+        when: {
+            manual: model.createTime()
+        }
+    };
+
+    if (attributes.name === "") {
+        stat.printError("Name can not be empty");
+        return;
+    }
+
+    if (!attributes.when.manual) {
+        throw new Error("An event must must have date/time set");
+    }
+
+    node.getUniqueName(basepath, attributes.name)
+    .then((name) => {
+        abspath = basepath + "/" + name;
+        return api.text.mktext(abspath, attributes);
+    })
+    .then(() => {
+        if (model.createPersonPath()) {
+            return api.vfs.link(abspath, model.createPersonPath() + "/texts");
+        }
+    })
+    .then(() => {
+        model.createType("generic");
+        model.createTitle("");
+        model.createTime(false);
+        model.createPersonPath(false);
+        model.createText("");
+
+        $("#createPeopleEventModal").modal("hide");
+
+        model.reload(!model.reload());
+
+        stat.printSuccess(attributes.name + " successfully created!");
+    })
+    .catch((error) => {
+        stat.printError(error);
+    });
+};
+
+const dispose = () => {
+    stat.destroy(model.loading);
+};

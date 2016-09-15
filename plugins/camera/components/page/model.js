@@ -3,14 +3,12 @@
 const ko = require("knockout");
 const utils = require("lib/utils");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.nodepath = params.nodepath;
-    this.section = params.section;
+model.nodepath = params.nodepath;
+model.section = params.section;
 
-    this.ownersPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/owners" : false);
-    this.owners = ko.nodepathList(this.ownersPath, { noerror: true });
+model.ownersPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/owners" : false);
+model.owners = ko.nodepathList(model.ownersPath, { noerror: true });
 
-    this.dispose = () => {
-        this.owners.dispose();
-    };
-});
+const dispose = () => {
+    model.owners.dispose();
+};

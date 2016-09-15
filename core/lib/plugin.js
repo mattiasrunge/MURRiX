@@ -2,6 +2,7 @@
 
 const path = require("path");
 const glob = require("glob-promise");
+const fs = require("fs-extra-promise");
 const co = require("bluebird").coroutine;
 const log = require("./log")(module);
 
@@ -98,5 +99,58 @@ module.exports = {
         }
 
         return routes;
-    }
+    },
+    getComponents: co(function*(wwwPath) {
+        let list = {};
+        let components = [];
+        let dir = path.join(wwwPath, "components");
+        let items = yield fs.readdirAsync(dir);
+
+        for (let item of items) {
+            let dirname = path.join(dir, item);
+            if (yield fs.isDirectoryAsync(dirname)) {
+                list[item] = dirname;
+            }
+        }
+
+        let pattern = path.join(__dirname, "..", "..", "plugins", "**", "components");
+        let directories = yield glob(pattern);
+
+        for (let name of directories) {
+            let items = yield fs.readdirAsync(name);
+            let plugin = path.basename(path.dirname(name));
+
+            for (let item of items) {
+                let dirname = path.join(name, item);
+                if (yield fs.isDirectoryAsync(dirname)) {
+                    list[plugin + "-" + item] = dirname;
+
+                }
+            }
+        }
+
+        for (let name of Object.keys(list)) {
+            let component = {
+                name: name,
+                path: list[name]
+            };
+            let jsFile = path.join(component.path, "model.js");
+            let htmlFile = path.join(component.path, "template.html");
+
+            component.js = (yield fs.readFileAsync(jsFile)).toString();
+            component.html = (yield fs.readFileAsync(htmlFile)).toString();
+
+            if (component.js.charCodeAt(0) === 0xFEFF) {
+                component.js = component.js.slice(1);
+            }
+
+            if (component.html.charCodeAt(0) === 0xFEFF) {
+                component.html = component.html.slice(1);
+            }
+
+            components.push(component);
+        }
+
+        return components;
+    })
 };

@@ -7,35 +7,33 @@ const utils = require("lib/utils");
 const stat = require("lib/status");
 const session = require("lib/session");
 
-module.exports = utils.wrapComponent(function*(/*params*/) {
-    this.user = session.user;
-    this.uid = ko.pureComputed(() => {
-        if (!this.user()) {
-            return false;
-        }
+model.user = session.user;
+model.uid = ko.pureComputed(() => {
+    if (!model.user()) {
+        return false;
+    }
 
-        return this.user().attributes.uid;
-    });
-    this.personPath = session.personPath;
-    this.loggedIn = session.loggedIn;
-    this.loading = stat.create();
-
-    this.logout = co.wrap(function*() {
-        this.loading(true);
-
-        try {
-            yield api.auth.logout();
-            yield session.loadUser();
-            stat.printSuccess("Logout successfull");
-        } catch (e) {
-            console.error(e);
-            stat.printError("Logout failed");
-        }
-
-        this.loading(false);
-    }.bind(this));
-
-    this.dispose = () => {
-        stat.destroy(this.loading);
-    };
+    return model.user().attributes.uid;
 });
+model.personPath = session.personPath;
+model.loggedIn = session.loggedIn;
+model.loading = stat.create();
+
+model.logout = co.wrap(function*() {
+    model.loading(true);
+
+    try {
+        yield api.auth.logout();
+        yield session.loadUser();
+        stat.printSuccess("Logout successfull");
+    } catch (e) {
+        console.error(e);
+        stat.printError("Logout failed");
+    }
+
+    model.loading(false);
+});
+
+const dispose = () => {
+    stat.destroy(model.loading);
+};

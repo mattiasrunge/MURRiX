@@ -6,17 +6,12 @@ const utils = require("lib/utils");
 const session = require("lib/session");
 const ui = require("lib/ui");
 
-module.exports = utils.wrapComponent(function*(/*params*/) {
-    this.user = session.user;
-    this.username = session.username;
-    this.personPath = session.personPath;
-    this.loggedIn = session.loggedIn;
-    this.groupList = ko.observableArray();
+model.user = session.user;
+model.username = session.username;
+model.personPath = session.personPath;
+model.loggedIn = session.loggedIn;
+model.groupList = ko.observableArray();
 
-    this.groupList(yield api.auth.groupList(session.username()));
+model.groupList(yield api.auth.groupList(session.username()));
 
-    ui.setTitle("Profile");
-
-    this.dispose = () => {
-    };
-});
+ui.setTitle("Profile");

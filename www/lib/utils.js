@@ -9,33 +9,9 @@ let clipBoardContent = false;
 
 
 module.exports = {
-    registerComponents: (list) => {
-        for (let name of list) {
-            ko.components.register(name, {
-                viewModel: {
-                    require: "components/" + name + "/model"
-                },
-                template: {
-                    element: document.querySelector("link[rel=\"import\"]").import.querySelector("#" + name)
-                }
-            });
-        }
-    },
     copyToClipboard: (content) => {
         clipBoardContent = content;
         document.execCommand("copy");
-    },
-    wrapComponent: (fn) => {
-        if (fn.constructor.name === "GeneratorFunction") {
-            return function(params) {
-                co.wrap(fn.bind(this))(params)
-                .catch((error) => {
-                    console.error(error.stack);
-                });
-            };
-        }
-
-        return fn;
     },
     co: co.wrap,
     modeString: (mode) => {

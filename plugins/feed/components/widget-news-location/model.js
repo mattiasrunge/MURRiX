@@ -5,30 +5,28 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = stat.create();
-    this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
+model.loading = stat.create();
+model.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
 
-    this.position = ko.asyncComputed(false, function*() {
-        if (!this.item()) {
-            return false;
-        }
-
-        if (!this.item().node().attributes.address) {
-            return false;
-        }
-
-        return yield api.lookup.getPositionFromAddress(this.item().node().attributes.address.replace("<br>", "\n"));
-    }.bind(this), (error) => {
-        stat.printError(error);
+model.position = ko.asyncComputed(false, function*() {
+    if (!model.item()) {
         return false;
-    });
+    }
 
-    this.itemPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().attributes.path : false);
-    this.item = ko.nodepath(this.itemPath, { noerror: true });
+    if (!model.item().node().attributes.address) {
+        return false;
+    }
 
-    this.dispose = () => {
-        this.item.dispose();
-        stat.destroy(this.loading);
-    };
+    return yield api.lookup.getPositionFromAddress(model.item().node().attributes.address.replace("<br>", "\n"));
+}, (error) => {
+    stat.printError(error);
+    return false;
 });
+
+model.itemPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().node().attributes.path : false);
+model.item = ko.nodepath(model.itemPath, { noerror: true });
+
+const dispose = () => {
+    model.item.dispose();
+    stat.destroy(model.loading);
+};

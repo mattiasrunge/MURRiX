@@ -8,56 +8,54 @@ const ui = require("lib/ui");
 const stat = require("lib/status");
 const session = require("lib/session");
 
-module.exports = utils.wrapComponent(function*(/*params*/) {
-    this.loading = stat.create();
-    this.query = ko.pureComputed({
-        read: () => ko.unwrap(loc.current().query) || "",
-        write: (value) => loc.goto({ query: value })
-    });
-    this.list = ko.asyncComputed([], function*() {
-        if (this.query().length < 4) {
+model.loading = stat.create();
+model.query = ko.pureComputed({
+    read: () => ko.unwrap(loc.current().query) || "",
+    write: (value) => loc.goto({ query: value })
+});
+model.list = ko.asyncComputed([], function*() {
+    if (model.query().length < 4) {
+        return [];
+    }
+
+    let query = {};
+
+    if (model.query().startsWith("label:")) {
+        let labels = model.query().replace(/label:/, "").split("+");
+
+        if (labels.length === 0) {
             return [];
         }
 
-        let query = {};
+        query = {
+            "attributes.labels": { $in: labels }
+        };
+    } else {
+        query = {
+            "attributes.name": { $regex: ".*" + model.query() + ".*", $options: "-i" }
+        };
+    }
 
-        if (this.query().startsWith("label:")) {
-            let labels = this.query().replace(/label:/, "").split("+");
+    model.loading(true);
 
-            if (labels.length === 0) {
-                return [];
-            }
+    let list = yield api.vfs.list(session.searchPaths(), { filter: query });
 
-            query = {
-                "attributes.labels": { $in: labels }
-            };
-        } else {
-            query = {
-                "attributes.name": { $regex: ".*" + this.query() + ".*", $options: "-i" }
-            };
-        }
+    model.loading(false);
 
-        this.loading(true);
+    ui.setTitle("Search for " + model.query());
 
-        let list = yield api.vfs.list(session.searchPaths(), { filter: query });
+    return list.map((item) => {
+        item.node = ko.observable(item.node);
+        return item;
+    });
+}, (error) => {
+    model.loading(false);
+    stat.printError(error);
+    return [];
+}, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
 
-        this.loading(false);
+ui.setTitle("Search");
 
-        ui.setTitle("Search for " + this.query());
-
-        return list.map((item) => {
-            item.node = ko.observable(item.node);
-            return item;
-        });
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
-        return [];
-    }, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
-
-    ui.setTitle("Search");
-
-    this.dispose = () => {
-        stat.destroy(this.loading);
-    };
-});
+const dispose = () => {
+    stat.destroy(model.loading);
+};

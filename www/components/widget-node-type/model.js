@@ -15,6 +15,4 @@ const types = {
     "r": "root"
 };
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.type = ko.pureComputed(() => types[ko.unwrap(params.type)] || "unknown");
-});
+model.type = ko.pureComputed(() => types[ko.unwrap(params.type)] || "unknown");

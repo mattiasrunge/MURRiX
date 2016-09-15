@@ -8,325 +8,323 @@ const ui = require("lib/ui");
 const node = require("lib/node");
 const loc = require("lib/location");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = stat.create();
-    this.sidebarView = ko.observable("main");
-    this.personPath = ko.observable(false);
-    this.selectedTag = ko.observable(false);
-    this.height = ko.pureComputed(() => {
-        if (!this.nodepath()) {
-            return 0;
-        }
-
-        if (this.nodepath().node().attributes.type === "image") {
-            let screenHeight = ko.unwrap(ui.windowSize()).height;
-            let heights = [ 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000 ];
-
-            for (let height of heights) {
-                if (screenHeight < height) {
-                    return height;
-                }
-            }
-
-            return heights[heights.length - 1];
-        } else if (this.nodepath().node().attributes.type === "video") {
-            return this.nodepath().node().attributes.fileinfo.height;
-        }
-
+model.loading = stat.create();
+model.sidebarView = ko.observable("main");
+model.personPath = ko.observable(false);
+model.selectedTag = ko.observable(false);
+model.height = ko.pureComputed(() => {
+    if (!model.nodepath()) {
         return 0;
-    });
+    }
 
-    this.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
-    this.nodepath = ko.nodepath(this.showPath);
+    if (model.nodepath().node().attributes.type === "image") {
+        let screenHeight = ko.unwrap(ui.windowSize()).height;
+        let heights = [ 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000 ];
 
-    this.locationPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/location" : false);
-    this.location = ko.nodepath(this.locationPath, { noerror: true });
-
-    this.versionsPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/versions" : false);
-    this.versions = ko.nodepathList(this.versionsPath, { noerror: true });
-
-    this.tagsPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/tags" : false);
-    this.tags = ko.nodepathList(this.tagsPath, { noerror: true });
-
-    this.initialCameraName = ko.pureComputed(() => {
-        if (!this.nodepath()) {
-            return "";
+        for (let height of heights) {
+            if (screenHeight < height) {
+                return height;
+            }
         }
 
-        if (this.nodepath().node().attributes.deviceinfo) {
-            return this.nodepath().node().attributes.deviceinfo.model || "";
-        }
+        return heights[heights.length - 1];
+    } else if (model.nodepath().node().attributes.type === "video") {
+        return model.nodepath().node().attributes.fileinfo.height;
+    }
 
+    return 0;
+});
+
+model.showPath = ko.pureComputed(() => ko.unwrap(params.showPath));
+model.nodepath = ko.nodepath(model.showPath);
+
+model.locationPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/location" : false);
+model.location = ko.nodepath(model.locationPath, { noerror: true });
+
+model.versionsPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/versions" : false);
+model.versions = ko.nodepathList(model.versionsPath, { noerror: true });
+
+model.tagsPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/tags" : false);
+model.tags = ko.nodepathList(model.tagsPath, { noerror: true });
+
+model.initialCameraName = ko.pureComputed(() => {
+    if (!model.nodepath()) {
         return "";
-    });
+    }
 
-    this.filename = ko.asyncComputed(false, function*(setter) {
-        if (!this.nodepath()) {
-            return false;
-        }
+    if (model.nodepath().node().attributes.deviceinfo) {
+        return model.nodepath().node().attributes.deviceinfo.model || "";
+    }
 
-        setter(false);
+    return "";
+});
 
-        let height = ko.unwrap(this.height);
-        let filename = false;
-
-        this.loading(true);
-
-        if (this.nodepath().node().attributes.type === "image") {
-            filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
-                height: height,
-                type: "image"
-            });
-        } else if (this.nodepath().node().attributes.type === "video") {
-            filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
-                height: height,
-                type: "video"
-            });
-        } else if (this.nodepath().node().attributes.type === "audio") {
-            filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
-                type: "audio"
-            });
-        } else if (this.nodepath().node().attributes.type === "document") {
-            filename = yield api.file.getMediaUrl(this.nodepath().node()._id, {
-                type: "document"
-            });
-        }
-
-        console.log("filename", filename);
-
-        this.loading(false);
-
-        return filename ? filename : false;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
+model.filename = ko.asyncComputed(false, function*(setter) {
+    if (!model.nodepath()) {
         return false;
-    });
+    }
 
-    this.tagNames = ko.pureComputed(() => {
-        return this.tags()
-        .map((tag) => tag.node().attributes.name)
-        .join("<br>");
-    });
+    setter(false);
 
-    this.position = ko.pureComputed({
-        read: () => {
-            if (!this.nodepath()) {
-                return false;
-            }
+    let height = ko.unwrap(model.height);
+    let filename = false;
 
-            if (this.nodepath().node().attributes.where) {
-                if (this.nodepath().node().attributes.where.gps) {
-                    return this.nodepath().node().attributes.where.gps;
-                } else if (this.nodepath().node().attributes.where.manual) {
-                    return this.nodepath().node().attributes.where.manual;
-                }
-            }
+    model.loading(true);
 
-            return false;
-        },
-        write: (position) => {
-            let where = this.nodepath().node().attributes.where;
-
-            where.manual = position;
-
-            api.vfs.setattributes(this.nodepath().path, { where: where })
-            .then((node) => {
-                this.nodepath().node(node);
-            })
-            .catch((error) => {
-                stat.printError(error);
-            });
-        }
-    });
-
-    this.selectTag = ko.pureComputed({
-        read: () => {
-            if (!this.selectedTag()) {
-                return false;
-            }
-
-            if (!this.selectedTag().link.attributes.y ||
-                !this.selectedTag().link.attributes.x ||
-                !this.selectedTag().link.attributes.width ||
-                !this.selectedTag().link.attributes.height) {
-                return {
-                    x: false,
-                    y: false,
-                    width: false,
-                    height: false
-                };
-            }
-
-            return {
-                x: this.selectedTag().link.attributes.x,
-                y: this.selectedTag().link.attributes.y,
-                width: this.selectedTag().link.attributes.width,
-                height: this.selectedTag().link.attributes.height
-            };
-        },
-        write: (value) => {
-            let attributes;
-
-            if (!this.selectedTag().link.attributes.x && !value) {
-                return;
-            } else if (!value) {
-                attributes = {
-                    x: null,
-                    y: null,
-                    width: null,
-                    height: null
-                };
-            } else if (this.selectedTag().link.attributes.y !== value.y ||
-                       this.selectedTag().link.attributes.x !== value.x ||
-                       this.selectedTag().link.attributes.width !== value.width ||
-                       this.selectedTag().link.attributes.height !== value.height) {
-                attributes = value;
-            } else {
-                return;
-            }
-
-            api.vfs.lookup(this.selectedTag().link._id)
-            .then((abspaths) => {
-                return api.vfs.setattributes(abspaths[0], attributes);
-            })
-            .then(() => {
-                this.selectedTag(false);
-            })
-            .catch((error) => {
-                stat.printError(error);
-            });
-        },
-        owner: this
-    });
-
-    this.surroundings = ko.pureComputed(() => {
-        if (!this.nodepath()) {
-            return false;
-        }
-
-        let index = node.list()
-        .map((nodepath) => nodepath.path)
-        .indexOf(this.nodepath().path);
-
-        if (index === -1) {
-            return false;
-        }
-
-        let result = {};
-
-        if (index + 1 >= node.list().length) {
-            result.next = node.list()[0];
-        } else {
-            result.next = node.list()[index + 1];
-        }
-
-        if (index - 1 < 0) {
-            result.previous = node.list()[node.list().length - 1];
-        } else {
-            result.previous = node.list()[index - 1];
-        }
-
-        return result;
-    });
-
-    let surroundingsLoad = ko.computed(utils.co(function*() {
-        if (!this.surroundings()) {
-            return;
-        }
-
-        let ids = [ this.surroundings().previous.node()._id, this.surroundings().next.node()._id ];
-        let filenames = yield api.file.getMediaUrl(ids, {
-            height: ko.unwrap(this.height),
+    if (model.nodepath().node().attributes.type === "image") {
+        filename = yield api.file.getMediaUrl(model.nodepath().node()._id, {
+            height: height,
             type: "image"
         });
+    } else if (model.nodepath().node().attributes.type === "video") {
+        filename = yield api.file.getMediaUrl(model.nodepath().node()._id, {
+            height: height,
+            type: "video"
+        });
+    } else if (model.nodepath().node().attributes.type === "audio") {
+        filename = yield api.file.getMediaUrl(model.nodepath().node()._id, {
+            type: "audio"
+        });
+    } else if (model.nodepath().node().attributes.type === "document") {
+        filename = yield api.file.getMediaUrl(model.nodepath().node()._id, {
+            type: "document"
+        });
+    }
 
-        for (let id of ids) {
-            if (filenames[id]) {
-                (new Image()).src = filenames[id];
+    console.log("filename", filename);
+
+    model.loading(false);
+
+    return filename ? filename : false;
+}, (error) => {
+    model.loading(false);
+    stat.printError(error);
+    return false;
+});
+
+model.tagNames = ko.pureComputed(() => {
+    return model.tags()
+    .map((tag) => tag.node().attributes.name)
+    .join("<br>");
+});
+
+model.position = ko.pureComputed({
+    read: () => {
+        if (!model.nodepath()) {
+            return false;
+        }
+
+        if (model.nodepath().node().attributes.where) {
+            if (model.nodepath().node().attributes.where.gps) {
+                return model.nodepath().node().attributes.where.gps;
+            } else if (model.nodepath().node().attributes.where.manual) {
+                return model.nodepath().node().attributes.where.manual;
             }
         }
-    }.bind(this)));
 
-    this.rotate = (offset) => {
-        if (!this.nodepath().editable) {
-            return;
-        }
+        return false;
+    },
+    write: (position) => {
+        let where = model.nodepath().node().attributes.where;
 
-        offset = parseInt(offset, 10);
+        where.manual = position;
 
-        if (this.nodepath().node().attributes.mirror) {
-            offset = -offset;
-        }
-
-        let angle = parseInt(this.nodepath().node().attributes.angle || 0, 10) + offset;
-
-        if (angle < 0) {
-            angle += 360;
-        } else if (angle > 270) {
-            angle -= 360;
-        }
-
-        api.vfs.setattributes(this.nodepath().path, { angle: angle })
+        api.vfs.setattributes(model.nodepath().path, { where: where })
         .then((node) => {
-            console.log("Saving angle attribute as " + angle + " successfully!", node);
+            model.nodepath().node(node);
         })
         .catch((error) => {
             stat.printError(error);
         });
-    };
+    }
+});
 
-    this.mirror = () => {
-        if (!this.nodepath().editable) {
-            return;
+model.selectTag = ko.pureComputed({
+    read: () => {
+        if (!model.selectedTag()) {
+            return false;
         }
 
-        let mirror = !this.nodepath().node().attributes.mirror;
+        if (!model.selectedTag().link.attributes.y ||
+            !model.selectedTag().link.attributes.x ||
+            !model.selectedTag().link.attributes.width ||
+            !model.selectedTag().link.attributes.height) {
+            return {
+                x: false,
+                y: false,
+                width: false,
+                height: false
+            };
+        }
 
-        api.vfs.setattributes(this.nodepath().path, { mirror: mirror })
-        .then((node) => {
-            console.log("Saving mirror attribute as " + mirror + " successfully!", node);
-        })
-        .catch((error) => {
-            stat.printError(error);
-        });
-    };
+        return {
+            x: model.selectedTag().link.attributes.x,
+            y: model.selectedTag().link.attributes.y,
+            width: model.selectedTag().link.attributes.width,
+            height: model.selectedTag().link.attributes.height
+        };
+    },
+    write: (value) => {
+        let attributes;
 
-    this.exit = () => {
-        if (this.sidebarView() === "time" || this.sidebarView() === "tag" || this.sidebarView() === "position") {
-            this.sidebarView("main");
+        if (!model.selectedTag().link.attributes.x && !value) {
+            return;
+        } else if (!value) {
+            attributes = {
+                x: null,
+                y: null,
+                width: null,
+                height: null
+            };
+        } else if (model.selectedTag().link.attributes.y !== value.y ||
+                    model.selectedTag().link.attributes.x !== value.x ||
+                    model.selectedTag().link.attributes.width !== value.width ||
+                    model.selectedTag().link.attributes.height !== value.height) {
+            attributes = value;
         } else {
-            loc.goto({ showPath: null });
-        }
-    };
-
-    this.removeTag = (tag) => {
-        api.vfs.unlink(this.showPath() + "/tags/" + tag.name)
-        .catch((error) => {
-            stat.printError(error);
-        });
-    };
-
-    let subscription = this.personPath.subscribe((value) => {
-        if (!value) {
             return;
         }
 
-        this.personPath(false);
-
-        api.vfs.symlink(value, this.showPath() + "/tags")
+        api.vfs.lookup(model.selectedTag().link._id)
+        .then((abspaths) => {
+            return api.vfs.setattributes(abspaths[0], attributes);
+        })
+        .then(() => {
+            model.selectedTag(false);
+        })
         .catch((error) => {
             stat.printError(error);
         });
+    },
+    owner: model
+});
+
+model.surroundings = ko.pureComputed(() => {
+    if (!model.nodepath()) {
+        return false;
+    }
+
+    let index = node.list()
+    .map((nodepath) => nodepath.path)
+    .indexOf(model.nodepath().path);
+
+    if (index === -1) {
+        return false;
+    }
+
+    let result = {};
+
+    if (index + 1 >= node.list().length) {
+        result.next = node.list()[0];
+    } else {
+        result.next = node.list()[index + 1];
+    }
+
+    if (index - 1 < 0) {
+        result.previous = node.list()[node.list().length - 1];
+    } else {
+        result.previous = node.list()[index - 1];
+    }
+
+    return result;
+});
+
+let surroundingsLoad = ko.computed(utils.co(function*() {
+    if (!model.surroundings()) {
+        return;
+    }
+
+    let ids = [ model.surroundings().previous.node()._id, model.surroundings().next.node()._id ];
+    let filenames = yield api.file.getMediaUrl(ids, {
+        height: ko.unwrap(model.height),
+        type: "image"
     });
 
-    this.dispose = () => {
-        this.nodepath.dispose();
-        this.location.dispose();
-        this.versions.dispose();
-        this.tags.dispose();
-        surroundingsLoad.dispose();
-        subscription.dispose();
-        stat.destroy(this.loading);
-    };
+    for (let id of ids) {
+        if (filenames[id]) {
+            (new Image()).src = filenames[id];
+        }
+    }
+}));
+
+model.rotate = (offset) => {
+    if (!model.nodepath().editable) {
+        return;
+    }
+
+    offset = parseInt(offset, 10);
+
+    if (model.nodepath().node().attributes.mirror) {
+        offset = -offset;
+    }
+
+    let angle = parseInt(model.nodepath().node().attributes.angle || 0, 10) + offset;
+
+    if (angle < 0) {
+        angle += 360;
+    } else if (angle > 270) {
+        angle -= 360;
+    }
+
+    api.vfs.setattributes(model.nodepath().path, { angle: angle })
+    .then((node) => {
+        console.log("Saving angle attribute as " + angle + " successfully!", node);
+    })
+    .catch((error) => {
+        stat.printError(error);
+    });
+};
+
+model.mirror = () => {
+    if (!model.nodepath().editable) {
+        return;
+    }
+
+    let mirror = !model.nodepath().node().attributes.mirror;
+
+    api.vfs.setattributes(model.nodepath().path, { mirror: mirror })
+    .then((node) => {
+        console.log("Saving mirror attribute as " + mirror + " successfully!", node);
+    })
+    .catch((error) => {
+        stat.printError(error);
+    });
+};
+
+model.exit = () => {
+    if (model.sidebarView() === "time" || model.sidebarView() === "tag" || model.sidebarView() === "position") {
+        model.sidebarView("main");
+    } else {
+        loc.goto({ showPath: null });
+    }
+};
+
+model.removeTag = (tag) => {
+    api.vfs.unlink(model.showPath() + "/tags/" + tag.name)
+    .catch((error) => {
+        stat.printError(error);
+    });
+};
+
+let subscription = model.personPath.subscribe((value) => {
+    if (!value) {
+        return;
+    }
+
+    model.personPath(false);
+
+    api.vfs.symlink(value, model.showPath() + "/tags")
+    .catch((error) => {
+        stat.printError(error);
+    });
 });
+
+const dispose = () => {
+    model.nodepath.dispose();
+    model.location.dispose();
+    model.versions.dispose();
+    model.tags.dispose();
+    surroundingsLoad.dispose();
+    subscription.dispose();
+    stat.destroy(model.loading);
+};

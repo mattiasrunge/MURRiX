@@ -4,30 +4,28 @@ const ko = require("knockout");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = stat.create();
-    this.nodepath = params.nodepath;
-    this.size = 226;
+model.loading = stat.create();
+model.nodepath = params.nodepath;
+model.size = 226;
 
-    this.filesPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/files" : false);
-    this.files = ko.nodepathList(this.filesPath, { noerror: true });
+model.filesPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/files" : false);
+model.files = ko.nodepathList(model.filesPath, { noerror: true });
 
-    this.textsPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().path + "/texts" : false);
-    this.texts = ko.nodepathList(this.textsPath, { noerror: true });
+model.textsPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/texts" : false);
+model.texts = ko.nodepathList(model.textsPath, { noerror: true });
 
-    this.data = ko.pureComputed(() => {
-        let files = this.files();
-        let texts = this.texts();
+model.data = ko.pureComputed(() => {
+    let files = model.files();
+    let texts = model.texts();
 
-        return {
-            files: this.files.hasLoaded() ? files : [],
-            texts: this.texts.hasLoaded() ? texts : []
-        };
-    });
-
-    this.dispose = () => {
-        this.files.dispose();
-        this.texts.dispose();
-        stat.destroy(this.loading);
+    return {
+        files: model.files.hasLoaded() ? files : [],
+        texts: model.texts.hasLoaded() ? texts : []
     };
 });
+
+const dispose = () => {
+    model.files.dispose();
+    model.texts.dispose();
+    stat.destroy(model.loading);
+};

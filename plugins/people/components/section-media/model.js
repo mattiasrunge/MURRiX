@@ -5,43 +5,41 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = stat.create();
-    this.nodepath = params.nodepath;
-    this.size = 226;
+model.loading = stat.create();
+model.nodepath = params.nodepath;
+model.size = 226;
 
-    this.data = ko.asyncComputed([], function*(setter) {
-        let result = {
-            files: [],
-            texts: []
-        };
+model.data = ko.asyncComputed([], function*(setter) {
+    let result = {
+        files: [],
+        texts: []
+    };
 
-        if (!this.nodepath()) {
-            return result;
-        }
-
-        setter(result);
-
-        this.loading(true);
-        result.files = yield api.people.findByTags(this.nodepath().path);
-        this.loading(false);
-
-        result.files = result.files.map((file) => {
-            file.node = ko.observable(file.node);
-            return file;
-        });
-
+    if (!model.nodepath()) {
         return result;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
-        return {
-            files: [],
-            texts: []
-        };
+    }
+
+    setter(result);
+
+    model.loading(true);
+    result.files = yield api.people.findByTags(model.nodepath().path);
+    model.loading(false);
+
+    result.files = result.files.map((file) => {
+        file.node = ko.observable(file.node);
+        return file;
     });
 
-    this.dispose = () => {
-        stat.destroy(this.loading);
+    return result;
+}, (error) => {
+    model.loading(false);
+    stat.printError(error);
+    return {
+        files: [],
+        texts: []
     };
 });
+
+const dispose = () => {
+    stat.destroy(model.loading);
+};

@@ -18,11 +18,10 @@
     "jquery": "2.2.4",
     "jquery-contextmenu": "^2.2.4",
     "knockout": "3.4.0",
+    "material-design-icons": "^3.0.1",
     "moment": "2.14.1",
     "moment-duration-format": "^1.3.0",
     "requirejs": "2.2.0",
-    "requirejs-json": "0.0.3",
-    "requirejs-text": "2.0.12",
     "snackbarjs": "1.1.0",
     "typeahead.js-bootstrap-css": "1.2.1",
     "vanilla-lazyload": "2.0.0"

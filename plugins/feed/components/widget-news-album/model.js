@@ -5,55 +5,53 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = stat.create();
-    this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
-    this.width = 156;
-    this.height = 270;
+model.loading = stat.create();
+model.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
+model.width = 156;
+model.height = 270;
 
-    this.fileListPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().attributes.path + "/files" : false);
-    this.fileList = ko.nodepathList(this.fileListPath, { limit: 3, noerror: true });
-
-
-    this.files = ko.asyncComputed([], function*(setter) {
-        if (this.fileList().length === 0) {
-            return [];
-        }
-
-        setter([]);
-
-        let ids = this.fileList().map((file) => file.node()._id);
-
-        this.loading(true);
-        let filenames = yield api.file.getMediaUrl(ids, {
-            width: this.width,
-            height: this.height,
-            type: "image"
-        });
+model.fileListPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().node().attributes.path + "/files" : false);
+model.fileList = ko.nodepathList(model.fileListPath, { limit: 3, noerror: true });
 
 
-        this.loading(false);
-
-        let files = this.fileList().map((file) => {
-            file.filename = filenames[file.node()._id] || false;
-            return file;
-        });
-
-        console.log("files", files);
-
-        return files;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
+model.files = ko.asyncComputed([], function*(setter) {
+    if (model.fileList().length === 0) {
         return [];
+    }
+
+    setter([]);
+
+    let ids = model.fileList().map((file) => file.node()._id);
+
+    model.loading(true);
+    let filenames = yield api.file.getMediaUrl(ids, {
+        width: model.width,
+        height: model.height,
+        type: "image"
     });
 
-    this.itemPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().attributes.path : false);
-    this.item = ko.nodepath(this.itemPath, { noerror: true });
 
-    this.dispose = () => {
-        this.fileList.dispose();
-        this.item.dispose();
-        stat.destroy(this.loading);
-    };
+    model.loading(false);
+
+    let files = model.fileList().map((file) => {
+        file.filename = filenames[file.node()._id] || false;
+        return file;
+    });
+
+    console.log("files", files);
+
+    return files;
+}, (error) => {
+    model.loading(false);
+    stat.printError(error);
+    return [];
 });
+
+model.itemPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().node().attributes.path : false);
+model.item = ko.nodepath(model.itemPath, { noerror: true });
+
+const dispose = () => {
+    model.fileList.dispose();
+    model.item.dispose();
+    stat.destroy(model.loading);
+};

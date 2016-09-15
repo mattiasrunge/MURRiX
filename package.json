@@ -29,6 +29,7 @@
     "file-uploader": "1.0.0",
     "fs-extra-promise": "0.4.0",
     "glob-promise": "1.0.6",
+    "hogan.js": "^3.0.2",
     "koa": "1.2.1",
     "koa-bodyparser": "2.2.0",
     "koa-compress": "1.0.9",

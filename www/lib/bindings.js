@@ -20,13 +20,8 @@ const Slider = require("slider");
 const autosize = require("autosize");
 const LazyLoad = require("lazyload");
 const dragula = require("dragula");
-const typeahead = require("typeahead"); // jshint ignore:line
-const imgareaselect = require("jquery.imgareaselect"); // jshint ignore:line
-const contextmenu = require("contextmenu"); // jshint ignore:line
 const Chart = require("chart");
 const chron = require("chron");
-
-require("moment-duration-format");
 
 let lazyload;
 

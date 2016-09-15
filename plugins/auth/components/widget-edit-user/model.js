@@ -8,87 +8,85 @@ const stat = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = stat.create();
-    this.name = ko.observable("");
-    this.username = ko.observable("");
-    this.email = ko.observable("");
-    this.password1 = ko.observable("");
-    this.password2 = ko.observable("");
-    this.personPath = ko.observable(false);
+model.loading = stat.create();
+model.name = ko.observable("");
+model.username = ko.observable("");
+model.email = ko.observable("");
+model.password1 = ko.observable("");
+model.password2 = ko.observable("");
+model.personPath = ko.observable(false);
 
-    let subscription = params.user.subscribe(() => this.reset());
+let subscription = params.user.subscribe(() => model.reset());
 
-    this.reset = () => {
-        this.password1("");
-        this.password2("");
+model.reset = () => {
+    model.password1("");
+    model.password2("");
 
-        this.name(params.user().attributes.name);
-        this.username(params.username());
-        this.email(params.user().attributes.email);
-        this.personPath(params.personPath());
-    };
+    model.name(params.user().attributes.name);
+    model.username(params.username());
+    model.email(params.user().attributes.email);
+    model.personPath(params.personPath());
+};
 
-    this.save = co.wrap(function*() {
-        if (this.username() === "") {
-            return stat.printError("Username can not be empty!");
-        }
+model.save = co.wrap(function*() {
+    if (model.username() === "") {
+        return stat.printError("Username can not be empty!");
+    }
 
-        this.loading(true);
+    model.loading(true);
 
-        try {
-            yield api.auth.saveProfile(params.username(), {
-                name: this.name()
-            }, this.personPath());
+    try {
+        yield api.auth.saveProfile(params.username(), {
+            name: model.name()
+        }, model.personPath());
 
-            if (params.username() !== this.username()) {
-                yield api.auth.changeUsername(params.username(), this.username());
+        if (params.username() !== model.username()) {
+            yield api.auth.changeUsername(params.username(), model.username());
 
-                if (params.username() === session.username()) {
-                    stat.printInfo("After username change you must login again");
-                    yield api.auth.logout();
-                    yield session.loadUser();
-                    loc.goto({ page: "login" });
-                }
+            if (params.username() === session.username()) {
+                stat.printInfo("After username change you must login again");
+                yield api.auth.logout();
+                yield session.loadUser();
+                loc.goto({ page: "login" });
             }
-
-            stat.printSuccess("Profile saved successfully!");
-        } catch (e) {
-            console.error(e);
-            stat.printError("Failed to save user");
         }
 
-        this.loading(false);
-    }.bind(this));
+        stat.printSuccess("Profile saved successfully!");
+    } catch (e) {
+        console.error(e);
+        stat.printError("Failed to save user");
+    }
 
-    this.changePassword = co.wrap(function*() {
-        if (this.password1() !== this.password2()) {
-            return stat.printError("Password does not match!");
-        } else if (this.password1() === "") {
-            return stat.printError("Password can not be empty!");
-        }
-
-        this.loading(true);
-
-        try {
-            yield api.auth.passwd(params.username(), this.password1());
-
-            stat.printSuccess("Password changed successfully!");
-
-            this.password1("");
-            this.password2("");
-        } catch (e) {
-            console.error(e);
-            stat.printError("Failed to change password");
-        }
-
-        this.loading(false);
-    }.bind(this));
-
-    this.reset();
-
-    this.dispose = () => {
-        stat.destroy(this.loading);
-        subscription.dispose();
-    };
+    model.loading(false);
 });
+
+model.changePassword = co.wrap(function*() {
+    if (model.password1() !== model.password2()) {
+        return stat.printError("Password does not match!");
+    } else if (model.password1() === "") {
+        return stat.printError("Password can not be empty!");
+    }
+
+    model.loading(true);
+
+    try {
+        yield api.auth.passwd(params.username(), model.password1());
+
+        stat.printSuccess("Password changed successfully!");
+
+        model.password1("");
+        model.password2("");
+    } catch (e) {
+        console.error(e);
+        stat.printError("Failed to change password");
+    }
+
+    model.loading(false);
+});
+
+model.reset();
+
+const dispose = () => {
+    stat.destroy(model.loading);
+    subscription.dispose();
+};

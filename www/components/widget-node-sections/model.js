@@ -3,13 +3,8 @@
 const utils = require("lib/utils");
 const ko = require("knockout");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.params = params.params;
-    this.section = params.section;
-    this.sections = params.sections;
-    this.showShareSettings = params.showShareSettings || false;
-    this.showUpload = ko.pureComputed(() => ko.unwrap(params.showUpload) || false);
-
-    this.dispose = () => {
-    };
-});
+model.params = params.params;
+model.section = params.section;
+model.sections = params.sections;
+model.showShareSettings = params.showShareSettings || false;
+model.showUpload = ko.pureComputed(() => ko.unwrap(params.showUpload) || false);

@@ -5,41 +5,39 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 
-module.exports = utils.wrapComponent(function*(params) {
-    this.loading = stat.create();
-    this.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
-    this.size = 470;
+model.loading = stat.create();
+model.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
+model.size = 470;
 
-    this.filename = ko.asyncComputed(false, function*(setter) {
-        if (!this.item()) {
-            return false;
-        }
-
-        setter(false);
-
-        this.loading(true);
-
-        let filename = yield api.file.getMediaUrl(this.item().node()._id, {
-            width: this.size,
-            type: "image"
-        });
-
-        console.log("filename", filename);
-
-        this.loading(false);
-
-        return filename;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
+model.filename = ko.asyncComputed(false, function*(setter) {
+    if (!model.item()) {
         return false;
+    }
+
+    setter(false);
+
+    model.loading(true);
+
+    let filename = yield api.file.getMediaUrl(model.item().node()._id, {
+        width: model.size,
+        type: "image"
     });
 
-    this.itemPath = ko.pureComputed(() => this.nodepath() ? this.nodepath().node().attributes.path : false);
-    this.item = ko.nodepath(this.itemPath, { noerror: true });
+    console.log("filename", filename);
 
-    this.dispose = () => {
-        this.item.dispose();
-        stat.destroy(this.loading);
-    };
+    model.loading(false);
+
+    return filename;
+}, (error) => {
+    model.loading(false);
+    stat.printError(error);
+    return false;
 });
+
+model.itemPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().node().attributes.path : false);
+model.item = ko.nodepath(model.itemPath, { noerror: true });
+
+const dispose = () => {
+    model.item.dispose();
+    stat.destroy(model.loading);
+};

@@ -1,0 +1,31 @@
+
+{{#components}}
+<template id="template-{{name}}">{{{html}}}</template>
+
+{{/components}}
+
+<script>
+    "use strict";
+
+    const ownerDocument = document.currentScript.ownerDocument;
+
+    define("components", (require) => {
+        const component = require("lib/component");
+
+        {{#components}}
+        component.register(ownerDocument, "{{name}}", function*(model, params, element) {
+// *************************
+// COMPONENT START: {{name}}
+// *************************
+
+{{{js}}}
+// ***********************
+// COMPONENT END: {{name}}
+// ***********************
+
+            return typeof dispose !== "undefined" ? dispose : false;
+        });
+
+        {{/components}}
+    });
+</script>

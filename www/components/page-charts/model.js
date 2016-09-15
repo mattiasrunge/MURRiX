@@ -7,51 +7,49 @@ const utils = require("lib/utils");
 const ui = require("lib/ui");
 const stat = require("lib/status");
 
-module.exports = utils.wrapComponent(function*(/*params*/) {
-    this.loading = stat.create();
+model.loading = stat.create();
 
-    this.data = ko.asyncComputed([], function*(setter) {
-        setter(false);
+model.data = ko.asyncComputed([], function*(setter) {
+    setter(false);
 
-        this.loading(true);
-        let result = yield api.statistics.getEventData();
-        this.loading(false);
+    model.loading(true);
+    let result = yield api.statistics.getEventData();
+    model.loading(false);
 
-        let data = [
-            {
-                label: "Births each month",
-                labels: moment.monthsShort(),
-                data: result.birth
-            },
-            {
-                label: "Engagements each month",
-                labels: moment.monthsShort(),
-                data: result.engagement
-            },
-            {
-                label: "Marriages each month",
-                labels: moment.monthsShort(),
-                data: result.marriage
-            },
-            {
-                label: "Deaths each month",
-                labels: moment.monthsShort(),
-                data: result.death
-            }
-        ];
+    let data = [
+        {
+            label: "Births each month",
+            labels: moment.monthsShort(),
+            data: result.birth
+        },
+        {
+            label: "Engagements each month",
+            labels: moment.monthsShort(),
+            data: result.engagement
+        },
+        {
+            label: "Marriages each month",
+            labels: moment.monthsShort(),
+            data: result.marriage
+        },
+        {
+            label: "Deaths each month",
+            labels: moment.monthsShort(),
+            data: result.death
+        }
+    ];
 
-        console.log("event data", result, data);
+    console.log("event data", result, data);
 
-        return data;
-    }.bind(this), (error) => {
-        this.loading(false);
-        stat.printError(error);
-        return false;
-    });
-
-    ui.setTitle("Charts");
-
-    this.dispose = () => {
-        stat.destroy(this.loading);
-    };
+    return data;
+}, (error) => {
+    model.loading(false);
+    stat.printError(error);
+    return false;
 });
+
+ui.setTitle("Charts");
+
+const dispose = () => {
+    stat.destroy(model.loading);
+};
