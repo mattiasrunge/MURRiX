@@ -5,7 +5,6 @@ const $ = require("jquery");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
-const node = require("lib/node");
 
 model.nodepath = params.nodepath;
 model.section = params.section;
@@ -65,7 +64,7 @@ model.createEvent = () => {
         throw new Error("An event must must have date/time set");
     }
 
-    node.getUniqueName(basepath, attributes.name)
+    api.node.getUniqueName(basepath, attributes.name)
     .then((name) => {
         abspath = basepath + "/" + name;
         return api.text.mktext(abspath, attributes);

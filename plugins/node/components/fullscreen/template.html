@@ -11,7 +11,7 @@
                         <i class="material-icons" title="Description">description</i>
                     </td>
                     <td style="padding-top: 1px;">
-                        <widget-node-text-attribute params="{ nodepath: nodepath, name: 'description', html: true }"></widget-node-text-attribute>
+                        <node-widget-text-attribute params="{ nodepath: nodepath, name: 'description', html: true }"></node-widget-text-attribute>
                     </td>
                 </tr>
                 <tr>
@@ -20,7 +20,7 @@
                     </td>
 
                     <td style="padding-top: 1px;">
-                        <widget-node-link-node params="{ nodepath: nodepath, name: 'createdBy', placeholder: 'Select who created model file', searchPaths: [ '/people' ] }"></widget-node-link-node>
+                        <node-widget-link-node params="{ nodepath: nodepath, name: 'createdBy', placeholder: 'Select who created model file', searchPaths: [ '/people' ] }"></node-widget-link-node>
                     </td>
                 </tr>
                 <tr>
@@ -29,7 +29,7 @@
                     </td>
 
                     <td style="padding-top: 1px;">
-                        <widget-node-link-node params="{ nodepath: nodepath, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ], initial: initialCameraName }"></widget-node-link-node>
+                        <node-widget-link-node params="{ nodepath: nodepath, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ], initial: initialCameraName }"></node-widget-link-node>
                     </td>
                 </tr>
 
@@ -112,7 +112,7 @@
                         <i class="material-icons" title="Location">place</i>
                     </td>
                     <td style="padding-top: 1px;">
-                        <widget-node-link-node params="{ nodepath: nodepath, name: 'location', placeholder: 'Select location', searchPaths: [ '/locations' ], input: true }"></widget-node-link-node>
+                        <node-widget-link-node params="{ nodepath: nodepath, name: 'location', placeholder: 'Select location', searchPaths: [ '/locations' ], input: true }"></node-widget-link-node>
                     </td>
                 </tr>
             </tbody>
@@ -157,7 +157,7 @@
             </table>
         </p>
 
-        <widget-node-when-attribute params="{ nodepath: nodepath }"></widget-node-when-attribute>
+        <node-widget-when-attribute params="{ nodepath: nodepath }"></node-widget-when-attribute>
     </div>
 
     <div class="maincontainer animated fadeIn" data-bind="if: filename">

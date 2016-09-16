@@ -1,7 +1,7 @@
 ﻿<div class="fadeInDown animated">
     <div class="row node-header" data-bind="if: nodepath" style="margin-top: 15px;">
         <div class="col-md-8">
-            <widget-node-header params="{ nodepath: nodepath }"></widget-node-header>
+            <node-widget-header params="{ nodepath: nodepath }"></node-widget-header>
         </div>
         <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
@@ -17,7 +17,7 @@
                     <tr>
                         <td><strong>Type</strong></td>
                         <td>
-                            <widget-node-select-attribute params="{ nodepath: nodepath, name: 'type', options: [
+                            <node-widget-select-attribute params="{ nodepath: nodepath, name: 'type', options: [
                                 {
                                     name: 'offset_fixed',
                                     title: 'Fixed offset'
@@ -26,31 +26,31 @@
                                     name: 'offset_relative_to_position',
                                     title: 'Offset relative to the position'
                                 }
-                            ]}"></widget-node-select-attribute>
+                            ]}"></node-widget-select-attribute>
                         </td>
                     </tr>
                     <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset UTC</strong></td>
                         <td>
-                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'utcOffset' }"></widget-node-text-attribute>
+                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'utcOffset' }"></node-widget-text-attribute>
                         </td>
                     </tr>
                     <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset description</strong></td>
                         <td>
-                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'offsetDescription' }"></widget-node-text-attribute>
+                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'offsetDescription' }"></node-widget-text-attribute>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Automatic daylight savings</strong></td>
                         <td>
-                            <widget-node-boolean-attribute params="{ nodepath: nodepath, name: 'deviceAutoDst' }"></widget-node-boolean-attribute>
+                            <node-widget-boolean-attribute params="{ nodepath: nodepath, name: 'deviceAutoDst' }"></node-widget-boolean-attribute>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Serial number</strong></td>
                         <td>
-                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'serialNumber' }"></widget-node-text-attribute>
+                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'serialNumber' }"></node-widget-text-attribute>
                         </td>
                     </tr>
                     <tr>
@@ -64,7 +64,7 @@
         </div>
     </div>
 
-    <widget-node-sections params="{
+    <node-widget-sections params="{
         section: section,
         sections: [
             {
@@ -77,5 +77,5 @@
         params: {
             nodepath: nodepath
         }
-    }"></widget-node-sections>
+    }"></node-widget-sections>
 </div>

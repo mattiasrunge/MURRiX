@@ -1,7 +1,7 @@
 ﻿<div>
     <div class="row node-header" data-bind="if: nodepath" style="margin-top: 15px;">
         <div class="col-md-8">
-            <widget-node-header params="{ nodepath: nodepath }"></widget-node-header>
+            <node-widget-header params="{ nodepath: nodepath }"></node-widget-header>
         </div>
         <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
@@ -17,7 +17,7 @@
                     <tr>
                         <td><strong>Birth name</strong></td>
                         <td>
-                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'birthname' }"></widget-node-text-attribute>
+                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'birthname' }"></node-widget-text-attribute>
                         </td>
                     </tr>
                     <tr data-bind="visible: metrics().birthdate">
@@ -39,7 +39,7 @@
                     <tr>
                         <td><strong>Gender</strong></td>
                         <td>
-                            <widget-node-select-attribute params="{ nodepath: nodepath, name: 'gender', options: [
+                            <node-widget-select-attribute params="{ nodepath: nodepath, name: 'gender', options: [
                                 {
                                     name: 'f',
                                     title: 'Female'
@@ -48,7 +48,7 @@
                                     name: 'm',
                                     title: 'Male'
                                 }
-                            ]}"></widget-node-select-attribute>
+                            ]}"></node-widget-select-attribute>
                         </td>
                     </tr>
                     <tr>
@@ -60,7 +60,7 @@
                     <tr>
                         <td><strong>Allergies</strong></td>
                         <td>
-                            <widget-node-text-attribute params="{ nodepath: nodepath, name: 'allergies' }"></widget-node-text-attribute>
+                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'allergies' }"></node-widget-text-attribute>
                         </td>
                     </tr>
                 </tbody>
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <widget-node-sections params="{
+    <node-widget-sections params="{
         section: section,
         sections: [
             {
@@ -100,7 +100,7 @@
             nodepath: nodepath,
             reload: reload
         }
-    }"></widget-node-sections>
+    }"></node-widget-sections>
 </div>
 
 <form data-bind="submit: createEvent, moveToBody: true">

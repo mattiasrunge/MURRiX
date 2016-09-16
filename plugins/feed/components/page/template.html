@@ -5,10 +5,10 @@
                 <div class="news-item">
                     <div class="news-title">
                         <span data-bind="if: $data.node().attributes.action === 'comment'">
-                            New comments were made on model <widget-node-type params="{ type: $data.node().attributes.type }"></widget-node-type>
+                            New comments were made on model <node-widget-type params="{ type: $data.node().attributes.type }"></node-widget-type>
                         </span>
                         <span data-bind="if: $data.node().attributes.action === 'created'">
-                            <strong data-bind="unameNice: $data.node().attributes.uid"></strong> added a new <widget-node-type params="{ type: $data.node().attributes.type }"></widget-node-type>
+                            <strong data-bind="unameNice: $data.node().attributes.uid"></strong> added a new <node-widget-type params="{ type: $data.node().attributes.type }"></node-widget-type>
                         </span>
                     </div>
 

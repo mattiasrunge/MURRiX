@@ -9,3 +9,4 @@ model.loading = stat.loading;
 model.loggedIn = session.loggedIn;
 model.page = ko.pureComputed(() => ko.unwrap(loc.current().page) || "default");
 model.showPath = ko.pureComputed(() => ko.unwrap(loc.current().showPath));
+model.list = session.list;

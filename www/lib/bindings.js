@@ -62,7 +62,7 @@ ko.bindingHandlers.contextmenu = {
                 let abspath = $(this).data("path");
 
                 if (key === "profilePicture") {
-                    node.setProfilePicture(nodepath().path, abspath)
+                    api.node.setProfilePicture(nodepath().path, abspath)
                     .then(() => {
                         stat.printSuccess("Profile picture set");
                     })
@@ -141,7 +141,7 @@ ko.bindingHandlers.dragula = {
             drake.cancel(el);
 
             if (target === targetProfilePicture.get(0)) {
-                node.setProfilePicture(nodepath().path, abspath)
+                api.node.setProfilePicture(nodepath().path, abspath)
                 .then(() => {
                     stat.printSuccess("Profile picture set");
                 })

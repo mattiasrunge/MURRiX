@@ -6,7 +6,6 @@ const api = require("api.io-client");
 const stat = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");
-const node = require("lib/node");
 
 model.loading = stat.loading;
 model.user = session.user;
@@ -86,25 +85,25 @@ model.create = () => {
     }
 
     if (model.createType() === "album") {
-        promise = node.getUniqueName("/albums", attributes.name)
+        promise = api.node.getUniqueName("/albums", attributes.name)
         .then((name) => {
             abspath = "/albums/" + name;
             return api.album.mkalbum(name, attributes);
         });
     } else if (model.createType() === "location") {
-        promise = node.getUniqueName("/locations", attributes.name)
+        promise = api.node.getUniqueName("/locations", attributes.name)
         .then((name) => {
             abspath = "/locations/" + name;
             return api.location.mklocation(name, attributes);
         });
     } else if (model.createType() === "person") {
-        promise = node.getUniqueName("/people", attributes.name)
+        promise = api.node.getUniqueName("/people", attributes.name)
         .then((name) => {
             abspath = "/people/" + name;
             return api.people.mkperson(name, attributes);
         });
     } else if (model.createType() === "camera") {
-        promise = node.getUniqueName("/cameras", attributes.name)
+        promise = api.node.getUniqueName("/cameras", attributes.name)
         .then((name) => {
             abspath = "/cameras/" + name;
             return api.camera.mkcamera(name, attributes);

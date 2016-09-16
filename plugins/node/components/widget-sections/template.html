@@ -33,11 +33,11 @@
     </div>
 </div>
 <div data-bind="if: $component.section() === 'comments'">
-    <div data-bind="component: { name: 'section-node-comments', params: $component.params }"></div>
+    <div data-bind="component: { name: 'node-section-comments', params: $component.params }"></div>
 </div>
 <div data-bind="if: $component.section() === 'upload' && showUpload()">
-    <div data-bind="component: { name: 'section-node-upload', params: $component.params }"></div>
+    <div data-bind="component: { name: 'node-section-upload', params: $component.params }"></div>
 </div>
 <div data-bind="if: $component.section() === 'share' && showShareSettings">
-    <div data-bind="component: { name: 'section-node-share', params: $component.params }"></div>
+    <div data-bind="component: { name: 'node-section-share', params: $component.params }"></div>
 </div>

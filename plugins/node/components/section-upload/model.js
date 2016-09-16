@@ -5,7 +5,6 @@ const $ = require("jquery");
 const co = require("co");
 const utils = require("lib/utils");
 const stat = require("lib/status");
-const node = require("lib/node");
 const api = require("api.io-client");
 
 model.nodepath = params.nodepath;
@@ -121,7 +120,7 @@ model.start = co.wrap(function*() {
                 item: item
             });
         } else {
-            let name = yield node.getUniqueName(parentPath, item.name);
+            let name = yield api.node.getUniqueName(parentPath, item.name);
             yield model.import(parentPath + "/" + name, item);
         }
     }
@@ -145,11 +144,11 @@ model.start = co.wrap(function*() {
 
             yield api.vfs.ensure(versionPath, "d");
 
-            let name = yield node.getUniqueName(versionPath, file.item.name);
+            let name = yield api.node.getUniqueName(versionPath, file.item.name);
 
             yield model.import(versionPath + "/" + name, file.item);
         } else {
-            let name = yield node.getUniqueName(parentPath, file.item.name);
+            let name = yield api.node.getUniqueName(parentPath, file.item.name);
             yield model.import(parentPath + "/" + name, file.item);
         }
     }

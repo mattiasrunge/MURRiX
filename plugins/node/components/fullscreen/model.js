@@ -5,7 +5,6 @@ const api = require("api.io-client");
 const co = require("co");
 const stat = require("lib/status");
 const ui = require("lib/ui");
-const session = require("lib/session");
 const loc = require("lib/location");
 
 model.loading = stat.create();
@@ -204,7 +203,7 @@ model.surroundings = ko.pureComputed(() => {
         return false;
     }
 
-    let index = session.list()
+    let index = params.list()
     .map((nodepath) => nodepath.path)
     .indexOf(model.nodepath().path);
 
@@ -214,16 +213,16 @@ model.surroundings = ko.pureComputed(() => {
 
     let result = {};
 
-    if (index + 1 >= session.list().length) {
-        result.next = session.list()[0];
+    if (index + 1 >= params.list().length) {
+        result.next = params.list()[0];
     } else {
-        result.next = session.list()[index + 1];
+        result.next = params.list()[index + 1];
     }
 
     if (index - 1 < 0) {
-        result.previous = session.list()[session.list().length - 1];
+        result.previous = params.list()[params.list().length - 1];
     } else {
-        result.previous = session.list()[index - 1];
+        result.previous = params.list()[index - 1];
     }
 
     return result;

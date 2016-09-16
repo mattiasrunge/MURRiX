@@ -8,7 +8,7 @@
             <tr>
                 <td style="padding: 50px; border-right: 1px solid #ccc; background-color: #EFEFEF; width: 250px; vertical-align: top; text-align: right; padding-bottom: 0; padding-left: 0; font-weight: bold;" class="text-muted" data-bind="displayTimeline: $data.node().attributes.time"></td>
                 <td style="padding: 50px; vertical-align: top; position: relative; padding-bottom: 0;">
-                    <div style="position: absolute; top: 45px; left: -25px; background-color: white; border: 1px solid #ccc; border-radius: 50%; padding: 10px; color: #777;"><widget-node-select-attribute params="{ nodepath: $parent.texts()[$index()], name: 'type', onlyicon: true, options: [
+                    <div style="position: absolute; top: 45px; left: -25px; background-color: white; border: 1px solid #ccc; border-radius: 50%; padding: 10px; color: #777;"><node-widget-select-attribute params="{ nodepath: $parent.texts()[$index()], name: 'type', onlyicon: true, options: [
                             {
                                 name: 'generic',
                                 icon: 'event',
@@ -34,9 +34,9 @@
                                 icon: 'sentiment_dissatisfied',
                                 title: 'Death'
                             }
-                        ]}"></widget-node-select-attribute></div>
+                        ]}"></node-widget-select-attribute></div>
                     <h4 style="margin-top: 6px;">
-                        <widget-node-text-attribute style="display: inline;" params="{ nodepath: $parent.texts()[$index()], name: 'name' }"></widget-node-text-attribute>
+                        <node-widget-text-attribute style="display: inline;" params="{ nodepath: $parent.texts()[$index()], name: 'name' }"></node-widget-text-attribute>
                     </h4>
                     <p class="text-muted" data-bind="visible: $data.withPaths.length > 0, if: $data.withPaths.length > 0" style="padding-bottom: 0; margin-top: -10px; font-size: 12px;">
                         <em>
@@ -48,7 +48,7 @@
                         </em>
                     </p>
                     <p>
-                        <widget-node-text-attribute params="{ nodepath: $parent.texts()[$index()], name: 'text', html: true }"></widget-node-text-attribute>
+                        <node-widget-text-attribute params="{ nodepath: $parent.texts()[$index()], name: 'text', html: true }"></node-widget-text-attribute>
                     </p>
                 </td>
             </tr>
