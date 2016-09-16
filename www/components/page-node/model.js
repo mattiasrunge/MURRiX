@@ -1,7 +1,6 @@
 "use strict";
 
 const ko = require("knockout");
-const utils = require("lib/utils");
 const loc = require("lib/location");
 const ui = require("lib/ui");
 

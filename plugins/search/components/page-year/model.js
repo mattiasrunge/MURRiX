@@ -2,7 +2,6 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const utils = require("lib/utils");
 const loc = require("lib/location");
 const ui = require("lib/ui");
 const stat = require("lib/status");
@@ -17,13 +16,11 @@ model.list = ko.asyncComputed([], function*(setter) {
 
     model.loading(true);
 
-    let list = yield api.album.findByYear(model.year());
+    let list = yield api.search.findByYear(model.year());
 
     model.loading(false);
 
     ui.setTitle("Browsing " + model.year());
-
-    console.log(list[0].node);
 
     return list.map((item) => {
         item.node = ko.observable(item.node);
