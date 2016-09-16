@@ -3,25 +3,16 @@
 const ko = require("knockout");
 const co = require("co");
 const api = require("api.io-client");
+const utils = require("lib/utils");
 
 module.exports = {
-    list: ko.observableArray(),
-    escapeName: (name) => {
-        return name.replace(/ |\//g, "_");
-    },
-    basename: (path) => {
-        return path.replace(/.*\//, "");
-    },
-    dirname: (path) => {
-        return path.match(/(.*)[\/]/)[1];
-    },
     getUniqueName: co.wrap(function*(parent, baseName) {
         parent = typeof parent === "string" ? yield api.vfs.resolve(parent) : parent;
-        let name = module.exports.escapeName(baseName);
+        let name = utils.escapeName(baseName);
         let counter = 1;
 
         while (parent.properties.children.filter((child) => child.name === name).length > 0) {
-            name = module.exports.escapeName(baseName) + "_" + counter;
+            name = utils.escapeName(baseName) + "_" + counter;
             counter++;
         }
 

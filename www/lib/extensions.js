@@ -4,7 +4,7 @@ const co = require("co");
 const ko = require("knockout");
 const api = require("api.io-client");
 const stat = require("lib/status");
-const node = require("lib/node");
+const utils = require("lib/utils");
 
 ko.nodepath = function(path, options) {
     options = options || {};
@@ -132,7 +132,7 @@ ko.nodepathList = function(path, options) {
     let subscription = api.vfs.on("update", (event) => {
         if (event.path === lastPath) {
             pure.reload();
-        } else if (node.dirname(event.path) === lastPath) {
+        } else if (utils.dirname(event.path) === lastPath) {
             let nodepath = result().filter((nodepath) => nodepath.path === event.path)[0];
 
             if (nodepath) {

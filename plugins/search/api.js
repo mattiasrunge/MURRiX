@@ -9,7 +9,7 @@ const log = require("../../core/lib/log")(module);
 let params = {};
 
 let search = api.register("search", {
-    deps: [ "vfs", "auth" ],
+    deps: [ "vfs" ],
     init: co(function*(config) {
         params = config;
     }),

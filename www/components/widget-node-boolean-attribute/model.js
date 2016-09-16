@@ -2,7 +2,6 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const utils = require("lib/utils");
 const stat = require("lib/status");
 
 model.nodepath = params.nodepath;

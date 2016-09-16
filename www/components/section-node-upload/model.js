@@ -2,6 +2,7 @@
 
 const ko = require("knockout");
 const $ = require("jquery");
+const co = require("co");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 const node = require("lib/node");
@@ -38,7 +39,7 @@ model.dragNoopHandler = (element, event) => {
     event.preventDefault();
 };
 
-model.dropEventHandler = utils.co(function*(element, event) {
+model.dropEventHandler = co.wrap(function*(element, event) {
     event.stopPropagation();
     event.preventDefault();
 
@@ -75,7 +76,7 @@ model.progress = ko.pureComputed(() => {
     return Math.round(progress / (model.files().length || 1));
 });
 
-model.import = utils.co(function*(abspath, item) {
+model.import = co.wrap(function*(abspath, item) {
     let file = yield api.file.mkfile(abspath, {
         name: item.name,
         _source: {
@@ -89,7 +90,7 @@ model.import = utils.co(function*(abspath, item) {
     console.log(item.name + " imported as " + abspath, item, file);
 });
 
-model.start = utils.co(function*() {
+model.start = co.wrap(function*() {
     model.active(true);
 
     let delayed = [];

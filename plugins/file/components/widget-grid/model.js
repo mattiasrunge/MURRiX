@@ -5,7 +5,7 @@ const moment = require("moment");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
-const node = require("lib/node");
+const session = require("lib/session");
 
 model.loading = stat.create();
 model.data = params.data;
@@ -53,7 +53,7 @@ model.list = ko.asyncComputed([], function*(setter) {
 
     utils.sortNodeList(files);
 
-    node.list(files);
+    session.list(files);
 
     utils.sortNodeList(texts);
 

@@ -46,9 +46,9 @@ model.homes = ko.asyncComputed(false, function*() {
 model.remove = (data) => {
     // TODO: This is not really safe, the path name of the location might have changed but the link names have not changed. As after a move operation on the location. Better to find relevant links based on path they point to and remove them.
 
-    api.vfs.unlink(model.nodepath().path + "/homes/" + node.basename(data.path))
+    api.vfs.unlink(model.nodepath().path + "/homes/" + utils.basename(data.path))
     .then(() => {
-        return api.vfs.unlink(data.path + "/residents/" + node.basename(model.nodepath().path));
+        return api.vfs.unlink(data.path + "/residents/" + utils.basename(model.nodepath().path));
     })
     .then(() => {
         model.selectedHome(false);

@@ -3,7 +3,6 @@
 const ko = require("knockout");
 const $ = require("jquery");
 const api = require("api.io-client");
-const utils = require("lib/utils");
 const stat = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");
@@ -18,23 +17,8 @@ model.createType = ko.observable("");
 model.createName = ko.observable("");
 model.createDescription = ko.observable("");
 model.path = ko.pureComputed({
-    read: () => {
-        let page = ko.unwrap(loc.current().page);
-
-        if (page === "node") {
-            return ko.unwrap(loc.current().path);
-        }
-
-        return "";
-    },
-    write: (path) => {
-        console.log("write", path);
-        if (path) {
-            loc.goto({ page: "node", path: path, section: null });
-        } else {
-            loc.goto({ page: null, path: null });
-        }
-    }
+    read: () => loc.current().page === "node" ? loc.current().path: "",
+    write: (path) => loc.goto(path ? { page: "node", path: path } : {}, false)
 });
 model.starred = ko.pureComputed(() => {
     if (model.path() !== "") {
@@ -68,7 +52,7 @@ model.random = () => {
     api.vfs.random(session.searchPaths(), 1)
     .then((item) => {
         if (item) {
-            loc.goto({ page: "node", path: item.path, section: null });
+            loc.goto({ page: "node", path: item.path }, false);
         } else {
             stat.printError("No random node could be found");
         }
@@ -138,7 +122,7 @@ model.create = () => {
 
         $("#createModal").modal("hide");
 
-        loc.goto({ page: "node", path: abspath, section: null });
+        loc.goto({ page: "node", path: abspath }, false);
 
         stat.printSuccess(attributes.name + " successfully created!");
     })

@@ -2,6 +2,7 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
+const co = require("co");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 
@@ -16,7 +17,7 @@ model.aclGroupAccess = ko.observable("read");
 
 model.saving(true); // While we load we don't want so save
 
-model.saveAccess = utils.co(function*() {
+model.saveAccess = co.wrap(function*() {
     if (model.gid() === false) {
         throw new Error("A group must be specified!");
     }

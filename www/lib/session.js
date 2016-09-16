@@ -5,6 +5,7 @@ const co = require("co");
 const api = require("api.io-client");
 
 module.exports = {
+    list: ko.observableArray(),
     user: ko.observable(false),
     username: ko.observable("guest"),
     personPath: ko.observable(false),

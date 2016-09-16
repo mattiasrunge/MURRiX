@@ -2,10 +2,10 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const utils = require("lib/utils");
+const co = require("co");
 const stat = require("lib/status");
 const ui = require("lib/ui");
-const node = require("lib/node");
+const session = require("lib/session");
 const loc = require("lib/location");
 
 model.loading = stat.create();
@@ -204,7 +204,7 @@ model.surroundings = ko.pureComputed(() => {
         return false;
     }
 
-    let index = node.list()
+    let index = session.list()
     .map((nodepath) => nodepath.path)
     .indexOf(model.nodepath().path);
 
@@ -214,22 +214,22 @@ model.surroundings = ko.pureComputed(() => {
 
     let result = {};
 
-    if (index + 1 >= node.list().length) {
-        result.next = node.list()[0];
+    if (index + 1 >= session.list().length) {
+        result.next = session.list()[0];
     } else {
-        result.next = node.list()[index + 1];
+        result.next = session.list()[index + 1];
     }
 
     if (index - 1 < 0) {
-        result.previous = node.list()[node.list().length - 1];
+        result.previous = session.list()[session.list().length - 1];
     } else {
-        result.previous = node.list()[index - 1];
+        result.previous = session.list()[index - 1];
     }
 
     return result;
 });
 
-let surroundingsLoad = ko.computed(utils.co(function*() {
+let surroundingsLoad = ko.computed(co.wrap(function*() {
     if (!model.surroundings()) {
         return;
     }

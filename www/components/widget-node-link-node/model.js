@@ -2,7 +2,7 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const utils = require("lib/utils");
+const co = require("co");
 const stat = require("lib/status");
 
 model.loading = stat.create();
@@ -35,7 +35,7 @@ model.item = ko.asyncComputed(false, function*(setter) {
     return false;
 });
 
-let save = utils.co(function*(targetpath) {
+let save = co.wrap(function*(targetpath) {
     if (model.item() && targetpath === model.item().path) {
         return;
     }

@@ -49,9 +49,9 @@ module.exports = {
 
         return module.exports.makeUrl(newArgs);
     },
-    goto: (url) => {
+    goto: (url, keep = true) => {
         if (typeof url !== "string") {
-            url = module.exports.constructUrl(url, true);
+            url = module.exports.constructUrl(url, keep);
         } else if (url[0] !== "#" && !url.startsWith("http") && !url.startsWith("mailto")) {
             url = "#" + url;
         }

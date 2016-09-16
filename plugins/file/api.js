@@ -201,6 +201,29 @@ let file = api.register("file", {
         }
 
         return ids instanceof Array ? result : (result[ids] || false);
+    },
+    rotate: function*(session, abspath, offset) {
+        let node = yield api.vfs.resolve(session, abspath);
+
+        if (!(yield api.vfs.access(session, node, "w"))) {
+            throw new Error("Permission denied");
+        }
+
+        offset = parseInt(offset, 10);
+
+        if (node.attributes.mirror) {
+            offset = -offset;
+        }
+
+        let angle = parseInt(node.attributes.angle || 0, 10) + offset;
+
+        if (angle < 0) {
+            angle += 360;
+        } else if (angle > 270) {
+            angle -= 360;
+        }
+
+        return yield api.vfs.setattributes(session, abspath, { angle: angle });
     }
 });
 

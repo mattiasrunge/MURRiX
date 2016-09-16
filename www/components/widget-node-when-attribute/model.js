@@ -3,7 +3,6 @@
 const ko = require("knockout");
 const api = require("api.io-client");
 const chron = require("chron");
-const utils = require("lib/utils");
 const stat = require("lib/status");
 
 model.nodepath = params.nodepath;

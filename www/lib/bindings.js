@@ -14,7 +14,6 @@ const moment = require("moment");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
-const node = require("lib/node");
 const loc = require("lib/location");
 const Slider = require("slider");
 const autosize = require("autosize");
@@ -49,37 +48,6 @@ ko.bindingHandlers.lazyload = {
     }
 };
 
-const rotateFile = (abspath, offset) => {
-    api.vfs.resolve(abspath, { nodepath: true })
-    .then((nodepath) => {
-        if (!nodepath.editable) {
-            return;
-        }
-
-        offset = parseInt(offset, 10);
-
-        if (nodepath.node.attributes.mirror) {
-            offset = -offset;
-        }
-
-        let angle = parseInt(nodepath.node.attributes.angle || 0, 10) + offset;
-
-        if (angle < 0) {
-            angle += 360;
-        } else if (angle > 270) {
-            angle -= 360;
-        }
-
-        return api.vfs.setattributes(nodepath.path, { angle: angle });
-    })
-    .then((node) => {
-        stat.printSuccess("Rotated successfully");
-    })
-    .catch((error) => {
-        stat.printError(error);
-    });
-};
-
 ko.bindingHandlers.contextmenu = {
     init: (element, valueAccessor) => {
         let nodepath = valueAccessor();
@@ -102,9 +70,21 @@ ko.bindingHandlers.contextmenu = {
                         stat.printError(error);
                     });
                 } else if (key === "rotateLeft") {
-                    rotateFile(abspath, 90);
+                    api.file.rotate(abspath, 90)
+                    .then((node) => {
+                        stat.printSuccess("Rotated successfully");
+                    })
+                    .catch((error) => {
+                        stat.printError(error);
+                    });
                 } else if (key === "rotateRight") {
-                    rotateFile(abspath, -90);
+                     api.file.rotate(abspath, -90)
+                    .then((node) => {
+                        stat.printSuccess("Rotated successfully");
+                    })
+                    .catch((error) => {
+                        stat.printError(error);
+                    });
                 }
             },
             items: {

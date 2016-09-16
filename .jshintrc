@@ -1,5 +1,5 @@
 {
-    "predef": [ "suite", "describe", "it", "test", "before", "after", "beforeEach", "afterEach", "define", "require" ],
+    "predef": [ "suite", "describe", "it", "test", "before", "after", "beforeEach", "afterEach", "define", "require", "model", "params", "element" ],
     "bitwise": false,
     "camelcase": true,
     "curly": true,
