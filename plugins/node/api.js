@@ -18,7 +18,7 @@ let node = api.register("node", {
         params = config;
     }),
     getUniqueName: function*(session, abspath, name) {
-        let parent = yield api.vfs.resolve(abspath);
+        let parent = yield api.vfs.resolve(session, abspath);
         let names = parent.properties.children.map((child) => child.name);
         let escapedName = escapeName(name);
         let result = escapedName;

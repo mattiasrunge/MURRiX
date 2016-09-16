@@ -1,6 +1,6 @@
 <div>
     <div class="loader" data-bind="visible: loading"></div>
-    <navbar></navbar>
+    <default-navbar></default-navbar>
 
     <div data-bind="if: showPath">
         <node-fullscreen params="{ showPath: showPath, list: list }"></node-fullscreen>
@@ -12,7 +12,7 @@
                 <div data-bind="if: loggedIn">
                     <div class="col-md-2 sidebar">
                         <div data-bind="if: page() !== 'node'">
-                            <sidebar></sidebar>
+                            <default-sidebar></default-sidebar>
                         </div>
                     </div>
                     <div class="col-md-10 main">

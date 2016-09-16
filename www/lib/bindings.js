@@ -48,6 +48,24 @@ ko.bindingHandlers.lazyload = {
     }
 };
 
+
+ko.bindingHandlers.modal = {
+    init: (element, valueAccessor) => {
+        $(element).on("hidden.bs.modal", () => {
+            valueAccessor()(false);
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            $(element).off("hidden.bs.modal");
+        });
+    },
+    update: (element, valueAccessor) => {
+        let show = ko.unwrap(valueAccessor());
+        console.log("modal", show);
+        $(element).modal(show ? "show" : "hide");
+    }
+};
+
 ko.bindingHandlers.contextmenu = {
     init: (element, valueAccessor) => {
         let nodepath = valueAccessor();
@@ -824,16 +842,6 @@ ko.bindingHandlers.gnameNice = {
         });
     }
 };
-
-ko.bindingHandlers.mode = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-        let $element = $(element);
-
-        $element.text(utils.modeString(value));
-    }
-};
-
 
 ko.bindingHandlers.timeInput = {
     init: (element, valueAccessor) => {

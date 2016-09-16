@@ -1,5 +1,6 @@
 {
     "uploadDirectory": "/tmp",
     "cacheDirectory": "/tmp/murrix_cache",
-    "port": 8080
+    "port": 8080,
+    "pages": {}
 }

@@ -9,7 +9,6 @@ module.exports = {
     user: ko.observable(false),
     username: ko.observable("guest"),
     personPath: ko.observable(false),
-    stars: ko.observableArray(),
     loggedIn: ko.pureComputed(() => {
         return module.exports.user() && module.exports.username() !== "guest";
     }),
@@ -25,7 +24,6 @@ module.exports = {
         module.exports.user(userinfo.user);
         module.exports.username(userinfo.username);
         module.exports.personPath(userinfo.personPath);
-        module.exports.stars(userinfo.stars || []);
 
         console.log(userinfo);
     })

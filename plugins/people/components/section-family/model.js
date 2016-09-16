@@ -8,7 +8,7 @@
 const ko = require("knockout");
 const $ = require("jquery");
 const api = require("api.io-client");
-const utils = require("lib/utils");
+const co = require("co");
 const stat = require("lib/status");
 
 model.nodepath = params.nodepath;
@@ -244,7 +244,7 @@ model.createPerson = (parentNodeData, nodeData, nodePath, metrics, type, index, 
         model._adjustPosition();
     };
 
-    nodeData.tree.loadParents = utils.co(function*() {
+    nodeData.tree.loadParents = co.wrap(function*() {
         if (!nodeData.tree.parents.loaded) {
             nodeData.tree.parents.loaded = true;
             nodeData.tree.parentsLoading(true);
@@ -275,7 +275,7 @@ model.createPerson = (parentNodeData, nodeData, nodePath, metrics, type, index, 
         }
     });
 
-    nodeData.tree.loadChildren = utils.co(function*() {
+    nodeData.tree.loadChildren = co.wrap(function*() {
         if (!nodeData.tree.children.loaded) {
             nodeData.tree.children.loaded = true;
             nodeData.tree.childrenLoading(true);

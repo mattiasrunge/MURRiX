@@ -103,18 +103,24 @@ module.exports = {
     getComponents: co(function*(wwwPath) {
         let list = {};
         let components = [];
-        let dir = path.join(wwwPath, "components");
-        let items = yield fs.readdirAsync(dir);
 
-        for (let item of items) {
-            let dirname = path.join(dir, item);
-            if (yield fs.isDirectoryAsync(dirname)) {
-                list[item] = dirname;
+        let pattern = path.join(wwwPath, "pages", "**", "components");
+        let directories = yield glob(pattern);
+
+        for (let name of directories) {
+            let items = yield fs.readdirAsync(name);
+            let page = path.basename(path.dirname(name));
+
+            for (let item of items) {
+                let dirname = path.join(name, item);
+                if (yield fs.isDirectoryAsync(dirname)) {
+                    list[page + "-" + item] = dirname;
+                }
             }
         }
 
-        let pattern = path.join(__dirname, "..", "..", "plugins", "**", "components");
-        let directories = yield glob(pattern);
+        pattern = path.join(__dirname, "..", "..", "plugins", "**", "components");
+        directories = yield glob(pattern);
 
         for (let name of directories) {
             let items = yield fs.readdirAsync(name);

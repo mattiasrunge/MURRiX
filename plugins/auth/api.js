@@ -94,7 +94,6 @@ let auth = api.register("auth", {
         let personPath = false;
         let user = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
         let person = yield api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", { noerror: true, nofollow: true });
-        let stars = yield auth.getStars(session);
 
         if (person) {
             personPath = person.attributes.path;
@@ -104,7 +103,7 @@ let auth = api.register("auth", {
         delete user.attributes.resetId;
         // TODO: Invert this
 
-        return { username: session.username, user: user, personPath: personPath, stars: stars };
+        return { username: session.username, user: user, personPath: personPath };
     },
     getStars: function*(session) {
         if (session.username === "guest") {

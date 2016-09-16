@@ -31,28 +31,35 @@ const gzip = (filename) => {
 module.exports = {
     unamed: () => [
         function*(next) {
-            let url = this.originalUrl;
+            let page = (configuration.pages[this.request.header.host] || "default");
 
-            if (url[url.length - 1] === "/") {
-                url += "index.html";
+            if (this.path[this.path.length - 1] === "/") {
+                this.path += "index.html";
             }
 
-            let ext = path.extname(url);
-            let filename = path.join(wwwPath, url);
-            let compiledFilename = path.join(configuration.cacheDirectory, url);
+            let ext = path.extname(this.path);
+            let filename = path.join(wwwPath, this.path);
+            let compiledFilename = path.join(configuration.cacheDirectory, this.path);
             let processJs = true;
+            let isIndex = false;
 
-            if (url === "/local/api.io-client.js") {
+            if (this.path === "/index.html") {
+                compiledFilename = path.join(configuration.cacheDirectory, page, this.path);
+                this.path = path.join("/", page, "index.html");
+                isIndex = true;
+            }
+
+            if (this.path === "/local/api.io-client.js") {
                 processJs = false;
                 filename = path.join(__dirname, "..", "..", "node_modules", "api.io", "browser", "api.io-client.js");
-            } else if (url === "/local/co.js") {
+            } else if (this.path === "/local/co.js") {
                 processJs = false;
                 filename = path.join(__dirname, "..", "..", "node_modules", "api.io", "browser", "co.js");
-            } else if (url === "/local/socket.io-client.js") {
+            } else if (this.path === "/local/socket.io-client.js") {
                 processJs = false;
                 filename = path.join(__dirname, "..", "..", "node_modules", "socket.io-client", "socket.io.js");
-            } else if (this.originalUrl.includes("node_modules") ||
-                this.originalUrl.includes("index.js")) {
+            } else if (this.path.includes("node_modules") ||
+                this.path.includes("index.js")) {
                 // No processing required
                 processJs = false;
             }
@@ -90,16 +97,16 @@ module.exports = {
                 }
 
                 yield fs.outputFileAsync(compiledFilename, compiled.styles);
-            } else if (url === "/components.html") {
+            } else if (this.path === "/components.html") {
                 let source = yield fs.readFileAsync(path.join(wwwPath, "components.html"));
                 let template = hogan.compile(source.toString());
                 let compiled = template.render({ components: yield plugin.getComponents(wwwPath) });
 
                 yield fs.outputFileAsync(compiledFilename, compiled);
-            } else if (url === "/index.html") {
+            } else if (isIndex) {
                 let source = yield fs.readFileAsync(filename);
                 let template = hogan.compile(source.toString());
-                let compiled = template.render({ GOOGLE_API_KEY: configuration.googleBrowserKey });
+                let compiled = template.render({ GOOGLE_API_KEY: configuration.googleBrowserKey, page: page });
 
                 yield fs.outputFileAsync(compiledFilename, compiled);
             } else {
