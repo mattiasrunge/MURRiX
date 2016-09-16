@@ -49,6 +49,37 @@ ko.bindingHandlers.lazyload = {
     }
 };
 
+const rotateFile = (abspath, offset) => {
+    api.vfs.resolve(abspath, { nodepath: true })
+    .then((nodepath) => {
+        if (!nodepath.editable) {
+            return;
+        }
+
+        offset = parseInt(offset, 10);
+
+        if (nodepath.node.attributes.mirror) {
+            offset = -offset;
+        }
+
+        let angle = parseInt(nodepath.node.attributes.angle || 0, 10) + offset;
+
+        if (angle < 0) {
+            angle += 360;
+        } else if (angle > 270) {
+            angle -= 360;
+        }
+
+        return api.vfs.setattributes(nodepath.path, { angle: angle });
+    })
+    .then((node) => {
+        stat.printSuccess("Rotated successfully");
+    })
+    .catch((error) => {
+        stat.printError(error);
+    });
+};
+
 ko.bindingHandlers.contextmenu = {
     init: (element, valueAccessor) => {
         let nodepath = valueAccessor();
@@ -70,10 +101,16 @@ ko.bindingHandlers.contextmenu = {
                     .catch((error) => {
                         stat.printError(error);
                     });
+                } else if (key === "rotateLeft") {
+                    rotateFile(abspath, 90);
+                } else if (key === "rotateRight") {
+                    rotateFile(abspath, -90);
                 }
             },
             items: {
-                "profilePicture": { name: "Set as profile picture" }
+                "profilePicture": { name: "Set as profile picture" },
+                "rotateLeft": { name: "Rotate left" },
+                "rotateRight": { name: "Rotate right" }
             }
         });
 

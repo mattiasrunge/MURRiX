@@ -130,8 +130,18 @@ ko.nodepathList = function(path, options) {
     pure.hasLoaded = () => hasLoaded;
 
     let subscription = api.vfs.on("update", (event) => {
-        if (event.path === lastPath || node.dirname(event.path) === lastPath) {
+        if (event.path === lastPath) {
             pure.reload();
+        } else if (node.dirname(event.path) === lastPath) {
+            let nodepath = result().filter((nodepath) => nodepath.path === event.path)[0];
+
+            if (nodepath) {
+                api.vfs.resolve(event.path)
+                .then(nodepath.node)
+                .catch((error) => {
+                    console.error(error);
+                });
+            }
         }
     });
 
