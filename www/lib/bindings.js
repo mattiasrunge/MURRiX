@@ -1125,6 +1125,7 @@ ko.bindingHandlers.nodeselect = {
     },
     update: (element, valueAccessor) => {
         let path = valueAccessor().path;
+        let errorObservable = valueAccessor().error;
         let initial = ko.unwrap(valueAccessor().initial) || "";
         let $element = $(element);
 
@@ -1143,8 +1144,14 @@ ko.bindingHandlers.nodeselect = {
                     $element.typeahead("val", "");
                 }
             })
-            .catch(() => {
+            .catch((error) => {
                 element.loading(false);
+                $element.removeClass("valid");
+
+                if (errorObservable) {
+                    errorObservable(error);
+                }
+
                 path(false);
             });
         } else {

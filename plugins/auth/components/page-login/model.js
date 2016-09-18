@@ -34,7 +34,11 @@ model.login = co.wrap(function*() {
         model.username("");
         model.password("");
 
-        loc.goto({ page: null });
+        if (loc.current().path) {
+            loc.goto({ page: "node" });
+        } else {
+            loc.goto({ page: null }, false);
+        }
     } catch (e) {
         console.error(e);
         stat.printError("Login failed");

@@ -8,7 +8,7 @@
 
         <div class="navbar-form navbar-left collapse navbar-collapse">
             <div class="form-group header-search">
-                <input type="text" class="form-control" placeholder="Search for anything" data-bind="nodeselect: { root: searchPaths, path: path }" style="width: 100%;">
+                <input type="text" class="form-control" placeholder="Search for anything" data-bind="nodeselect: { root: searchPaths, path: path, error: pathError }" style="width: 100%;">
 
                 <a class="star" href="#" data-bind=", attr: { title: starred() ? 'Click to unstar' : 'Click to star' }, click: toggleStar, visible: loggedIn() && path() !== '', tooltip: starred() ? 'Click to unstar' : 'Click to star'" data-placement="bottom" data-trigger="hover">
                     <i class="material-icons md-24" data-bind="visible: starred">star</i>
