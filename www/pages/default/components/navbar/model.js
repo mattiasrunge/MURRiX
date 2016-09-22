@@ -63,7 +63,7 @@ model.toggleStar = () => {
 };
 
 model.random = () => {
-    api.vfs.random(session.searchPaths(), 1)
+    api.vfs.random([ "/albums" ], 1)
     .then((item) => {
         if (item) {
             loc.goto({ page: "node", path: item.path }, false);
