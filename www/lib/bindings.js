@@ -106,7 +106,7 @@ ko.bindingHandlers.contextmenu = {
                 } else if (key === "download") {
                     api.vfs.resolve(abspath)
                     .then((node) => {
-                        window.location = "file/download/" + node.attributes.diskfilename;
+                        window.location = "file/download/" + node.attributes.diskfilename + "/" + node.attributes.name;
                     })
                     .catch((error) => {
                         stat.printError(error);
