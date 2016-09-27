@@ -96,9 +96,17 @@ ko.bindingHandlers.contextmenu = {
                         stat.printError(error);
                     });
                 } else if (key === "rotateRight") {
-                     api.file.rotate(abspath, -90)
+                    api.file.rotate(abspath, -90)
                     .then((node) => {
                         stat.printSuccess("Rotated successfully");
+                    })
+                    .catch((error) => {
+                        stat.printError(error);
+                    });
+                } else if (key === "download") {
+                    api.vfs.resolve(abspath)
+                    .then((node) => {
+                        window.location = "file/download/" + node.attributes.diskfilename;
                     })
                     .catch((error) => {
                         stat.printError(error);
@@ -108,7 +116,8 @@ ko.bindingHandlers.contextmenu = {
             items: {
                 "profilePicture": { name: "Set as profile picture" },
                 "rotateLeft": { name: "Rotate left" },
-                "rotateRight": { name: "Rotate right" }
+                "rotateRight": { name: "Rotate right" },
+                "download": { name: "Download" }
             }
         });
 
