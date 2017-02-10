@@ -36,11 +36,7 @@ model.change = (value) => {
 
     let when = model.nodepath().node().attributes.when || {};
 
-    if (value) {
-        when.manual = value;
-    } else {
-        delete when.manual;
-    }
+    when.manual = value;
 
     api.vfs.setattributes(model.nodepath().path, { when: when })
     .then((node) => {

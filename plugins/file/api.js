@@ -108,9 +108,11 @@ let file = api.register("file", {
             yield api.vfs.setattributes(session, abspath, {
                 time: chron.time2timestamp(source.time, options)
             });
+        } else if (node.attributes.time){
+            yield api.vfs.setattributes(session, abspath, {
+                time: null
+            });
         }
-
-
 
         return yield api.vfs.resolve(session, abspath);
     },
