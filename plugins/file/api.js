@@ -54,7 +54,7 @@ let file = api.register("file", {
         let metadata = yield api.mcs.getMetadata(path.join(params.fileDirectory, node.attributes.diskfilename), { noChecksums: true });
 
         for (let key of Object.keys(metadata)) {
-            if (key !== "raw" && key !== "name" && typeof attributes[key] === "undefined") {
+            if (key !== "raw" && key !== "name" && typeof node.attributes[key] === "undefined") {
                 attributes[key] = metadata[key];
             }
         }
