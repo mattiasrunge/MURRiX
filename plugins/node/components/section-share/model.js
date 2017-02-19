@@ -40,8 +40,6 @@ model.saveAccess = co.wrap(function*() {
     mode |= model.nodepath().node().properties.mode & api.vfs.MASK_OTHER_WRITE ? api.vfs.MASK_OTHER_WRITE : 0;
     mode |= model.public() ? api.vfs.MASK_OTHER_EXEC : 0;
 
-    console.log(utils.modeString(model.nodepath().node().properties.mode), "=>", utils.modeString(mode));
-
     if (mode !== model.nodepath().node().properties.mode) {
         yield api.vfs.chmod(model.nodepath().path, mode, { recursive: true });
     }
