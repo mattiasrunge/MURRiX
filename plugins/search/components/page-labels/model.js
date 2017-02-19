@@ -14,10 +14,6 @@ model.query = ko.pureComputed({
     write: (value) => loc.goto({ query: value })
 });
 model.list = ko.asyncComputed([], function*() {
-    if (model.query().length < 4) {
-        return [];
-    }
-
     let labels = model.query().split("+");
 
     if (labels.length === 0) {
