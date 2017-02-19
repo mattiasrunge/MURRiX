@@ -14,7 +14,7 @@ model.value = ko.pureComputed(() => {
         return "";
     }
 
-    return model.nodepath().node().attributes[model.name()];
+    return model.nodepath().node().attributes[model.name()] || "";
 });
 model.nicevalue = ko.pureComputed(() => {
     for (let option of ko.unwrap(model.options)) {
