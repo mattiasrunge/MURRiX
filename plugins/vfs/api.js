@@ -1021,6 +1021,15 @@ let vfs = api.register("vfs", {
 
         session.uploads[id] = true;
         return id;
+    },
+    labels: function*(session) {
+        if (!session.username) {
+            throw new Error("Not allowed");
+        }
+
+        const labels = yield db.distinct("nodes", "attributes.labels");
+
+        return labels.filter((label) => label !== "");
     }
 });
 

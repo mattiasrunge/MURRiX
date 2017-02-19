@@ -62,6 +62,12 @@ let Database = function() {
         return collection.deleteOne({ _id: id }, options);
     };
 
+    this.distinct = (collectionName, attribute) => {
+        let collection = db.collection(collectionName);
+
+        return collection.distinct(attribute);
+    };
+
     this.stop = co(function*() {
         db.close();
     });

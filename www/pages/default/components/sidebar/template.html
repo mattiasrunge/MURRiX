@@ -21,6 +21,12 @@
                 Search by year
             </a>
         </li>
+        <li data-bind="css: { active: page() === 'labels' }">
+            <a data-bind="location: { page: 'labels' }">
+                <i class="material-icons md-18">label</i>
+                Browse by label
+            </a>
+        </li>
 
         <li class="header">Numbers</li>
         <li data-bind="css: { active: page() === 'charts' }">
