@@ -793,7 +793,7 @@ let vfs = api.register("vfs", {
 
         yield rremove(abspath, child.id);
     },
-    symlink: function*(session, srcpath, destpath) {
+    symlink: function*(session, srcpath, destpath) {console.log(1);
         yield vfs.resolve(session, srcpath);
         let name = path.basename(srcpath);
 

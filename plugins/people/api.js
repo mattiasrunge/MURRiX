@@ -37,6 +37,40 @@ let people = api.register("people", {
 
         return yield api.vfs.resolve(session, abspath);
     },
+    getParent: function*(session, abspath, gender = "f") {
+        let parentpath = path.join(abspath, "parents");
+        let list = yield api.vfs.list(session, parentpath);
+
+        return list.find((item) => item.node.attributes.gender === gender) || false;
+    },
+    setParent: function*(session, abspath, parentpath, gender) {
+        const currentParent = yield people.getParent(session, abspath, gender);
+        const childNodepath = yield api.vfs.resolve(session, abspath, { nodepath: true });
+
+        if (currentParent) {
+            // Remove current parent symlink from parents
+            const curretParentPath = path.join(abspath, "parents", currentParent.name);
+            console.log("Unlink", curretParentPath);
+            yield api.vfs.unlink(session, curretParentPath);
+
+            // Remove child from parents current parents children
+            const currentChildPath = path.join(currentParent.path, "children", childNodepath.name);
+            console.log("Unlink", currentChildPath);
+            yield api.vfs.unlink(session, currentChildPath);
+        }
+
+        if (parentpath) {
+            const newParentNodepath = yield api.vfs.resolve(session, parentpath, { nodepath: true });
+
+            const newParentPath = path.join(abspath, "parents");
+            console.log("Link", parentpath, newParentPath);
+            yield api.vfs.symlink(session, parentpath, newParentPath);
+
+            const newChildPath = path.join(newParentNodepath.path, "children");
+            console.log("Link", abspath, newChildPath);
+            yield api.vfs.symlink(session, abspath, newChildPath);
+        }
+    },
     getPartner: function*(session, abspath) {
         let partnerpath = path.join(abspath, "partner");
         let node = yield api.vfs.resolve(session, partnerpath, { noerror: true, nofollow: true });
