@@ -1029,6 +1029,8 @@ let vfs = api.register("vfs", {
 
         const labels = yield db.distinct("nodes", "attributes.labels");
 
+        labels.sort();
+
         return labels.filter((label) => label !== "");
     }
 });
