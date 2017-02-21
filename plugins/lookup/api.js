@@ -1,17 +1,16 @@
 "use strict";
 
-const co = require("bluebird").coroutine;
 const api = require("api.io");
 const request = require("request-promise-native");
 
 let params = {};
 
-let lookup = api.register("lookup", {
+const lookup = api.register("lookup", {
     deps: [ ],
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
-    getTimezoneFromPosition: function*(session, longitude, latitude) {
+    },
+    getTimezoneFromPosition: api.export(async (session, longitude, latitude) => {
         let options = {
             uri: "https://maps.googleapis.com/maps/api/timezone/json",
             qs: {
@@ -22,7 +21,7 @@ let lookup = api.register("lookup", {
             json: true
         };
 
-        let data = yield request(options);
+        let data = await request(options);
         /*{
             "dstOffset" : 3600,
             "rawOffset" : 0,
@@ -39,8 +38,8 @@ let lookup = api.register("lookup", {
             utcOffset: data.rawOffset,
             name: data.timeZoneId
         };
-    },
-    getAddressFromPosition: function*(session, longitude, latitude) {
+    }),
+    getAddressFromPosition: api.export(async (session, longitude, latitude) => {
         let options = {
             uri: "https://maps.googleapis.com/maps/api/geocode/json",
             qs: {
@@ -51,7 +50,7 @@ let lookup = api.register("lookup", {
             json: true
         };
 
-        let data = yield request(options);
+        let data = await request(options);
 
         if (data.status !== "OK") {
             throw new Error(data.errorMessage);
@@ -60,8 +59,8 @@ let lookup = api.register("lookup", {
         }
 
         return data.results[0].formatted_address; // jshint ignore:line
-    },
-    getPositionFromAddress: function*(session, address) {
+    }),
+    getPositionFromAddress: api.export(async (session, address) => {
         let options = {
             uri: "https://maps.googleapis.com/maps/api/geocode/json",
             qs: {
@@ -71,7 +70,7 @@ let lookup = api.register("lookup", {
             json: true
         };
 
-        let data = yield request(options);
+        let data = await request(options);
 
         if (data.status !== "OK") {
             throw new Error(data.errorMessage);
@@ -83,7 +82,7 @@ let lookup = api.register("lookup", {
             longitude: data.results[0].geometry.location.lng,
             latitude: data.results[0].geometry.location.lat
         };
-    }
+    })
 });
 
 module.exports = lookup;

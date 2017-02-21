@@ -1,21 +1,20 @@
 "use strict";
 
-const co = require("bluebird").coroutine;
 const api = require("api.io");
 const chron = require("chron-time");
 const bus = require("../../core/lib/bus");
 
 let params = {};
 
-let text = api.register("text", {
+const text = api.register("text", {
     deps: [ "vfs" ],
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
-    mktext: function*(session, abspath, attributes) {
-        yield api.vfs.create(session, abspath, "t", attributes);
+    },
+    mktext: api.export(async (session, abspath, attributes) => {
+        await api.vfs.create(session, abspath, "t", attributes);
 
-        yield text.regenerate(session, abspath);
+        await text.regenerate(session, abspath);
 
         bus.emit("text.new", {
             uid: session.uid,
@@ -24,21 +23,21 @@ let text = api.register("text", {
             type: attributes.type
         });
 
-        return yield api.vfs.resolve(session, abspath);
-    },
-    regenerate: function*(session, abspath) {
-        let node = yield api.vfs.resolve(session, abspath);
+        return await api.vfs.resolve(session, abspath);
+    }),
+    regenerate: api.export(async (session, abspath) => {
+        let node = await api.vfs.resolve(session, abspath);
 
         let source = chron.select(node.attributes.when || {});
 
         if (source) {
             let timestamp = chron.time2timestamp(source.time, { type: source.type });
 
-            yield api.vfs.setattributes(session, node, {
+            await api.vfs.setattributes(session, node, {
                 time: timestamp
             });
         }
-    }
+    })
 });
 
 module.exports = text;

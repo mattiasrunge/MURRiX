@@ -3,17 +3,16 @@
 /* jslint bitwise: true */
 
 const path = require("path");
-const co = require("bluebird").coroutine;
 const api = require("api.io").client;
 
 module.exports = {
-    autocomplete: co(function*(session, input) {
-        let cwd = yield session.env("cwd");
+    autocomplete: async (session, input) => {
+        let cwd = await session.env("cwd");
         let names = [];
 
         try {
             if (input === "") {
-                let items = yield api.vfs.list(cwd);
+                let items = await api.vfs.list(cwd);
                 return items.map((item) => item.name + "/");
             }
 
@@ -26,7 +25,7 @@ module.exports = {
                 match = path.basename(dir);
             }
 
-            let items = yield api.vfs.list(parentDir);
+            let items = await api.vfs.list(parentDir);
             names = items
             .map((item) => item.name)
             .filter((name) => name.startsWith(match))
@@ -39,7 +38,7 @@ module.exports = {
         }
 
         return names;
-    }),
+    },
     normalize: (cwd, dir) => {
         let trailingSlash = dir[dir.length - 1] === "/";
         dir = path.resolve(cwd, dir);

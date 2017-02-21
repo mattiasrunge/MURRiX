@@ -5,14 +5,14 @@ const api = require("api.io").client;
 
 vorpal
 .command("passwd [username]", "Change user password")
-.action(vorpal.wrap(function*(session, args) {
-    let username = args.username || (yield session.env("username"));
-    let prompt1 = yield this.promptAsync({
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let username = args.username || (await session.env("username"));
+    let prompt1 = await ctx.promptAsync({
         type: "password",
         name: "password",
         message: "New password: "
     });
-    let prompt2 = yield this.promptAsync({
+    let prompt2 = await ctx.promptAsync({
         type: "password",
         name: "password",
         message: "Confirm new password: "
@@ -22,7 +22,7 @@ vorpal
         throw new Error("Passwords do not match");
     }
 
-    yield api.auth.passwd(username, prompt1.password);
+    await api.auth.passwd(username, prompt1.password);
 
-    this.log("Password updated".green);
+    ctx.log("Password updated".green);
 }));

@@ -1,7 +1,6 @@
 "use strict";
 
 const path = require("path");
-const co = require("bluebird").coroutine;
 const api = require("api.io").client;
 const expandvar = require("expand-var");
 const fs = require("fs-extra-promise");
@@ -16,25 +15,25 @@ module.exports = {
         ps1: "\u001b[32m$username\u001b[39m \u001b[1m$cwd ]\u001b[22m"
     },
     session: {},
-    init: co(function*() {
-        let session = yield api.auth.session();
+    init: async () => {
+        let session = await api.auth.session();
 
         if (session._id) {
-            yield fs.outputFileAsync(sessionIdFilename, session._id, {
+            await fs.outputFileAsync(sessionIdFilename, session._id, {
                 mode: 0o700
             });
         }
 
-        yield module.exports.env("username", session.username);
-    }),
-    readSessionId: co(function*() {
+        await module.exports.env("username", session.username);
+    },
+    readSessionId: async () => {
         try {
-            let sessionId = yield fs.readFileAsync(sessionIdFilename);
+            let sessionId = await fs.readFileAsync(sessionIdFilename);
             return sessionId.toString();
         } catch (e) {
         }
-    }),
-    env: co(function*(name, value) {
+    },
+    env: async (name, value) => {
         if (value) {
             if (value === null) {
                 delete module.exports.environment[name];
@@ -50,13 +49,13 @@ module.exports = {
         }
 
         return module.exports.environment[name];
-    }),
-    get: co(function*(name) {
+    },
+    get: async (name) => {
         return module.exports.session[name];
-    }),
-    set: co(function*(name, value) {
+    },
+    set: async (name, value) => {
         module.exports.session[name] = value;
-    }),
+    },
     expand: (str) => {
         return expandvar(str, module.exports.environment);
     },

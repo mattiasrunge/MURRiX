@@ -5,12 +5,12 @@ const api = require("api.io").client;
 
 vorpal
 .command("mkgroup <name>", "Create a new group")
-.action(vorpal.wrap(function*(session, args) {
-    let prompt = yield this.promptAsync({
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let prompt = await ctx.promptAsync({
         type: "input",
         name: "name",
         message: "Name: "
     });
 
-    yield api.auth.mkgroup(args.name, prompt.name);
+    await api.auth.mkgroup(args.name, prompt.name);
 }));

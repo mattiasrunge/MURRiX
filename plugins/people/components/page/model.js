@@ -17,7 +17,7 @@ model.createText = ko.observable("");
 model.createTime = ko.observable(false);
 model.createPersonPath = ko.observable(false);
 
-model.metrics = ko.asyncComputed([], function*(setter) {
+model.metrics = ko.asyncComputed([], async (setter) => {
     if (!model.nodepath() || model.nodepath() === "") {
         return {};
     }
@@ -25,7 +25,7 @@ model.metrics = ko.asyncComputed([], function*(setter) {
     setter({});
 
     model.loading(true);
-    let metrics = yield api.people.getMetrics(model.nodepath().path);
+    let metrics = await api.people.getMetrics(model.nodepath().path);
     model.loading(false);
 
     console.log("metrics", metrics);

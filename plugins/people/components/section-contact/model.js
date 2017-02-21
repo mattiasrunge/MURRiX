@@ -14,19 +14,19 @@ model.nodepath = params.nodepath;
 model.selectedHome = ko.observable(false);
 model.locationPath = ko.observable();
 
-model.position = ko.asyncComputed(false, function*() {
+model.position = ko.asyncComputed(false, async () => {
     if (!model.selectedHome()) {
         return false;
     }
 
-    return yield api.lookup.getPositionFromAddress(model.selectedHome().node.attributes.address.replace("<br>", "\n"));
+    return await api.lookup.getPositionFromAddress(model.selectedHome().node.attributes.address.replace("<br>", "\n"));
 }, (error) => {
     stat.printError(error);
     return false;
 });
 
-model.homes = ko.asyncComputed(false, function*() {
-    let list = yield api.vfs.list(model.nodepath().path + "/homes");
+model.homes = ko.asyncComputed(false, async () => {
+    let list = await api.vfs.list(model.nodepath().path + "/homes");
 
     if (list.length > 0) {
         if (!model.selectedHome()) {

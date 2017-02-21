@@ -1,16 +1,15 @@
 "use strict";
 
 const MongoClient = require("mongodb").MongoClient;
-const co = require("bluebird").coroutine;
 
 let Database = function() {
     let db = null;
 
-    this.init = co(function*(config) {
+    this.init = async (config) => {
         let url = config.mongoUrl;
 
-        db = yield MongoClient.connect(url);
-    });
+        db = await MongoClient.connect(url);
+    };
 
     this.createIndexes = (collectionName, indexes) => {
         let collection = db.collection(collectionName);
@@ -68,15 +67,15 @@ let Database = function() {
         return collection.distinct(attribute);
     };
 
-    this.stop = co(function*() {
+    this.stop = async () => {
         db.close();
-    });
+    };
 
-    this.createInstance = co(function*(config) {
+    this.createInstance = async (config) => {
         let db = new Database();
-        yield db.init(config);
+        await db.init(config);
         return db;
-    });
+    };
 };
 
 module.exports = new Database();

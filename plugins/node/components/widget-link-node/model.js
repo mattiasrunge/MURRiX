@@ -2,7 +2,6 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const co = require("co");
 const stat = require("lib/status");
 
 model.loading = stat.create();
@@ -14,18 +13,18 @@ model.searchPaths = ko.pureComputed(() => ko.unwrap(params.searchPaths));
 model.editing = ko.observable(false);
 model.linkToPath = ko.observable(false);
 
-model.item = ko.asyncComputed(false, function*(setter) {
+model.item = ko.asyncComputed(false, async (setter) => {
     let abspath = model.nodepath().path + "/" + model.name();
 
     setter(false);
 
-    let link = yield api.vfs.resolve(abspath, { noerror: true, nofollow: true });
+    let link = await api.vfs.resolve(abspath, { noerror: true, nofollow: true });
 
     if (!link) {
         return false;
     }
 
-    let item = yield api.vfs.resolve(link.attributes.path);
+    let item = await api.vfs.resolve(link.attributes.path);
 
     model.linkToPath(link.attributes.path);
 
@@ -35,21 +34,21 @@ model.item = ko.asyncComputed(false, function*(setter) {
     return false;
 });
 
-let save = co.wrap(function*(targetpath) {
+let save = async (targetpath) => {
     if (model.item() && targetpath === model.item().path) {
         return;
     }
 
     let abspath = model.nodepath().path + "/" + model.name();
 
-    yield api.vfs.unlink(abspath);
+    await api.vfs.unlink(abspath);
 
     if (targetpath) {
-        yield api.vfs.symlink(targetpath, abspath);
+        await api.vfs.symlink(targetpath, abspath);
     }
 
     model.item.reload();
-});
+};
 
 let subscription = model.linkToPath.subscribe((value) => {
     if (!model.editing()) {

@@ -4,6 +4,6 @@ const vorpal = require("../../../cli/lib/vorpal");
 
 vorpal
 .command("pwd", "Shows current working directory")
-.action(vorpal.wrap(function*(session/*, args*/) {
-    this.log(yield session.env("cwd"));
+.action(vorpal.wrap(async (ctx, session/*, args*/) => {
+    ctx.log(await session.env("cwd"));
 }));

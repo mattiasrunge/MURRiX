@@ -33,12 +33,12 @@ model.personPath = ko.pureComputed({
 });
 
 model.editing = ko.observable(false);
-model.nodepath = ko.asyncComputed(false, function*(setter) {
+model.nodepath = ko.asyncComputed(false, async (setter) => {
     setter(false);
 
     model.reloadFlag();
 
-    let nodepath = yield api.people.getParent(ko.unwrap(params.nodepath().path), params.gender);
+    let nodepath = await api.people.getParent(ko.unwrap(params.nodepath().path), params.gender);
 
     if (!nodepath) {
         return false;

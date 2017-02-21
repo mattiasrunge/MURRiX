@@ -9,7 +9,6 @@
 
 const $ = require("jquery");
 const ko = require("knockout");
-const co = require("co");
 const moment = require("moment");
 const api = require("api.io-client");
 const utils = require("lib/utils");
@@ -903,8 +902,8 @@ ko.bindingHandlers.timeInput = {
 
 
 ko.bindingHandlers.groupselect = {
-    lookup: co.wrap(function*(querystr, limit) {
-        let list = yield api.auth.groups({
+    lookup: async (querystr, limit) => {
+        let list = await api.auth.groups({
             filter: {
                 "attributes.name": { $regex: ".*" + querystr + ".*", $options: "-i" }
             },
@@ -917,7 +916,7 @@ ko.bindingHandlers.groupselect = {
                 node: item.node
             };
         });
-    }),
+    },
     init: (element, valueAccessor) => {
         let gid = valueAccessor().gid;
         let limit = ko.unwrap(valueAccessor().limit) || 10;
@@ -1016,10 +1015,10 @@ ko.bindingHandlers.groupselect = {
 };
 
 ko.bindingHandlers.nodeselect = {
-    lookup: co.wrap(function*(root, querystr, limit) {
+    lookup: async (root, querystr, limit) => {
         let filter = limit === 1 ? querystr : { $regex: ".*" + querystr + ".*", $options: "-i" };
 
-        let list = yield api.vfs.list(root, {
+        let list = await api.vfs.list(root, {
             filter: {
                 "attributes.name": filter
             },
@@ -1033,7 +1032,7 @@ ko.bindingHandlers.nodeselect = {
                 filename: item.filename
             };
         });
-    }),
+    },
     init: (element, valueAccessor) => {
         let root = ko.unwrap(valueAccessor().root);
         let path = valueAccessor().path;

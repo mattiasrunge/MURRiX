@@ -6,15 +6,15 @@ const api = require("api.io").client;
 
 vorpal
 .command("message list", "List messages.")
-.action(vorpal.wrap(function*(/*session, args*/) {
-    let list = yield api.message.list();
+.action(vorpal.wrap(async (ctx/*, session, args*/) => {
+    let list = await api.message.list();
     let ucache = {};
 
     list = list.reverse();
 
     for (let message of list) {
         if (!ucache[message.node.attributes.from]) {
-            ucache[message.node.attributes.from] = yield api.auth.uname(message.node.attributes.from);
+            ucache[message.node.attributes.from] = await api.auth.uname(message.node.attributes.from);
         }
     }
 
@@ -41,5 +41,5 @@ vorpal
         columnSplitter: " | "
     });
 
-    this.log(columns);
+    ctx.log(columns);
 }));

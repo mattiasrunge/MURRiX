@@ -33,12 +33,12 @@ model.personPath = ko.pureComputed({
 });
 
 model.editing = ko.observable(false);
-model.nodepath = ko.asyncComputed(false, function*(setter) {
+model.nodepath = ko.asyncComputed(false, async (setter) => {
     setter(false);
 
     model.reloadFlag();
 
-    let nodepath = yield api.people.getPartner(ko.unwrap(params.nodepath().path));
+    let nodepath = await api.people.getPartner(ko.unwrap(params.nodepath().path));
 
     if (!nodepath) {
         return false;

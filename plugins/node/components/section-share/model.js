@@ -2,7 +2,6 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const co = require("co");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 
@@ -17,13 +16,13 @@ model.aclGroupAccess = ko.observable("read");
 
 model.saving(true); // While we load we don't want so save
 
-model.saveAccess = co.wrap(function*() {
+model.saveAccess = async () => {
     if (model.gid() === false) {
         throw new Error("A group must be specified!");
     }
 
     if (model.nodepath().node().properties.gid !== model.gid()) {
-        yield api.vfs.chown(model.nodepath().path, null, parseInt(model.gid(), 10), { recursive: true });
+        await api.vfs.chown(model.nodepath().path, null, parseInt(model.gid(), 10), { recursive: true });
     }
 
     let mode = 0;
@@ -41,7 +40,7 @@ model.saveAccess = co.wrap(function*() {
     mode |= model.public() ? api.vfs.MASK_OTHER_EXEC : 0;
 
     if (mode !== model.nodepath().node().properties.mode) {
-        yield api.vfs.chmod(model.nodepath().path, mode, { recursive: true });
+        await api.vfs.chmod(model.nodepath().path, mode, { recursive: true });
     }
 
     for (let ac of model.aclGroupList()) {
@@ -56,7 +55,7 @@ model.saveAccess = co.wrap(function*() {
             mode |= api.vfs.MASK_ACL_EXEC;
         }
 
-        yield api.vfs.setfacl(model.nodepath().path, { gid: ac.gid, mode: mode }, { recursive: true });
+        await api.vfs.setfacl(model.nodepath().path, { gid: ac.gid, mode: mode }, { recursive: true });
     }
 
     if (model.aclGid()) {
@@ -71,16 +70,16 @@ model.saveAccess = co.wrap(function*() {
             mode |= api.vfs.MASK_ACL_EXEC;
         }
 
-        yield api.vfs.setfacl(model.nodepath().path, { gid: model.aclGid(), mode: mode }, { recursive: true });
+        await api.vfs.setfacl(model.nodepath().path, { gid: model.aclGid(), mode: mode }, { recursive: true });
 
         model.aclGid(false);
         model.aclGroupAccess("read");
     }
 
-    let node = yield api.vfs.resolve(model.nodepath().path);
+    let node = await api.vfs.resolve(model.nodepath().path);
 
     model.nodepath().node(node);
-});
+};
 
 model.aclGroupList = ko.pureComputed(() => {
     if (!model.nodepath()) {
@@ -129,7 +128,7 @@ model.changed = ko.computed(() => {
     }
 }).extend({ notify: "always" });
 
-model.whoHasAccess = ko.asyncComputed([], function*() {
+model.whoHasAccess = ko.asyncComputed([], async () => {
     if (!model.nodepath()) {
         return [];
     }
@@ -139,7 +138,7 @@ model.whoHasAccess = ko.asyncComputed([], function*() {
     model.loading(true);
 
     list.push({
-        name: yield api.auth.name(model.nodepath().node().properties.uid),
+        name: await api.auth.name(model.nodepath().node().properties.uid),
         uid: model.nodepath().node().properties.uid,
         type: "write",
         reason: "as owner"
@@ -154,9 +153,9 @@ model.whoHasAccess = ko.asyncComputed([], function*() {
     }
 
     if (model.gid() && model.groupAccess() !== "none") {
-        let name = yield api.auth.gname(model.gid());
-        let niceName = yield api.auth.gnameNice(model.gid());
-        let users = yield api.auth.userList(name);
+        let name = await api.auth.gname(model.gid());
+        let niceName = await api.auth.gnameNice(model.gid());
+        let users = await api.auth.userList(name);
 
         for (let user of users) {
             list.push({
@@ -170,9 +169,9 @@ model.whoHasAccess = ko.asyncComputed([], function*() {
 
     for (let ac of model.aclGroupList()) {
         if (ac.access() !== "none") {
-            let name = yield api.auth.gname(ac.gid);
-            let niceName = yield api.auth.gnameNice(ac.gid);
-            let users = yield api.auth.userList(name);
+            let name = await api.auth.gname(ac.gid);
+            let niceName = await api.auth.gnameNice(ac.gid);
+            let users = await api.auth.userList(name);
 
             for (let user of users) {
                 list.push({

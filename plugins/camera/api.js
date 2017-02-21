@@ -1,23 +1,22 @@
 "use strict";
 
 const path = require("path");
-const co = require("bluebird").coroutine;
 const api = require("api.io");
 const bus = require("../../core/lib/bus");
 
 let params = {};
 
-let camera = api.register("camera", {
+const camera = api.register("camera", {
     deps: [ "vfs", "auth" ],
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
 
-        if (!(yield api.vfs.resolve(api.auth.getAdminSession(), "/cameras", { noerror: true }))) {
-            yield api.vfs.create(api.auth.getAdminSession(), "/cameras", "d");
-            yield api.vfs.chown(api.auth.getAdminSession(), "/cameras", "admin", "users");
+        if (!(await api.vfs.resolve(api.auth.getAdminSession(), "/cameras", { noerror: true }))) {
+            await api.vfs.create(api.auth.getAdminSession(), "/cameras", "d");
+            await api.vfs.chown(api.auth.getAdminSession(), "/cameras", "admin", "users");
         }
-    }),
-    mkcamera: function*(session, name, attributes) {
+    },
+    mkcamera: api.export(async (session, name, attributes) => {
         let abspath = path.join("/cameras", name);
 
         attributes = attributes || {};
@@ -28,8 +27,8 @@ let camera = api.register("camera", {
         attributes.deviceAutoDst = attributes.deviceAutoDst || false;
         attributes.serialNumber = attributes.serialNumber || "";
 
-        yield api.vfs.create(session, abspath, "c", attributes);
-        yield api.vfs.create(session, path.join(abspath, "owners"), "d");
+        await api.vfs.create(session, abspath, "c", attributes);
+        await api.vfs.create(session, path.join(abspath, "owners"), "d");
 
         bus.emit("camera.new", {
             uid: session.uid,
@@ -37,11 +36,11 @@ let camera = api.register("camera", {
             name: attributes.name
         });
 
-        return yield api.vfs.resolve(session, abspath);
-    },
-    find: function*(session, name) {
-        return yield api.vfs.resolve(session, "/cameras/" + name, { noerror: true });
-    }
+        return await api.vfs.resolve(session, abspath);
+    }),
+    find: api.export(async (session, name) => {
+        return await api.vfs.resolve(session, "/cameras/" + name, { noerror: true });
+    })
 });
 
 module.exports = camera;

@@ -2,7 +2,6 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const co = require("co");
 const stat = require("lib/status");
 const ui = require("lib/ui");
 const loc = require("lib/location");
@@ -58,7 +57,7 @@ model.initialCameraName = ko.pureComputed(() => {
     return "";
 });
 
-model.filename = ko.asyncComputed(false, function*(setter) {
+model.filename = ko.asyncComputed(false, async (setter) => {
     if (!model.nodepath()) {
         return false;
     }
@@ -71,21 +70,21 @@ model.filename = ko.asyncComputed(false, function*(setter) {
     model.loading(true);
 
     if (model.nodepath().node().attributes.type === "image") {
-        filename = yield api.file.getMediaUrl(model.nodepath().node()._id, {
+        filename = await api.file.getMediaUrl(model.nodepath().node()._id, {
             height: height,
             type: "image"
         });
     } else if (model.nodepath().node().attributes.type === "video") {
-        filename = yield api.file.getMediaUrl(model.nodepath().node()._id, {
+        filename = await api.file.getMediaUrl(model.nodepath().node()._id, {
             height: height,
             type: "video"
         });
     } else if (model.nodepath().node().attributes.type === "audio") {
-        filename = yield api.file.getMediaUrl(model.nodepath().node()._id, {
+        filename = await api.file.getMediaUrl(model.nodepath().node()._id, {
             type: "audio"
         });
     } else if (model.nodepath().node().attributes.type === "document") {
-        filename = yield api.file.getMediaUrl(model.nodepath().node()._id, {
+        filename = await api.file.getMediaUrl(model.nodepath().node()._id, {
             type: "document"
         });
     }
@@ -228,13 +227,13 @@ model.surroundings = ko.pureComputed(() => {
     return result;
 });
 
-let surroundingsLoad = ko.computed(co.wrap(function*() {
+let surroundingsLoad = ko.computed(async () => {
     if (!model.surroundings()) {
         return;
     }
 
     let ids = [ model.surroundings().previous.node()._id, model.surroundings().next.node()._id ];
-    let filenames = yield api.file.getMediaUrl(ids, {
+    let filenames = await api.file.getMediaUrl(ids, {
         height: ko.unwrap(model.height),
         type: "image"
     });
@@ -244,7 +243,7 @@ let surroundingsLoad = ko.computed(co.wrap(function*() {
             (new Image()).src = filenames[id];
         }
     }
-}));
+});
 
 model.rotate = (offset) => {
     if (!model.nodepath().editable) {

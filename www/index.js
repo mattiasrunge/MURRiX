@@ -20,8 +20,7 @@ require.config({
         dragula: "node_modules/dragula/dist/dragula.min",
         chart: "node_modules/chart.js/dist/Chart.min",
         "socket.io-client": "local/socket.io-client",
-        "api.io-client": "local/api.io-client",
-        "co": "local/co"
+        "api.io-client": "local/api.io-client"
     },
     shim: {
         bootstrap: {
@@ -74,7 +73,6 @@ define([
     "chron",
     "dragula",
     "chart",
-    "co",
     "socket.io-client",
     "api.io-client",
     "lib/component",

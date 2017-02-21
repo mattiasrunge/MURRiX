@@ -8,7 +8,6 @@
 const ko = require("knockout");
 const $ = require("jquery");
 const api = require("api.io-client");
-const co = require("co");
 const stat = require("lib/status");
 
 model.nodepath = params.nodepath;
@@ -244,12 +243,12 @@ model.createPerson = (parentNodeData, nodeData, nodePath, metrics, type, index, 
         model._adjustPosition();
     };
 
-    nodeData.tree.loadParents = co.wrap(function*() {
+    nodeData.tree.loadParents = async () => {
         if (!nodeData.tree.parents.loaded) {
             nodeData.tree.parents.loaded = true;
             nodeData.tree.parentsLoading(true);
 
-            let list = yield api.vfs.list(nodePath + "/parents");
+            let list = await api.vfs.list(nodePath + "/parents");
 
             nodeData.tree.parentsLoading(false);
 
@@ -266,26 +265,26 @@ model.createPerson = (parentNodeData, nodeData, nodePath, metrics, type, index, 
             });
 
             for (let n = 0; n < list.length; n++) {
-                let metrics = yield api.people.getMetrics(list[n].path);
+                let metrics = await api.people.getMetrics(list[n].path);
 
                 nodeData.tree.parents.push(model.createPerson(nodeData, list[n].node, list[n].path, metrics, "parent", n, list.length));
             }
 
             model._adjustPosition();
         }
-    });
+    };
 
-    nodeData.tree.loadChildren = co.wrap(function*() {
+    nodeData.tree.loadChildren = async () => {
         if (!nodeData.tree.children.loaded) {
             nodeData.tree.children.loaded = true;
             nodeData.tree.childrenLoading(true);
 
-            let list = yield api.vfs.list(nodePath + "/children");
+            let list = await api.vfs.list(nodePath + "/children");
 
             nodeData.tree.childrenLoading(false);
 
             for (let child of list) {
-                child.metrics = yield api.people.getMetrics(child.path);
+                child.metrics = await api.people.getMetrics(child.path);
             }
 
             list.sort((a, b) => {
@@ -307,7 +306,7 @@ model.createPerson = (parentNodeData, nodeData, nodePath, metrics, type, index, 
 
             model._adjustPosition();
         }
-    });
+    };
 
 
     if (!parentNodeData) {
@@ -339,14 +338,14 @@ model.afterRender = () => {
 
 model.zoomSet(0.8);
 
-model.person = ko.asyncComputed(false, function*(setter) {
+model.person = ko.asyncComputed(false, async (setter) => {
     if (!model.nodepath()) {
         return false;
     }
 
     setter(false);
 
-    let metrics = yield api.people.getMetrics(model.nodepath().path);
+    let metrics = await api.people.getMetrics(model.nodepath().path);
 
     return model.createPerson(null, model.nodepath().node(), model.nodepath().path, metrics, "me", 0, 1);
 }, (error) => {

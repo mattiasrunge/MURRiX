@@ -8,7 +8,7 @@ const stat = require("lib/status");
 model.loading = stat.create();
 model.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
 
-model.position = ko.asyncComputed(false, function*() {
+model.position = ko.asyncComputed(false, async () => {
     if (!model.item()) {
         return false;
     }
@@ -17,7 +17,7 @@ model.position = ko.asyncComputed(false, function*() {
         return false;
     }
 
-    return yield api.lookup.getPositionFromAddress(model.item().node().attributes.address.replace("<br>", "\n"));
+    return await api.lookup.getPositionFromAddress(model.item().node().attributes.address.replace("<br>", "\n"));
 }, (error) => {
     stat.printError(error);
     return false;

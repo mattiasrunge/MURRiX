@@ -1,7 +1,6 @@
 "use strict";
 
 const ko = require("knockout");
-const co = require("co");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
@@ -28,7 +27,7 @@ model.reset = () => {
     model.personPath(params.personPath());
 };
 
-model.save = co.wrap(function*() {
+model.save = async () => {
     if (model.username() === "") {
         return stat.printError("Username can not be empty!");
     }
@@ -36,17 +35,17 @@ model.save = co.wrap(function*() {
     model.loading(true);
 
     try {
-        yield api.auth.saveProfile(params.username(), {
+        await api.auth.saveProfile(params.username(), {
             name: model.name()
         }, model.personPath());
 
         if (params.username() !== model.username()) {
-            yield api.auth.changeUsername(params.username(), model.username());
+            await api.auth.changeUsername(params.username(), model.username());
 
             if (params.username() === session.username()) {
                 stat.printInfo("After username change you must login again");
-                yield api.auth.logout();
-                yield session.loadUser();
+                await api.auth.logout();
+                await session.loadUser();
                 loc.goto({ page: "login" });
             }
         }
@@ -58,9 +57,9 @@ model.save = co.wrap(function*() {
     }
 
     model.loading(false);
-});
+};
 
-model.changePassword = co.wrap(function*() {
+model.changePassword = async () => {
     if (model.password1() !== model.password2()) {
         return stat.printError("Password does not match!");
     } else if (model.password1() === "") {
@@ -70,7 +69,7 @@ model.changePassword = co.wrap(function*() {
     model.loading(true);
 
     try {
-        yield api.auth.passwd(params.username(), model.password1());
+        await api.auth.passwd(params.username(), model.password1());
 
         stat.printSuccess("Password changed successfully!");
 
@@ -82,7 +81,7 @@ model.changePassword = co.wrap(function*() {
     }
 
     model.loading(false);
-});
+};
 
 model.reset();
 

@@ -5,10 +5,10 @@ const api = require("api.io").client;
 
 vorpal
 .command("find <search>", "Find nodes")
-.action(vorpal.wrap(function*(session, args) {
-    let cwd = yield session.env("cwd");
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let cwd = await session.env("cwd");
 
-    let items = yield api.vfs.find(cwd, args.search);
+    let items = await api.vfs.find(cwd, args.search);
 
-    this.log(items.join("\n"));
+    ctx.log(items.join("\n"));
 }));

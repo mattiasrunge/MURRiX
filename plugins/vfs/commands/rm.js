@@ -11,16 +11,16 @@ vorpal
         return terminal.autocomplete(vorpal.cliSession, input);
     }
 })
-.action(vorpal.wrap(function*(session, args) {
-    let cwd = yield session.env("cwd");
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let cwd = await session.env("cwd");
 
     if (args.path.includes("*")) {
-        let list = yield api.vfs.list(cwd);
+        let list = await api.vfs.list(cwd);
 
         for (let item of list) {
-            yield api.vfs.unlink(item.path);
+            await api.vfs.unlink(item.path);
         }
     } else {
-        yield api.vfs.unlink(terminal.normalize(cwd, args.path));
+        await api.vfs.unlink(terminal.normalize(cwd, args.path));
     }
 }));

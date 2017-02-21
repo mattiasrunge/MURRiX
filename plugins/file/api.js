@@ -1,7 +1,6 @@
 "use strict";
 
 const path = require("path");
-const co = require("bluebird").coroutine;
 const fs = require("fs-extra-promise");
 const api = require("api.io");
 const chron = require("chron-time");
@@ -9,19 +8,19 @@ const bus = require("../../core/lib/bus");
 
 let params = {};
 
-let file = api.register("file", {
+const file = api.register("file", {
     deps: [ "vfs", "camera", "mcs", "auth", "lookup" ],
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
-    mkfile: function*(session, abspath, attributes) {
+    },
+    mkfile: api.export(async (session, abspath, attributes) => {
         attributes._source.filename = attributes._source.filename || path.join(params.uploadDirectory, attributes._source.uploadId);
 
-        if (!(yield fs.existsAsync(attributes._source.filename))) {
+        if (!(await fs.existsAsync(attributes._source.filename))) {
             throw new Error("Source file does not exist");
         }
 
-        let metadata = yield api.mcs.getMetadata(attributes._source.filename, {});
+        let metadata = await api.mcs.getMetadata(attributes._source.filename, {});
 
         if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
             throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
@@ -31,10 +30,10 @@ let file = api.register("file", {
             throw new Error("md5 checksum for file does not match, is the file corrupt? " + attributes.md5 + " !== " + metadata.md5);
         }
 
-        yield api.vfs.create(session, abspath, "f", attributes);
-        yield file.regenerate(session, abspath);
+        await api.vfs.create(session, abspath, "f", attributes);
+        await file.regenerate(session, abspath);
 
-        yield api.vfs.create(session, abspath + "/tags", "d");
+        await api.vfs.create(session, abspath + "/tags", "d");
 
         bus.emit("file.new", {
             uid: session.uid,
@@ -42,16 +41,16 @@ let file = api.register("file", {
             type: attributes.type
         });
 
-        return yield api.vfs.resolve(session, abspath);
-    },
-    regenerate: function*(session, abspath) {
-        let node = yield api.vfs.resolve(session, abspath);
+        return await api.vfs.resolve(session, abspath);
+    }),
+    regenerate: api.export(async (session, abspath) => {
+        let node = await api.vfs.resolve(session, abspath);
 
 
 
         // Update metadata
         let attributes = {};
-        let metadata = yield api.mcs.getMetadata(path.join(params.fileDirectory, node.attributes.diskfilename), { noChecksums: true });
+        let metadata = await api.mcs.getMetadata(path.join(params.fileDirectory, node.attributes.diskfilename), { noChecksums: true });
 
         for (let key of Object.keys(metadata)) {
             if (key !== "raw" && key !== "name" && typeof node.attributes[key] === "undefined") {
@@ -59,22 +58,22 @@ let file = api.register("file", {
             }
         }
 
-        yield api.vfs.setattributes(session, node, attributes);
-        node = yield api.vfs.resolve(session, abspath);
+        await api.vfs.setattributes(session, node, attributes);
+        node = await api.vfs.resolve(session, abspath);
 
 
 
         // Update device
-        let device = yield api.vfs.resolve(session, abspath + "/createdWith", { noerror: true });
+        let device = await api.vfs.resolve(session, abspath + "/createdWith", { noerror: true });
 
         if (node.attributes.deviceSerialNumber && !device) {
-            device = (yield api.vfs.list(session, "/cameras", {
+            device = (await api.vfs.list(session, "/cameras", {
                 filter: {
                     "attributes.serialNumber": node.attributes.deviceSerialNumber }
             }))[0];
 
             if (device) {
-                yield api.vfs.symlink(session, device.path, abspath + "/createdWith");
+                await api.vfs.symlink(session, device.path, abspath + "/createdWith");
                 device = device.node;
             }
         }
@@ -94,7 +93,7 @@ let file = api.register("file", {
                     options.deviceUtcOffset = 0;
 
                     if (node.attributes.where.longitude && node.attributes.where.latitude) {
-                        let data = yield api.lookup.getTimezoneFromPosition(session, node.attributes.where.latitude, node.attributes.where.longitude);
+                        let data = await api.lookup.getTimezoneFromPosition(session, node.attributes.where.latitude, node.attributes.where.longitude);
 
                         options.deviceUtcOffset = data.utcOffset;
                     }
@@ -105,20 +104,20 @@ let file = api.register("file", {
                 options.deviceAutoDst = device.attributes.deviceAutoDst;
             }
 
-            yield api.vfs.setattributes(session, abspath, {
+            await api.vfs.setattributes(session, abspath, {
                 time: chron.time2timestamp(source.time, options)
             });
         } else if (node.attributes.time){
-            yield api.vfs.setattributes(session, abspath, {
+            await api.vfs.setattributes(session, abspath, {
                 time: null
             });
         }
 
-        return yield api.vfs.resolve(session, abspath);
-    },
-    regenerateOther: function*(/*session*/) {
+        return await api.vfs.resolve(session, abspath);
+    }),
+    regenerateOther: api.export(async (/*session*/) => {
         let cache = {};
-        let nodes = yield api.vfs.query(api.auth.getAdminSession(), {
+        let nodes = await api.vfs.query(api.auth.getAdminSession(), {
             "attributes.type": "other"
         }, {
             fields: {
@@ -127,18 +126,18 @@ let file = api.register("file", {
         });
 
         for (let node of nodes) {
-            let paths = yield api.vfs.lookup(api.auth.getAdminSession(), node._id, cache);
-            yield api.file.regenerate(api.auth.getAdminSession(), paths[0]);
+            let paths = await api.vfs.lookup(api.auth.getAdminSession(), node._id, cache);
+            await api.file.regenerate(api.auth.getAdminSession(), paths[0]);
         }
 
         return nodes.length;
-    },
-    getFaces: function*(session, abspath) {
-        let node = yield api.vfs.resolve(session, abspath);
+    }),
+    getFaces: api.export(async (session, abspath) => {
+        let node = await api.vfs.resolve(session, abspath);
 
         return api.mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
-    },
-    getMediaUrl: function*(session, ids, format, requestId) {
+    }),
+    getMediaUrl: api.export(async (session, ids, format, requestId) => {
         format = format || {};
 
         if (typeof format.type === "undefined") {
@@ -146,7 +145,7 @@ let file = api.register("file", {
         }
 
         let idQuery = ids instanceof Array ? { $in: ids } : ids;
-        let nodes = yield api.vfs.query(session, {
+        let nodes = await api.vfs.query(session, {
             _id: idQuery
         }, {
             fields: {
@@ -166,13 +165,14 @@ let file = api.register("file", {
 
             if (requestId && !timer) {
                 timer = setTimeout(() => {
-                    this.emit("media-progress", { requestId: requestId, total: nodes.length, complete: complete });
+                    console.log("media-progress", { requestId: requestId, total: nodes.length, complete: complete });
+                    file.emit("media-progress", { requestId: requestId, total: nodes.length, complete: complete });
                     timer = null;
                 }, 1000);
             }
         };
 
-        let results = yield Promise.all(nodes.map((node) => {
+        let results = await Promise.all(nodes.map((node) => {
             return new Promise((resolve) => {
                 api.mcs.getCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), {
                     angle: node.attributes.angle,
@@ -203,11 +203,11 @@ let file = api.register("file", {
         }
 
         return ids instanceof Array ? result : (result[ids] || false);
-    },
-    rotate: function*(session, abspath, offset) {
-        let node = yield api.vfs.resolve(session, abspath);
+    }),
+    rotate: api.export(async (session, abspath, offset) => {
+        let node = await api.vfs.resolve(session, abspath);
 
-        if (!(yield api.vfs.access(session, node, "w"))) {
+        if (!(await api.vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");
         }
 
@@ -225,8 +225,8 @@ let file = api.register("file", {
             angle -= 360;
         }
 
-        return yield api.vfs.setattributes(session, abspath, { angle: angle });
-    }
+        return await api.vfs.setattributes(session, abspath, { angle: angle });
+    })
 });
 
 module.exports = file;

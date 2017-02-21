@@ -11,8 +11,8 @@ vorpal
         return terminal.autocomplete(vorpal.cliSession, input);
     }
 })
-.action(vorpal.wrap(function*(session, args) {
-    let cwd = yield session.env("cwd");
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let cwd = await session.env("cwd");
 
-    yield api.vfs.link(terminal.normalize(cwd, args.srcpath), terminal.normalize(cwd, args.destpath));
+    await api.vfs.link(terminal.normalize(cwd, args.srcpath), terminal.normalize(cwd, args.destpath));
 }));

@@ -12,11 +12,11 @@ vorpal
         return terminal.autocomplete(vorpal.cliSession, input);
     }
 })
-.action(vorpal.wrap(function*(session, args) {
-    let cwd = yield session.env("cwd");
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let cwd = await session.env("cwd");
     let abspath = args.path ? terminal.normalize(cwd, args.path) : cwd;
 
-    let node = yield api.vfs.resolve(abspath, { nofollow: args.options.l });
+    let node = await api.vfs.resolve(abspath, { nofollow: args.options.l });
 
-    this.log(JSON.stringify(node.attributes, null, 2));
+    ctx.log(JSON.stringify(node.attributes, null, 2));
 }));

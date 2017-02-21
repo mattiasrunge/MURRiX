@@ -1,21 +1,18 @@
 "use strict";
 
-const stream = require("koa-stream");
-const co = require("bluebird").coroutine;
+const path = require("path");
+const fs = require("fs-extra-promise");
 
 let params = {};
 
 module.exports = {
     method: "GET",
     route: "/:filename/:name",
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
-    handler: function*(filename, name) {
-        this.set("Content-disposition", "filename=" + encodeURIComponent(name));
-        yield stream.file(this, filename, {
-            root: params.mcsDirectory,
-            allowDownload: true
-        });
+    },
+    handler: async (ctx, filename, name) => {
+        ctx.set("Content-disposition", "filename=" + encodeURIComponent(name));
+        ctx.body = fs.createReadStream(path.join(params.mcsDirectory, path.basename(filename)));
     }
 };

@@ -1,7 +1,6 @@
 "use strict";
 
 const ko = require("knockout");
-const co = require("co");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
@@ -18,7 +17,7 @@ model.id = ko.pureComputed(() => {
     return ko.unwrap(loc.current().id);
 });
 
-model.changePassword = co.wrap(function*() {
+model.changePassword = async () => {
     if (model.password1() !== model.password2()) {
         return stat.printError("Password does not match!");
     } else if (model.password1() === "") {
@@ -28,7 +27,7 @@ model.changePassword = co.wrap(function*() {
     model.loading(true);
 
     try {
-        yield api.auth.passwordReset(model.username(), model.id(), model.password1());
+        await api.auth.passwordReset(model.username(), model.id(), model.password1());
 
         stat.printSuccess("Password reset successfully!");
 
@@ -42,7 +41,7 @@ model.changePassword = co.wrap(function*() {
     }
 
     model.loading(false);
-});
+};
 
 ui.setTitle("Password reset");
 

@@ -13,7 +13,7 @@ model.query = ko.pureComputed({
     read: () => ko.unwrap(loc.current().query) || "",
     write: (value) => loc.goto({ query: value })
 });
-model.list = ko.asyncComputed([], function*() {
+model.list = ko.asyncComputed([], async () => {
     if (model.query().length < 4) {
         return [];
     }
@@ -38,7 +38,7 @@ model.list = ko.asyncComputed([], function*() {
 
     model.loading(true);
 
-    let list = yield api.vfs.list(session.searchPaths(), { filter: query });
+    let list = await api.vfs.list(session.searchPaths(), { filter: query });
 
     model.loading(false);
 

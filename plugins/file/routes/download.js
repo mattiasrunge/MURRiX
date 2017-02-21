@@ -2,18 +2,17 @@
 
 const path = require("path");
 const fs = require("fs-extra-promise");
-const co = require("bluebird").coroutine;
 
 let params = {};
 
 module.exports = {
     method: "GET",
     route: "/:filename/:name",
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
-    handler: function*(filename, name) {
-        this.set("Content-disposition", "attachment; filename=" + encodeURIComponent(name));
-        this.body = fs.createReadStream(path.join(params.fileDirectory, path.basename(filename)));
+    },
+    handler: async (ctx, filename, name) => {
+        ctx.set("Content-disposition", "attachment; filename=" + encodeURIComponent(name));
+        ctx.body = fs.createReadStream(path.join(params.fileDirectory, path.basename(filename)));
     }
 };

@@ -30,91 +30,92 @@ const gzip = (filename) => {
 
 module.exports = {
     unamed: () => [
-        function*(next) {
-            let page = (configuration.pages[this.request.header.host] || "default");
-
-            if (this.path[this.path.length - 1] === "/") {
-                this.path += "index.html";
+        async (ctx, next) => {
+            if (ctx.path === "/bundle.js" || ctx.path === "/bundle.js.map") {
+                return await next();
             }
 
-            let ext = path.extname(this.path);
-            let filename = path.join(wwwPath, this.path);
-            let compiledFilename = path.join(configuration.cacheDirectory, this.path);
+            let page = (configuration.pages[ctx.request.header.host] || "default");
+
+            if (ctx.path[ctx.path.length - 1] === "/") {
+                ctx.path += "index.html";
+            }
+
+            let ext = path.extname(ctx.path);
+            let filename = path.join(wwwPath, ctx.path);
+            let compiledFilename = path.join(configuration.cacheDirectory, ctx.path);
             let processJs = true;
             let isIndex = false;
 
-            if (this.path === "/index.html") {
-                compiledFilename = path.join(configuration.cacheDirectory, page, this.path);
-                this.path = path.join("/", page, "index.html");
+            if (ctx.path === "/index.html") {
+                compiledFilename = path.join(configuration.cacheDirectory, page, ctx.path);
+                ctx.path = path.join("/", page, "index.html");
                 isIndex = true;
             }
 
-            if (this.path === "/local/api.io-client.js") {
+            if (ctx.path === "/local/api.io-client.js") {
                 processJs = false;
                 filename = path.join(__dirname, "..", "..", "node_modules", "api.io", "browser", "api.io-client.js");
-            } else if (this.path === "/local/co.js") {
-                processJs = false;
-                filename = path.join(__dirname, "..", "..", "node_modules", "api.io", "browser", "co.js");
-            } else if (this.path === "/local/socket.io-client.js") {
+            } else if (ctx.path === "/local/socket.io-client.js") {
                 processJs = false;
                 filename = path.join(__dirname, "..", "..", "node_modules", "socket.io-client", "socket.io.js");
-            } else if (this.path.includes("node_modules") ||
-                this.path.includes("index.js")) {
+            } else if (ctx.path.includes("node_modules") ||
+                ctx.path.includes("index.js")) {
                 // No processing required
                 processJs = false;
             }
 
-            if (yield fs.existsAsync(compiledFilename)) {
+            if (await fs.existsAsync(compiledFilename)) {
                 // File already compiled
 
-                let filestat = yield fs.statAsync(filename);
-                let compiledFilestat = yield fs.statAsync(compiledFilename);
+                let filestat = await fs.statAsync(filename);
+                let compiledFilestat = await fs.statAsync(compiledFilename);
 
                 if (moment(filestat.mtime).isBefore(moment(compiledFilestat.mtime))) {
-                    return yield next;
+                    return await next();
                 }
             }
 
-            if (!(yield fs.existsAsync(filename))) {
+            if (!(await fs.existsAsync(filename))) {
                 // File does not exist, try to serve will give error
-                return yield next;
+                return await next();
             }
 
             if (processJs && ext === ".js") {
-                let result = yield babel.transformFileAsync(filename, {
+                let result = await babel.transformFileAsync(filename, {
                     plugins: [
                         "transform-es2015-modules-amd"
                     ]
                 });
 
-                yield fs.outputFileAsync(compiledFilename, result.code);
+                await fs.outputFileAsync(compiledFilename, result.code);
             } else if (ext === ".css") {
-                let source = yield fs.readFileAsync(filename);
+                let source = await fs.readFileAsync(filename);
                 let compiled = new CleanCSS({ root: wwwPath }).minify(source);
 
                 if (compiled.errors.length > 0) {
                     throw new Error(compiled.errors);
                 }
 
-                yield fs.outputFileAsync(compiledFilename, compiled.styles);
-            } else if (this.path === "/components.html") {
-                let source = yield fs.readFileAsync(path.join(wwwPath, "components.html"));
+                await fs.outputFileAsync(compiledFilename, compiled.styles);
+            } else if (ctx.path === "/components.html") {
+                let source = await fs.readFileAsync(path.join(wwwPath, "components.html"));
                 let template = hogan.compile(source.toString());
-                let compiled = template.render({ components: yield plugin.getComponents(wwwPath) });
+                let compiled = template.render({ components: await plugin.getComponents(wwwPath) });
 
-                yield fs.outputFileAsync(compiledFilename, compiled);
+                await fs.outputFileAsync(compiledFilename, compiled);
             } else if (isIndex) {
-                let source = yield fs.readFileAsync(filename);
+                let source = await fs.readFileAsync(filename);
                 let template = hogan.compile(source.toString());
                 let compiled = template.render({ GOOGLE_API_KEY: configuration.googleBrowserKey, page: page });
 
-                yield fs.outputFileAsync(compiledFilename, compiled);
+                await fs.outputFileAsync(compiledFilename, compiled);
             } else {
-                yield fs.copyAsync(filename, compiledFilename);
+                await fs.copyAsync(filename, compiledFilename);
             }
 
-            yield gzip(compiledFilename);
-            yield next;
+            await gzip(compiledFilename);
+            await next();
         },
         staticFile(configuration.cacheDirectory, { maxage: maxage })
     ]

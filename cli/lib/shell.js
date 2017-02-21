@@ -1,6 +1,5 @@
 "use strict";
 
-const co = require("bluebird").coroutine;
 const path = require("path");
 const glob = require("glob-promise");
 const vorpal = require("./vorpal");
@@ -8,21 +7,21 @@ const vorpal = require("./vorpal");
 require("colors"); // Modifies the string prototype
 
 module.exports = {
-    start: co(function*() {
-        let commands = yield glob(path.join(__dirname, "commands", "**/*.js"));
+    start: async () => {
+        let commands = await glob(path.join(__dirname, "commands", "**/*.js"));
         commands.forEach(module.exports.loadCommand);
 
-        yield module.exports.loadPlugins();
+        await module.exports.loadPlugins();
 
         vorpal
         .history("murrix-cli")
         .show();
-    }),
-    loadPlugins: co(function*() {
+    },
+    loadPlugins: async () => {
         let pattern = path.join(__dirname, "..", "..", "plugins", "**", "commands", "*.js");
-        let filenames = yield glob(pattern);
+        let filenames = await glob(pattern);
         filenames.forEach(module.exports.loadCommand);
-    }),
+    },
     loadCommand: (filename) => {
         try {
             require(filename);

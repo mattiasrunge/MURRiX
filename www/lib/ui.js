@@ -2,7 +2,6 @@
 
 const $ = require("jquery");
 const ko = require("knockout");
-const co = require("co");
 
 let $window = $(window);
 let resizeFlag = ko.observable(false);
@@ -21,9 +20,9 @@ document.addEventListener("copy", (e) => {
 });
 
 module.exports = {
-    start: co.wrap(function*() {
+    start: async () =>{
         ko.applyBindings({}, document.body);
-    }),
+    },
     copyToClipboard: (content) => {
         clipBoardContent = content;
         document.execCommand("copy");

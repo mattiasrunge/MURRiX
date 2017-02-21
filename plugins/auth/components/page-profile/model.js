@@ -12,6 +12,6 @@ model.personPath = session.personPath;
 model.loggedIn = session.loggedIn;
 model.groupList = ko.observableArray();
 
-model.groupList(yield api.auth.groupList(session.username()));
+model.groupList(await api.auth.groupList(session.username()));
 
 ui.setTitle("Profile");

@@ -10,7 +10,7 @@ model.uid = ko.pureComputed(() => ko.unwrap(params.uid) || false);
 model.size = params.size;
 model.classes = ko.pureComputed(() => ko.unwrap(params.classes) || "");
 
-model.filename = ko.asyncComputed(false, function*(setter) {
+model.filename = ko.asyncComputed(false, async (setter) => {
     if (!model.uid()) {
         return false;
     }
@@ -21,10 +21,10 @@ model.filename = ko.asyncComputed(false, function*(setter) {
 
     model.loading(true);
 
-    let id = yield api.auth.picture(model.uid());
+    let id = await api.auth.picture(model.uid());
 
     if (id) {
-        filename = yield api.file.getMediaUrl(id, {
+        filename = await api.file.getMediaUrl(id, {
             width: model.size,
             height: model.size,
             type: "image"

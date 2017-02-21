@@ -14,30 +14,30 @@ vorpal
         return terminal.autocomplete(vorpal.cliSession, input);
     }
 })
-.action(vorpal.wrap(function*(session, args) {
-    let cwd = yield session.env("cwd");
-    let pipedOutput = this.commandWrapper.pipes.length > 0;
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let cwd = await session.env("cwd");
+    //let pipedOutput = ctx.commandWrapper.pipes.length > 0;
     let dir = args.path || cwd;
 
     if (!args.options.l) {
-        let list = yield api.vfs.list(terminal.normalize(cwd, dir), { nofollow: true });
+        let list = await api.vfs.list(terminal.normalize(cwd, dir), { nofollow: true });
 
-        if (pipedOutput) {
+        /*if (pipedOutput) {
             list = list.map((item) => item.name);
 
             for (let line of list) {
-                this.log(line);
+                ctx.log(line);
             }
-        } else {
+        } else {*/
             list = list.map((item) => terminal.colorName(item.name, item.node.properties.type));
 
-            this.log(vorpal.util.prettifyArray(list));
-        }
+            ctx.log(vorpal.util.prettifyArray(list));
+        //}
 
         return;
     }
 
-    let items = yield api.vfs.list(terminal.normalize(cwd, dir), { all: true, nofollow: true });
+    let items = await api.vfs.list(terminal.normalize(cwd, dir), { all: true, nofollow: true });
 
     if (items.length > 0) {
         let ucache = {};
@@ -45,11 +45,11 @@ vorpal
 
         for (let item of items) {
             if (!ucache[item.node.properties.uid]) {
-                ucache[item.node.properties.uid] = yield api.auth.uname(item.node.properties.uid);
+                ucache[item.node.properties.uid] = await api.auth.uname(item.node.properties.uid);
             }
 
             if (!gcache[item.node.properties.gid]) {
-                gcache[item.node.properties.gid] = yield api.auth.gname(item.node.properties.gid);
+                gcache[item.node.properties.gid] = await api.auth.gname(item.node.properties.gid);
             }
         }
 
@@ -78,8 +78,8 @@ vorpal
             showHeaders: false
         });
 
-        this.log(columns);
+        ctx.log(columns);
     }
 
-    this.log("total " + items.length);
+    ctx.log("total " + items.length);
 }));

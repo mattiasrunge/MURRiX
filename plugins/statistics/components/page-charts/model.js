@@ -9,11 +9,11 @@ const stat = require("lib/status");
 
 model.loading = stat.create();
 
-model.data = ko.asyncComputed([], function*(setter) {
+model.data = ko.asyncComputed([], async (setter) => {
     setter(false);
 
     model.loading(true);
-    let result = yield api.statistics.getEventData();
+    let result = await api.statistics.getEventData();
     model.loading(false);
 
     let data = [

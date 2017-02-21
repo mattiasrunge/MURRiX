@@ -49,7 +49,7 @@ model.post = (model, event) => {
 };
 
 model.loading(true);
-let list = yield api.comment.list(model.path());
+let list = await api.comment.list(model.path());
 model.loading(false);
 
 console.log("comments", list);

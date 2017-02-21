@@ -2,7 +2,6 @@
 
 const ko = require("knockout");
 const $ = require("jquery");
-const co = require("co");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 const api = require("api.io-client");
@@ -11,12 +10,12 @@ model.nodepath = params.nodepath;
 model.active = ko.observable(false);
 model.fileInput = ko.observableArray();
 
-model.files = ko.asyncComputed([], function*() {
+model.files = ko.asyncComputed([], async () => {
     let files = [];
 
     for (let file of model.fileInput()) {
         files.push({
-            uploadId: yield api.vfs.allocateUploadId(),
+            uploadId: await api.vfs.allocateUploadId(),
             progress: ko.observable(0),
             size: file.size,
             name: file.name,
@@ -38,14 +37,14 @@ model.dragNoopHandler = (element, event) => {
     event.preventDefault();
 };
 
-model.dropEventHandler = co.wrap(function*(element, event) {
+model.dropEventHandler = async (element, event) => {
     event.stopPropagation();
     event.preventDefault();
 
     console.log("files", event.originalEvent.dataTransfer.files);
 
     model.fileInput(event.originalEvent.dataTransfer.files);
-});
+};
 
 model.selectHandler = (id) => {
     $("#" + id).trigger("click");
@@ -75,8 +74,8 @@ model.progress = ko.pureComputed(() => {
     return Math.round(progress / (model.files().length || 1));
 });
 
-model.import = co.wrap(function*(abspath, item) {
-    let file = yield api.file.mkfile(abspath, {
+model.import = async (abspath, item) => {
+    let file = await api.file.mkfile(abspath, {
         name: item.name,
         _source: {
             uploadId: item.uploadId
@@ -87,9 +86,9 @@ model.import = co.wrap(function*(abspath, item) {
     item.complete(true);
 
     console.log(item.name + " imported as " + abspath, item, file);
-});
+};
 
-model.start = co.wrap(function*() {
+model.start = async () => {
     model.active(true);
 
     let delayed = [];
@@ -103,7 +102,7 @@ model.start = co.wrap(function*() {
         item.active(true);
         item.failed(false);
 
-        let result = yield utils.upload("/file/upload/" + item.uploadId, item.file, (progress, speed) => {
+        let result = await utils.upload("/file/upload/" + item.uploadId, item.file, (progress, speed) => {
             item.progress(progress);
             model.speed(speed);
         });
@@ -120,14 +119,14 @@ model.start = co.wrap(function*() {
                 item: item
             });
         } else {
-            let name = yield api.node.getUniqueName(parentPath, item.name);
-            yield model.import(parentPath + "/" + name, item);
+            let name = await api.node.getUniqueName(parentPath, item.name);
+            await model.import(parentPath + "/" + name, item);
         }
     }
 
     console.log("First run of files imported, " + delayed.length + " files delayed");
 
-    let parent = yield api.vfs.resolve(parentPath);
+    let parent = await api.vfs.resolve(parentPath);
     let children = [];
     for (let child of parent.properties.children) {
         let name = child.name.substr(0, child.name.lastIndexOf(".")) || child.name;
@@ -142,14 +141,14 @@ model.start = co.wrap(function*() {
         if (children[basename]) {
             let versionPath = parentPath + "/" + children[basename].name + "/versions";
 
-            yield api.vfs.ensure(versionPath, "d");
+            await api.vfs.ensure(versionPath, "d");
 
-            let name = yield api.node.getUniqueName(versionPath, file.item.name);
+            let name = await api.node.getUniqueName(versionPath, file.item.name);
 
-            yield model.import(versionPath + "/" + name, file.item);
+            await model.import(versionPath + "/" + name, file.item);
         } else {
-            let name = yield api.node.getUniqueName(parentPath, file.item.name);
-            yield model.import(parentPath + "/" + name, file.item);
+            let name = await api.node.getUniqueName(parentPath, file.item.name);
+            await model.import(parentPath + "/" + name, file.item);
         }
     }
 
@@ -157,4 +156,4 @@ model.start = co.wrap(function*() {
     model.active(false);
     stat.printSuccess("Uploaded " + model.files().length + " files successfully!");
     model.fileInput([]);
-});
+};

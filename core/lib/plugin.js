@@ -3,18 +3,17 @@
 const path = require("path");
 const glob = require("glob-promise");
 const fs = require("fs-extra-promise");
-const co = require("bluebird").coroutine;
 const log = require("./log")(module);
 
 let params = {};
 let apis = {};
 
 module.exports = {
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
 
         let pattern = path.join(__dirname, "..", "..", "plugins", "**", "api.js");
-        let filenames = yield glob(pattern);
+        let filenames = await glob(pattern);
 
         // Load API files
         for (let filename of filenames) {
@@ -28,7 +27,7 @@ module.exports = {
             api.priority = -1;
             api.routes = [];
 
-            let routefilenames = yield glob(path.join(path.dirname(filename), "routes", "*"));
+            let routefilenames = await glob(path.join(path.dirname(filename), "routes", "*"));
 
             for (let routefilename of routefilenames) {
                 log.info("Loading route from " + routefilename);
@@ -76,15 +75,15 @@ module.exports = {
         // Intialize plugins
         for (let api of list) {
             log.info("Initializing " + api.namespace);
-            yield api.instance.init(params);
+            await api.instance.init(params);
 
             for (let route of api.routes) {
-                yield route.init(params);
+                await route.init(params);
             }
         }
 
         log.info("All plugins initialized!");
-    }),
+    },
     getRoutes: () => {
         let routes = [];
 
@@ -100,35 +99,35 @@ module.exports = {
 
         return routes;
     },
-    getComponents: co(function*(wwwPath) {
+    getComponents: async (wwwPath) => {
         let list = {};
         let components = [];
 
         let pattern = path.join(wwwPath, "pages", "**", "components");
-        let directories = yield glob(pattern);
+        let directories = await glob(pattern);
 
         for (let name of directories) {
-            let items = yield fs.readdirAsync(name);
+            let items = await fs.readdirAsync(name);
             let page = path.basename(path.dirname(name));
 
             for (let item of items) {
                 let dirname = path.join(name, item);
-                if (yield fs.isDirectoryAsync(dirname)) {
+                if (await fs.isDirectoryAsync(dirname)) {
                     list[page + "-" + item] = dirname;
                 }
             }
         }
 
         pattern = path.join(__dirname, "..", "..", "plugins", "**", "components");
-        directories = yield glob(pattern);
+        directories = await glob(pattern);
 
         for (let name of directories) {
-            let items = yield fs.readdirAsync(name);
+            let items = await fs.readdirAsync(name);
             let plugin = path.basename(path.dirname(name));
 
             for (let item of items) {
                 let dirname = path.join(name, item);
-                if (yield fs.isDirectoryAsync(dirname)) {
+                if (await fs.isDirectoryAsync(dirname)) {
                     list[plugin + "-" + item] = dirname;
 
                 }
@@ -143,8 +142,8 @@ module.exports = {
             let jsFile = path.join(component.path, "model.js");
             let htmlFile = path.join(component.path, "template.html");
 
-            component.js = (yield fs.readFileAsync(jsFile)).toString();
-            component.html = (yield fs.readFileAsync(htmlFile)).toString();
+            component.js = (await fs.readFileAsync(jsFile)).toString();
+            component.html = (await fs.readFileAsync(htmlFile)).toString();
 
             if (component.js.charCodeAt(0) === 0xFEFF) {
                 component.js = component.js.slice(1);
@@ -158,5 +157,5 @@ module.exports = {
         }
 
         return components;
-    })
+    }
 };

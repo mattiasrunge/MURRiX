@@ -4,4 +4,4 @@ set +v
 
 DIR=$(dirname "$0")
 
-node $DIR/../core/index.js "$@"
+node --harmony_async_await $DIR/../core/index.js "$@"

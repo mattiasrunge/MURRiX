@@ -23,5 +23,5 @@
     "devel": true,
     "browser": true,
     "esnext": true,
-    "noyield": true
+    "noawait": true
 }

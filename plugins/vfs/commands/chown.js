@@ -12,8 +12,8 @@ vorpal
         return terminal.autocomplete(vorpal.cliSession, input);
     }
 })
-.action(vorpal.wrap(function*(session, args) {
-    let cwd = yield session.env("cwd");
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let cwd = await session.env("cwd");
     let group = false;
     let username = args.userstring;
     let options = {};
@@ -28,5 +28,5 @@ vorpal
         options.recursive = true;
     }
 
-    yield api.vfs.chown(terminal.normalize(cwd, args.path), username, group, options);
+    await api.vfs.chown(terminal.normalize(cwd, args.path), username, group, options);
 }));

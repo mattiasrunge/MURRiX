@@ -1,47 +1,46 @@
 "use strict";
 
-const co = require("bluebird").coroutine;
 const moment = require("moment");
 const api = require("api.io");
 
 let params = {};
 
-let message = api.register("message", {
+const message = api.register("message", {
     deps: [ "vfs", "auth" ],
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
-    send: function*(session, username, text, metadata) {
-        let user = yield api.vfs.resolve(api.auth.getAdminSession(), "/users/" + username);
+    },
+    send: api.export(async (session, username, text, metadata) => {
+        let user = await api.vfs.resolve(api.auth.getAdminSession(), "/users/" + username);
 
         if (!user) {
             throw new Error("No such user");
         }
 
         let name = moment().format();
-        yield api.vfs.ensure(api.auth.getAdminSession(), "/users/" + username + "/all_messages", "d");
-        yield api.vfs.ensure(api.auth.getAdminSession(), "/users/" + username + "/new_messages", "d");
+        await api.vfs.ensure(api.auth.getAdminSession(), "/users/" + username + "/all_messages", "d");
+        await api.vfs.ensure(api.auth.getAdminSession(), "/users/" + username + "/new_messages", "d");
 
-        let item = yield api.vfs.create(api.auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "m", {
-            from: yield api.auth.uid(session, session.username),
+        let item = await api.vfs.create(api.auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "m", {
+            from: await api.auth.uid(session, session.username),
             text: text,
             metadata: metadata || {}
         });
 
-        yield api.vfs.link(api.auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "/users/" + username + "/new_messages");
+        await api.vfs.link(api.auth.getAdminSession(), "/users/" + username + "/all_messages/" + name, "/users/" + username + "/new_messages");
 
         message.emit("new", item, { username: username });
-    },
-    count: function*(session) {
+    }),
+    count: api.export(async (session) => {
         let allMessages = [];
         let newMessages = [];
 
         try {
-            allMessages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
+            allMessages = await api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
         } catch (e) {}
 
         try {
-            newMessages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
+            newMessages = await api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
         } catch (e) {}
 
         allMessages = allMessages || [];
@@ -51,19 +50,19 @@ let message = api.register("message", {
             total: allMessages.length,
             unread: newMessages.length
         };
-    },
-    read: function*(session, index) {
+    }),
+    read: api.export(async (session, index) => {
         let messages = [];
 
         if (typeof index === "undefined") {
             try {
-                messages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
+                messages = await api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
             } catch (e) {}
 
             index = Math.max(messages.length - 1, 0);
         } else {
             try {
-                messages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
+                messages = await api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
             } catch (e) {}
         }
 
@@ -74,17 +73,17 @@ let message = api.register("message", {
         api.vfs.unlink(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages/" + messages[index].name);
 
         return messages[index];
-    },
-    list: function*(session) {
+    }),
+    list: api.export(async (session) => {
         let messages = [];
         let unreadIds = [];
 
         try {
-            messages = yield api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
+            messages = await api.vfs.list(api.auth.getAdminSession(), "/users/" + session.username + "/all_messages");
         } catch (e) {}
 
         try {
-            let node = yield api.vfs.resolve(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
+            let node = await api.vfs.resolve(api.auth.getAdminSession(), "/users/" + session.username + "/new_messages");
 
             if (node) {
                 unreadIds = node.properties.children.map((child) => child.id);
@@ -99,7 +98,7 @@ let message = api.register("message", {
         });
 
         return messages;
-    }
+    })
 });
 
 module.exports = message;

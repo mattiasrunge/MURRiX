@@ -4,11 +4,11 @@ const vorpal = require("../vorpal");
 
 vorpal
 .command("env", "List all environment variables")
-.action(vorpal.wrap(function*(session/*, args*/) {
+.action(vorpal.wrap(async (ctx, session/*, args*/) => {
     for (let name of Object.keys(session.environment)) {
-        let value = yield session.env(name);
+        let value = await session.env(name);
         if (typeof value === "string") {
-            this.log(name + "=" + value);
+            ctx.log(name + "=" + value);
         }
     }
 }));

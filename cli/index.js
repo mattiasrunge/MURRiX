@@ -31,7 +31,7 @@ process
 .on("SIGTERM", () => { main.stop().then(process.exit); });
 
 main.start(argv)
-.catch(function(error) {
+.catch((error) => {
     console.error("FATAL ERROR");
     console.error(error);
     console.error(error.stack);

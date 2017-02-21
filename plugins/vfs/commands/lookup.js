@@ -13,22 +13,22 @@ vorpal
         return terminal.autocomplete(vorpal.cliSession, input);
     }
 })
-.action(vorpal.wrap(function*(session, args) {
-    let cwd = yield session.env("cwd");
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let cwd = await session.env("cwd");
     let id;
 
     if (!args.options.i) {
         let abspath = args.path ? terminal.normalize(cwd, args.path) : cwd;
-        let node = yield api.vfs.resolve(abspath, { nofollow: args.options.l });
+        let node = await api.vfs.resolve(abspath, { nofollow: args.options.l });
 
         id = node._id;
     } else {
         id = args.path;
     }
 
-    let paths = yield api.vfs.lookup(id);
+    let paths = await api.vfs.lookup(id);
 
     for (let path of paths) {
-        this.log(path);
+        ctx.log(path);
     }
 }));

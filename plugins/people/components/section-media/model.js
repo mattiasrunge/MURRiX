@@ -9,7 +9,7 @@ model.loading = stat.create();
 model.nodepath = params.nodepath;
 model.size = 226;
 
-model.data = ko.asyncComputed([], function*(setter) {
+model.data = ko.asyncComputed([], async (setter) => {
     let result = {
         files: [],
         texts: []
@@ -22,7 +22,7 @@ model.data = ko.asyncComputed([], function*(setter) {
     setter(result);
 
     model.loading(true);
-    result.files = yield api.people.findByTags(model.nodepath().path);
+    result.files = await api.people.findByTags(model.nodepath().path);
     model.loading(false);
 
     result.files = result.files.map((file) => {

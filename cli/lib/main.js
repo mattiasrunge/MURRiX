@@ -1,16 +1,15 @@
 "use strict";
 
-const co = require("bluebird").coroutine;
 const api = require("api.io").client;
 const session = require("./session");
 const shell = require("./shell");
 const vorpal = require("./vorpal");
 
 module.exports = {
-    start: co(function*(args) {
-        args.sessionId = yield session.readSessionId();
+    start: async (args) => {
+        args.sessionId = await session.readSessionId();
 
-        yield api.connect(args, (status, message) => {
+        await api.connect(args, (status, message) => {
             if (status === "timeout") {
                 console.error(message);
                 process.exit(255);
@@ -42,11 +41,11 @@ module.exports = {
                 });
             }
         });
-        yield session.init();
-        yield shell.start();
-    }),
-    stop: co(function*() {
+        await session.init();
+        await shell.start();
+    },
+    stop: async () => {
         console.log("Received shutdown signal, stoppping...");
-        yield api.disconnect();
-    })
+        await api.disconnect();
+    }
 };

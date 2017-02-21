@@ -1,7 +1,6 @@
 "use strict";
 
 const uuid = require("node-uuid");
-const co = require("bluebird").coroutine;
 const log = require("./log")(module);
 
 let params = {};
@@ -10,9 +9,9 @@ let buffer = [];
 let opened = false;
 
 module.exports = {
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
+    },
     open: () => {
         if (opened) {
             return;

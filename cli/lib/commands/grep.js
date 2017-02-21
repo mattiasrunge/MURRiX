@@ -6,7 +6,7 @@ const vorpal = require("../vorpal");
 vorpal
 .command("grep <pattern> [files...]", "Grep implementation.")
 .option("-v, --invert-match", "select non-matching lines")
-.action(vorpal.wrap(function*(session, args) {
+.action(vorpal.wrap(async (ctx, session, args) => {
     let stdin = args.stdin.map(stripAnsi);
     let pattern = new RegExp(`(${args.pattern})`, "gi");
 
@@ -15,7 +15,7 @@ vorpal
 
         for (let line of lines) {
             if (line.match(pattern)) {
-                this.log(line);
+                ctx.log(line);
             }
         }
     }

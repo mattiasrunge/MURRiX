@@ -1,18 +1,17 @@
 "use strict";
 
 const moment = require("moment");
-const co = require("bluebird").coroutine;
 const api = require("api.io");
 
 let params = {};
 
-let statistics = api.register("statistics", {
+const statistics = api.register("statistics", {
     deps: [ "vfs", "auth" ],
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
-    getEventData: function*(/*session*/) {
-        let nodes = yield api.vfs.query(api.auth.getAdminSession(), {
+    },
+    getEventData: api.export(async (/*session*/) => {
+        let nodes = await api.vfs.query(api.auth.getAdminSession(), {
             "properties.type": "t",
             "attributes.type": { $in: [ "birth", "death", "engagement", "marriage" ] }
         }, {
@@ -48,7 +47,7 @@ let statistics = api.register("statistics", {
         }
 
         return data;
-    }
+    })
 });
 
 module.exports = statistics;

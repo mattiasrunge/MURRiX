@@ -10,7 +10,7 @@ const stat = require("lib/status");
 model.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
 model.loading = stat.create();
 
-model.texts = ko.asyncComputed([], function*(setter) {
+model.texts = ko.asyncComputed([], async (setter) => {
     if (!model.nodepath() || model.nodepath() === "") {
         return [];
     }
@@ -21,7 +21,7 @@ model.texts = ko.asyncComputed([], function*(setter) {
 
     model.loading(true);
 
-    let texts = yield api.vfs.list(model.nodepath().path + "/texts", { checkwritable: true });
+    let texts = await api.vfs.list(model.nodepath().path + "/texts", { checkwritable: true });
 
     utils.sortNodeList(texts);
 
@@ -30,7 +30,7 @@ model.texts = ko.asyncComputed([], function*(setter) {
     let list = [];
 
     for (let text of texts) {
-        let paths = yield api.vfs.lookup(text.node._id);
+        let paths = await api.vfs.lookup(text.node._id);
         let withPaths = paths.filter((path) => path !== text.path).map((path) => path.split("/", 3).join("/"));
 
         list.push(ko.observable({
@@ -50,7 +50,7 @@ model.texts = ko.asyncComputed([], function*(setter) {
     return [];
 });
 
-model.events = ko.asyncComputed([], function*(setter) {
+model.events = ko.asyncComputed([], async (setter) => {
     if (!model.nodepath() || model.nodepath() === "") {
         return [];
     }
@@ -61,7 +61,7 @@ model.events = ko.asyncComputed([], function*(setter) {
 
     model.loading(true);
 
-    let texts = yield api.vfs.list(model.nodepath().path + "/texts", { checkwritable: true });
+    let texts = await api.vfs.list(model.nodepath().path + "/texts", { checkwritable: true });
 
     utils.sortNodeList(texts);
 
@@ -72,7 +72,7 @@ model.events = ko.asyncComputed([], function*(setter) {
     for (let text of texts) {
         let day = moment.utc(text.node.attributes.time.timestamp * 1000).format("YYYY-MM-DD");
 
-        let paths = yield api.vfs.lookup(text.node._id);
+        let paths = await api.vfs.lookup(text.node._id);
         let withPaths = paths.filter((path) => path !== text.path).map((path) => path.split("/", 3).join("/"));
 
         days[day] = days[day] || { texts: [], day: text.node.attributes.time.timestamp };

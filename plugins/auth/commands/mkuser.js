@@ -5,12 +5,12 @@ const api = require("api.io").client;
 
 vorpal
 .command("mkuser <username>", "Create a new user")
-.action(vorpal.wrap(function*(session, args) {
-    let prompt = yield this.promptAsync({
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let prompt = await ctx.promptAsync({
         type: "input",
         name: "name",
         message: "Name: "
     });
 
-    yield api.auth.mkuser(args.username, prompt.name);
+    await api.auth.mkuser(args.username, prompt.name);
 }));

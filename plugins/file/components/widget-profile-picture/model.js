@@ -14,7 +14,7 @@ model.nolazyload = params.nolazyload;
 model.picturePath = ko.pureComputed(() => model.path() + "/profilePicture");
 model.picture = ko.nodepath(model.picturePath, { noerror: true });
 
-model.profileUrl = ko.asyncComputed(undefined, function*(setter) {
+model.profileUrl = ko.asyncComputed(undefined, async (setter) => {
     let id = false;
 
     setter(undefined);
@@ -22,7 +22,7 @@ model.profileUrl = ko.asyncComputed(undefined, function*(setter) {
     if (model.picture()) {
         id = model.picture().node()._id;
     } else {
-        let nodepath = (yield api.vfs.list(model.path() + "/files", { noerror: true, limit: 1 }))[0];
+        let nodepath = (await api.vfs.list(model.path() + "/files", { noerror: true, limit: 1 }))[0];
 
         id = nodepath ? nodepath.node._id : false;
     }
@@ -33,7 +33,7 @@ model.profileUrl = ko.asyncComputed(undefined, function*(setter) {
 
     model.loading(true);
 
-    let filename = yield api.file.getMediaUrl(id, {
+    let filename = await api.file.getMediaUrl(id, {
         width: model.size,
         height: model.size,
         type: "image"

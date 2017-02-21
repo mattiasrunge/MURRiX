@@ -13,7 +13,7 @@
         const component = require("lib/component");
 
         {{#components}}
-        component.register(ownerDocument, "{{name}}", function*(model, params, element) {
+        component.register(ownerDocument, "{{name}}", async (model, params, element) => {
 // *************************
 // COMPONENT START: {{name}}
 // *************************

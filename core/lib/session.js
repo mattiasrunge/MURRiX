@@ -1,6 +1,5 @@
 "use strict";
 
-const co = require("bluebird").coroutine;
 const db = require("./db");
 const log = require("./log")(module);
 
@@ -40,20 +39,20 @@ let sessions = new Proxy({}, {
 });
 
 module.exports = {
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
 
-        yield module.exports.load();
+        await module.exports.load();
 
         timer = setInterval(() => {
             module.exports.store();
         }, 1000 * 60 * 5);
-    }),
+    },
     getSessions: () => {
         return sessions;
     },
-    load: co(function*() {
-        let list = yield db.find("sessions");
+    load: async () => {
+        let list = await db.find("sessions");
 
         for (let session of list) {
             sessions[session._id] = session;
@@ -61,9 +60,9 @@ module.exports = {
 
         log.info("Loaded " + list.length + " sessions");
 
-        yield module.exports.store();
-    }),
-    store: co(function*() {
+        await module.exports.store();
+    },
+    store: async () => {
         let saveList = Array.from(updatedSessions);
         updatedSessions.clear();
 
@@ -78,23 +77,23 @@ module.exports = {
         }
 
         for (let session of saveList) {
-            yield db.updateOne("sessions", session, { upsert: true });
+            await db.updateOne("sessions", session, { upsert: true });
         }
 
         for (let sessionId of expiredList) {
-            yield db.removeOne("sessions", sessionId);
+            await db.removeOne("sessions", sessionId);
         }
 
         if (expiredList.length > 0) {
             log.info("Removed " + expiredList.length + " expired sessions");
         }
-    }),
-    stop: co(function*() {
+    },
+    stop: async () => {
         if (timer) {
             clearInterval(timer);
             timer = null;
         }
 
-        yield module.exports.store();
-    })
+        await module.exports.store();
+    }
 };

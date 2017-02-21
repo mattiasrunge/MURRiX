@@ -1,7 +1,6 @@
 "use strict";
 
 const ko = require("knockout");
-const co = require("co");
 const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
@@ -18,7 +17,7 @@ model.loginDisallowed = ko.pureComputed(() => {
     return model.loading() || model.username() === "" || model.password() === "";
 });
 
-model.login = co.wrap(function*() {
+model.login = async () => {
     if (model.loginDisallowed()) {
         return;
     }
@@ -26,8 +25,8 @@ model.login = co.wrap(function*() {
     model.loading(true);
 
     try {
-        yield api.auth.login(model.username(), model.password());
-        yield session.loadUser();
+        await api.auth.login(model.username(), model.password());
+        await session.loadUser();
 
         stat.printSuccess("Login successfull, welcome " + session.user().attributes.name + "!");
 
@@ -45,14 +44,14 @@ model.login = co.wrap(function*() {
     }
 
     model.loading(false);
-});
+};
 
-model.logout = co.wrap(function*() {
+model.logout = async () => {
     model.loading(true);
 
     try {
-        yield api.auth.logout();
-        yield session.loadUser();
+        await api.auth.logout();
+        await session.loadUser();
         stat.printSuccess("Logout successfull");
 
         loc.goto({ page: "login" });
@@ -62,9 +61,9 @@ model.logout = co.wrap(function*() {
     }
 
     model.loading(false);
-});
+};
 
-model.reset = co.wrap(function*() {
+model.reset = async () => {
     if (model.username() === "") {
         return stat.printError("Please enter an e-mail address to reset password");
     }
@@ -72,7 +71,7 @@ model.reset = co.wrap(function*() {
     model.loading(true);
 
     try {
-        yield api.auth.requestReset(model.username(), document.location.origin);
+        await api.auth.requestReset(model.username(), document.location.origin);
         stat.printSuccess("Password reset e-mail sent!");
     } catch (e) {
         console.error(e);
@@ -80,7 +79,7 @@ model.reset = co.wrap(function*() {
     }
 
     model.loading(false);
-});
+};
 
 ui.setTitle("Login");
 

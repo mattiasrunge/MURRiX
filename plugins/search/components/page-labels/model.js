@@ -13,7 +13,7 @@ model.query = ko.pureComputed({
     read: () => ko.unwrap(loc.current().query) || "",
     write: (value) => loc.goto({ query: value })
 });
-model.list = ko.asyncComputed([], function*() {
+model.list = ko.asyncComputed([], async () => {
     let labels = model.query().split("+");
 
     if (labels.length === 0) {
@@ -26,7 +26,7 @@ model.list = ko.asyncComputed([], function*() {
 
     model.loading(true);
 
-    let list = yield api.vfs.list(session.searchPaths(), { filter: query });
+    let list = await api.vfs.list(session.searchPaths(), { filter: query });
 
     model.loading(false);
 
@@ -42,8 +42,8 @@ model.list = ko.asyncComputed([], function*() {
     return [];
 }, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
 
-model.labels = ko.asyncComputed([], function*() {
-    return yield api.vfs.labels();
+model.labels = ko.asyncComputed([], async () => {
+    return await api.vfs.labels();
 }, (error) => {
     model.loading(false);
     stat.printError(error);

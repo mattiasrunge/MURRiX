@@ -14,7 +14,7 @@ model.nodepath = params.nodepath;
 model.requestId = Date.now();
 model.progress = ko.observable(false);
 
-model.list = ko.asyncComputed([], function*(setter) {
+model.list = ko.asyncComputed([], async (setter) => {
     model.requestId = Date.now();
     let requestId = model.requestId;
 
@@ -34,7 +34,7 @@ model.list = ko.asyncComputed([], function*(setter) {
 
     model.loading(true);
 
-    let filenames = yield api.file.getMediaUrl(ids, {
+    let filenames = await api.file.getMediaUrl(ids, {
         width: model.size,
         height: model.size,
         type: "image"

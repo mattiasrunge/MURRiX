@@ -1,6 +1,5 @@
 "use strict";
 
-const co = require("bluebird").coroutine;
 const api = require("api.io");
 const log = require("../../core/lib/log")(module);
 
@@ -8,12 +7,12 @@ const mcsApi = api.client.create();
 
 let params = {};
 
-let mcs = api.register("mcs", {
+const mcs = api.register("mcs", {
     deps: [],
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
 
-        yield mcsApi.connect({
+        await mcsApi.connect({
             hostname: params.mcs.host,
             port: params.mcs.port
         }, (status, message) => {
@@ -28,30 +27,30 @@ let mcs = api.register("mcs", {
             }
         });
 
-        yield mcs.authenticate();
-    }),
-    authenticate: co(function*() {
-        let result = yield mcsApi.auth.identify(params.mcs.key);
+        await mcs.authenticate();
+    },
+    authenticate: async () => {
+        let result = await mcsApi.auth.identify(params.mcs.key);
 
         if (!result) {
             throw new Error("Failed to identify ourselves with the MCS, is the keys set up?");
         }
-    }),
-    getMetadata: (filename, options) => {
+    },
+    getMetadata: api.export((filename, options) => {
         return mcsApi.metadata.get(filename, options);
-    },
-    getFaces: (filename) => {
+    }),
+    getFaces: api.export((filename) => {
         return mcsApi.face.detect(filename);
-    },
-    compileTime: (sources) => {
+    }),
+    compileTime: api.export((sources) => {
         return mcsApi.time.compile(sources);
-    },
-    getCached: (id, filename, format) => {
+    }),
+    getCached: api.export((id, filename, format) => {
         return mcsApi.cache.get(id, filename, format, params.mcsDirectory);
-    },
-    getStatus: function*() {
+    }),
+    getStatus: api.export(async () => {
         return mcsApi.cache.status();
-    }
+    })
 });
 
 module.exports = mcs;

@@ -1,6 +1,5 @@
 "use strict";
 
-const co = require("co");
 const ko = require("knockout");
 const api = require("api.io-client");
 const stat = require("lib/status");
@@ -16,14 +15,14 @@ ko.nodepath = function(path, options) {
     let lastPath = false;
     let hasLoaded = false;
 
-    let load = co.wrap(function*(path) {
+    let load = async (path) => {
         let data = false;
 
         loading(true);
         let currentActive = ++active;
 
         try {
-            data = (yield api.vfs.resolve(path, options)) || false;
+            data = (await api.vfs.resolve(path, options)) || false;
 
             if (data) {
                 data.node = ko.observable(data.node);
@@ -39,7 +38,7 @@ ko.nodepath = function(path, options) {
         hasLoaded = true;
         loading(false);
         result(data);
-    });
+    };
 
     let computed = ko.pureComputed(() => {
         let newPath = ko.unwrap(path);
@@ -84,14 +83,14 @@ ko.nodepathList = function(path, options) {
     let lastPath = false;
     let hasLoaded = false;
 
-    let load = co.wrap(function*(path) {
+    let load = async (path) => {
         let data = [];
 
         loading(true);
         let currentActive = ++active;
 
         try {
-            data = (yield api.vfs.list(path, options)) || [];
+            data = (await api.vfs.list(path, options)) || [];
 
             for (let item of data) {
                 item.node = ko.observable(item.node);
@@ -107,7 +106,7 @@ ko.nodepathList = function(path, options) {
         hasLoaded = true;
         loading(false);
         result(data);
-    });
+    };
 
     let computed = ko.pureComputed(() => {
         let newPath = ko.unwrap(path);
@@ -155,7 +154,7 @@ ko.nodepathList = function(path, options) {
 
 ko.asyncComputed = function(defaultValue, fn, onError, extend) {
     let self = {};
-    let promise = co.wrap(fn.bind(self));
+    let promise = fn.bind(self);
     let reloadFlag = ko.observable(false);
     let result = ko.observable(defaultValue);
     let active = 0;

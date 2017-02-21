@@ -11,12 +11,12 @@ model.year = ko.pureComputed({
     read: () => parseInt(ko.unwrap(loc.current().year), 10) || new Date().getFullYear(),
     write: (value) => loc.goto({ year: value })
 });
-model.list = ko.asyncComputed([], function*(setter) {
+model.list = ko.asyncComputed([], async (setter) => {
     setter([]);
 
     model.loading(true);
 
-    let list = yield api.search.findByYear(model.year());
+    let list = await api.search.findByYear(model.year());
 
     model.loading(false);
 

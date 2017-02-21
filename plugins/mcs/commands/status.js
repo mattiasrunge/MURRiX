@@ -7,14 +7,14 @@ const api = require("api.io").client;
 
 vorpal
 .command("mcs status", "Print status of MCS job queue.")
-.action(vorpal.wrap(function*(session, args) {
-    let jobs = yield api.mcs.getStatus();
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let jobs = await api.mcs.getStatus();
 
     if (jobs.length > 0 ) {
         for (let job of jobs) {
             let basename = path.basename(job.filename);
             let id = basename.substr(0, basename.indexOf("."));
-            let paths = yield api.vfs.lookup(id);
+            let paths = await api.vfs.lookup(id);
 
             job.path = paths[0];
         }
@@ -31,8 +31,8 @@ vorpal
             showHeaders: true
         });
 
-        this.log(columns);
+        ctx.log(columns);
     }
 
-    this.log("total " + jobs.length);
+    ctx.log("total " + jobs.length);
 }));

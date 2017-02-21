@@ -2,8 +2,7 @@
 
 const path = require("path");
 const fs = require("fs-extra-promise");
-const parse = require("co-busboy");
-const co = require("bluebird").coroutine;
+const asyncBusboy = require("async-busboy");
 const log = require("../../../core/lib/log")(module);
 const api = require("api.io");
 
@@ -12,34 +11,35 @@ let params = {};
 module.exports = {
     method: "POST",
     route: "/:id",
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
-    }),
-    handler: function*(id) {
-        if (!this.session.uploads || !this.session.uploads[id]) {
+    },
+    handler: async (ctx, id) => {
+        if (!ctx.session.uploads || !ctx.session.uploads[id]) {
             throw new Error("Invalid upload id");
         }
 
-        delete this.session.uploads[id];
+        delete ctx.session.uploads[id];
 
-        let part = yield parse(this);
+        const { files } = await asyncBusboy(ctx.req);
+
         let filename = path.join(params.uploadDirectory, id);
         log.debug("Saving uploaded file as " + filename);
 
         let stream = fs.createWriteStream(filename);
 
-        part.pipe(stream);
+        files[0].pipe(stream);
 
-        yield new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             stream.on("finish", resolve);
             stream.on("error", reject);
         });
 
-        let metadata = yield api.mcs.getMetadata(filename, { noChecksums: true });
+        let metadata = await api.mcs.getMetadata(filename, { noChecksums: true });
 
         log.debug("Uploaded file " + filename + " saved!");
 
-        this.type = "json";
-        this.body = JSON.stringify({ status: "success", metadata: metadata }, null, 2);
+        ctx.type = "json";
+        ctx.body = JSON.stringify({ status: "success", metadata: metadata }, null, 2);
     }
 };

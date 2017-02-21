@@ -9,7 +9,7 @@ model.loading = stat.create();
 model.nodepath = ko.pureComputed(() => ko.unwrap(params.nodepath));
 model.size = 470;
 
-model.filename = ko.asyncComputed(false, function*(setter) {
+model.filename = ko.asyncComputed(false, async (setter) => {
     if (!model.item()) {
         return false;
     }
@@ -18,7 +18,7 @@ model.filename = ko.asyncComputed(false, function*(setter) {
 
     model.loading(true);
 
-    let filename = yield api.file.getMediaUrl(model.item().node()._id, {
+    let filename = await api.file.getMediaUrl(model.item().node()._id, {
         width: model.size,
         type: "image"
     });

@@ -1,10 +1,10 @@
 "use strict";
 
+const path = require("path");
 const fs = require("fs-extra-promise");
 const http = require("http");
-const co = require("bluebird").coroutine;
 const promisify = require("bluebird").promisify;
-const koa = require("koa");
+const Koa = require("koa");
 const bodyParser = require("koa-bodyparser");
 const route = require("koa-route");
 const compress = require("koa-compress");
@@ -17,48 +17,53 @@ const api = require("api.io");
 const plugin = require("./plugin");
 const session = require("./session");
 const log = require("./log")(module);
+const send = require("koa-send");
+const serve = require("koa-static");
 
 let server;
 let params = {};
 
 module.exports = {
-    init: co(function*(config) {
+    init: async (config) => {
         params = config;
 
-        let app = koa();
+        const app = new Koa();
         let sessions = session.getSessions();
         let sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
         let sessionName = "apiio";
 
         if (params.cacheDirectory) {
-            yield fs.removeAsync(params.cacheDirectory);
+            await fs.removeAsync(params.cacheDirectory);
         }
 
         // Setup application
         app.use(compress());
-        app.use(bodyParser());
+        app.use(bodyParser({ enableTypes: [ "json", "form", "text" ] }));
         app.use(conditional());
         app.use(etag());
 
         // Configure error handling
-        app.use(function*(next) {
+        app.use(async (ctx, next) => {
             try {
-                yield next;
+                await next();
             } catch (error) {
                 console.error(error);
-                console.error(error.stack);
-                this.response.status = error.status || 500;
-                this.type = "text/plain";
-                this.body = error.message || error;
+                ctx.status = error.status || 500;
+                ctx.type = "json";
+                ctx.body = JSON.stringify({
+                    result: "fail",
+                    error: error.message || error,
+                    status: ctx.status
+                }, null, 2);
             }
         });
 
         // Configure sessions
-        app.use(function*(next) {
+        app.use(async (ctx, next) => {
             let sessionId = false;
 
             try {
-                sessionId = this.cookies.get(sessionName);
+                sessionId = ctx.cookies.get(sessionName);
             } catch (e) {
             }
 
@@ -70,12 +75,12 @@ module.exports = {
                 };
             }
 
-            this.session = sessions[sessionId];
-            this.session._expires = new Date(Date.now() + sessionMaxAge);
+            ctx.session = sessions[sessionId];
+            ctx.session._expires = new Date(Date.now() + sessionMaxAge);
 
-            this.cookies.set(sessionName, sessionId, { maxAge: sessionMaxAge });
+            ctx.cookies.set(sessionName, sessionId, { maxAge: sessionMaxAge });
 
-            yield next;
+            await next();
         });
 
         // Create plugin routes
@@ -103,21 +108,31 @@ module.exports = {
             }
         }
 
-        // This must come after last app.use()
-        server = http.Server(app.callback());
+        const buildWebpackCfg = require("../../webpack.config.js");
+        const webpack = require("webpack");
+        const webpackMiddleware = require("koa-webpack-dev-middleware");
+
+        const webpackCfg = buildWebpackCfg({ dev: true });
+        const webpackMiddlewareConf = webpackMiddleware(webpack(webpackCfg), {
+            stats: true
+        });
+
+        app.use(webpackMiddlewareConf);
+
+        //app.use(route.get("*", async (ctx) => await send(ctx, "/index.html", { root: path.join(__dirname, "..", "..", "www") })));
+
+        server = app.listen(params.port);
 
         enableDestroy(server);
 
         // Socket.io if we have defined API
-        yield api.start(server, { sessionName: sessionName, sessionMaxAge: sessionMaxAge }, sessions);
-
-        server.listen(params.port);
+        await api.start(server, { sessionName: sessionName, sessionMaxAge: sessionMaxAge }, sessions);
 
         log.info("Now listening for http request on port " + params.port);
-    }),
-    stop: co(function*() {
+    },
+    stop: async () => {
         if (server) {
-            yield promisify(server.destroy, { context: server })();
+            await promisify(server.destroy, { context: server })();
         }
-    })
+    }
 };

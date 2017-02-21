@@ -11,33 +11,33 @@ vorpal
         return terminal.autocomplete(vorpal.cliSession, input);
     }
 })
-.action(vorpal.wrap(function*(session, args) {
-    let cwd = yield session.env("cwd");
-    let node = yield api.vfs.resolve(terminal.normalize(cwd, args.path), { nofollow: true });
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let cwd = await session.env("cwd");
+    let node = await api.vfs.resolve(terminal.normalize(cwd, args.path), { nofollow: true });
 
-    this.log("# file: " + args.path);
-    this.log("# owner: " + (yield api.auth.uname(node.properties.uid)));
-    this.log("# group: " + (yield api.auth.gname(node.properties.gid)));
+    ctx.log("# file: " + args.path);
+    ctx.log("# owner: " + (await api.auth.uname(node.properties.uid)));
+    ctx.log("# group: " + (await api.auth.gname(node.properties.gid)));
 
-    this.log("user::" + terminal.modeString(node.properties.mode, { owner: true }));
+    ctx.log("user::" + terminal.modeString(node.properties.mode, { owner: true }));
 
     if (node.properties.acl && node.properties.acl.length > 0) {
         for (let ac of node.properties.acl) {
             if (ac.uid) {
-                this.log("user:" + (yield api.auth.uname(ac.uid)) + ":" + terminal.modeString(ac.mode, { acl: true }));
+                ctx.log("user:" + (await api.auth.uname(ac.uid)) + ":" + terminal.modeString(ac.mode, { acl: true }));
             }
         }
     }
 
-    this.log("group::" + terminal.modeString(node.properties.mode, { group: true }));
+    ctx.log("group::" + terminal.modeString(node.properties.mode, { group: true }));
 
     if (node.properties.acl && node.properties.acl.length > 0) {
         for (let ac of node.properties.acl) {
             if (ac.gid) {
-                this.log("group:" + (yield api.auth.gname(ac.gid)) + ":" + terminal.modeString(ac.mode, { acl: true }));
+                ctx.log("group:" + (await api.auth.gname(ac.gid)) + ":" + terminal.modeString(ac.mode, { acl: true }));
             }
         }
     }
 
-    this.log("other::" + terminal.modeString(node.properties.mode, { other: true }));
+    ctx.log("other::" + terminal.modeString(node.properties.mode, { other: true }));
 }));

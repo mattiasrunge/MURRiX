@@ -11,20 +11,20 @@ vorpal
         return terminal.autocomplete(vorpal.cliSession, input);
     }
 })
-.action(vorpal.wrap(function*(session, args) {
-    let abspath = terminal.normalize(yield session.env("cwd"), args.path);
+.action(vorpal.wrap(async (ctx, session, args) => {
+    let abspath = terminal.normalize(await session.env("cwd"), args.path);
 
-    let access = yield api.vfs.access(abspath, "x");
+    let access = await api.vfs.access(abspath, "x");
 
     if (!access) {
         throw new Error("Permission denied");
     }
 
-    let node = yield api.vfs.resolve(abspath);
+    let node = await api.vfs.resolve(abspath);
 
     if (!node) {
         throw new Error("Invalid path " + abspath);
     }
 
-    yield session.env("cwd", abspath);
+    await session.env("cwd", abspath);
 }));

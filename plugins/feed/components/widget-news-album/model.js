@@ -14,7 +14,7 @@ model.fileListPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().n
 model.fileList = ko.nodepathList(model.fileListPath, { limit: 3, noerror: true });
 
 
-model.files = ko.asyncComputed([], function*(setter) {
+model.files = ko.asyncComputed([], async (setter) => {
     if (model.fileList().length === 0) {
         return [];
     }
@@ -24,7 +24,7 @@ model.files = ko.asyncComputed([], function*(setter) {
     let ids = model.fileList().map((file) => file.node()._id);
 
     model.loading(true);
-    let filenames = yield api.file.getMediaUrl(ids, {
+    let filenames = await api.file.getMediaUrl(ids, {
         width: model.width,
         height: model.height,
         type: "image"

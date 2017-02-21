@@ -13,9 +13,9 @@ model.today = ko.observable(moment());
 model.tomorrow = ko.pureComputed(() => model.today().clone().add(1, "day"));
 model.loading = stat.create();
 model.list = ko.observableArray();
-model.eventsToday = ko.asyncComputed([], function*() {
+model.eventsToday = ko.asyncComputed([], async () => {
     model.loading(true);
-    let result = yield api.feed.eventThisDay(model.today().format("YYYY-MM-DD"));
+    let result = await api.feed.eventThisDay(model.today().format("YYYY-MM-DD"));
     model.loading(false);
 
     console.log(result);
@@ -30,9 +30,9 @@ model.eventsToday = ko.asyncComputed([], function*() {
     return [];
 });
 
-model.eventsTomorrow = ko.asyncComputed([], function*() {
+model.eventsTomorrow = ko.asyncComputed([], async () => {
     model.loading(true);
-    let result = yield api.feed.eventThisDay(model.tomorrow().format("YYYY-MM-DD"));
+    let result = await api.feed.eventThisDay(model.tomorrow().format("YYYY-MM-DD"));
     model.loading(false);
 
     console.log(result);
@@ -58,14 +58,14 @@ model.prevDay = () => {
 };
 
 model.loading(true);
-let list = yield api.feed.list();
+let list = await api.feed.list();
 model.loading(false);
 
 console.log("news", list);
 
 let filtered = [];
 for (let item of list) {
-    let readable = yield api.vfs.access(item.node.attributes.path, "r");
+    let readable = await api.vfs.access(item.node.attributes.path, "r");
 
     if (readable) {
         filtered.push(item);
@@ -99,7 +99,7 @@ const delayAdd = (item) => {
 };
 
 for (let item of filtered) {
-    yield delayAdd(item);
+    await delayAdd(item);
 }
 
 const dispose = () => {
