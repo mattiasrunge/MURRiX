@@ -1,7 +1,7 @@
 ﻿<div class="">
     <div class="row node-header" data-bind="if: nodepath" style="margin-top: 15px;">
         <div class="col-md-8">
-            <node-widget-header params="{ nodepath: nodepath }"></node-widget-header>
+            <div data-bind="component: { name: 'node-widget-header', params: { nodepath: nodepath } }"></div>
         </div>
         <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <node-widget-sections params="{
+    <div data-bind="component: { name: 'node-widget-sections', params: {
         section: section,
         sections: [
             {
@@ -44,5 +44,5 @@
         params: {
             nodepath: nodepath
         }
-    }"></node-widget-sections>
+    } }" class="node-widget-sections"></div>
 </div>

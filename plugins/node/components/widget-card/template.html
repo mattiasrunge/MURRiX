@@ -1,6 +1,6 @@
 <a class="node-item-panel" style="width: 305px;" data-bind="location: { page: 'node', path: nodepath().path, section: null }">
     <div style="position: relative; height: 303px;">
-        <file-widget-profile-picture params="{ size: 303, path: nodepath().path }"></file-widget-profile-picture>
+        <div data-bind="component: { name: 'file-widget-profile-picture', params: { size: 303, path: nodepath().path } }"></div>
 
         <div class="title-text">
             <i class="material-icons md-18" data-bind="visible: nodepath().node().properties.type === 'a'">photo_album</i>
@@ -12,7 +12,7 @@
         </div>
     </div>
     <div style="padding: 15px;">
-        <node-widget-description params="{ nodepath: nodepath }"></node-widget-description>
-        <node-widget-labels params="{ nodepath: nodepath }"></node-widget-labels>
+        <div data-bind="component: { name: 'node-widget-description', params: { nodepath: nodepath } }"></div>
+        <div data-bind="component: { name: 'node-widget-labels', params: { nodepath: nodepath } }"></div>
     </div>
 </a>

@@ -29,7 +29,7 @@
                             <div class="box-content relation-person-box-small" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: $component.zoom() <= 0.7">
 
                                 <div class="relation-person-image-small">
-                                    <file-widget-profile-picture params="{ size: 88, path: $data.tree.nodepath().path, nolazyload: true }"></file-widget-profile-picture>
+                                    <span data-bind="component: { name: 'file-widget-profile-picture', params: { size: 88, path: $data.tree.nodepath().path, nolazyload: true } }"></span>
                                 </div>
 
                                 <div class="relation-person-image-small-title" data-bind="css: { 'relation-person-title-male': $data.attributes.gender === 'm', 'relation-person-title-female': $data.attributes.gender === 'f' }">
@@ -40,7 +40,7 @@
                             <div class="box-content relation-person-box" style="margin: 0px 15px 0px 15px; height: 90px; padding: 0px; position: relative;" data-bind="visible: $component.zoom() > 0.7">
 
                                 <div class="relation-person-image">
-                                    <file-widget-profile-picture params="{ size: 88, path: $data.tree.nodepath().path, nolazyload: true }"></file-widget-profile-picture>
+                                    <span data-bind="component: { name: 'file-widget-profile-picture', params: { size: 88, path: $data.tree.nodepath().path, nolazyload: true } }"></span>
                                 </div>
 
                                 <div class="relation-person-title">
@@ -56,7 +56,7 @@
                                     </div>
                                     <div>
                                         <i class="material-icons md-14">favorite</i>
-                                        <people-widget-partner class="relation-person-partner" params="{ nodepath: $data.tree.nodepath }"></people-widget-partner>
+                                        <span data-bind="component: { name: 'people-widget-partner', params: { nodepath: $data.tree.nodepath } }" class="relation-person-partner"></span>
                                     </div>
                                 </div>
                             </div>

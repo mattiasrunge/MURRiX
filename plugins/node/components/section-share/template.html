@@ -4,7 +4,7 @@
             <div class="col-md-6">
                 <h3>Public access</h3>
                 <p>
-                    Public access can be granted on <node-widget-type params="{ type: nodepath().node().properties.type }"></node-widget-type>s if needed. This will allow anyone with the link to access model <node-widget-type params="{ type: nodepath().node().properties.type }"></node-widget-type>. <em>Use with care!</em>
+                    Public access can be granted on <span data-bind="component: { name: 'node-widget-type', params: { type: nodepath().node().properties.type } }"></span>s if needed. This will allow anyone with the link to access model <span data-bind="component: { name: 'node-widget-type', params: { type: nodepath().node().properties.type } }"></span>. <em>Use with care!</em>
                 </p>
                 <div class="form-group">
                     <div class="checkbox">
@@ -16,7 +16,7 @@
 
                 <h3>Primary group access</h3>
                 <p>
-                    A group can be given read and write access model <node-widget-type params="{ type: nodepath().node().properties.type }"></node-widget-type>. This will grant the group the selected rights on model <node-widget-type params="{ type: nodepath().node().properties.type }"></node-widget-type>.
+                    A group can be given read and write access model <span data-bind="component: { name: 'node-widget-type', params: { type: nodepath().node().properties.type } }"></span>. This will grant the group the selected rights on model <span data-bind="component: { name: 'node-widget-type', params: { type: nodepath().node().properties.type } }"></span>.
                 </p>
                 <table class="table table-condensed table-striped">
                     <thead>
@@ -91,7 +91,7 @@
                             <tr>
                                 <td>
                                     <span data-bind="if: $data.uid">
-                                        <auth-widget-picture-user params="{ size: 20, uid: $data.uid, classes: 'img-circle' }" style="margin-right: 10px;" class="pull-left"></auth-widget-picture-user>
+                                        <span data-bind="component: { name: 'auth-widget-picture-user', params: { size: 20, uid: $data.uid, classes: 'img-circle' } }" style="margin-right: 10px;" class="pull-left"></span>
                                     </span>
                                     <span data-bind="text: $data.name"></span>
                                 </td>

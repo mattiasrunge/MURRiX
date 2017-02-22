@@ -1,7 +1,7 @@
 ﻿<div>
     <div class="row node-header" data-bind="if: nodepath" style="margin-top: 15px;">
         <div class="col-md-8">
-            <node-widget-header params="{ nodepath: nodepath }"></node-widget-header>
+            <div data-bind="component: { name: 'node-widget-header', params: { nodepath: nodepath } }"></div>
         </div>
         <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
@@ -17,7 +17,7 @@
                     <tr>
                         <td><strong>Birth name</strong></td>
                         <td>
-                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'birthname' }"></node-widget-text-attribute>
+                            <div data-bind="component: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'birthname' } }"></div>
                         </td>
                     </tr>
                     <tr data-bind="visible: metrics().birthdate">
@@ -39,7 +39,7 @@
                     <tr>
                         <td><strong>Gender</strong></td>
                         <td>
-                            <node-widget-select-attribute params="{ nodepath: nodepath, name: 'gender', options: [
+                            <div data-bind="component: { name: 'node-widget-select-attribute', params: { nodepath: nodepath, name: 'gender', options: [
                                 {
                                     name: 'f',
                                     title: 'Female'
@@ -48,31 +48,31 @@
                                     name: 'm',
                                     title: 'Male'
                                 }
-                            ]}"></node-widget-select-attribute>
+                            ]} }"></div>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Partner</strong></td>
                         <td>
-                            <people-widget-partner params="{ nodepath: nodepath }"></people-widget-partner>
+                            <div data-bind="component: { name: 'people-widget-partner', params: { nodepath: nodepath } }"></div>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Mother</strong></td>
                         <td>
-                            <people-widget-parent params="{ nodepath: nodepath, gender: 'f' }"></people-widget-parent>
+                            <div data-bind="component: { name: 'people-widget-parent', params: { nodepath: nodepath, gender: 'f' } }"></div>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Father</strong></td>
                         <td>
-                            <people-widget-parent params="{ nodepath: nodepath, gender: 'm' }"></people-widget-parent>
+                            <div data-bind="component: { name: 'people-widget-parent', params: { nodepath: nodepath, gender: 'm' } }"></div>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Allergies</strong></td>
                         <td>
-                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'allergies' }"></node-widget-text-attribute>
+                            <div data-bind="component: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'allergies' } }"></div>
                         </td>
                     </tr>
                 </tbody>
@@ -80,7 +80,7 @@
         </div>
     </div>
 
-    <node-widget-sections params="{
+    <div data-bind="component: { name: 'node-widget-sections', params: {
         section: section,
         sections: [
             {
@@ -112,7 +112,7 @@
             nodepath: nodepath,
             reload: reload
         }
-    }"></node-widget-sections>
+    } }" class="node-widget-sections"></div>
 </div>
 
 <form data-bind="submit: createEvent, moveToBody: true">

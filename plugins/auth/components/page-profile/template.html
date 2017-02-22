@@ -6,7 +6,7 @@
     <div class="row" data-bind="visible: loggedIn">
         <div class="col-md-5" style="padding-right: 0;">
             <div class="box box-content" style="margin-top: 0; padding-bottom: 0;">
-                <auth-widget-edit-user params="{ user: user, username: username, personPath: personPath }"></auth-widget-edit-user>
+                <div data-bind="component: { name: 'auth-widget-edit-user', params: { user: user, username: username, personPath: personPath } }"></div>
             </div>
         </div>
         <div class="col-md-7" data-bind="if: user">
@@ -30,7 +30,7 @@
                 </table>
 
                 <h3>Group memberships</h3>
-                <auth-widget-list-groups params="{ list: groupList }"></auth-widget-list-groups>
+                <div data-bind="component: { name: 'auth-widget-list-groups', params: { list: groupList } }"></div>
             </div>
         </div>
     </div>

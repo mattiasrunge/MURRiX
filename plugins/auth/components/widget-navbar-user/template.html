@@ -1,5 +1,5 @@
 <li class="dropdown profile" data-bind="visible: loggedIn, if: loggedIn">
-    <a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown"><span class="picture" style="width: 20px; height: 20px;" data-bind=""><auth-widget-picture-user params="{ size: 20, uid: uid, classes: 'img-circle' }" class="picture pull-left"></auth-widget-picture-user></span><span data-bind="text: user().attributes.name"></span> <b class="caret"></b></a>
+    <a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown"><span class="picture" style="width: 20px; height: 20px;" data-bind=""><span data-bind="component: { name: 'auth-widget-picture-user', params: { size: 20, uid: uid, classes: 'img-circle' } }" class="picture pull-left"></span></span><span data-bind="text: user().attributes.name"></span> <b class="caret"></b></a>
     <ul class="dropdown-menu">
         <li>
             <a href="#" data-bind="location: { page: 'profile' }">

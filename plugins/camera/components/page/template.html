@@ -1,7 +1,7 @@
 ﻿<div class="fadeInDown animated">
     <div class="row node-header" data-bind="if: nodepath" style="margin-top: 15px;">
         <div class="col-md-8">
-            <node-widget-header params="{ nodepath: nodepath }"></node-widget-header>
+             <div data-bind="component: { name: 'node-widget-header', params: { nodepath: nodepath } }"></div>
         </div>
         <div class="col-md-4 left-border">
             <table class="table node-table text-muted">
@@ -17,7 +17,7 @@
                     <tr>
                         <td><strong>Type</strong></td>
                         <td>
-                            <node-widget-select-attribute params="{ nodepath: nodepath, name: 'type', options: [
+                            <div data-bind="component: { name: 'node-widget-select-attribute', params: { nodepath: nodepath, name: 'type', options: [
                                 {
                                     name: 'offset_fixed',
                                     title: 'Fixed offset'
@@ -26,31 +26,31 @@
                                     name: 'offset_relative_to_position',
                                     title: 'Offset relative to the position'
                                 }
-                            ]}"></node-widget-select-attribute>
+                            ]} }"></div>
                         </td>
                     </tr>
                     <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset UTC</strong></td>
                         <td>
-                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'utcOffset' }"></node-widget-text-attribute>
+                            <div data-bind="component: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'utcOffset' } }"></div>
                         </td>
                     </tr>
                     <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
                         <td><strong>Offset description</strong></td>
                         <td>
-                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'offsetDescription' }"></node-widget-text-attribute>
+                            <div data-bind="component: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'offsetDescription' } }"></div>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Automatic daylight savings</strong></td>
                         <td>
-                            <node-widget-boolean-attribute params="{ nodepath: nodepath, name: 'deviceAutoDst' }"></node-widget-boolean-attribute>
+                            <div data-bind="component: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'deviceAutoDst' } }"></div>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Serial number</strong></td>
                         <td>
-                            <node-widget-text-attribute params="{ nodepath: nodepath, name: 'serialNumber' }"></node-widget-text-attribute>
+                            <div data-bind="component: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'serialNumber' } }"></div>
                         </td>
                     </tr>
                     <tr>
@@ -64,18 +64,18 @@
         </div>
     </div>
 
-    <node-widget-sections params="{
-        section: section,
-        sections: [
-            {
-                name: 'media',
-                icon: 'photo_library',
-                title: 'Media',
-                component: 'camera-section-media'
-            }
-        ],
-        params: {
-            nodepath: nodepath
-        }
-    }"></node-widget-sections>
+     <div data-bind="component: { name: 'node-widget-sections', params: {
+         section: section,
+         sections: [
+             {
+                 name: 'media',
+                 icon: 'photo_library',
+                 title: 'Media',
+                 component: 'camera-section-media'
+             }
+         ],
+         params: {
+             nodepath: nodepath
+         }
+     } }" class="node-widget-sections"></div>
 </div>

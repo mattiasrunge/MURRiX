@@ -1,4 +1,4 @@
 ﻿<div class="fadeInDown animated node-content">
     <h3>Comments</h3>
-    <comment-widget-comments params="{ path: nodepath().path }"></comment-widget-comments>
+    <div data-bind="component: { name: 'comment-widget-comments', params: { path: nodepath().path } }"></div>
 </div>

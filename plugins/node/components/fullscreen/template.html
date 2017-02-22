@@ -11,7 +11,7 @@
                         <i class="material-icons" title="Description">description</i>
                     </td>
                     <td style="padding-top: 1px;">
-                        <node-widget-text-attribute params="{ nodepath: nodepath, name: 'description', html: true }"></node-widget-text-attribute>
+                        <div data-bind="component: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'description', html: true } }"></div>
                     </td>
                 </tr>
                 <tr>
@@ -20,7 +20,7 @@
                     </td>
 
                     <td style="padding-top: 1px;">
-                        <node-widget-link-node params="{ nodepath: nodepath, name: 'createdBy', placeholder: 'Select who created model file', searchPaths: [ '/people' ] }"></node-widget-link-node>
+                        <div data-bind="component: { name: 'node-widget-link-node', params: { nodepath: nodepath, name: 'createdBy', placeholder: 'Select who created model file', searchPaths: [ '/people' ] } }"></div>
                     </td>
                 </tr>
                 <tr>
@@ -29,7 +29,7 @@
                     </td>
 
                     <td style="padding-top: 1px;">
-                        <node-widget-link-node params="{ nodepath: nodepath, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ], initial: initialCameraName }"></node-widget-link-node>
+                        <div data-bind="component: { name: 'node-widget-link-node', params: { nodepath: nodepath, name: 'createdWith', placeholder: 'Select what camera was used', searchPaths: [ '/cameras' ], initial: initialCameraName } }"></div>
                     </td>
                 </tr>
 
@@ -76,7 +76,7 @@
 
         <h3>Comments</h3>
 
-        <comment-widget-comments params="{ path: showPath }"></comment-widget-comments>
+        <div data-bind="component: { name: 'comment-widget-comments', params: { path: showPath } }"></div>
     </div>
 
     <div class="sidebar" data-bind="visible: sidebarView() === 'tag', if: sidebarView() === 'tag'">
@@ -93,7 +93,7 @@
                         <button type="button" class="btn btn-primary" data-bind="click: $component.selectedTag.bind($data, $data), visible: !$component.selectedTag() && $component.nodepath().node().attributes.type === 'image'">Edit</button>
                         <button type="button" class="btn btn-danger" data-bind="click: $component.removeTag.bind($data, $data), disable: $component.selectedTag">Remove</button>
                     </div>
-                    <file-widget-profile-picture class="pull-left" style="margin-right: 15px;" params="{ size: 32, path: $data.path, nolazyload: true }"></file-widget-profile-picture>
+                    <div data-bind="component: { name: 'file-widget-profile-picture', params: { size: 32, path: $data.path, nolazyload: true } }" class="pull-left" style="margin-right: 15px;" ></div>
                     <div class="title" data-bind="text: $data.node().attributes.name"></div>
                 </div>
             </div>
@@ -112,7 +112,7 @@
                         <i class="material-icons" title="Location">place</i>
                     </td>
                     <td style="padding-top: 1px;">
-                        <node-widget-link-node params="{ nodepath: nodepath, name: 'location', placeholder: 'Select location', searchPaths: [ '/locations' ], input: true }"></node-widget-link-node>
+                        <div data-bind="component: { name: 'node-widget-link-node', params: { nodepath: nodepath, name: 'location', placeholder: 'Select location', searchPaths: [ '/locations' ], input: true } }"></div>
                     </td>
                 </tr>
             </tbody>
@@ -157,7 +157,7 @@
             </table>
         </p>
 
-        <node-widget-when-attribute params="{ nodepath: nodepath }"></node-widget-when-attribute>
+        <div data-bind="component: { name: 'node-widget-when-attribute', params: { nodepath: nodepath } }"></div>
     </div>
 
     <div class="maincontainer animated fadeIn" data-bind="if: filename">

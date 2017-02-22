@@ -1,15 +1,15 @@
 <div data-bind="if: nodepath">
     <div data-bind="if: nodepath().node().properties.type === 'p'">
-        <people-page params="{ nodepath: nodepath, section: section }"></people-page>
+        <div data-bind="component: { name: 'people-page', params: { nodepath: nodepath, section: section } }"></div>
     </div>
     <div data-bind="if: nodepath().node().properties.type === 'a'">
-        <album-page params="{ nodepath: nodepath, section: section }"></album-page>
+        <div data-bind="component: { name: 'album-page', params: { nodepath: nodepath, section: section } }"></div>
     </div>
     <div data-bind="if: nodepath().node().properties.type === 'l'">
-        <location-page params="{ nodepath: nodepath, section: section }"></location-page>
+        <div data-bind="component: { name: 'location-page', params: { nodepath: nodepath, section: section } }"></div>
     </div>
     <div data-bind="if: nodepath().node().properties.type === 'c'">
-        <camera-page params="{ nodepath: nodepath, section: section }"></camera-page>
+        <div data-bind="component: { name: 'camera-page', params: { nodepath: nodepath, section: section } }"></div>
     </div>
 
 
@@ -47,4 +47,3 @@
 <!--<div data-bind="if: !nodepath() && !nodeLoading()">
     Invalid path
 </div>-->
-

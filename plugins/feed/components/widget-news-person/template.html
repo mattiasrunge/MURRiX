@@ -1,5 +1,5 @@
 <div class="news-media">
-    <file-widget-profile-picture style="margin-right: 15px;" params="{ size: 200, path: nodepath().node().attributes.path }"></file-widget-profile-picture>
+    <div data-bind="component: { name: 'file-widget-profile-picture', params: { size: 200, path: nodepath().node().attributes.path } }" style="margin-right: 15px;"></div>
 </div>
 <div class="news-name" data-bind="visible: item, if: item">
     <a href="#" data-bind="location: { page: 'node', path: nodepath().node().attributes.path }">

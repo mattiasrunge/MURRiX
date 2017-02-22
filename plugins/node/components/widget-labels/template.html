@@ -1,15 +1,17 @@
-﻿<div class="edit-hover-container" data-bind="visible: nodepath() && nodepath().node().attributes.labels.length > 0 && !editing(), if: nodepath">
-    <span data-bind="foreach: nodepath().node().attributes.labels">
-        <a href="#" class="label label-primary" data-bind="text: $data, location: { page: 'search', query: 'label:' + $data }"></a>
-    </span>
+<div class="node-widget-labels">
+    <div class="edit-hover-container" data-bind="visible: nodepath() && nodepath().node().attributes.labels.length > 0 && !editing(), if: nodepath">
+        <span data-bind="foreach: nodepath().node().attributes.labels">
+            <a href="#" class="label label-primary" data-bind="text: $data, location: { page: 'search', query: 'label:' + $data }"></a>
+        </span>
 
-    <a class="edit-hover-link" href="#" title="Edit" data-bind="visible: nodepath().editable, click: edit">
-        <i class="material-icons">edit</i>
-    </a>
-</div>
-<div data-bind="visible: nodepath() && nodepath().node().attributes.labels.length === 0 && !editing(), if: nodepath">
-    <a style="font-style: italic; color: #999; cursor: text;" href="#" data-bind="visible: nodepath().editable, click: edit">Add labels</a>
-</div>
-<div data-bind="visible: editing, if: editing">
-    <input type="text" class="form-control" data-bind="textInput: labelString, event: { blur: save }, hasFocus: true" placeholder="Write a label name">
+        <a class="edit-hover-link" href="#" title="Edit" data-bind="visible: nodepath().editable, click: edit">
+            <i class="material-icons">edit</i>
+        </a>
+    </div>
+    <div data-bind="visible: nodepath() && nodepath().node().attributes.labels.length === 0 && !editing(), if: nodepath">
+        <a style="font-style: italic; color: #999; cursor: text;" href="#" data-bind="visible: nodepath().editable, click: edit">Add labels</a>
+    </div>
+    <div data-bind="visible: editing, if: editing">
+        <input type="text" class="form-control" data-bind="textInput: labelString, event: { blur: save }, hasFocus: true" placeholder="Write a label name">
+    </div>
 </div>

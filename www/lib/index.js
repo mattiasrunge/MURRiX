@@ -27,9 +27,9 @@ class Knockout extends React.PureComponent {
     render() {
         console.log("Knockout render");
         return (
-            <div ref={this.setRef.bind(this)}>
+            <span ref={this.setRef.bind(this)}>
                 {this.props.children}
-            </div>
+            </span>
         );
     }
 }
@@ -81,6 +81,7 @@ class App extends KnockoutComponent {
                     <li data-bind="text: $data"></li>
                 </ul>
                 <div data-bind="react: { name: 'widget', params: { name: 'Mattias' } }"></div>
+                <div data-bind="react: 'widget'"></div>
             </div>
         );
     }
@@ -96,8 +97,9 @@ ko.bindingHandlers.react = {
     },
     update: (element, valueAccessor, allBindings) => {
         const data = ko.unwrap(valueAccessor());
-        const Component = components[data.name];
-        const Element = React.createElement(Component, data.params);
+        const { name, params } = typeof data === "object" ? data : { name: data, params: {} };
+        const Component = components[ko.unwrap(name)];
+        const Element = React.createElement(Component, params);
 
         ReactDOM.render(Element, element);
     }

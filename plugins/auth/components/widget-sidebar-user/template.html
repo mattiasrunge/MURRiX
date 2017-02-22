@@ -1,5 +1,5 @@
 <div class="profile" data-bind="visible: loggedIn, if: loggedIn">
-    <auth-widget-picture-user params="{ size: 40, uid: uid, classes: 'img-circle picture' }" class="pull-left"></auth-widget-picture-user>
+    <div data-bind="component: { name: 'auth-widget-picture-user', params: { size: 40, uid: uid, classes: 'img-circle picture' } }" class="pull-left"></div>
     <div>
         <div class="name" data-bind="text: user().attributes.name"></div>
         <div>

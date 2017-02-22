@@ -5,28 +5,28 @@
                 <div class="news-item">
                     <div class="news-title">
                         <span data-bind="if: $data.node().attributes.action === 'comment'">
-                            New comments were made on model <node-widget-type params="{ type: $data.node().attributes.type }"></node-widget-type>
+                            New comments were made on model <span data-bind="component: { name: 'node-widget-type', params: { type: $data.node().attributes.type } }"></span>
                         </span>
                         <span data-bind="if: $data.node().attributes.action === 'created'">
-                            <strong data-bind="unameNice: $data.node().attributes.uid"></strong> added a new <node-widget-type params="{ type: $data.node().attributes.type }"></node-widget-type>
+                            <strong data-bind="unameNice: $data.node().attributes.uid"></strong> added a new <span data-bind="component: { name: 'node-widget-type', params: { type: $data.node().attributes.type } }"></span>
                         </span>
                     </div>
 
                     <div data-bind="if: $data.node().attributes.type === 'f'">
-                        <feed-widget-news-file params="{ nodepath: $data }"></feed-widget-news-file>
+                        <div data-bind="component: { name: 'feed-widget-news-file', params: { nodepath: $data } }"></div>
                     </div>
                     <div data-bind="if: $data.node().attributes.type === 'a'">
-                        <feed-widget-news-album params="{ nodepath: $data }"></feed-widget-news-album>
+                        <div data-bind="component: { name: 'feed-widget-news-album', params: { nodepath: $data } }"></div>
                     </div>
                     <div data-bind="if: $data.node().attributes.type === 'l'">
-                        <feed-widget-news-location params="{ nodepath: $data }"></feed-widget-news-location>
+                        <div data-bind="component: { name: 'feed-widget-news-location', params: { nodepath: $data } }"></div>
                     </div>
                     <div data-bind="if: $data.node().attributes.type === 'p'">
-                        <feed-widget-news-person params="{ nodepath: $data }"></feed-widget-news-person>
+                        <div data-bind="component: { name: 'feed-widget-news-person', params: { nodepath: $data } }"></div>
                     </div>
 
                     <div class="news-comments">
-                        <comment-widget-comments params="{ path: $data.node().attributes.path, rows: 3 }"></comment-widget-comments>
+                        <div data-bind="component: { name: 'comment-widget-comments', params: { path: $data.node().attributes.path, rows: 3 } }"></div>
                     </div>
                 </div>
             </div>
@@ -40,13 +40,13 @@
                 <div data-bind="foreach: eventsToday">
                     <div class="today-item">
                         <div data-bind="if: $data.type === 'birthday'">
-                            <feed-widget-today-birthday params="{ nodepath: $data }"></feed-widget-today-birthday>
+                            <div data-bind="component: { name: 'feed-widget-today-birthday', params: { nodepath: $data } }"></div>
                         </div>
                         <div data-bind="if: $data.type === 'marriage'">
-                            <feed-widget-today-marriage params="{ nodepath: $data }"></feed-widget-today-marriage>
+                            <div data-bind="component: { name: 'feed-widget-today-marriage', params: { nodepath: $data } }"></div>
                         </div>
                         <div data-bind="if: $data.type === 'engagement'">
-                            <feed-widget-today-engagement params="{ nodepath: $data }"></feed-widget-today-engagement>
+                            <div data-bind="component: { name: 'feed-widget-today-engagement', params: { nodepath: $data } }"></div>
                         </div>
                     </div>
                 </div>
@@ -62,13 +62,13 @@
                 <div data-bind="foreach: eventsTomorrow">
                     <div class="today-item">
                         <div data-bind="if: $data.type === 'birthday'">
-                            <feed-widget-today-birthday params="{ nodepath: $data }"></feed-widget-today-birthday>
+                            <div data-bind="component: { name: 'feed-widget-today-birthday', params: { nodepath: $data } }"></div>
                         </div>
                         <div data-bind="if: $data.type === 'marriage'">
-                            <feed-widget-today-marriage params="{ nodepath: $data }"></feed-widget-today-marriage>
+                            <div data-bind="component: { name: 'feed-widget-today-marriage', params: { nodepath: $data } }"></div>
                         </div>
                         <div data-bind="if: $data.type === 'engagement'">
-                            <feed-widget-today-engagement params="{ nodepath: $data }"></feed-widget-today-engagement>
+                            <div data-bind="component: { name: 'feed-widget-today-engagement', params: { nodepath: $data } }"></div>
                         </div>
                     </div>
                 </div>

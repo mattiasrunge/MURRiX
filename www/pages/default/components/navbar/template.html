@@ -33,7 +33,7 @@
                     <ul class="dropdown-menu" data-bind="foreach: stars">
                         <li>
                             <a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }">
-                                <file-widget-profile-picture style="display: inline-block;" params="{ size: 16, path: $data.path, nolazyload: true }"></file-widget-profile-picture>
+                                <div style="display: inline-block;" data-bind="component: { name: 'file-widget-profile-picture', params: { size: 16, path: $data.path, nolazyload: true } }"></div>
                                 &nbsp;&nbsp;
                                 <span data-bind="nodename: $data.path"></span>
                             </a>
