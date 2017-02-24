@@ -7,11 +7,11 @@
             <form class="form clearfix" data-bind="submit: login, if: !loggedIn()">
                 <div class="form-group label-floating">
                     <label for="username" class="control-label">E-Mail</label>
-                    <input type="text" class="form-control" id="username" data-bind="textInput: username, disable: loading">
+                    <input type="text" class="form-control" id="username" data-bind="textInput: username, disable: loading" />
                 </div>
                 <div class="form-group label-floating">
                     <label for="password" class="control-label">Password</label>
-                    <input type="password" class="form-control" id="password" data-bind="textInput: password, disable: loading">
+                    <input type="password" class="form-control" id="password" data-bind="textInput: password, disable: loading" />
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-raised btn-primary pull-right" data-bind="disable: loginDisallowed">Login</button>

@@ -1,120 +1,59 @@
 
+/* global location window document */
+
 import React from "react";
 import ReactDOM from "react-dom";
-import ko from "knockout";
+import Knockout from "components/knockout";
+import bluebird from "bluebird";
 
-/* global window document location */
+import "jquery";
+import "bootstrap";
+import "lib/extensions";
+import "lib/bindings";
+
+const api = require("api.io-client");
+const ui = require("lib/ui");
+const session = require("lib/session");
+
+// https://github.com/petkaantonov/bluebird/issues/903
+// https://github.com/babel/babel/issues/3922
+// https://github.com/tj/co/pull/256#issuecomment-168475913
+bluebird.config({
+    warnings: false
+});
 
 
-
-
-class Knockout extends React.PureComponent {
-    setRef(ref) {
-        this.ref = ref;
-
-        ko.cleanNode(this.ref);
-
-        ko.applyBindings(this.props, this.ref);
-    }
-
-    componentWillUnmount() {
-        if (this.ref) {
-            ko.cleanNode(this.ref);
-            delete this.ref;
-        }
-    }
-
-    render() {
-        console.log("Knockout render");
-        return (
-            <span ref={this.setRef.bind(this)}>
-                {this.props.children}
-            </span>
-        );
-    }
-}
-
-class KnockoutComponent extends React.PureComponent {
-    getModel() {
-        return this.props;
-    }
-
-    getTemplate() {
-        return "";
-    }
-
-    render() {
-        console.log("KnockoutComponent render");
-
-        return (
-            <Knockout {...this.getModel()}>
-                {this.getTemplate()}
-            </Knockout>
-        );
-    }
-}
-
-class Widget extends KnockoutComponent {
-    getTemplate() {
-        console.log("Widget getTemplate");
-        return (
-            <div>
-                Hej <span data-bind="text: name"></span>
-            </div>
-        );
-    }
-}
-
-class App extends KnockoutComponent {
-    getModel() {
-        return {
-            todos: this.props.todos
-        };
-    }
-
+class App extends Knockout {
     getTemplate() {
         console.log("App getTemplate");
 
         return (
-            <div>
-                <ul data-bind="foreach: todos">
-                    <li data-bind="text: $data"></li>
-                </ul>
-                <div data-bind="react: { name: 'widget', params: { name: 'Mattias' } }"></div>
-                <div data-bind="react: 'widget'"></div>
-            </div>
+            <div data-bind="react: 'default-root'"></div>
         );
     }
 }
 
-const components = {
-    "widget": Widget
-};
-
-ko.bindingHandlers.react = {
-    init: () => {
-        return { controlsDescendantBindings: true };
-    },
-    update: (element, valueAccessor, allBindings) => {
-        const data = ko.unwrap(valueAccessor());
-        const { name, params } = typeof data === "object" ? data : { name: data, params: {} };
-        const Component = components[ko.unwrap(name)];
-        const Element = React.createElement(Component, params);
-
-        ReactDOM.render(Element, element);
-    }
-};
-
-window.onload = () => {
-    const a = ko.observable("A");
-
-    setInterval(() => {
-        a(new Date().toString());
-    }, 2000);
+const start = async (args) => {
+    await api.connect(args);
+    await session.loadUser();
+    await ui.start();
 
     ReactDOM.render((
-        <App
-            todos={[ a, "B" ]}
-        />
+        <App />
     ), document.getElementById("main"));
+};
+
+
+window.onload = () => {
+    const args = {
+        hostname: location.hostname,
+        port: location.port,
+        secure: location.protocol.includes("https")
+    };
+
+    start(args).catch((error) => {
+        console.error("FATAL ERROR");
+        console.error(error);
+        console.error(error.stack);
+    });
 };

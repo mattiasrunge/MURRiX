@@ -20,17 +20,17 @@ model.pathError = ko.observable(false);
 model.pathPermissionDenied = ko.pureComputed(() => model.pathError() && model.pathError().toString().includes("Permission denied"));
 model.needLogin = ko.pureComputed(() => model.pathPermissionDenied() && !session.loggedIn());
 model.path = ko.pureComputed({
-    read: () => loc.current().page === "node" ? loc.current().path: "",
+    read: () => loc.current().page === "node" ? loc.current().path : "",
     write: (path) => {
         if (path) {
             return loc.goto({ page: "node", path: path }, false);
         }
 
         if (model.needLogin()) {
-            return loc.goto({ page: "login" })
+            return loc.goto({ page: "login" });
         }
 
-        loc.goto({}, false)
+        loc.goto({}, false);
     }
 });
 model.starred = ko.pureComputed(() => model.stars().filter((star) => star.path === model.path()).length > 0);

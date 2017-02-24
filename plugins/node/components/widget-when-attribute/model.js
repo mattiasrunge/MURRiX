@@ -2,7 +2,7 @@
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const chron = require("chron");
+const chron = require("chron-time");
 const stat = require("lib/status");
 
 model.nodepath = params.nodepath;

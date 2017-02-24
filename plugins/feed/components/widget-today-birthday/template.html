@@ -1,14 +1,16 @@
-<i class="material-icons md-24">cake</i>
-<div class="today-title">
-    <a href="#" data-bind="location: { page: 'node', path: nodepath().person.path }, text: nodepath().person.node.attributes.name"></a>
-    <span data-bind="if: nodepath().ageAtDeath === false">
-        celebrates
-        <span data-bind="text: nodepath().person.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
-        <span data-bind="number: nodepath().ageNow"></span> birthday
-    </span>
-    <span data-bind="if: nodepath().ageAtDeath !== false">
-        would have celebrated
-        <span data-bind="text: nodepath().person.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
-        <span data-bind="number: nodepath().ageNow"></span> birthday (died age <span data-bind="text: nodepath().ageAtDeath"></span>)
-    </span>
+<div>
+    <i class="material-icons md-24">cake</i>
+    <div class="today-title">
+        <a href="#" data-bind="location: { page: 'node', path: nodepath().person.path }, text: nodepath().person.node.attributes.name"></a>
+        <span data-bind="if: nodepath().ageAtDeath === false">
+            celebrates
+            <span data-bind="text: nodepath().person.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
+            <span data-bind="number: nodepath().ageNow"></span> birthday
+        </span>
+        <span data-bind="if: nodepath().ageAtDeath !== false">
+            would have celebrated
+            <span data-bind="text: nodepath().person.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
+            <span data-bind="number: nodepath().ageNow"></span> birthday (died age <span data-bind="text: nodepath().ageAtDeath"></span>)
+        </span>
+    </div>
 </div>

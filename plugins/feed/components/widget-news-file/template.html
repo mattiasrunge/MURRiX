@@ -1,8 +1,10 @@
-<div class="news-media">
-    <a href="#" data-bind="location: { showPath: nodepath().node().attributes.path }">
-        <div data-bind="picture: { filename: filename, width: size, classes: 'img-responsive' }"></div>
-    </a>
-</div>
-<div class="news-description" data-bind="visible: item() && item().node().attributes.description !== '', if: item() && item().node().attributes.description !== ''">
-    <span data-bind="html: item().node().attributes.description"></span>
+<div>
+    <div class="news-media">
+        <a href="#" data-bind="location: { showPath: nodepath().node().attributes.path }">
+            <div data-bind="picture: { filename: filename, width: size, classes: 'img-responsive' }"></div>
+        </a>
+    </div>
+    <div class="news-description" data-bind="visible: item() && item().node().attributes.description !== '', if: item() && item().node().attributes.description !== ''">
+        <span data-bind="html: item().node().attributes.description"></span>
+    </div>
 </div>

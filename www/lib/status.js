@@ -2,7 +2,7 @@
 
 const $ = require("jquery");
 const ko = require("knockout");
-require("snackbar");
+require("snackbarjs");
 
 let list = ko.observableArray();
 

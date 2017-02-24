@@ -1,7 +1,7 @@
 "use strict";
 
 const ko = require("knockout");
-const api = require("api.io-client");
+const api = require("api.io/api.io-client");
 
 module.exports = {
     list: ko.observableArray(),

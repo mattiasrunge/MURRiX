@@ -1,10 +1,5 @@
 "use strict";
 
-/* TODO:
- * Should implement a fullscreen option
- * Height should be adjusted if the window is resized
- */
-
 const ko = require("knockout");
 const $ = require("jquery");
 const api = require("api.io-client");

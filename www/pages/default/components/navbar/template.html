@@ -1,110 +1,112 @@
-<div class="navbar navbar-fixed-top navbar-inverse navbar-background" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#" data-bind="tooltip: 'Go to start'" data-placement="bottom" data-trigger="hover">
-                <i class="material-icons md-20">home</i>
-            </a>
-        </div>
-
-        <div class="navbar-form navbar-left collapse navbar-collapse">
-            <div class="form-group header-search">
-                <input type="text" class="form-control" placeholder="Search for anything" data-bind="nodeselect: { root: searchPaths, path: path, error: pathError }" style="width: 100%;">
-
-                <a class="star" href="#" data-bind=", attr: { title: starred() ? 'Click to unstar' : 'Click to star' }, click: toggleStar, visible: loggedIn() && path() !== '', tooltip: starred() ? 'Click to unstar' : 'Click to star'" data-placement="bottom" data-trigger="hover">
-                    <i class="material-icons md-24" data-bind="visible: starred">star</i>
-                    <i class="material-icons md-24" data-bind="visible: !starred()">star_border</i>
+<div>
+    <div class="navbar navbar-fixed-top navbar-inverse navbar-background" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#" data-bind="tooltip: 'Go to start'" data-placement="bottom" data-trigger="hover">
+                    <i class="material-icons md-20">home</i>
                 </a>
             </div>
-        </div>
 
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-right" data-bind="component: 'auth-widget-navbar-user'"></ul>
+            <div class="navbar-form navbar-left collapse navbar-collapse">
+                <div class="form-group header-search">
+                    <input type="text" class="form-control" placeholder="Search for anything" data-bind="nodeselect: { root: searchPaths, path: path, error: pathError }" style="width: 100%;" />
 
-            <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
-                <li>
-                    <a href="#" data-bind="click: random, visible: loggedIn(), tooltip: 'Go to random'" data-placement="bottom" data-trigger="hover">
-                        <i class="material-icons md-20">explore</i>
+                    <a class="star" href="#" data-bind=", attr: { title: starred() ? 'Click to unstar' : 'Click to star' }, click: toggleStar, visible: loggedIn() && path() !== '', tooltip: starred() ? 'Click to unstar' : 'Click to star'" data-placement="bottom" data-trigger="hover">
+                        <i class="material-icons md-24" data-bind="visible: starred">star</i>
+                        <i class="material-icons md-24" data-bind="visible: !starred()">star_border</i>
                     </a>
-                </li>
-                <li class="dropdown" data-bind="visible: stars().length > 0 && loggedIn()">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-bind="tooltip: 'Starred'" data-placement="bottom" data-trigger="hover">
-                        <i class="material-icons md-20">star</i>
-                    </a>
-                    <ul class="dropdown-menu" data-bind="foreach: stars">
-                        <li>
-                            <a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }">
-                                <div style="display: inline-block;" data-bind="component: { name: 'file-widget-profile-picture', params: { size: 16, path: $data.path, nolazyload: true } }"></div>
-                                &nbsp;&nbsp;
-                                <span data-bind="nodename: $data.path"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown" data-bind="visible: loggedIn">
-                    <a class="dropdown-toggle" title="Create" data-toggle="dropdown" href="#" data-bind="tooltip: 'Create'" data-placement="bottom" data-trigger="hover">
-                        <i class="material-icons md-20">add</i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#" data-bind="click: createShow.bind($data, 'album')">
-                                <i class="material-icons">photo_album</i>
-                                &nbsp;&nbsp;
-                                Album
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-bind="click: createShow.bind($data, 'person')">
-                                <i class="material-icons">person</i>
-                                &nbsp;&nbsp;
-                                Person
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-bind="click: createShow.bind($data, 'location')">
-                                <i class="material-icons">location_on</i>
-                                &nbsp;&nbsp;
-                                Location
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-bind="click: createShow.bind($data, 'camera')">
-                                <i class="material-icons">photo_camera</i>
-                                &nbsp;&nbsp;
-                                Camera
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+                </div>
+            </div>
 
-<form data-bind="submit: create">
-    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" data-bind="modal: showCreateModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">
-                        Create new <span data-bind="text: createType"></span>
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" class="form-control" placeholder="Write a name" data-bind="textInput: createName">
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea rows="6" class="form-control" placeholder="Write a description" data-bind="textInput: createDescription"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right" data-bind="component: 'auth-widget-navbar-user'"></ul>
+
+                <ul class="nav navbar-nav navbar-right" data-bind="visible: user() !== false">
+                    <li>
+                        <a href="#" data-bind="click: random, visible: loggedIn(), tooltip: 'Go to random'" data-placement="bottom" data-trigger="hover">
+                            <i class="material-icons md-20">explore</i>
+                        </a>
+                    </li>
+                    <li class="dropdown" data-bind="visible: stars().length > 0 && loggedIn()">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" data-bind="tooltip: 'Starred'" data-placement="bottom" data-trigger="hover">
+                            <i class="material-icons md-20">star</i>
+                        </a>
+                        <ul class="dropdown-menu" data-bind="foreach: stars">
+                            <li>
+                                <a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }">
+                                    <div style="display: inline-block;" data-bind="component: { name: 'file-widget-profile-picture', params: { size: 16, path: $data.path, nolazyload: true } }"></div>
+                                    &nbsp;&nbsp;
+                                    <span data-bind="nodename: $data.path"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" data-bind="visible: loggedIn">
+                        <a class="dropdown-toggle" title="Create" data-toggle="dropdown" href="#" data-bind="tooltip: 'Create'" data-placement="bottom" data-trigger="hover">
+                            <i class="material-icons md-20">add</i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" data-bind="click: createShow.bind($data, 'album')">
+                                    <i class="material-icons">photo_album</i>
+                                    &nbsp;&nbsp;
+                                    Album
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-bind="click: createShow.bind($data, 'person')">
+                                    <i class="material-icons">person</i>
+                                    &nbsp;&nbsp;
+                                    Person
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-bind="click: createShow.bind($data, 'location')">
+                                    <i class="material-icons">location_on</i>
+                                    &nbsp;&nbsp;
+                                    Location
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-bind="click: createShow.bind($data, 'camera')">
+                                    <i class="material-icons">photo_camera</i>
+                                    &nbsp;&nbsp;
+                                    Camera
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-</form>
+
+    <form data-bind="submit: create">
+        <div class="modal fade" id="createModal" tabindex="-1" role="dialog" data-bind="modal: showCreateModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">
+                            Create new <span data-bind="text: createType"></span>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" class="form-control" placeholder="Write a name" data-bind="textInput: createName" />
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea rows="6" class="form-control" placeholder="Write a description" data-bind="textInput: createDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

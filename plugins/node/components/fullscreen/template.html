@@ -84,7 +84,7 @@
             Tags
         </h2>
 
-        <input type="text" class="form-control" style="margin-top: 15px;" placeholder="Add a person" data-bind="nodeselect: { root: '/people', path: personPath }, visible: nodepath().editable, disable: selectedTag">
+        <input type="text" class="form-control" style="margin-top: 15px;" placeholder="Add a person" data-bind="nodeselect: { root: '/people', path: personPath }, visible: nodepath().editable, disable: selectedTag" />
 
         <div data-bind="foreach: tags">
             <div class="tag-item">
@@ -131,31 +131,32 @@
         </p>
         <p class="text-muted" style="font-size: 12px;">
             Some examples:
-            <table class="table table-condensed" style="font-size: 10px;">
-                <tbody>
-                    <tr>
-                        <td>2002-03-04 13:45:03+01:00</td>
-                        <td>Exact time</td>
-                    </tr>
-                    <tr>
-                        <td>2002-03-04 13:45:03</td>
-                        <td>Exact local time</td>
-                    </tr>
-                    <tr>
-                        <td>2002-03-04 13</td>
-                        <td>Exact date with hour</td>
-                    </tr>
-                    <tr>
-                        <td>2002-03</td>
-                        <td>Exact year and month</td>
-                    </tr>
-                    <tr>
-                        <td>2002-03|04</td>
-                        <td>Exact year but month range</td>
-                    </tr>
-                </tbody>
-            </table>
         </p>
+        <table class="table table-condensed" style="font-size: 10px;">
+            <tbody>
+                <tr>
+                    <td>2002-03-04 13:45:03+01:00</td>
+                    <td>Exact time</td>
+                </tr>
+                <tr>
+                    <td>2002-03-04 13:45:03</td>
+                    <td>Exact local time</td>
+                </tr>
+                <tr>
+                    <td>2002-03-04 13</td>
+                    <td>Exact date with hour</td>
+                </tr>
+                <tr>
+                    <td>2002-03</td>
+                    <td>Exact year and month</td>
+                </tr>
+                <tr>
+                    <td>2002-03|04</td>
+                    <td>Exact year but month range</td>
+                </tr>
+            </tbody>
+        </table>
+
 
         <div data-bind="component: { name: 'node-widget-when-attribute', params: { nodepath: nodepath } }"></div>
     </div>
@@ -166,13 +167,13 @@
         </div>
         <div data-bind="visible: nodepath().node().attributes.type === 'video', if: nodepath().node().attributes.type === 'video'" class="resize-fit-container">
             <video autoplay controls preload="metadata" class="resize-fit-center">
-                <source src="" type="video/webm" data-bind="attr: { src: filename }">
+                <source src="" type="video/webm" data-bind="attr: { src: filename }" />
                 Your browser does not support the video tag.
             </video>
         </div>
         <div data-bind="visible: nodepath().node().attributes.type === 'audio', if: nodepath().node().attributes.type === 'audio'" style="position: absolute; left: 0; right: 0; bottom: 0;">
             <audio autoplay controls preload="metadata" style="width: 100%;">
-                <source src="" type="video/webm" data-bind="attr: { src: filename }">
+                <source src="" type="video/webm" data-bind="attr: { src: filename }" />
                 Your browser does not support the audio tag.
             </audio>
         </div>

@@ -162,21 +162,25 @@ module.exports = function(options) {
                 }
             ]
         },
-        plugins: [],
+        plugins: [
+            new webpack.ProvidePlugin({
+                jQuery: "jquery",
+                $: "jquery",
+                jquery: "jquery"
+            })
+        ],
         resolve: {
             modules: [
                 "node_modules",
-                path.join("..", "node_modules"),
-                path.join(__dirname, "..", "..", "www", "node_modules"),
-                path.join(__dirname, "..", "node_modules")
+                path.join(__dirname, "www", "node_modules"),
+                path.join(__dirname, "node_modules")
             ],
             alias: {
-                "lib": path.join(__dirname, "..", "..", "www", "lib"),
-                "www": path.join(__dirname, "..", "..", "www"),
-                "ui-lib": path.join(__dirname, "lib"),
-                "ui-styles": path.join(__dirname, "styles"),
-                "ui-components": path.join(__dirname, "components"),
-                "ui-mgr": path.join(__dirname, "..", "lib", "managers")
+                "api.io-client": path.join(__dirname, "node_modules", "api.io", "api.io-client"),
+                "lib": path.join(__dirname, "www", "lib"),
+                "components": path.join(__dirname, "www", "pages", "default", "components"),
+                "www": path.join(__dirname, "www"),
+                "plugins": path.join(__dirname, "plugins")
             }
         },
         /* Declare node modules empty, not present in browser */

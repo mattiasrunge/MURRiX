@@ -40,8 +40,7 @@
                     </h4>
                     <p class="text-muted" data-bind="visible: $data.withPaths.length > 0, if: $data.withPaths.length > 0" style="padding-bottom: 0; margin-top: -10px; font-size: 12px;">
                         <em>
-                            &dash;
-                            with
+                            - with
                             <span data-bind="foreach: $data.withPaths">
                                 <a href="#" data-bind="location: { page: 'node', path: $data }, nodename: $data"></a>
                             </span>
@@ -54,8 +53,10 @@
             </tr>
         </tbody>
         <tbody>
-            <td style="padding: 50px; border-right: 1px solid #ccc; background-color: #EFEFEF; width: 250px; vertical-align: top; text-align: right; padding-bottom: 0; padding-left: 0; font-weight: bold;" class="text-muted"></td>
-            <td style="padding: 50px; vertical-align: top; position: relative; padding-bottom: 0;"></td>
+            <tr>
+                <td style="padding: 50px; border-right: 1px solid #ccc; background-color: #EFEFEF; width: 250px; vertical-align: top; text-align: right; padding-bottom: 0; padding-left: 0; font-weight: bold;" class="text-muted"></td>
+                <td style="padding: 50px; vertical-align: top; position: relative; padding-bottom: 0;"></td>
+            </tr>
         </tbody>
     </table>
 </div>

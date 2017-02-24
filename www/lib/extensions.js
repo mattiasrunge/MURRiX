@@ -1,9 +1,34 @@
 "use strict";
 
+import React from "react";
+import ReactDOM from "react-dom";
+import components from "lib/components";
+
 const ko = require("knockout");
-const api = require("api.io-client");
+const api = require("api.io/api.io-client");
 const stat = require("lib/status");
 const utils = require("lib/utils");
+
+ko.bindingHandlers.react = {
+    init: () => {
+        return { controlsDescendantBindings: true };
+    },
+    update: (element, valueAccessor) => {
+        const data = ko.unwrap(valueAccessor());
+        const { name, params } = typeof data === "object" ? data : { name: data, params: {} };
+        const Component = components[ko.unwrap(name)];
+
+        if (!Component) {
+            console.error("Component is not defined:", ko.unwrap(name));
+
+            return;
+        }
+
+        const Element = React.createElement(Component, params);
+
+        ReactDOM.render(Element, element);
+    }
+};
 
 ko.nodepath = function(path, options) {
     options = options || {};

@@ -1,0 +1,73 @@
+
+import React from "react";
+import Knockout from "components/knockout";
+
+const ko = require("knockout");
+const api = require("api.io-client");
+const stat = require("lib/status");
+
+class NodeWidgetTextAttribute extends Knockout {
+    async getModel() {
+        const model = {};
+
+        model.nodepath = this.props.nodepath;
+        model.name = ko.pureComputed(() => ko.unwrap(this.props.name));
+        model.nicename = ko.pureComputed(() => model.name().replace(/([A-Z])/g, " $1").toLowerCase());
+        model.value = ko.pureComputed(() => {
+            if (!model.nodepath()) {
+                return "";
+            }
+
+            return model.nodepath().node().attributes[model.name()];
+        });
+        model.editable = ko.pureComputed(() => {
+            if (!model.nodepath()) {
+                return false;
+            }
+
+            return ko.unwrap(model.nodepath().editable);
+        });
+
+        model.change = (model, event) => {
+            let value = event.target.innerText.replace(/(^\n|\n$)/g, "");
+
+            if (ko.unwrap(this.props.html)) {
+                value = event.target.innerHTML.replace(/(^<br>|<br>$)/g, "");
+            }
+
+            if (!model.editable() || model.value() === value) {
+                return;
+            }
+
+            console.log("Saving attribute " + model.name() + ", old value was \"" + model.value() + "\", new value is \"" + value + "\"");
+
+            let attributes = {};
+
+            attributes[model.name()] = value;
+
+            api.vfs.setattributes(model.nodepath().path, attributes)
+            .then((node) => {
+                model.nodepath().node(node);
+                console.log("Saving attribute " + model.name() + " successfull!", node);
+            })
+            .catch((error) => {
+                stat.printError(error);
+            });
+        };
+
+
+        return model;
+    }
+
+    getTemplate() {
+        return (
+            <span className="node-widget-text-attribute">
+                <span data-bind="html: value, event: { blur: change }, attr: { contenteditable: editable() ? 'true' : 'false', placeholder: 'Add ' + nicename() }, style: { display: value() === '' ? 'inline-block' : 'inherit' }"></span>
+                <i data-bind="visible: !editable() && value() === ''" className="text-muted">No <span data-bind="text: nicename"></span> found</i>
+            </span>
+
+        );
+    }
+}
+
+export default NodeWidgetTextAttribute;
