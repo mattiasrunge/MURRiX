@@ -20,10 +20,12 @@ const LazyLoad = require("vanilla-lazyload");
 const dragula = require("dragula");
 const Chart = require("chart.js");
 const chron = require("chron-time");
-import "corejs-typeahead/dist/typeahead.jquery";
-import "jquery-contextmenu";
+require("jquery-contextmenu");
+require("corejs-typeahead/dist/typeahead.jquery");
+
 import "moment-duration-format";
 import "jdomizio-imgareaselect";
+
 
 
 let lazyload;
@@ -405,7 +407,7 @@ ko.bindingHandlers.location = {
         if (typeof value !== "string") {
             replace = ko.unwrap(value.replace);
             delete value.replace;
-            
+
             value = loc.constructUrl(value, true);
         } else if (value[0] !== "#" && !value.startsWith("http") && !value.startsWith("mailto")) {
             value = "#" + value;
@@ -938,7 +940,7 @@ ko.bindingHandlers.groupselect = {
         element.loading = stat.create();
 
         $element.addClass("typeahead");
-        return; // TODO Fix typeahead
+
         $element.typeahead({
             hint: true,
             highlight: true,
@@ -998,7 +1000,7 @@ ko.bindingHandlers.groupselect = {
     update: (element, valueAccessor) => {
         let gid = valueAccessor().gid;
         let $element = $(element);
-        return; // TODO Fix typeahead
+
         if (gid()) {
             element.loading(true);
             api.auth.groups({ filter: { "attributes.gid": gid() }, limit: 1 })
@@ -1053,7 +1055,7 @@ ko.bindingHandlers.nodeselect = {
         let limit = ko.unwrap(valueAccessor().limit) || 10;
         let $element = $(element);
         element.loading = stat.create();
-        return; // TODO Fix typeahead
+
         $element.addClass("typeahead");
 
 
@@ -1153,7 +1155,7 @@ ko.bindingHandlers.nodeselect = {
         let errorObservable = valueAccessor().error;
         let initial = ko.unwrap(valueAccessor().initial) || "";
         let $element = $(element);
-        return; // TODO Fix typeahead
+
         if (path()) {
             element.loading(true);
             api.vfs.resolve(path())

@@ -5,12 +5,14 @@
         <span data-bind="if: nodepath().ageAtDeath === false">
             <span> celebrates </span>
             <span data-bind="text: nodepath().person.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
+            <span> </span>
             <span data-bind="number: nodepath().ageNow"></span>
             <span> birthday</span>
         </span>
         <span data-bind="if: nodepath().ageAtDeath !== false">
             <span> would have celebrated </span>
             <span data-bind="text: nodepath().person.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
+            <span> </span>
             <span data-bind="number: nodepath().ageNow"></span>
             <span> birthday (died age <span data-bind="text: nodepath().ageAtDeath"></span>)</span>
         </span>

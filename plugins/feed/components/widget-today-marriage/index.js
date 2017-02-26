@@ -25,6 +25,7 @@ class FeedWidgetTodayMarriage extends Knockout {
                         <a href="#" data-bind="location: { page: 'node', path: nodepath().person1.path }, text: nodepath().person1.node.attributes.name"></a>
                         <span> celebrates </span>
                         <span data-bind="text: nodepath().person1.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
+                        <span> </span>
                         <span data-bind="number: nodepath().years"></span>
                         <span> wedding anniversary</span>
                     </span>

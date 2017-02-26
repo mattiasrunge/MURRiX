@@ -60,11 +60,11 @@
 
                     <td style="padding-top: 1px;">
                         <a href="#" data-bind="text: nodepath().node().attributes.name, attr: { href: 'file/download/' + nodepath().node().attributes.diskfilename + '/' + nodepath().node().attributes.name }"></a>
-                        (<span data-bind="htmlSize: nodepath().node().attributes.size"></span>)
+                        <span> (<span data-bind="htmlSize: nodepath().node().attributes.size"></span>)</span>
                         <div data-bind="if: versions().length > 0">
                             <small data-bind="foreach: versions" style="font-size: 80%;">
                                 <a style="color: #999;" href="#" data-bind="text: $data.node().attributes.name, attr: { href: 'file/download/' + $data.node().attributes.diskfilename + '/' + $data.node().attributes.name }"></a>
-                                (<span data-bind="htmlSize: $data.node().attributes.size"></span>)
+                                <span> (<span data-bind="htmlSize: $data.node().attributes.size"></span>)</span>
                             </small>
                         </div>
                     </td>

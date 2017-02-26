@@ -133,10 +133,10 @@ class FileWidgetGrid extends Knockout {
                     <i className="material-icons md-48 spin">cached</i>
                     <div>
                         <strong>
-                            Generating
+                            <span>Generating </span>
                             <span data-bind="if: progress">
                                 <span data-bind="text: progress().complete"></span>
-                                of
+                                <span> of </span>
                                 <span data-bind="text: progress().total"></span>
                             </span>
                         </strong>

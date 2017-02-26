@@ -29,25 +29,25 @@ class DefaultSidebar extends Knockout {
                     <li data-bind="css: { active: page() === 'news' || page() === 'default' }">
                         <a data-bind="location: { page: null }">
                             <i className="material-icons md-18">home</i>
-                            News
+                            <span> News</span>
                         </a>
                     </li>
                     <li data-bind="css: { active: page() === 'search' }">
                         <a data-bind="location: { page: 'search' }">
                             <i className="material-icons md-18">search</i>
-                            Search by name
+                            <span> Search by name</span>
                         </a>
                     </li>
                     <li data-bind="css: { active: page() === 'year' }">
                         <a data-bind="location: { page: 'year' }">
                             <i className="material-icons md-18">date_range</i>
-                            Search by year
+                            <span> Search by year</span>
                         </a>
                     </li>
                     <li data-bind="css: { active: page() === 'labels' }">
                         <a data-bind="location: { page: 'labels' }">
                             <i className="material-icons md-18">label</i>
-                            Browse by label
+                            <span> Browse by label</span>
                         </a>
                     </li>
 
@@ -55,7 +55,7 @@ class DefaultSidebar extends Knockout {
                     <li data-bind="css: { active: page() === 'charts' }">
                         <a data-bind="location: { page: 'charts' }">
                             <i className="material-icons md-18">show_chart</i>
-                            Charts
+                            <span> Charts</span>
                         </a>
                     </li>
                 </ul>
