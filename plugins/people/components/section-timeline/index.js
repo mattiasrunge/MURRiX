@@ -1,6 +1,7 @@
 
 import React from "react";
 import Knockout from "components/knockout";
+import Comment from "components/comment";
 
 const ko = require("knockout");
 const $ = require("jquery");
@@ -163,7 +164,7 @@ class PeopleSectionTimeline extends Knockout {
                                 </h4>
                                 <p className="text-muted" data-bind="visible: $data.withPaths.length > 0, if: $data.withPaths.length > 0" style={{ paddingBottom: "0", marginTop: "-10px", fontSize: "12px" }}>
                                     <em>
-                                        - with
+                                        <span>- with </span>
                                         <span data-bind="foreach: $data.withPaths">
                                             <a href="#" data-bind="location: { page: 'node', path: $data }, nodename: $data"></a>
                                         </span>

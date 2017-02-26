@@ -1,6 +1,7 @@
 
 import React from "react";
 import Knockout from "components/knockout";
+import Comment from "components/comment";
 
 const ko = require("knockout");
 
@@ -23,14 +24,15 @@ class NodeWidgetSections extends Knockout {
             <div>
                 <div className="row">
                     <ul className="nav nav-pills" style={{ marginLeft: "15px", marginRight: "15px", marginTop: "15px" }}>
-                        <span data-bind="foreach: sections">
+                        <Comment text="ko foreach: sections" />
                             <li data-bind="css: { active: $root.section() === $data.name || ($index() === 0 && $root.section() === 'default') }">
                                 <a data-bind="location: { section: $data.name }">
                                     <i className="material-icons md-18" data-bind="text: $data.icon"></i>
+                                    <span> </span>
                                     <span data-bind="text: $data.title"></span>
                                 </a>
                             </li>
-                        </span>
+                        <Comment text="/ko" />
 
                         <li className="pull-right" data-bind="css: { active: $root.section() === 'comments' }, tooltip: 'Comments'" data-trigger="hover">
                             <a data-bind="location: { section: 'comments' }">

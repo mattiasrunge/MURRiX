@@ -20,12 +20,11 @@ const LazyLoad = require("vanilla-lazyload");
 const dragula = require("dragula");
 const Chart = require("chart.js");
 const chron = require("chron-time");
-const Typeahead = require("corejs-typeahead/dist/typeahead.jquery");
+import "corejs-typeahead/dist/typeahead.jquery";
 import "jquery-contextmenu";
 import "moment-duration-format";
 import "jdomizio-imgareaselect";
 
-console.log("typeahead", Typeahead);
 
 let lazyload;
 
@@ -411,11 +410,11 @@ ko.bindingHandlers.location = {
         if ($element.prop("tagName").toLowerCase() === "a") {
             $element.attr("href", value);
 
-            //             $element.on("click", (event) => {
-            //                 event.preventDefault();
-            //                 event.stopPropagation();
-            //                 loc.goto(value);
-            //             });
+            $element.on("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                loc.goto(value);
+            });
         } else if ($element.prop("tagName").toLowerCase() === "iframe") {
             $element.attr("src", value);
             $element.get(0).contentWindow.location = value;
@@ -935,7 +934,7 @@ ko.bindingHandlers.groupselect = {
         element.loading = stat.create();
 
         $element.addClass("typeahead");
-        //return; // TODO Fix typeahead
+        return; // TODO Fix typeahead
         $element.typeahead({
             hint: true,
             highlight: true,
@@ -995,7 +994,7 @@ ko.bindingHandlers.groupselect = {
     update: (element, valueAccessor) => {
         let gid = valueAccessor().gid;
         let $element = $(element);
-//return; // TODO Fix typeahead
+        return; // TODO Fix typeahead
         if (gid()) {
             element.loading(true);
             api.auth.groups({ filter: { "attributes.gid": gid() }, limit: 1 })
@@ -1050,11 +1049,11 @@ ko.bindingHandlers.nodeselect = {
         let limit = ko.unwrap(valueAccessor().limit) || 10;
         let $element = $(element);
         element.loading = stat.create();
-//return; // TODO Fix typeahead
+        return; // TODO Fix typeahead
         $element.addClass("typeahead");
 
 
-        console.log("init", $element);
+
 
         $element.typeahead({
             hint: true,
@@ -1150,7 +1149,7 @@ ko.bindingHandlers.nodeselect = {
         let errorObservable = valueAccessor().error;
         let initial = ko.unwrap(valueAccessor().initial) || "";
         let $element = $(element);
-//return; // TODO Fix typeahead
+        return; // TODO Fix typeahead
         if (path()) {
             element.loading(true);
             api.vfs.resolve(path())

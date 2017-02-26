@@ -1,6 +1,7 @@
 
 import React from "react";
 import Knockout from "components/knockout";
+import Comment from "components/comment";
 
 const ko = require("knockout");
 const moment = require("moment");
@@ -74,9 +75,12 @@ class FeedPage extends Knockout {
             let readable = await api.vfs.access(item.node.attributes.path, "r");
 
             if (readable) {
+                item.node = ko.observable(item.node);
                 filtered.push(item);
             }
         }
+
+        model.list(filtered);
 
         let subscription = api.feed.on("new", (data) => {
             api.vfs.access(data.path, "r")
@@ -93,20 +97,6 @@ class FeedPage extends Knockout {
                 console.error(error);
             });
         });
-
-        const delayAdd = (item) => {
-            return new Promise((resolve) => {
-                item.node = ko.observable(item.node);
-
-                model.list.push(item);
-
-                setTimeout(resolve, 300);
-            });
-        };
-
-        for (let item of filtered) {
-            await delayAdd(item);
-        }
 
         model.dispose = () => {
             api.feed.off(subscription);

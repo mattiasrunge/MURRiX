@@ -60,6 +60,7 @@ for (const line of html.split("\n")) {
     .replace(/tabindex=/g, "tabIndex=")
     .replace(/autocomplete=/g, "autoComplete=")
     .replace(/autoplay/g, "autoPlay")
+    .replace(/<\!-- (.*?) -->/g, (whole, content) => `<Comment text="${content}" />`)
     .replace(/<\!--/g, "{/* ")
     .replace(/-->/g, " */}")
     .replace(/<br>/g, "<br />")

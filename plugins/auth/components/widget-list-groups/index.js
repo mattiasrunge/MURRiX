@@ -1,6 +1,7 @@
 
 import React from "react";
 import Knockout from "components/knockout";
+import Comment from "components/comment";
 
 const utils = require("lib/utils");
 

@@ -1,6 +1,7 @@
 
 import React from "react";
 import Knockout from "components/knockout";
+import Comment from "components/comment";
 
 const ko = require("knockout");
 
@@ -25,7 +26,7 @@ class NodeWidgetCard extends Knockout {
                         <i className="material-icons md-18" data-bind="visible: nodepath().node().properties.type === 'p'">person</i>
                         <i className="material-icons md-18" data-bind="visible: nodepath().node().properties.type === 'l'">location_on</i>
                         <i className="material-icons md-18" data-bind="visible: nodepath().node().properties.type === 'c'">photo_camera</i>
-
+                        <span> </span>
                         <span data-bind="text: nodepath().node().attributes.fullname ? nodepath().node().attributes.fullname :  nodepath().node().attributes.name"></span>
                     </div>
                 </div>

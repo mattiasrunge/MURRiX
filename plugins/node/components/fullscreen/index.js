@@ -1,6 +1,7 @@
 
 import React from "react";
 import Knockout from "components/knockout";
+import Comment from "components/comment";
 
 const ko = require("knockout");
 const api = require("api.io-client");
@@ -533,11 +534,13 @@ class NodeFullscreen extends Knockout {
                     <span className="middle">
                         <span data-bind="click: sidebarView.bind($data, 'time')" style={{ cursor: "pointer" }}>
                             <i className="material-icons md-18">access_time</i>
+                            <span> </span>
                             <span data-bind="displayTime: nodepath().node().attributes.time"></span>
                         </span>
 
                         <span data-bind="click: sidebarView.bind($data, 'position')" style={{ cursor: "pointer" }}>
                             <i className="material-icons md-18">place</i>
+                            <span> </span>
                             <span data-bind="if: location">
                                 <span data-bind="text: location().node().attributes.name"></span>
                             </span>
@@ -548,6 +551,7 @@ class NodeFullscreen extends Knockout {
 
                         <span data-bind="tooltip: tagNames, click: sidebarView.bind($data, 'tag')" style={{ cursor: "pointer" }}>
                             <i className="material-icons md-18">face</i>
+                            <span> </span>
                             <span data-bind="text: tags().length"></span>
                         </span>
                     </span>

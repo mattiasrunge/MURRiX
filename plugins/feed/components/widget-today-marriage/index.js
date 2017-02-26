@@ -1,6 +1,7 @@
 
 import React from "react";
 import Knockout from "components/knockout";
+import Comment from "components/comment";
 
 const ko = require("knockout");
 const utils = require("lib/utils");
@@ -22,17 +23,18 @@ class FeedWidgetTodayMarriage extends Knockout {
                 <div className="today-title">
                     <span data-bind="if: !nodepath().person2">
                         <a href="#" data-bind="location: { page: 'node', path: nodepath().person1.path }, text: nodepath().person1.node.attributes.name"></a>
-                        celebrates
+                        <span> celebrates </span>
                         <span data-bind="text: nodepath().person1.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
-                        <span data-bind="number: nodepath().years"></span> wedding anniversary
+                        <span data-bind="number: nodepath().years"></span>
+                        <span> wedding anniversary</span>
                     </span>
                     <span data-bind="if: nodepath().person2">
                         <a href="#" data-bind="location: { page: 'node', path: nodepath().person1.path }, text: nodepath().person1.node.attributes.name"></a>
-                        and
+                        <span> and </span>
                         <a href="#" data-bind="location: { page: 'node', path: nodepath().person2.path }, text: nodepath().person2.node.attributes.name"></a>
-                        celebrates
-                        their
-                        <span data-bind="number: nodepath().years"></span> wedding anniversary
+                        <span> celebrates their </span>
+                        <span data-bind="number: nodepath().years"></span>
+                        <span> wedding anniversary</span>
                     </span>
                 </div>
             </div>

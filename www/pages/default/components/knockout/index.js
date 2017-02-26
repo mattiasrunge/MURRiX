@@ -1,29 +1,27 @@
 
 import React from "react";
+import ReactDOM from "react-dom";
 import ko from "knockout";
 
 class KnockoutWrapper extends React.PureComponent {
-    setRef(ref) {
-        this.ref = ref;
+    componentDidMount() {
+        this.setRef(ReactDOM.findDOMNode(this));
+    }
 
-        ko.cleanNode(this.ref);
+    setRef(ref) {
+        this.ref && ko.cleanNode(this.ref);
+        this.ref = ref;
 
         ko.applyBindings(this.props, this.ref);
 
-        if (this.props.afterRender) {
-            this.props.afterRender();
-        }
+        this.props.afterRender && this.props.afterRender();
     }
 
     dispose() {
-        if (this.props.dispose) {
-            this.props.dispose();
-        }
+        this.props.dispose && this.props.dispose();
 
-        if (this.ref) {
-            ko.cleanNode(this.ref);
-            delete this.ref;
-        }
+        this.ref && ko.cleanNode(this.ref);
+        delete this.ref;
     }
 
     componentWillUnmount() {
@@ -31,11 +29,7 @@ class KnockoutWrapper extends React.PureComponent {
     }
 
     render() {
-        return (
-            <span ref={this.setRef.bind(this)}>
-                {this.props.children}
-            </span>
-        );
+        return this.props.children;
     }
 }
 

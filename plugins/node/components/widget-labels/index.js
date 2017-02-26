@@ -1,6 +1,7 @@
 
 import React from "react";
 import Knockout from "components/knockout";
+import Comment from "components/comment";
 
 const ko = require("knockout");
 const api = require("api.io-client");
@@ -52,7 +53,7 @@ class NodeWidgetLabels extends Knockout {
             <div className="node-widget-labels">
                 <div className="edit-hover-container" data-bind="visible: nodepath() && nodepath().node().attributes.labels.length > 0 && !editing(), if: nodepath">
                     <span data-bind="foreach: nodepath().node().attributes.labels">
-                        <a href="#" className="label label-primary" data-bind="text: $data, location: { page: 'search', query: 'label:' + $data }"></a>
+                        <a href="#" className="label label-primary" data-bind="text: $data, location: { page: 'search', query: 'label:' + $data }" style={{ marginRight: "5px", marginBottom: "5px" }}></a>
                     </span>
 
                     <a className="edit-hover-link" href="#" title="Edit" data-bind="visible: nodepath().editable, click: edit">
