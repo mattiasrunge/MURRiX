@@ -1,4 +1,4 @@
-<div class="fullscreen animated zoomIn" data-bind="css: { showsidebar: sidebarView }, if: nodepath">
+<div class="fullscreen animated zoomIn" data-bind="css: { showsidebar: sidebarView() !== 'hide' }, if: nodepath">
     <div class="sidebar" data-bind="visible: sidebarView() === 'main', if: sidebarView() === 'main'">
         <h2 style="margin-top: 0;">
             Information
@@ -184,19 +184,19 @@
 
     <div class="bottombar">
         <span data-bind="if: surroundings">
-            <a href="#" data-bind="location: { showPath: surroundings().previous.path }">
+            <a href="#" data-bind="location: { showPath: surroundings().previous.path, replace: true }">
                 <i class="material-icons md-48 pull-left">arrow_back</i>
             </a>
         </span>
 
         <span class="middle">
-            <span data-bind="click: sidebarView.bind($data, 'time')" style="cursor: pointer;">
+            <span data-bind="location: { sidebar: 'time', replace: true }" style="cursor: pointer;">
                 <i class="material-icons md-18">access_time</i>
                 <span> </span>
                 <span data-bind="displayTime: nodepath().node().attributes.time"></span>
             </span>
 
-            <span data-bind="click: sidebarView.bind($data, 'position')" style="cursor: pointer;">
+            <span data-bind="location: { sidebar: 'position', replace: true }" style="cursor: pointer;">
                 <i class="material-icons md-18">place</i>
                 <span> </span>
                 <span data-bind="if: location">
@@ -207,7 +207,7 @@
                 </span>
             </span>
 
-            <span data-bind="tooltip: tagNames, click: sidebarView.bind($data, 'tag')" style="cursor: pointer;">
+            <span data-bind="tooltip: tagNames, location: { sidebar: 'tag', replace: true }" style="cursor: pointer;">
                 <i class="material-icons md-18">face</i>
                 <span> </span>
                 <span data-bind="text: tags().length"></span>
@@ -215,17 +215,17 @@
         </span>
 
         <span data-bind="if: surroundings">
-            <a href="#" data-bind="location: { showPath: surroundings().next.path }">
+            <a href="#" data-bind="location: { showPath: surroundings().next.path, replace: true }">
                 <i class="material-icons md-48 pull-right">arrow_forward</i>
             </a>
         </span>
     </div>
 
-    <a href="#" class="information" data-bind="click: sidebarView.bind($data, 'main'), visible: !sidebarView()">
+    <a href="#" class="information" data-bind="location: { sidebar: 'main', replace: true }, visible: sidebarView() === 'hide'">
         <i class="material-icons">info</i>
     </a>
 
-    <a href="#" class="hideinformation" data-bind="click: sidebarView.bind($data, false), visible: sidebarView">
+    <a href="#" class="hideinformation" data-bind="location: { sidebar: 'hide', replace: true }, visible: sidebarView() !== 'hide'">
         <i class="material-icons">forward</i>
     </a>
 
@@ -247,22 +247,25 @@
                 Mirror
             </a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#" data-bind="click: sidebarView.bind($data, 'tag')">
+            <li><a href="#" data-bind="location: { sidebar: 'tag', replace: true }">
                 <i class="material-icons">face</i>
                 Tag people
             </a></li>
-            <li><a href="#" data-bind="click: sidebarView.bind($data, 'position')">
+            <li><a href="#" data-bind="location: { sidebar: 'position', replace: true }">
                 <i class="material-icons">place</i>
                 Set location
             </a></li>
-            <li><a href="#" data-bind="click: sidebarView.bind($data, 'time')">
+            <li><a href="#" data-bind="location: { sidebar: 'time', replace: true }">
                 <i class="material-icons">access_time</i>
                 Set time
             </a></li>
         </ul>
     </div>
 
-    <a href="#" class="exit" data-bind="click: exit">
+    <a href="#" class="exit" data-bind="visible: sidebarView() === 'main', location: { sidebar: null, showPath: null, replace: true }">
+        <i class="material-icons">close</i>
+    </a>
+    <a href="#" class="exit" data-bind="visible: sidebarView() !== 'main', location: { sidebar: null, replace: true }">
         <i class="material-icons">close</i>
     </a>
 </div>

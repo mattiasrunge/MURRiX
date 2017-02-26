@@ -14,7 +14,7 @@ class NodeFullscreen extends Knockout {
         const model = {};
 
         model.loading = stat.create();
-        model.sidebarView = ko.observable("main");
+        model.sidebarView = ko.pureComputed(() => ko.unwrap(loc.current().sidebar) || "main");
         model.personPath = ko.observable(false);
         model.selectedTag = ko.observable(false);
         model.height = ko.pureComputed(() => {
@@ -340,7 +340,7 @@ class NodeFullscreen extends Knockout {
 
     getTemplate() {
         return (
-            <div className="fullscreen animated zoomIn" data-bind="css: { showsidebar: sidebarView }, if: nodepath">
+            <div className="fullscreen animated zoomIn" data-bind="css: { showsidebar: sidebarView() !== 'hide' }, if: nodepath">
                 <div className="sidebar" data-bind="visible: sidebarView() === 'main', if: sidebarView() === 'main'">
                     <h2 style={{ marginTop: "0" }}>
                         Information
@@ -526,19 +526,19 @@ class NodeFullscreen extends Knockout {
 
                 <div className="bottombar">
                     <span data-bind="if: surroundings">
-                        <a href="#" data-bind="location: { showPath: surroundings().previous.path }">
+                        <a href="#" data-bind="location: { showPath: surroundings().previous.path, replace: true }">
                             <i className="material-icons md-48 pull-left">arrow_back</i>
                         </a>
                     </span>
 
                     <span className="middle">
-                        <span data-bind="click: sidebarView.bind($data, 'time')" style={{ cursor: "pointer" }}>
+                        <span data-bind="location: { sidebar: 'time', replace: true }" style={{ cursor: "pointer" }}>
                             <i className="material-icons md-18">access_time</i>
                             <span> </span>
                             <span data-bind="displayTime: nodepath().node().attributes.time"></span>
                         </span>
 
-                        <span data-bind="click: sidebarView.bind($data, 'position')" style={{ cursor: "pointer" }}>
+                        <span data-bind="location: { sidebar: 'position', replace: true }" style={{ cursor: "pointer" }}>
                             <i className="material-icons md-18">place</i>
                             <span> </span>
                             <span data-bind="if: location">
@@ -549,7 +549,7 @@ class NodeFullscreen extends Knockout {
                             </span>
                         </span>
 
-                        <span data-bind="tooltip: tagNames, click: sidebarView.bind($data, 'tag')" style={{ cursor: "pointer" }}>
+                        <span data-bind="tooltip: tagNames, location: { sidebar: 'tag', replace: true }" style={{ cursor: "pointer" }}>
                             <i className="material-icons md-18">face</i>
                             <span> </span>
                             <span data-bind="text: tags().length"></span>
@@ -557,17 +557,17 @@ class NodeFullscreen extends Knockout {
                     </span>
 
                     <span data-bind="if: surroundings">
-                        <a href="#" data-bind="location: { showPath: surroundings().next.path }">
+                        <a href="#" data-bind="location: { showPath: surroundings().next.path, replace: true }">
                             <i className="material-icons md-48 pull-right">arrow_forward</i>
                         </a>
                     </span>
                 </div>
 
-                <a href="#" className="information" data-bind="click: sidebarView.bind($data, 'main'), visible: !sidebarView()">
+                <a href="#" className="information" data-bind="location: { sidebar: 'main', replace: true }, visible: sidebarView() === 'hide'">
                     <i className="material-icons">info</i>
                 </a>
 
-                <a href="#" className="hideinformation" data-bind="click: sidebarView.bind($data, false), visible: sidebarView">
+                <a href="#" className="hideinformation" data-bind="location: { sidebar: 'hide', replace: true }, visible: sidebarView() !== 'hide'">
                     <i className="material-icons">forward</i>
                 </a>
 
@@ -589,22 +589,25 @@ class NodeFullscreen extends Knockout {
                             Mirror
                         </a></li>
                         <li role="separator" className="divider"></li>
-                        <li><a href="#" data-bind="click: sidebarView.bind($data, 'tag')">
+                        <li><a href="#" data-bind="location: { sidebar: 'tag', replace: true }">
                             <i className="material-icons">face</i>
                             Tag people
                         </a></li>
-                        <li><a href="#" data-bind="click: sidebarView.bind($data, 'position')">
+                        <li><a href="#" data-bind="location: { sidebar: 'position', replace: true }">
                             <i className="material-icons">place</i>
                             Set location
                         </a></li>
-                        <li><a href="#" data-bind="click: sidebarView.bind($data, 'time')">
+                        <li><a href="#" data-bind="location: { sidebar: 'time', replace: true }">
                             <i className="material-icons">access_time</i>
                             Set time
                         </a></li>
                     </ul>
                 </div>
 
-                <a href="#" className="exit" data-bind="click: exit">
+                <a href="#" className="exit" data-bind="visible: sidebarView() === 'main', location: { sidebar: null, showPath: null, replace: true }">
+                    <i className="material-icons">close</i>
+                </a>
+                <a href="#" className="exit" data-bind="visible: sidebarView() !== 'main', location: { sidebar: null, replace: true }">
                     <i className="material-icons">close</i>
                 </a>
             </div>

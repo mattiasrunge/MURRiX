@@ -398,10 +398,14 @@ ko.bindingHandlers.location = {
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
+        let replace = false;
 
         $element.off("click");
 
         if (typeof value !== "string") {
+            replace = ko.unwrap(value.replace);
+            delete value.replace;
+            
             value = loc.constructUrl(value, true);
         } else if (value[0] !== "#" && !value.startsWith("http") && !value.startsWith("mailto")) {
             value = "#" + value;
@@ -413,7 +417,7 @@ ko.bindingHandlers.location = {
             $element.on("click", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                loc.goto(value);
+                loc.goto(value, true, replace);
             });
         } else if ($element.prop("tagName").toLowerCase() === "iframe") {
             $element.attr("src", value);
@@ -422,7 +426,7 @@ ko.bindingHandlers.location = {
             $element.on("click", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                loc.goto(value);
+                loc.goto(value, true, replace);
             });
         }
     }

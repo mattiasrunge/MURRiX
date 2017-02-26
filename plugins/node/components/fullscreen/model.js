@@ -7,7 +7,7 @@ const ui = require("lib/ui");
 const loc = require("lib/location");
 
 model.loading = stat.create();
-model.sidebarView = ko.observable("main");
+model.sidebarView = ko.pureComputed(() => ko.unwrap(loc.current().sidebar) || "main");
 model.personPath = ko.observable(false);
 model.selectedTag = ko.observable(false);
 model.height = ko.pureComputed(() => {

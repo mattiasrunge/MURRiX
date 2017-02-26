@@ -49,14 +49,24 @@ module.exports = {
 
         return module.exports.makeUrl(newArgs);
     },
-    goto: (url, keep = true) => {
+    goto: (url, keep = true, replace = false) => {
         if (typeof url !== "string") {
             url = module.exports.constructUrl(url, keep);
         } else if (url[0] !== "#" && !url.startsWith("http") && !url.startsWith("mailto")) {
             url = "#" + url;
         }
 
-        document.location.hash = url;
+        if (window.history) {
+            if (replace) {
+                window.history.replaceState({}, null, url);
+            } else {
+                window.history.pushState({}, null, url);
+            }
+
+            module.exports.updateCurrent();
+        } else {
+            document.location.hash = url;
+        }
     },
     updateCurrent: () => {
         let args = module.exports.parseUrl(document.location.hash);
