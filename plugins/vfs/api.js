@@ -3,7 +3,7 @@
 /* jslint bitwise: true */
 
 const path = require("path");
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 const sha1 = require("sha1");
 const fs = require("fs-extra-promise");
 const api = require("api.io");

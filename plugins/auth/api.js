@@ -2,7 +2,7 @@
 
 const promisifyAll = require("bluebird").promisifyAll;
 const sha1 = require("sha1");
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 const email = require("emailjs");
 const api = require("api.io");
 const log = require("../../core/lib/log")(module);

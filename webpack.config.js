@@ -26,6 +26,10 @@ module.exports = function(options) {
         module: {
             rules: [
                 {
+                    test: /\.gif$/,
+                    loader: "url-loader"
+                },
+                {
                     test: /\.jsx?$/,
                     loader: "babel-loader",
                     /* Include everything under this directory and all paths
@@ -68,7 +72,7 @@ module.exports = function(options) {
                             {
                                 loader: "css-loader",
                                 options: {
-                                    modules: true,
+                                    modules: false,
                                     includePaths: [ path.join(__dirname, "..", "node_modules") ]
                                 }
                             }

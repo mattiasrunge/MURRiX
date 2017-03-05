@@ -2,23 +2,31 @@
 
 const path = require("path");
 const fs = require("fs-extra-promise");
-const http = require("http");
 const promisify = require("bluebird").promisify;
+
 const Koa = require("koa");
 const bodyParser = require("koa-bodyparser");
 const route = require("koa-route");
 const compress = require("koa-compress");
 const conditional = require("koa-conditional-get");
 const etag = require("koa-etag");
+const serve = require("koa-static");
+const favicon = require("koa-favicon");
+
 const enableDestroy = require("server-destroy");
-const uuid = require("node-uuid");
-const routes = require("./http-routes");
+const uuid = require("uuid");
+const hogan = require("hogan.js");
+const webpack = require("webpack");
+const webpackMiddleware = require("koa-webpack-dev-middleware");
 const api = require("api.io");
+
 const plugin = require("./plugin");
 const session = require("./session");
 const log = require("./log")(module);
-const send = require("koa-send");
-const serve = require("koa-static");
+
+
+const buildWebpackCfg = require("../../webpack.config.js");
+
 
 let server;
 let params = {};
@@ -28,13 +36,9 @@ module.exports = {
         params = config;
 
         const app = new Koa();
-        let sessions = session.getSessions();
-        let sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
-        let sessionName = "apiio";
-
-        if (params.cacheDirectory) {
-            await fs.removeAsync(params.cacheDirectory);
-        }
+        const sessions = session.getSessions();
+        const sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
+        const sessionName = "apiio";
 
         // Setup application
         app.use(compress());
@@ -83,34 +87,27 @@ module.exports = {
             await next();
         });
 
-        // Create plugin routes
-        let pluginRoutes = plugin.getRoutes();
+        app.use(favicon(path.join(__dirname, "..", "..", "www", "favicon.ico")));
 
-        for (let pluginRoute of pluginRoutes) {
+        app.use(async (ctx, next) => {
+            if (ctx.path !== "/") {
+                return next();
+            }
+
+            const source = await fs.readFileAsync(path.join(__dirname, "..", "..", "www", "index.html"));
+            const template = hogan.compile(source.toString());
+            const compiled = template.render({ GOOGLE_API_KEY: config.googleBrowserKey });
+
+            ctx.type = "text/html; charset=utf-8";
+            ctx.body = compiled;
+        });
+
+        // Create plugin routes
+        const pluginRoutes = plugin.getRoutes();
+
+        for (const pluginRoute of pluginRoutes) {
             app.use(route[pluginRoute.method.toLowerCase()](pluginRoute.route, pluginRoute.handler));
         }
-
-        // Create routes
-        for (let name of Object.keys(routes)) {
-            if (name === "unamed") {
-                for (let fn of routes.unamed()) {
-                    app.use(fn);
-                }
-            } else {
-                let method = "get";
-                let routeName = name;
-
-                if (name[0] !== "/") {
-                    [ , method, routeName ] = name.match(/(.+?)(\/.*)/);
-                }
-
-                app.use(route[method](routeName, routes[name]));
-            }
-        }
-
-        const buildWebpackCfg = require("../../webpack.config.js");
-        const webpack = require("webpack");
-        const webpackMiddleware = require("koa-webpack-dev-middleware");
 
         const webpackCfg = buildWebpackCfg({ dev: true });
         const webpackMiddlewareConf = webpackMiddleware(webpack(webpackCfg), {
@@ -119,7 +116,7 @@ module.exports = {
 
         app.use(webpackMiddlewareConf);
 
-        //app.use(route.get("*", async (ctx) => await send(ctx, "/index.html", { root: path.join(__dirname, "..", "..", "www") })));
+        // app.use(route.get("*", async (ctx) => await send(ctx, "/index.html", { root: path.join(__dirname, "..", "..", "www") })));
 
         server = app.listen(params.port);
 
@@ -128,7 +125,7 @@ module.exports = {
         // Socket.io if we have defined API
         await api.start(server, { sessionName: sessionName, sessionMaxAge: sessionMaxAge }, sessions);
 
-        log.info("Now listening for http request on port " + params.port);
+        log.info(`Now listening for http request on port ${params.port}`);
     },
     stop: async () => {
         if (server) {

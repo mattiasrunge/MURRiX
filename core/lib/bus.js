@@ -1,6 +1,6 @@
 "use strict";
 
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 const log = require("./log")(module);
 
 let params = {};
