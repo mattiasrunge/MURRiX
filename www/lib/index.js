@@ -37,7 +37,6 @@ class App extends Knockout {
 const start = async (args) => {
     await api.connect(args);
     await session.loadUser();
-    await ui.start();
 
     ReactDOM.render((
         <App />

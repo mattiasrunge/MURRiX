@@ -20,9 +20,6 @@ document.addEventListener("copy", (e) => {
 });
 
 module.exports = {
-    start: async () =>{
-        ko.applyBindings({}, document.body);
-    },
     copyToClipboard: (content) => {
         clipBoardContent = content;
         document.execCommand("copy");
