@@ -2,6 +2,7 @@
 
 const path = require("path");
 const webpack = require("webpack");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = function(options) {
     const isProduction = !(options && options.dev);
@@ -9,14 +10,18 @@ module.exports = function(options) {
     const explicitModuleIncludes = [
         /node_modules\/api\.io/
     ];
+    const extractStyles = new ExtractTextPlugin("[name].css");
+
     const cfg = {
-        entry: [
-            "babel-polyfill",
-            path.join(__dirname, "www", "lib", "index.js")
-        ],
+        entry: {
+            bundle: [
+                "babel-polyfill",
+                path.join(__dirname, "www", "lib", "index.js")
+            ]
+        },
         output: {
-            path: path.join(__dirname, "static"),
-            filename: "bundle.js"
+            path: path.join(__dirname, "www"),
+            filename: "[name].js"
         },
         module: {
             rules: [
@@ -43,9 +48,10 @@ module.exports = function(options) {
                     query: {
                         cacheDirectory: "babel_cache",
                         presets: [
-                            [ require.resolve("babel-preset-es2015"), { "modules": false } ],
+                            require.resolve("babel-preset-es2015"),
                             require.resolve("babel-preset-stage-1"),
-                            require.resolve("babel-preset-react") ],
+                            require.resolve("babel-preset-react")
+                        ],
                         plugins: [
                             [ require.resolve("babel-plugin-transform-async-to-module-method"), {
                                 "module": "bluebird",
@@ -56,50 +62,50 @@ module.exports = function(options) {
                 },
                 {
                     test: /\.css$/,
-                    use: [
-                        {
-                            loader: "style-loader"
-                        },
-                        {
-                            loader: "css-loader",
-                            options: {
-                                modules: true,
-                                includePaths: [ path.join(__dirname, "..", "node_modules") ]
+                    use: extractStyles.extract({
+                        fallback: "style-loader",
+                        use: [
+                            {
+                                loader: "css-loader",
+                                options: {
+                                    modules: true,
+                                    includePaths: [ path.join(__dirname, "..", "node_modules") ]
+                                }
                             }
-                        }
-                    ]
+                        ]
+                    })
                 },
                 {
                     test: /\.scss$/,
-                    use: [
-                        {
-                            loader: "style-loader"
-                        },
-                        {
-                            loader: "css-loader",
-                            options: {
-                                importLoaders: 2,
-                                modules: true,
-                                localIdentName: "[path]__[name]__[local]",
-                                includePaths: [
-                                    path.join(__dirname, "..", "node_modules"),
-                                    __dirname
-                                ]
+                    use: extractStyles.extract({
+                        fallback: "style-loader",
+                        use: [
+                            {
+                                loader: "css-loader",
+                                options: {
+                                    importLoaders: 2,
+                                    modules: true,
+                                    localIdentName: "[path]__[name]__[local]",
+                                    includePaths: [
+                                        path.join(__dirname, "..", "node_modules"),
+                                        __dirname
+                                    ]
+                                }
+                            },
+                            {
+                                loader: "sass-loader",
+                                options: {
+                                    outputStyle: "expanded",
+                                    sourceMap: !isProduction,
+                                    sourceMapContents: !isProduction,
+                                    includePaths: [
+                                        path.join(__dirname, "..", "node_modules"),
+                                        __dirname
+                                    ]
+                                }
                             }
-                        },
-                        {
-                            loader: "sass-loader",
-                            options: {
-                                outputStyle: "expanded",
-                                sourceMap: true,
-                                sourceMapContents: true,
-                                includePaths: [
-                                    path.join(__dirname, "..", "node_modules"),
-                                    __dirname
-                                ]
-                            }
-                        }
-                    ]
+                        ]
+                    })
                 },
                 {
                     test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -163,6 +169,7 @@ module.exports = function(options) {
             ]
         },
         plugins: [
+            extractStyles,
             new webpack.ProvidePlugin({
                 jQuery: "jquery",
                 $: "jquery",
@@ -172,10 +179,10 @@ module.exports = function(options) {
         resolve: {
             modules: [
                 "node_modules",
-                path.join(__dirname, "www", "node_modules"),
                 path.join(__dirname, "node_modules")
             ],
             alias: {
+                jquery: "jquery/src/jquery",
                 "api.io-client": path.join(__dirname, "node_modules", "api.io", "api.io-client"),
                 "lib": path.join(__dirname, "www", "lib"),
                 "components": path.join(__dirname, "www", "pages", "default", "components"),

@@ -7,23 +7,19 @@ DEPS := deps
 all: test lint coverage
 
 deps:
-	npm set progress=false
-	npm install
+	yarn
 
 test: $(DEPS)
 	./node_modules/.bin/mocha $(DEFAULT_FLAGS)
 
 lint: $(DEPS)
-	./node_modules/.bin/jshint --verbose $(SRC_JS)
+	./node_modules/.bin/eslint $(SRC_JS)
 	./node_modules/.bin/htmlhint --config .htmlhintrc $(SRC_HTML)
 	./node_modules/.bin/csslint --config .csslintrc $(SRC_CSS)
 
-style: $(DEPS)
-	./node_modules/.bin/jscs -e --verbose $(SRC_JS)
-
-reg: test lint style
+reg: test lint
 
 configure: $(DEPS)
 
 
-.PHONY: all deps test lint style reg
+.PHONY: all deps test lint reg

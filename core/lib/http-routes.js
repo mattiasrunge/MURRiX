@@ -31,9 +31,10 @@ const gzip = (filename) => {
 module.exports = {
     unamed: () => [
         async (ctx, next) => {
-            if (ctx.path === "/bundle.js" || ctx.path === "/bundle.js.map") {
+            if (ctx.path === "/bundle.js" || ctx.path === "/bundle.js.map" || ctx.path === "/bundle.css") {
                 return await next();
             }
+            console.log(ctx.path);
 
             let page = (configuration.pages[ctx.request.header.host] || "default");
 
@@ -51,18 +52,8 @@ module.exports = {
                 compiledFilename = path.join(configuration.cacheDirectory, page, ctx.path);
                 ctx.path = path.join("/", page, "index.html");
                 isIndex = true;
-            }
-
-            if (ctx.path === "/local/api.io-client.js") {
-                processJs = false;
-                filename = path.join(__dirname, "..", "..", "node_modules", "api.io", "browser", "api.io-client.js");
-            } else if (ctx.path === "/local/socket.io-client.js") {
-                processJs = false;
-                filename = path.join(__dirname, "..", "..", "node_modules", "socket.io-client", "socket.io.js");
-            } else if (ctx.path.includes("node_modules") ||
-                ctx.path.includes("index.js")) {
-                // No processing required
-                processJs = false;
+            } else if (ctx.path.startsWith("/node_modules/")) {
+                filename = path.join(wwwPath, "..", ctx.path);
             }
 
             if (await fs.existsAsync(compiledFilename)) {
@@ -98,12 +89,6 @@ module.exports = {
                 }
 
                 await fs.outputFileAsync(compiledFilename, compiled.styles);
-            } else if (ctx.path === "/components.html") {
-                let source = await fs.readFileAsync(path.join(wwwPath, "components.html"));
-                let template = hogan.compile(source.toString());
-                let compiled = template.render({ components: await plugin.getComponents(wwwPath) });
-
-                await fs.outputFileAsync(compiledFilename, compiled);
             } else if (isIndex) {
                 let source = await fs.readFileAsync(filename);
                 let template = hogan.compile(source.toString());
@@ -111,6 +96,7 @@ module.exports = {
 
                 await fs.outputFileAsync(compiledFilename, compiled);
             } else {
+                console.log("copy", filename, compiledFilename);
                 await fs.copyAsync(filename, compiledFilename);
             }
 
