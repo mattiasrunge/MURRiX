@@ -38,18 +38,25 @@
     display: block;
 }
 
-h1, h2, h3, h4, h5, h6, .heading {
+h1, h2, h3, h5, h6, .heading {
     font-family: 'Ubuntu', Georgia, Times, serif;
 /*     overflow: hidden; */
 /*     white-space: nowrap; */
 /*     text-overflow: ellipsis; */
     color: #327DE6;
     padding-bottom: 10px;
+    margin-top: 20px;
+}
+
+
+h4 {
+    font-family: 'Ubuntu', Georgia, Times, serif;
 }
 
 body {
     overflow: hidden;
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    font-size: 14px;
     background-color: #efefef;
 }
 
@@ -116,7 +123,7 @@ body {
 
 .page-container {
     position: fixed;
-    top: 50px;
+    top: 54px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -143,7 +150,7 @@ body {
     border-bottom: 1px solid #ccc;
 }
 
-.media>.pull-left {
+.media>.float-left {
     margin-right: 15px;
 }
 
@@ -488,6 +495,10 @@ body {
     border-bottom: none;
 }
 
+.navbar-inverse .navbar-nav .nav-link {
+    color: white;
+}
+
 .navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-text, .navbar-inverse .navbar-brand {
     color: white;
 }
@@ -519,6 +530,7 @@ body {
 .progress,
 .context-menu-list {
     border-radius: 0;
+    font-size: 14px;
 }
 
 .box {
@@ -706,6 +718,10 @@ body {
 
 .snackbar.alert-warning {
     background-color: #ff5722;
+}
+
+.twitter-typeahead {
+    background-color: white;
 }
 
 .twitter-typeahead .valid {

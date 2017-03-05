@@ -264,7 +264,7 @@ class PeoplePage extends Knockout {
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" className="btn btn-primary">Create</button>
                                 </div>
                             </div>

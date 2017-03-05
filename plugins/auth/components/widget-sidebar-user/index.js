@@ -29,13 +29,13 @@ class AuthWidgetSidebarUser extends Knockout {
     getTemplate() {
         return (
             <div className="profile" data-bind="visible: loggedIn, if: loggedIn">
-                <div data-bind="react: { name: 'auth-widget-picture-user', params: { size: 40, uid: uid, classes: 'img-circle picture' } }" className="pull-left"></div>
+                <div data-bind="react: { name: 'auth-widget-picture-user', params: { size: 40, uid: uid, classes: 'rounded-circle picture' } }" className="float-left"></div>
                 <div>
                     <div className="name" data-bind="text: user().attributes.name"></div>
                     <div>
                         <a href="#" data-bind="location: { page: 'profile' }">Profile</a>
                         <span data-bind="visible: personPath, if: personPath">
-                            &nbsp;&bull;&nbsp;
+                            {" "}&bull;{" "}
                             <a href="#" data-bind="location: { page: 'node', path: personPath }">Me</a>
                         </span>
                     </div>

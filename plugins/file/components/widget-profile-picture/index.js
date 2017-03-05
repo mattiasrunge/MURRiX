@@ -69,7 +69,7 @@ class FileWidgetProfilePicture extends Knockout {
     getTemplate() {
         return (
             <div className="file-widget-profile-picture">
-                ﻿<div className="text-center" data-bind="visible: loading, if: loading">
+                <div className="text-center" data-bind="visible: loading, if: loading">
                     <i className="material-icons md-20 spin">cached</i>
                     <div>Loading...</div>
                 </div>

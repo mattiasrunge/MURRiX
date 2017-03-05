@@ -431,11 +431,11 @@ class NodeFullscreen extends Knockout {
                     <div data-bind="foreach: tags">
                         <div className="tag-item">
                             <div className="clearfix">
-                                <div className="btn-group btn-group-sm pull-right" role="group" data-bind="visible: $root.nodepath().editable">
+                                <div className="btn-group btn-group-sm float-right" role="group" data-bind="visible: $root.nodepath().editable">
                                     <button type="button" className="btn btn-primary" data-bind="click: $root.selectedTag.bind($data, $data), visible: !$root.selectedTag() && $root.nodepath().node().attributes.type === 'image'">Edit</button>
                                     <button type="button" className="btn btn-danger" data-bind="click: $root.removeTag.bind($data, $data), disable: $root.selectedTag">Remove</button>
                                 </div>
-                                <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 32, path: $data.path, nolazyload: true } }" className="pull-left" style={{ marginRight: "15px" }} ></div>
+                                <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 32, path: $data.path, nolazyload: true } }" className="float-left" style={{ marginRight: "15px" }} ></div>
                                 <div className="title" data-bind="text: $data.node().attributes.name"></div>
                             </div>
                         </div>
@@ -527,7 +527,7 @@ class NodeFullscreen extends Knockout {
                 <div className="bottombar">
                     <span data-bind="if: surroundings">
                         <a href="#" data-bind="location: { showPath: surroundings().previous.path, replace: true }">
-                            <i className="material-icons md-48 pull-left">arrow_back</i>
+                            <i className="material-icons md-48 float-left">arrow_back</i>
                         </a>
                     </span>
 
@@ -558,7 +558,7 @@ class NodeFullscreen extends Knockout {
 
                     <span data-bind="if: surroundings">
                         <a href="#" data-bind="location: { showPath: surroundings().next.path, replace: true }">
-                            <i className="material-icons md-48 pull-right">arrow_forward</i>
+                            <i className="material-icons md-48 float-right">arrow_forward</i>
                         </a>
                     </span>
                 </div>

@@ -35,13 +35,13 @@ class DefaultRoot extends Knockout {
                 <div className="page-container" data-bind="lazyload: true">
                     <div className="container">
                         <div className="row" data-bind="if: page() !== 'node', visible: page() !== 'node'">
-                            <div data-bind="if: loggedIn">
-                                <div className="col-md-2 sidebar">
+                            <div data-bind="if: loggedIn" style={{ width: "100%" }}>
+                                <div className="col-2 sidebar">
                                     <div data-bind="if: page() !== 'node'">
                                         <div data-bind="react: 'default-sidebar'"></div>
                                     </div>
                                 </div>
-                                <div className="col-md-10 main">
+                                <div className="col-10 main">
                                     <div data-bind="if: page() === 'news' || page() === 'default'">
                                         <div data-bind="react: 'feed-page'"></div>
                                     </div>
@@ -68,7 +68,7 @@ class DefaultRoot extends Knockout {
                                     </div>
                                 </div>
                             </div>
-                            <div data-bind="if: !loggedIn()">
+                            <div data-bind="if: !loggedIn()" style={{ width: "100%" }}>
                                 <div className="col-md-12">
                                     <div data-bind="if: page() === 'reset'">
                                         <div data-bind="react: 'auth-page-reset'"></div>

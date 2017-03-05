@@ -177,7 +177,8 @@ module.exports = function(options) {
             new webpack.ProvidePlugin({
                 jQuery: "jquery",
                 $: "jquery",
-                jquery: "jquery"
+                jquery: "jquery",
+                Tether: "tether"
             })
         ],
         resolve: {

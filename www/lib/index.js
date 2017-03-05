@@ -7,9 +7,11 @@ import Knockout from "components/knockout";
 import bluebird from "bluebird";
 
 import "jquery";
+import "tether";
 import "bootstrap";
 import "lib/extensions";
 import "lib/bindings";
+
 import "www/style.css";
 
 const api = require("api.io-client");

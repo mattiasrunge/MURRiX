@@ -14,7 +14,7 @@ class FeedWidgetNewsFile extends Knockout {
 
         model.loading = stat.create();
         model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-        model.size = 470;
+        model.size = 458;
 
         model.filename = ko.asyncComputed(false, async (setter) => {
             if (!model.item()) {

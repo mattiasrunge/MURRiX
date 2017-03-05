@@ -127,7 +127,7 @@ class AuthWidgetEditUser extends Knockout {
                         <div className="form-group">
                             <div className="col-lg-offset-3 col-lg-9 clearfix">
                                 <a href="#" className="btn btn-primary" data-bind="disable: loading, click: save">Save</a>
-                                <a href="#" className="btn btn-default" data-bind="disable: loading, click: reset">Reset</a>
+                                <a href="#" className="btn btn-secondary" data-bind="disable: loading, click: reset">Reset</a>
                             </div>
                         </div>
                     </form>

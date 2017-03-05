@@ -77,7 +77,7 @@ class NodeWidgetSelectAttribute extends Knockout {
     getTemplate() {
         return (
             ﻿<span className="dropdown">
-                <span data-toggle="dropdown" data-bind="css: { 'dropdown-toggle': editable }">
+                <span data-toggle="dropdown">
                     <i className="material-icons" style={{ marginRight: "-1px", marginBottom: "-1px" }} data-bind="visible: icon, text: icon"></i>
                     <span data-bind="visible: !onlyicon(), text: nicevalue"></span>
                 </span>
@@ -87,7 +87,7 @@ class NodeWidgetSelectAttribute extends Knockout {
                 <span className="dropdown-select-empty" data-bind="text: 'No ' + nicename(), visible: value() === '' && !editable()"></span>
 
                 <ul className="dropdown-menu" data-bind="foreach: options">
-                    <li>
+                    <li className="dropdown-item">
                         <a href="#" data-bind="click: $root.change.bind($data, $data.name)">
                             <i className="material-icons" data-bind="visible: $data.icon, text: $data.icon" style={{ marginRight: "10px" }}></i>
                             <span data-bind="text: $data.title"></span>

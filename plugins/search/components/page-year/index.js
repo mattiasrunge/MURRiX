@@ -74,8 +74,8 @@ class SearchPageYear extends Knockout {
                             </span>
                         </div>
 
-                        <a className="pull-right btn btn-primary" data-bind="click: yearIncClicked, clickKey: 'right'"><i className="material-icons">add</i></a>
-                        <a className="pull-left btn btn-primary" data-bind="click: yearDecClicked, clickKey: 'left'"><i className="material-icons">remove</i></a>
+                        <a href="#" className="float-right btn btn-primary" data-bind="click: yearIncClicked, clickKey: 'right'"><i className="material-icons">add</i></a>
+                        <a href="#" className="float-left btn btn-primary" data-bind="click: yearDecClicked, clickKey: 'left'"><i className="material-icons">remove</i></a>
 
                         <div className="year-slider">
                             <div data-bind="yearSlider: { year: year }"></div>
@@ -83,18 +83,18 @@ class SearchPageYear extends Knockout {
                     </div>
                     {/* <div style={{ marginBottom: "15px" }}>
                         <div className="btn-group btn-group-justified" role="group">
-                            <a type="button" className="btn btn-default">Jan</a>
-                            <a type="button" className="btn btn-default">Feb</a>
-                            <a type="button" className="btn btn-default">Mar</a>
-                            <a type="button" className="btn btn-default">Apr</a>
-                            <a type="button" className="btn btn-default">May</a>
-                            <a type="button" className="btn btn-default">Jun</a>
-                            <a type="button" className="btn btn-default">Jul</a>
-                            <a type="button" className="btn btn-default">Aug</a>
-                            <a type="button" className="btn btn-default">Sep</a>
-                            <a type="button" className="btn btn-default">Oct</a>
-                            <a type="button" className="btn btn-default">Nov</a>
-                            <a type="button" className="btn btn-default">Dec</a>
+                            <a type="button" className="btn btn-secondary">Jan</a>
+                            <a type="button" className="btn btn-secondary">Feb</a>
+                            <a type="button" className="btn btn-secondary">Mar</a>
+                            <a type="button" className="btn btn-secondary">Apr</a>
+                            <a type="button" className="btn btn-secondary">May</a>
+                            <a type="button" className="btn btn-secondary">Jun</a>
+                            <a type="button" className="btn btn-secondary">Jul</a>
+                            <a type="button" className="btn btn-secondary">Aug</a>
+                            <a type="button" className="btn btn-secondary">Sep</a>
+                            <a type="button" className="btn btn-secondary">Oct</a>
+                            <a type="button" className="btn btn-secondary">Nov</a>
+                            <a type="button" className="btn btn-secondary">Dec</a>
                         </div>
                     </div> */}
                 </div>

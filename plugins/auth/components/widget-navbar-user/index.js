@@ -50,34 +50,36 @@ class AuthWidgetNavbarUser extends Knockout {
 
     getTemplate() {
         return (
-            <li className="dropdown profile" data-bind="css: { dropdown: loggedIn(), profile: loggedIn() }">
-                <a href="#" data-target="#" className="dropdown-toggle" data-toggle="dropdown" data-bind="if: loggedIn, visible: loggedIn"><span className="picture" style={{ width: "20px", height: "20px" }} data-bind=""><span data-bind="react: { name: 'auth-widget-picture-user', params: { size: 20, uid: uid, classes: 'img-circle' } }" className="picture pull-left"></span></span><span data-bind="text: user().attributes.name"></span> <b className="caret"></b></a>
-                <ul className="dropdown-menu" data-bind="if: loggedIn, visible: loggedIn">
-                    <li>
-                        <a href="#" data-bind="location: { page: 'profile' }">
-                            <i className="material-icons">account_box</i>
-                            &nbsp;&nbsp;
-                            Profile
-                        </a>
-                    </li>
-                    <li data-bind="visible: personPath, if: personPath">
-                        <a href="#" data-bind="location: { page: 'node', path: personPath }">
-                            <i className="material-icons">person</i>
-                            &nbsp;&nbsp;
-                            Me
-                        </a>
-                    </li>
-                    <li className="divider"></li>
-                    <li>
-                        <a href="#" data-bind="click: logout">
-                            <i className="material-icons">exit_to_app</i>
-                            &nbsp;&nbsp;
-                            Logout
-                        </a>
-                    </li>
-                </ul>
-                <a href="#" data-bind="location: { page: 'login' }, if: !loggedIn(), visible: !loggedIn()">
+            <li className="nav-item dropdown profile" data-bind="css: { dropdown: loggedIn(), profile: loggedIn() }">
+                <a href="#" data-target="#" className="nav-link dropdown-toggle" data-toggle="dropdown" data-bind="if: loggedIn, visible: loggedIn">
+                    <span className="picture" style={{ width: "20px", height: "20px" }} data-bind="">
+                        <span data-bind="react: { name: 'auth-widget-picture-user', params: { size: 20, uid: uid, classes: 'rounded-circle' } }" className="picture float-left"></span>
+                    </span>
+                    <span data-bind="text: user().attributes.name"></span>
+                </a>
+
+                <div className="dropdown-menu dropdown-menu-right" data-bind="if: loggedIn, visible: loggedIn">
+                    <a className="dropdown-item" href="#" data-bind="location: { page: 'profile' }">
+                        <i className="material-icons">account_box</i>
+                        {"  "}
+                        Profile
+                    </a>
+                    <a className="dropdown-item" href="#" data-bind="visible: personPath, if: personPath, location: { page: 'node', path: personPath }">
+                        <i className="material-icons">person</i>
+                        {"  "}
+                        Me
+                    </a>
+                    <div className="dropdown-divider"></div>
+                    <a className="dropdown-item" href="#" data-bind="click: logout">
+                        <i className="material-icons">exit_to_app</i>
+                        {"  "}
+                        Logout
+                    </a>
+                </div>
+
+                <a className="nav-link" href="#" data-bind="location: { page: 'login' }, if: !loggedIn(), visible: !loggedIn()">
                     <i className="material-icons md-18">account_circle</i>
+                    {"  "}
                     Login
                 </a>
             </li>

@@ -96,7 +96,7 @@ class CommentWidgetComments extends Knockout {
                 <div data-bind="foreach: filtered">
                     <div className="row">
                         <div className="col-md-12">
-                            <div data-bind="react: { name: 'auth-widget-picture-user', params: { size: 30, uid: $data.node().properties.birthuid, classes: 'img-circle comment-picture-user' } }" className="pull-left"></div>
+                            <div data-bind="react: { name: 'auth-widget-picture-user', params: { size: 30, uid: $data.node().properties.birthuid, classes: 'rounded-circle comment-picture-user' } }" className="float-left"></div>
                             <div className="name" data-bind="unameNice: $data.node().properties.birthuid"></div>
                             <small className="text-muted" data-bind="datetimeAgo: $data.node().properties.birthtime"></small>
                             <p style={{ whiteSpace: "pre-line" }} data-bind="text: $data.node().attributes.text"></p>

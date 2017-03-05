@@ -129,7 +129,7 @@ class FileWidgetGrid extends Knockout {
     getTemplate() {
         return (
             <div>
-                ﻿<div className="text-center" data-bind="visible: loading, if: loading">
+                <div className="text-center" data-bind="visible: loading, if: loading">
                     <i className="material-icons md-48 spin">cached</i>
                     <div>
                         <strong>
@@ -146,8 +146,8 @@ class FileWidgetGrid extends Knockout {
                     </div>
                 </div>
                 <div className="clearfix" data-bind="foreach: list">
-                    <div style={{ marginLeft: "15px", marginRight: "15px" }}>
-                        <div>
+                    <div style={{ marginLeft: "2px", marginRight: "2px" }}>
+                        <div style={{ marginLeft: "13px", marginRight: "13px" }}>
                             <div data-bind="visible: $data.time, if: $data.time">
                                 <h3 data-bind="displayTimeDay: $data.time"></h3>
                             </div>
@@ -160,7 +160,7 @@ class FileWidgetGrid extends Knockout {
                             </div>
                         </div>
 
-                        <div className="clearfix" data-bind="foreach: $data.files, contextmenu: $root.nodepath" style={{ marginRight: "-1px", marginBottom: "-1px" }}><a href="#" className="context-menu pull-left" data-bind="picture: { item: $data, width: $root.size, height: $root.size, classes: 'grid-picture', type: $data.node().attributes.type, title: $data.node().attributes.type !== 'image' && $data.node().attributes.type !== 'video' ? $data.node().attributes.name : false }, location: { showPath: $data.path }, attr: { title: $data.node().attributes.name, 'data-path': $data.path }"></a></div>
+                        <div className="clearfix" data-bind="foreach: $data.files, contextmenu: $root.nodepath" style={{ marginRight: "-1px", marginBottom: "-1px" }}><a href="#" className="context-menu float-left" data-bind="picture: { item: $data, width: $root.size, height: $root.size, classes: 'grid-picture', type: $data.node().attributes.type, title: $data.node().attributes.type !== 'image' && $data.node().attributes.type !== 'video' ? $data.node().attributes.name : false }, location: { showPath: $data.path }, attr: { title: $data.node().attributes.name, 'data-path': $data.path }"></a></div>
                     </div>
                 </div>
             </div>

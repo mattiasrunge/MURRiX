@@ -144,8 +144,8 @@ class FeedPage extends Knockout {
                     </div>
                     <div className="col-md-6">
                         <div className="today-container box box-content">
-                            <i className="material-icons md-14 text-muted pull-left" data-bind="click: prevDay" style={{ cursor: "pointer" }}>arrow_back</i>
-                            <i className="material-icons md-14 text-muted pull-right" data-bind="click: nextDay" style={{ cursor: "pointer" }}>arrow_forward</i>
+                            <i className="material-icons md-14 text-muted float-left" data-bind="click: prevDay" style={{ cursor: "pointer" }}>arrow_back</i>
+                            <i className="material-icons md-14 text-muted float-right" data-bind="click: nextDay" style={{ cursor: "pointer" }}>arrow_forward</i>
                             <h2 data-bind="datetimeDayString: today().unix()"></h2>
 
                             <div data-bind="foreach: eventsToday">

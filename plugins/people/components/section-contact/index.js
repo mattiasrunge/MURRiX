@@ -117,13 +117,15 @@ class PeopleSectionContact extends Knockout {
                         <input type="text" className="form-control" style={{ marginBottom: "15px" }} placeholder="Add a home location" data-bind="nodeselect: { root: '/locations', path: locationPath }, visible: nodepath().editable" />
 
                         <div className="list-group" data-bind="foreach: homes">
-                            <a href="#" className="list-group-item" data-bind="css: { active: $parent.selectedHome() === $data }, click: $parent.selectedHome.bind($parent, $data)">
-                                <i className="material-icons pull-right" data-bind="tooltip: 'Remove home', click: $root.remove, visible: $root.nodepath().editable">close</i>
+                            <a href="#" className="list-group-item list-group-item-action flex-column align-items-start" data-bind="css: { active: $parent.selectedHome() === $data }, click: $parent.selectedHome.bind($parent, $data)">
+                                <div className="float-left" data-bind="react: { name: 'file-widget-profile-picture', params: { size: 70, path: $data.path, nolazyload: true } }" className="float-left" style={{ marginRight: "15px" }} ></div>
 
-                                <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 70, path: $data.path, nolazyload: true } }" className="pull-left" style={{ marginRight: "15px" }} ></div>
+                                <div className="d-flex w-100 justify-content-between">
+                                    <h4 className="mb-1" data-bind="text: $data.node.attributes.name"></h4>
+                                    <i className="material-icons float-right" data-bind="tooltip: 'Remove home', click: $root.remove, visible: $root.nodepath().editable">close</i>
+                                </div>
 
-                                <h4 className="list-group-item-heading" data-bind="text: $data.node.attributes.name"></h4>
-                                <p className="list-group-item-text" data-bind="html: $data.node.attributes.address.replace('\n','<br />')"></p>
+                                <p className="mb-1" data-bind="html: $data.node.attributes.address.replace('\n','<br />')"></p>
                             </a>
                         </div>
                     </div>

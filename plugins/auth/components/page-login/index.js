@@ -116,8 +116,8 @@ class AuthPageLogin extends Knockout {
                                 <input type="password" className="form-control" id="password" data-bind="textInput: password, disable: loading" />
                             </div>
                             <div className="form-group">
-                                <button type="submit" className="btn btn-raised btn-primary pull-right" data-bind="disable: loginDisallowed">Login</button>
-                                <button className="btn btn-link pull-right" data-bind="disable: loading, click: reset">Forgot your password?</button>
+                                <button type="submit" className="btn btn-raised btn-primary float-right" data-bind="disable: loginDisallowed">Login</button>
+                                <button className="btn btn-link float-right" data-bind="disable: loading, click: reset">Forgot your password?</button>
                             </div>
                         </form>
                         <div className="" data-bind="visible: loggedIn">

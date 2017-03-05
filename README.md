@@ -33,7 +33,7 @@ cp conf/config.json.sample conf/config.json
 ```bash
 git clone https://github.com/mattiasrunge/MURRiX
 cd MURRiX
-make deps
+npm install
 ```
 
 ## How to configure

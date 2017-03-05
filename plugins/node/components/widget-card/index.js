@@ -17,7 +17,7 @@ class NodeWidgetCard extends Knockout {
 
     getTemplate() {
         return (
-            <a className="node-item-panel" style={{ width: "305px" }} data-bind="location: { page: 'node', path: nodepath().path, section: null }">
+            <a className="node-item-panel" style={{ width: "296px" }} data-bind="location: { page: 'node', path: nodepath().path, section: null }">
                 <div style={{ position: "relative", height: "303px" }}>
                     <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 303, path: nodepath().path } }"></div>
 

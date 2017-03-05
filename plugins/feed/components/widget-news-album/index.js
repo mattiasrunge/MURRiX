@@ -14,7 +14,7 @@ class FeedWidgetNewsAlbum extends Knockout {
 
         model.loading = stat.create();
         model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-        model.width = 156;
+        model.width = 152;
         model.height = 270;
 
         model.fileListPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().node().attributes.path + "/files" : false);

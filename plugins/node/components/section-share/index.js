@@ -331,7 +331,7 @@ class NodeSectionShare extends Knockout {
                                         <tr>
                                             <td>
                                                 <span data-bind="if: $data.uid">
-                                                    <span data-bind="react: { name: 'auth-widget-picture-user', params: { size: 20, uid: $data.uid, classes: 'img-circle' } }" style={{ marginRight: "10px" }} className="pull-left"></span>
+                                                    <span data-bind="react: { name: 'auth-widget-picture-user', params: { size: 20, uid: $data.uid, classes: 'rounded-circle' } }" style={{ marginRight: "10px" }} className="float-left"></span>
                                                 </span>
                                                 <span data-bind="text: $data.name"></span>
                                             </td>

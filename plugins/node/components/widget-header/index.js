@@ -19,7 +19,7 @@ class NodeWidgetHeader extends Knockout {
         return (
             ﻿<div style={{ display: "table" }}>
                 <div style={{ display: "table-cell", padding: "0", verticalAlign: "top" }}>
-                    <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 128, path: nodepath().path } }" className="pull-left" style={{ marginRight: "15px" }}></div>
+                    <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 128, path: nodepath().path } }" className="float-left" style={{ marginRight: "15px" }}></div>
                 </div>
                 <div style={{ display: "table-cell", padding: "0", verticalAlign: "top", width: "100%" }}>
                     <h2>

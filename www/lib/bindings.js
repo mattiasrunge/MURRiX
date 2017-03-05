@@ -332,19 +332,19 @@ ko.bindingHandlers.tooltip = {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
-        $element.tooltip({
+        /*$element.tooltip({
             html: true,
             title: value
         });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             $element.tooltip("destroy");
-        });
+        });*/
     },
     update: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
 
-        $(element).data("bs.tooltip").options.title = value;
+        //$(element).data("bs.tooltip").options.title = value;
     }
 };
 
