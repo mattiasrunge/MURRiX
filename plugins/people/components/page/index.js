@@ -226,14 +226,14 @@ class PeoplePage extends Knockout {
                 } }" className="node-widget-sections"></div>
 
                 <form data-bind="submit: createEvent, moveToBody: true">
-                    <div className="modal fade" id="createPeopleEventModal" tabIndex="-1" role="dialog">
+                    <div className="modal" id="createPeopleEventModal" tabIndex="-1" role="dialog">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 className="modal-title">
+                                    <h5 className="modal-title">
                                         Create new event
-                                    </h4>
+                                    </h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 </div>
                                 <div className="modal-body">
                                     <div className="form-group">

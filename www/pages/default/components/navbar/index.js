@@ -369,14 +369,15 @@ class DefaultNavbar extends Knockout {
                 </nav>
 
                 <form data-bind="submit: create, moveToBody: true">
-                    <div className="modal fade" id="createModal" tabIndex="-1" role="dialog" data-bind="modal: showCreateModal">
+                    <div className="modal" id="createModal" tabIndex="-1" role="dialog" data-bind="modal: showCreateModal">
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 className="modal-title">
+                                    <h5 className="modal-title">
                                         Create new <span data-bind="text: createType"></span>
-                                    </h4>
+                                    </h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
                                 </div>
                                 <div className="modal-body">
                                     <div className="form-group">

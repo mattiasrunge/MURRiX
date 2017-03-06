@@ -106,26 +106,27 @@ class AuthWidgetEditUser extends Knockout {
             <div>
                 <div>
                     <form className="form-horizontal clearfix" role="form" data-bind="submit: save" autoComplete="off">
-                        <div className="form-group">
-                            <label htmlFor="inputName" className="col-lg-3 control-label">Name</label>
+                        <div className="form-group row">
+                            <label htmlFor="inputName" className="col-lg-3 col-form-label">Name</label>
                             <div className="col-lg-9">
                                 <input type="text" className="form-control" id="inputName" placeholder="Name" data-bind="value: name, disable: loading" />
                             </div>
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="inputUsername" className="col-lg-3 control-label">E-Mail</label>
+                        <div className="form-group row">
+                            <label htmlFor="inputUsername" className="col-lg-3 col-form-label">E-Mail</label>
                             <div className="col-lg-9">
                                 <input type="text" className="form-control" id="inputUsername" placeholder="E-Mail" data-bind="value: username, disable: loading" />
                             </div>
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="inputPerson" className="col-lg-3 control-label">Person</label>
+                        <div className="form-group row">
+                            <label htmlFor="inputPerson" className="col-lg-3 col-form-label">Person</label>
                             <div className="col-lg-9">
                                 <input type="text" className="form-control" id="inputPerson" placeholder="Select a person" data-bind="nodeselect: { root: '/people', path: personPath }" />
                             </div>
                         </div>
-                        <div className="form-group">
-                            <div className="col-lg-offset-3 col-lg-9 clearfix">
+                        <div className="form-group row">
+                            <div className="col-lg-3"></div>
+                            <div className="col-lg-9 clearfix">
                                 <a href="#" className="btn btn-primary" data-bind="disable: loading, click: save">Save</a>
                                 <a href="#" className="btn btn-secondary" data-bind="disable: loading, click: reset">Reset</a>
                             </div>
@@ -135,20 +136,21 @@ class AuthWidgetEditUser extends Knockout {
 
                 <div className="top-border" style={{ paddingTop: "15px" }}>
                     <form className="form-horizontal clearfix" role="form" data-bind="submit: changePassword" autoComplete="off">
-                        <div className="form-group">
-                            <label htmlFor="inputPassword1" className="col-lg-3 control-label">Password</label>
+                        <div className="form-group row">
+                            <label htmlFor="inputPassword1" className="col-lg-3 col-form-label">Password</label>
                             <div className="col-lg-9">
                                 <input type="password" className="form-control" id="inputPassword1" placeholder="Password" data-bind="value: password1, disable: loading" />
                             </div>
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="inputPassword2" className="col-lg-3 control-label">&nbsp;</label>
+                        <div className="form-group row">
+                            <label htmlFor="inputPassword2" className="col-lg-3 col-form-label">&nbsp;</label>
                             <div className="col-lg-9">
                                 <input type="password" className="form-control" id="inputPassword2" placeholder="Confirm password" data-bind="value: password2, disable: loading" />
                             </div>
                         </div>
-                        <div className="form-group">
-                            <div className="col-lg-offset-3 col-lg-9 clearfix">
+                        <div className="form-group row">
+                            <div className="col-lg-3"></div>
+                            <div className="col-lg-9 clearfix">
                                 <a href="#" className="btn btn-primary" data-bind="disable: loading, click: changePassword">Change password</a>
                             </div>
                         </div>

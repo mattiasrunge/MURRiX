@@ -35,7 +35,7 @@ class AuthWidgetSidebarUser extends Knockout {
                     <div>
                         <a href="#" data-bind="location: { page: 'profile' }">Profile</a>
                         <span data-bind="visible: personPath, if: personPath">
-                            {" "}&bull;{" "}
+                            &nbsp;&nbsp;&bull;&nbsp;&nbsp;
                             <a href="#" data-bind="location: { page: 'node', path: personPath }">Me</a>
                         </span>
                     </div>

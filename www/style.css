@@ -48,6 +48,15 @@ h1, h2, h3, h5, h6, .heading {
     margin-top: 20px;
 }
 
+.col-form-label {
+    font-weight: bold;
+    text-align: right;
+}
+
+.modal-title {
+    margin-top: 0;
+    padding-bottom: 0;
+}
 
 h4 {
     font-family: 'Ubuntu', Georgia, Times, serif;
@@ -132,6 +141,8 @@ body {
 
 .page-header {
     border-bottom: 1px solid #ccc;
+    padding-bottom: 9px;
+    margin: 40px 0 20px;
 }
 
 .left-border {

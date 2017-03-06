@@ -70,13 +70,13 @@ class AuthPageReset extends Knockout {
                     <div className="col-md-6">
                         <form className="form-horizontal clearfix" role="form" data-bind="submit: changePassword" autoComplete="off">
                             <div className="form-group">
-                                <label htmlFor="inputPassword1" className="col-lg-3 control-label">Password</label>
+                                <label htmlFor="inputPassword1" className="col-lg-3 col-form-label">Password</label>
                                 <div className="col-lg-9">
                                     <input type="password" className="form-control" id="inputPassword1" placeholder="New password" data-bind="value: password1, disable: loading" />
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="inputPassword2" className="col-lg-3 control-label">&nbsp;</label>
+                                <label htmlFor="inputPassword2" className="col-lg-3 col-form-label">&nbsp;</label>
                                 <div className="col-lg-9">
                                     <input type="password" className="form-control" id="inputPassword2" placeholder="Confirm password" data-bind="value: password2, disable: loading" />
                                 </div>

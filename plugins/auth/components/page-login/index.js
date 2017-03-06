@@ -108,11 +108,11 @@ class AuthPageLogin extends Knockout {
                     <div className="col-md-6">
                         <form className="form clearfix" data-bind="submit: login, if: !loggedIn()">
                             <div className="form-group label-floating">
-                                <label htmlFor="username" className="control-label">E-Mail</label>
+                                <label htmlFor="username" className="col-form-label">E-Mail</label>
                                 <input type="text" className="form-control" id="username" data-bind="textInput: username, disable: loading" />
                             </div>
                             <div className="form-group label-floating">
-                                <label htmlFor="password" className="control-label">Password</label>
+                                <label htmlFor="password" className="col-form-label">Password</label>
                                 <input type="password" className="form-control" id="password" data-bind="textInput: password, disable: loading" />
                             </div>
                             <div className="form-group">

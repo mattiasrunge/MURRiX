@@ -553,6 +553,8 @@ ko.bindingHandlers.displayTimeline = {
         let value = ko.unwrap(valueAccessor());
         let $element = $(element);
 
+        $element.empty();
+
         if (!value || !value.timestamp) {
             return $element.text("Unknown");
         }
