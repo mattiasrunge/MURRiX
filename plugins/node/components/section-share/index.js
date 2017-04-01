@@ -112,7 +112,19 @@ class NodeSectionShare extends Knockout {
             return list;
         });
 
-        model.changed = ko.computed(() => {
+        model.onSave = () => {
+            model.saveAccess()
+            .then(() => {
+                model.saving(false);
+                stat.printSuccess("Share settings saved successfully!");
+            })
+            .catch((error) => {
+                model.saving(false);
+                stat.printError(error);
+            });
+        };
+
+        /*model.changed = ko.computed(() => {
             model.gid();
             model.groupAccess();
             model.public();
@@ -133,7 +145,7 @@ class NodeSectionShare extends Knockout {
                     stat.printError(error);
                 });
             }
-        }).extend({ notify: "always" });
+        }).extend({ notify: "always" });*/
 
         model.whoHasAccess = ko.asyncComputed([], async () => {
             if (!model.nodepath()) {
@@ -228,7 +240,7 @@ class NodeSectionShare extends Knockout {
         model.saving(false);
 
         model.dispose = () => {
-            model.changed.dispose();
+            //model.changed.dispose();
             stat.destroy(model.loading);
         };
 
@@ -318,6 +330,8 @@ class NodeSectionShare extends Knockout {
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <button className="btn btn-primary" data-bind="click: onSave">Save changes</button>
                         </div>
 
                         <div className="col-md-6">
