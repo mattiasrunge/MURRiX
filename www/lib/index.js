@@ -3,8 +3,8 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import Knockout from "components/knockout";
 import bluebird from "bluebird";
+import Root from "components/root";
 
 import "jquery";
 import "tether";
@@ -26,12 +26,10 @@ bluebird.config({
 });
 
 
-class App extends Knockout {
-    getTemplate() {
-        console.log("App getTemplate");
-
+class App extends React.PureComponent {
+    render() {
         return (
-            <div data-bind="react: 'default-root'"></div>
+            <Root />
         );
     }
 }

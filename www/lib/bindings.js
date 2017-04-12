@@ -28,8 +28,6 @@ import "jdomizio-imgareaselect";
 
 
 
-let lazyload;
-
 ko.bindingHandlers.moveToBody = {
     init: (element) => {
         let $element = $(element);
@@ -43,17 +41,6 @@ ko.bindingHandlers.moveToBody = {
         });
     }
 };
-
-ko.bindingHandlers.lazyload = {
-    init: (element) => {
-        lazyload = new LazyLoad({
-            container: element,
-            show_while_loading: true, // jshint ignore:line
-            elements_selector: "img.lazyload" // jshint ignore:line
-        });
-    }
-};
-
 
 ko.bindingHandlers.modal = {
     init: (element, valueAccessor) => {
@@ -1336,7 +1323,7 @@ ko.bindingHandlers.picture = {
 
             element.$img = $img;
 
-            lazyload.update();
+            window.lazyload.update();
         }
 
         $element = $span;

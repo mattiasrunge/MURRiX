@@ -1,64 +1,101 @@
 
+import ko from "knockout";
+import loc from "lib/location";
+import session from "lib/session";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import AuthWidgetSidebarUser from "plugins/auth/components/widget-sidebar-user";
 
-const ko = require("knockout");
-const loc = require("lib/location");
-const session = require("lib/session");
+class DefaultSidebar extends Component {
+    constructor(props) {
+        super(props);
 
-class DefaultSidebar extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.user = session.user;
-        model.loggedIn = session.loggedIn;
-        model.page = ko.pureComputed(() => ko.unwrap(loc.current().page) || "default");
-
-
-        return model;
+        this.state = {
+            user: session.user(),
+            loggedIn: session.loggedIn(),
+            page: ko.unwrap(loc.current().page) || "default"
+        };
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            session.user.subscribe((user) => this.setState({ user })),
+            session.loggedIn.subscribe((loggedIn) => this.setState({ loggedIn })),
+            loc.current.subscribe((current) => this.setState({
+                page: current.page || "default"
+            }))
+        ]);
+    }
+
+    gotoPage(event, page) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        loc.goto({ page });
+    }
+
+    render() {
         return (
             <div>
-                <div data-bind="react: 'auth-widget-sidebar-user'"></div>
+                <AuthWidgetSidebarUser />
 
-                <ul className="nav nav-pills flex-column" data-bind="visible: loggedIn, if: loggedIn">
-                    <li className="header">Explore</li>
-                    <li data-bind="css: { active: page() === 'news' || page() === 'default' }">
-                        <a className="nav-link" data-bind="location: { page: null }">
-                            <i className="material-icons md-18">home</i>
-                            <span> News</span>
-                        </a>
-                    </li>
-                    <li data-bind="css: { active: page() === 'search' }">
-                        <a className="nav-link" data-bind="location: { page: 'search' }">
-                            <i className="material-icons md-18">search</i>
-                            <span> Search by name</span>
-                        </a>
-                    </li>
-                    <li data-bind="css: { active: page() === 'year' }">
-                        <a className="nav-link" data-bind="location: { page: 'year' }">
-                            <i className="material-icons md-18">date_range</i>
-                            <span> Search by year</span>
-                        </a>
-                    </li>
-                    <li data-bind="css: { active: page() === 'labels' }">
-                        <a className="nav-link" data-bind="location: { page: 'labels' }">
-                            <i className="material-icons md-18">label</i>
-                            <span> Browse by label</span>
-                        </a>
-                    </li>
+                <If condition={this.state.loggedIn}>
+                    <ul className="nav nav-pills flex-column">
+                        <li className="header">Explore</li>
+                        <li className={this.state.page === "news" || this.state.page === "default" ? "active" : ""}>
+                            <a
+                                className="nav-link"
+                                onClick={(e) => this.gotoPage(e, null)}
+                                href="#"
+                            >
+                                <i className="material-icons md-18">home</i>
+                                <span> News</span>
+                            </a>
+                        </li>
+                        <li className={this.state.page === "search" ? "active" : ""}>
+                            <a
+                                className="nav-link"
+                                onClick={(e) => this.gotoPage(e, "search")}
+                                href="#"
+                            >
+                                <i className="material-icons md-18">search</i>
+                                <span> Search by name</span>
+                            </a>
+                        </li>
+                        <li className={this.state.page === "year" ? "active" : ""}>
+                            <a
+                                className="nav-link"
+                                onClick={(e) => this.gotoPage(e, "year")}
+                                href="#"
+                            >
+                                <i className="material-icons md-18">date_range</i>
+                                <span> Search by year</span>
+                            </a>
+                        </li>
+                        <li className={this.state.page === "labels" ? "active" : ""}>
+                            <a
+                                className="nav-link"
+                                onClick={(e) => this.gotoPage(e, "labels")}
+                                href="#"
+                            >
+                                <i className="material-icons md-18">label</i>
+                                <span> Browse by label</span>
+                            </a>
+                        </li>
 
-                    <li className="header">Numbers</li>
-                    <li data-bind="css: { active: page() === 'charts' }">
-                        <a className="nav-link" data-bind="location: { page: 'charts' }">
-                            <i className="material-icons md-18">show_chart</i>
-                            <span> Charts</span>
-                        </a>
-                    </li>
-                </ul>
+                        <li className="header">Numbers</li>
+                        <li className={this.state.page === "charts" ? "active" : ""}>
+                            <a
+                                className="nav-link"
+                                onClick={(e) => this.gotoPage(e, "charts")}
+                                href="#"
+                            >
+                                <i className="material-icons md-18">show_chart</i>
+                                <span> Charts</span>
+                            </a>
+                        </li>
+                    </ul>
+                </If>
             </div>
 
         );

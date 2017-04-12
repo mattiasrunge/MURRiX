@@ -75,6 +75,7 @@ class AlbumPage extends Knockout {
                     ],
                     showShareSettings: nodepath().editable,
                     showUpload: nodepath().editable,
+                    showMove: nodepath().editable,
                     params: {
                         nodepath: nodepath
                     }

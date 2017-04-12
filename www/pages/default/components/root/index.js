@@ -1,89 +1,141 @@
 
+/* global window */
+
+import ko from "knockout";
+import LazyLoad from "vanilla-lazyload";
+import loc from "lib/location";
+import session from "lib/session";
+import stat from "lib/status";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import Navbar from "components/navbar";
+import Sidebar from "components/sidebar";
+import Fullscreen from "plugins/node/components/fullscreen";
+import PageFeed from "plugins/feed/components/page";
+import PageSearch from "plugins/search/components/page-search";
+import PageYear from "plugins/search/components/page-year";
+import PageLabels from "plugins/search/components/page-labels";
+import PageCharts from "plugins/statistics/components/page-charts";
+import PageLogin from "plugins/auth/components/page-login";
+import PageProfile from "plugins/auth/components/page-profile";
+import PageReset from "plugins/auth/components/page-reset";
+import PageNode from "plugins/node/components/page";
 
-const ko = require("knockout");
-const loc = require("lib/location");
-const session = require("lib/session");
-const stat = require("lib/status");
+class DefaultRoot extends Component {
+    constructor(props) {
+        super(props);
 
-class DefaultRoot extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.loading = stat.loading;
-        model.loggedIn = session.loggedIn;
-        model.page = ko.pureComputed(() => ko.unwrap(loc.current().page) || "default");
-        model.showPath = ko.pureComputed(() => ko.unwrap(loc.current().showPath));
-        model.list = session.list;
-
-
-        return model;
+        this.state = {
+            loading: stat.loading(),
+            loggedIn: session.loggedIn(),
+            page: ko.unwrap(loc.current().page) || "default",
+            showPath: ko.unwrap(loc.current().showPath),
+            list: session.list
+        };
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            stat.loading.subscribe((loading) => this.setState({ loading })),
+            session.loggedIn.subscribe((loggedIn) => this.setState({ loggedIn })),
+            loc.current.subscribe((current) => this.setState({
+                page: current.page || "default",
+                showPath: current.showPath
+            })),
+            session.list.subscribe((list) => this.setState({ list }))
+        ]);
+    }
+
+    onLoad(ref) {
+        if (!ref || window.lazyload) {
+            return;
+        }
+
+        window.lazyload = new LazyLoad({
+            "container": ref,
+            "show_while_loading": true,
+            "elements_selector": "img.lazyload"
+        });
+    }
+
+    render() {
         return (
             <div>
-                <div className="loader" data-bind="visible: loading"></div>
-                <div data-bind="react: 'default-navbar'"></div>
+                <If condition={this.state.loading}>
+                    <div className="loader" data-bind="visible: loading"></div>
+                </If>
+                <Navbar />
 
-                <div data-bind="if: showPath">
-                    <div data-bind="react: { name: 'node-fullscreen', params: { showPath: showPath, list: list } }"></div>
-                </div>
+                <If condition={this.state.showPath}>
+                    <Fullscreen
+                        params={{
+                            showPath: loc.current().showPath,
+                            list: session.list
+                        }}
+                    />
+                </If>
 
-                <div className="page-container" data-bind="lazyload: true">
+                <div className="page-container" ref={(ref) => this.onLoad(ref)}>
                     <div className="container">
-                        <div className="row" data-bind="if: page() !== 'node', visible: page() !== 'node'">
-                            <div data-bind="if: loggedIn" style={{ width: "100%" }}>
-                                <div className="col-2 sidebar">
-                                    <div data-bind="if: page() !== 'node'">
-                                        <div data-bind="react: 'default-sidebar'"></div>
+                        <div className="row">
+                            <Choose>
+                                <When condition={this.state.page !== "node"}>
+                                    <div style={{ width: "100%" }}>
+                                        <Choose>
+                                            <When condition={this.state.loggedIn}>
+                                                <div className="col-2 sidebar">
+                                                    <Sidebar />
+                                                </div>
+                                                <div className="col-10 main">
+                                                    <Choose>
+                                                        <When condition={this.state.page === "news" || this.state.page === "default"}>
+                                                            <PageFeed />
+                                                        </When>
+                                                        <When condition={this.state.page === "search"}>
+                                                            <PageSearch />
+                                                        </When>
+                                                        <When condition={this.state.page === "year"}>
+                                                            <PageYear />
+                                                        </When>
+                                                        <When condition={this.state.page === "labels"}>
+                                                            <PageLabels />
+                                                        </When>
+                                                        <When condition={this.state.page === "charts"}>
+                                                            <PageCharts />
+                                                        </When>
+                                                        <When condition={this.state.page === "login"}>
+                                                            <PageLogin />
+                                                        </When>
+                                                        <When condition={this.state.page === "profile"}>
+                                                            <PageProfile />
+                                                        </When>
+                                                        <When condition={this.state.page === "reset"}>
+                                                            <PageReset />
+                                                        </When>
+                                                    </Choose>
+                                                </div>
+                                            </When>
+                                            <Otherwise>
+                                                <div className="col-md-12">
+                                                    <Choose>
+                                                        <When condition={this.state.page === "reset"}>
+                                                            <PageReset />
+                                                        </When>
+                                                        <Otherwise>
+                                                            <PageLogin />
+                                                        </Otherwise>
+                                                    </Choose>
+                                                </div>
+                                            </Otherwise>
+                                        </Choose>
                                     </div>
-                                </div>
-                                <div className="col-10 main">
-                                    <div data-bind="if: page() === 'news' || page() === 'default'">
-                                        <div data-bind="react: 'feed-page'"></div>
+                                </When>
+                                <Otherwise>
+                                    <div className="col-md-12 page-node">
+                                        <PageNode />
                                     </div>
-                                    <div data-bind="if: page() === 'search'">
-                                        <div data-bind="react: 'search-page-search'"></div>
-                                    </div>
-                                    <div data-bind="if: page() === 'year'">
-                                        <div data-bind="react: 'search-page-year'"></div>
-                                    </div>
-                                    <div data-bind="if: page() === 'labels'">
-                                        <div data-bind="react: 'search-page-labels'"></div>
-                                    </div>
-                                    <div data-bind="if: page() === 'charts'">
-                                        <div data-bind="react: 'statistics-page-charts'"></div>
-                                    </div>
-                                    <div data-bind="if: page() === 'login'">
-                                        <div data-bind="react: 'auth-page-login'"></div>
-                                    </div>
-                                    <div data-bind="if: page() === 'profile'">
-                                        <div data-bind="react: 'auth-page-profile'"></div>
-                                    </div>
-                                    <div data-bind="if: page() === 'reset'">
-                                        <div data-bind="react: 'auth-page-reset'"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div data-bind="if: !loggedIn()" style={{ width: "100%" }}>
-                                <div className="col-md-12">
-                                    <div data-bind="if: page() === 'reset'">
-                                        <div data-bind="react: 'auth-page-reset'"></div>
-                                    </div>
-                                    <div data-bind="if: page() !== 'reset'">
-                                        <div data-bind="react: 'auth-page-login'"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="row" data-bind="if: page() === 'node', visible: page() === 'node'">
-                            <div className="col-md-12 page-node">
-                                <div data-bind="react: 'node-page'"></div>
-                            </div>
+                                </Otherwise>
+                            </Choose>
                         </div>
                     </div>
                 </div>
