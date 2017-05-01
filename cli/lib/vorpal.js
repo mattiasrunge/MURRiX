@@ -11,7 +11,7 @@ module.exports.wrap = function(fn) {
         try {
             this.promptAsync = (options) => {
                 return new Promise((resolve) => {
-                    this.prompt(options, resolve);
+                    this.ui.inquirer.prompt(options, resolve);
                 });
             };
 
