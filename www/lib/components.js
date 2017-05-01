@@ -59,8 +59,7 @@ const components = {
     "statistics-page-charts": require("plugins/statistics/components/page-charts").default,
     "default-sidebar": require("components/sidebar").default,
     "default-root": require("components/root").default,
-    "default-navbar": require("components/navbar").default,
-    widget: require("components/widget").default
+    "default-navbar": require("components/navbar").default
 };
 
 export default components;
