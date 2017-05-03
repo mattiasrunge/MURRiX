@@ -68,10 +68,7 @@ class DefaultRoot extends Component {
 
                 <If condition={this.state.showPath}>
                     <Fullscreen
-                        params={{
-                            showPath: loc.current().showPath,
-                            list: session.list
-                        }}
+                        list={session.list}
                     />
                 </If>
 

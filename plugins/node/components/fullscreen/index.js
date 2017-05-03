@@ -15,6 +15,7 @@ class NodeFullscreen extends Knockout {
 
         model.loading = stat.create();
         model.sidebarView = ko.pureComputed(() => ko.unwrap(loc.current().sidebar) || "main");
+        model.showPath = ko.pureComputed(() => ko.unwrap(loc.current().showPath));
         model.personPath = ko.observable(false);
         model.selectedTag = ko.observable(false);
         model.height = ko.pureComputed(() => {
@@ -40,7 +41,6 @@ class NodeFullscreen extends Knockout {
             return 0;
         });
 
-        model.showPath = ko.pureComputed(() => ko.unwrap(this.props.showPath));
         model.nodepath = ko.nodepath(model.showPath);
 
         model.locationPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/location" : false);
