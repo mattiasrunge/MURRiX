@@ -10,7 +10,7 @@ const route = require("koa-route");
 const compress = require("koa-compress");
 const conditional = require("koa-conditional-get");
 const etag = require("koa-etag");
-const serve = require("koa-static");
+const range = require("koa-range");
 const favicon = require("koa-favicon");
 
 const enableDestroy = require("server-destroy");
@@ -45,6 +45,7 @@ module.exports = {
         app.use(bodyParser({ enableTypes: [ "json", "form", "text" ] }));
         app.use(conditional());
         app.use(etag());
+        app.use(range());
 
         // Configure error handling
         app.use(async (ctx, next) => {
