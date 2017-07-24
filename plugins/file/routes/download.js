@@ -12,7 +12,11 @@ module.exports = {
         params = config;
     },
     handler: async (ctx, filename, name) => {
-        ctx.set("Content-disposition", "attachment; filename=" + encodeURIComponent(name));
-        ctx.body = fs.createReadStream(path.join(params.fileDirectory, path.basename(filename)));
+        const filepath = path.join(params.mcsDirectory, path.basename(filename));
+        const stat = fs.statAsync(filepath);
+
+        ctx.set("Content-disposition", `attachment; filename=${encodeURIComponent(name)}`);
+        ctx.length = stat.size;
+        ctx.body = fs.createReadStream(filepath);
     }
 };

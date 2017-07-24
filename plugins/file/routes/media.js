@@ -15,7 +15,8 @@ module.exports = {
         const filepath = path.join(params.mcsDirectory, path.basename(filename));
         const stat = fs.statAsync(filepath);
 
-        ctx.set("Content-disposition", "filename=" + encodeURIComponent(name));
+        ctx.set("Content-disposition", `filename=${encodeURIComponent(name)}`);
+        ctx.compress = false;
         ctx.length = stat.size;
         ctx.body = fs.createReadStream(filepath);
     }
