@@ -13,7 +13,7 @@ module.exports = {
     },
     handler: async (ctx, filename, name) => {
         const filepath = path.join(params.mcsDirectory, path.basename(filename));
-        const stat = fs.statAsync(filepath);
+        const stat = await fs.statAsync(filepath);
 
         ctx.set("Content-disposition", `attachment; filename=${encodeURIComponent(name)}`);
         ctx.length = stat.size;
