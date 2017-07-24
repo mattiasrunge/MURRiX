@@ -45,7 +45,7 @@ module.exports = {
         app.use(bodyParser({ enableTypes: [ "json", "form", "text" ] }));
         app.use(conditional());
         app.use(etag());
-        app.use(range());
+        app.use(range);
 
         // Configure error handling
         app.use(async (ctx, next) => {
