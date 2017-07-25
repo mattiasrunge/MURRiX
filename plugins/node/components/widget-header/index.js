@@ -1,10 +1,10 @@
 
 import React from "react";
 import Component from "lib/component";
-import WidgetProfilePicture from "plugins/file/components/widget-profile-picture";
-import WidgetTextAttribute from "plugins/node/components/widget-text-attribute";
-import WidgetDescription from "plugins/node/components/widget-description";
-import WidgetLabels from "plugins/node/components/widget-labels";
+import FileWidgetProfilePicture from "plugins/file/components/widget-profile-picture";
+import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
+import NodeWidgetDescription from "plugins/node/components/widget-description";
+import NodeWidgetLabels from "plugins/node/components/widget-labels";
 
 class NodeWidgetHeader extends Component {
     render() {
@@ -12,23 +12,24 @@ class NodeWidgetHeader extends Component {
             ﻿<div style={{ display: "table" }}>
                 <div style={{ display: "table-cell", padding: "0", verticalAlign: "top" }}>
                     <div className="float-left" style={{ marginRight: "15px" }}>
-                        <WidgetProfilePicture
+                        <FileWidgetProfilePicture
                             size="128"
                             path={this.props.nodepath().path}
-                            />
+                            nodepath={this.props.nodepath}
+                        />
                     </div>
                 </div>
                 <div style={{ display: "table-cell", padding: "0", verticalAlign: "top", width: "100%" }}>
                     <h2>
-                        <WidgetTextAttribute
+                        <NodeWidgetTextAttribute
                             nodepath={this.props.nodepath}
                             name="name"
                         />
                     </h2>
-                    <WidgetDescription
+                    <NodeWidgetDescription
                         nodepath={this.props.nodepath}
                     />
-                    <WidgetLabels
+                    <NodeWidgetLabels
                         nodepath={this.props.nodepath}
                     />
                 </div>
@@ -39,7 +40,7 @@ class NodeWidgetHeader extends Component {
 }
 
 NodeWidgetHeader.propTypes = {
-    nodepath: React.PropTypes.object
+    nodepath: React.PropTypes.func
 };
 
 export default NodeWidgetHeader;
