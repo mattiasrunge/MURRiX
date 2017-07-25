@@ -43,7 +43,7 @@ h1, h2, h3, h5, h6, .heading {
 /*     overflow: hidden; */
 /*     white-space: nowrap; */
 /*     text-overflow: ellipsis; */
-    color: #327DE6;
+    color: #303f9f;
     padding-bottom: 10px;
     margin-top: 20px;
 }
@@ -66,7 +66,7 @@ body {
     overflow: hidden;
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
     font-size: 14px;
-    background-color: #efefef;
+    background-color: #fafbff;
 }
 
 #browser-warning {
@@ -140,25 +140,25 @@ body {
 }
 
 .page-header {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #eee;
     padding-bottom: 9px;
     margin: 40px 0 20px;
 }
 
 .left-border {
-    border-left: 1px solid #ccc;
+    border-left: 1px solid #eee;
 }
 
 .right-border {
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #eee;
 }
 
 .top-border {
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #eee;
 }
 
 .bottom-border {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #eee;
 }
 
 .media>.float-left {
@@ -249,7 +249,7 @@ body {
     bottom: 30px;
     right: 30px;
     background-color: white;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
 }
 
 .upload-main {
@@ -268,7 +268,7 @@ body {
     right: 0;
     bottom: 0;
     width: 299px;
-    border-left: 1px solid #ccc;
+    border-left: 1px solid #eee;
     padding: 15px;
 }
 
@@ -437,7 +437,7 @@ body {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: #327DE6;
+    color: #303f9f;
     font-size: 14px;
     padding-top: 6px;
 }
@@ -500,8 +500,8 @@ body {
 }
 
 .navbar-background {
-    background-color: #327DE6;
-/*     background: linear-gradient(0, #2966BC 0%, #327DE6 100%); */
+    background-color: #303f9f;
+/*     background: linear-gradient(0, #2966BC 0%, #303f9f 100%); */
     box-shadow: 0 1px 3px rgba(0,0,0,.6);
     border-bottom: none;
 }
@@ -515,7 +515,7 @@ body {
 }
 
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
-    background-color: #327DE6;
+    background-color: #303f9f;
 }
 
 .navbar .profile .picture {
@@ -545,16 +545,16 @@ body {
 }
 
 .box {
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
     background-color: white;
     margin-bottom: 15px;
     margin-top: 15px;
 }
 
 .page-node {
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
     background-color: white;
     display: block;
     padding: 0;
@@ -582,8 +582,8 @@ body {
     bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    border-right: 1px solid #ccc;
-    border-left: 1px solid #ccc;
+    border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
     background-color: white;
 }
 
@@ -608,7 +608,7 @@ body {
 
 .sidebar li.header {
     font-family: 'Ubuntu', Georgia, Times, serif;
-    color: #327DE6;
+    color: #303f9f;
     font-size: 20px;
     padding-bottom: 5px;
     margin-top: 15px;
@@ -637,8 +637,8 @@ body {
 }
 
 .node-widget-sections ul.nav {
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
 }
 
 .node-widget-sections .nav-pills > li > a {
@@ -767,7 +767,7 @@ body {
 
 .news-container .news-item {
     background-color: white;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
 /*     border-radius: 4px; */
     position: relative;
 /*     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175); */
@@ -826,7 +826,7 @@ body {
     margin-top: 15px;
     margin-bottom: 15px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #eee;
     min-height: 24px;
 }
 
@@ -846,7 +846,7 @@ body {
 
 .node-item-panel {
     background-color: white;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
 /*   border-radius: 4px; */
     position: relative;
 /*   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175); */
@@ -882,7 +882,7 @@ body {
     right: 0;
     bottom: 0;
     position: absolute;
-    background-color: #ccc;
+    background-color: #eee;
 }
 
 .node-item-panel .node-widget-description {
@@ -916,7 +916,7 @@ body {
 
 .relation-person-box {
     text-align: left;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
     border-radius: 3px 3px 3px 3px;
     background-color: white;
 }
@@ -927,14 +927,14 @@ body {
 
 .relation-horizontal-line-left {
     height: 2px;
-    background-color: #ccc;
+    background-color: #eee;
     display: inline-block;
     width: 50%;
 }
 
 .relation-horizontal-line-right {
     height: 2px;
-    background-color: #ccc;
+    background-color: #eee;
     display: inline-block;
     width: 50%;
 }
@@ -965,7 +965,7 @@ body {
     vertical-align: top;
     margin-left: auto;
     margin-right: auto;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
     border-radius: 3px;
     display: inline-block;
     z-index: 3;
@@ -1042,7 +1042,7 @@ body {
     z-index: 1;
     position: relative;
     border-radius: 3px;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
     color: #0088CC;
     background-color: white;
     font-size: 10px;
@@ -1127,8 +1127,8 @@ body {
     left: 8px;
     background-color: white;
     width: 2px;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
 }
 
 .relation-zoom-control .mark-container {
@@ -1149,8 +1149,8 @@ body {
     padding: 0;
     margin: 0;
     border-radius: 3px;
-    border: 1px solid #ccc;
-    color: #ccc;
+    border: 1px solid #eee;
+    color: #eee;
     background-color: white;
     font-size: 10px;
 }
@@ -1165,8 +1165,8 @@ body {
     padding: 0;
     margin: 0;
     border-radius: 3px;
-    border: 1px solid #ccc;
-    color: #ccc;
+    border: 1px solid #eee;
+    color: #eee;
     background-color: white;
     font-size: 10px;
 }
@@ -1181,8 +1181,8 @@ body {
     padding: 0;
     margin: 0;
     border-radius: 3px;
-    border: 1px solid #ccc;
-    color: #ccc;
+    border: 1px solid #eee;
+    color: #eee;
     background-color: white;
     font-size: 10px;
 }

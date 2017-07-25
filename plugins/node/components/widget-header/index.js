@@ -1,37 +1,45 @@
 
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import WidgetProfilePicture from "plugins/file/components/widget-profile-picture";
+import WidgetTextAttribute from "plugins/node/components/widget-text-attribute";
+import WidgetDescription from "plugins/node/components/widget-description";
+import WidgetLabels from "plugins/node/components/widget-labels";
 
-
-
-class NodeWidgetHeader extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = this.props.nodepath;
-
-
-        return model;
-    }
-
-    getTemplate() {
+class NodeWidgetHeader extends Component {
+    render() {
         return (
             ﻿<div style={{ display: "table" }}>
                 <div style={{ display: "table-cell", padding: "0", verticalAlign: "top" }}>
-                    <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 128, path: nodepath().path } }" className="float-left" style={{ marginRight: "15px" }}></div>
+                    <div className="float-left" style={{ marginRight: "15px" }}>
+                        <WidgetProfilePicture
+                            size="128"
+                            path={this.props.nodepath().path}
+                            />
+                    </div>
                 </div>
                 <div style={{ display: "table-cell", padding: "0", verticalAlign: "top", width: "100%" }}>
                     <h2>
-                        <div data-bind="react: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'name' } }"></div>
+                        <WidgetTextAttribute
+                            nodepath={this.props.nodepath}
+                            name="name"
+                        />
                     </h2>
-                    <div data-bind="react: { name: 'node-widget-description', params: { nodepath: nodepath } }"></div>
-                    <div data-bind="react: { name: 'node-widget-labels', params: { nodepath: nodepath } }"></div>
+                    <WidgetDescription
+                        nodepath={this.props.nodepath}
+                    />
+                    <WidgetLabels
+                        nodepath={this.props.nodepath}
+                    />
                 </div>
             </div>
 
         );
     }
 }
+
+NodeWidgetHeader.propTypes = {
+    nodepath: React.PropTypes.object
+};
 
 export default NodeWidgetHeader;

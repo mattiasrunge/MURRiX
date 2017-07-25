@@ -97,7 +97,6 @@ class DefaultSidebar extends Component {
                     </ul>
                 </If>
             </div>
-
         );
     }
 }

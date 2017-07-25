@@ -62,8 +62,9 @@ class DefaultRoot extends Component {
         return (
             <div>
                 <If condition={this.state.loading}>
-                    <div className="loader" data-bind="visible: loading"></div>
+                    <div className="loader"></div>
                 </If>
+
                 <Navbar />
 
                 <If condition={this.state.showPath}>
