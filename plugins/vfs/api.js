@@ -392,27 +392,31 @@ const vfs = api.register("vfs", {
 
         return list;
     }),
-    random: api.export(async (session, abspaths) => {
-        let list = [];
+    random: api.export(async (session, abspaths, excludePaths = []) => {
+        const list = [];
         let result = false;
         let tries = 0;
 
-        for (let abspath of abspaths) {
-            let parent = await vfs.resolve(session, abspath);
+        for (const abspath of abspaths) {
+            const parent = await vfs.resolve(session, abspath);
 
             if (!(await vfs.access(session, parent, "r"))) {
                 continue;
             }
 
-            for (let child of parent.properties.children) {
-                list.push({ id: child.id, name: child.name, path: path.join(abspath, child.name) });
+            for (const child of parent.properties.children) {
+                const node = { id: child.id, name: child.name, path: path.join(abspath, child.name) };
+
+                if (!excludePaths.includes(node.path)) {
+                    list.push(node);
+                }
             }
         }
 
         while (!result && list.length > tries) {
-            let index = Math.floor(Math.random() * (list.length - 1)) + 1;
-            let child = list.splice(index, 1)[0];
-            let node = await db.findOne("nodes", { _id: child.id });
+            const index = Math.floor(Math.random() * list.length);
+            const child = list.splice(index, 1)[0];
+            const node = await db.findOne("nodes", { _id: child.id });
 
             if (await vfs.access(session, node, "r")) {
                 result = { name: child.name, node: node, path: child.path };

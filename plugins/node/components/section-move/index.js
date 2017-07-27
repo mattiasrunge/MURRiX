@@ -53,14 +53,12 @@ class NodeSectionMove extends Knockout {
                     <div className="row">
                         <div className="col-6">
                             <table className="table table-striped table-hover table-sm" style={{ width: "100%", marginBottom: "0" }}>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                    </tr>
-                                </thead>
                                 <tbody data-bind="foreach: data().files">
                                     <tr>
-                                        <td data-bind="text: $data.name"></td>
+                                        <td>
+                                            <span data-bind="picture: { item: $data, width: 16, height: 16, classes: 'move-picture' }"></span>
+                                            <span data-bind="text: $data.name"></span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

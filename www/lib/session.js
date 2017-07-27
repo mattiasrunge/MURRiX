@@ -8,6 +8,7 @@ module.exports = {
     user: ko.observable(false),
     username: ko.observable("guest"),
     personPath: ko.observable(false),
+    stars: ko.observableArray(),
     loggedIn: ko.pureComputed(() => {
         return module.exports.user() && module.exports.username() !== "guest";
     }),
@@ -19,11 +20,15 @@ module.exports = {
         return [];
     }),
     loadUser: async () => {
-        let userinfo = await api.auth.whoami();
+        const userinfo = await api.auth.whoami();
         module.exports.user(userinfo.user);
         module.exports.username(userinfo.username);
         module.exports.personPath(userinfo.personPath);
+        module.exports.stars(await api.auth.getStars());
 
         console.log(userinfo);
+    },
+    setStars: (stars) => {
+        module.exports.stars(stars);
     }
 };

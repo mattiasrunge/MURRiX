@@ -1,89 +1,124 @@
 
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import { NavDropdown, NavLink, DropdownItem, DropdownToggle, DropdownMenu } from "reactstrap";
+import AuthWidgetPictureUser from "plugins/auth/components/widget-picture-user";
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const utils = require("lib/utils");
 const stat = require("lib/status");
 const session = require("lib/session");
+const loc = require("lib/location");
 
-class AuthWidgetNavbarUser extends Knockout {
-    async getModel() {
-        const model = {};
+class AuthWidgetNavbarUser extends Component {
+    constructor(props) {
+        super(props);
 
-        model.user = session.user;
-        model.uid = ko.pureComputed(() => {
-            if (!model.user()) {
-                return false;
-            }
+        this.toggleMenu = this.toggleMenu.bind(this);
 
-            return model.user().attributes.uid;
-        });
-        model.personPath = session.personPath;
-        model.loggedIn = session.loggedIn;
-        model.loading = stat.create();
-
-        model.logout = async () => {
-            model.loading(true);
-
-            try {
-                await api.auth.logout();
-                await session.loadUser();
-                stat.printSuccess("Logout successfull");
-            } catch (e) {
-                console.error(e);
-                stat.printError("Logout failed");
-            }
-
-            model.loading(false);
+        this.state = {
+            menuOpen: false,
+            user: ko.unwrap(session.user),
+            loggedIn: ko.unwrap(session.loggedIn),
+            personPath: ko.unwrap(session.personPath)
         };
-
-        model.dispose = () => {
-            stat.destroy(model.loading);
-        };
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            session.user.subscribe((user) => this.setState({ user })),
+            session.loggedIn.subscribe((loggedIn) => this.setState({ loggedIn })),
+            session.personPath.subscribe((personPath) => this.setState({ personPath }))
+        ]);
+    }
+
+    toggleMenu() {
+        this.setState({
+            menuOpen: !this.state.menuOpen
+        });
+    }
+
+    async logout() {
+        try {
+            await api.auth.logout();
+            await session.loadUser();
+            stat.printSuccess("Logout successfull");
+        } catch (e) {
+            console.error(e);
+            stat.printError("Logout failed");
+        }
+    }
+
+    gotoLogin(event) {
+        event.preventDefault();
+
+        loc.goto({ page: "login" });
+    }
+
+    render() {
         return (
-            <li className="nav-item dropdown profile" data-bind="css: { dropdown: loggedIn(), profile: loggedIn() }">
-                <a href="#" data-target="#" className="nav-link dropdown-toggle" data-toggle="dropdown" data-bind="if: loggedIn, visible: loggedIn">
-                    <span className="picture" style={{ width: "20px", height: "20px" }} data-bind="">
-                        <span data-bind="react: { name: 'auth-widget-picture-user', params: { size: 20, uid: uid, classes: 'rounded-circle' } }" className="picture float-left"></span>
-                    </span>
-                    <span data-bind="text: user().attributes.name"></span>
-                </a>
-
-                <div className="dropdown-menu dropdown-menu-right" data-bind="if: loggedIn, visible: loggedIn">
-                    <a className="dropdown-item" href="#" data-bind="location: { page: 'profile' }">
-                        <i className="material-icons">account_box</i>
-                        {"  "}
-                        Profile
-                    </a>
-                    <a className="dropdown-item" href="#" data-bind="visible: personPath, if: personPath, location: { page: 'node', path: personPath }">
-                        <i className="material-icons">person</i>
-                        {"  "}
-                        Me
-                    </a>
-                    <div className="dropdown-divider"></div>
-                    <a className="dropdown-item" href="#" data-bind="click: logout">
-                        <i className="material-icons">exit_to_app</i>
-                        {"  "}
-                        Logout
-                    </a>
-                </div>
-
-                <a className="nav-link" href="#" data-bind="location: { page: 'login' }, if: !loggedIn(), visible: !loggedIn()">
-                    <i className="material-icons md-18">account_circle</i>
-                    {"  "}
-                    Login
-                </a>
-            </li>
-
+            <span>
+                <Choose>
+                    <When condition={this.state.loggedIn}>
+                        <NavDropdown
+                            isOpen={this.state.menuOpen}
+                            toggle={this.toggleMenu}
+                        >
+                            <DropdownToggle
+                                style={{ color: "white" }}
+                                nav
+                                caret
+                            >
+                                <span className="picture">
+                                    <AuthWidgetPictureUser
+                                        size={20}
+                                        uid={this.state.user.attributes.uid}
+                                        classes="rounded-circle"
+                                    />
+                                </span>
+                                {this.state.user.attributes.name}
+                            </DropdownToggle>
+                            <DropdownMenu right>
+                                <DropdownItem
+                                    onClick={() => loc.goto({ page: "profile" }, false)}
+                                >
+                                    <i className="material-icons">account_box</i>
+                                    {"  "}
+                                    Profile
+                                </DropdownItem>
+                                <If condition={this.state.personPath}>
+                                    <DropdownItem
+                                        onClick={() => loc.goto({ page: "node", path: this.state.personPath }, false)}
+                                    >
+                                        <i className="material-icons">person</i>
+                                        {"  "}
+                                        Me
+                                    </DropdownItem>
+                                </If>
+                                <DropdownItem divider />
+                                <DropdownItem
+                                    onClick={() => this.logout()}
+                                >
+                                    <i className="material-icons">exit_to_app</i>
+                                    {"  "}
+                                    Logout
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </NavDropdown>
+                    </When>
+                    <Otherwise>
+                        <NavLink
+                            href="#"
+                            onClick={(e) => this.gotoLogin(e)}
+                            style={{ color: "white" }}
+                        >
+                            <i className="material-icons md-18">account_circle</i>
+                            {"  "}
+                            Login
+                        </NavLink>
+                    </Otherwise>
+                </Choose>
+            </span>
         );
     }
 }

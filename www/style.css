@@ -213,6 +213,13 @@ body {
     margin-bottom: 1px;
 }
 
+.move-picture {
+    background-color: black;
+    display: inline-block;
+    float: left;
+    margin-right: 5px;
+}
+
 .node-table .material-icons {
     font-size: inherit;
     color: #aaa;
@@ -499,26 +506,16 @@ body {
     position: relative;
 }
 
-.navbar-background {
+.navbar {
     background-color: #303f9f;
 /*     background: linear-gradient(0, #2966BC 0%, #303f9f 100%); */
     box-shadow: 0 1px 3px rgba(0,0,0,.6);
     border-bottom: none;
 }
 
-.navbar-inverse .navbar-nav .nav-link {
-    color: white;
-}
-
-.navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-text, .navbar-inverse .navbar-brand {
-    color: white;
-}
-
-.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
-    background-color: #303f9f;
-}
-
-.navbar .profile .picture {
+.navbar .picture {
+    width: 20px;
+    height: 20px;
     margin-right: 5px;
     vertical-align: top;
     display: inline-block;
@@ -526,9 +523,10 @@ body {
 
 .navbar .star {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 5px;
+    right: 5px;
     color: #FAB400;
+    z-index: 100;
 }
 
 .form-control,
@@ -735,8 +733,11 @@ body {
     background-color: white;
 }
 
-.twitter-typeahead .valid {
+.twitter-typeahead .valid,
+.header-search .valid input,
+.header-search .valid div {
     font-weight: bold;
+    width: 100% !important;
     color: #2d6ca2;
 }
 
