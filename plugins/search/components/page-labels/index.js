@@ -1,11 +1,9 @@
 
 import React from "react";
 import Knockout from "components/knockout";
-import Comment from "components/comment";
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const utils = require("lib/utils");
 const loc = require("lib/location");
 const ui = require("lib/ui");
 const stat = require("lib/status");
@@ -74,7 +72,7 @@ class SearchPageLabels extends Knockout {
                     <h1>Browse by label</h1>
 
                     <div style={{ marginBottom: "15px" }} data-bind="foreach: labels">
-                        <a role="button" className="btn btn-secondary" data-bind="css: { 'btn-primary': $data === $parent.query() }, text: $data, attr: { href: '#page=labels&query=' + $data }" style={{ marginRight: "5px", marginBottom: "10px" }}></a>
+                        <a role="button" className="btn btn-sm" data-bind="css: { 'btn-primary': $data === $parent.query(), 'btn-secondary': $data !== $parent.query() }, text: $data, attr: { href: '#page=labels&query=' + $data }" style={{ marginRight: "5px", marginBottom: "10px" }}></a>
                     </div>
                 </div>
 
