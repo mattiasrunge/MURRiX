@@ -138,7 +138,6 @@ class DefaultRoot extends Component {
                     </div>
                 </div>
             </div>
-
         );
     }
 }

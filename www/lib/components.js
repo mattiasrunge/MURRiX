@@ -44,9 +44,7 @@ const components = {
     "feed-widget-news-file": require("plugins/feed/components/widget-news-file").default,
     "feed-widget-news-album": require("plugins/feed/components/widget-news-album").default,
     "feed-page": require("plugins/feed/components/page").default,
-    "auth-widget-sidebar-user": require("plugins/auth/components/widget-sidebar-user").default,
     "auth-widget-picture-user": require("plugins/auth/components/widget-picture-user").default,
-    "auth-widget-navbar-user": require("plugins/auth/components/widget-navbar-user").default,
     "auth-widget-list-groups": require("plugins/auth/components/widget-list-groups").default,
     "auth-widget-edit-user": require("plugins/auth/components/widget-edit-user").default,
     "auth-page-reset": require("plugins/auth/components/page-reset").default,
@@ -56,10 +54,7 @@ const components = {
     "album-page": require("plugins/album/components/page").default,
     "file-widget-grid": require("plugins/file/components/widget-grid").default,
     "file-widget-profile-picture": require("plugins/file/components/widget-profile-picture").default,
-    "statistics-page-charts": require("plugins/statistics/components/page-charts").default,
-    "default-sidebar": require("components/sidebar").default,
-    "default-root": require("components/root").default,
-    "default-navbar": require("components/navbar").default
+    "statistics-page-charts": require("plugins/statistics/components/page-charts").default
 };
 
 export default components;

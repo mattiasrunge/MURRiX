@@ -1,18 +1,17 @@
 
+import ko from "knockout";
+import api from "api.io-client";
+import stat from "lib/status";
+import session from "lib/session";
+import loc from "lib/location";
 import React from "react";
 import Component from "lib/component";
-import { NavDropdown, Navbar, NavbarBrand, Nav, NavLink, Container, Row, DropdownItem, DropdownToggle, DropdownMenu } from "reactstrap";
+import { Navbar, NavbarBrand, Nav, NavLink, Container, Row } from "reactstrap";
 import NodeWidgetNodeSelect from "plugins/node/components/widget-node-select";
 import NodeWidgetNavbarNodeCreate from "plugins/node/components/widget-navbar-node-create";
 import AuthWidgetNavbarUser from "plugins/auth/components/widget-navbar-user";
 import AuthWidgetNavbarStars from "plugins/auth/components/widget-navbar-stars";
 import AuthWidgetNodeStar from "plugins/auth/components/widget-node-star";
-
-const ko = require("knockout");
-const api = require("api.io-client");
-const stat = require("lib/status");
-const session = require("lib/session");
-const loc = require("lib/location");
 
 class DefaultNavbar extends Component {
     constructor(props) {

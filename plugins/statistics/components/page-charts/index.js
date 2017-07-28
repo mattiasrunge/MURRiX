@@ -1,85 +1,135 @@
 
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import StatisticsWidgetChart from "plugins/statistics/components/widget-chart";
 
-const ko = require("knockout");
-const moment = require("moment");
-const api = require("api.io-client");
-const utils = require("lib/utils");
-const ui = require("lib/ui");
-const stat = require("lib/status");
+import moment from "moment";
+import api from "api.io-client";
+import ui from "lib/ui";
+import stat from "lib/status";
 
-class StatisticsPageCharts extends Knockout {
-    async getModel() {
-        const model = {};
+class StatisticsPageCharts extends Component {
+    constructor(props) {
+        super(props);
 
-        model.loading = stat.create();
+        this.state = {
+            dataList: [],
+            options: {
+                tooltips: {
+                    enabled: false
+                },
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }
+                    ]
+                }
+            }
+        };
+    }
 
-        model.data = ko.asyncComputed([], async (setter) => {
-            setter(false);
+    componentDidMount() {
+        this.load();
 
-            model.loading(true);
-            let result = await api.statistics.getEventData();
-            model.loading(false);
+        ui.setTitle("Statistics");
+    }
 
-            let data = [
+    async load() {
+        const backgroundColor = [
+            "rgba(255, 204, 204, 0.8)",
+            "rgba(255, 230, 204, 0.8)",
+            "rgba(255, 255, 204, 0.8)",
+            "rgba(230, 255, 204, 0.8)",
+            "rgba(204, 255, 204, 0.8)",
+            "rgba(204, 255, 230, 0.8)",
+            "rgba(204, 255, 255, 0.8)",
+            "rgba(204, 230, 255, 0.8)",
+            "rgba(255, 204, 255, 0.8)",
+            "rgba(230, 204, 255, 0.8)",
+            "rgba(255, 204, 255, 0.8)",
+            "rgba(255, 204, 230, 0.8)"
+        ];
+
+        try {
+            const result = await api.statistics.getEventData();
+
+            const dataList = [
                 {
                     label: "Births each month",
                     labels: moment.monthsShort(),
-                    data: result.birth
+                    datasets: [
+                        {
+                            data: result.birth,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
                 },
                 {
                     label: "Engagements each month",
                     labels: moment.monthsShort(),
-                    data: result.engagement
+                    datasets: [
+                        {
+                            data: result.engagement,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
                 },
                 {
                     label: "Marriages each month",
                     labels: moment.monthsShort(),
-                    data: result.marriage
+                    datasets: [
+                        {
+                            data: result.marriage,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
                 },
                 {
                     label: "Deaths each month",
                     labels: moment.monthsShort(),
-                    data: result.death
+                    datasets: [
+                        {
+                            data: result.death,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
                 }
             ];
 
-            console.log("event data", result, data);
-
-            return data;
-        }, (error) => {
-            model.loading(false);
+            this.setState({ dataList });
+        } catch (error) {
             stat.printError(error);
-            return false;
-        });
-
-        ui.setTitle("Charts");
-
-        model.dispose = () => {
-            stat.destroy(model.loading);
-        };
-
-
-        return model;
+        }
     }
 
-    getTemplate() {
+    render() {
         return (
             <div className="fadeInRight animated">
                 <div className="box box-content">
                     <h1>Charts</h1>
 
-                    <div data-bind="foreach: data">
-                        <h2 data-bind="text: $data.label"></h2>
+                    <For each="data" of={this.state.dataList}>
+                        <h2>{data.label}</h2>
                         <div style={{ marginBottom: "15px" }}>
-                            <canvas data-bind="barchart: $data"></canvas>
+                        <StatisticsWidgetChart
+                            type="bar"
+                            data={data}
+                            options={this.state.options}
+                        />
                         </div>
-                    </div>
+                    </For>
                 </div>
             </div>
-
         );
     }
 }

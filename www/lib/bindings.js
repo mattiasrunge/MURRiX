@@ -18,15 +18,12 @@ const Slider = require("bootstrap-slider");
 const autosize = require("autosize");
 const LazyLoad = require("vanilla-lazyload");
 const dragula = require("dragula");
-const Chart = require("chart.js");
 const chron = require("chron-time");
 require("jquery-contextmenu");
 require("corejs-typeahead/dist/typeahead.jquery");
 
 import "moment-duration-format";
 import "jdomizio-imgareaselect";
-
-
 
 ko.bindingHandlers.moveToBody = {
     init: (element) => {
@@ -176,67 +173,6 @@ ko.bindingHandlers.dragula = {
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             drake.destroy();
         });
-    }
-};
-
-ko.bindingHandlers.barchart = {
-    init: (element/*, valueAccessor*/) => {
-        element.chart = new Chart(element, {
-            type: "bar",
-            data: {
-                labels: [],
-                label: "",
-                datasets: []
-            },
-            options: {
-                tooltips: {
-                    enabled: false
-                },
-                legend: {
-                    display: false
-                },
-                scales: {
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }
-                    ]
-                }
-            }
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-            element.chart.destroy();
-            delete element.chart;
-        });
-    },
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-
-        element.chart.data.labels = value.labels;
-        element.chart.data.label = value.label;
-        element.chart.data.datasets[0] = {
-            data: value.data,
-            backgroundColor: [
-                "rgba(255, 204, 204, 0.8)",
-                "rgba(255, 230, 204, 0.8)",
-                "rgba(255, 255, 204, 0.8)",
-                "rgba(230, 255, 204, 0.8)",
-                "rgba(204, 255, 204, 0.8)",
-                "rgba(204, 255, 230, 0.8)",
-                "rgba(204, 255, 255, 0.8)",
-                "rgba(204, 230, 255, 0.8)",
-                "rgba(255, 204, 255, 0.8)",
-                "rgba(230, 204, 255, 0.8)",
-                "rgba(255, 204, 255, 0.8)",
-                "rgba(255, 204, 230, 0.8)"
-            ],
-            borderWidth: 1
-        };
-
-        element.chart.update();
     }
 };
 

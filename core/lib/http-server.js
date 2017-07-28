@@ -112,7 +112,9 @@ module.exports = {
 
         const webpackCfg = buildWebpackCfg({ dev: true });
         const webpackMiddlewareConf = webpackMiddleware(webpack(webpackCfg), {
-            stats: true
+            stats: {
+                colors: true
+            }
         });
 
         app.use(webpackMiddlewareConf);
