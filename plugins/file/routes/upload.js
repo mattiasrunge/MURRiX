@@ -23,21 +23,30 @@ module.exports = {
 
         const { files } = await asyncBusboy(ctx.req);
 
-        let filename = path.join(params.uploadDirectory, id);
-        log.debug("Saving uploaded file as " + filename);
+        const filename = path.join(params.uploadDirectory, id);
+        log.debug(`Will save uploading file to ${filename}...`);
 
-        let stream = fs.createWriteStream(filename);
+        const stream = fs.createWriteStream(filename);
 
         files[0].pipe(stream);
 
         await new Promise((resolve, reject) => {
-            stream.on("finish", resolve);
-            stream.on("error", reject);
+            stream.on("finish", () => {
+                log.debug(`Streaming of uploaded file (${filename}) finished!`);
+                resolve();
+            });
+
+            stream.on("error", (error) => {
+                log.error(`Streaming of uploaded file (${filename}) failed!`);
+                log.error(error);
+                reject();
+            });
         });
 
-        let metadata = await api.mcs.getMetadata(filename, { noChecksums: true });
+        log.debug(`Getting metadata for uploaded file ${filename}...`);
+        const metadata = await api.mcs.getMetadata(filename, { noChecksums: true });
 
-        log.debug("Uploaded file " + filename + " saved!");
+        log.debug(`Upload of file ${filename} completed successfully!`);
 
         ctx.type = "json";
         ctx.body = JSON.stringify({ status: "success", metadata: metadata }, null, 2);

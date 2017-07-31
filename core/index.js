@@ -14,7 +14,7 @@ const argv = require("yargs")
     type: "string"
 })
 .option("level", {
-    default: "info",
+    default: "debug",
     describe: "Log level",
     type: "string"
 })
