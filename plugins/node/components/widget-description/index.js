@@ -1,9 +1,6 @@
 
 import React from "react";
 import Knockout from "components/knockout";
-import Comment from "components/comment";
-
-
 
 class NodeWidgetDescription extends Knockout {
     async getModel() {

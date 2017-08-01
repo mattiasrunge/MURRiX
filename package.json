@@ -32,6 +32,7 @@
     "columnify": "1.5.4",
     "corejs-typeahead": "git+https://github.com/mattiasrunge/typeahead.js.git",
     "css-loader": "^0.28.4",
+    "debounce": "^1.0.2",
     "dragula": "^3.7.1",
     "emailjs": "^1.0.11",
     "eslint-plugin-jsx-control-statements": "^2.1.1",

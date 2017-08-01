@@ -1,88 +1,94 @@
 
+import ko from "knockout";
+import debounce from "debounce";
+import api from "api.io-client";
+import loc from "lib/location";
+import ui from "lib/ui";
+import stat from "lib/status";
+import session from "lib/session";
 import React from "react";
-import Knockout from "components/knockout";
+import Component from "lib/component";
+import NodeWidgetCardList from "plugins/node/components/widget-card-list";
 
-const ko = require("knockout");
-const api = require("api.io-client");
-const loc = require("lib/location");
-const ui = require("lib/ui");
-const stat = require("lib/status");
-const session = require("lib/session");
+class SearchPageSearch extends Component {
+    constructor(props) {
+        super(props);
 
-class SearchPageSearch extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.loading = stat.create();
-        model.query = ko.pureComputed({
-            read: () => ko.unwrap(loc.current().query) || "",
-            write: (value) => loc.goto({ query: value })
-        });
-        model.list = ko.asyncComputed([], async () => {
-            if (model.query().length < 4) {
-                return [];
-            }
-
-            let query = {};
-
-            if (model.query().startsWith("label:")) {
-                let labels = model.query().replace(/label:/, "").split("+");
-
-                if (labels.length === 0) {
-                    return [];
-                }
-
-                query = {
-                    "attributes.labels": { $in: labels }
-                };
-            } else {
-                query = {
-                    "attributes.name": { $regex: ".*" + model.query() + ".*", $options: "-i" }
-                };
-            }
-
-            model.loading(true);
-
-            let list = await api.vfs.list(session.searchPaths(), { filter: query });
-
-            model.loading(false);
-
-            ui.setTitle("Search for " + model.query());
-
-            return list.map((item) => {
-                item.node = ko.observable(item.node);
-                return item;
-            });
-        }, (error) => {
-            model.loading(false);
-            stat.printError(error);
-            return [];
-        }, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
-
-        ui.setTitle("Search");
-
-        model.dispose = () => {
-            stat.destroy(model.loading);
+        this.state = {
+            query: ko.unwrap(loc.current().query) || "",
+            list: []
         };
 
-
-        return model;
+        this.loadDebounced = debounce(this.load.bind(this), 300);
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            loc.current.subscribe((current) => {
+                const query = current.query || "";
+
+                if (query !== this.state.query) {
+                    this.setState({ query });
+                    this.loadDebounced(query);
+                }
+            })
+        ]);
+
+        this.loadDebounced(this.state.query);
+    }
+
+    async load(query) {
+        try {
+            ui.setTitle(`Search for ${query}`);
+
+            if (!query) {
+                return this.setState({ list: [] });
+            }
+
+            const options = {
+                filter: {
+                    "attributes.name": { $regex: `.*${query}.*`, $options: "-i" }
+                }
+            };
+
+            const list = await api.vfs.list(session.searchPaths(), options);
+
+            this.setState({ list });
+        } catch (error) {
+            stat.printError(error);
+            this.setState({ list: [] });
+        }
+    }
+
+    onChange(event) {
+        event.preventDefault();
+
+        loc.goto({ query: event.target.value });
+    }
+
+    render() {
         return (
             <div className="fadeInRight animated">
                 <div className="box box-content">
                     <h1>Search by name</h1>
 
                     <form className="form" role="search" style={{ marginBottom: "15px" }} data-bind="submit: () => false">
-                        <input name="query" type="search" className="form-control" placeholder="Enter name to search for" data-bind="textInput: query" />
+                        <input
+                            name="query"
+                            type="search"
+                            className="form-control"
+                            style={{ marginBottom: "15px" }}
+                            placeholder="Enter name to search for"
+                            value={this.state.query}
+                            onChange={(e) => this.onChange(e)}
+                        />
                     </form>
                 </div>
 
-                <div data-bind="react: { name: 'node-widget-card-list', params: { list: list } }"></div>
+                <NodeWidgetCardList
+                    list={this.state.list}
+                />
             </div>
-
         );
     }
 }

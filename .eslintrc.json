@@ -1,7 +1,7 @@
 {
     "extends": [
-        "plugin:react/recommended",
-        "plugin:jsx-control-statements/recommended"
+        "plugin:jsx-control-statements/recommended",
+        "plugin:react/recommended"
     ],
     "root": true,
     "parser": "babel-eslint",
