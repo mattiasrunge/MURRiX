@@ -1,28 +1,43 @@
 
+import ko from "knockout";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import NodeWidgetCard from "plugins/node/components/widget-card";
 
+class NodeWidgetCardList extends Component {
+    constructor(props) {
+        super(props);
 
-
-class NodeWidgetCardList extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.list = this.props.list;
-
-
-        return model;
+        this.state = {
+            list: ko.unwrap(this.props.list)
+        };
     }
 
-    getTemplate() {
-        return (
-            <div data-bind="foreach: list" className="clearfix" style={{ marginRight: "-15px" }}>
-                <div data-bind="react: { name: 'node-widget-card', params: { nodepath: $data } }" className="float-left"></div>
-            </div>
+    componentDidMount() {
+        if (ko.isObservable(this.props.list)) {
+            this.addDisposables([
+                this.props.list.subscribe((list) => this.setState({ list }))
+            ]);
+        }
+    }
 
+    render() {
+        return (
+            <div className="clearfix" style={{ marginRight: "-15px" }}>
+                <For each="item" of={this.state.list}>
+                    <NodeWidgetCard
+                        key={item.path}
+                        className="float-left"
+                        nodepath={item}
+                    />
+                </For>
+            </div>
         );
     }
 }
+
+NodeWidgetCardList.propTypes = {
+    list: React.PropTypes.any
+};
 
 export default NodeWidgetCardList;

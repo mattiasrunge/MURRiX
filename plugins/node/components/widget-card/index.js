@@ -1,43 +1,86 @@
 
+import loc from "lib/location";
+import ko from "knockout";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import FileWidgetProfilePicture from "plugins/file/components/widget-profile-picture";
+import NodeWidgetDescription from "plugins/node/components/widget-description";
+import NodeWidgetLabels from "plugins/node/components/widget-labels";
 
-const ko = require("knockout");
+class NodeWidgetCard extends Component {
+    constructor(props) {
+        super(props);
 
-class NodeWidgetCard extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-
-
-        return model;
+        this.state = {
+            nodepath: props.nodepath,
+            node: ko.unwrap(props.nodepath).node
+        };
     }
 
-    getTemplate() {
+    onClick(event) {
+        event.preventDefault();
+        loc.goto({ page: "node", path: this.state.nodepath.path, section: null });
+    }
+
+    render() {
+        const node = ko.unwrap(this.state.nodepath.node);
+
         return (
-            <a className="node-item-panel" style={{ width: "296px" }} data-bind="location: { page: 'node', path: nodepath().path, section: null }">
-                <div style={{ position: "relative", height: "303px" }}>
-                    <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 303, path: nodepath().path } }"></div>
+            <div
+                className={`node-item-panel ${this.props.className}`}
+                style={{ width: "296px" }}
+                onClick={(e) => this.onClick(e)}
+            >
+                <If condition={this.state.nodepath}>
+                    <div style={{ position: "relative", height: "303px" }}>
+                        <FileWidgetProfilePicture
+                            size="303"
+                            path={this.state.nodepath.path}
+                            nodepath={this.state.nodepath}
+                        />
 
-                    <div className="title-text">
-                        <i className="material-icons md-18" data-bind="visible: nodepath().node().properties.type === 'a'">photo_album</i>
-                        <i className="material-icons md-18" data-bind="visible: nodepath().node().properties.type === 'p'">person</i>
-                        <i className="material-icons md-18" data-bind="visible: nodepath().node().properties.type === 'l'">location_on</i>
-                        <i className="material-icons md-18" data-bind="visible: nodepath().node().properties.type === 'c'">photo_camera</i>
-                        <span> </span>
-                        <span data-bind="text: nodepath().node().attributes.fullname ? nodepath().node().attributes.fullname :  nodepath().node().attributes.name"></span>
+                        <div className="title-text">
+                            <i className="material-icons md-18">
+                                <Choose>
+                                    <When condition={node.properties.type === "a"}>
+                                        photo_album
+                                    </When>
+                                    <When condition={node.properties.type === "p"}>
+                                        person
+                                    </When>
+                                    <When condition={node.properties.type === "l"}>
+                                        location_on
+                                    </When>
+                                    <When condition={node.properties.type === "c"}>
+                                        photo_camera
+                                    </When>
+                                </Choose>
+                            </i>
+                            {" "}
+                            {node.attributes.fullname ? node.attributes.fullname : node.attributes.name}
+                        </div>
                     </div>
-                </div>
-                <div style={{ padding: "15px" }}>
-                    <div data-bind="react: { name: 'node-widget-description', params: { nodepath: nodepath } }"></div>
-                    <div data-bind="react: { name: 'node-widget-labels', params: { nodepath: nodepath } }"></div>
-                </div>
-            </a>
-
+                    <div style={{ padding: "15px" }}>
+                        <NodeWidgetDescription
+                            nodepath={ko.observable(this.props.nodepath)}
+                        />
+                        <NodeWidgetLabels
+                            nodepath={ko.observable(this.props.nodepath)}
+                        />
+                    </div>
+                </If>
+            </div>
         );
     }
 }
+
+NodeWidgetCard.defaultProps = {
+    className: ""
+};
+
+NodeWidgetCard.propTypes = {
+    className: React.PropTypes.string,
+    nodepath: React.PropTypes.any
+};
 
 export default NodeWidgetCard;

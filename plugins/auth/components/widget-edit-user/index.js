@@ -1,11 +1,9 @@
 
 import React from "react";
 import Knockout from "components/knockout";
-import Comment from "components/comment";
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const utils = require("lib/utils");
 const stat = require("lib/status");
 const session = require("lib/session");
 const loc = require("lib/location");

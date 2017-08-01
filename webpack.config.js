@@ -4,6 +4,8 @@ const path = require("path");
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+process.traceDeprecation = true;
+
 module.exports = function(options) {
     const isProduction = !(options && options.dev);
     // List of regexes matching modules that shall be transpiled
@@ -49,7 +51,7 @@ module.exports = function(options) {
 
                         return isNodeModule && !isExplicitInclude;
                     },
-                    query: {
+                    options: {
                         cacheDirectory: "babel_cache",
                         presets: [
                             require.resolve("babel-preset-es2015"),
@@ -156,7 +158,7 @@ module.exports = function(options) {
                     use: [
                         {
                             loader: "babel-loader",
-                            query: {
+                            options: {
                                 presets: [
                                     require.resolve("babel-preset-es2015"),
                                     require.resolve("babel-preset-react")
@@ -165,7 +167,7 @@ module.exports = function(options) {
                         },
                         {
                             loader: "react-svg-loader",
-                            query: {
+                            options: {
                                 jsx: true
                             }
                         }
