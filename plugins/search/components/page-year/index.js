@@ -1,62 +1,72 @@
 
+import ko from "knockout";
+import debounce from "debounce";
+import api from "api.io-client";
+import loc from "lib/location";
+import ui from "lib/ui";
+import stat from "lib/status";
 import React from "react";
-import Knockout from "components/knockout";
+import Component from "lib/component";
+import NodeWidgetCardList from "plugins/node/components/widget-card-list";
+import ReactBootstrapSlider from "react-bootstrap-slider";
 
-const ko = require("knockout");
-const api = require("api.io-client");
-const loc = require("lib/location");
-const ui = require("lib/ui");
-const stat = require("lib/status");
+class SearchPageYear extends Component {
+    constructor(props) {
+        super(props);
 
-class SearchPageYear extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.loading = stat.create();
-        model.year = ko.pureComputed({
-            read: () => parseInt(ko.unwrap(loc.current().year), 10) || new Date().getFullYear(),
-            write: (value) => loc.goto({ year: value })
-        });
-        model.list = ko.asyncComputed([], async (setter) => {
-            setter([]);
-
-            model.loading(true);
-
-            let list = await api.search.findByYear(model.year());
-
-            model.loading(false);
-
-            ui.setTitle("Browsing " + model.year());
-
-            return list.map((item) => {
-                item.node = ko.observable(item.node);
-                return item;
-            });
-        }, (error) => {
-            model.loading(false);
-            stat.printError(error);
-            return [];
-        }, { rateLimit: { timeout: 500, method: "notifyWhenChangesStop" } });
-
-        model.yearIncClicked = () => {
-            model.year(model.year() + 1);
+        this.state = {
+            year: parseInt(ko.unwrap(loc.current().year), 10) || new Date().getFullYear(),
+            list: []
         };
 
-        model.yearDecClicked = () => {
-            model.year(model.year() - 1);
-        };
-
-        ui.setTitle("Browse year");
-
-        model.dispose = () => {
-            stat.destroy(model.loading);
-        };
-
-
-        return model;
+        this.loadDebounced = debounce(this.load.bind(this), 300);
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            loc.current.subscribe((current) => {
+                const year = parseInt(current.year, 10) || new Date().getFullYear();
+
+                if (year !== this.state.year) {
+                    this.setState({ year });
+                    this.loadDebounced(year);
+                }
+            })
+        ]);
+
+        this.loadDebounced(this.state.year);
+    }
+
+    async load(year) {
+        try {
+            ui.setTitle(`Browsing ${year}`);
+
+            const list = await api.search.findByYear(year);
+
+            this.setState({ list });
+        } catch (error) {
+            stat.printError(error);
+            this.setState({ list: [] });
+        }
+    }
+
+    onChange(event) {
+        loc.goto({ year: event.target.value });
+    }
+
+    onYearIncClick(event) {
+        event.preventDefault();
+
+        loc.goto({ year: this.state.year + 1 });
+    }
+
+    onYearDecClick(event) {
+        event.preventDefault();
+
+        loc.goto({ year: this.state.year - 1 });
+    }
+
+    render() {
         return (
             <div className="fadeInRight animated">
                 <div className="box box-content">
@@ -64,20 +74,33 @@ class SearchPageYear extends Knockout {
 
                     <div style={{ marginBottom: "25px" }}>
                         <div style={{ textAlign: "center" }}>
-                            <span data-bind="visible: !loading()">
-                            Showing <span data-bind="text: year"></span>
-                            </span>
-
-                            <span data-bind="visible: loading" style={{ display: "none" }}>
-                            Loading <span data-bind="text: year"></span>...
-                            </span>
+                            Showing {this.state.year}
                         </div>
 
-                        <a href="#" className="float-right btn btn-primary" data-bind="click: yearIncClicked, clickKey: 'right'"><i className="material-icons">add</i></a>
-                        <a href="#" className="float-left btn btn-primary" data-bind="click: yearDecClicked, clickKey: 'left'"><i className="material-icons">remove</i></a>
+                        <a
+                            href="#"
+                            className="float-right btn btn-primary"
+                            onClick={(e) => this.onYearIncClick(e)}
+                        >
+                            <i className="material-icons">add</i>
+                        </a>
+                        <a
+                            href="#"
+                            className="float-left btn btn-primary"
+                            onClick={(e) => this.onYearDecClick(e)}
+                        >
+                            <i className="material-icons">remove</i>
+                        </a>
 
                         <div className="year-slider">
-                            <div data-bind="yearSlider: { year: year }"></div>
+                            <ReactBootstrapSlider
+                                value={this.state.year}
+                                slideStop={(e) => this.onChange(e)}
+                                step={1}
+                                min={1600}
+                                max={new Date().getFullYear()}
+                                tooltip="always"
+                            />
                         </div>
                     </div>
                     {/* <div style={{ marginBottom: "15px" }}>
@@ -98,9 +121,10 @@ class SearchPageYear extends Knockout {
                     </div> */}
                 </div>
 
-                <div data-bind="react: { name: 'node-widget-card-list', params: { list: list } }"></div>
+                <NodeWidgetCardList
+                    list={this.state.list}
+                />
             </div>
-
         );
     }
 }

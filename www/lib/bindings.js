@@ -14,7 +14,6 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 const loc = require("lib/location");
-const Slider = require("bootstrap-slider");
 const autosize = require("autosize");
 const LazyLoad = require("vanilla-lazyload");
 const dragula = require("dragula");
@@ -354,32 +353,6 @@ ko.bindingHandlers.location = {
                 loc.goto(value, true, replace);
             });
         }
-    }
-};
-
-ko.bindingHandlers.yearSlider = {
-    init: (element, valueAccessor) => {
-        let options = valueAccessor();
-
-        let slider = new Slider(element, {
-            value: ko.unwrap(options.year),
-            min: options.min ? options.min : 1600,
-            max: options.max ? options.max : new Date().getFullYear(),
-            step: 1,
-            selection: "none"
-        });
-
-        slider.on("slideStop", () => { options.year(slider.getValue()); });
-
-        let subscription = options.year.subscribe((value) => {
-            slider.setValue(value);
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-            subscription.dispose();
-            slider.off("slideStop");
-            slider.destroy();
-        });
     }
 };
 
