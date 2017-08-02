@@ -42,6 +42,7 @@
     overflow: scroll;
     overflow-x: hidden;
     overflow-y: scroll;
+    white-space: pre-wrap;
 }
 
 .tt-cursor {

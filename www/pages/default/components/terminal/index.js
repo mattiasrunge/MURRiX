@@ -4,6 +4,9 @@
 import Josh from "josh.js";
 import api from "api.io-client";
 import $ from "jquery";
+import columnify from "columnify";
+import moment from "moment";
+import utils from "lib/utils";
 import session from "lib/session";
 import React from "react";
 import Component from "lib/component";
@@ -32,13 +35,60 @@ class DefaultTerminal extends Component {
             this.getChildNodes(node.path, true).then(callback);
         };
 
-        this.shell.templates.prompt = (args) => `<span class="promptUser">${session.username()}</span>  <span class="promptPath">${args.node.path}  $</span>`;
+        this.shell.templates.prompt = (args) => this.renderPrompt(args);
+
+        this.shell.templates.ls_ex = (args) => this.renderList(args);  // eslint-disable-line
+    }
+
+    renderPrompt(args) {
+        return `<span class="promptUser">${session.username()}</span> <span class="promptPath">${args.node.path} $</span>`;
+    }
+
+    renderList(args) {
+        const columns = columnify(args.nodes.map((item) => {
+            let name = item.name;
+
+            if (item.node.properties.type === "s") {
+                name += ` -> ${item.node.attributes.path}`;
+            }
+
+            const acl = item.node.properties.acl && item.node.properties.acl.length > 0 ? "+" : "";
+            const mode = utils.modeString(item.node.properties.mode);
+
+            return {
+                mode: item.node.properties.type + mode + acl,
+                count: item.node.properties.count,
+                uid: item.uid,
+                gid: item.gid,
+                children: Object.keys(item.node.properties.children).length,
+                mtime: moment(item.node.properties.mtime).format(),
+                name: name
+            };
+        }), {
+            showHeaders: false
+        });
+
+        return columns.split("\n").map((line) => `<div>${line}</div>`);
     }
 
     async getChildNodes(path, all) {
         const abspath = await api.vfs.normalize(this.pathhandler.current.path, path);
+        const list = await api.vfs.list(abspath, { noerror: true, all });
 
-        return await api.vfs.list(abspath, { noerror: true, all });
+        if (all) {
+            const ucache = {};
+            const gcache = {};
+
+            for (const item of list) {
+                const uid = item.node.properties.uid;
+                const gid = item.node.properties.gid;
+
+                item.uid = ucache[uid] = ucache[uid] || await api.auth.uname(uid);
+                item.gid = gcache[gid] = gcache[gid] || await api.auth.gname(gid);
+            }
+        }
+
+        return list;
     }
 
     async getNode(path) {
@@ -77,13 +127,16 @@ class DefaultTerminal extends Component {
         }
 
         this.shell.activate();
-        this.ref.slideDown();
+        this.ref.addClass("slideInDown");
+        this.ref.removeClass("slideOutUp");
+        this.ref.show();
         this.ref.focus();
     }
 
     deactivate() {
         this.shell.deactivate();
-        this.ref.slideUp();
+        this.ref.addClass("slideOutUp");
+        this.ref.removeClass("slideInDown");
         this.ref.blur();
     }
 
@@ -106,7 +159,7 @@ class DefaultTerminal extends Component {
     render() {
         return (
             <div
-                className="terminal"
+                className="terminal animated"
                 ref={(ref) => this.onLoad(ref)}
             >
                 <div id="shell-view"></div>
