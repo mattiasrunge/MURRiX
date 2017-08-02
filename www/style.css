@@ -14,15 +14,7 @@
     to {transform:rotate(0deg);}
 }
 
-.promptUser {
-    font-weight: 700;
-    color: #8AE234;
-}
 
-.promptPath {
-    font-weight: 700;
-    color: #729FCF;
-}
 
 .terminal {
     display: none;
@@ -43,6 +35,21 @@
     overflow-x: hidden;
     overflow-y: scroll;
     white-space: pre-wrap;
+}
+
+.terminal .promptUser {
+    font-weight: 700;
+    color: #8AE234;
+}
+
+.terminal .promptPath {
+    font-weight: 700;
+    color: #729FCF;
+}
+
+.terminal .error {
+    font-weight: 700;
+    color: #FF3C3C;
 }
 
 .tt-cursor {

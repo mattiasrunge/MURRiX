@@ -10,6 +10,7 @@ import utils from "lib/utils";
 import session from "lib/session";
 import React from "react";
 import Component from "lib/component";
+import commands from "./commands";
 
 class DefaultTerminal extends Component {
     constructor(props) {
@@ -37,7 +38,103 @@ class DefaultTerminal extends Component {
 
         this.shell.templates.prompt = (args) => this.renderPrompt(args);
 
-        this.shell.templates.ls_ex = (args) => this.renderList(args);  // eslint-disable-line
+        this.shell.templates.ls_ex = (args) => this.renderList(args); // eslint-disable-line
+
+        for (const name of Object.keys(commands)) {
+            const options = {};
+
+            options.exec = (cmd, args, callback) => {
+                this.executeCommand(commands[name], cmd, args)
+                    .then(callback)
+                    .catch((error) => callback(this.renderError(error)));
+            };
+
+            if (commands[name].completion) {
+                // TODO
+                // options.completion = (cmd, args, line, callback) => {
+                //     this.completeCommand(commands[name], cmd, args, line)
+                //         .then(callback)
+                //         .catch((error) => callback(this.renderError(error)));
+                // };
+            } else if (commands[name].completion !== false) {
+                options.completion = this.pathhandler.pathCompletionHandler;
+            }
+
+            this.shell.setCommandHandler(name, options);
+        }
+    }
+
+    renderHelp(command, cmd, error = false) {
+        const args = command.args.map((a) => a[0] === "?" ? `[${a.substr(1)}]` : `&lt;${a}&gt;`);
+        const opts = Object.keys(command.opts).map((o) => `  -${o}  ${command.opts[o]}`);
+        const err = error && error.message ? `<span class="error">${error}</span>\n` : "";
+
+        return `${err}
+Usage: ${cmd} ${opts.length > 0 ? "[options] " : ""}${args.join(" ")}
+
+${command.desc}
+
+Options:
+
+  -h  Print help
+${opts.join("\n")}
+        `;
+    }
+
+    async executeCommand(command, cmd, rawArgs) {
+        try {
+            const { opts, args } = this.parseArgs(command, rawArgs);
+
+            return command.exec(this, cmd, opts, args);
+        } catch (error) {
+            return this.renderHelp(command, cmd, error);
+        }
+    }
+
+    parseArgs(command, rawArgs) {
+        const argsList = rawArgs.filter((a) => a[0] !== "-");
+        const optsList = rawArgs.filter((a) => a[0] === "-").map((a) => a.substr(1));
+
+        if (optsList.includes("h")) {
+            throw new Error();
+        }
+
+        const opts = {};
+        const args = {};
+
+        for (const name of optsList) {
+            if (!command.opts[name]) {
+                throw new Error(`Unknown option -${name}`);
+            }
+        }
+
+        for (const name of Object.keys(command.opts)) {
+            opts[name] = optsList.includes(name);
+        }
+
+        for (let n = 0; n < command.args.length; n++) {
+            const rawName = command.args[n];
+            const optional = rawName[0] === "?";
+            const name = optional ? rawName.substr(1) : rawName;
+
+            if (optional) {
+                if (argsList[n]) {
+                    args[name] = argsList[n];
+                } else {
+                    break;
+                }
+            } else if (argsList[n]) {
+                args[name] = argsList[n];
+            } else {
+                throw new Error(`Missing parameter ${name}`);
+            }
+        }
+
+        return { opts, args };
+    }
+
+    renderError(error) {
+        return `<span class="error">${error.stack}</span>`;
     }
 
     renderPrompt(args) {
@@ -159,6 +256,7 @@ class DefaultTerminal extends Component {
     render() {
         return (
             <div
+                id="shell-panel"
                 className="terminal animated"
                 ref={(ref) => this.onLoad(ref)}
             >
