@@ -187,6 +187,14 @@ const vfs = api.register("vfs", {
 
         return node;
     }),
+    normalize: api.export(async (session, cwd, dir) => {
+        const trailingSlash = dir[dir.length - 1] === "/";
+        dir = path.resolve(cwd, dir);
+
+        dir += trailingSlash ? "/" : "";
+
+        return dir.replace(/\/+/g, "/");
+    }),
     resolve: api.export(async (session, abspath, options) => {
         options = options || {};
 

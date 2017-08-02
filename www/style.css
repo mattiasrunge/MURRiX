@@ -14,6 +14,36 @@
     to {transform:rotate(0deg);}
 }
 
+.promptUser {
+    font-weight: 700;
+    color: #8AE234;
+}
+
+.promptPath {
+    font-weight: 700;
+    color: #729FCF;
+}
+
+.terminal {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    position: fixed;
+    padding: 5px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+    font-family: 'Roboto Mono', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 .tt-cursor {
     cursor: pointer;
 }

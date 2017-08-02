@@ -182,7 +182,8 @@ module.exports = function(options) {
                 $: "jquery",
                 jquery: "jquery",
                 Tether: "tether"
-            })
+            }),
+            require("imports-loader")
         ],
         resolve: {
             modules: [

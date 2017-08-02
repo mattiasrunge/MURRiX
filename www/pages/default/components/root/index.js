@@ -20,6 +20,7 @@ import PageLogin from "plugins/auth/components/page-login";
 import PageProfile from "plugins/auth/components/page-profile";
 import PageReset from "plugins/auth/components/page-reset";
 import PageNode from "plugins/node/components/page";
+import Terminal from "components/terminal";
 
 class DefaultRoot extends Component {
     constructor(props) {
@@ -72,6 +73,8 @@ class DefaultRoot extends Component {
                         list={session.list}
                     />
                 </If>
+
+                <Terminal />
 
                 <div className="page-container" ref={(ref) => this.onLoad(ref)}>
                     <div className="container">
