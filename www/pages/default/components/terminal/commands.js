@@ -13,5 +13,10 @@ export default {
     setfacl: require("./commands/setfacl").default,
     setattr: require("./commands/setattr").default,
     lookup: require("./commands/lookup").default,
-    find: require("./commands/find").default
+    find: require("./commands/find").default,
+    id: require("./commands/id").default,
+    whoami: require("./commands/whoami").default,
+    passwd: require("./commands/passwd").default,
+    mkuser: require("./commands/mkuser").default,
+    mkgroup: require("./commands/mkgroup").default
 };
