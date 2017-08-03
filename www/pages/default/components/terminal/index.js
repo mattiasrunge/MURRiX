@@ -40,6 +40,25 @@ class DefaultTerminal extends Component {
 
         this.shell.templates.ls_ex = (args) => this.renderList(args); // eslint-disable-line
 
+        this.term = {
+            current: () => this.pathhandler.current,
+            bestMatch: (partial, possible) => this.shell.bestMatch(partial, possible),
+            completePath: (value) => {
+                return new Promise((resolve) => {
+                    this.pathhandler.pathCompletionHandler(null, value, null, resolve);
+                });
+            },
+            getAbspath: async (path, useCwd) => {
+                const cwd = this.pathhandler.current.path;
+
+                if (useCwd && !path) {
+                    return cwd;
+                }
+
+                return await api.vfs.normalize(cwd, path);
+            }
+        };
+
         for (const name of Object.keys(commands)) {
             const options = {};
 
@@ -50,42 +69,43 @@ class DefaultTerminal extends Component {
             };
 
             if (commands[name].completion) {
-                // TODO
-                // options.completion = (cmd, args, line, callback) => {
-                //     this.completeCommand(commands[name], cmd, args, line)
-                //         .then(callback)
-                //         .catch((error) => callback(this.renderError(error)));
-                // };
-            } else if (commands[name].completion !== false) {
-                options.completion = this.pathhandler.pathCompletionHandler;
+                options.completion = (cmd, arg, line, callback) => {
+                    this.doCompletion(commands[name], cmd, arg, line)
+                        .then(callback)
+                        .catch((error) => {
+                            console.error(error);
+                            callback([]);
+                        });
+                };
             }
 
             this.shell.setCommandHandler(name, options);
         }
     }
 
-    renderHelp(command, cmd, error = false) {
-        const args = command.args.map((a) => a[0] === "?" ? `[${a.substr(1)}]` : `&lt;${a}&gt;`);
-        const opts = Object.keys(command.opts).map((o) => `  -${o}  ${command.opts[o]}`);
-        const err = error && error.message ? `<span class="error">${error}</span>\n` : "";
+    async doCompletion(command, cmd, arg, line) {
+        const before = line.text.substr(0, line.cursor);
+        let args = before.split(" ");
 
-        return `${err}
-Usage: ${cmd} ${opts.length > 0 ? "[options] " : ""}${args.join(" ")}
+        args.shift(); // Remove cmd name
+        args = args.filter((a) => a[0] !== "-"); // Remove flags
 
-${command.desc}
+        let argName = command.args[args.length - 1];
 
-Options:
+        if (!argName) {
+            return [];
+        }
 
-  -h  Print help
-${opts.join("\n")}
-        `;
+        argName = argName[0] === "?" ? argName.substr(1) : argName;
+
+        return command.completion(this.term, cmd, argName, arg);
     }
 
     async executeCommand(command, cmd, rawArgs) {
         try {
             const { opts, args } = this.parseArgs(command, rawArgs);
 
-            return command.exec(this, cmd, opts, args);
+            return command.exec(this.term, cmd, opts, args);
         } catch (error) {
             return this.renderHelp(command, cmd, error);
         }
@@ -108,29 +128,48 @@ ${opts.join("\n")}
             }
         }
 
-        for (const name of Object.keys(command.opts)) {
+        for (const name of Object.keys(command.opts || {})) {
             opts[name] = optsList.includes(name);
         }
 
-        for (let n = 0; n < command.args.length; n++) {
-            const rawName = command.args[n];
-            const optional = rawName[0] === "?";
-            const name = optional ? rawName.substr(1) : rawName;
+        if (command.args) {
+            for (let n = 0; n < command.args.length; n++) {
+                const rawName = command.args[n];
+                const optional = rawName[0] === "?";
+                const name = optional ? rawName.substr(1) : rawName;
 
-            if (optional) {
-                if (argsList[n]) {
+                if (optional) {
+                    if (argsList[n]) {
+                        args[name] = argsList[n];
+                    } else {
+                        break;
+                    }
+                } else if (argsList[n]) {
                     args[name] = argsList[n];
                 } else {
-                    break;
+                    throw new Error(`Missing parameter ${name}`);
                 }
-            } else if (argsList[n]) {
-                args[name] = argsList[n];
-            } else {
-                throw new Error(`Missing parameter ${name}`);
             }
         }
 
         return { opts, args };
+    }
+
+    renderHelp(command, cmd, error = false) {
+        const args = (command.args || []).map((a) => a[0] === "?" ? `[${a.substr(1)}]` : `&lt;${a}&gt;`);
+        const opts = Object.keys(command.opts || {}).map((o) => `  -${o}  ${command.opts[o]}`);
+        const err = error && error.message ? `<span class="error">${error}</span>\n` : "";
+
+        return `${err}
+Usage: ${cmd} ${opts.length > 0 ? "[options] " : ""}${args.join(" ")}
+
+${command.desc}
+
+Options:
+
+  -h  Print help
+${opts.join("\n")}
+        `;
     }
 
     renderError(error) {

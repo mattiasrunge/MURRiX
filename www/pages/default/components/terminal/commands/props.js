@@ -7,11 +7,17 @@ export default {
     opts: {
         l: "Don't follow links"
     },
-    exec: async (terminal, cmd, opts, args) => {
-        const cwd = terminal.pathhandler.current.path;
-        const abspath = args.path ? await api.vfs.normalize(cwd, args.path) : cwd;
+    exec: async (term, cmd, opts, args) => {
+        const abspath = await term.getAbspath(args.path, true);
         const node = await api.vfs.resolve(abspath, { nofollow: opts.l });
 
         return JSON.stringify(node.properties, null, 2);
+    },
+    completion: async (term, cmd, name, value) => {
+        if (name === "path") {
+            return await term.completePath(value);
+        }
+
+        return [];
     }
 };
