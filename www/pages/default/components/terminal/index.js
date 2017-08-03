@@ -19,6 +19,7 @@ class DefaultTerminal extends Component {
         this.shell = Josh.Shell(); // eslint-disable-line
         this.pathhandler = new Josh.PathHandler(this.shell);
 
+
         this.pathhandler.current = {
             name: "",
             path: "/"
@@ -56,6 +57,11 @@ class DefaultTerminal extends Component {
                 }
 
                 return await api.vfs.normalize(cwd, path);
+            },
+            ask: (prompt, obscure) => {
+                return new Promise((resolve) => {
+                    this.shell.ask(prompt, obscure, resolve);
+                });
             }
         };
 
@@ -209,7 +215,7 @@ ${opts.join("\n")}
 
     async getChildNodes(path, all) {
         const abspath = await api.vfs.normalize(this.pathhandler.current.path, path);
-        const list = await api.vfs.list(abspath, { noerror: true, all });
+        const list = await api.vfs.list(abspath, { noerror: true, nofollow: true, all });
 
         if (all) {
             const ucache = {};

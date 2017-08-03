@@ -52,6 +52,10 @@
     color: #FF3C3C;
 }
 
+.terminal .bold {
+    font-weight: bold;
+}
+
 .tt-cursor {
     cursor: pointer;
 }

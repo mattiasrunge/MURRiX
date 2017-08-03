@@ -984,7 +984,7 @@ const vfs = api.register("vfs", {
 
             if (node.properties.type === "f") {
                 let olddiskfilepath = path.join(params.fileDirectory, node.attributes.diskfilename);
-                let ext = path.extname(node.attributes.filename);
+                let ext = path.extname(node.attributes.diskfilename);
 
                 node.attributes.diskfilename = node._id + ext;
 
