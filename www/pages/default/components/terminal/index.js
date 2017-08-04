@@ -41,6 +41,8 @@ class DefaultTerminal extends Component {
 
         this.shell.templates.ls_ex = (args) => this.renderList(args); // eslint-disable-line
 
+        this.logBuffer = "";
+
         this.term = {
             current: () => this.pathhandler.current,
             bestMatch: (partial, possible) => this.shell.bestMatch(partial, possible),
@@ -62,6 +64,17 @@ class DefaultTerminal extends Component {
                 return new Promise((resolve) => {
                     this.shell.ask(prompt, obscure, resolve);
                 });
+            },
+            log: (text) => {
+                if (text) {
+                    this.logBuffer += `${text}\n`;
+                }
+            },
+            flushLog: () => {
+                const buffer = this.logBuffer;
+                this.logBuffer = "";
+
+                return buffer;
             }
         };
 
@@ -70,8 +83,14 @@ class DefaultTerminal extends Component {
 
             options.exec = (cmd, args, callback) => {
                 this.executeCommand(commands[name], cmd, args)
-                    .then(callback)
-                    .catch((error) => callback(this.renderError(error)));
+                    .then((output) => {
+                        this.term.log(output);
+                        callback(this.term.flushLog());
+                    })
+                    .catch((error) => {
+                        this.term.log(this.renderError(error));
+                        callback(this.term.flushLog());
+                    });
             };
 
             if (commands[name].completion) {

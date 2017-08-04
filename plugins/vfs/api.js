@@ -299,6 +299,7 @@ const vfs = api.register("vfs", {
         let abspaths = abspath instanceof Array ? abspath : [ abspath ];
 
         for (let abspath of abspaths) {
+            // TODO: Filter options, sending in nodepath breaks things!
             let parent = await vfs.resolve(session, abspath, options);
 
             if (!parent) {

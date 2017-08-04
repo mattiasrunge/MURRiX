@@ -18,5 +18,10 @@ export default {
     whoami: require("./commands/whoami").default,
     passwd: require("./commands/passwd").default,
     mkuser: require("./commands/mkuser").default,
-    mkgroup: require("./commands/mkgroup").default
+    mkgroup: require("./commands/mkgroup").default,
+
+
+    // Scripts
+    "script_hiderawfiles": require("./scripts/hiderawfiles").default,
+    "script_regeneratefiles": require("./scripts/regeneratefiles").default
 };
