@@ -1,17 +1,9 @@
 
 import React from "react";
+import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 
 class Comment extends React.Component {
-    static propTypes = {
-        text: React.PropTypes.string,
-        trim: React.PropTypes.bool
-    };
-
-    static defaultProps = {
-        trim: true
-    };
-
     componentDidMount() {
         const el = ReactDOM.findDOMNode(this);
         ReactDOM.unmountComponentAtNode(el);
@@ -32,5 +24,14 @@ class Comment extends React.Component {
         return <div />;
     }
 }
+
+Comment.defaultProps = {
+    trim: true
+};
+
+Comment.propTypes = {
+    text: PropTypes.string,
+    trim: PropTypes.bool
+};
 
 export default Comment;

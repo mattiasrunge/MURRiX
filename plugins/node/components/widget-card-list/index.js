@@ -1,5 +1,6 @@
 
 import React from "react";
+import PropTypes from "prop-types";
 import Component from "lib/component";
 import NodeWidgetCard from "plugins/node/components/widget-card";
 
@@ -20,7 +21,7 @@ class NodeWidgetCardList extends Component {
 }
 
 NodeWidgetCardList.propTypes = {
-    list: React.PropTypes.array
+    list: PropTypes.array
 };
 
 export default NodeWidgetCardList;

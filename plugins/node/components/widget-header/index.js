@@ -1,5 +1,6 @@
 
 import React from "react";
+import PropTypes from "prop-types";
 import Component from "lib/component";
 import FileWidgetProfilePicture from "plugins/file/components/widget-profile-picture";
 import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
@@ -40,7 +41,7 @@ class NodeWidgetHeader extends Component {
 }
 
 NodeWidgetHeader.propTypes = {
-    nodepath: React.PropTypes.func
+    nodepath: PropTypes.func
 };
 
 export default NodeWidgetHeader;

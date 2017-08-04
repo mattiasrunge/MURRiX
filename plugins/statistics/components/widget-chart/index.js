@@ -2,6 +2,7 @@
 // Credits to https://github.com/reactjs/react-chartjs/issues/84
 
 import React from "react";
+import PropTypes from "prop-types";
 import Component from "lib/component";
 import { Chart as ChartJS } from "chart.js";
 
@@ -49,11 +50,11 @@ StatisticsWidgetChart.defaultProps = {
 
 
 StatisticsWidgetChart.propTypes = {
-    type: React.PropTypes.oneOf([ "bar", "line" ]).isRequired,
-    height: React.PropTypes.number,
-    width: React.PropTypes.number,
-    data: React.PropTypes.object,
-    options: React.PropTypes.object
+    type: PropTypes.oneOf([ "bar", "line" ]).isRequired,
+    height: PropTypes.number,
+    width: PropTypes.number,
+    data: PropTypes.object,
+    options: PropTypes.object
 };
 
 export default StatisticsWidgetChart;

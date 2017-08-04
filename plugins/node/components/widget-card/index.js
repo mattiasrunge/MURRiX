@@ -1,6 +1,7 @@
 
 import loc from "lib/location";
 import React from "react";
+import PropTypes from "prop-types";
 import Component from "lib/component";
 import FileWidgetProfilePicture from "plugins/file/components/widget-profile-picture";
 
@@ -73,8 +74,8 @@ NodeWidgetCard.defaultProps = {
 };
 
 NodeWidgetCard.propTypes = {
-    className: React.PropTypes.string,
-    nodepath: React.PropTypes.object
+    className: PropTypes.string,
+    nodepath: PropTypes.object
 };
 
 export default NodeWidgetCard;

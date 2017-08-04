@@ -1,5 +1,6 @@
 
 import React from "react";
+import PropTypes from "prop-types";
 import Component from "lib/component";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import api from "api.io-client";
@@ -139,10 +140,10 @@ WidgetNodeSelect.defaultProps = {
 };
 
 WidgetNodeSelect.propTypes = {
-    root: React.PropTypes.array,
-    limit: React.PropTypes.number,
-    path: React.PropTypes.string,
-    onSelect: React.PropTypes.func
+    root: PropTypes.array,
+    limit: PropTypes.number,
+    path: PropTypes.string,
+    onSelect: PropTypes.func
 };
 
 export default WidgetNodeSelect;
