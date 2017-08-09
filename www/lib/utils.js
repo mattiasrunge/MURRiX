@@ -50,6 +50,7 @@ module.exports = {
                 cache: false,
                 contentType: false,
                 processData: false,
+                timeout: 0,
                 xhr: () => {
                     let xhr = $.ajaxSettings.xhr();
 

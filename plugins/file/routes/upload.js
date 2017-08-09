@@ -16,6 +16,8 @@ module.exports = {
     },
     handler: async (ctx, id) => {
         if (!ctx.session.uploads || !ctx.session.uploads[id]) {
+            log.info(`Could not find upload id ${id}`);
+            log.info(JSON.stringify(ctx.session.uploads, null, 2));
             throw new Error("Invalid upload id");
         }
 
@@ -23,30 +25,17 @@ module.exports = {
 
         const { files } = await asyncBusboy(ctx.req);
 
+        files[0].destroy();
+
         const filename = path.join(params.uploadDirectory, id);
-        log.debug(`Will save uploading file to ${filename}...`);
+        log.info(`Will move uploaded file to ${filename}...`);
 
-        const stream = fs.createWriteStream(filename);
+        await fs.moveAsync(files[0].path, filename);
 
-        files[0].pipe(stream);
-
-        await new Promise((resolve, reject) => {
-            stream.on("finish", () => {
-                log.debug(`Streaming of uploaded file (${filename}) finished!`);
-                resolve();
-            });
-
-            stream.on("error", (error) => {
-                log.error(`Streaming of uploaded file (${filename}) failed!`);
-                log.error(error);
-                reject();
-            });
-        });
-
-        log.debug(`Getting metadata for uploaded file ${filename}...`);
+        log.info(`Getting metadata for uploaded file ${filename}...`);
         const metadata = await api.mcs.getMetadata(filename, { noChecksums: true });
 
-        log.debug(`Upload of file ${filename} completed successfully!`);
+        log.info(`Upload of file ${filename} completed successfully!`);
 
         ctx.type = "json";
         ctx.body = JSON.stringify({ status: "success", metadata: metadata }, null, 2);
