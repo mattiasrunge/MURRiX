@@ -11,5 +11,15 @@ export default {
         const groups = info.gids.map((group) => `${group.id}(${group.name})`);
 
         return `uid=${info.uid.id}(${info.uid.name}) gid=${info.gid.id}(${info.gid.name}) groups=${groups.join(",")}`;
+    },
+    completion: async (term, cmd, name, value) => {
+        if (name === "username") {
+            const nodes = await api.vfs.list("/users");
+            const list = nodes.map((node) => node.name);
+
+            return term.bestMatch(value, list);
+        }
+
+        return [];
     }
 };

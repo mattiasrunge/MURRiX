@@ -9,6 +9,12 @@ const log = require("../../core/lib/log")(module);
 
 let params = {};
 
+const GID_ADMIN = 1000;
+const GID_GUEST = 1001;
+const GID_USERS = 1002;
+const UID_ADMIN = 1000;
+const UID_GUEST = 1001;
+
 const auth = api.register("auth", {
     deps: [ "vfs" ],
     init: async (config) => {
@@ -27,7 +33,7 @@ const auth = api.register("auth", {
         if (!(await api.vfs.resolve(auth.getAdminSession(), "/groups/admin", { noerror: true }))) {
             await auth.mkgroup(auth.getAdminSession(), "admin", "Administrators", "");
             await api.vfs.setattributes(auth.getAdminSession(), "/groups/admin", {
-                gid: 1000
+                gid: GID_ADMIN
             });
         }
 
@@ -35,7 +41,7 @@ const auth = api.register("auth", {
         if (!(await api.vfs.resolve(auth.getAdminSession(), "/groups/guest", { noerror: true }))) {
             await auth.mkgroup(auth.getAdminSession(), "guest", "Guest", "");
             await api.vfs.setattributes(auth.getAdminSession(), "/groups/guest", {
-                gid: 1001
+                gid: GID_GUEST
             });
         }
 
@@ -43,7 +49,7 @@ const auth = api.register("auth", {
         if (!(await api.vfs.resolve(auth.getAdminSession(), "/groups/users", { noerror: true }))) {
             await auth.mkgroup(auth.getAdminSession(), "users", "Users", "");
             await api.vfs.setattributes(auth.getAdminSession(), "/groups/users", {
-                gid: 1002
+                gid: GID_USERS
             });
         }
 
@@ -51,8 +57,8 @@ const auth = api.register("auth", {
         if (!(await api.vfs.resolve(auth.getAdminSession(), "/users/admin", { noerror: true }))) {
             await auth.mkuser(auth.getAdminSession(), "admin", "Administrator");
             await api.vfs.setattributes(auth.getAdminSession(), "/users/admin", {
-                uid: 1000,
-                gid: 1000,
+                uid: UID_ADMIN,
+                gid: GID_ADMIN,
                 password: sha1("admin")
             });
             await auth.connect(auth.getAdminSession(), "admin", "admin");
@@ -62,8 +68,8 @@ const auth = api.register("auth", {
         if (!(await api.vfs.resolve(auth.getAdminSession(), "/users/guest", { noerror: true }))) {
             await auth.mkuser(auth.getAdminSession(), "guest", "Guest");
             await api.vfs.setattributes(auth.getAdminSession(), "/users/guest", {
-                uid: 1001,
-                gid: 1001,
+                uid: UID_GUEST,
+                gid: GID_GUEST,
                 password: sha1("guest")
             });
             await auth.connect(auth.getAdminSession(), "guest", "guest");
@@ -72,9 +78,9 @@ const auth = api.register("auth", {
     getAdminSession: () => {
         return {
             username: "admin",
-            uid: 1000,
-            gid: 1000,
-            gids: [ 1000, 1002 ],
+            uid: UID_ADMIN,
+            gid: GID_ADMIN,
+            gids: [ GID_ADMIN, GID_USERS ],
             umask: 0o770
         };
     },
@@ -420,7 +426,7 @@ const auth = api.register("auth", {
     mkuser: api.export(async (session, username, fullname) => {
         let user = await api.vfs.create(session, "/users/" + username, "u", {
             uid: await auth.allocateuid(),
-            gid: username === "guest" ? 1001 : 1002,
+            gid: username === "guest" ? GID_GUEST : GID_USERS,
             name: fullname
         });
 
@@ -433,8 +439,12 @@ const auth = api.register("auth", {
         return user;
     }),
     connect: api.export(async (session, username, groupname) => {
-        await api.vfs.symlink(session, "/groups/" + groupname, "/users/" + username + "/groups");
-        await api.vfs.symlink(session, "/users/" + username, "/groups/" + groupname + "/users");
+        await api.vfs.symlink(session, `/groups/${groupname}`, `/users/${username}/groups`);
+        await api.vfs.symlink(session, `/users/${username}`, `/groups/${groupname}/users`);
+    }),
+    disconnect: api.export(async (session, username, groupname) => {
+        await api.vfs.unlink(session, `/users/${username}/groups/${groupname}`);
+        await api.vfs.unlink(session, `/groups/${groupname}/users/${username}`);
     })
 });
 

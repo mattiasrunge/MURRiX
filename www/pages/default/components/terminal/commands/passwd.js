@@ -18,5 +18,15 @@ export default {
         await api.auth.passwd(username, password1);
 
         return "Password updated";
+    },
+    completion: async (term, cmd, name, value) => {
+        if (name === "username") {
+            const nodes = await api.vfs.list("/users");
+            const list = nodes.map((node) => node.name);
+
+            return term.bestMatch(value, list);
+        }
+
+        return [];
     }
 };

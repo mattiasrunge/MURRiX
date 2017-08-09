@@ -19,6 +19,7 @@ export default {
     passwd: require("./commands/passwd").default,
     mkuser: require("./commands/mkuser").default,
     mkgroup: require("./commands/mkgroup").default,
+    usermod: require("./commands/usermod").default,
 
 
     // Scripts
