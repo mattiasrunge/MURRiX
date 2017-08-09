@@ -20,6 +20,7 @@ export default {
     mkuser: require("./commands/mkuser").default,
     mkgroup: require("./commands/mkgroup").default,
     usermod: require("./commands/usermod").default,
+    view: require("./commands/view").default,
 
 
     // Scripts
