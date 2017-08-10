@@ -1,10 +1,7 @@
 
 const components = {
-    /* ADD HERE */
-    "search-page-year": require("plugins/search/components/page-year").default,
-    "search-page-search": require("plugins/search/components/page-search").default,
-    "search-page-labels": require("plugins/search/components/page-labels").default,
     "comment-widget-comments": require("plugins/comment/components/widget-comments").default,
+
     "people-widget-family-person": require("plugins/people/components/widget-family-person").default,
     "people-widget-partner": require("plugins/people/components/widget-partner").default,
     "people-widget-parent": require("plugins/people/components/widget-parent").default,
@@ -12,6 +9,7 @@ const components = {
     "people-section-family": require("plugins/people/components/section-family").default,
     "people-section-contact": require("plugins/people/components/section-contact").default,
     "people-page": require("plugins/people/components/page").default,
+
     "node-widget-card-list": require("plugins/node/components/widget-card-list").default,
     "node-widget-card": require("plugins/node/components/widget-card").default,
     "node-widget-labels": require("plugins/node/components/widget-labels").default,
@@ -31,9 +29,12 @@ const components = {
     "node-section-media": require("plugins/node/components/section-media").default,
     "node-fullscreen": require("plugins/node/components/fullscreen").default,
     "node-page": require("plugins/node/components/page").default,
+
     "location-section-map": require("plugins/location/components/section-map").default,
     "location-page": require("plugins/location/components/page").default,
+
     "camera-page": require("plugins/camera/components/page").default,
+
     "feed-widget-today-marriage": require("plugins/feed/components/widget-today-marriage").default,
     "feed-widget-today-engagement": require("plugins/feed/components/widget-today-engagement").default,
     "feed-widget-today-birthday": require("plugins/feed/components/widget-today-birthday").default,
@@ -42,16 +43,18 @@ const components = {
     "feed-widget-news-file": require("plugins/feed/components/widget-news-file").default,
     "feed-widget-news-album": require("plugins/feed/components/widget-news-album").default,
     "feed-page": require("plugins/feed/components/page").default,
+
     "auth-widget-picture-user": require("plugins/auth/components/widget-picture-user").default,
     "auth-widget-list-groups": require("plugins/auth/components/widget-list-groups").default,
     "auth-widget-edit-user": require("plugins/auth/components/widget-edit-user").default,
     "auth-page-reset": require("plugins/auth/components/page-reset").default,
     "auth-page-profile": require("plugins/auth/components/page-profile").default,
     "auth-page-login": require("plugins/auth/components/page-login").default,
+
     "album-page": require("plugins/album/components/page").default,
+
     "file-widget-grid": require("plugins/file/components/widget-grid").default,
-    "file-widget-profile-picture": require("plugins/file/components/widget-profile-picture").default,
-    "statistics-page-charts": require("plugins/statistics/components/page-charts").default
+    "file-widget-profile-picture": require("plugins/file/components/widget-profile-picture").default
 };
 
 export default components;

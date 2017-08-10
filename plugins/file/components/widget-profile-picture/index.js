@@ -1,85 +1,85 @@
 
+import ko from "knockout";
+import api from "api.io-client";
+import stat from "lib/status";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
 
-const ko = require("knockout");
-const api = require("api.io-client");
-const utils = require("lib/utils");
-const stat = require("lib/status");
+class FileWidgetProfilePicture extends Component {
+    constructor(props) {
+        super(props);
 
-class FileWidgetProfilePicture extends Knockout {
-    async getModel() {
-        const model = {};
+        this.state = {
+            url: false
+        };
+    }
 
-        model.loading = stat.create();
-        model.path = ko.pureComputed(() => ko.unwrap(this.props.path));
-        model.classes = ko.pureComputed(() => ko.unwrap(this.props.classes));
-        model.size = this.props.size;
-        model.nolazyload = this.props.nolazyload;
+    componentDidMount() {
+        if (ko.isObservable(this.props.path)) {
+            this.addDisposables([
+                this.props.path.subscribe((path) => this.load(path))
+            ]);
+        }
 
-        model.picturePath = ko.pureComputed(() => model.path() + "/profilePicture");
-        model.picture = ko.nodepath(model.picturePath, { noerror: true });
+        this.load(ko.unwrap(this.props.path));
+    }
 
-        model.profileUrl = ko.asyncComputed(undefined, async (setter) => {
+    componentWillReceiveProps(nextProps) {
+        if (ko.unwrap(this.props.path) !== ko.unwrap(nextProps.path)) {
+            this.load(ko.unwrap(nextProps.path));
+        }
+    }
+
+    async load(abspath) {
+        try {
+            this.setState({ url: false });
+
+            const node = await api.vfs.resolve(`${abspath}/profilePicture`, { noerror: true });
             let id = false;
 
-            setter(undefined);
-
-            if (model.picture()) {
-                id = model.picture().node()._id;
+            if (node) {
+                id = node._id;
             } else {
-                let nodepath = (await api.vfs.list(model.path() + "/files", { noerror: true, limit: 1 }))[0];
+                const nodepath = (await api.vfs.list(`${abspath}/files`, { noerror: true, limit: 1 }))[0];
 
                 id = nodepath ? nodepath.node._id : false;
             }
 
-            if (!id) {
-                return false;
+            if (id) {
+                const url = await api.file.getMediaUrl(id, {
+                    width: ko.unwrap(this.props.size),
+                    height: ko.unwrap(this.props.size),
+                    type: "image"
+                });
+
+                this.setState({ url });
             }
-
-            model.loading(true);
-
-            let filename = await api.file.getMediaUrl(id, {
-                width: model.size,
-                height: model.size,
-                type: "image"
-            });
-
-            console.log("profileUrl", filename);
-
-            model.loading(false);
-
-            return filename;
-        }, (error) => {
-            model.loading(false);
+        } catch (error) {
             stat.printError(error);
-            return false;
-        });
-
-        model.dispose = () => {
-            model.picture.dispose();
-            stat.destroy(model.loading);
-        };
-
-
-        return model;
+            this.setState({ url: false });
+        }
     }
 
-    getTemplate() {
+    render() {
         return (
             <div className="file-widget-profile-picture">
-                <div className="text-center" data-bind="visible: loading, if: loading">
-                    <i className="material-icons md-20 spin">cached</i>
-                    <div>Loading...</div>
-                </div>
-                <div data-bind="if: profileUrl">
-                    <div data-bind="picture: { filename: profileUrl, width: size, height: size, nolazyload: nolazyload, classes: classes }"></div>
-                </div>
+                <If condition={this.state.url}>
+                    <img
+                        src={this.state.url}
+                        style={{ width: parseInt(ko.unwrap(this.props.size), 10), height: parseInt(ko.unwrap(this.props.size), 10) }}
+                        className={ko.unwrap(this.props.classes)}
+                    />
+                </If>
             </div>
-
         );
     }
 }
+
+FileWidgetProfilePicture.propTypes = {
+    path: PropTypes.any,
+    size: PropTypes.any,
+    classes: PropTypes.any
+};
 
 export default FileWidgetProfilePicture;
