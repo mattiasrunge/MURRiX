@@ -51,7 +51,7 @@ class AlbumSectionMedia extends Component {
                 return;
             }
 
-            this.setState({ loading: true });
+            this.setState({ loading: true, days: [] });
 
             let texts = [];
             let files = [];
