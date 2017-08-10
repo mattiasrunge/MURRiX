@@ -137,6 +137,18 @@ const file = api.register("file", {
 
         return api.mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
     }),
+    list: api.export(async (session, abspath, format) => {
+        const files = await api.vfs.list(session, abspath, { noerror: true, checkwritable: true });
+        const ids = files.map((file) => file.node._id);
+
+        const urls = await api.file.getMediaUrl(session, ids, format);
+
+        for (const file of files) {
+            file.filename = urls[file.node._id] || false;
+        }
+
+        return files;
+    }),
     getMediaUrl: api.export(async (session, ids, format, requestId) => {
         format = format || {};
 

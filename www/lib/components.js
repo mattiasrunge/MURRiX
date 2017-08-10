@@ -51,6 +51,7 @@ const components = {
     "auth-page-profile": require("plugins/auth/components/page-profile").default,
     "auth-page-login": require("plugins/auth/components/page-login").default,
     "album-section-media": require("plugins/album/components/section-media").default,
+    "album-section-mediang": require("plugins/album/components/section-mediang").default,
     "album-page": require("plugins/album/components/page").default,
     "file-widget-grid": require("plugins/file/components/widget-grid").default,
     "file-widget-profile-picture": require("plugins/file/components/widget-profile-picture").default,

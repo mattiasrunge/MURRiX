@@ -74,6 +74,7 @@
     "react-bootstrap-typeahead": "^2.0.0-alpha.3",
     "react-dom": "^15.4.2",
     "react-flexbox-grid": "^1.1.3",
+    "react-lazy-load": "^3.0.12",
     "react-router": "^4.1.2",
     "react-svg-loader": "^1.1.1",
     "reactstrap": "^4.2.0",

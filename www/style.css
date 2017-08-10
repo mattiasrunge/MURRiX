@@ -222,13 +222,32 @@ body {
     display: block;
 }
 
-.grid-picture-type {
+.grid-picture-menu {
     position: absolute;
+    top: 10px;
     right: 10px;
-    bottom: 10px;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
+}
+
+.grid-picture-menu .grid-picture-menu-toggle {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
     color: white;
     text-shadow: 0 0 8px black;
-    z-index: 10;
+    cursor: pointer;
+}
+
+.grid-picture-menu .grid-picture-menu-toggle:focus {
+    box-shadow: none;
+}
+
+.grid-picture:hover .grid-picture-menu {
+    opacity: 1;
+    transition: opacity .1s ease-in-out;
 }
 
 .grid-picture-title {
@@ -247,6 +266,16 @@ body {
     text-overflow: ellipsis;
 }
 
+.grid-picture-type {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: white;
+    text-shadow: 0 0 8px black;
+    z-index: 10;
+    opacity: 0.8;
+}
+
 .grid-picture-type:hover {
     color: white;
 }
@@ -255,6 +284,7 @@ body {
     background-color: black;
     margin-right: 1px;
     margin-bottom: 1px;
+    cursor: pointer;
 }
 
 .move-picture {

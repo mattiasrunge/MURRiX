@@ -10,7 +10,7 @@ export default {
     exec: async (term, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.srcpath, true);
         const nodepath = await api.vfs.resolve(abspath, { nodepath: true });
-console.log("nodepath", nodepath)
+
         const el = (
             <NodeWidgetCard nodepath={nodepath} />
         );
