@@ -76,7 +76,7 @@ class AuthWidgetNavbarStars extends Component {
                             style={{ color: "white" }}
                             nav
                         >
-                            <i className="material-icons md-20">star</i>
+                            <i className="material-icons md-24">star</i>
                         </DropdownToggle>
                         <DropdownMenu right>
                             <For each="item" of={this.state.stars}>

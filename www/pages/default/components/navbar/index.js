@@ -19,7 +19,8 @@ class DefaultNavbar extends Component {
 
         this.state = {
             page: ko.unwrap(loc.current().page) || "default",
-            path: ko.unwrap(loc.current().path)
+            path: ko.unwrap(loc.current().path),
+            loggedIn: ko.unwrap(session.loggedIn)
         };
     }
 
@@ -28,7 +29,8 @@ class DefaultNavbar extends Component {
             loc.current.subscribe((current) => this.setState({
                 page: current.page || "default",
                 path: current.path
-            }))
+            })),
+            session.loggedIn.subscribe((loggedIn) => this.setState({ loggedIn }))
         ]);
     }
 
@@ -60,7 +62,7 @@ class DefaultNavbar extends Component {
                 <Container>
                     <Row>
                         <NavbarBrand href="#">
-                            <i className="material-icons md-20">home</i>
+                            <i className="material-icons md-24">home</i>
                         </NavbarBrand>
                         <div className="header-search mr-auto">
                             <NodeWidgetNodeSelect
@@ -71,13 +73,15 @@ class DefaultNavbar extends Component {
                             <AuthWidgetNodeStar />
                         </div>
                         <Nav>
-                            <NavLink
-                                href="#"
-                                onClick={() => this.random()}
-                                style={{ color: "white" }}
-                            >
-                                <i className="material-icons md-20">explore</i>
-                            </NavLink>
+                            <If condition={this.state.loggedIn}>
+                                <NavLink
+                                    href="#"
+                                    onClick={() => this.random()}
+                                    style={{ color: "white" }}
+                                >
+                                    <i className="material-icons md-24">explore</i>
+                                </NavLink>
+                            </If>
 
                             <AuthWidgetNavbarStars />
 

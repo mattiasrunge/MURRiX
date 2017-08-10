@@ -157,7 +157,7 @@ class NodeWidgetNavbarNodeCreate extends Component {
                             style={{ color: "white" }}
                             nav
                         >
-                            <i className="material-icons md-20">add</i>
+                            <i className="material-icons md-24">add</i>
                         </DropdownToggle>
                         <DropdownMenu right>
                             <DropdownItem

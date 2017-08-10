@@ -71,7 +71,7 @@ class AuthWidgetNavbarUser extends Component {
                             >
                                 <span className="picture">
                                     <AuthWidgetPictureUser
-                                        size={20}
+                                        size={24}
                                         uid={this.state.user.attributes.uid}
                                         classes="rounded-circle"
                                     />
@@ -112,7 +112,7 @@ class AuthWidgetNavbarUser extends Component {
                             onClick={(e) => this.gotoLogin(e)}
                             style={{ color: "white" }}
                         >
-                            <i className="material-icons md-18">account_circle</i>
+                            <i className="material-icons md-24">account_circle</i>
                             {"  "}
                             Login
                         </NavLink>
