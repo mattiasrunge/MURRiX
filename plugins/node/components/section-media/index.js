@@ -19,6 +19,7 @@ class AlbumSectionMedia extends Component {
         super(props);
 
         this.state = {
+            loading: false,
             size: 226,
             days: [],
             dropdownOpen: false
@@ -43,15 +44,31 @@ class AlbumSectionMedia extends Component {
 
     async load() {
         try {
-            const abspath = ko.unwrap(this.props.nodepath).path;
+            const nodepath = ko.unwrap(this.props.nodepath);
+            const node = ko.unwrap(nodepath.node);
 
-            const texts = await api.vfs.list(`${abspath}/texts`, { noerror: true });
+            if (!node) {
+                return;
+            }
 
-            const files = await api.file.list(`${abspath}/files`, {
+            this.setState({ loading: true });
+
+            let texts = [];
+            let files = [];
+            const imageOpts = {
                 width: this.state.size,
                 height: this.state.size,
                 type: "image"
-            });
+            };
+
+            if (node.properties.type === "a") {
+                texts = await api.vfs.list(`${nodepath.path}/texts`, { noerror: true });
+                files = await api.file.list(`${nodepath.path}/files`, { image: imageOpts });
+            } else if (node.properties.type === "p") {
+                files = await api.people.findByTags(nodepath.path, { image: imageOpts });
+            } else {
+                console.error("Don't know what data to load for this type", node, nodepath);
+            }
 
             utils.sortNodeList(texts);
             utils.sortNodeList(files);
@@ -97,10 +114,10 @@ class AlbumSectionMedia extends Component {
 
             console.log("days", days);
 
-            this.setState({ days });
+            this.setState({ days, loading: false });
         } catch (error) {
             stat.printError(error);
-            this.setState({ list: [] });
+            this.setState({ days: [], loading: false });
         }
     }
 
@@ -139,6 +156,14 @@ class AlbumSectionMedia extends Component {
     render() {
         return (
             <div className="clearfix">
+                <If condition={this.state.loading}>
+                    <div className="text-center" style={{ margin: 20 }}>
+                        <i className="material-icons md-48 spin">cached</i>
+                        <div>
+                            <strong>Loading...</strong>
+                        </div>
+                    </div>
+                </If>
                 <For each="item" of={this.state.days}>
                     <div key={item.time ? item.time.timestamp : 0} style={{ marginLeft: 2, marginRight: 2, marginTop: 2 }}>
                         <div style={{ marginLeft: 13, marginRight: 13 }}>

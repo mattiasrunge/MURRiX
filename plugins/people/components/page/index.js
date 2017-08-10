@@ -204,7 +204,7 @@ class PeoplePage extends Knockout {
                             name: 'media',
                             icon: 'photo_library',
                             title: 'Media',
-                            react: 'people-section-media'
+                            react: 'node-section-media'
                         },
                         {
                             name: 'contact',

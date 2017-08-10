@@ -99,7 +99,7 @@ class CameraPage extends Knockout {
                              name: 'media',
                              icon: 'photo_library',
                              title: 'Media',
-                             react: 'camera-section-media'
+                             react: 'node-section-media'
                          }
                      ],
                      params: {

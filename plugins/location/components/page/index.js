@@ -97,7 +97,7 @@ class LocationPage extends Knockout {
                             name: 'media',
                             icon: 'photo_library',
                             title: 'Media',
-                            react: 'location-section-media'
+                            react: 'node-section-media'
                         }
                     ],
                     params: {

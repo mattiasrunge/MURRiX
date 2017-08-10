@@ -161,7 +161,7 @@ const people = api.register("people", {
     find: api.export(async (session, name) => {
         return await api.vfs.resolve(session, "/people/" + name, { noerror: true });
     }),
-    findByTags: api.export(async (session, abspath) => {
+    findByTags: api.export(async (session, abspath, opts = {}) => {
         console.time("people.findByTags total " + abspath);
         console.time("people.findByTags sIds");
 
@@ -214,6 +214,16 @@ const people = api.register("people", {
 
         console.timeEnd("people.findByTags lookup");
         console.timeEnd("people.findByTags total " + abspath);
+
+        if (opts.image) {
+            const ids = list.map((nodepath) => nodepath.node._id);
+
+            const urls = await api.file.getMediaUrl(session, ids, opts.image);
+
+            for (const nodepath of list) {
+                nodepath.filename = urls[nodepath.node._id] || false;
+            }
+        }
 
         return list;
     })

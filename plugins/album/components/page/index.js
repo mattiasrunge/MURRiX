@@ -70,13 +70,7 @@ class AlbumPage extends Knockout {
                             name: 'media',
                             icon: 'photo_library',
                             title: 'Media',
-                            react: 'album-section-media'
-                        },
-                        {
-                            name: 'mediang',
-                            icon: 'photo_library',
-                            title: 'MediaNG',
-                            react: 'album-section-mediang'
+                            react: 'node-section-media'
                         }
                     ],
                     showShareSettings: nodepath().editable,
