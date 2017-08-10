@@ -148,7 +148,7 @@ class AlbumSectionMedia extends Component {
                                 </h3>
                             </If>
                             <For each="text" of={item.texts}>
-                                <blockquote key={item.node._id}>
+                                <blockquote key={text.node._id}>
                                     <p>
                                         {text.node.attributes.text}
                                     </p>
