@@ -14,7 +14,7 @@ import LazyLoad from "react-lazy-load";
 import Component from "lib/component";
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 
-class AlbumSectionMedia extends Component {
+class NodeSectionMedia extends Component {
     constructor(props) {
         super(props);
 
@@ -263,8 +263,8 @@ class AlbumSectionMedia extends Component {
     }
 }
 
-AlbumSectionMedia.propTypes = {
+NodeSectionMedia.propTypes = {
     nodepath: PropTypes.func
 };
 
-export default AlbumSectionMedia;
+export default NodeSectionMedia;

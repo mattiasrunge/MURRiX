@@ -84,7 +84,7 @@ class WidgetNodeSelect extends Component {
     render() {
         return (
             <AsyncTypeahead
-                placeholder="Search for anything"
+                placeholder={this.props.placeholder}
                 className={this.state.selected[0] ? "valid" : ""}
                 options={this.state.options}
                 selected={this.state.selected}
@@ -136,14 +136,16 @@ class WidgetNodeSelect extends Component {
 }
 
 WidgetNodeSelect.defaultProps = {
-    limit: 10
+    limit: 10,
+    placeholder: "Search for anything"
 };
 
 WidgetNodeSelect.propTypes = {
     root: PropTypes.array,
     limit: PropTypes.number,
     path: PropTypes.string,
-    onSelect: PropTypes.func
+    onSelect: PropTypes.func,
+    placeholder: PropTypes.string
 };
 
 export default WidgetNodeSelect;

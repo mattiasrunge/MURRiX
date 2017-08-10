@@ -16,7 +16,6 @@ class NodeWidgetSections extends Knockout {
         model.showUpload = ko.pureComputed(() => ko.unwrap(this.props.showUpload) || false);
         model.showMove = ko.pureComputed(() => ko.unwrap(this.props.showMove) || false);
 
-
         return model;
     }
 
@@ -35,7 +34,7 @@ class NodeWidgetSections extends Knockout {
                             </li>
                         <Comment text="/ko" />
 
-                        <li className="nav-item float-right" data-bind="visible: false, css: { active: $root.section() === 'move' }, tooltip: 'Move'" data-trigger="hover">
+                        <li className="nav-item float-right" data-bind="visible: showMove, css: { active: $root.section() === 'move' }, tooltip: 'Move'" data-trigger="hover">
                             <a className="nav-link" data-bind="location: { section: 'move' }">
                                 <i className="material-icons md-18" style={{ width: "18px" }}>folder</i>
                             </a>
@@ -73,7 +72,7 @@ class NodeWidgetSections extends Knockout {
                 <div data-bind="if: $root.section() === 'share' && showShareSettings">
                     <div data-bind="react: { name: 'node-section-share', params: $root.params }"></div>
                 </div>
-                <div data-bind="if: $root.section() === 'move' && showMove">
+                <div data-bind="if: $root.section() === 'move' && showMove()">
                     <div data-bind="react: { name: 'node-section-move', params: $root.params }"></div>
                 </div>
             </div>

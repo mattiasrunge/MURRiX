@@ -217,9 +217,25 @@ body {
     margin-right: 10px;
 }
 
+.grid-picture-check {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
+    color: white;
+    font-weight: bold;
+    font-size: 40px;
+    text-shadow: 0 0 8px black;
+}
+
+.grid-picture-selected {
+    opacity: 0.5;
+}
+
 .grid-picture-container {
 /*     position: relative; */
     display: block;
+    color: white;
 }
 
 .grid-picture-menu {
