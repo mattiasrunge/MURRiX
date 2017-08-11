@@ -21,6 +21,7 @@ export default {
     mkgroup: require("./commands/mkgroup").default,
     usermod: require("./commands/usermod").default,
     view: require("./commands/view").default,
+    label: require("./commands/label").default,
 
 
     // Scripts
