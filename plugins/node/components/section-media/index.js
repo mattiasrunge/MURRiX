@@ -7,6 +7,7 @@ import stat from "lib/status";
 import loc from "lib/location";
 import format from "lib/format";
 import utils from "lib/utils";
+import session from "lib/session";
 import moment from "moment";
 import React from "react";
 import PropTypes from "prop-types";
@@ -72,6 +73,8 @@ class NodeSectionMedia extends Component {
 
             utils.sortNodeList(texts);
             utils.sortNodeList(files);
+
+            session.list(files);
 
             console.log("files", files);
             console.log("texts", texts);
