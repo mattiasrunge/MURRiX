@@ -229,7 +229,7 @@ ${opts.join("\n")}
             showHeaders: false
         });
 
-        return columns.split("\n").map((line) => `<div>${line}</div>`);
+        return columns;
     }
 
     async getChildNodes(path, all) {
