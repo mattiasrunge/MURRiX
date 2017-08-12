@@ -18,7 +18,7 @@ export default {
                 uid: item.node.attributes.uid,
                 inactive: item.node.attributes.inactive ? "Yes" : "No",
                 lastLogin: item.node.attributes.loginTime || "Never",
-                groups: item.groups.map((g) => `${g.name}(${g.node.attributes.gid})`).join(", ")
+                groups: item.groups.map((g) => g.name).join(", ")
             };
         }), {
             columnSplitter: "  "

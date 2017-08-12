@@ -16,7 +16,7 @@ export default {
                 name: item.name,
                 gid: item.node.attributes.gid,
                 description: item.node.attributes.description,
-                users: item.users.map((u) => `${u.name}(${u.node.attributes.uid})`).join(", ")
+                users: item.users.map((u) => u.name).join(", ")
             };
         }), {
             columnSplitter: "  "
