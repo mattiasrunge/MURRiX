@@ -1,111 +1,163 @@
 
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import PropTypes from "prop-types";
+import Textarea from "react-textarea-autosize";
+import AuthWidgetPictureUser from "plugins/auth/components/widget-picture-user";
+import AuthWidgetNameUser from "plugins/auth/components/widget-name-user";
+import format from "lib/format";
+import ko from "knockout";
+import api from "api.io-client";
+import stat from "lib/status";
+import session from "lib/session";
 
-const ko = require("knockout");
-const utils = require("lib/utils");
-const api = require("api.io-client");
-const stat = require("lib/status");
-const session = require("lib/session");
+class CommentWidgetComments extends Component {
+    constructor(props) {
+        super(props);
 
-class CommentWidgetComments extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.loading = stat.create();
-        model.path = ko.pureComputed(() => ko.unwrap(this.props.path));
-        model.user = session.user;
-        model.uid = ko.pureComputed(() => {
-            if (!model.user()) {
-                return false;
-            }
-
-            return model.user().attributes.uid;
-        });
-        model.rows = ko.pureComputed(() => ko.unwrap(this.props.rows) || 0);
-        model.list = ko.observableArray();
-        model.comment = ko.observable("");
-        model.collapsed = ko.observable(model.rows() > 0);
-
-        model.filtered = ko.pureComputed(() => {
-            if (model.rows() === 0 || !model.collapsed()) {
-                return model.list();
-            }
-
-            return model.list().slice(-model.rows());
-        });
-
-        model.post = (model, event) => {
-            if (event.keyCode === 13 && !event.shiftKey) {
-                model.loading(true);
-                api.comment.comment(model.path(), model.comment())
-                .then(() => {
-                    model.loading(false);
-                    model.comment("");
-                })
-                .catch((error) => {
-                    model.loading(false);
-                    stat.printError(error);
-                });
-
-                return false;
-            }
-
-            return true;
+        this.state = {
+            path: ko.unwrap(this.props.path),
+            rows: ko.unwrap(props.rows),
+            user: ko.unwrap(session.user),
+            list: [],
+            filtered: [],
+            comment: "",
+            collapsed: ko.unwrap(props.rows) > 0,
+            loading: false
         };
-
-        model.loading(true);
-        let list = await api.comment.list(model.path());
-        model.loading(false);
-
-        console.log("comments", list);
-
-        model.list(list.map((item) => {
-            item.node = ko.observable(item.node);
-            return item;
-        }));
-
-        let subscription = api.comment.on("new", (data) => {
-            console.log(data);
-            console.log(data.path, model.path());
-
-            if (data.path === model.path()) {
-                model.list.push({
-                    name: data.name,
-                    path: data.path,
-                    node: ko.observable(data.node)
-                });
-            }
-        });
-
-        model.dispose = () => {
-            api.comment.off(subscription);
-            stat.destroy(model.loading);
-        };
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        if (ko.isObservable(this.props.path)) {
+            this.addDisposables([
+                this.props.path.subscribe((path) => this.load(path))
+            ]);
+        }
+
+        this.addDisposables([
+            session.user.subscribe((user) => this.setState({ user }))
+        ]);
+
+        const subscription = api.comment.on("new", (data) => {
+            console.log(data);
+            console.log(data.path, this.state.path);
+
+            if (data.path === this.state.path) {
+                this.load(this.state.path);
+            }
+        });
+
+        this.addDisposable({
+            dispose: () => api.comment.off(subscription)
+        });
+
+        this.load(ko.unwrap(this.props.path));
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (ko.unwrap(this.props.path) !== ko.unwrap(nextProps.path)) {
+            this.load(ko.unwrap(nextProps.path));
+        }
+    }
+
+    getFilteredList(list) {
+        if (this.state.rows === 0 || !this.state.collapsed) {
+            return list;
+        }
+
+        return list.slice(-this.state.rows);
+    }
+
+    async load(abspath) {
+        try {
+            this.setState({ loading: true });
+
+            const list = await api.comment.list(abspath);
+            const filtered = this.getFilteredList(list);
+
+            console.log("comments", list, filtered);
+
+            this.setState({ list, filtered, loading: false });
+        } catch (error) {
+            stat.printError(error);
+            this.setState({ list: [], filtered: [], loading: false });
+        }
+    }
+
+    async onKeyPress(event) {
+        try {
+            if (event.which === 13 && !event.shiftKey) {
+                await api.comment.comment(this.state.path, this.state.comment);
+                this.setState({ comment: "" });
+                await this.load(this.state.path);
+            }
+        } catch (error) {
+            stat.printError(error);
+        }
+    }
+
+    onExpand(event) {
+        event.preventDefault();
+
+        this.setState({
+            collapsed: false,
+            filtered: this.state.list
+        });
+    }
+
+    onChange(event) {
+        this.setState({ comment: event.target.value });
+    }
+
+    render() {
         return (
             <div className="comments">
-                <a className="show-all-link" href="#" data-bind="visible: list().length > filtered().length, click: collapsed.bind($data, false)">Show all comments</a>
+                <If condition={this.state.collapsed && this.state.list.length > this.state.filtered.length}>
+                    <a
+                        className="show-all-link"
+                        href="#"
+                        onClick={(e) => this.onExpand(e)}
+                    >
+                        Show all comments
+                    </a>
+                </If>
 
-                <div data-bind="foreach: filtered">
-                    <div className="row">
+                <For each="item" of={this.state.filtered}>
+                    <div className="row" key={item.node._id}>
                         <div className="col-md-12">
-                            <div data-bind="react: { name: 'auth-widget-picture-user', params: { size: 30, uid: $data.node().properties.birthuid, classes: 'rounded-circle comment-picture-user' } }" className="float-left"></div>
-                            <div className="name" data-bind="unameNice: $data.node().properties.birthuid"></div>
-                            <small className="text-muted" data-bind="datetimeAgo: $data.node().properties.birthtime"></small>
-                            <p style={{ whiteSpace: "pre-line" }} data-bind="text: $data.node().attributes.text"></p>
+                            <AuthWidgetPictureUser
+                                size={30}
+                                uid={item.node.properties.birthuid}
+                                classes="rounded-circle comment-picture-user float-left"
+                            />
+                            <div>
+                                <div className="name">
+                                    <AuthWidgetNameUser
+                                        uid={item.node.properties.birthuid}
+                                    />
+                                </div>
+                                <small className="text-muted">
+                                    {format.datetimeAgo(item.node.properties.birthtime)}
+                                </small>
+                            </div>
+                            <p style={{ whiteSpace: "pre-line", display: "inline-block" }}>
+                                {item.node.attributes.text}
+                            </p>
                         </div>
                     </div>
-                </div>
+                </For>
                 <div className="row">
                     <div className="col-md-12">
-                        <textarea style={{ marginTop: "5px", resize: "none" }} rows="1" className="form-control" data-bind="textInput: comment, event: { keypress: post }, autosize: comment, disable: loading" placeholder="Leave a comment..."></textarea>
+                        <Textarea
+                            className="form-control"
+                            style={{ marginTop: "5px", resize: "none" }}
+                            rows="1"
+                            placeholder="Leave a comment..."
+                            value={this.state.comment}
+                            onKeyPress={(event) => this.onKeyPress(event)}
+                            onChange={(event) => this.onChange(event)}
+                            disabled={this.state.loading}
+                        ></Textarea>
                     </div>
                 </div>
             </div>
@@ -113,5 +165,14 @@ class CommentWidgetComments extends Knockout {
         );
     }
 }
+
+CommentWidgetComments.defaultType = {
+    rows: 0
+};
+
+CommentWidgetComments.propTypes = {
+    rows: PropTypes.any,
+    path: PropTypes.any
+};
 
 export default CommentWidgetComments;
