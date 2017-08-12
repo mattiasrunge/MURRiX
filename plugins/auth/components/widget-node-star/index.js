@@ -33,18 +33,18 @@ class AuthWidgetNodeStar extends Component {
         event.preventDefault();
 
         api.auth.toggleStar(this.state.path)
-        .then((result) => {
-            session.setStars(result.stars);
+            .then((result) => {
+                session.setStars(result.stars);
 
-            if (result.created) {
-                stat.printSuccess("Star created");
-            } else {
-                stat.printSuccess("Star removed");
-            }
-        })
-        .catch((error) => {
-            stat.printError(error);
-        });
+                if (result.created) {
+                    stat.printSuccess("Star created");
+                } else {
+                    stat.printSuccess("Star removed");
+                }
+            })
+            .catch((error) => {
+                stat.printError(error);
+            });
     }
 
     render() {

@@ -43,9 +43,9 @@ class AuthWidgetNavbarStars extends Component {
                         height: 16,
                         type: "image"
                     })
-                    .catch((error) => {
-                        stat.printError(error);
-                    });
+                        .catch((error) => {
+                            stat.printError(error);
+                        });
                 }
 
                 list.push(node);

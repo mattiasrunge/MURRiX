@@ -3,12 +3,11 @@ import React from "react";
 import Component from "lib/component";
 import { NavDropdown, NavLink, DropdownItem, DropdownToggle, DropdownMenu } from "reactstrap";
 import AuthWidgetPictureUser from "plugins/auth/components/widget-picture-user";
-
-const ko = require("knockout");
-const api = require("api.io-client");
-const stat = require("lib/status");
-const session = require("lib/session");
-const loc = require("lib/location");
+import ko from "knockout";
+import api from "api.io-client";
+import stat from "lib/status";
+import session from "lib/session";
+import loc from "lib/location";
 
 class AuthWidgetNavbarUser extends Component {
     constructor(props) {

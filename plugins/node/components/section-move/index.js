@@ -1,19 +1,14 @@
 
-/* global window */
-
 import ko from "knockout";
 import api from "api.io-client";
 import stat from "lib/status";
-import loc from "lib/location";
-import format from "lib/format";
 import utils from "lib/utils";
-import moment from "moment";
 import React from "react";
 import PropTypes from "prop-types";
 import LazyLoad from "react-lazy-load";
 import Component from "lib/component";
 import NodeWidgetNodeSelect from "plugins/node/components/widget-node-select";
-import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import { Button } from "reactstrap";
 
 class NodeSectionMove extends Component {
     constructor(props) {
@@ -113,7 +108,7 @@ class NodeSectionMove extends Component {
                             <tr>
                                 <td style={{ width: 300 }}>
                                     <NodeWidgetNodeSelect
-                                        root={["/albums"]}
+                                        root={[ "/albums" ]}
                                         placeholder="Select target album"
                                         path={this.state.path}
                                         onSelect={(t) => this.selectTarget(t)}

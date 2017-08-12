@@ -1,66 +1,76 @@
 
+import ko from "knockout";
+import api from "api.io-client";
+import stat from "lib/status";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
 
-const ko = require("knockout");
-const api = require("api.io-client");
-const utils = require("lib/utils");
-const stat = require("lib/status");
+class AuthWidgetPictureUser extends Component {
+    constructor(props) {
+        super(props);
 
-class AuthWidgetPictureUser extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.loading = stat.create();
-        model.uid = ko.pureComputed(() => ko.unwrap(this.props.uid) || false);
-        model.size = this.props.size;
-        model.classes = ko.pureComputed(() => ko.unwrap(this.props.classes) || "");
-
-        model.filename = ko.asyncComputed(false, async (setter) => {
-            if (!model.uid()) {
-                return false;
-            }
-
-            let filename = false;
-
-            setter(false);
-
-            model.loading(true);
-
-            let id = await api.auth.picture(model.uid());
-
-            if (id) {
-                filename = await api.file.getMediaUrl(id, {
-                    width: model.size,
-                    height: model.size,
-                    type: "image"
-                });
-            }
-
-            model.loading(false);
-
-            return filename;
-        }, (error) => {
-            model.loading(false);
-            stat.printError(error);
-            return false;
-        });
-
-        model.dispose = () => {
-            stat.destroy(model.loading);
+        this.state = {
+            url: false
         };
-
-
-        return model;
     }
 
-    getTemplate() {
-        return (
-            ﻿<span data-bind="picture: { filename: filename, width: size, height: size, classes: classes, nolazyload: true }"></span>
+    componentDidMount() {
+        if (ko.isObservable(this.props.uid)) {
+            this.addDisposables([
+                this.props.uid.subscribe((uid) => this.load(uid))
+            ]);
+        }
 
+        this.load(ko.unwrap(this.props.uid));
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (ko.unwrap(this.props.uid) !== ko.unwrap(nextProps.uid)) {
+            this.load(ko.unwrap(nextProps.uid));
+        }
+    }
+
+    async load(uid) {
+        try {
+            this.setState({ url: false });
+
+            const id = await api.auth.picture(uid);
+
+            if (id) {
+                const url = await api.file.getMediaUrl(id, {
+                    width: ko.unwrap(this.props.size),
+                    height: ko.unwrap(this.props.size),
+                    type: "image"
+                });
+
+                this.setState({ url });
+            }
+        } catch (error) {
+            stat.printError(error);
+            this.setState({ url: false });
+        }
+    }
+
+    render() {
+        return (
+            <span>
+                <If condition={this.state.url}>
+                    <img
+                        src={this.state.url}
+                        style={{ width: parseInt(ko.unwrap(this.props.size), 10), height: parseInt(ko.unwrap(this.props.size), 10) }}
+                        className={ko.unwrap(this.props.classes)}
+                    />
+                </If>
+            </span>
         );
     }
 }
+
+AuthWidgetPictureUser.propTypes = {
+    uid: PropTypes.any,
+    size: PropTypes.any,
+    classes: PropTypes.any
+};
 
 export default AuthWidgetPictureUser;
