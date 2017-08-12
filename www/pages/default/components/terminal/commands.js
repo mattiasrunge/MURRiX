@@ -21,6 +21,8 @@ export default {
     mkgroup: require("./commands/mkgroup").default,
     usermod: require("./commands/usermod").default,
     useractivation: require("./commands/useractivation").default,
+    users: require("./commands/users").default,
+    groups: require("./commands/groups").default,
     view: require("./commands/view").default,
     label: require("./commands/label").default,
 
