@@ -18,6 +18,7 @@ import PageProfile from "plugins/auth/components/page-profile";
 import PageReset from "plugins/auth/components/page-reset";
 import PageNode from "plugins/node/components/page";
 import Terminal from "components/terminal";
+import Notification from "components/notification";
 
 class DefaultRoot extends Component {
     constructor(props) {
@@ -60,6 +61,8 @@ class DefaultRoot extends Component {
                 </If>
 
                 <Terminal />
+
+                <Notification />
 
                 <div className="page-container">
                     <div className="container">

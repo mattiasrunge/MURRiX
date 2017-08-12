@@ -3,7 +3,6 @@
 @import "../node_modules/typeahead.js-bootstrap-css/typeaheadjs.css";
 @import "../node_modules/animate.css/animate.css";
 @import "../node_modules/bootstrap-slider/dist/css/bootstrap-slider.css";
-@import "../node_modules/snackbarjs/dist/snackbar.css";
 @import "../node_modules/jdomizio-imgareaselect/distfiles/css/imgareaselect-default.css";
 @import "../node_modules/material-design-icons/iconfont/material-icons.css";
 
@@ -776,46 +775,25 @@ body {
     width: 100%;
 }
 
-.snackbar {
-    background-color: #323232;
-    color: rgba(255,255,255, 0.84);
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 1px;
-    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
-    height: 0;
-    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, padding 0s linear 0.2s, height 0s linear 0.2s;
-    transform: translateY(200%);
-}
-.snackbar.snackbar-opened {
-    padding: 14px 15px;
-    margin-bottom: 20px;
-    height: auto;
-    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0s linear 0.2s, height 0s linear 0.2s;
-    transform: none;
-}
-.snackbar.toast {
-    border-radius: 200px;
+
+.alert {
+    font-weight: bold !important;
 }
 
-.snackbar.alert {
-    color: rgba(255,255,255,.84);
+.alert-danger {
+    background-color: #f44336 !important;
 }
 
-.snackbar.alert-danger {
-    background-color: #f44336;
+.alert-success {
+    background-color: #4caf50 !important;
 }
 
-.snackbar.alert-success {
-    background-color: #4caf50;
+.alert-info {
+    background-color: #03a9f4 !important;
 }
 
-.snackbar.alert-info {
-    background-color: #03a9f4;
-}
-
-.snackbar.alert-warning {
-    background-color: #ff5722;
+.alert-warning {
+    background-color: #ff5722 !important;
 }
 
 .twitter-typeahead {

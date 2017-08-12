@@ -15,7 +15,6 @@ import "lib/bindings";
 import "www/style.css";
 
 const api = require("api.io-client");
-const ui = require("lib/ui");
 const session = require("lib/session");
 
 // https://github.com/petkaantonov/bluebird/issues/903

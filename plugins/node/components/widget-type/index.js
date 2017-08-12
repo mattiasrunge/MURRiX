@@ -1,37 +1,47 @@
 
+import ko from "knockout";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
 
-const ko = require("knockout");
+const types = {
+    "a": "album",
+    "l": "location",
+    "p": "person",
+    "c": "camera",
+    "d": "directory",
+    "f": "file",
+    "s": "symlink",
+    "k": "comment",
+    "r": "root"
+};
 
-class NodeWidgetType extends Knockout {
-    async getModel() {
-        const model = {};
+class NodeWidgetType extends Component {
+    constructor(props) {
+        super(props);
 
-        const types = {
-            "a": "album",
-            "l": "location",
-            "p": "person",
-            "c": "camera",
-            "d": "directory",
-            "f": "file",
-            "s": "symlink",
-            "k": "comment",
-            "r": "root"
+        this.state = {
+            type: ko.unwrap(this.props.type)
         };
-
-        model.type = ko.pureComputed(() => types[ko.unwrap(this.props.type)] || "unknown");
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        if (ko.isObservable(this.props.type)) {
+            this.addDisposables([
+                this.props.type.subscribe((type) => this.setState({ type }))
+            ]);
+        }
+    }
+
+    render() {
         return (
-            ﻿<span data-bind="text: type"></span>
+            <span>{types[this.state.type] || "unknown"}</span>
         );
     }
 }
+
+NodeWidgetType.propTypes = {
+    type: PropTypes.any
+};
 
 export default NodeWidgetType;

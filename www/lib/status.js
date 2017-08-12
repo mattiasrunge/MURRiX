@@ -1,12 +1,11 @@
-"use strict";
 
-const $ = require("jquery");
-const ko = require("knockout");
-require("snackbarjs");
+import ko from "knockout";
 
-let list = ko.observableArray();
+const list = ko.observableArray();
+let count = 0;
 
 module.exports = {
+    list: ko.observableArray(),
     printError: (text) => {
         console.error(text);
         console.error(new Error().stack);
@@ -14,71 +13,84 @@ module.exports = {
         if (typeof text === "string") {
             text = text.split("\n")[0];
         } else if (text instanceof Error) {
-            text = "Error: " + text.message;
+            text = `Error: ${text.message}`;
         }
 
-        let options = {
-            content: text,
-            style: "alert-danger",
-            timeout: 10000,
-            htmlAllowed: true
+        const message = {
+            message: text,
+            key: count++,
+            className: "alert alert-danger",
+            dismissAfter: 10000,
+            dismiss: () => {
+                module.exports.list.remove(message);
+            }
         };
 
-        $.snackbar(options).snackbar("show");
+        module.exports.list.push(message);
     },
     printSuccess: (text) => {
         console.log(text);
 
-        let options = {
-            content: text,
-            style: "alert-success",
-            timeout: 5000,
-            htmlAllowed: true
+        const message = {
+            message: text,
+            key: count++,
+            className: "alert alert-success",
+            dismissAfter: 5000,
+            dismiss: () => {
+                module.exports.list.remove(message);
+            }
         };
 
-        $.snackbar(options).snackbar("show");
+        module.exports.list.push(message);
     },
     printWarning: (text) => {
         console.log(text);
 
-        let options = {
-            content: text,
-            style: "alert-warning",
-            timeout: 5000,
-            htmlAllowed: true
+        const message = {
+            message: text,
+            key: count++,
+            className: "alert alert-warning",
+            dismissAfter: 5000,
+            dismiss: () => {
+                module.exports.list.remove(message);
+            }
         };
 
-        $.snackbar(options).snackbar("show");
+        module.exports.list.push(message);
     },
     printInfo: (text) => {
         console.log(text);
 
-        let options = {
-            content: text,
-            style: "alert-info",
-            timeout: 5000,
-            htmlAllowed: true
+        const message = {
+            message: text,
+            key: count++,
+            className: "alert alert-info",
+            dismissAfter: 5000,
+            dismiss: () => {
+                module.exports.list.remove(message);
+            }
         };
 
-        $.snackbar(options).snackbar("show");
+        module.exports.list.push(message);
     },
     create: () => {
-        let line = "unnamed"; //new Error().stack.split("\n")[2].trim().split(" ")[2];
-        //line = line.substr(1, line.length - 2);
+        const line = "unnamed"; // new Error().stack.split("\n")[2].trim().split(" ")[2];
+        // line = line.substr(1, line.length - 2);
 
-        let status = ko.observable(false);
+        const status = ko.observable(false);
         list.push({ status: status, name: line });
+
         return status;
     },
     destroy: (status) => {
-        let item = list().filter((item) => item.status === status)[0];
+        const item = list().filter((item) => item.status === status)[0];
 
         if (item) {
             list.remove(item);
         }
     },
     loading: ko.pureComputed(() => {
-        //console.log("status", JSON.stringify(list().map((item) => item.name + " => " + ko.unwrap(item.status)), null, 2));
+        // console.log("status", JSON.stringify(list().map((item) => item.name + " => " + ko.unwrap(item.status)), null, 2));
 
         return list().filter((item) => item.status()).length > 0;
     })
