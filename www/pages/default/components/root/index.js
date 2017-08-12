@@ -1,6 +1,4 @@
 
-/* global window */
-
 import ko from "knockout";
 import loc from "lib/location";
 import session from "lib/session";

@@ -36,13 +36,13 @@ class DefaultNavbar extends Component {
 
     random() {
         api.vfs.random([ "/albums" ], this.state.path ? [ this.state.path ] : [])
-        .then((item) => {
-            if (item) {
-                loc.goto({ page: "node", path: item.path }, false);
-            } else {
-                stat.printError("No random node could be found");
-            }
-        });
+            .then((item) => {
+                if (item) {
+                    loc.goto({ page: "node", path: item.path }, false);
+                } else {
+                    stat.printError("No random node could be found");
+                }
+            });
     }
 
     goto(node) {

@@ -146,19 +146,6 @@ ko.bindingHandlers.tooltip = {
     }
 };
 
-ko.bindingHandlers.copyToClipboard = {
-    init: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-
-        $(element).on("click", () => {
-            utils.copyToClipboard(value);
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-            $(element).off("click");
-        });
-    }
-};
 
 // http://stackoverflow.com/questions/16930869/how-to-access-file-input-with-knockout-binding
 ko.bindingHandlers.fileUpload = {
