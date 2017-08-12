@@ -202,7 +202,7 @@ ${opts.join("\n")}
     }
 
     renderPrompt(args) {
-        return `<span class="promptUser">${session.username()}</span> <span class="promptPath">${args.node.path} $</span>`;
+        return `<span class="promptUser">${session.adminGranted() ? "+" : ""}${session.username()}</span> <span class="promptPath">${args.node.path} $</span>`;
     }
 
     renderList(args) {

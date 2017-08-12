@@ -9,6 +9,7 @@ module.exports = {
     username: ko.observable("guest"),
     personPath: ko.observable(false),
     stars: ko.observableArray(),
+    adminGranted: ko.observable(false),
     loggedIn: ko.pureComputed(() => {
         return module.exports.user() && module.exports.username() !== "guest";
     }),
@@ -24,6 +25,7 @@ module.exports = {
         module.exports.user(userinfo.user);
         module.exports.username(userinfo.username);
         module.exports.personPath(userinfo.personPath);
+        module.exports.adminGranted(userinfo.adminGranted);
         module.exports.stars(await api.auth.getStars());
 
         console.log(userinfo);

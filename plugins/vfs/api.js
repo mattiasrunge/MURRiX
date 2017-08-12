@@ -106,7 +106,7 @@ const vfs = api.register("vfs", {
             throw new Error("Corrupt session, please reinitialize");
         }
 
-        if (session.almighty || session.username === "admin") {
+        if (session.almighty || session.username === "admin" || session.admin) {
             return true;
         }
 

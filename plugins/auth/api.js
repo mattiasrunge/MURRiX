@@ -108,7 +108,7 @@ const auth = api.register("auth", {
         delete user.attributes.resetId;
         // TODO: Invert this
 
-        return { username: session.username, user: user, personPath: personPath };
+        return { username: session.username, user: user, personPath: personPath, adminGranted: session.admin };
     }),
     getStars: api.export(async (session) => {
         if (session.username === "guest") {
@@ -171,6 +171,21 @@ const auth = api.register("auth", {
         }
 
         return await api.vfs.list(auth.getAdminSession(), "/groups/" + groupname + "/users");
+    }),
+    becomeAdmin: api.export(async (session, password) => {
+        const user = await api.vfs.resolve(auth.getAdminSession(), "/users/admin");
+
+        session.admin = false;
+
+        if (!password) {
+            return;
+        }
+
+        if (user.attributes.password !== sha1(password)) {
+            throw new Error("Authentication failed");
+        }
+
+        session.admin = new Date();
     }),
     login: api.export(async (session, username, password) => {
         let user = await api.vfs.resolve(auth.getAdminSession(), "/users/" + username);
