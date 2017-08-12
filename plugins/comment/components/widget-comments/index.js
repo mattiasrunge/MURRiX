@@ -69,6 +69,10 @@ class CommentWidgetComments extends Component {
     }
 
     async load(abspath) {
+        if (!abspath) {
+            return this.setState({ list: [], filtered: [], loading: false });
+        }
+
         try {
             this.setState({ loading: true });
 
@@ -118,7 +122,7 @@ class CommentWidgetComments extends Component {
                         href="#"
                         onClick={(e) => this.onExpand(e)}
                     >
-                        Show all comments
+                        Show all comments ({this.state.list.length})
                     </a>
                 </If>
 

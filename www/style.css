@@ -5,8 +5,6 @@
 @import "../node_modules/bootstrap-slider/dist/css/bootstrap-slider.css";
 @import "../node_modules/snackbarjs/dist/snackbar.css";
 @import "../node_modules/jdomizio-imgareaselect/distfiles/css/imgareaselect-default.css";
-@import "../node_modules/dragula/dist/dragula.css";
-@import "../node_modules/jquery-contextmenu/dist/jquery.contextMenu.css";
 @import "../node_modules/material-design-icons/iconfont/material-icons.css";
 
 @keyframes spin {

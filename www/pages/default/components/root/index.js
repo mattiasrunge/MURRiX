@@ -2,7 +2,6 @@
 /* global window */
 
 import ko from "knockout";
-import LazyLoad from "vanilla-lazyload";
 import loc from "lib/location";
 import session from "lib/session";
 import stat from "lib/status";
@@ -47,18 +46,6 @@ class DefaultRoot extends Component {
         ]);
     }
 
-    onLoad(ref) {
-        if (!ref || window.lazyload) {
-            return;
-        }
-
-        window.lazyload = new LazyLoad({
-            "container": ref,
-            "show_while_loading": true,
-            "elements_selector": "img.lazyload"
-        });
-    }
-
     render() {
         return (
             <div>
@@ -76,7 +63,7 @@ class DefaultRoot extends Component {
 
                 <Terminal />
 
-                <div className="page-container" ref={(ref) => this.onLoad(ref)}>
+                <div className="page-container">
                     <div className="container">
                         <div className="row">
                             <Choose>

@@ -53,7 +53,6 @@ const components = {
 
     "album-page": require("plugins/album/components/page").default,
 
-    "file-widget-grid": require("plugins/file/components/widget-grid").default,
     "file-widget-profile-picture": require("plugins/file/components/widget-profile-picture").default
 };
 

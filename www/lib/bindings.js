@@ -14,11 +14,7 @@ const api = require("api.io-client");
 const utils = require("lib/utils");
 const stat = require("lib/status");
 const loc = require("lib/location");
-const autosize = require("autosize");
-const LazyLoad = require("vanilla-lazyload");
-const dragula = require("dragula");
 const chron = require("chron-time");
-require("jquery-contextmenu");
 require("corejs-typeahead/dist/typeahead.jquery");
 
 import "moment-duration-format";
@@ -52,126 +48,6 @@ ko.bindingHandlers.modal = {
         let show = ko.unwrap(valueAccessor());
         console.log("modal", show);
         $(element).modal(show ? "show" : "hide");
-    }
-};
-
-ko.bindingHandlers.contextmenu = {
-    init: (element, valueAccessor) => {
-        let nodepath = valueAccessor();
-
-        if (!ko.unwrap(nodepath().editable)) {
-            return;
-        }
-
-        $(element).contextMenu({
-            selector: ".context-menu",
-            callback: function(key/*, options*/) {
-                let abspath = $(this).data("path");
-
-                if (key === "profilePicture") {
-                    api.node.setProfilePicture(nodepath().path, abspath)
-                    .then(() => {
-                        stat.printSuccess("Profile picture set");
-                    })
-                    .catch((error) => {
-                        stat.printError(error);
-                    });
-                } else if (key === "rotateLeft") {
-                    api.file.rotate(abspath, 90)
-                    .then((node) => {
-                        stat.printSuccess("Rotated successfully");
-                    })
-                    .catch((error) => {
-                        stat.printError(error);
-                    });
-                } else if (key === "rotateRight") {
-                    api.file.rotate(abspath, -90)
-                    .then((node) => {
-                        stat.printSuccess("Rotated successfully");
-                    })
-                    .catch((error) => {
-                        stat.printError(error);
-                    });
-                } else if (key === "download") {
-                    api.vfs.resolve(abspath)
-                    .then((node) => {
-                        window.location = "file/download/" + node.attributes.diskfilename + "/" + node.attributes.name;
-                    })
-                    .catch((error) => {
-                        stat.printError(error);
-                    });
-                }
-            },
-            items: {
-                "profilePicture": { name: "Set as profile picture" },
-                "rotateLeft": { name: "Rotate left" },
-                "rotateRight": { name: "Rotate right" },
-                "download": { name: "Download" }
-            }
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-            $(element).contextMenu("destroy");
-        });
-    }
-};
-
-ko.bindingHandlers.dragula = {
-    init: (element, valueAccessor) => {
-        let nodepath = valueAccessor();
-
-        if (!ko.unwrap(nodepath().editable)) {
-            return;
-        }
-
-        let targetContainer = $("#dropTargetContainer");
-        let targetProfilePicture = $("#dropTargetProfilePicture");
-        let targetDelete = $("#dropTargetDelete");
-
-        let drake = dragula({
-            containers: [ element, targetProfilePicture.get(0), targetDelete.get(0), targetContainer.get(0) ],
-            copy: true,
-            revertOnSpill: true,
-            mirrorContainer: targetContainer.get(0)
-        });
-
-        drake.on("drag", () => {
-            targetContainer.addClass("show");
-        });
-
-        drake.on("dragend", () => {
-            targetContainer.removeClass("show");
-        });
-
-        drake.on("over", (el, container) => {
-            $(container).addClass("over");
-        });
-
-        drake.on("out", (el, container) => {
-            $(container).removeClass("over");
-        });
-
-        drake.on("drop", (el, target) => {
-            let abspath = $(el).data("path");
-
-            drake.cancel(el);
-
-            if (target === targetProfilePicture.get(0)) {
-                api.node.setProfilePicture(nodepath().path, abspath)
-                .then(() => {
-                    stat.printSuccess("Profile picture set");
-                })
-                .catch((error) => {
-                    stat.printError(error);
-                });
-            } /*else if (target === targetDelete.get(0)) {
-                // TODO
-            }*/
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-            drake.destroy();
-        });
     }
 };
 
@@ -267,20 +143,6 @@ ko.bindingHandlers.tooltip = {
         let value = ko.unwrap(valueAccessor());
 
         //$(element).data("bs.tooltip").options.title = value;
-    }
-};
-
-ko.bindingHandlers.autosize = {
-    init: (element) => {
-        autosize(element);
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-            autosize.destroy(element);
-        });
-    },
-    update: (element, valueAccessor) => {
-        valueAccessor()();
-        autosize.update(element);
     }
 };
 
@@ -1100,7 +962,6 @@ ko.bindingHandlers.picture = {
         let title = ko.unwrap(data.title);
         let type = ko.unwrap(data.type);
         let $element = $(element);
-        let nolazyload = !!ko.unwrap(data.nolazyload);
         let $span = $element;
 
         if (element.$img) {
@@ -1147,11 +1008,7 @@ ko.bindingHandlers.picture = {
             $span = $("<span style='display: inline-block; position: relative; " + containerCss + "' class='" + classes + "'></span>");
             let $img;
 
-            if (nolazyload) {
-                $img = $("<img src='" + filename + "' style='" + css.join(";") + "' class='" + classes + "'>");
-            } else {
-                $img = $("<img data-original='" + filename + "' style='" + css.join(";") + "' class='lazyload " + classes + "'>");
-            }
+            $img = $("<img src='" + filename + "' style='" + css.join(";") + "' class='" + classes + "'>");
 
             $span.append($img);
 
@@ -1231,8 +1088,6 @@ ko.bindingHandlers.picture = {
             }
 
             element.$img = $img;
-
-            window.lazyload.update();
         }
 
         $element = $span;
