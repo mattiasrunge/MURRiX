@@ -180,6 +180,11 @@ const auth = api.register("auth", {
             throw new Error("Authentication failed");
         }
 
+        if (user.attributes.inactive) {
+            log.error("login: User " + username + " marked inactive");
+            throw new Error("User is marked inactive");
+        }
+
         if (!user.attributes.password) {
             log.error("login: User " + username + " is disabled");
             throw new Error("Authentication failed");
@@ -222,6 +227,11 @@ const auth = api.register("auth", {
     }),
     requestReset: api.export(async (session, username, baseUrl) => {
         let user = await api.vfs.resolve(auth.getAdminSession(), "/users/" + username);
+
+        if (user.attributes.inactive) {
+            throw new Error("User is marked inactive");
+        }
+
         let text = "";
         let server = promisifyAll(email.server.connect(params.email));
         let resetId = uuid.v4();
@@ -248,6 +258,10 @@ const auth = api.register("auth", {
     }),
     passwordReset: api.export(async (session, username, resetId, password) => {
         let user = await api.vfs.resolve(auth.getAdminSession(), "/users/" + username);
+
+        if (user.attributes.inactive) {
+            throw new Error("User is marked inactive");
+        }
 
         if (user.attributes.resetId !== resetId) {
             throw new Error("Invalid reset id");
@@ -296,6 +310,15 @@ const auth = api.register("auth", {
 
         return api.vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
             password: sha1(password)
+        });
+    }),
+    inactive: api.export(async (session, username, inactive) => {
+        if (session.username !== "admin") {
+            throw new Error("Not allowed");
+        }
+
+        return api.vfs.setattributes(auth.getAdminSession(), "/users/" + username, {
+            inactive: inactive || null
         });
     }),
     id: api.export(async (session, username) => {

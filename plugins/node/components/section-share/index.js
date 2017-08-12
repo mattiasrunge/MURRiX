@@ -17,6 +17,7 @@ class NodeSectionShare extends Knockout {
         model.saving = stat.create();
         model.gid = ko.observable(false);
         model.public = ko.observable(false);
+        model.showInactive = ko.observable(false);
         model.groupAccess = ko.observable("none");
         model.aclGid = ko.observable(false);
         model.aclGroupAccess = ko.observable("read");
@@ -152,6 +153,8 @@ class NodeSectionShare extends Knockout {
                 return [];
             }
 
+            model.showInactive(); // Setup subscription
+
             let list = [];
 
             model.loading(true);
@@ -177,12 +180,14 @@ class NodeSectionShare extends Knockout {
                 let users = await api.auth.userList(name);
 
                 for (let user of users) {
-                    list.push({
-                        name: user.node.attributes.name,
-                        uid: user.node.attributes.uid,
-                        type: model.groupAccess(),
-                        reason: "as member of " + niceName
-                    });
+                    if (!user.node.attributes.inactive || model.showInactive()) {
+                        list.push({
+                            name: user.node.attributes.name,
+                            uid: user.node.attributes.uid,
+                            type: model.groupAccess(),
+                            reason: "as member of " + niceName
+                        });
+                    }
                 }
             }
 
@@ -193,12 +198,14 @@ class NodeSectionShare extends Knockout {
                     let users = await api.auth.userList(name);
 
                     for (let user of users) {
-                        list.push({
-                            name: user.node.attributes.name,
-                            uid: user.node.attributes.uid,
-                            type: ac.access(),
-                            reason: "as member of " + niceName
-                        });
+                        if (!user.node.attributes.inactive || model.showInactive()) {
+                            list.push({
+                                name: user.node.attributes.name,
+                                uid: user.node.attributes.uid,
+                                type: ac.access(),
+                                reason: "as member of " + niceName
+                            });
+                        }
                     }
                 }
             }
@@ -339,6 +346,13 @@ class NodeSectionShare extends Knockout {
                             <p>
                                 Here is a list of all the users that have access and what access level they have. This is based on what groups are selected to the left and what access level they are granted.
                             </p>
+                            <div className="form-group">
+                                <div className="checkbox">
+                                    <label>
+                                        <input type="checkbox" data-bind="checked: showInactive" /> Show inactive users
+                                    </label>
+                                </div>
+                            </div>
                             <div>
                                 <table className="table table-condensed table-striped">
                                     <tbody data-bind="foreach: whoHasAccess">
