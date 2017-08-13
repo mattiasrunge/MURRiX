@@ -44,23 +44,25 @@ class AuthWidgetSidebarUser extends Component {
                         uid={this.state.user.attributes.uid}
                         classes="rounded-circle picture float-left"
                     />
-                    <div className="name">{this.state.user.attributes.name}</div>
-                    <div>
-                        <a
-                            href="#"
-                            onClick={(e) => this.onProfile(e)}
-                        >
-                            Profile
-                        </a>
-                        <If condition={this.state.personPath}>
-                            &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                    <div style={{ marginLeft: 46 }}>
+                        <div className="name">{this.state.user.attributes.name}</div>
+                        <div>
                             <a
                                 href="#"
-                                onClick={(e) => this.onMe(e)}
+                                onClick={(e) => this.onProfile(e)}
                             >
-                                Me
+                                Profile
                             </a>
-                        </If>
+                            <If condition={this.state.personPath}>
+                                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                                <a
+                                    href="#"
+                                    onClick={(e) => this.onMe(e)}
+                                >
+                                    Me
+                                </a>
+                            </If>
+                        </div>
                     </div>
                 </If>
             </div>
