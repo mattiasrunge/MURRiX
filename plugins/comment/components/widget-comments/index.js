@@ -134,7 +134,7 @@ class CommentWidgetComments extends Component {
                                 uid={item.node.properties.birthuid}
                                 classes="rounded-circle comment-picture-user float-left"
                             />
-                            <p style={{ whiteSpace: "pre-line", display: "inline-block" }}>
+                            <p style={{ whiteSpace: "pre-line", marginLeft: 40 }}>
                                 <strong style={{ marginRight: 5 }}>
                                     <AuthWidgetNameUser
                                         uid={item.node.properties.birthuid}
