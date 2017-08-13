@@ -114,21 +114,21 @@ class StatisticsPageCharts extends Component {
 
     render() {
         return (
-            <div className="fadeInRight animated">
-                <div className="box box-content">
-                    <h1>Charts</h1>
-
-                    <For each="data" of={this.state.dataList}>
-                        <h2>{data.label}</h2>
-                        <div style={{ marginBottom: "15px" }}>
-                        <StatisticsWidgetChart
-                            type="bar"
-                            data={data}
-                            options={this.state.options}
-                        />
+            <div className="fadeInRight animated chart-container">
+                <For each="data" of={this.state.dataList}>
+                    <div className="chart-item">
+                        <div className="chart-name">
+                            <h4>{data.label}</h4>
                         </div>
-                    </For>
-                </div>
+                        <div className="chart-chart">
+                            <StatisticsWidgetChart
+                                type="bar"
+                                data={data}
+                                options={this.state.options}
+                            />
+                        </div>
+                    </div>
+                </For>
             </div>
         );
     }

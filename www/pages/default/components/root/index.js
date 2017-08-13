@@ -69,55 +69,53 @@ class DefaultRoot extends Component {
                         <div className="row">
                             <Choose>
                                 <When condition={this.state.page !== "node"}>
-                                    <div style={{ width: "100%" }}>
-                                        <Choose>
-                                            <When condition={this.state.loggedIn}>
-                                                <div className="col-2 sidebar">
-                                                    <Sidebar />
-                                                </div>
-                                                <div className="col-10 main">
-                                                    <Choose>
-                                                        <When condition={this.state.page === "news" || this.state.page === "default"}>
-                                                            <PageFeed />
-                                                        </When>
-                                                        <When condition={this.state.page === "search"}>
-                                                            <PageSearch />
-                                                        </When>
-                                                        <When condition={this.state.page === "year"}>
-                                                            <PageYear />
-                                                        </When>
-                                                        <When condition={this.state.page === "labels"}>
-                                                            <PageLabels />
-                                                        </When>
-                                                        <When condition={this.state.page === "charts"}>
-                                                            <PageCharts />
-                                                        </When>
-                                                        <When condition={this.state.page === "login"}>
-                                                            <PageLogin />
-                                                        </When>
-                                                        <When condition={this.state.page === "profile"}>
-                                                            <PageProfile />
-                                                        </When>
-                                                        <When condition={this.state.page === "reset"}>
-                                                            <PageReset />
-                                                        </When>
-                                                    </Choose>
-                                                </div>
-                                            </When>
-                                            <Otherwise>
-                                                <div className="col-md-12">
-                                                    <Choose>
-                                                        <When condition={this.state.page === "reset"}>
-                                                            <PageReset />
-                                                        </When>
-                                                        <Otherwise>
-                                                            <PageLogin />
-                                                        </Otherwise>
-                                                    </Choose>
-                                                </div>
-                                            </Otherwise>
-                                        </Choose>
-                                    </div>
+                                    <Choose>
+                                        <When condition={this.state.loggedIn}>
+                                            <div className="col-md-2 sidebar">
+                                                <Sidebar />
+                                            </div>
+                                            <div className="col-md-10 main">
+                                                <Choose>
+                                                    <When condition={this.state.page === "news" || this.state.page === "default"}>
+                                                        <PageFeed />
+                                                    </When>
+                                                    <When condition={this.state.page === "search"}>
+                                                        <PageSearch />
+                                                    </When>
+                                                    <When condition={this.state.page === "year"}>
+                                                        <PageYear />
+                                                    </When>
+                                                    <When condition={this.state.page === "labels"}>
+                                                        <PageLabels />
+                                                    </When>
+                                                    <When condition={this.state.page === "charts"}>
+                                                        <PageCharts />
+                                                    </When>
+                                                    <When condition={this.state.page === "login"}>
+                                                        <PageLogin />
+                                                    </When>
+                                                    <When condition={this.state.page === "profile"}>
+                                                        <PageProfile />
+                                                    </When>
+                                                    <When condition={this.state.page === "reset"}>
+                                                        <PageReset />
+                                                    </When>
+                                                </Choose>
+                                            </div>
+                                        </When>
+                                        <Otherwise>
+                                            <div className="col-md-12">
+                                                <Choose>
+                                                    <When condition={this.state.page === "reset"}>
+                                                        <PageReset />
+                                                    </When>
+                                                    <Otherwise>
+                                                        <PageLogin />
+                                                    </Otherwise>
+                                                </Choose>
+                                            </div>
+                                        </Otherwise>
+                                    </Choose>
                                 </When>
                                 <Otherwise>
                                     <div className="col-md-12 page-node">

@@ -48,8 +48,12 @@ class FeedWidgetNewsAlbum extends Component {
                 type: "image"
             };
 
-            const files = await api.file.list(`${ko.unwrap(this.state.nodepath.node).attributes.path}/files`, { image: imageOpts });
-            const urls = files.map((file) => file.filename).filter((url) => url).slice(0, 5);
+            const files = await api.file.list(`${ko.unwrap(this.state.nodepath.node).attributes.path}/files`, { image: imageOpts, shuffle: true, limit: 5 });
+            let urls = files.map((file) => file.filename).filter((url) => url);
+
+            if (urls.length < 5 && urls.length > 2) {
+                urls = urls.slice(0, 2);
+            }
 
             return this.setState({ urls, target });
         } catch (error) {
@@ -67,20 +71,30 @@ class FeedWidgetNewsAlbum extends Component {
     render() {
         return (
             <div>
-                <If condition={this.state.nodepath && this.state.urls.length > 0}>
-                    <div className="news-media" onClick={(e) => this.onClick(e)} style={{ cursor: "pointer" }}>
-                        <div className="news-grid">
-                            <For each="url" index="idx" of={this.state.urls}>
-                                <div className={`news-grid-${idx}`} key={url}>
-                                    <img
-                                        className="img-responsive img-fill"
-                                        src={url}
-                                    />
-                                </div>
-                            </For>
+                <Choose>
+                    <When condition={this.state.urls.length === 5 || this.state.urls.length === 2}>
+                        <div className="news-media" onClick={(e) => this.onClick(e)} style={{ cursor: "pointer" }}>
+                            <div className="news-grid">
+                                <For each="url" index="idx" of={this.state.urls}>
+                                    <div className={`news-grid-${idx}`} key={url}>
+                                        <img
+                                            className="img-responsive img-fill"
+                                            src={url}
+                                        />
+                                    </div>
+                                </For>
+                            </div>
                         </div>
-                    </div>
-                </If>
+                    </When>
+                    <When condition={this.state.urls.length === 1}>
+                        <div className="news-media" onClick={(e) => this.onClick(e)} style={{ cursor: "pointer" }}>
+                            <img
+                                className="img-responsive img-fill"
+                                src={this.state.urls[0]}
+                            />
+                        </div>
+                    </When>
+                </Choose>
                 <If condition={this.state.target}>
                     <div className="news-name">
                         <a

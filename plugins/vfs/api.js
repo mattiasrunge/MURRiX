@@ -5,6 +5,7 @@
 const path = require("path");
 const uuid = require("uuid");
 const sha1 = require("sha1");
+const shuffle = require("shuffle-array");
 const fs = require("fs-extra-promise");
 const api = require("api.io");
 const db = require("../../core/lib/db");
@@ -393,6 +394,10 @@ const vfs = api.register("vfs", {
 
                 return a.node.attributes.time.timestamp - b.node.attributes.time.timestamp;
             });
+        }
+
+        if (options.shuffle) {
+            list = shuffle(list);
         }
 
         if (options.limit) {
