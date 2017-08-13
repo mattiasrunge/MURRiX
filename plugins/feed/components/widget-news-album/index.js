@@ -106,7 +106,7 @@ class FeedWidgetNewsAlbum extends Component {
                     </div>
                     <If condition={this.state.target.attributes.description}>
                         <div className="news-description text-muted">
-                            <p>{this.state.target.attributes.description}</p>
+                            <p dangerouslySetInnerHTML={{ __html: this.state.target.attributes.description }}></p>
                         </div>
                     </If>
                 </If>
@@ -116,7 +116,7 @@ class FeedWidgetNewsAlbum extends Component {
 }
 
 FeedWidgetNewsAlbum.defaultProps = {
-    size: 458
+    size: 600
 };
 
 FeedWidgetNewsAlbum.propTypes = {

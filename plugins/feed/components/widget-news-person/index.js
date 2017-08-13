@@ -75,7 +75,7 @@ class FeedWidgetNewsPerson extends Component {
                     </div>
                     <If condition={this.state.target.attributes.description}>
                         <div className="news-description text-muted">
-                            <p>{this.state.target.attributes.description}</p>
+                            <p dangerouslySetInnerHTML={{ __html: this.state.target.attributes.description }}></p>
                         </div>
                     </If>
                 </If>
@@ -85,7 +85,7 @@ class FeedWidgetNewsPerson extends Component {
 }
 
 FeedWidgetNewsPerson.defaultProps = {
-    size: 458
+    size: 600
 };
 
 FeedWidgetNewsPerson.propTypes = {

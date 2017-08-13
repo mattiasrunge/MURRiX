@@ -82,7 +82,7 @@ class FeedWidgetNewsFile extends Component {
                     </div>
                     <If condition={this.state.target.attributes.description}>
                         <div className="news-description text-muted">
-                            <p>{this.state.target.attributes.description}</p>
+                            <p dangerouslySetInnerHTML={{ __html: this.state.target.attributes.description }}></p>
                         </div>
                     </If>
                 </If>
@@ -92,7 +92,7 @@ class FeedWidgetNewsFile extends Component {
 }
 
 FeedWidgetNewsFile.defaultProps = {
-    size: 458
+    size: 600
 };
 
 FeedWidgetNewsFile.propTypes = {
