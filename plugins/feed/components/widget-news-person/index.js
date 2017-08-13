@@ -1,46 +1,96 @@
 
+import ko from "knockout";
+import api from "api.io-client";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
+import loc from "lib/location";
+import stat from "lib/status";
+import FileWidgetProfilePicture from "plugins/file/components/widget-profile-picture";
 
-const ko = require("knockout");
-const utils = require("lib/utils");
+class FeedWidgetNewsPerson extends Component {
+    constructor(props) {
+        super(props);
 
-class FeedWidgetNewsPerson extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-
-        model.itemPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().node().attributes.path : false);
-        model.item = ko.nodepath(model.itemPath, { noerror: true });
-
-        model.dispose = () => {
-            model.item.dispose();
+        this.state = {
+            target: false,
+            nodepath: ko.unwrap(props.nodepath)
         };
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        if (ko.isObservable(this.props.nodepath)) {
+            this.addDisposables([
+                this.props.nodepath.subscribe((nodepath) => this.load(nodepath))
+            ]);
+        }
+
+        this.load(ko.unwrap(this.props.nodepath));
+    }
+
+    async load(nodepath) {
+        this.setState({ nodepath });
+
+        if (!nodepath) {
+            return this.setState({ target: false });
+        }
+
+        try {
+            const node = await api.vfs.resolve(ko.unwrap(this.state.nodepath.node).attributes.path, { noerror: true });
+
+            return this.setState({ target: node || false });
+        } catch (error) {
+            stat.printError(error);
+            this.setState({ target: false });
+        }
+    }
+
+    onClick(event) {
+        event.preventDefault();
+
+        loc.goto({ page: "node", path: ko.unwrap(this.state.nodepath.node).attributes.path });
+    }
+
+    render() {
         return (
             <div>
-                <div className="news-media">
-                    <div data-bind="react: { name: 'file-widget-profile-picture', params: { size: 200, path: nodepath().node().attributes.path } }" style={{ marginRight: "15px" }}></div>
-                </div>
-                <div className="news-name" data-bind="visible: item, if: item">
-                    <a href="#" data-bind="location: { page: 'node', path: nodepath().node().attributes.path }">
-                        <h4 data-bind="text: item().node().attributes.name"></h4>
-                    </a>
-                </div>
-                <div className="news-description text-muted" data-bind="visible: item() && item().node().attributes.description !== '', if: item() && item().attributes.node().description !== ''">
-                    <p data-bind="html: item().node().attributes.description"></p>
-                </div>
+                <If condition={this.state.nodepath}>
+                    <div className="news-media" onClick={(e) => this.onClick(e)}>
+                        <FileWidgetProfilePicture
+                            size={this.props.size}
+                            classes="img-responsive img-fill"
+                            responsive={true}
+                            path={ko.unwrap(this.state.nodepath.node).attributes.path}
+                        />
+                    </div>
+                </If>
+                <If condition={this.state.target}>
+                    <div className="news-name">
+                        <a
+                            href="#"
+                            onClick={(e) => this.onClick(e)}
+                        >
+                            <h4>{this.state.target.attributes.name}</h4>
+                        </a>
+                    </div>
+                    <If condition={this.state.target.attributes.description}>
+                        <div className="news-description text-muted">
+                            <p>{this.state.target.attributes.description}</p>
+                        </div>
+                    </If>
+                </If>
             </div>
-
         );
     }
 }
+
+FeedWidgetNewsPerson.defaultProps = {
+    size: 458
+};
+
+FeedWidgetNewsPerson.propTypes = {
+    nodepath: PropTypes.any,
+    size: PropTypes.number
+};
 
 export default FeedWidgetNewsPerson;

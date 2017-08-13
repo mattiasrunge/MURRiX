@@ -1,73 +1,103 @@
 
+import ko from "knockout";
+import api from "api.io-client";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
+import loc from "lib/location";
+import stat from "lib/status";
 
-const ko = require("knockout");
-const api = require("api.io-client");
-const utils = require("lib/utils");
-const stat = require("lib/status");
+class FeedWidgetNewsFile extends Component {
+    constructor(props) {
+        super(props);
 
-class FeedWidgetNewsFile extends Knockout {
-    async getModel() {
-        const model = {};
+        this.state = {
+            url: false,
+            target: false,
+            nodepath: ko.unwrap(props.nodepath)
+        };
+    }
 
-        model.loading = stat.create();
-        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-        model.size = 458;
+    componentDidMount() {
+        if (ko.isObservable(this.props.nodepath)) {
+            this.addDisposables([
+                this.props.nodepath.subscribe((nodepath) => this.load(nodepath))
+            ]);
+        }
 
-        model.filename = ko.asyncComputed(false, async (setter) => {
-            if (!model.item()) {
-                return false;
+        this.load(ko.unwrap(this.props.nodepath));
+    }
+
+    async load(nodepath) {
+        this.setState({ nodepath });
+
+        if (!nodepath) {
+            return this.setState({ url: false, target: false });
+        }
+
+        try {
+            const target = await api.vfs.resolve(ko.unwrap(this.state.nodepath.node).attributes.path, { noerror: true });
+
+            if (!target) {
+                return this.setState({ url: false });
             }
 
-            setter(false);
-
-            model.loading(true);
-
-            let filename = await api.file.getMediaUrl(model.item().node()._id, {
-                width: model.size,
+            const url = await api.file.getMediaUrl(target._id, {
+                width: this.props.size,
                 type: "image"
             });
 
-            console.log("filename", filename);
-
-            model.loading(false);
-
-            return filename;
-        }, (error) => {
-            model.loading(false);
+            return this.setState({ url, target });
+        } catch (error) {
             stat.printError(error);
-            return false;
-        });
-
-        model.itemPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().node().attributes.path : false);
-        model.item = ko.nodepath(model.itemPath, { noerror: true });
-
-        model.dispose = () => {
-            model.item.dispose();
-            stat.destroy(model.loading);
-        };
-
-
-        return model;
+            this.setState({ url: false, target: false });
+        }
     }
 
-    getTemplate() {
+    onClick(event) {
+        event.preventDefault();
+
+        loc.goto({ showPath: ko.unwrap(this.state.nodepath.node).attributes.path });
+    }
+
+    render() {
         return (
             <div>
-                <div className="news-media">
-                    <a href="#" data-bind="location: { showPath: nodepath().node().attributes.path }">
-                        <div data-bind="picture: { filename: filename, width: size, classes: 'img-responsive' }"></div>
-                    </a>
-                </div>
-                <div className="news-description" data-bind="visible: item() && item().node().attributes.description !== '', if: item() && item().node().attributes.description !== ''">
-                    <span data-bind="html: item().node().attributes.description"></span>
-                </div>
+                <If condition={this.state.nodepath}>
+                    <div className="news-media" onClick={(e) => this.onClick(e)} style={{ cursor: "pointer" }}>
+                        <img
+                            className="img-responsive img-fill"
+                            src={this.state.url}
+                        />
+                    </div>
+                </If>
+                <If condition={this.state.target}>
+                    <div className="news-name">
+                        <a
+                            href="#"
+                            onClick={(e) => this.onClick(e)}
+                        >
+                            <h4>{this.state.target.attributes.name}</h4>
+                        </a>
+                    </div>
+                    <If condition={this.state.target.attributes.description}>
+                        <div className="news-description text-muted">
+                            <p>{this.state.target.attributes.description}</p>
+                        </div>
+                    </If>
+                </If>
             </div>
-
         );
     }
 }
+
+FeedWidgetNewsFile.defaultProps = {
+    size: 458
+};
+
+FeedWidgetNewsFile.propTypes = {
+    nodepath: PropTypes.any,
+    size: PropTypes.number
+};
 
 export default FeedWidgetNewsFile;

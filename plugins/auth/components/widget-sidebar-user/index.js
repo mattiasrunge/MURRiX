@@ -40,7 +40,7 @@ class AuthWidgetSidebarUser extends Component {
             <div className="profile">
                 <If condition={this.state.loggedIn}>
                     <AuthWidgetPictureUser
-                        size={40}
+                        size={36}
                         uid={this.state.user.attributes.uid}
                         classes="rounded-circle picture float-left"
                     />

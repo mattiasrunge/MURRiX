@@ -111,15 +111,15 @@ class FeedPage extends Knockout {
         return (
             <div className="fadeInRight animated">
                 <div className="row">
-                    <div className="col-md-6" style={{ paddingRight: "0" }}>
+                    <div className="col-md-7" style={{ paddingRight: "0" }}>
                         <div className="news-container" data-bind="foreach: list">
                             <div className="news-item">
                                 <div className="news-title">
                                     <span data-bind="if: $data.node().attributes.action === 'comment'">
-                                        New comments were made on model <span data-bind="react: { name: 'node-widget-type', params: { type: $data.node().attributes.type } }"></span>
+                                        New comments were made on <strong data-bind="react: { name: 'node-widget-type', params: { type: $data.node().attributes.type } }"></strong>
                                     </span>
                                     <span data-bind="if: $data.node().attributes.action === 'created'">
-                                        <strong data-bind="unameNice: $data.node().attributes.uid"></strong> added a new <span data-bind="react: { name: 'node-widget-type', params: { type: $data.node().attributes.type } }"></span>
+                                        <strong data-bind="unameNice: $data.node().attributes.uid"></strong> added a new <strong data-bind="react: { name: 'node-widget-type', params: { type: $data.node().attributes.type } }"></strong>
                                     </span>
                                 </div>
 
@@ -142,11 +142,9 @@ class FeedPage extends Knockout {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6">
-                        <div className="today-container box box-content">
-                            <i className="material-icons md-14 text-muted float-left" data-bind="click: prevDay" style={{ cursor: "pointer" }}>arrow_back</i>
-                            <i className="material-icons md-14 text-muted float-right" data-bind="click: nextDay" style={{ cursor: "pointer" }}>arrow_forward</i>
-                            <h2 data-bind="datetimeDayString: today().unix()"></h2>
+                    <div className="col-md-5">
+                        <div className="today-container">
+                            <div className="today-header" data-bind="datetimeDayString: today().unix()"></div>
 
                             <div data-bind="foreach: eventsToday">
                                 <div className="today-item">
@@ -168,8 +166,8 @@ class FeedPage extends Knockout {
                             </div>
                         </div>
 
-                        <div className="today-container box box-content">
-                            <h2 data-bind="datetimeDayString: tomorrow().unix()"></h2>
+                        <div className="today-container">
+                            <div className="today-header" data-bind="datetimeDayString: tomorrow().unix()"></div>
                             <div data-bind="foreach: eventsTomorrow">
                                 <div className="today-item">
                                     <div data-bind="if: $data.type === 'birthday'">

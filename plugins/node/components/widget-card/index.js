@@ -23,7 +23,6 @@ class NodeWidgetCard extends Component {
                         <FileWidgetProfilePicture
                             size="303"
                             path={this.props.nodepath.path}
-                            nodepath={this.props.nodepath}
                         />
 
                         <div className="title-text">

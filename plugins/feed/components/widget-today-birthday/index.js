@@ -1,46 +1,67 @@
 
+import ko from "knockout";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
+import format from "lib/format";
+import loc from "lib/location";
 
-const ko = require("knockout");
-const utils = require("lib/utils");
+class FeedWidgetTodayBirthday extends Component {
+    constructor(props) {
+        super(props);
 
-class FeedWidgetTodayBirthday extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-
-
-        return model;
+        this.state = {
+            nodepath: ko.unwrap(props.nodepath)
+        };
     }
 
-    getTemplate() {
+    componentDidMount() {
+        if (ko.isObservable(this.props.nodepath)) {
+            this.addDisposables([
+                this.props.nodepath.subscribe((nodepath) => this.setState({ nodepath }))
+            ]);
+        }
+    }
+
+    onClick(event, path) {
+        event.preventDefault();
+
+        loc.goto({ page: "node", path: path }, false);
+    }
+
+    render() {
         return (
             <div>
                 <i className="material-icons md-24">cake</i>
                 <div className="today-title">
-                    <a href="#" data-bind="location: { page: 'node', path: nodepath().person.path }, text: nodepath().person.node.attributes.name"></a>
-                    <span data-bind="if: nodepath().ageAtDeath === false">
+                    <a
+                        href="#"
+                        onClick={(e) => this.onClick(e, this.state.nodepath.person.path)}
+                    >
+                        {this.state.nodepath.person.node.attributes.name}
+                    </a>
+                    <If condition={this.state.nodepath.ageAtDeath === false}>
                         <span> celebrates </span>
-                        <span data-bind="text: nodepath().person.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
-                        <span> </span>
-                        <span data-bind="number: nodepath().ageNow"></span>
+                        {this.state.nodepath.person.node.attributes.gender === "m" ? "his" : "her"}
+                        {" "}
+                        {format.number(this.state.nodepath.ageNow)}
                         <span> birthday</span>
-                    </span>
-                    <span data-bind="if: nodepath().ageAtDeath !== false">
+                    </If>
+                    <If condition={this.state.nodepath.ageAtDeath !== false}>
                         <span> would have celebrated </span>
-                        <span data-bind="text: nodepath().person.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
-                        <span> </span>
-                        <span data-bind="number: nodepath().ageNow"></span>
-                        <span> birthday (died age <span data-bind="text: nodepath().ageAtDeath"></span>)</span>
-                    </span>
+                        {this.state.nodepath.person.node.attributes.gender === "m" ? "his" : "her"}
+                        {" "}
+                        {format.number(this.state.nodepath.ageNow)}
+                        <span> birthday (died at age {this.state.nodepath.ageAtDeath})</span>
+                    </If>
                 </div>
             </div>
-
         );
     }
 }
+
+FeedWidgetTodayBirthday.propTypes = {
+    nodepath: PropTypes.any
+};
 
 export default FeedWidgetTodayBirthday;

@@ -14,8 +14,8 @@ import "lib/bindings";
 
 import "www/style.css";
 
-const api = require("api.io-client");
-const session = require("lib/session");
+import api from "api.io-client";
+import session from "lib/session";
 
 // https://github.com/petkaantonov/bluebird/issues/903
 // https://github.com/babel/babel/issues/3922
@@ -24,21 +24,12 @@ bluebird.config({
     warnings: false
 });
 
-
-class App extends React.PureComponent {
-    render() {
-        return (
-            <Root />
-        );
-    }
-}
-
 const start = async (args) => {
     await api.connect(args);
     await session.loadUser();
 
     ReactDOM.render((
-        <App />
+        <Root />
     ), document.getElementById("main"));
 };
 

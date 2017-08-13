@@ -134,18 +134,17 @@ class CommentWidgetComments extends Component {
                                 uid={item.node.properties.birthuid}
                                 classes="rounded-circle comment-picture-user float-left"
                             />
-                            <div>
-                                <div className="name">
+                            <p style={{ whiteSpace: "pre-line", display: "inline-block" }}>
+                                <strong style={{ marginRight: 5 }}>
                                     <AuthWidgetNameUser
                                         uid={item.node.properties.birthuid}
                                     />
-                                </div>
-                                <small className="text-muted">
+                                </strong>
+                                {" "}
+                                {item.node.attributes.text}
+                                <small className="text-muted" style={{ display: "block" }}>
                                     {format.datetimeAgo(item.node.properties.birthtime)}
                                 </small>
-                            </div>
-                            <p style={{ whiteSpace: "pre-line", display: "inline-block" }}>
-                                {item.node.attributes.text}
                             </p>
                         </div>
                     </div>

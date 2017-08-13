@@ -11,7 +11,6 @@ const $ = require("jquery");
 const ko = require("knockout");
 const moment = require("moment");
 const api = require("api.io-client");
-const utils = require("lib/utils");
 const stat = require("lib/status");
 const loc = require("lib/location");
 const chron = require("chron-time");

@@ -1,47 +1,79 @@
 
+import ko from "knockout";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
+import format from "lib/format";
+import loc from "lib/location";
 
-const ko = require("knockout");
-const utils = require("lib/utils");
+class FeedWidgetTodayMarriage extends Component {
+    constructor(props) {
+        super(props);
 
-class FeedWidgetTodayMarriage extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-
-
-        return model;
+        this.state = {
+            nodepath: ko.unwrap(props.nodepath)
+        };
     }
 
-    getTemplate() {
+    componentDidMount() {
+        if (ko.isObservable(this.props.nodepath)) {
+            this.addDisposables([
+                this.props.nodepath.subscribe((nodepath) => this.setState({ nodepath }))
+            ]);
+        }
+    }
+
+    onClick(event, path) {
+        event.preventDefault();
+
+        loc.goto({ page: "node", path: path }, false);
+    }
+
+    render() {
         return (
             <div>
                 <i className="material-icons md-24">favorite</i>
                 <div className="today-title">
-                    <span data-bind="if: !nodepath().person2">
-                        <a href="#" data-bind="location: { page: 'node', path: nodepath().person1.path }, text: nodepath().person1.node.attributes.name"></a>
+                    <If condition={!this.state.nodepath.person2}>
+                        <a
+                            href="#"
+                            onClick={(e) => this.onClick(e, this.state.nodepath.person1.path)}
+                        >
+                            {this.state.nodepath.person1.node.attributes.name}
+                        </a>
                         <span> celebrates </span>
-                        <span data-bind="text: nodepath().person1.node.attributes.gender === 'm' ? 'his' : 'her'"></span>
-                        <span> </span>
-                        <span data-bind="number: nodepath().years"></span>
+                        {this.state.nodepath.person1.node.attributes.gender === "m" ? "his" : "her"}
+                        {" "}
+                        {format.number(this.state.nodepath.years)}
                         <span> wedding anniversary</span>
-                    </span>
-                    <span data-bind="if: nodepath().person2">
-                        <a href="#" data-bind="location: { page: 'node', path: nodepath().person1.path }, text: nodepath().person1.node.attributes.name"></a>
+                    </If>
+                    <If condition={this.state.nodepath.person2}>
+                        <a
+                            href="#"
+                            onClick={(e) => this.onClick(e, this.state.nodepath.person1.path)}
+                        >
+                            {this.state.nodepath.person1.node.attributes.name}
+                        </a>
                         <span> and </span>
-                        <a href="#" data-bind="location: { page: 'node', path: nodepath().person2.path }, text: nodepath().person2.node.attributes.name"></a>
+                        <a
+                            href="#"
+                            onClick={(e) => this.onClick(e, this.state.nodepath.person2.path)}
+                        >
+                            {this.state.nodepath.person2.node.attributes.name}
+                        </a>
                         <span> celebrates their </span>
-                        <span data-bind="number: nodepath().years"></span>
+                        {format.number(this.state.nodepath.years)}
                         <span> wedding anniversary</span>
-                    </span>
+                    </If>
                 </div>
             </div>
 
         );
     }
 }
+
+FeedWidgetTodayMarriage.propTypes = {
+    nodepath: PropTypes.any
+};
 
 export default FeedWidgetTodayMarriage;

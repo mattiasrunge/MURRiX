@@ -3,6 +3,23 @@ import React from "react";
 import moment from "moment";
 
 module.exports = {
+    number: (number) => {
+        // http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+
+        const j = number % 10;
+        const k = number % 100;
+        let str = `${number}th`;
+
+        if (j === 1 && k !== 11) {
+            str = `${number}st`;
+        } else if (j === 2 && k !== 12) {
+            str = `${number}nd`;
+        } else if (j === 3 && k !== 13) {
+            str = `${number}rd`;
+        }
+
+        return str;
+    },
     duration: (value) => {
         if (!value) {
             return "Unknown";

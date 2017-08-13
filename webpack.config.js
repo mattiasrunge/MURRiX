@@ -10,7 +10,8 @@ module.exports = function(options) {
     const isProduction = !(options && options.dev);
     // List of regexes matching modules that shall be transpiled
     const explicitModuleIncludes = [
-        /node_modules\/api\.io/
+        /node_modules\/api\.io/,
+        /node_modules\/react-photo-grid/
     ];
     const extractStyles = new ExtractTextPlugin("[name].css");
 
@@ -38,8 +39,6 @@ module.exports = function(options) {
                      * matching /managers/<ANYTHING>/client */
                     include: [
                         __dirname,
-                        /\/managers\/[^\/]+\/client\//,
-                        /\/src\/lib\/[^\/]+\//,
                         ...explicitModuleIncludes
                     ],
                     exclude: (absPath) => {

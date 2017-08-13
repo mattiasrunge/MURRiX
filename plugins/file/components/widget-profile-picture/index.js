@@ -62,12 +62,19 @@ class FileWidgetProfilePicture extends Component {
     }
 
     render() {
+        const style = {};
+
+        if (!this.props.responsive) {
+            style.width = parseInt(ko.unwrap(this.props.size), 10);
+            style.height = style.width;
+        }
+
         return (
             <div className="file-widget-profile-picture">
                 <If condition={this.state.url}>
                     <img
                         src={this.state.url}
-                        style={{ width: parseInt(ko.unwrap(this.props.size), 10), height: parseInt(ko.unwrap(this.props.size), 10) }}
+                        style={style}
                         className={ko.unwrap(this.props.classes)}
                     />
                 </If>
@@ -76,9 +83,14 @@ class FileWidgetProfilePicture extends Component {
     }
 }
 
+FileWidgetProfilePicture.defaultProps = {
+    responsive: false
+}
+
 FileWidgetProfilePicture.propTypes = {
     path: PropTypes.any,
     size: PropTypes.any,
+    responsive: PropTypes.bool,
     classes: PropTypes.any
 };
 
