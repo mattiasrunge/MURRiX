@@ -1,65 +1,109 @@
 
+import ko from "knockout";
+import api from "api.io-client";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
+import loc from "lib/location";
+import stat from "lib/status";
+import Map from "components/map";
 
-const ko = require("knockout");
-const api = require("api.io-client");
-const utils = require("lib/utils");
-const stat = require("lib/status");
+class FeedWidgetNewsLocation extends Component {
+    constructor(props) {
+        super(props);
 
-class FeedWidgetNewsLocation extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.loading = stat.create();
-        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-
-        model.position = ko.asyncComputed(false, async () => {
-            if (!model.item()) {
-                return false;
-            }
-
-            if (!model.item().node().attributes.address) {
-                return false;
-            }
-
-            return await api.lookup.getPositionFromAddress(model.item().node().attributes.address.replace("<br>", "\n"));
-        }, (error) => {
-            stat.printError(error);
-            return false;
-        });
-
-        model.itemPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().node().attributes.path : false);
-        model.item = ko.nodepath(model.itemPath, { noerror: true });
-
-        model.dispose = () => {
-            model.item.dispose();
-            stat.destroy(model.loading);
+        this.state = {
+            target: false,
+            position: false,
+            nodepath: ko.unwrap(props.nodepath)
         };
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        if (ko.isObservable(this.props.nodepath)) {
+            this.addDisposables([
+                this.props.nodepath.subscribe((nodepath) => this.load(nodepath))
+            ]);
+        }
+
+        this.load(ko.unwrap(this.props.nodepath));
+    }
+
+    async load(nodepath) {
+        if (!nodepath) {
+            return this.setState({ nodepath, target: false, position: false });
+        }
+
+        try {
+            const node = await api.vfs.resolve(ko.unwrap(nodepath.node).attributes.path, { noerror: true });
+
+            if (!node || !node.attributes.address) {
+                return this.setState({ nodepath, target: false, position: false });
+            }
+
+            const location = await api.lookup.getPositionFromAddress(node.attributes.address.replace("<br>", "\n"));
+            const position = {
+                lat: location.latitude,
+                lng: location.longitude
+            };
+
+            return this.setState({ nodepath, target: node, position });
+        } catch (error) {
+            stat.printError(error);
+            this.setState({ nodepath, target: false, position: false });
+        }
+    }
+
+    onClick(event) {
+        event.preventDefault();
+
+        loc.goto({ page: "node", path: ko.unwrap(this.state.nodepath.node).attributes.path });
+    }
+
+    render() {
         return (
             <div>
-                <div className="news-media" data-bind="visible: position, if: position">
-                    <div style={{ height: "270px", marginRight: "1px" }} data-bind="map: { position: position, zoom: position() ? 15 : 10 }"></div>
-                </div>
-                <div className="news-name" data-bind="visible: item, if: item">
-                    <a href="#" data-bind="location: { page: 'node', path: nodepath().node().attributes.path }">
-                        <h4 data-bind="text: item().node().attributes.name"></h4>
-                    </a>
-                </div>
-                <div className="news-description" data-bind="visible: item() && item().node().attributes.description !== '', if: item() && item().node().attributes.description !== ''">
-                    <span data-bind="html: item().node().attributes.description"></span>
-                </div>
+                <If condition={this.state.nodepath}>
+                    <div className="news-media" onClick={(e) => this.onClick(e)} style={{ cursor: "pointer" }}>
+                        <If condition={this.state.position}>
+                            <div style={{ height: 350, position: "relative" }}>
+                                <Map
+                                    style={{ width: "100%", height: "100%" }}
+                                    initialCenter={this.state.position}
+                                    zoom={15}
+                                    disableDefaultUI={true}
+                                    disableDoubleClickZoom={true}
+                                    gestureHandling="none"
+                                    clickableIcons={false}
+                                    keyboardShortcuts={false}
+                                >
+                                </Map>
+                            </div>
+                        </If>
+                    </div>
+                </If>
+                <If condition={this.state.target}>
+                    <div className="news-name">
+                        <a
+                            href="#"
+                            onClick={(e) => this.onClick(e)}
+                        >
+                            <h4>{this.state.target.attributes.name}</h4>
+                        </a>
+                    </div>
+                    <If condition={this.state.target.attributes.description}>
+                        <div className="news-description text-muted">
+                            <p dangerouslySetInnerHTML={{ __html: this.state.target.attributes.description }}></p>
+                        </div>
+                    </If>
+                </If>
             </div>
-
         );
     }
 }
+
+FeedWidgetNewsLocation.propTypes = {
+    nodepath: PropTypes.any
+};
 
 export default FeedWidgetNewsLocation;

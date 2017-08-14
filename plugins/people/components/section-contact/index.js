@@ -130,7 +130,9 @@ class PeopleSectionContact extends Knockout {
                         </div>
                     </div>
                 </div>
-                <div style={{ height: "500px" }} data-bind="map: { position: position, zoom: position() ? 15 : 10 }"></div>
+                <div style={{ height: 500, position: "relative" }}>
+                    <div data-bind="react: { name: 'map', params: { position: position, zoom: 15 }}"></div>
+                </div>
             </div>
 
         );

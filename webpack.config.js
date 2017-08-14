@@ -16,6 +16,9 @@ module.exports = function(options) {
     const extractStyles = new ExtractTextPlugin("[name].css");
 
     const cfg = {
+        externals: {
+            configuration: JSON.stringify(options.configuration)
+        },
         entry: {
             bundle: [
                 "babel-polyfill",
@@ -245,15 +248,6 @@ module.exports = function(options) {
             host: "localhost",
             port: 8080 // Will be changed later when port is known
         };
-    }
-
-    /* Add global node_modules directory.
-     * Use-case is when building within docker container where all libraries
-     * is installed as global modules. */
-    if (options && options.global_modules_dir) {
-        // eslint-disable-next-line prefer-template
-        console.log("webpack.config is using global module directory " + options.global_modules_dir);
-        cfg.resolve.modules.push(options.global_modules_dir);
     }
 
     return cfg;

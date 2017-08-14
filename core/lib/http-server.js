@@ -15,7 +15,6 @@ const favicon = require("koa-favicon");
 
 const enableDestroy = require("server-destroy");
 const uuid = require("uuid");
-const hogan = require("hogan.js");
 const webpack = require("webpack");
 const webpackMiddleware = require("koa-webpack-dev-middleware");
 const api = require("api.io");
@@ -95,12 +94,8 @@ module.exports = {
                 return next();
             }
 
-            const source = await fs.readFileAsync(path.join(__dirname, "..", "..", "www", "index.html"));
-            const template = hogan.compile(source.toString());
-            const compiled = template.render({ GOOGLE_API_KEY: config.googleBrowserKey });
-
             ctx.type = "text/html; charset=utf-8";
-            ctx.body = compiled;
+            ctx.body = fs.createReadStream(path.join(__dirname, "..", "..", "www", "index.html"));
         });
 
         // Create plugin routes
@@ -110,7 +105,12 @@ module.exports = {
             app.use(route[pluginRoute.method.toLowerCase()](pluginRoute.route, pluginRoute.handler));
         }
 
-        const webpackCfg = buildWebpackCfg({ dev: true });
+        const webpackCfg = buildWebpackCfg({
+            dev: true,
+            configuration: {
+                googleBrowserKey: config.googleBrowserKey
+            }
+        });
         const webpackMiddlewareConf = webpackMiddleware(webpack(webpackCfg), {
             stats: {
                 colors: true

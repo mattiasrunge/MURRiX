@@ -29,17 +29,15 @@ class FeedWidgetNewsAlbum extends Component {
     }
 
     async load(nodepath) {
-        this.setState({ nodepath });
-
         if (!nodepath) {
-            return this.setState({ urls: [], target: false });
+            return this.setState({ nodepath, urls: [], target: false });
         }
 
         try {
-            const target = await api.vfs.resolve(ko.unwrap(this.state.nodepath.node).attributes.path, { noerror: true });
+            const target = await api.vfs.resolve(ko.unwrap(nodepath.node).attributes.path, { noerror: true });
 
             if (!target) {
-                return this.setState({ urls: [] });
+                return this.setState({ nodepath, urls: [], target: false });
             }
 
             const imageOpts = {
@@ -48,17 +46,17 @@ class FeedWidgetNewsAlbum extends Component {
                 type: "image"
             };
 
-            const files = await api.file.list(`${ko.unwrap(this.state.nodepath.node).attributes.path}/files`, { image: imageOpts, shuffle: true, limit: 5 });
+            const files = await api.file.list(`${ko.unwrap(nodepath.node).attributes.path}/files`, { image: imageOpts, shuffle: true, limit: 5 });
             let urls = files.map((file) => file.filename).filter((url) => url);
 
             if (urls.length < 5 && urls.length > 2) {
                 urls = urls.slice(0, 2);
             }
 
-            return this.setState({ urls, target });
+            return this.setState({ nodepath, urls, target });
         } catch (error) {
             stat.printError(error);
-            this.setState({ urls: [], target: false });
+            this.setState({ nodepath, urls: [], target: false });
         }
     }
 

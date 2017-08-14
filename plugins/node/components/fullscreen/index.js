@@ -311,6 +311,17 @@ class NodeFullscreen extends Knockout {
             });
         };
 
+        model.onPositionClick = (mapProps, map, clickEvent) => {
+            if (!model.nodepath().editable) {
+                return;
+            }
+
+            model.position({
+                latitude: clickEvent.latLng.lat(),
+                longitude: clickEvent.latLng.lng()
+            });
+        }
+
         let subscription = model.personPath.subscribe((value) => {
             if (!value) {
                 return;
@@ -460,7 +471,9 @@ class NodeFullscreen extends Knockout {
                         </tbody>
                     </table>
 
-                    <div style={{ position: "absolute", top: "160px", left: "0", right: "0", bottom: "0" }} data-bind="map: { position: position, zoom: position() ? 15 : 10, editable: nodepath().editable }"></div>
+                    <div style={{ position: "absolute", top: "160px", left: "0", right: "0", bottom: "0" }}>
+                        <div data-bind="react: { name: 'map', params: { position: position, zoom: 15, onClick: onPositionClick }}"></div>
+                    </div>
                 </div>
 
                 <div className="sidebar" data-bind="visible: sidebarView() === 'time', if: sidebarView() === 'time'">

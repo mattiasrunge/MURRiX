@@ -29,19 +29,17 @@ class FeedWidgetNewsPerson extends Component {
     }
 
     async load(nodepath) {
-        this.setState({ nodepath });
-
         if (!nodepath) {
-            return this.setState({ target: false });
+            return this.setState({ nodepath, target: false });
         }
 
         try {
-            const node = await api.vfs.resolve(ko.unwrap(this.state.nodepath.node).attributes.path, { noerror: true });
+            const node = await api.vfs.resolve(ko.unwrap(nodepath.node).attributes.path, { noerror: true });
 
-            return this.setState({ target: node || false });
+            return this.setState({ nodepath, target: node || false });
         } catch (error) {
             stat.printError(error);
-            this.setState({ target: false });
+            this.setState({ nodepath, target: false });
         }
     }
 
@@ -55,7 +53,7 @@ class FeedWidgetNewsPerson extends Component {
         return (
             <div>
                 <If condition={this.state.nodepath}>
-                    <div className="news-media" onClick={(e) => this.onClick(e)}>
+                    <div className="news-media" onClick={(e) => this.onClick(e)} style={{ cursor: "pointer" }}>
                         <FileWidgetProfilePicture
                             size={this.props.size}
                             classes="img-responsive img-fill"

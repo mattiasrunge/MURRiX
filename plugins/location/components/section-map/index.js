@@ -1,29 +1,51 @@
 
+import ko from "knockout";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
+import Map from "components/map";
 
-const utils = require("lib/utils");
+class LocationSectionMap extends Component {
+    constructor(props) {
+        super(props);
 
-class LocationSectionMap extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = this.props.nodepath;
-        model.position = this.props.position;
-
-
-        return model;
+        this.state = {
+            position: ko.unwrap(this.props.position)
+        };
     }
 
-    getTemplate() {
+    componentDidMount() {
+        if (ko.isObservable(this.props.position)) {
+            this.addDisposables([
+                this.props.position.subscribe((position) => this.setState({ position }))
+            ]);
+        }
+    }
+
+    render() {
         return (
             ﻿<div className="fadeInDown animated">
-                <div style={{ height: "500px" }} data-bind="map: { position: position, zoom: position() ? 15 : 10 }"></div>
+                <div style={{ height: 500, position: "relative" }}>
+                    <If condition={this.state.position}>
+                        <Map
+                            style={{ width: "100%", height: "100%" }}
+                            initialCenter={{
+                                lat: this.state.position.latitude,
+                                lng: this.state.position.longitude
+                            }}
+                            zoom={15}
+                        >
+                        </Map>
+                    </If>
+                </div>
             </div>
 
         );
     }
 }
+
+LocationSectionMap.propTypes = {
+    position: PropTypes.any
+};
 
 export default LocationSectionMap;

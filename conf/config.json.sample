@@ -14,5 +14,6 @@
         "port": 8181,
         "key": "let-me-in"
     },
-    "googleKey": "<APIKEY>"
+    "googleServerKey": "<APIKEY1>",
+    "googleBrowserKey": "<APIKEY2>"
 }

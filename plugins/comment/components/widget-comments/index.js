@@ -39,9 +39,6 @@ class CommentWidgetComments extends Component {
         ]);
 
         const subscription = api.comment.on("new", (data) => {
-            console.log(data);
-            console.log(data.path, this.state.path);
-
             if (data.path === this.state.path) {
                 this.load(this.state.path);
             }
@@ -78,8 +75,6 @@ class CommentWidgetComments extends Component {
 
             const list = await api.comment.list(abspath);
             const filtered = this.getFilteredList(list);
-
-            console.log("comments", list, filtered);
 
             this.setState({ list, filtered, loading: false });
         } catch (error) {

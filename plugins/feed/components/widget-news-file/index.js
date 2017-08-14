@@ -29,17 +29,15 @@ class FeedWidgetNewsFile extends Component {
     }
 
     async load(nodepath) {
-        this.setState({ nodepath });
-
         if (!nodepath) {
-            return this.setState({ url: false, target: false });
+            return this.setState({ nodepath, url: false, target: false });
         }
 
         try {
-            const target = await api.vfs.resolve(ko.unwrap(this.state.nodepath.node).attributes.path, { noerror: true });
+            const target = await api.vfs.resolve(ko.unwrap(nodepath.node).attributes.path, { noerror: true });
 
             if (!target) {
-                return this.setState({ url: false });
+                return this.setState({ nodepath, url: false, target: false });
             }
 
             const url = await api.file.getMediaUrl(target._id, {
@@ -50,7 +48,7 @@ class FeedWidgetNewsFile extends Component {
             return this.setState({ url, target });
         } catch (error) {
             stat.printError(error);
-            this.setState({ url: false, target: false });
+            this.setState({ nodepath, url: false, target: false });
         }
     }
 
