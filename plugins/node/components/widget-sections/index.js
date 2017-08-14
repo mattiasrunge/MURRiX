@@ -3,6 +3,7 @@ import React from "react";
 import Knockout from "components/knockout";
 import Comment from "components/comment";
 
+import loc from "lib/location";
 const ko = require("knockout");
 
 class NodeWidgetSections extends Knockout {
@@ -10,7 +11,7 @@ class NodeWidgetSections extends Knockout {
         const model = {};
 
         model.params = this.props.params;
-        model.section = this.props.section;
+        model.section = ko.pureComputed(() => ko.unwrap(loc.current().section) || "default");
         model.sections = this.props.sections;
         model.showShareSettings = this.props.showShareSettings || false;
         model.showUpload = ko.pureComputed(() => ko.unwrap(this.props.showUpload) || false);

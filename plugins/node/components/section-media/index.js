@@ -35,14 +35,6 @@ class NodeSectionMedia extends Component {
         this.load();
     }
 
-    toggle(file) {
-        if (file.node._id === this.state.dropdownOpen) {
-            this.setState({ dropdownOpen: false });
-        } else {
-            this.setState({ dropdownOpen: file.node._id });
-        }
-    }
-
     async load() {
         try {
             const nodepath = ko.unwrap(this.props.nodepath);
@@ -121,6 +113,14 @@ class NodeSectionMedia extends Component {
         } catch (error) {
             stat.printError(error);
             this.setState({ days: [], loading: false });
+        }
+    }
+
+    toggle(file) {
+        if (file.node._id === this.state.dropdownOpen) {
+            this.setState({ dropdownOpen: false });
+        } else {
+            this.setState({ dropdownOpen: file.node._id });
         }
     }
 
