@@ -1,196 +1,211 @@
 
+import moment from "moment";
+import ui from "lib/ui";
+import api from "api.io-client";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import stat from "lib/status";
+import NodeWidgetType from "plugins/node/components/widget-type";
+import AuthWidgetNameUser from "plugins/auth/components/widget-name-user";
+import CommentWidgetComments from "plugins/comment/components/widget-comments";
+import FeedWidgetNewsFile from "plugins/feed/components/widget-news-file";
+import FeedWidgetNewsLocation from "plugins/feed/components/widget-news-location";
+import FeedWidgetNewsAlbum from "plugins/feed/components/widget-news-album";
+import FeedWidgetNewsPerson from "plugins/feed/components/widget-news-person";
+import FeedWidgetTodayBirthday from "plugins/feed/components/widget-today-birthday";
+import FeedWidgetTodayMarriage from "plugins/feed/components/widget-today-marriage";
+import FeedWidgetTodayEngagement from "plugins/feed/components/widget-today-engagement";
 
-const ko = require("knockout");
-const moment = require("moment");
-const api = require("api.io-client");
-const utils = require("lib/utils");
-const ui = require("lib/ui");
-const stat = require("lib/status");
+class FeedPage extends Component {
+    constructor(props) {
+        super(props);
 
-class FeedPage extends Knockout {
-    async getModel() {
-        const model = {};
-
-        ui.setTitle("News");
-
-        model.today = ko.observable(moment());
-        model.tomorrow = ko.pureComputed(() => model.today().clone().add(1, "day"));
-        model.loading = stat.create();
-        model.list = ko.observableArray();
-        model.eventsToday = ko.asyncComputed([], async () => {
-            model.loading(true);
-            let result = await api.feed.eventThisDay(model.today().format("YYYY-MM-DD"));
-            model.loading(false);
-
-            console.log(result);
-
-            return result.map((item) => {
-                item.node = ko.observable(item.node);
-                return item;
-            });
-        }, (error) => {
-            model.loading(false);
-            stat.printError(error);
-            return [];
-        });
-
-        model.eventsTomorrow = ko.asyncComputed([], async () => {
-            model.loading(true);
-            let result = await api.feed.eventThisDay(model.tomorrow().format("YYYY-MM-DD"));
-            model.loading(false);
-
-            console.log(result);
-
-            return result.map((item) => {
-                item.node = ko.observable(item.node);
-                return item;
-            });
-        }, (error) => {
-            model.loading(false);
-            stat.printError(error);
-            return [];
-        });
-
-        model.nextDay = () => {
-            model.today().add(1, "day");
-            model.today.valueHasMutated();
+        this.state = {
+            todaysDate: moment(),
+            tomorrowsDate: moment().add(1, "day"),
+            todayList: [],
+            tomorrowList: [],
+            list: []
         };
-
-        model.prevDay = () => {
-            model.today().subtract(1, "day");
-            model.today.valueHasMutated();
-        };
-
-        model.loading(true);
-        let list = await api.feed.list();
-        model.loading(false);
-
-        console.log("news", list);
-
-        let filtered = [];
-        for (let item of list) {
-            let readable = await api.vfs.access(item.node.attributes.path, "r");
-
-            if (readable) {
-                item.node = ko.observable(item.node);
-                filtered.push(item);
-            }
-        }
-
-        model.list(filtered);
-
-        let subscription = api.feed.on("new", (data) => {
-            api.vfs.access(data.path, "r")
-            .then((readable) => {
-                if (readable) {
-                    model.list.unshift({
-                        name: data.name,
-                        path: data.path,
-                        node: ko.observable(data.node)
-                    });
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-        });
-
-        model.dispose = () => {
-            api.feed.off(subscription);
-            stat.destroy(model.loading);
-        };
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        ui.setTitle("News");
+
+        const subscription = api.feed.on("new", (data) => {
+            api.vfs.access(data.path, "r")
+                .then((readable) => {
+                    if (readable) {
+                        const list = this.state.list.slice(0);
+
+                        list.unshift({
+                            name: data.name,
+                            path: data.path,
+                            node: data.node
+                        });
+
+                        this.setState({ list });
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        });
+
+        this.addDisposable({
+            dispose: () => api.feed.off(subscription)
+        });
+
+        this.load();
+    }
+
+    async load() {
+        const todaysDate = moment();
+        const tomorrowsDate = todaysDate.clone().add(1, "day");
+        let todayList = [];
+        let tomorrowList = [];
+        let list = [];
+
+        try {
+            todayList = await api.feed.eventThisDay(todaysDate.format("YYYY-MM-DD"));
+        } catch (error) {
+            stat.printError(error);
+        }
+
+        try {
+            tomorrowList = await api.feed.eventThisDay(tomorrowsDate.format("YYYY-MM-DD"));
+        } catch (error) {
+            stat.printError(error);
+        }
+
+        try {
+            list = await api.feed.list();
+        } catch (error) {
+            stat.printError(error);
+        }
+
+        this.setState({ todaysDate, tomorrowsDate, todayList, tomorrowList, list });
+    }
+
+    render() {
         return (
             <div className="fadeInRight animated">
                 <div className="row">
                     <div className="col-md-7" style={{ paddingRight: "0" }}>
-                        <div className="news-container" data-bind="foreach: list">
-                            <div className="news-item">
-                                <div className="news-title">
-                                    <span data-bind="if: $data.node().attributes.action === 'comment'">
-                                        New comments were made on <strong data-bind="react: { name: 'node-widget-type', params: { type: $data.node().attributes.type } }"></strong>
-                                    </span>
-                                    <span data-bind="if: $data.node().attributes.action === 'created'">
-                                        <strong data-bind="unameNice: $data.node().attributes.uid"></strong> added a new <strong data-bind="react: { name: 'node-widget-type', params: { type: $data.node().attributes.type } }"></strong>
-                                    </span>
-                                </div>
+                        <div className="news-container">
+                            <For each="item" of={this.state.list}>
+                                <div className="news-item" key={item.node._id}>
+                                    <div className="news-title">
+                                        <If condition={item.node.attributes.action === "comment"}>
+                                            New comments were made on
+                                        </If>
+                                        <If condition={item.node.attributes.action === "created"}>
+                                            <strong><AuthWidgetNameUser uid={item.node.attributes.uid} /></strong> added a new
+                                        </If>
+                                        {" "}
+                                        <strong><NodeWidgetType type={item.node.attributes.type} /></strong>
+                                    </div>
+                                    <Choose>
+                                        <When condition={item.node.attributes.type === "f"}>
+                                            <FeedWidgetNewsFile
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                        <When condition={item.node.attributes.type === "a"}>
+                                            <FeedWidgetNewsAlbum
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                        <When condition={item.node.attributes.type === "l"}>
+                                            <FeedWidgetNewsLocation
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                        <When condition={item.node.attributes.type === "p"}>
+                                            <FeedWidgetNewsPerson
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                    </Choose>
 
-                                <div data-bind="if: $data.node().attributes.type === 'f'">
-                                    <div data-bind="react: { name: 'feed-widget-news-file', params: { nodepath: $data } }"></div>
+                                    <div className="news-comments">
+                                        <CommentWidgetComments
+                                            path={item.node.attributes.path}
+                                            rows={3}
+                                        />
+                                    </div>
                                 </div>
-                                <div data-bind="if: $data.node().attributes.type === 'a'">
-                                    <div data-bind="react: { name: 'feed-widget-news-album', params: { nodepath: $data } }"></div>
-                                </div>
-                                <div data-bind="if: $data.node().attributes.type === 'l'">
-                                    <div data-bind="react: { name: 'feed-widget-news-location', params: { nodepath: $data } }"></div>
-                                </div>
-                                <div data-bind="if: $data.node().attributes.type === 'p'">
-                                    <div data-bind="react: { name: 'feed-widget-news-person', params: { nodepath: $data } }"></div>
-                                </div>
-
-                                <div className="news-comments">
-                                    <div data-bind="react: { name: 'comment-widget-comments', params: { path: $data.node().attributes.path, rows: 3 } }"></div>
-                                </div>
-                            </div>
+                            </For>
                         </div>
                     </div>
                     <div className="col-md-5">
                         <div className="today-container">
-                            <div className="today-header" data-bind="datetimeDayString: today().unix()"></div>
-
-                            <div data-bind="foreach: eventsToday">
-                                <div className="today-item">
-                                    <div data-bind="if: $data.type === 'birthday'">
-                                        <div data-bind="react: { name: 'feed-widget-today-birthday', params: { nodepath: $data } }"></div>
-                                    </div>
-                                    <div data-bind="if: $data.type === 'marriage'">
-                                        <div data-bind="react: { name: 'feed-widget-today-marriage', params: { nodepath: $data } }"></div>
-                                    </div>
-                                    <div data-bind="if: $data.type === 'engagement'">
-                                        <div data-bind="react: { name: 'feed-widget-today-engagement', params: { nodepath: $data } }"></div>
-                                    </div>
-                                </div>
+                            <div className="today-header">
+                                Today
                             </div>
-                            <div data-bind="visible: eventsToday().length === 0">
+
+                            <For each="item" of={this.state.todayList}>
+                                <div className="today-item" key={item.node._id}>
+                                    <Choose>
+                                        <When condition={item.type === "birthday"}>
+                                            <FeedWidgetTodayBirthday
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                        <When condition={item.type === "marriage"}>
+                                            <FeedWidgetTodayMarriage
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                        <When condition={item.type === "engagement"}>
+                                            <FeedWidgetTodayEngagement
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                    </Choose>
+                                </div>
+                            </For>
+                            <If condition={this.state.todayList.length === 0}>
                                 <p className="text-muted">
                                     No events found
                                 </p>
-                            </div>
+                            </If>
                         </div>
 
                         <div className="today-container">
-                            <div className="today-header" data-bind="datetimeDayString: tomorrow().unix()"></div>
-                            <div data-bind="foreach: eventsTomorrow">
-                                <div className="today-item">
-                                    <div data-bind="if: $data.type === 'birthday'">
-                                        <div data-bind="react: { name: 'feed-widget-today-birthday', params: { nodepath: $data } }"></div>
-                                    </div>
-                                    <div data-bind="if: $data.type === 'marriage'">
-                                        <div data-bind="react: { name: 'feed-widget-today-marriage', params: { nodepath: $data } }"></div>
-                                    </div>
-                                    <div data-bind="if: $data.type === 'engagement'">
-                                        <div data-bind="react: { name: 'feed-widget-today-engagement', params: { nodepath: $data } }"></div>
-                                    </div>
-                                </div>
+                            <div className="today-header">
+                                Tomorrow
                             </div>
-                            <div data-bind="visible: eventsTomorrow().length === 0">
+                            <For each="item" of={this.state.tomorrowList}>
+                                <div className="today-item" key={item.node._id}>
+                                    <Choose>
+                                        <When condition={item.type === "birthday"}>
+                                            <FeedWidgetTodayBirthday
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                        <When condition={item.type === "marriage"}>
+                                            <FeedWidgetTodayMarriage
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                        <When condition={item.type === "engagement"}>
+                                            <FeedWidgetTodayEngagement
+                                                nodepath={item}
+                                            />
+                                        </When>
+                                    </Choose>
+                                </div>
+                            </For>
+                            <If condition={this.state.tomorrowList.length === 0}>
                                 <p className="text-muted">
                                     No events found
                                 </p>
-                            </div>
+                            </If>
                         </div>
                     </div>
                 </div>
             </div>
-
         );
     }
 }

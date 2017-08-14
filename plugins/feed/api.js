@@ -128,7 +128,18 @@ const feed = api.register("feed", {
         options.reverse = options.reverse || true;
         options.limit = options.limit || feed.limit;
 
-        return await api.vfs.list(session, "/news", options);
+        const list = await api.vfs.list(session, "/news", options);
+        const filtered = [];
+
+        for (const item of list) {
+            const readable = await api.vfs.access(session, item.node.attributes.path, "r");
+
+            if (readable) {
+                filtered.push(item);
+            }
+        }
+
+        return filtered;
     }),
     eventThisDay: api.export(async (session, datestr) => {
         let start = moment.utc(datestr);

@@ -776,6 +776,7 @@ body {
 
 
 .alert {
+    z-index: 1000;
     font-weight: bold !important;
 }
 

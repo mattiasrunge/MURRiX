@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import api from "api.io-client";
 import React from "react";
 import PropTypes from "prop-types";
@@ -13,31 +12,30 @@ class FeedWidgetNewsAlbum extends Component {
 
         this.state = {
             urls: [],
-            target: false,
-            nodepath: ko.unwrap(props.nodepath)
+            target: false
         };
     }
 
     componentDidMount() {
-        if (ko.isObservable(this.props.nodepath)) {
-            this.addDisposables([
-                this.props.nodepath.subscribe((nodepath) => this.load(nodepath))
-            ]);
-        }
+        this.load(this.props.nodepath);
+    }
 
-        this.load(ko.unwrap(this.props.nodepath));
+    componentWillReceiveProps(nextProps) {
+        if (this.props.nodepath !== nextProps.nodepath) {
+            this.load(this.props.nodepath);
+        }
     }
 
     async load(nodepath) {
         if (!nodepath) {
-            return this.setState({ nodepath, urls: [], target: false });
+            return this.setState({ urls: [], target: false });
         }
 
         try {
-            const target = await api.vfs.resolve(ko.unwrap(nodepath.node).attributes.path, { noerror: true });
+            const target = await api.vfs.resolve(nodepath.node.attributes.path, { noerror: true });
 
             if (!target) {
-                return this.setState({ nodepath, urls: [], target: false });
+                return this.setState({ urls: [], target: false });
             }
 
             const imageOpts = {
@@ -46,24 +44,24 @@ class FeedWidgetNewsAlbum extends Component {
                 type: "image"
             };
 
-            const files = await api.file.list(`${ko.unwrap(nodepath.node).attributes.path}/files`, { image: imageOpts, shuffle: true, limit: 5 });
+            const files = await api.file.list(`${nodepath.node.attributes.path}/files`, { image: imageOpts, shuffle: true, limit: 5 });
             let urls = files.map((file) => file.filename).filter((url) => url);
 
             if (urls.length < 5 && urls.length > 2) {
                 urls = urls.slice(0, 2);
             }
 
-            return this.setState({ nodepath, urls, target });
+            return this.setState({ urls, target });
         } catch (error) {
             stat.printError(error);
-            this.setState({ nodepath, urls: [], target: false });
+            this.setState({ urls: [], target: false });
         }
     }
 
     onClick(event) {
         event.preventDefault();
 
-        loc.goto({ page: "node", path: ko.unwrap(this.state.nodepath.node).attributes.path });
+        loc.goto({ page: "node", path: this.props.nodepath.node.attributes.path });
     }
 
     render() {
@@ -118,7 +116,7 @@ FeedWidgetNewsAlbum.defaultProps = {
 };
 
 FeedWidgetNewsAlbum.propTypes = {
-    nodepath: PropTypes.any,
+    nodepath: PropTypes.object.isRequired,
     size: PropTypes.number
 };
 
