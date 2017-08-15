@@ -13,14 +13,16 @@
         }
     },
     "plugins": [
-        "react",
-        "jsx-control-statements"
+        "jsx-control-statements",
+        "react"
     ],
     "env": {
         "node": true,
-        "es6": true
+        "es6": true,
+        "jsx-control-statements/jsx-control-statements": true
     },
     "rules": {
+        "react/jsx-no-undef": [2, { "allowGlobals": true }],
         "space-before-function-paren": [ "error", { "anonymous": "ignore", "named": "never" } ],
         "no-empty": [ "error", { "allowEmptyCatch": true } ],
         "space-in-parens": "error",

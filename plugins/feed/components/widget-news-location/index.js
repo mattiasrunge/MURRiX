@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import api from "api.io-client";
 import React from "react";
 import PropTypes from "prop-types";
@@ -15,18 +14,18 @@ class FeedWidgetNewsLocation extends Component {
         this.state = {
             target: false,
             position: false,
-            nodepath: ko.unwrap(props.nodepath)
+            nodepath: props.nodepath
         };
     }
 
     componentDidMount() {
-        if (ko.isObservable(this.props.nodepath)) {
-            this.addDisposables([
-                this.props.nodepath.subscribe((nodepath) => this.load(nodepath))
-            ]);
-        }
+        this.load(this.props.nodepath);
+    }
 
-        this.load(ko.unwrap(this.props.nodepath));
+    componentWillReceiveProps(nextProps) {
+        if (this.props.nodepath !== nextProps.nodepath) {
+            this.load(this.props.nodepath);
+        }
     }
 
     async load(nodepath) {
@@ -35,7 +34,7 @@ class FeedWidgetNewsLocation extends Component {
         }
 
         try {
-            const node = await api.vfs.resolve(ko.unwrap(nodepath.node).attributes.path, { noerror: true });
+            const node = await api.vfs.resolve(nodepath.node.attributes.path, { noerror: true });
 
             if (!node || !node.attributes.address) {
                 return this.setState({ nodepath, target: false, position: false });
@@ -57,7 +56,7 @@ class FeedWidgetNewsLocation extends Component {
     onClick(event) {
         event.preventDefault();
 
-        loc.goto({ page: "node", path: ko.unwrap(this.state.nodepath.node).attributes.path });
+        loc.goto({ page: "node", path: this.state.nodepath.node.attributes.path });
     }
 
     render() {
@@ -103,7 +102,7 @@ class FeedWidgetNewsLocation extends Component {
 }
 
 FeedWidgetNewsLocation.propTypes = {
-    nodepath: PropTypes.any
+    nodepath: PropTypes.object.isRequired
 };
 
 export default FeedWidgetNewsLocation;

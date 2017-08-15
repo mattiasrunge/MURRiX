@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import api from "api.io-client";
 import React from "react";
 import PropTypes from "prop-types";
@@ -14,18 +13,18 @@ class FeedWidgetNewsFile extends Component {
         this.state = {
             url: false,
             target: false,
-            nodepath: ko.unwrap(props.nodepath)
+            nodepath: props.nodepath
         };
     }
 
     componentDidMount() {
-        if (ko.isObservable(this.props.nodepath)) {
-            this.addDisposables([
-                this.props.nodepath.subscribe((nodepath) => this.load(nodepath))
-            ]);
-        }
+        this.load(this.props.nodepath);
+    }
 
-        this.load(ko.unwrap(this.props.nodepath));
+    componentWillReceiveProps(nextProps) {
+        if (this.props.nodepath !== nextProps.nodepath) {
+            this.load(this.props.nodepath);
+        }
     }
 
     async load(nodepath) {
@@ -34,7 +33,7 @@ class FeedWidgetNewsFile extends Component {
         }
 
         try {
-            const target = await api.vfs.resolve(ko.unwrap(nodepath.node).attributes.path, { noerror: true });
+            const target = await api.vfs.resolve(nodepath.node.attributes.path, { noerror: true });
 
             if (!target) {
                 return this.setState({ nodepath, url: false, target: false });
@@ -55,7 +54,7 @@ class FeedWidgetNewsFile extends Component {
     onClick(event) {
         event.preventDefault();
 
-        loc.goto({ showPath: ko.unwrap(this.state.nodepath.node).attributes.path });
+        loc.goto({ showPath: this.state.nodepath.node.attributes.path });
     }
 
     render() {
@@ -94,7 +93,7 @@ FeedWidgetNewsFile.defaultProps = {
 };
 
 FeedWidgetNewsFile.propTypes = {
-    nodepath: PropTypes.any,
+    nodepath: PropTypes.object.isRequired,
     size: PropTypes.number
 };
 
