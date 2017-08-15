@@ -50,7 +50,7 @@ class SearchPageLabels extends Component {
         try {
             ui.setTitle(`Browsing label ${query}`);
 
-            const labels = query.split("+");
+            const labels = query.split("+").filter((l) => l);
 
             if (labels.length === 0) {
                 return this.setState({ list: [] });
@@ -89,7 +89,7 @@ class SearchPageLabels extends Component {
                             <Badge
                                 key={item}
                                 color={item === this.state.query ? "primary" : "none"}
-                                style={{ marginRight: 5, marginBottom: 10 }}
+                                style={{ marginRight: 5, marginBottom: 10, cursor: "pointer" }}
                                 onClick={(e) => this.onClick(e, item)}
                             >
                                 {item}
