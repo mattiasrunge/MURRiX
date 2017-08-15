@@ -47,7 +47,7 @@ class SearchPageLabels extends Component {
 
     async load(query) {
         try {
-            ui.setTitle(`Search for label ${query}`);
+            ui.setTitle(`Browsing label ${query}`);
 
             const labels = query.split("+");
 

@@ -46,7 +46,7 @@ class AuthPageProfile extends Component {
 
     render() {
         return (
-            ﻿<div className="fadeInRight animated">
+            <div className="fadeInRight animated">
                 <div className="page-header">
                     <h1>Profile</h1>
                 </div>
