@@ -69,7 +69,7 @@ class DefaultSidebar extends Component {
                                 href="#"
                             >
                                 <i className="material-icons md-18">date_range</i>
-                                <span> Search by year</span>
+                                <span> Browse by year</span>
                             </a>
                         </li>
                         <li className={this.state.page === "labels" ? "active" : ""}>

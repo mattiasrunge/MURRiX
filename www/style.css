@@ -801,8 +801,8 @@ body {
 }
 
 .twitter-typeahead .valid,
-.header-search .valid input,
-.header-search .valid div {
+.valid input,
+.valid div {
     font-weight: bold;
     width: 100% !important;
     color: #2d6ca2;

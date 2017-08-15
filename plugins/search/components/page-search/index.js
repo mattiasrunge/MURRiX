@@ -68,15 +68,16 @@ class SearchPageSearch extends Component {
     render() {
         return (
             <div className="fadeInRight animated">
-                <div className="box box-content">
+                <div className="page-header">
                     <h1>Search by name</h1>
-
-                    <form className="form" role="search" style={{ marginBottom: "15px" }} data-bind="submit: () => false">
+                </div>
+                <div className="box box-content">
+                    <form className="form" role="search" style={{ marginBottom: 15 }} data-bind="submit: () => false">
                         <input
                             name="query"
                             type="search"
                             className="form-control"
-                            style={{ marginBottom: "15px" }}
+                            style={{ marginBottom: 15 }}
                             placeholder="Enter name to search for"
                             value={this.state.query}
                             onChange={(e) => this.onChange(e)}

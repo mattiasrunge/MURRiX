@@ -1,38 +1,34 @@
 
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
 
-const utils = require("lib/utils");
-
-class AuthWidgetListGroups extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.list = this.props.list;
-
-
-        return model;
-    }
-
-    getTemplate() {
+class AuthWidgetListGroups extends Component {
+    render() {
         return (
             <table className="table table-striped" style={{ fontSize: "12px" }}>
-                <tbody data-bind="foreach: list">
-                    <tr>
-                        <td style={{ whiteSpace: "nowrap" }}>
-                            <strong>
-                                <i className="icon icon-group"></i>
-                                <span data-bind="text: $data.node.attributes.name"></span>
-                            </strong>
-                        </td>
-                        <td data-bind="text: $data.node.attributes.description"></td>
-                    </tr>
+                <tbody>
+                    <For each="item" of={this.props.list}>
+                        <tr key={item.node._id}>
+                            <td style={{ whiteSpace: "nowrap" }}>
+                                <strong>
+                                    <i className="icon icon-group"></i>
+                                    {item.node.attributes.name}
+                                </strong>
+                            </td>
+                            <td>
+                                {item.node.attributes.description}
+                            </td>
+                        </tr>
+                    </For>
                 </tbody>
             </table>
-
         );
     }
 }
+
+AuthWidgetListGroups.propTypes = {
+    list: PropTypes.array.isRequired
+};
 
 export default AuthWidgetListGroups;

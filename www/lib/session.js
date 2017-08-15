@@ -4,6 +4,7 @@ const ko = require("knockout");
 const api = require("api.io/api.io-client");
 
 module.exports = {
+    userinfo: ko.observable({}),
     list: ko.observableArray(),
     user: ko.observable(false),
     username: ko.observable("guest"),
@@ -22,6 +23,7 @@ module.exports = {
     }),
     loadUser: async () => {
         const userinfo = await api.auth.whoami();
+        module.exports.userinfo(userinfo);
         module.exports.user(userinfo.user);
         module.exports.username(userinfo.username);
         module.exports.personPath(userinfo.personPath);

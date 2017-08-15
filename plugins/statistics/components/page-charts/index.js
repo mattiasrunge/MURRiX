@@ -113,21 +113,26 @@ class StatisticsPageCharts extends Component {
 
     render() {
         return (
-            <div className="fadeInRight animated chart-container">
-                <For each="data" of={this.state.dataList}>
-                    <div className="chart-item">
-                        <div className="chart-name">
-                            <h4>{data.label}</h4>
+            <div className="fadeInRight animated">
+                <div className="page-header">
+                    <h1>Charts</h1>
+                </div>
+                <div className="chart-container">
+                    <For each="data" of={this.state.dataList}>
+                        <div className="chart-item">
+                            <div className="chart-name">
+                                <h4>{data.label}</h4>
+                            </div>
+                            <div className="chart-chart">
+                                <StatisticsWidgetChart
+                                    type="bar"
+                                    data={data}
+                                    options={this.state.options}
+                                />
+                            </div>
                         </div>
-                        <div className="chart-chart">
-                            <StatisticsWidgetChart
-                                type="bar"
-                                data={data}
-                                options={this.state.options}
-                            />
-                        </div>
-                    </div>
-                </For>
+                    </For>
+                </div>
             </div>
         );
     }

@@ -79,16 +79,17 @@ class SearchPageLabels extends Component {
     render() {
         return (
             <div className="fadeInRight animated">
-                <div className="box box-content">
+                <div className="page-header">
                     <h1>Browse by label</h1>
-
-                    <div style={{ marginBottom: "15px" }}>
+                </div>
+                <div className="box box-content">
+                    <div style={{ marginBottom: 5 }}>
                         <For each="item" of={this.state.labels}>
                             <a
                                 key={item}
                                 role="button"
                                 className={`btn btn-sm ${item === this.state.query ? "btn-primary" : "btn-secondary"}`}
-                                style={{ marginRight: "5px", marginBottom: "10px" }}
+                                style={{ marginRight: 5, marginBottom: 10 }}
                                 onClick={(e) => this.onClick(e, item)}
                             >
                                 {item}

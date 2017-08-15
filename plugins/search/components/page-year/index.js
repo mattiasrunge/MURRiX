@@ -68,14 +68,16 @@ class SearchPageYear extends Component {
     render() {
         return (
             <div className="fadeInRight animated">
+                <div className="page-header">
+                    <h1>
+                        <span className="float-right">
+                            {this.state.year}
+                        </span>
+                        Browse by year
+                    </h1>
+                </div>
                 <div className="box box-content">
-                    <h1>Search by year</h1>
-
-                    <div style={{ marginBottom: "25px" }}>
-                        <div style={{ textAlign: "center" }}>
-                            Showing {this.state.year}
-                        </div>
-
+                    <div style={{ marginBottom: 25 }}>
                         <a
                             href="#"
                             className="float-right btn btn-primary"
