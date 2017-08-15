@@ -59,7 +59,17 @@ class DefaultSidebar extends Component {
                                 href="#"
                             >
                                 <i className="material-icons md-18">search</i>
-                                <span> Search by name</span>
+                                <span> Search</span>
+                            </a>
+                        </li>
+                        <li className={this.state.page === "name" ? "active" : ""}>
+                            <a
+                                className="nav-link"
+                                onClick={(e) => this.gotoPage(e, "name")}
+                                href="#"
+                            >
+                                <i className="material-icons md-18">folder_open</i>
+                                <span> Browse by name</span>
                             </a>
                         </li>
                         <li className={this.state.page === "year" ? "active" : ""}>

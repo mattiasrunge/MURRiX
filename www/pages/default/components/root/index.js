@@ -10,6 +10,7 @@ import Sidebar from "components/sidebar";
 import Fullscreen from "plugins/node/components/fullscreen";
 import PageFeed from "plugins/feed/components/page";
 import PageSearch from "plugins/search/components/page-search";
+import PageName from "plugins/search/components/page-name";
 import PageYear from "plugins/search/components/page-year";
 import PageLabels from "plugins/search/components/page-labels";
 import PageCharts from "plugins/statistics/components/page-charts";
@@ -81,6 +82,9 @@ class DefaultRoot extends Component {
                                                     </When>
                                                     <When condition={this.state.page === "search"}>
                                                         <PageSearch />
+                                                    </When>
+                                                    <When condition={this.state.page === "name"}>
+                                                        <PageName />
                                                     </When>
                                                     <When condition={this.state.page === "year"}>
                                                         <PageYear />

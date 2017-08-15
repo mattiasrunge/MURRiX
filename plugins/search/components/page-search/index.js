@@ -38,7 +38,7 @@ class SearchPageSearch extends Component {
 
     async load(query) {
         try {
-            ui.setTitle(`Search for ${query}`);
+            ui.setTitle(`Searched for ${query}`);
 
             if (!query) {
                 return this.setState({ list: [] });
@@ -69,7 +69,7 @@ class SearchPageSearch extends Component {
         return (
             <div className="fadeInRight animated">
                 <div className="page-header">
-                    <h1>Search by name</h1>
+                    <h1>Search</h1>
                 </div>
                 <div className="box box-content">
                     <form className="form" role="search" style={{ marginBottom: 15 }} data-bind="submit: () => false">

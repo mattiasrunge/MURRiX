@@ -10,13 +10,22 @@ import { Badge } from "reactstrap";
 import Component from "lib/component";
 import NodeWidgetCardList from "plugins/node/components/widget-card-list";
 
-class SearchPageLabels extends Component {
+class SearchPageName extends Component {
     constructor(props) {
         super(props);
 
+        this.letters = [];
+
+        for (let n = 0; n < 26; n++) {
+            this.letters.push(String.fromCharCode(65 + n));
+        }
+
+        this.letters.push(String.fromCharCode(197)); // Å
+        this.letters.push(String.fromCharCode(196)); // Ä
+        this.letters.push(String.fromCharCode(214)); // Ö
+
         this.state = {
-            labels: [],
-            query: loc.get("query"),
+            letter: loc.get("letter"),
             list: []
         };
 
@@ -26,39 +35,29 @@ class SearchPageLabels extends Component {
     componentDidMount() {
         this.addDisposables([
             loc.subscribe((params) => {
-                const query = params.query || "";
+                const letter = params.letter || "";
 
-                if (query !== this.state.query) {
-                    this.setState({ query });
-                    this.load(query);
+                if (letter !== this.state.letter) {
+                    this.setState({ letter });
+                    this.load(letter);
                 }
             })
         ]);
 
-        api.vfs.labels()
-            .then((labels) => {
-                this.setState({ labels });
-            })
-            .catch((error) => {
-                stat.printError(error);
-            });
-
-        this.loadDebounced(this.state.query);
+        this.loadDebounced(this.state.letter);
     }
 
-    async load(query) {
+    async load(letter) {
         try {
-            ui.setTitle(`Browsing label ${query}`);
+            ui.setTitle(`Browsing for names beginning with ${letter}`);
 
-            const labels = query.split("+").filter((l) => l);
-
-            if (labels.length === 0) {
+            if (!letter) {
                 return this.setState({ list: [] });
             }
 
             const options = {
                 filter: {
-                    "attributes.labels": { $in: labels }
+                    "attributes.name": { $regex: `^${letter}.*`, $options: "-i" }
                 }
             };
 
@@ -71,25 +70,26 @@ class SearchPageLabels extends Component {
         }
     }
 
-    onClick(event, label) {
+    onClick(event, letter) {
         event.preventDefault();
 
-        loc.goto({ query: label });
+        loc.goto({ letter: letter || null });
     }
 
     render() {
         return (
             <div className="fadeInRight animated">
                 <div className="page-header">
-                    <h1>Browse by label</h1>
+                    <h1>Browse by name</h1>
                 </div>
                 <div className="box box-content">
                     <div style={{ marginBottom: 5, textAlign: "center" }}>
-                        <For each="item" of={this.state.labels}>
+                        <For each="item" of={this.letters}>
                             <Badge
                                 key={item}
-                                color={item === this.state.query ? "primary" : "none"}
-                                style={{ marginRight: 5, marginBottom: 10, cursor: "pointer" }}
+                                pill={true}
+                                color={item === this.state.letter ? "primary" : "none"}
+                                style={{ marginRight: 4, marginBottom: 10, cursor: "pointer" }}
                                 onClick={(e) => this.onClick(e, item)}
                             >
                                 {item}
@@ -106,4 +106,4 @@ class SearchPageLabels extends Component {
     }
 }
 
-export default SearchPageLabels;
+export default SearchPageName;
