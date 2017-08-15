@@ -152,8 +152,8 @@ class CommentWidgetComments extends Component {
                             rows="1"
                             placeholder="Leave a comment..."
                             value={this.state.comment}
-                            onKeyPress={(event) => this.onKeyPress(event)}
-                            onChange={(event) => this.onChange(event)}
+                            onKeyPress={(e) => this.onKeyPress(e)}
+                            onChange={(e) => this.onChange(e)}
                             disabled={this.state.loading}
                         ></Textarea>
                     </div>
