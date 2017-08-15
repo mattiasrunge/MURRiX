@@ -1,12 +1,11 @@
 
-import React from "react";
-import Component from "lib/component";
-import StatisticsWidgetChart from "plugins/statistics/components/widget-chart";
-
 import moment from "moment";
 import api from "api.io-client";
 import ui from "lib/ui";
 import stat from "lib/status";
+import React from "react";
+import Component from "lib/component";
+import StatisticsWidgetChart from "plugins/statistics/components/widget-chart";
 
 class StatisticsPageCharts extends Component {
     constructor(props) {

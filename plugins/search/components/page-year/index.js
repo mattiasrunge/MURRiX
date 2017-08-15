@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import debounce from "debounce";
 import api from "api.io-client";
 import loc from "lib/location";
@@ -15,7 +14,7 @@ class SearchPageYear extends Component {
         super(props);
 
         this.state = {
-            year: parseInt(ko.unwrap(loc.current().year), 10) || new Date().getFullYear(),
+            year: parseInt(loc.get("year", new Date().getFullYear()), 10),
             list: []
         };
 
@@ -24,8 +23,8 @@ class SearchPageYear extends Component {
 
     componentDidMount() {
         this.addDisposables([
-            loc.current.subscribe((current) => {
-                const year = parseInt(current.year, 10) || new Date().getFullYear();
+            loc.subscribe((params) => {
+                const year = parseInt(params.year, 10) || new Date().getFullYear();
 
                 if (year !== this.state.year) {
                     this.setState({ year });

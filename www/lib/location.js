@@ -1,4 +1,5 @@
-"use strict";
+
+/* global window document */
 
 const ko = require("knockout");
 const $ = require("jquery");
@@ -6,6 +7,12 @@ const $ = require("jquery");
 module.exports = {
     lastString: false, // Last JSON version of current to compare with
     current: ko.observable({}), // Current parameters
+    get: (param, defValue = "") => {
+        return module.exports.current()[param] || defValue;
+    },
+    subscribe: (fn) => {
+        return module.exports.current.subscribe(fn);
+    },
     parseUrl: (str) => {
         if (typeof str !== "string") {
             return {};
@@ -22,8 +29,9 @@ module.exports = {
         }
 
         return str.trim().split("&").reduce((ret, param) => {
-            let parts = param.replace(/\+/g, " ").split("=");
+            const parts = param.replace(/\+/g, " ").split("=");
             ret[parts[0]] = parts[1] === undefined ? null : decodeURIComponent(parts[1]);
+
             return ret;
         }, {});
     },
@@ -33,9 +41,9 @@ module.exports = {
         }).join("&") : "");
     },
     constructUrl: (args, baseOnCurrent) => {
-        let newArgs = baseOnCurrent ? JSON.parse(JSON.stringify(module.exports.current())) : {};
+        const newArgs = baseOnCurrent ? JSON.parse(JSON.stringify(module.exports.current())) : {};
 
-        for (let argName in args) {
+        for (const argName in args) {
             if (args.hasOwnProperty(argName)) {
                 if (ko.unwrap(args[argName]) !== "" || ko.unwrap(args[argName]) !== null) {
                     newArgs[argName] = ko.unwrap(args[argName]);
@@ -53,7 +61,7 @@ module.exports = {
         if (typeof url !== "string") {
             url = module.exports.constructUrl(url, keep);
         } else if (url[0] !== "#" && !url.startsWith("http") && !url.startsWith("mailto")) {
-            url = "#" + url;
+            url = `#${url}`;
         }
 
         if (window.history) {
@@ -69,8 +77,8 @@ module.exports = {
         }
     },
     updateCurrent: () => {
-        let args = module.exports.parseUrl(document.location.hash);
-        let argsString = JSON.stringify(args);
+        const args = module.exports.parseUrl(document.location.hash);
+        const argsString = JSON.stringify(args);
 
         if (module.exports.lastString !== argsString) {
             module.exports.current(args);

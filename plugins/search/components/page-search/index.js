@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import debounce from "debounce";
 import api from "api.io-client";
 import loc from "lib/location";
@@ -15,7 +14,7 @@ class SearchPageSearch extends Component {
         super(props);
 
         this.state = {
-            query: ko.unwrap(loc.current().query) || "",
+            query: loc.get("query"),
             list: []
         };
 
@@ -24,12 +23,12 @@ class SearchPageSearch extends Component {
 
     componentDidMount() {
         this.addDisposables([
-            loc.current.subscribe((current) => {
-                const query = current.query || "";
+            loc.subscribe((params) => {
+                const query = params.query || "";
 
                 if (query !== this.state.query) {
                     this.setState({ query });
-                    this.loadDebounced(query);
+                    this.load(query);
                 }
             })
         ]);

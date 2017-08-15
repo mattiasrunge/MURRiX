@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import debounce from "debounce";
 import api from "api.io-client";
 import loc from "lib/location";
@@ -16,7 +15,7 @@ class SearchPageLabels extends Component {
 
         this.state = {
             labels: [],
-            query: ko.unwrap(loc.current().query) || "",
+            query: loc.get("query"),
             list: []
         };
 
@@ -25,8 +24,8 @@ class SearchPageLabels extends Component {
 
     componentDidMount() {
         this.addDisposables([
-            loc.current.subscribe((current) => {
-                const query = current.query || "";
+            loc.subscribe((params) => {
+                const query = params.query || "";
 
                 if (query !== this.state.query) {
                     this.setState({ query });
@@ -36,12 +35,12 @@ class SearchPageLabels extends Component {
         ]);
 
         api.vfs.labels()
-        .then((labels) => {
-            this.setState({ labels });
-        })
-        .catch((error) => {
-            stat.printError(error);
-        });
+            .then((labels) => {
+                this.setState({ labels });
+            })
+            .catch((error) => {
+                stat.printError(error);
+            });
 
         this.loadDebounced(this.state.query);
     }
