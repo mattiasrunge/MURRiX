@@ -6,6 +6,7 @@ import ui from "lib/ui";
 import stat from "lib/status";
 import session from "lib/session";
 import React from "react";
+import { Badge } from "reactstrap";
 import Component from "lib/component";
 import NodeWidgetCardList from "plugins/node/components/widget-card-list";
 
@@ -85,15 +86,14 @@ class SearchPageLabels extends Component {
                 <div className="box box-content">
                     <div style={{ marginBottom: 5 }}>
                         <For each="item" of={this.state.labels}>
-                            <a
+                            <Badge
                                 key={item}
-                                role="button"
-                                className={`btn btn-sm ${item === this.state.query ? "btn-primary" : "btn-secondary"}`}
+                                color={item === this.state.query ? "primary" : "none"}
                                 style={{ marginRight: 5, marginBottom: 10 }}
                                 onClick={(e) => this.onClick(e, item)}
                             >
                                 {item}
-                            </a>
+                            </Badge>
                         </For>
                     </div>
                 </div>

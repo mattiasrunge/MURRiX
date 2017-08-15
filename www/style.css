@@ -93,6 +93,18 @@ h1, h2, h3, h5, h6, .heading {
     margin-top: 20px;
 }
 
+.badge {
+    padding: 0.5em 1em;
+    line-height: normal;
+    font-size: 85%;
+    font-weight: 500;
+}
+
+.badge-none {
+    background-color: #ddd;
+    color: black;
+}
+
 .col-form-label {
     font-weight: bold;
     text-align: right;
@@ -111,7 +123,7 @@ body {
     overflow: hidden;
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
     font-size: 14px;
-    background-color: #fafbff;
+    background-color: #F3F6FF;
 }
 
 #browser-warning {
@@ -703,26 +715,38 @@ body {
     margin-top: 30px;
 }
 
+a, button.btn-link {
+    color: #303f9f;
+}
+
+a:hover, button.btn-link:hover {
+    color: #830055;
+    text-decoration: none;
+}
+
+a:active, button.btn-link:active {
+    color: #B32381;
+}
+
 .sidebar .nav-pills > li > a {
     padding: 5px;
     padding-left: 7px;
     border-left: 3px solid transparent;
     border-radius: 0;
-    color: rgba(0, 0, 0, 0.54);
-
-    width: 169px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    font-size: 15px;
+    color: #2B2B2B;
+    font-size: 14px;
 }
 
-.sidebar .nav-pills > li.active > a,
 .sidebar .nav-pills > li.active > a:hover,
+.sidebar .nav-pills > li.active > a {
+    background-color: transparent;
+    border-color: #B32381;
+    color: #B32381;
+}
+
 .sidebar .nav-pills > li > a:hover {
     background-color: transparent;
-    border-color: black;
-    color: black;
+    color: #830055;
 }
 
 .node-widget-sections ul.nav {

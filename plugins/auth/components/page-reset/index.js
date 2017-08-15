@@ -48,6 +48,7 @@ class AuthPageReset extends Component {
             await api.auth.passwordReset(this.state.username, this.state.id, this.state.password1);
 
             stat.printSuccess("Password reset successfully!");
+            this.setState({ loading: false, password1: "", password2: "" });
             loc.goto({ page: "login", email: null, id: null });
         } catch (e) {
             console.error(e);

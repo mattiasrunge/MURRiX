@@ -119,7 +119,7 @@ class StatisticsPageCharts extends Component {
                 </div>
                 <div className="chart-container">
                     <For each="data" of={this.state.dataList}>
-                        <div className="chart-item">
+                        <div className="chart-item" key={data.label}>
                             <div className="chart-name">
                                 <h4>{data.label}</h4>
                             </div>
