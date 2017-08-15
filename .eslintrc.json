@@ -22,6 +22,8 @@
         "jsx-control-statements/jsx-control-statements": true
     },
     "rules": {
+        "jsx-control-statements/jsx-jcs-no-undef": 1,
+        "no-undef": 0,
         "react/jsx-no-undef": [2, { "allowGlobals": true }],
         "space-before-function-paren": [ "error", { "anonymous": "ignore", "named": "never" } ],
         "no-empty": [ "error", { "allowEmptyCatch": true } ],
@@ -86,7 +88,6 @@
         "yoda": "error",
         "no-delete-var": "error",
         "no-undef-init": "error",
-        "no-undef": "error",
         "no-undefined": "error",
         "no-unused-vars": "error",
         "no-use-before-define": "error",
