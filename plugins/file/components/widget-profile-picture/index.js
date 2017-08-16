@@ -82,6 +82,12 @@ class FileWidgetProfilePicture extends Component {
                         className={ko.unwrap(this.props.classes)}
                     />
                 </If>
+                <If condition={!this.state.url}>
+                    <div
+                        style={style}
+                        className={ko.unwrap(this.props.classes)}
+                    ></div>
+                </If>
             </div>
         );
     }

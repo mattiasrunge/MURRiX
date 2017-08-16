@@ -43,40 +43,7 @@ class NodePage extends Knockout {
                 <div data-bind="if: nodepath().node().properties.type === 'c'">
                     <div data-bind="react: { name: 'camera-page', params: { nodepath: nodepath, section: section } }"></div>
                 </div>
-
-
-                <div id="dropTargetContainer">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td className="text-center">
-                                    <div id="dropTargetProfilePicture" className="dropTarget text-muted text-uppercase">
-                                        Drop here
-                                        <br />
-                                        <br />
-                                        <i className="material-icons md-96">wallpaper</i>
-                                        <br />
-                                        <br />
-                                        Use as profile picture
-                                    </div>
-                                </td>
-                                <td className="text-center">
-                                    <div id="dropTargetDelete" className="dropTarget text-muted text-uppercase" style={{ backgroundColor: "#FFAEAE" }}>
-                                        Drop here
-                                        <br />
-                                        <br />
-                                        <i className="material-icons md-96">delete</i>
-                                        <br />
-                                        <br />
-                                        Delete
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-
         );
     }
 }
