@@ -25,7 +25,6 @@ const components = {
     "node-section-upload": require("plugins/node/components/section-upload").default,
     "node-section-move": require("plugins/node/components/section-move").default,
     "node-section-share": require("plugins/node/components/section-share").default,
-    "node-section-comments": require("plugins/node/components/section-comments").default,
     "node-section-media": require("plugins/node/components/section-media").default,
     "node-fullscreen": require("plugins/node/components/fullscreen").default,
     "node-page": require("plugins/node/components/page").default,

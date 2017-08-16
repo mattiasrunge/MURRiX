@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import FileWidgetProfilePicture from "plugins/file/components/widget-profile-picture";
 import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
-import NodeWidgetDescription from "plugins/node/components/widget-description";
 import NodeWidgetLabels from "plugins/node/components/widget-labels";
 
 class NodeWidgetHeader extends Component {
@@ -25,28 +24,36 @@ class NodeWidgetHeader extends Component {
 
     render() {
         return (
-            ﻿<div style={{ display: "table" }}>
-                <div style={{ display: "table-cell", padding: 0, verticalAlign: "top" }}>
-                    <div className="float-left" style={{ marginRight: 15 }}>
+            ﻿<div className="node-header" style={{ display: "table" }}>
+                <FileWidgetProfilePicture
+                    renderOverride={(url) => (
+                        <div
+                            className="node-header-background"
+                            style={{ backgroundImage: `url('${url}')` }}
+                        ></div>
+                    )}
+                    size="150"
+                    path={this.state.path}
+                />
+
+                <div style={{ display: "table-cell", padding: 0, verticalAlign: "bottom" }}>
+                    <div className="node-header-picture">
                         <FileWidgetProfilePicture
-                            size="128"
+                            size="150"
                             path={this.state.path}
                         />
                     </div>
-                </div>
-                <div style={{ display: "table-cell", padding: 0, verticalAlign: "top", width: "100%" }}>
-                    <h2>
-                        <NodeWidgetTextAttribute
+                    <div className="node-header-title">
+                        <NodeWidgetLabels
                             nodepath={this.props.nodepath}
-                            name="name"
                         />
-                    </h2>
-                    <NodeWidgetDescription
-                        nodepath={this.props.nodepath}
-                    />
-                    <NodeWidgetLabels
-                        nodepath={this.props.nodepath}
-                    />
+                        <div className="node-header-name">
+                            <NodeWidgetTextAttribute
+                                nodepath={this.props.nodepath}
+                                name="name"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         );

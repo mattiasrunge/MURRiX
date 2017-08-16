@@ -24,15 +24,15 @@ class NodeWidgetSections extends Knockout {
         return (
             <div>
                 <div className="row">
-                    <ul className="nav nav-pills" style={{ marginLeft: "15px", marginRight: "15px", marginTop: "15px", width: "100%" }}>
+                    <ul className="nav nav-pills" style={{ marginLeft: "15px", marginRight: "15px", width: "100%" }}>
                         <Comment text="ko foreach: sections" />
-                            <li className="nav-item" data-bind="css: { active: $root.section() === $data.name || ($index() === 0 && $root.section() === 'default'), 'mr-auto': $index() === $root.sections.length - 1 }">
-                                <a className="nav-link" data-bind="location: { section: $data.name }">
-                                    <i className="material-icons md-18" data-bind="text: $data.icon"></i>
-                                    <span> </span>
-                                    <span data-bind="text: $data.title"></span>
-                                </a>
-                            </li>
+                        <li className="nav-item" data-bind="css: { active: $root.section() === $data.name || ($index() === 0 && $root.section() === 'default'), 'mr-auto': $index() === $root.sections.length - 1 }">
+                            <a className="nav-link" data-bind="location: { section: $data.name }">
+                                <i className="material-icons md-18" data-bind="text: $data.icon"></i>
+                                <span> </span>
+                                <span data-bind="text: $data.title"></span>
+                            </a>
+                        </li>
                         <Comment text="/ko" />
 
                         <li className="nav-item float-right" data-bind="visible: showMove, css: { active: $root.section() === 'move' }, tooltip: 'Move'" data-trigger="hover">
@@ -41,11 +41,6 @@ class NodeWidgetSections extends Knockout {
                             </a>
                         </li>
 
-                        <li className="nav-item float-right" data-bind="css: { active: $root.section() === 'comments' }, tooltip: 'Comments'" data-trigger="hover">
-                            <a className="nav-link" data-bind="location: { section: 'comments' }">
-                                <i className="material-icons md-18" style={{ width: "18px" }}>comments</i>
-                            </a>
-                        </li>
                         <li className="nav-item float-right" data-bind="visible: showUpload, css: { active: $root.section() === 'upload' }, tooltip: 'Upload files'" data-trigger="hover">
                             <a className="nav-link" data-bind="location: { section: 'upload' }">
                                 <i className="material-icons md-18" style={{ width: "18px" }}>file_upload</i>

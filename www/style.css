@@ -83,7 +83,7 @@
     display: block;
 }
 
-h1, h2, h3, h5, h6, .heading {
+h1, h2, h3, h4, h5, h6, .heading {
     font-family: 'Ubuntu', Georgia, Times, serif;
 /*     overflow: hidden; */
 /*     white-space: nowrap; */
@@ -666,10 +666,72 @@ body {
     padding: 0;
 }
 
+.node-header-background {
+  content: "";
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  right: -100px;
+  bottom: -100px;
+  z-index: -1;
+  display: block;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.9;
+
+  -webkit-filter: blur(10px);
+  -moz-filter: blur(10px);
+  -o-filter: blur(10px);
+  -ms-filter: blur(10px);
+  filter: blur(10px);
+}
+
 .node-header {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    min-height: 300px;
+    z-index: 1;
+    vertical-align: bottom;
+}
+
+.node-header-title {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    left: 184px;
+}
+
+.node-header .badge {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.node-header-title a,
+.node-header-title a:hover,
+.node-header-title a:focus,
+.node-header-title a:active {
+    color: white;
+    text-rendering: optimizelegibility;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 1);
+}
+
+.node-header-title .node-header-name {
+    color: white;
+    font-size: 36px;
+    font-weight: 500;
+    text-rendering: optimizelegibility;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 1);
+}
+
+.node-header-picture {
+    float: left;
+    background-color: white;
+    padding: 1px;
     margin: 15px;
-    margin-left: 0;
-    margin-bottom: 0;
+    background-color: white;
+    border: 1px solid #eee;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 }
 
 .node-content {
@@ -1357,10 +1419,23 @@ a:active, button.btn-link:active {
     margin-bottom: auto;
 }
 
+.node-table > tbody > tr > td {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .node-table > tbody > tr:first-child > td {
     border-top: none;
 }
 
+.node-sidebar-section {
+    margin: 15px;
+    margin-top: 30px;
+}
+
+.node-sidebar {
+    padding-left: 0;
+}
 
 #dropTargetContainer {
     position: fixed;

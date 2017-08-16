@@ -5,9 +5,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 import stat from "lib/status";
-import format from "lib/format";
-import NodeWidgetSections from "plugins/node/components/widget-sections";
-import NodeWidgetHeader from "plugins/node/components/widget-header";
+import NodeWidgetPage from "plugins/node/components/widget-page";
 
 class AlbumPage extends Component {
     constructor(props) {
@@ -46,67 +44,24 @@ class AlbumPage extends Component {
     }
 
     render() {
-        const nodepath = ko.unwrap(this.props.nodepath);
-
         return (
-            ﻿<div>
-                <If condition={nodepath}>
-                    <div className="row node-header" style={{ marginTop: "15px" }}>
-                        <div className="col-md-8">
-                            <NodeWidgetHeader
-                                nodepath={this.props.nodepath}
-                            />
-                        </div>
-                        <div className="col-md-4 left-border">
-                            <table className="table node-table text-muted">
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Created</strong></td>
-                                        <td>
-                                            {format.datetimeAgo(ko.unwrap(nodepath.node).properties.birthtime)}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Last modified</strong></td>
-                                        <td>
-                                            {format.datetimeAgo(ko.unwrap(nodepath.node).properties.mtime)}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Number of files</strong></td>
-                                        <td>
-                                            {this.state.count}
-                                        </td>
-                                    </tr>
-                                    {/*  <tr>
-                                        <td><strong>Download files</strong></td>
-                                        <td>
-                                            <a href="#" data-bind="text: nodepath().node().attributes.name.replace(" ", "_") + ".zip""></a> (size) <-- TODO
-                                        </td>
-                                    </tr> */}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div className="node-widget-sections">
-                        <NodeWidgetSections
-                            sections={[
-                                {
-                                    name: "media",
-                                    icon: "photo_library",
-                                    title: "Media",
-                                    react: "node-section-media"
-                                }
-                            ]}
-                            showShareSettings={nodepath.editable}
-                            showUpload={nodepath.editable}
-                            showMove={nodepath.editable}
-                            params={{ nodepath: this.props.nodepath }}
-                        />
-                    </div>
-                </If>
-            </div>
+            <NodeWidgetPage
+                nodepath={this.props.nodepath}
+                sections={[
+                    {
+                        name: "media",
+                        icon: "photo_library",
+                        title: "Media",
+                        react: "node-section-media"
+                    }
+                ]}
+                information={[
+                    {
+                        name: "Number of files",
+                        value: this.state.count
+                    }
+                ]}
+            />
         );
     }
 }

@@ -69,6 +69,10 @@ class FileWidgetProfilePicture extends Component {
             style.height = style.width;
         }
 
+        if (this.props.renderOverride) {
+            return this.props.renderOverride(this.state.url);
+        }
+
         return (
             <div className="file-widget-profile-picture">
                 <If condition={this.state.url}>
@@ -85,13 +89,14 @@ class FileWidgetProfilePicture extends Component {
 
 FileWidgetProfilePicture.defaultProps = {
     responsive: false
-}
+};
 
 FileWidgetProfilePicture.propTypes = {
     path: PropTypes.any,
     size: PropTypes.any,
     responsive: PropTypes.bool,
-    classes: PropTypes.any
+    classes: PropTypes.any,
+    renderOverride: PropTypes.func
 };
 
 export default FileWidgetProfilePicture;

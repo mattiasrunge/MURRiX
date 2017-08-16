@@ -21,7 +21,6 @@ class NodeSectionMedia extends Component {
 
         this.state = {
             loading: false,
-            size: 226,
             days: [],
             dropdownOpen: false
         };
@@ -49,8 +48,8 @@ class NodeSectionMedia extends Component {
             let texts = [];
             let files = [];
             const imageOpts = {
-                width: this.state.size,
-                height: this.state.size,
+                width: this.props.size,
+                height: this.props.size,
                 type: "image"
             };
 
@@ -168,7 +167,7 @@ class NodeSectionMedia extends Component {
                     </div>
                 </If>
                 <For each="item" of={this.state.days}>
-                    <div key={item.time ? item.time.timestamp : 0} style={{ marginLeft: 2, marginRight: 2, marginTop: 2 }}>
+                    <div key={item.time ? item.time.timestamp : 0} style={{ marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3 }}>
                         <div style={{ marginLeft: 13, marginRight: 13 }}>
                             <If condition={item.time && item.time.timestamp}>
                                 <h3>
@@ -192,16 +191,16 @@ class NodeSectionMedia extends Component {
                                 <LazyLoad
                                     key={file.node._id}
                                     className="float-left grid-picture-container"
-                                    height={this.state.size + 1}
-                                    width={this.state.size + 1}
-                                    offsetVertical={this.state.size}
+                                    height={this.props.size + 1}
+                                    width={this.props.size + 1}
+                                    offsetVertical={this.props.size}
                                 >
                                     <span
                                         style={{
                                             display: "inline-block",
                                             position: "relative",
-                                            width: this.state.size,
-                                            height: this.state.size
+                                            width: this.props.size,
+                                            height: this.props.size
                                         }}
                                         className="grid-picture"
                                     >
@@ -266,8 +265,13 @@ class NodeSectionMedia extends Component {
     }
 }
 
+NodeSectionMedia.defaultProps = {
+    size: 213
+};
+
 NodeSectionMedia.propTypes = {
-    nodepath: PropTypes.func
+    nodepath: PropTypes.func,
+    size: PropTypes.number
 };
 
 export default NodeSectionMedia;
