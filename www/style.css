@@ -677,7 +677,7 @@ body {
   display: block;
   background-position: center;
   background-size: cover;
-  opacity: 0.9;
+  background-color: #7D93FF;
 
   -webkit-filter: blur(10px);
   -moz-filter: blur(10px);
@@ -696,6 +696,19 @@ body {
     vertical-align: bottom;
 }
 
+.node-header-menu {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.node-header-menu a {
+    background: none;
+    border: none;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
 .node-header-title {
     position: absolute;
     bottom: 15px;
@@ -703,14 +716,28 @@ body {
     left: 184px;
 }
 
+.node-header-type {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+.node-header-type i.material-icons {
+    color: white;
+    text-rendering: optimizelegibility;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 1);
+    font-size: 155px;
+    opacity: 0.5;
+}
+
 .node-header .badge {
     border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.node-header-title a,
-.node-header-title a:hover,
-.node-header-title a:focus,
-.node-header-title a:active {
+.node-header a,
+.node-header a:hover,
+.node-header a:focus,
+.node-header a:active {
     color: white;
     text-rendering: optimizelegibility;
     text-shadow: 0 0 3px rgba(0, 0, 0, 1);
@@ -1431,6 +1458,12 @@ a:active, button.btn-link:active {
 .node-sidebar-section {
     margin: 15px;
     margin-top: 30px;
+}
+
+.node-sidebar-section-title {
+    padding-right: 10px !important;
+    white-space: nowrap;
+    font-weight: bold;
 }
 
 .node-sidebar {

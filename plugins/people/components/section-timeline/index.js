@@ -16,13 +16,20 @@ class PeopleSectionTimeline extends Knockout {
 
         model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
         model.loading = stat.create();
+        model.reload = ko.observable(false);
+
+        model.createTitle = ko.observable("");
+        model.createType = ko.observable("generic");
+        model.createText = ko.observable("");
+        model.createTime = ko.observable(false);
+        model.createPersonPath = ko.observable(false);
 
         model.texts = ko.asyncComputed([], async (setter) => {
             if (!model.nodepath() || model.nodepath() === "") {
                 return [];
             }
 
-            this.props.reload();
+            model.reload();
 
             setter([]);
 
@@ -62,7 +69,7 @@ class PeopleSectionTimeline extends Knockout {
                 return [];
             }
 
-            this.props.reload();
+            model.reload();
 
             setter([]);
 
@@ -110,6 +117,61 @@ class PeopleSectionTimeline extends Knockout {
 
         model.createShow = () => {
             $("#createPeopleEventModal").modal("show");
+        };
+
+        model.createEvent = () => {
+            console.log("type", model.createType());
+            console.log("title", model.createTitle());
+            console.log("time", model.createTime());
+            console.log("person", model.createPersonPath());
+            console.log("text", model.createText());
+
+            let basepath = model.nodepath().path + "/texts";
+            let abspath = "";
+            let attributes = {
+                type: model.createType(),
+                name: model.createTitle().trim(),
+                text: model.createText().trim(),
+                when: {
+                    manual: model.createTime()
+                }
+            };
+
+            if (attributes.name === "") {
+                stat.printError("Name can not be empty");
+                return;
+            }
+
+            if (!attributes.when.manual) {
+                throw new Error("An event must must have date/time set");
+            }
+
+            api.node.getUniqueName(basepath, attributes.name)
+            .then((name) => {
+                abspath = basepath + "/" + name;
+                return api.text.mktext(abspath, attributes);
+            })
+            .then(() => {
+                if (model.createPersonPath()) {
+                    return api.vfs.link(abspath, model.createPersonPath() + "/texts");
+                }
+            })
+            .then(() => {
+                model.createType("generic");
+                model.createTitle("");
+                model.createTime(false);
+                model.createPersonPath(false);
+                model.createText("");
+
+                $("#createPeopleEventModal").modal("hide");
+
+                model.reload(!model.reload());
+
+                stat.printSuccess(attributes.name + " successfully created!");
+            })
+            .catch((error) => {
+                stat.printError(error);
+            });
         };
 
         model.dispose = () => {
@@ -183,6 +245,52 @@ class PeopleSectionTimeline extends Knockout {
                         </tr>
                     </tbody>
                 </table>
+                <form data-bind="submit: createEvent, moveToBody: true">
+                    <div className="modal" id="createPeopleEventModal" tabIndex="-1" role="dialog">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">
+                                        Create new event
+                                    </h5>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="form-group">
+                                        <label>Type</label>
+                                        <select className="form-control" data-bind="value: createType">
+                                            <option value="generic">Generic</option>
+                                            <option value="birth">Birth</option>
+                                            <option value="engagement">Engagement</option>
+                                            <option value="marriage">Marriage</option>
+                                            <option value="death">Death</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Title</label>
+                                        <input type="text" className="form-control" placeholder="Write a name" data-bind="textInput: createTitle" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Date and time</label>
+                                        <input type="text" className="form-control" data-bind="timeInput: createTime" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Other person connected to model event</label>
+                                        <input type="text" className="form-control" placeholder="Select a person" data-bind="nodeselect: { root: '/people', path: createPersonPath }" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Text</label>
+                                        <textarea rows="6" className="form-control" placeholder="Write a description" data-bind="textInput: createText"></textarea>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" className="btn btn-primary">Create</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
 
         );

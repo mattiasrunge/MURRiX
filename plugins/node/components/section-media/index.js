@@ -58,9 +58,16 @@ class NodeSectionMedia extends Component {
                 files = await api.file.list(`${nodepath.path}/files`, { image: imageOpts });
             } else if (node.properties.type === "p") {
                 files = await api.people.findByTags(nodepath.path, { image: imageOpts });
+            } else if (node.properties.type === "l") {
+                files = await api.location.findByLinks(nodepath.path, { image: imageOpts });
+            } else if (node.properties.type === "c") {
+                files = await api.camera.findByLinks(nodepath.path, { image: imageOpts });
             } else {
                 console.error("Don't know what data to load for this type", node, nodepath);
             }
+
+            console.log("unsorted files", files);
+            console.log("unsorted  texts", texts);
 
             utils.sortNodeList(texts);
             utils.sortNodeList(files);

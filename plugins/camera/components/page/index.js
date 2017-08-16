@@ -1,115 +1,162 @@
 
+import ko from "knockout";
+import loc from "lib/location";
+import api from "api.io-client";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
+import stat from "lib/status";
+import NodeWidgetPage from "plugins/node/components/widget-page";
+import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
+import NodeWidgetSelectAttribute from "plugins/node/components/widget-select-attribute";
 
-const ko = require("knockout");
-const utils = require("lib/utils");
+class CameraPage extends Component {
+    constructor(props) {
+        super(props);
 
-class CameraPage extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = this.props.nodepath;
-        model.section = this.props.section;
-
-        model.ownersPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/owners" : false);
-        model.owners = ko.nodepathList(model.ownersPath, { noerror: true });
-
-        model.dispose = () => {
-            model.owners.dispose();
+        this.state = {
+            owners: []
         };
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            this.props.nodepath.subscribe((np) => this.load(np))
+        ]);
+
+        this.load(ko.unwrap(this.props.nodepath));
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.nodepath !== nextProps.nodepath) {
+            this.load(ko.unwrap(nextProps.nodepath));
+        }
+    }
+
+    async load(nodepath) {
+        const state = {
+            owners: []
+        };
+
+        if (!nodepath) {
+            return this.setState(state);
+        }
+
+        const node = ko.unwrap(nodepath.node);
+
+        if (!node) {
+            return this.setState(state);
+        }
+
+        try {
+            state.owners = await api.vfs.list(`${nodepath.path}/owners`, { noerror: true });
+        } catch (error) {
+            stat.printError(error);
+        }
+
+        this.setState(state);
+    }
+
+    onOwner(event, owner) {
+        event.preventDefault();
+
+        loc.goto({ page: "node", path: owner.path });
+    }
+
+    render() {
         return (
-            ﻿<div className="fadeInDown animated">
-                <div className="row node-header" data-bind="if: nodepath" style={{ marginTop: "15px" }}>
-                    <div className="col-md-8">
-                         <div data-bind="react: { name: 'node-widget-header', params: { nodepath: nodepath } }"></div>
-                    </div>
-                    <div className="col-md-4 left-border">
-                        <table className="table node-table text-muted">
-                            <tbody>
-                                <tr>
-                                    <td><strong>Created</strong></td>
-                                    <td data-bind="datetimeAgo: nodepath().node().properties.birthtime"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Last modified</strong></td>
-                                    <td data-bind="datetimeAgo: nodepath().node().properties.mtime"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Type</strong></td>
-                                    <td>
-                                        <div data-bind="react: { name: 'node-widget-select-attribute', params: { nodepath: nodepath, name: 'type', options: [
-                                            {
-                                                name: 'offset_fixed',
-                                                title: 'Fixed offset'
-                                            },
-                                            {
-                                                name: 'offset_relative_to_position',
-                                                title: 'Offset relative to the position'
-                                            }
-                                        ]} }"></div>
-                                    </td>
-                                </tr>
-                                <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
-                                    <td><strong>Offset UTC</strong></td>
-                                    <td>
-                                        <div data-bind="react: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'utcOffset' } }"></div>
-                                    </td>
-                                </tr>
-                                <tr data-bind="visible: nodepath().node().attributes.type === 'offset_fixed'">
-                                    <td><strong>Offset description</strong></td>
-                                    <td>
-                                        <div data-bind="react: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'offsetDescription' } }"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Automatic daylight savings</strong></td>
-                                    <td>
-                                        <div data-bind="react: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'deviceAutoDst' } }"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Serial number</strong></td>
-                                    <td>
-                                        <div data-bind="react: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'serialNumber' } }"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Owners</strong></td>
-                                    <td data-bind="foreach: owners">
-                                        <div><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }, text: $data.node().attributes.name"></a></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                 <div data-bind="react: { name: 'node-widget-sections', params: {
-                     section: section,
-                     sections: [
-                         {
-                             name: 'media',
-                             icon: 'photo_library',
-                             title: 'Media',
-                             react: 'node-section-media'
-                         }
-                     ],
-                     params: {
-                         nodepath: nodepath
-                     }
-                 } }" className="node-widget-sections"></div>
-            </div>
-
+            <NodeWidgetPage
+                nodepath={this.props.nodepath}
+                sections={[
+                    {
+                        name: "media",
+                        icon: "photo_library",
+                        title: "Media",
+                        react: "node-section-media"
+                    }
+                ]}
+                information={[
+                    {
+                        name: "Type",
+                        value: (
+                            <NodeWidgetSelectAttribute
+                                nodepath={this.props.nodepath}
+                                name="type"
+                                options={[
+                                    {
+                                        name: "offset_fixed",
+                                        title: "Fixed offset"
+                                    },
+                                    {
+                                        name: "offset_relative_to_position",
+                                        title: "Offset relative to the position"
+                                    }
+                                ]}
+                            />
+                        )
+                    },
+                    ko.unwrap(ko.unwrap(this.props.nodepath).node).attributes.type === "offset_fixed" &&
+                    {
+                        name: "Offset UTC",
+                        value: (
+                            <NodeWidgetTextAttribute
+                                nodepath={this.props.nodepath}
+                                name="utcOffset"
+                            />
+                        )
+                    },
+                    ko.unwrap(ko.unwrap(this.props.nodepath).node).attributes.type === "offset_fixed" &&
+                    {
+                        name: "Offset description",
+                        value: (
+                            <NodeWidgetTextAttribute
+                                nodepath={this.props.nodepath}
+                                name="offsetDescription"
+                            />
+                        )
+                    },
+                    {
+                        name: "Auto DST",
+                        value: (
+                            <NodeWidgetTextAttribute
+                                nodepath={this.props.nodepath}
+                                name="deviceAutoDst"
+                            />
+                        )
+                    },
+                    {
+                        name: "Serial number",
+                        value: (
+                            <NodeWidgetTextAttribute
+                                nodepath={this.props.nodepath}
+                                name="serialNumber"
+                            />
+                        )
+                    },
+                    {
+                        name: "Owners",
+                        value: (
+                            <div>
+                                <For each="item" of={this.state.owners}>
+                                    <a
+                                        href="#"
+                                        style={{ display: "block" }}
+                                        onClick={(e) => this.onOwner(e, item)}
+                                    >
+                                        {item.node.attributes.name}
+                                    </a>
+                                </For>
+                            </div>
+                        )
+                    }
+                ]}
+            />
         );
     }
 }
+
+CameraPage.propTypes = {
+    nodepath: PropTypes.func
+};
 
 export default CameraPage;

@@ -1,114 +1,137 @@
 
+import ko from "knockout";
+import loc from "lib/location";
+import api from "api.io-client";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import PropTypes from "prop-types";
+import Component from "lib/component";
+import stat from "lib/status";
+import NodeWidgetPage from "plugins/node/components/widget-page";
+import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
 
-const ko = require("knockout");
-const api = require("api.io-client");
-const utils = require("lib/utils");
-const stat = require("lib/status");
+class LocationPage extends Component {
+    constructor(props) {
+        super(props);
 
-class LocationPage extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = this.props.nodepath;
-        model.section = this.props.section;
-
-        model.position = ko.asyncComputed(false, async () => {
-            if (!model.nodepath()) {
-                return false;
-            }
-
-            if (!model.nodepath().node().attributes.address) {
-                return false;
-            }
-
-            return await api.lookup.getPositionFromAddress(model.nodepath().node().attributes.address.replace("<br>", "\n"));
-        }, (error) => {
-            stat.printError(error);
-            return false;
-        });
-
-        model.residentsPath = ko.pureComputed(() => model.nodepath() ? model.nodepath().path + "/residents" : false);
-        model.residents = ko.nodepathList(model.residentsPath, { noerror: true });
-
-        model.dispose = () => {
-            model.residents.dispose();
+        this.state = {
+            position: false,
+            residents: []
         };
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            this.props.nodepath.subscribe((np) => this.load(np))
+        ]);
+
+        this.load(ko.unwrap(this.props.nodepath));
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.nodepath !== nextProps.nodepath) {
+            this.load(ko.unwrap(nextProps.nodepath));
+        }
+    }
+
+    async load(nodepath) {
+        const state = {
+            position: false,
+            residents: []
+        };
+
+        if (!nodepath) {
+            return this.setState(state);
+        }
+
+        const node = ko.unwrap(nodepath.node);
+
+        if (!node) {
+            return this.setState(state);
+        }
+
+        if (node && node.attributes.address) {
+            try {
+                state.position = await api.lookup.getPositionFromAddress(node.attributes.address.replace("<br>", "\n"));
+            } catch (error) {
+                stat.printError(error);
+            }
+        }
+
+        try {
+            state.residents = await api.vfs.list(`${nodepath.path}/residents`, { noerror: true });
+        } catch (error) {
+            stat.printError(error);
+        }
+
+        this.setState(state);
+    }
+
+    onResident(event, resident) {
+        event.preventDefault();
+
+        loc.goto({ page: "node", path: resident.path });
+    }
+
+    render() {
         return (
-            ﻿<div className="fadeInDown animated">
-                <div className="row node-header" data-bind="if: nodepath" style={{ marginTop: "15px" }}>
-                    <div className="col-md-8">
-                        <div data-bind="react: { name: 'node-widget-header', params: { nodepath: nodepath } }"></div>
-                    </div>
-                    <div className="col-md-4 left-border">
-                        <table className="table node-table text-muted">
-                            <tbody>
-                                <tr>
-                                    <td><strong>Created</strong></td>
-                                    <td data-bind="datetimeAgo: nodepath().node().properties.birthtime"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Last modified</strong></td>
-                                    <td data-bind="datetimeAgo: nodepath().node().properties.mtime"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Address</strong></td>
-                                    <td>
-                                        <div data-bind="react: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'address' } }"></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Longitude</strong></td>
-                                    <td data-bind="text: position().longitude"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Latitude</strong></td>
-                                    <td data-bind="text: position().latitude"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Residents</strong></td>
-                                    <td data-bind="foreach: residents">
-                                        <div><a href="#" data-bind="location: { page: 'node', path: $data.path, section: null }, text: $data.node().attributes.name"></a></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div data-bind="react: { name: 'node-widget-sections', params: {
-                    section: section,
-                    sections: [
-                        {
-                            name: 'map',
-                            icon: 'location_on',
-                            title: 'Map',
-                            react: 'location-section-map'
-                        },
-                        {
-                            name: 'media',
-                            icon: 'photo_library',
-                            title: 'Media',
-                            react: 'node-section-media'
-                        }
-                    ],
-                    params: {
-                        nodepath: nodepath,
-                        position: position
+            <NodeWidgetPage
+                nodepath={this.props.nodepath}
+                sections={[
+                    {
+                        name: "map",
+                        icon: "location_on",
+                        title: "Map",
+                        react: "location-section-map"
+                    },
+                    {
+                        name: "media",
+                        icon: "photo_library",
+                        title: "Media",
+                        react: "node-section-media"
                     }
-                } }" className="node-widget-sections"></div>
-            </div>
-
+                ]}
+                information={[
+                    {
+                        name: "Address",
+                        value: (
+                            <NodeWidgetTextAttribute
+                                nodepath={this.props.nodepath}
+                                name="address"
+                            />
+                        )
+                    },
+                    {
+                        name: "Longitude",
+                        value: this.state.position.longitude || "No value"
+                    },
+                    {
+                        name: "Latitude",
+                        value: this.state.position.latitude || "No value"
+                    },
+                    {
+                        name: "Residents",
+                        value: (
+                            <div>
+                                <For each="item" of={this.state.residents}>
+                                    <a
+                                        href="#"
+                                        style={{ display: "block" }}
+                                        onClick={(e) => this.onResident(e, item)}
+                                    >
+                                        {item.node.attributes.name}
+                                    </a>
+                                </For>
+                            </div>
+                        )
+                    }
+                ]}
+            />
         );
     }
 }
+
+LocationPage.propTypes = {
+    nodepath: PropTypes.func
+};
 
 export default LocationPage;

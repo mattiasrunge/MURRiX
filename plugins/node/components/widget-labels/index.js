@@ -155,7 +155,7 @@ class NodeWidgetLabels extends Component {
                 <If condition={this.state.labels.length === 0 && !this.state.editing}>
                     <If condition={this.state.editable}>
                         <a
-                            style={{ fontStyle: "italic", color: "#999", cursor: "text" }}
+                            style={{ fontStyle: "italic", cursor: "text" }}
                             href="#"
                             onClick={(e) => this.onEdit(e)}
                         >
