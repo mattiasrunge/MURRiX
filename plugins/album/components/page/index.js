@@ -30,7 +30,7 @@ class AlbumPage extends Component {
         }
 
         try {
-            const node = await api.vfs.resolve(`${nodepath.path}/files`);
+            const node = await api.vfs.resolve(`${nodepath.path}/files`, { noerror: true });
 
             if (!node) {
                 return this.setState({ count: 0 });
