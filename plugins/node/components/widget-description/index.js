@@ -1,25 +1,25 @@
 
 import React from "react";
-import Knockout from "components/knockout";
+import Component from "lib/component";
+import PropTypes from "prop-types";
+import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
 
-class NodeWidgetDescription extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = this.props.nodepath;
-
-
-        return model;
-    }
-
-    getTemplate() {
+class NodeWidgetDescription extends Component {
+    render() {
         return (
-            ﻿<p className="node-widget-description">
-                <span data-bind="react: { name: 'node-widget-text-attribute', params: { nodepath: nodepath, name: 'description', html: true } }"></span>
+            <p className="node-widget-description">
+                <NodeWidgetTextAttribute
+                    nodepath={this.props.nodepath}
+                    name="description"
+                    html={true}
+                />
             </p>
-
         );
     }
 }
+
+NodeWidgetDescription.propTypes = {
+    nodepath: PropTypes.any
+};
 
 export default NodeWidgetDescription;

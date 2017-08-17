@@ -14,18 +14,17 @@ class NodeWidgetHeader extends Component {
 
         this.state = {
             nodepath: ko.unwrap(props.nodepath),
-            dropdownOpen: false
+            section: loc.get("section") || "default"
         };
     }
 
     componentDidMount() {
         this.addDisposables([
-            this.props.nodepath.subscribe((nodepath) => this.setState({ nodepath }))
+            this.props.nodepath.subscribe((nodepath) => this.setState({ nodepath })),
+            loc.subscribe(({ section }) => this.setState({
+                section: section || "default"
+            }))
         ]);
-    }
-
-    toggle() {
-        this.setState({ dropdownOpen: !this.state.dropdownOpen });
     }
 
     onClick(event, section) {
@@ -38,7 +37,23 @@ class NodeWidgetHeader extends Component {
         const node = this.state.nodepath ? ko.unwrap(this.state.nodepath.node) : false;
 
         return (
-            ﻿<div className="node-header" style={{ display: "table" }}>
+            <div className="node-header" style={{ display: "table" }}>
+                <div
+                    className="node-header-menubar"
+                >
+                    <For each="item" index="idx" of={this.props.sections}>
+                        <a
+                            key={item.name}
+                            href="#"
+                            onClick={(e) => this.onClick(e, item.name)}
+                            className={`nav-item ${this.state.section === item.name || (idx === 0 && this.state.section === "default") ? "active" : ""}`}
+                        >
+                            <i className="material-icons md-14">{item.icon}</i>
+                            &nbsp;&nbsp;&nbsp;
+                            {item.title}
+                        </a>
+                    </For>
+                </div>
                 <If condition={this.state.nodepath.editable}>
                     <div className="node-header-menu">
                         <If condition={node && node.properties.type === "a"}>
@@ -76,8 +91,9 @@ class NodeWidgetHeader extends Component {
                     size="150"
                     path={this.state.nodepath.path}
                 />
+                <div className="node-header-background-gradient"></div>
 
-                <div style={{ display: "table-cell", padding: 0, verticalAlign: "bottom" }}>
+                <div className="node-header-title-container">
                     <div className="node-header-type">
                         <If condition={node && node.properties.type === "a"}>
                             <i className="material-icons">photo_album</i>

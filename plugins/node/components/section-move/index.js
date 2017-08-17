@@ -101,7 +101,7 @@ class NodeSectionMove extends Component {
 
     render() {
         return (
-            ﻿<div className="fadeInDown animated node-content" style={{ position: "relative" }}>
+            <div className="fadeInDown animated node-content" style={{ position: "relative" }}>
                 <div style={{ position: "absolute", right: "0", top: "0", zIndex: "5" }} data-bind="visible: fileInput().length > 0">
                     <table style={{ display: "inline-block" }}>
                         <tbody>

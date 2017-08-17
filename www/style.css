@@ -145,7 +145,6 @@ body {
 
 [contenteditable=true]:focus {
     display: block;
-    background-color: #FFFEDF;
     border: none;
     outline: none;
 }
@@ -677,23 +676,34 @@ body {
 }
 
 .node-header-background {
-  content: "";
-  position: absolute;
-  top: -100px;
-  left: -100px;
-  right: -100px;
-  bottom: -100px;
-  z-index: -1;
-  display: block;
-  background-position: center;
-  background-size: cover;
-  background-color: #9AA6FF;
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    z-index: -2;
+    display: block;
+    background-position: center;
+    background-size: cover;
+    background-color: #9AA6FF;
+    -webkit-filter: blur(10px);
+    -moz-filter: blur(10px);
+    -o-filter: blur(10px);
+    -ms-filter: blur(10px);
+    filter: blur(10px);
+}
 
-  -webkit-filter: blur(10px);
-  -moz-filter: blur(10px);
-  -o-filter: blur(10px);
-  -ms-filter: blur(10px);
-  filter: blur(10px);
+.node-header-background-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    display: block;
+    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 100%);
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 100%);
 }
 
 .node-header {
@@ -701,10 +711,37 @@ body {
     margin: 0;
     width: 100%;
     overflow: hidden;
-    min-height: 300px;
+    min-height: 350px;
     z-index: 1;
     vertical-align: bottom;
 }
+
+.node-header-menubar {
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+}
+
+.node-header-menubar a {
+    display: inline-block;
+    padding: 4px 30px 0 30px;
+    font-weight: 400;
+    font-size: 16px;
+    height: 35px;
+    border-bottom: 3px solid transparent;
+    margin-bottom: 3px;
+    margin-right: 3px;
+}
+
+.node-header-menubar a:hover {
+    border-bottom: 3px solid rgba(255,255,255,0.4);
+}
+
+.node-header-menubar a.active,
+.node-header-menubar a.focus  {
+    border-bottom: 3px solid white;
+}
+
 
 .node-header-menu {
     position: absolute;
@@ -721,7 +758,7 @@ body {
 
 .node-header-title {
     position: absolute;
-    bottom: 15px;
+    bottom: 55px;
     right: 15px;
     left: 184px;
 }
@@ -735,7 +772,7 @@ body {
 .node-header-type i.material-icons {
     color: white;
     text-rendering: optimizelegibility;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 1);
+    text-shadow: 0 0 2px rgba(0, 0, 0, 1);
     font-size: 155px;
     opacity: 0.5;
 }
@@ -750,7 +787,14 @@ body {
 .node-header a:active {
     color: white;
     text-rendering: optimizelegibility;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 1);
+    text-shadow: 0 0 2px black;
+}
+
+.node-header-title-container {
+    display: table-cell;
+    padding: 0;
+    padding-bottom: 50px;
+    vertical-align: bottom;
 }
 
 .node-header-title .node-header-name {
@@ -818,12 +862,16 @@ a, button.btn-link {
     color: #303f9f;
 }
 
-a:hover, button.btn-link:hover {
+a:hover,
+button.btn-link:hover,
+a:focus,
+button.btn-link:focus {
     color: #830055;
     text-decoration: none;
 }
 
-a:active, button.btn-link:active {
+a:active,
+button.btn-link:active {
     color: #B32381;
 }
 

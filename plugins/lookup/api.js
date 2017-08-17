@@ -61,7 +61,7 @@ const lookup = api.register("lookup", {
         return data.results[0].formatted_address; // jshint ignore:line
     }),
     getPositionFromAddress: api.export(async (session, address) => {
-        return { latitude: 57.66006619999999, longitude: 11.879761 }; // TEMP
+        //return { latitude: 57.66006619999999, longitude: 11.879761 }; // TEMP
         let options = {
             uri: "https://maps.googleapis.com/maps/api/geocode/json",
             qs: {

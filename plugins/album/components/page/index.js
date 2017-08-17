@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import stat from "lib/status";
 import NodeWidgetPage from "plugins/node/components/widget-page";
+import NodeSectionMedia from "plugins/node/components/section-media";
 
 class AlbumPage extends Component {
     constructor(props) {
@@ -52,7 +53,7 @@ class AlbumPage extends Component {
                         name: "media",
                         icon: "photo_library",
                         title: "Media",
-                        react: "node-section-media"
+                        Element: NodeSectionMedia
                     }
                 ]}
                 information={[

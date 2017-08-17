@@ -12,6 +12,10 @@ import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribu
 import PeopleWidgetParent from "plugins/people/components/widget-parent";
 import PeopleWidgetPartner from "plugins/people/components/widget-partner";
 import NodeWidgetSelectAttribute from "plugins/node/components/widget-select-attribute";
+import NodeSectionMedia from "plugins/node/components/section-media";
+import NodeSectionContact from "plugins/people/components/section-contact";
+import NodeSectionFamily from "plugins/people/components/section-family";
+import NodeSectionTimeline from "plugins/people/components/section-timeline";
 
 class PeoplePage extends Component {
     constructor(props) {
@@ -75,25 +79,25 @@ class PeoplePage extends Component {
                         name: "timeline",
                         icon: "event",
                         title: "Timeline",
-                        react: "people-section-timeline"
+                        Element: NodeSectionTimeline
                     },
                     {
                         name: "media",
                         icon: "photo_library",
                         title: "Media",
-                        react: "node-section-media"
+                        Element: NodeSectionMedia
                     },
                     {
                         name: "contact",
                         icon: "contact_mail",
                         title: "Contact",
-                        react: "people-section-contact"
+                        Element: NodeSectionContact
                     },
                     {
                         name: "family",
                         icon: "people",
                         title: "Family",
-                        react: "people-section-family"
+                        Element: NodeSectionFamily
                     }
                 ]}
                 information={[

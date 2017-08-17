@@ -8,6 +8,8 @@ import Component from "lib/component";
 import stat from "lib/status";
 import NodeWidgetPage from "plugins/node/components/widget-page";
 import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
+import LocatationSectionMap from "plugins/location/components/section-map";
+import NodeSectionMedia from "plugins/node/components/section-media";
 
 class LocationPage extends Component {
     constructor(props) {
@@ -81,13 +83,13 @@ class LocationPage extends Component {
                         name: "map",
                         icon: "location_on",
                         title: "Map",
-                        react: "location-section-map"
+                        Element: LocatationSectionMap
                     },
                     {
                         name: "media",
                         icon: "photo_library",
                         title: "Media",
-                        react: "node-section-media"
+                        Element: NodeSectionMedia
                     }
                 ]}
                 information={[

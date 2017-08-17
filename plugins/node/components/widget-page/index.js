@@ -14,7 +14,7 @@ class WidgetPage extends Component {
         const nodepath = ko.unwrap(this.props.nodepath);
 
         return (
-            ﻿<div>
+            <div>
                 <If condition={nodepath}>
                     <NodeWidgetHeader
                         nodepath={this.props.nodepath}
@@ -25,7 +25,7 @@ class WidgetPage extends Component {
                             <div className="node-widget-sections">
                                 <NodeWidgetSections
                                     sections={this.props.sections}
-                                    params={{ nodepath: this.props.nodepath }}
+                                    nodepath={this.props.nodepath}
                                 />
                             </div>
                         </div>

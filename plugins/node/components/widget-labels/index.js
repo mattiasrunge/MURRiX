@@ -53,18 +53,26 @@ class NodeWidgetLabels extends Component {
         const np = ko.unwrap(nodepath);
 
         if (!np) {
-            return [];
+            return {
+                list: [],
+                string: ""
+            };
         }
 
         const node = ko.unwrap(np.node);
 
         if (!node) {
-            return [];
+            return {
+                list: [],
+                string: ""
+            };
         }
 
+        const labels = node.attributes.labels || [];
+
         return {
-            list: node.attributes.labels,
-            string: node.attributes.labels.filter((l) => l).join(" ")
+            list: labels,
+            string: labels.filter((l) => l).join(" ")
         };
     }
 

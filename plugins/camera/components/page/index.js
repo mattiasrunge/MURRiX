@@ -9,6 +9,7 @@ import stat from "lib/status";
 import NodeWidgetPage from "plugins/node/components/widget-page";
 import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
 import NodeWidgetSelectAttribute from "plugins/node/components/widget-select-attribute";
+import NodeSectionMedia from "plugins/node/components/section-media";
 
 class CameraPage extends Component {
     constructor(props) {
@@ -72,7 +73,7 @@ class CameraPage extends Component {
                         name: "media",
                         icon: "photo_library",
                         title: "Media",
-                        react: "node-section-media"
+                        Element: NodeSectionMedia
                     }
                 ]}
                 information={[

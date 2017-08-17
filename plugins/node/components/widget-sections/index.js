@@ -1,53 +1,96 @@
 
 import React from "react";
-import Knockout from "components/knockout";
+import Component from "lib/component";
+import PropTypes from "prop-types";
 import loc from "lib/location";
-import ko from "knockout";
+import NodeSectionUpload from "plugins/node/components/section-upload";
+import NodeSectionShare from "plugins/node/components/section-share";
+import NodeSectionMove from "plugins/node/components/section-move";
 
-class NodeWidgetSections extends Knockout {
-    async getModel() {
-        const model = {};
+class NodeWidgetSections extends Component {
+    constructor(props) {
+        super(props);
 
-        model.params = this.props.params;
-        model.section = ko.pureComputed(() => ko.unwrap(loc.current().section) || "default");
-        model.sections = this.props.sections;
-
-        return model;
+        this.state = {
+            section: loc.get("section") || "default"
+        };
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            loc.subscribe(({ section }) => this.setState({
+                section: section || "default"
+            }))
+        ]);
+    }
+
+    onClick(event, section) {
+        event.preventDefault();
+
+        loc.goto({ section: section.name });
+    }
+
+    render() {
+        let section = this.props.sections.find((s) => s.name === this.state.section);
+
+        if (!section && this.state.section === "default" && this.props.sections.length > 0) {
+            section = this.props.sections[0];
+        }
+
         return (
             <div>
-                <div className="row">
-                    <ul className="nav nav-pills" style={{ marginLeft: "15px", marginRight: "15px", width: "100%" }} data-bind="foreach: sections">
-                        <li className="nav-item" data-bind="css: { active: $root.section() === $data.name || ($index() === 0 && $root.section() === 'default'), 'mr-auto': $index() === $root.sections.length - 1 }">
-                            <a className="nav-link" data-bind="location: { section: $data.name }">
-                                <i className="material-icons md-18" data-bind="text: $data.icon"></i>
-                                <span> </span>
-                                <span data-bind="text: $data.title"></span>
-                            </a>
-                        </li>
+                <div className="row" style={{ display: "none" }}>
+                    <ul
+                        className="nav nav-pills"
+                        style={{ marginLeft: "15px", marginRight: "15px", width: "100%" }}
+                    >
+                        <For each="item" index="idx" of={this.props.sections}>
+                            <li
+                                key={item.name}
+                                className={`nav-item ${this.state.section === item.name || (idx === 0 && this.state.section === "default") ? "active" : ""} ${idx === this.props.sections.length - 1 ? "mr-auto" : ""}`}
+                            >
+                                <a
+                                    href="#"
+                                    className="nav-link"
+                                    onClick={(e) => this.onClick(e, item)}
+                                >
+                                    <i className="material-icons md-18">{item.icon}</i>
+                                    {" "}
+                                    {item.title}
+                                </a>
+                            </li>
+                        </For>
                     </ul>
                 </div>
 
-                <div data-bind="foreach: sections">
-                    <div data-bind="if: $root.section() === $data.name || ($index() === 0 && $root.section() === 'default')">
-                        <div data-bind="react: { name: $data.react, params: $root.params }"></div>
-                    </div>
-                </div>
-                <div data-bind="if: $root.section() === 'upload'">
-                    <div data-bind="react: { name: 'node-section-upload', params: $root.params }"></div>
-                </div>
-                <div data-bind="if: $root.section() === 'share'">
-                    <div data-bind="react: { name: 'node-section-share', params: $root.params }"></div>
-                </div>
-                <div data-bind="if: $root.section() === 'move'">
-                    <div data-bind="react: { name: 'node-section-move', params: $root.params }"></div>
-                </div>
+                <If condition={section}>
+                    <section.Element
+                        nodepath={this.props.nodepath}
+                    />
+                </If>
+                <If condition={this.state.section === "upload"}>
+                    <NodeSectionUpload
+                        nodepath={this.props.nodepath}
+                    />
+                </If>
+                <If condition={this.state.section === "share"}>
+                    <NodeSectionShare
+                        nodepath={this.props.nodepath}
+                    />
+                </If>
+                <If condition={this.state.section === "move"}>
+                    <NodeSectionMove
+                        nodepath={this.props.nodepath}
+                    />
+                </If>
             </div>
-
         );
     }
 }
+
+NodeWidgetSections.propTypes = {
+    sections: PropTypes.array.isRequired,
+    nodepath: PropTypes.any
+};
 
 export default NodeWidgetSections;
