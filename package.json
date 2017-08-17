@@ -65,6 +65,7 @@
     "react-addons-transition-group": "^15.4.2",
     "react-bootstrap-slider": "^2.0.0",
     "react-bootstrap-typeahead": "^2.0.0-alpha.3",
+    "react-content-editable": "^1.0.1",
     "react-dom": "^15.4.2",
     "react-lazy-load": "^3.0.12",
     "react-notification": "^6.7.1",

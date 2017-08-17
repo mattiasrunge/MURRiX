@@ -38,7 +38,7 @@ class PeopleWidgetPartner extends Component {
 
     async load(nodepath) {
         if (!nodepath) {
-            return this.setState({ editable: nodepath.editable, partner: null });
+            return this.setState({ editable: false, partner: null });
         }
 
         try {

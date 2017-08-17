@@ -83,6 +83,14 @@
     display: block;
 }
 
+.node-widget-select-attribute a {
+    cursor: pointer;
+}
+
+.node-widget-select-attribute a:hover {
+    color: #B32381 !important;
+}
+
 h1, h2, h3, h4, h5, h6, .heading {
     font-family: 'Ubuntu', Georgia, Times, serif;
 /*     overflow: hidden; */
