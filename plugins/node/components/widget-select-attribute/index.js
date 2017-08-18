@@ -75,15 +75,15 @@ class NodeWidgetSelectAttribute extends Component {
 
     render() {
         const nicename = this.props.name.replace(/([A-Z])/g, " $1").toLowerCase();
-        const selected = this.props.options.find((o) => o.name === this.state.value) || this.props.options[0];
+        const selected = this.props.options.find((o) => o.name === this.state.value);
 
         return (
             <span className="node-widget-select-attribute">
                 <Choose>
-                    <When condition={!this.state.editable && this.state.value === ""}>
+                    <When condition={!this.state.editable && !selected}>
                         <i className="text-muted">No {nicename} found</i>
                     </When>
-                    <When condition={!this.state.editable && this.state.value !== ""}>
+                    <When condition={!this.state.editable && selected}>
                         <i className="material-icons">
                             {selected.icon}
                         </i>
@@ -97,13 +97,18 @@ class NodeWidgetSelectAttribute extends Component {
                             isOpen={this.state.dropdownOpen}
                             toggle={() => this.toggle()}
                         >
-                            <DropdownToggle tag="a">
-                                <i className="material-icons">
-                                    {selected.icon}
-                                </i>
-                                <If condition={!this.props.onlyicon}>
-                                    {" "}
-                                    {selected.title}
+                            <DropdownToggle tag="a" className={!selected ? "unselected" : ""}>
+                                <If condition={selected}>
+                                    <i className="material-icons">
+                                        {selected.icon}
+                                    </i>
+                                    <If condition={!this.props.onlyicon}>
+                                        {" "}
+                                        {selected.title}
+                                    </If>
+                                </If>
+                                <If condition={!selected}>
+                                    <i>Select {nicename}</i>
                                 </If>
                             </DropdownToggle>
                             <DropdownMenu>
@@ -124,27 +129,6 @@ class NodeWidgetSelectAttribute extends Component {
                     </Otherwise>
                 </Choose>
             </span>
-
-            // ﻿<span className="dropdown">
-            //     <span data-toggle="dropdown">
-            //         <i className="material-icons" style={{ marginRight: "-1px", marginBottom: "-1px" }} data-bind="visible: icon, text: icon"></i>
-            //         <span data-bind="visible: !onlyicon(), text: nicevalue"></span>
-            //     </span>
-            //
-            //     <span className="dropdown-select-empty" data-toggle="dropdown" data-bind="text: 'Select ' + nicename(), css: { 'dropdown-toggle': editable }, visible: value() === '' && editable()"></span>
-            //
-            //     <span className="dropdown-select-empty" data-bind="text: 'No ' + nicename(), visible: value() === '' && !editable()"></span>
-            //
-            //     <ul className="dropdown-menu" data-bind="foreach: options">
-            //         <li className="dropdown-item">
-            //             <a href="#" data-bind="click: $root.change.bind($data, $data.name)">
-            //                 <i className="material-icons" data-bind="visible: $data.icon, text: $data.icon" style={{ marginRight: "10px" }}></i>
-            //                 <span data-bind="text: $data.title"></span>
-            //             </a>
-            //         </li>
-            //     </ul>
-            // </span>
-
         );
     }
 }

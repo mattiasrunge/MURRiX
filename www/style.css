@@ -83,8 +83,16 @@
     display: block;
 }
 
+.node-widget-text-attribute [contenteditable=true]:focus {
+    background-color: #FFFEDF;
+}
+
 .node-widget-select-attribute a {
     cursor: pointer;
+}
+
+.node-widget-select-attribute a.unselected {
+    color: #303f9f;
 }
 
 .node-widget-select-attribute a:hover {
