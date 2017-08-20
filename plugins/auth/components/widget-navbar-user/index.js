@@ -65,8 +65,8 @@ class AuthWidgetNavbarUser extends Component {
                         >
                             <DropdownToggle
                                 style={{ color: "white" }}
-                                nav
-                                caret
+                                nav={true}
+                                caret={true}
                             >
                                 <span className="picture">
                                     <AuthWidgetPictureUser
@@ -75,7 +75,9 @@ class AuthWidgetNavbarUser extends Component {
                                         classes="rounded-circle"
                                     />
                                 </span>
-                                {this.state.user.attributes.name}
+                                <span className="auth-widget-navbar-user-name">
+                                    {this.state.user.attributes.name}
+                                </span>
                             </DropdownToggle>
                             <DropdownMenu right>
                                 <DropdownItem

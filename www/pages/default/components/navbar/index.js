@@ -18,17 +18,17 @@ class DefaultNavbar extends Component {
         super(props);
 
         this.state = {
-            page: ko.unwrap(loc.current().page) || "default",
-            path: ko.unwrap(loc.current().path),
+            page: loc.get("page") || "default",
+            path: loc.get("path"),
             loggedIn: ko.unwrap(session.loggedIn)
         };
     }
 
     componentDidMount() {
         this.addDisposables([
-            loc.current.subscribe((current) => this.setState({
-                page: current.page || "default",
-                path: current.path
+            loc.subscribe(({ page, path }) => this.setState({
+                page: page || "default",
+                path: path
             })),
             session.loggedIn.subscribe((loggedIn) => this.setState({ loggedIn }))
         ]);
@@ -70,7 +70,9 @@ class DefaultNavbar extends Component {
                                 path={this.state.page === "node" ? this.state.path : null }
                                 onSelect={(node) => this.goto(node)}
                             />
-                            <AuthWidgetNodeStar />
+                            <span className="navbar-collapse">
+                                <AuthWidgetNodeStar />
+                            </span>
                         </div>
                         <Nav>
                             <If condition={this.state.loggedIn}>
@@ -83,9 +85,13 @@ class DefaultNavbar extends Component {
                                 </NavLink>
                             </If>
 
-                            <AuthWidgetNavbarStars />
+                            <span className="navbar-collapse">
+                                <AuthWidgetNavbarStars />
+                            </span>
 
-                            <NodeWidgetNavbarNodeCreate />
+                            <span className="navbar-collapse">
+                                <NodeWidgetNavbarNodeCreate />
+                            </span>
 
                             <AuthWidgetNavbarUser />
                         </Nav>

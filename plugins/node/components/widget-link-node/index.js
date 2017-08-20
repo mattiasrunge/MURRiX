@@ -13,7 +13,6 @@ class NodeWidgetLinkNode extends Knockout {
 
         model.loading = stat.create();
         model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
-        model.initial = ko.pureComputed(() => ko.unwrap(this.props.initial) || "");
         model.name = ko.pureComputed(() => ko.unwrap(this.props.name));
         model.placeholder = ko.pureComputed(() => ko.unwrap(this.props.placeholder));
         model.searchPaths = ko.pureComputed(() => ko.unwrap(this.props.searchPaths));
@@ -91,7 +90,7 @@ class NodeWidgetLinkNode extends Knockout {
                     <i data-bind="visible: !nodepath().editable">Unknown</i>
                 </span>
                 <span data-bind="visible: editing, if: editing">
-                    <input type="text" className="node-select-text" data-bind="attr: { placeholder: placeholder }, nodeselect: { root: searchPaths, path: linkToPath, initial: initial }, hasFocus: true" />
+                    <input type="text" className="node-select-text" data-bind="attr: { placeholder: placeholder }, nodeselect: { root: searchPaths, path: linkToPath }, hasFocus: true" />
                 </span>
             </span>
 

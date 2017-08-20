@@ -44,8 +44,10 @@ class NodeWidgetHeader extends Component {
                             className={`nav-item ${this.state.section === item.name || (idx === 0 && this.state.section === "default") ? "active" : ""}`}
                         >
                             <i className="material-icons md-14">{item.icon}</i>
-                            &nbsp;&nbsp;&nbsp;
-                            {item.title}
+                            <span className="small-collapse">
+                                &nbsp;&nbsp;&nbsp;
+                                {item.title}
+                            </span>
                         </a>
                     </For>
                 </div>
