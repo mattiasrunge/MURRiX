@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
@@ -11,11 +10,9 @@ import NodeWidgetDescription from "plugins/node/components/widget-description";
 
 class WidgetPage extends Component {
     render() {
-        const nodepath = ko.unwrap(this.props.nodepath);
-
         return (
             <div>
-                <If condition={nodepath}>
+                <If condition={this.props.nodepath}>
                     <NodeWidgetHeader
                         nodepath={this.props.nodepath}
                         sections={this.props.sections}
@@ -29,7 +26,7 @@ class WidgetPage extends Component {
                                 />
                             </div>
                         </div>
-                        <div className="col-md-3 left-border top-border node-sidebar">
+                        <div className="col-md-3 left-border node-sidebar">
                             <div className="node-sidebar-section">
                                 <h4>Description</h4>
                                 <NodeWidgetDescription
@@ -46,7 +43,7 @@ class WidgetPage extends Component {
                                                 Created
                                             </td>
                                             <td>
-                                                {format.datetimeAgo(ko.unwrap(nodepath.node).properties.birthtime)}
+                                                {format.datetimeAgo(this.props.nodepath.node.properties.birthtime)}
                                             </td>
                                         </tr>
                                         <tr>
@@ -54,7 +51,7 @@ class WidgetPage extends Component {
                                                 Modified
                                             </td>
                                             <td>
-                                                {format.datetimeAgo(ko.unwrap(nodepath.node).properties.mtime)}
+                                                {format.datetimeAgo(this.props.nodepath.node.properties.mtime)}
                                             </td>
                                         </tr>
                                         <For each="item" of={this.props.information}>
@@ -74,7 +71,7 @@ class WidgetPage extends Component {
                             <div className="node-sidebar-section">
                                 <h4>Comments</h4>
                                 <CommentWidgetComments
-                                    path={nodepath.path}
+                                    path={this.props.nodepath.path}
                                 />
                             </div>
                         </div>
@@ -90,7 +87,7 @@ WidgetPage.defaultProps = {
 };
 
 WidgetPage.propTypes = {
-    nodepath: PropTypes.func,
+    nodepath: PropTypes.object.isRequired,
     sections: PropTypes.array.isRequired,
     information: PropTypes.array
 };

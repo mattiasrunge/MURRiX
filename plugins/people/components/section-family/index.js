@@ -12,7 +12,7 @@ class PeopleSectionFamily extends Knockout {
     async getModel() {
         const model = {};
 
-        model.nodepath = this.props.nodepath;
+        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
         model.person = ko.observable(false);
         model.height = ko.observable(300);
         model.zoom = ko.observable(0.8);
@@ -349,7 +349,7 @@ class PeopleSectionFamily extends Knockout {
 
             let metrics = await api.people.getMetrics(model.nodepath().path);
 
-            return model.createPerson(null, model.nodepath().node(), model.nodepath().path, metrics, "me", 0, 1);
+            return model.createPerson(null, ko.unwrap(model.nodepath().node), model.nodepath().path, metrics, "me", 0, 1);
         }, (error) => {
             stat.printError(error);
             return false;

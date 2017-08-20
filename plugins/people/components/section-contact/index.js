@@ -1,9 +1,6 @@
 
 import React from "react";
 import Knockout from "components/knockout";
-import Comment from "components/comment";
-
-
 
 class PeopleSectionContact extends Knockout {
     async getModel() {
@@ -19,7 +16,7 @@ class PeopleSectionContact extends Knockout {
         const utils = require("lib/utils");
         const stat = require("lib/status");
 
-        model.nodepath = this.props.nodepath;
+        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
         model.selectedHome = ko.observable(false);
         model.locationPath = ko.observable();
 
@@ -101,7 +98,7 @@ class PeopleSectionContact extends Knockout {
                     <div className="col-md-6">
                         <h3>Contact information</h3>
                         <table className="table table-striped">
-                            <tbody data-bind="foreach: nodepath().node().attributes.contact">
+                            <tbody data-bind="foreach: ko.unwrap(nodepath().node).attributes.contact">
                                 <tr>
                                     <td>
                                         <strong data-bind="text: $data.type"></strong>
@@ -118,7 +115,7 @@ class PeopleSectionContact extends Knockout {
 
                         <div className="list-group" data-bind="foreach: homes">
                             <a href="#" className="list-group-item list-group-item-action flex-column align-items-start" data-bind="css: { active: $parent.selectedHome() === $data }, click: $parent.selectedHome.bind($parent, $data)">
-                                <div className="float-left" data-bind="react: { name: 'file-widget-profile-picture', params: { size: 70, path: $data.path, nolazyload: true } }" className="float-left" style={{ marginRight: "15px" }} ></div>
+                                <div className="float-left" data-bind="react: { name: 'file-widget-profile-picture', params: { size: 70, path: $data.path, nolazyload: true } }" style={{ marginRight: "15px" }} ></div>
 
                                 <div className="d-flex w-100 justify-content-between">
                                     <h4 className="mb-1" data-bind="text: $data.node.attributes.name"></h4>

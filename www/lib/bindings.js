@@ -33,23 +33,6 @@ ko.bindingHandlers.moveToBody = {
     }
 };
 
-ko.bindingHandlers.modal = {
-    init: (element, valueAccessor) => {
-        $(element).on("hidden.bs.modal", () => {
-            valueAccessor()(false);
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-            $(element).off("hidden.bs.modal");
-        });
-    },
-    update: (element, valueAccessor) => {
-        let show = ko.unwrap(valueAccessor());
-        console.log("modal", show);
-        $(element).modal(show ? "show" : "hide");
-    }
-};
-
 ko.bindingHandlers.tooltip = {
     init: (element, valueAccessor) => {
         let value = ko.unwrap(valueAccessor());
@@ -143,80 +126,7 @@ ko.bindingHandlers.duration = {
     }
 };
 
-ko.bindingHandlers.datetimeDayString = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
 
-        if (!value) {
-            $(element).text("Unknown");
-            return;
-        }
-
-        let dateItem = moment.utc(value * 1000).calendar(null, {
-            sameDay: "[Today]",
-            nextDay: "[Tomorrow]",
-            nextWeek: "dddd",
-            lastDay: "[Yesterday]",
-            lastWeek: "[Last] dddd",
-            sameElse: "dddd, MMMM Do YYYY"
-        });
-
-        $(element).html(dateItem);
-    }
-};
-
-ko.bindingHandlers.datetimeDay = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-
-        if (!value) {
-            $(element).text("Unknown");
-            return;
-        }
-
-        let dateItem = moment.utc(value * 1000);
-
-        if (!dateItem.date()) {
-            $(element).html(value);
-        } else {
-            $(element).html(dateItem.format("dddd, MMMM Do YYYY"));
-        }
-    }
-};
-
-
-ko.bindingHandlers.displayTimeDay = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-        let $element = $(element);
-
-        if (!value || !value.timestamp) {
-            return $element.text("Unknown");
-        }
-
-        let time = moment.utc(value.timestamp * 1000);
-
-        let format = "";
-
-        if (value.accuracy === "second") {
-            format = "dddd, MMMM Do YYYY";
-        } else if (value.accuracy === "minute") {
-            format = "dddd, MMMM Do YYYY";
-        } else if (value.accuracy === "hour") {
-            format = "dddd, MMMM Do YYYY";
-        } else if (value.accuracy === "day") {
-            format = "dddd, MMMM Do YYYY";
-        } else if (value.accuracy === "month") {
-            format = "MMMM YYYY";
-        } else if (value.accuracy === "year") {
-            format = "YYYY";
-        } else {
-            return console.error("Unknown accuracy type ", value);
-        }
-
-        $element.text(time.format(format));
-    }
-};
 
 ko.bindingHandlers.displayTimeline = {
     update: (element, valueAccessor) => {
@@ -308,110 +218,7 @@ ko.bindingHandlers.displayTime = {
     }
 };
 
-ko.bindingHandlers.datetime = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
 
-        if (!value) {
-            $(element).text("Unknown");
-            return;
-        }
-
-        let format = "dddd, MMMM Do YYYY, HH:mm:ss Z";
-
-        if ($(element).data("format")) {
-            format = $(element).data("format");
-        }
-
-        let dateItem = moment(value).local();
-
-        if (!dateItem.date()) {
-            $(element).html(value);
-        } else {
-            $(element).html(dateItem.format(format));
-        }
-    }
-};
-
-ko.bindingHandlers.datetimeUtc = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-
-        if (!value) {
-            $(element).text("Unknown");
-            return;
-        }
-
-        let dateItem = moment.utc(value * 1000);
-
-        if (!dateItem.date()) {
-            $(element).html(value);
-        } else {
-            $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
-        }
-    }
-};
-
-ko.bindingHandlers.datetimeLocal = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-
-        if (!value) {
-            $(element).text("Unknown");
-            return;
-        }
-
-        let dateItem = moment.utc(value * 1000).local();
-
-        if (!dateItem.date()) {
-            $(element).html(value);
-        } else {
-            $(element).html(dateItem.format("dddd, MMMM Do YYYY, HH:mm:ss Z"));
-        }
-    }
-};
-
-ko.bindingHandlers.datetimeAgo = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-        let dateItem = null;
-
-        if (typeof value === "number") {
-            dateItem = moment.unix(value);
-        } else if (typeof value === "string") {
-            dateItem = moment(value + "+0000", "YYYY-MM-DD HH:mm:ss Z");
-        } else {
-            $(element).html("never");
-            return;
-        }
-
-        if (!dateItem.date()) {
-            $(element).html(ko.unwrap(value));
-        } else {
-            $(element).html(dateItem.fromNow());
-        }
-    }
-};
-
-//http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
-ko.bindingHandlers.number = {
-    update: (element, valueAccessor) => {
-        let number = ko.unwrap(valueAccessor());
-        let j = number % 10;
-        let k = number % 100;
-        let str = number + "th";
-
-        if (j === 1 && k !== 11) {
-            str = number + "st";
-        } else if (j === 2 && k !== 12) {
-            str = number + "nd";
-        } else if (j === 3 && k !== 13) {
-            str = number + "rd";
-        }
-
-        $(element).html(str);
-    }
-};
 
 ko.bindingHandlers.htmlSize = {
     update: (element, valueAccessor) => {
@@ -475,53 +282,6 @@ ko.bindingHandlers.nodename = {
     }
 };
 
-ko.bindingHandlers.unameNice = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-        let $element = $(element);
-
-        api.auth.name(value)
-        .then((name) => {
-            $element.text(name);
-        })
-        .catch((error) => {
-            $element.html("<span class='text-error'>unknown</span>");
-            stat.printError(error);
-        });
-    }
-};
-
-ko.bindingHandlers.uname = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-        let $element = $(element);
-
-        api.auth.uname(value)
-        .then((name) => {
-            $element.text(name);
-        })
-        .catch((error) => {
-            $element.html("<span class='text-error'>unknown</span>");
-            stat.printError(error);
-        });
-    }
-};
-
-ko.bindingHandlers.gname = {
-    update: (element, valueAccessor) => {
-        let value = ko.unwrap(valueAccessor());
-        let $element = $(element);
-
-        api.auth.gname(value)
-        .then((name) => {
-            $element.text(name);
-        })
-        .catch((error) => {
-            $element.html("<span class='text-error'>unknown</span>");
-            stat.printError(error);
-        });
-    }
-};
 
 ko.bindingHandlers.gnameNice = {
     update: (element, valueAccessor) => {

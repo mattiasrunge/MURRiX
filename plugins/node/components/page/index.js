@@ -1,48 +1,71 @@
 
+import loc from "lib/location";
+import api from "api.io-client";
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import stat from "lib/status";
+import ui from "lib/ui";
+import PeoplePage from "plugins/people/components/page";
+import AlbumPage from "plugins/album/components/page";
+import LocationPage from "plugins/location/components/page";
+import CameraPage from "plugins/camera/components/page";
 
-const ko = require("knockout");
-const loc = require("lib/location");
-const ui = require("lib/ui");
+class NodePage extends Component {
+    constructor(props) {
+        super(props);
 
-class NodePage extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.path = ko.pureComputed(() => ko.unwrap(loc.current().path) || false);
-        model.section = ko.pureComputed(() => ko.unwrap(loc.current().section) || "default");
-        model.nodepath = ko.nodepath(model.path);
-
-        let subscription = model.nodepath.subscribe((nodepath) => {
-            ui.setTitle(nodepath ? nodepath.node().attributes.name : false);
-        });
-
-        model.dispose = () => {
-            subscription.dispose();
-            model.nodepath.dispose();
+        this.state = {
+            nodepath: false
         };
-
-
-        return model;
     }
 
-    getTemplate() {
+    componentDidMount() {
+        this.addDisposables([
+            loc.subscribe(({ path }) => this.load(path))
+        ]);
+
+        this.load(loc.get("path"));
+    }
+
+    async load(path) {
+        if (!path) {
+            ui.setTitle(false);
+
+            return this.setState({ nodepath: false });
+        }
+
+        try {
+            const nodepath = await api.vfs.resolve(path, { noerror: true, nodepath: true });
+
+            ui.setTitle(nodepath.node.attributes.name);
+            this.setState({ nodepath });
+        } catch (error) {
+            stat.printError(error);
+            ui.setTitle(false);
+
+            return this.setState({ nodepath: false });
+        }
+    }
+
+    render() {
         return (
-            <div data-bind="if: nodepath">
-                <div data-bind="if: nodepath().node().properties.type === 'p'">
-                    <div data-bind="react: { name: 'people-page', params: { nodepath: nodepath, section: section } }"></div>
-                </div>
-                <div data-bind="if: nodepath().node().properties.type === 'a'">
-                    <div data-bind="react: { name: 'album-page', params: { nodepath: nodepath, section: section } }"></div>
-                </div>
-                <div data-bind="if: nodepath().node().properties.type === 'l'">
-                    <div data-bind="react: { name: 'location-page', params: { nodepath: nodepath, section: section } }"></div>
-                </div>
-                <div data-bind="if: nodepath().node().properties.type === 'c'">
-                    <div data-bind="react: { name: 'camera-page', params: { nodepath: nodepath, section: section } }"></div>
-                </div>
+            <div>
+                <If condition={this.state.nodepath}>
+                    <Choose>
+                        <When condition={this.state.nodepath.node.properties.type === "p"}>
+                            <PeoplePage nodepath={this.state.nodepath} />
+                        </When>
+                        <When condition={this.state.nodepath.node.properties.type === "a"}>
+                            <AlbumPage nodepath={this.state.nodepath} />
+                        </When>
+                        <When condition={this.state.nodepath.node.properties.type === "l"}>
+                            <LocationPage nodepath={this.state.nodepath} />
+                        </When>
+                        <When condition={this.state.nodepath.node.properties.type === "c"}>
+                            <CameraPage nodepath={this.state.nodepath} />
+                        </When>
+                    </Choose>
+                </If>
             </div>
         );
     }

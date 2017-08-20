@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import api from "api.io-client";
 import React from "react";
 import PropTypes from "prop-types";
@@ -18,11 +17,13 @@ class AlbumPage extends Component {
     }
 
     componentDidMount() {
-        this.addDisposables([
-            this.props.nodepath.subscribe((np) => this.load(np))
-        ]);
+        this.load(this.props.nodepath);
+    }
 
-        this.load(ko.unwrap(this.props.nodepath));
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.nodepath !== this.props.nodepath) {
+            this.load(nextProps.nodepath);
+        }
     }
 
     async load(nodepath) {
@@ -68,7 +69,7 @@ class AlbumPage extends Component {
 }
 
 AlbumPage.propTypes = {
-    nodepath: PropTypes.func
+    nodepath: PropTypes.object.isRequired
 };
 
 export default AlbumPage;

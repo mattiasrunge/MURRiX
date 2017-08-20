@@ -1,78 +1,88 @@
 
 import React from "react";
-import Knockout from "components/knockout";
-import Comment from "components/comment";
+import Component from "lib/component";
+import PropTypes from "prop-types";
+import ko from "knockout";
+import api from "api.io-client";
+import stat from "lib/status";
+import NodeWidgetTimeInput from "plugins/node/components/widget-time-input";
 
-const ko = require("knockout");
-const api = require("api.io-client");
-const chron = require("chron-time");
-const stat = require("lib/status");
+class NodeWidgetWhenAttribute extends Component {
+    constructor(props) {
+        super(props);
 
-class NodeWidgetWhenAttribute extends Knockout {
-    async getModel() {
-        const model = {};
-
-        model.nodepath = this.props.nodepath;
-        model.editable = ko.pureComputed(() => {
-            if (!model.nodepath()) {
-                return false;
-            }
-
-            return ko.unwrap(model.nodepath().editable);
-        });
-
-        model.value = ko.pureComputed({
-            read: () => {
-                if (!model.nodepath()) {
-                    return false;
-                }
-
-                return model.nodepath().node().attributes.when ? model.nodepath().node().attributes.when.manual : false;
-            },
-            write: (value) => {
-                model.change(value);
-            }
-        });
-
-        model.change = (value) => {
-            if (!model.editable() || chron.time2str(model.value() || {}) === chron.time2str(value || {})) {
-                return;
-            }
-
-            console.log("Saving attribute when, old value was \"" + JSON.stringify(model.value()) + "\", new value is \"" + JSON.stringify(value) + "\"");
-
-            let when = model.nodepath().node().attributes.when || {};
-
-            when.manual = value;
-
-            api.vfs.setattributes(model.nodepath().path, { when: when })
-            .then((node) => {
-                // TODO: Do model serverside based on events
-                if (node.properties.type === "f") {
-                    return api.file.regenerate(model.nodepath().path);
-                }
-
-                return node;
-            })
-            .then((node) => {
-                model.nodepath().node(node);
-                console.log("Saving attribute when successfull!", node);
-            })
-            .catch((error) => {
-                stat.printError(error);
-            });
+        this.state = {
+            editable: ko.unwrap(props.nodepath).editable,
+            value: false
         };
-
-
-        return model;
     }
 
-    getTemplate() {
-        return (
-            ﻿<input type="text" className="form-control" data-bind="timeInput: value, disable: !editable()" />
+    componentDidMount() {
+        if (ko.isObservable(this.props.nodepath)) {
+            this.addDisposables([
+                this.props.nodepath.subscribe((nodepath) => this.load(nodepath))
+            ]);
+        }
 
+        this.load(ko.unwrap(this.props.nodepath));
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.nodepath !== ko.unwrap(nextProps.nodepath)) {
+            this.load(ko.unwrap(nextProps.nodepath));
+        }
+    }
+
+    load(nodepath) {
+        if (!nodepath) {
+            return this.setState({ editable: false, value: "", newValue: "" });
+        }
+
+        const node = ko.unwrap(nodepath.node);
+        const value = node.attributes.when ? node.attributes.when.manual : false;
+
+        this.setState({
+            editable: nodepath.editable,
+            value: value
+        });
+    }
+
+    async save(value) {
+        const nodepath = ko.unwrap(this.props.nodepath);
+        const node = ko.unwrap(nodepath.node);
+
+        try {
+            console.log(`Saving attribute when.manual, old value was \"${JSON.stringify(node.attributes.when ? node.attributes.when.manual : false)}\", new value is \"${JSON.stringify(value)}\"`);
+
+            const attributes = {
+                when: node.attributes.when || {}
+            };
+
+            attributes.when.manual = value || false;
+
+            await api.vfs.setattributes(ko.unwrap(this.props.nodepath).path, attributes);
+
+            console.log("Save of attribute when.manual successfull!");
+
+            this.setState({ value: value });
+        } catch (error) {
+            stat.printError(error);
+        }
+    }
+
+    render() {
+        return (
+            <NodeWidgetTimeInput
+                disabled={!this.state.editable}
+                value={this.state.value}
+                onChange={(value) => this.save(value)}
+            />
         );
     }
 }
+
+NodeWidgetWhenAttribute.propTypes = {
+    nodepath: PropTypes.any.isRequired
+};
 
 export default NodeWidgetWhenAttribute;

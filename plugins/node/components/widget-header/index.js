@@ -1,6 +1,5 @@
 
 import React from "react";
-import ko from "knockout";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 import loc from "lib/location";
@@ -13,14 +12,12 @@ class NodeWidgetHeader extends Component {
         super(props);
 
         this.state = {
-            nodepath: ko.unwrap(props.nodepath),
             section: loc.get("section") || "default"
         };
     }
 
     componentDidMount() {
         this.addDisposables([
-            this.props.nodepath.subscribe((nodepath) => this.setState({ nodepath })),
             loc.subscribe(({ section }) => this.setState({
                 section: section || "default"
             }))
@@ -34,8 +31,6 @@ class NodeWidgetHeader extends Component {
     }
 
     render() {
-        const node = this.state.nodepath ? ko.unwrap(this.state.nodepath.node) : false;
-
         return (
             <div className="node-header" style={{ display: "table" }}>
                 <div
@@ -54,9 +49,9 @@ class NodeWidgetHeader extends Component {
                         </a>
                     </For>
                 </div>
-                <If condition={this.state.nodepath.editable}>
+                <If condition={this.props.nodepath.editable}>
                     <div className="node-header-menu">
-                        <If condition={node && node.properties.type === "a"}>
+                        <If condition={this.props.nodepath.node.properties.type === "a"}>
                             <a
                                 href="#"
                                 title="Move files"
@@ -89,29 +84,29 @@ class NodeWidgetHeader extends Component {
                         ></div>
                     )}
                     size="150"
-                    path={this.state.nodepath.path}
+                    path={this.props.nodepath.path}
                 />
                 <div className="node-header-background-gradient"></div>
 
                 <div className="node-header-title-container">
                     <div className="node-header-type">
-                        <If condition={node && node.properties.type === "a"}>
+                        <If condition={this.props.nodepath.node.properties.type === "a"}>
                             <i className="material-icons">photo_album</i>
                         </If>
-                        <If condition={node && node.properties.type === "l"}>
+                        <If condition={this.props.nodepath.node.properties.type === "l"}>
                             <i className="material-icons">location_on</i>
                         </If>
-                        <If condition={node && node.properties.type === "p"}>
+                        <If condition={this.props.nodepath.node.properties.type === "p"}>
                             <i className="material-icons">person</i>
                         </If>
-                        <If condition={node && node.properties.type === "c"}>
+                        <If condition={this.props.nodepath.node.properties.type === "c"}>
                             <i className="material-icons">photo_camera</i>
                         </If>
                     </div>
                     <div className="node-header-picture">
                         <FileWidgetProfilePicture
                             size="150"
-                            path={this.state.nodepath.path}
+                            path={this.props.nodepath.path}
                         />
                     </div>
                     <div className="node-header-title">
@@ -132,7 +127,7 @@ class NodeWidgetHeader extends Component {
 }
 
 NodeWidgetHeader.propTypes = {
-    nodepath: PropTypes.func,
+    nodepath: PropTypes.object.isRequired,
     sections: PropTypes.array
 };
 

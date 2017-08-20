@@ -12,7 +12,7 @@ class NodeSectionShare extends Knockout {
     async getModel() {
         const model = {};
 
-        model.nodepath = this.props.nodepath;
+        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
         model.loading = stat.create();
         model.saving = stat.create();
         model.gid = ko.observable(false);
@@ -29,25 +29,25 @@ class NodeSectionShare extends Knockout {
                 throw new Error("A group must be specified!");
             }
 
-            if (model.nodepath().node().properties.gid !== model.gid()) {
+            if (ko.unwrap(model.nodepath().node).properties.gid !== model.gid()) {
                 await api.vfs.chown(model.nodepath().path, null, parseInt(model.gid(), 10), { recursive: true });
             }
 
             let mode = 0;
 
-            mode |= model.nodepath().node().properties.mode & api.vfs.MASK_OWNER_READ ? api.vfs.MASK_OWNER_READ : 0;
-            mode |= model.nodepath().node().properties.mode & api.vfs.MASK_OWNER_WRITE ? api.vfs.MASK_OWNER_WRITE : 0;
-            mode |= model.nodepath().node().properties.mode & api.vfs.MASK_OWNER_EXEC ? api.vfs.MASK_OWNER_EXEC : 0;
+            mode |= ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OWNER_READ ? api.vfs.MASK_OWNER_READ : 0;
+            mode |= ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OWNER_WRITE ? api.vfs.MASK_OWNER_WRITE : 0;
+            mode |= ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OWNER_EXEC ? api.vfs.MASK_OWNER_EXEC : 0;
 
             mode |= model.groupAccess() === "read" || model.groupAccess() === "write" ? api.vfs.MASK_GROUP_READ : 0;
             mode |= model.groupAccess() === "write" ? api.vfs.MASK_GROUP_WRITE : 0;
             mode |= model.groupAccess() === "read" || model.groupAccess() === "write" ? api.vfs.MASK_GROUP_EXEC : 0;
 
             mode |= model.public() ? api.vfs.MASK_OTHER_READ : 0;
-            mode |= model.nodepath().node().properties.mode & api.vfs.MASK_OTHER_WRITE ? api.vfs.MASK_OTHER_WRITE : 0;
+            mode |= ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OTHER_WRITE ? api.vfs.MASK_OTHER_WRITE : 0;
             mode |= model.public() ? api.vfs.MASK_OTHER_EXEC : 0;
 
-            if (mode !== model.nodepath().node().properties.mode) {
+            if (mode !== ko.unwrap(model.nodepath().node).properties.mode) {
                 await api.vfs.chmod(model.nodepath().path, mode, { recursive: true });
             }
 
@@ -85,8 +85,6 @@ class NodeSectionShare extends Knockout {
             }
 
             let node = await api.vfs.resolve(model.nodepath().path);
-
-            model.nodepath().node(node);
         };
 
         model.aclGroupList = ko.pureComputed(() => {
@@ -94,13 +92,13 @@ class NodeSectionShare extends Knockout {
                 return [];
             }
 
-            if (!model.nodepath().node().properties.acl) {
+            if (!ko.unwrap(model.nodepath().node).properties.acl) {
                 return [];
             }
 
             let list = [];
 
-            for (let ac of model.nodepath().node().properties.acl) {
+            for (let ac of ko.unwrap(model.nodepath().node).properties.acl) {
                 if (ac.gid) {
                     let access = "none";
                     access = ac.mode & api.vfs.MASK_ACL_READ ? "read" : access;
@@ -160,8 +158,8 @@ class NodeSectionShare extends Knockout {
             model.loading(true);
 
             list.push({
-                name: await api.auth.name(model.nodepath().node().properties.uid),
-                uid: model.nodepath().node().properties.uid,
+                name: await api.auth.name(ko.unwrap(model.nodepath().node).properties.uid),
+                uid: ko.unwrap(model.nodepath().node).properties.uid,
                 type: "write",
                 reason: "as owner"
             });
@@ -239,10 +237,10 @@ class NodeSectionShare extends Knockout {
             stat.printError(error);
         });
 
-        model.gid(model.nodepath().node().properties.gid);
-        model.public(model.nodepath().node().properties.mode & api.vfs.MASK_OTHER_READ);
-        model.groupAccess(model.nodepath().node().properties.mode & api.vfs.MASK_GROUP_READ ? "read" : model.groupAccess());
-        model.groupAccess(model.nodepath().node().properties.mode & api.vfs.MASK_GROUP_WRITE ? "write" : model.groupAccess());
+        model.gid(ko.unwrap(model.nodepath().node).properties.gid);
+        model.public(ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OTHER_READ);
+        model.groupAccess(ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_GROUP_READ ? "read" : model.groupAccess());
+        model.groupAccess(ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_GROUP_WRITE ? "write" : model.groupAccess());
 
         model.saving(false);
 
@@ -263,7 +261,7 @@ class NodeSectionShare extends Knockout {
                         <div className="col-md-6">
                             <h3>Public access</h3>
                             <p>
-                                Public access can be granted on <span data-bind="react: { name: 'node-widget-type', params: { type: nodepath().node().properties.type } }"></span>s if needed. This will allow anyone with the link to access model <span data-bind="react: { name: 'node-widget-type', params: { type: nodepath().node().properties.type } }"></span>. <em>Use with care!</em>
+                                Public access can be granted on <span data-bind="react: { name: 'node-widget-type', params: { type: ko.unwrap(nodepath().node).properties.type } }"></span>s if needed. This will allow anyone with the link to access model <span data-bind="react: { name: 'node-widget-type', params: { type: ko.unwrap(nodepath().node).properties.type } }"></span>. <em>Use with care!</em>
                             </p>
                             <div className="form-group">
                                 <div className="checkbox">
@@ -275,7 +273,7 @@ class NodeSectionShare extends Knockout {
 
                             <h3>Primary group access</h3>
                             <p>
-                                A group can be given read and write access model <span data-bind="react: { name: 'node-widget-type', params: { type: nodepath().node().properties.type } }"></span>. This will grant the group the selected rights on model <span data-bind="react: { name: 'node-widget-type', params: { type: nodepath().node().properties.type } }"></span>.
+                                A group can be given read and write access model <span data-bind="react: { name: 'node-widget-type', params: { type: ko.unwrap(nodepath().node).properties.type } }"></span>. This will grant the group the selected rights on model <span data-bind="react: { name: 'node-widget-type', params: { type: ko.unwrap(nodepath().node).properties.type } }"></span>.
                             </p>
                             <table className="table table-condensed table-striped">
                                 <thead>

@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import loc from "lib/location";
 import api from "api.io-client";
 import React from "react";
@@ -21,16 +20,12 @@ class CameraPage extends Component {
     }
 
     componentDidMount() {
-        this.addDisposables([
-            this.props.nodepath.subscribe((np) => this.load(np))
-        ]);
-
-        this.load(ko.unwrap(this.props.nodepath));
+        this.load(this.props.nodepath);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.nodepath !== nextProps.nodepath) {
-            this.load(ko.unwrap(nextProps.nodepath));
+        if (nextProps.nodepath !== this.props.nodepath) {
+            this.load(nextProps.nodepath);
         }
     }
 
@@ -40,12 +35,6 @@ class CameraPage extends Component {
         };
 
         if (!nodepath) {
-            return this.setState(state);
-        }
-
-        const node = ko.unwrap(nodepath.node);
-
-        if (!node) {
             return this.setState(state);
         }
 
@@ -96,7 +85,7 @@ class CameraPage extends Component {
                             />
                         )
                     },
-                    ko.unwrap(ko.unwrap(this.props.nodepath).node).attributes.type === "offset_fixed" &&
+                    this.props.nodepath.node.attributes.type === "offset_fixed" &&
                     {
                         name: "Offset UTC",
                         value: (
@@ -106,7 +95,7 @@ class CameraPage extends Component {
                             />
                         )
                     },
-                    ko.unwrap(ko.unwrap(this.props.nodepath).node).attributes.type === "offset_fixed" &&
+                    this.props.nodepath.node.attributes.type === "offset_fixed" &&
                     {
                         name: "Offset description",
                         value: (
@@ -157,7 +146,7 @@ class CameraPage extends Component {
 }
 
 CameraPage.propTypes = {
-    nodepath: PropTypes.func
+    nodepath: PropTypes.object.isRequired
 };
 
 export default CameraPage;

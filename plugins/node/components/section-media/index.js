@@ -1,7 +1,6 @@
 
 /* global window */
 
-import ko from "knockout";
 import api from "api.io-client";
 import stat from "lib/status";
 import loc from "lib/location";
@@ -27,22 +26,21 @@ class NodeSectionMedia extends Component {
     }
 
     componentDidMount() {
-        this.addDisposables([
-            this.props.nodepath.subscribe(() => this.load())
-        ]);
-
-        this.load();
+        this.load(this.props.nodepath);
     }
 
-    async load() {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.nodepath !== this.props.nodepath) {
+            this.load(nextProps.nodepath);
+        }
+    }
+
+    async load(nodepath) {
+        if (!nodepath) {
+            this.setState({ loading: false, days: [], dropdownOpen: false });
+        }
+
         try {
-            const nodepath = ko.unwrap(this.props.nodepath);
-            const node = ko.unwrap(nodepath.node);
-
-            if (!node) {
-                return;
-            }
-
             this.setState({ loading: true, days: [] });
 
             let texts = [];
@@ -53,17 +51,17 @@ class NodeSectionMedia extends Component {
                 type: "image"
             };
 
-            if (node.properties.type === "a") {
+            if (nodepath.node.properties.type === "a") {
                 texts = await api.vfs.list(`${nodepath.path}/texts`, { noerror: true });
                 files = await api.file.list(`${nodepath.path}/files`, { image: imageOpts });
-            } else if (node.properties.type === "p") {
+            } else if (nodepath.node.properties.type === "p") {
                 files = await api.people.findByTags(nodepath.path, { image: imageOpts });
-            } else if (node.properties.type === "l") {
+            } else if (nodepath.node.properties.type === "l") {
                 files = await api.location.findByLinks(nodepath.path, { image: imageOpts });
-            } else if (node.properties.type === "c") {
+            } else if (nodepath.node.properties.type === "c") {
                 files = await api.camera.findByLinks(nodepath.path, { image: imageOpts });
             } else {
-                console.error("Don't know what data to load for this type", node, nodepath);
+                console.error("Don't know what data to load for this type", nodepath);
             }
 
             console.log("unsorted files", files);
@@ -137,7 +135,7 @@ class NodeSectionMedia extends Component {
     }
 
     makeProfilePicture(file) {
-        const abspath = ko.unwrap(this.props.nodepath).path;
+        const abspath = this.props.nodepath.path;
 
         api.node.setProfilePicture(abspath, file.path)
             .then(() => {
@@ -234,7 +232,7 @@ class NodeSectionMedia extends Component {
                                                 </i>
                                             </DropdownToggle>
                                             <DropdownMenu>
-                                                <If condition={ko.unwrap(this.props.nodepath).editable}>
+                                                <If condition={this.props.nodepath.editable}>
                                                     <DropdownItem onClick={() => this.makeProfilePicture(file)}>Make profile picture</DropdownItem>
                                                 </If>
                                                 <If condition={file.editable}>
@@ -277,7 +275,7 @@ NodeSectionMedia.defaultProps = {
 };
 
 NodeSectionMedia.propTypes = {
-    nodepath: PropTypes.func,
+    nodepath: PropTypes.object.isRequired,
     size: PropTypes.number
 };
 

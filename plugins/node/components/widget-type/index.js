@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
@@ -17,31 +16,15 @@ const types = {
 };
 
 class NodeWidgetType extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            type: ko.unwrap(this.props.type)
-        };
-    }
-
-    componentDidMount() {
-        if (ko.isObservable(this.props.type)) {
-            this.addDisposables([
-                this.props.type.subscribe((type) => this.setState({ type }))
-            ]);
-        }
-    }
-
     render() {
         return (
-            <span>{types[this.state.type] || "unknown"}</span>
+            <span>{types[this.props.type] || "unknown"}</span>
         );
     }
 }
 
 NodeWidgetType.propTypes = {
-    type: PropTypes.any
+    type: PropTypes.string.isRequired
 };
 
 export default NodeWidgetType;

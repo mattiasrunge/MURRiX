@@ -239,7 +239,7 @@ class NodeFullscreen extends Knockout {
                 return;
             }
 
-            let ids = [ model.surroundings().previous.node()._id, model.surroundings().next.node()._id ];
+            let ids = [ ko.unwrap(model.surroundings().previous.node)._id, ko.unwrap(model.surroundings().next.node)._id ];
             let filenames = await api.file.getMediaUrl(ids, {
                 height: ko.unwrap(model.height),
                 type: "image"

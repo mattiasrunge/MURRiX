@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import api from "api.io-client";
 import React from "react";
 import PropTypes from "prop-types";
@@ -12,39 +11,31 @@ class LocationSectionMap extends Component {
         super(props);
 
         this.state = {
-            target: false,
-            position: false,
-            nodepath: ko.unwrap(props.nodepath)
+            position: false
         };
     }
 
     componentDidMount() {
-        this.addDisposables([
-            this.props.nodepath.subscribe((nodepath) => this.load(nodepath))
-        ]);
-
-        this.load(ko.unwrap(this.props.nodepath));
+        this.load(this.props.nodepath);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.nodepath !== nextProps.nodepath) {
-            this.load(ko.unwrap(nextProps.nodepath));
+        if (nextProps.nodepath !== this.props.nodepath) {
+            this.load(nextProps.nodepath);
         }
     }
 
     async load(nodepath) {
         if (!nodepath) {
-            return this.setState({ nodepath, target: false, position: false });
+            return this.setState({ nodepath, position: false });
         }
 
-        const node = ko.unwrap(nodepath.node);
-
-        if (!node || !node.attributes.address) {
-            return this.setState({ nodepath, target: false, position: false });
+        if (!nodepath.node.attributes.address) {
+            return this.setState({ nodepath, position: false });
         }
 
         try {
-            const location = await api.lookup.getPositionFromAddress(node.attributes.address.replace("<br>", "\n"));
+            const location = await api.lookup.getPositionFromAddress(nodepath.node.attributes.address.replace("<br>", "\n"));
             const position = {
                 lat: location.latitude,
                 lng: location.longitude
@@ -52,17 +43,17 @@ class LocationSectionMap extends Component {
 
             console.log(position);
 
-            return this.setState({ nodepath, target: node, position });
+            return this.setState({ nodepath, position });
         } catch (error) {
             stat.printError(error);
-            this.setState({ nodepath, target: false, position: false });
+            this.setState({ nodepath, position: false });
         }
     }
 
     render() {
         return (
-            ﻿<div className="fadeInDown animated">
-                <div style={{ top: 44, left: 15, bottom: 0, right: 0, position: "absolute" }}>
+            <div className="fadeInDown animated">
+                <div style={{ top: 0, left: 15, bottom: 0, right: 0, position: "absolute" }}>
                     <If condition={this.state.position}>
                         <Map
                             style={{ width: "100%", height: "100%" }}
@@ -73,13 +64,12 @@ class LocationSectionMap extends Component {
                     </If>
                 </div>
             </div>
-
         );
     }
 }
 
 LocationSectionMap.propTypes = {
-    nodepath: PropTypes.any
+    nodepath: PropTypes.object.isRequired
 };
 
 export default LocationSectionMap;

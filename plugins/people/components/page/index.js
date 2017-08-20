@@ -1,6 +1,4 @@
 
-
-import ko from "knockout";
 import loc from "lib/location";
 import api from "api.io-client";
 import React from "react";
@@ -27,16 +25,12 @@ class PeoplePage extends Component {
     }
 
     componentDidMount() {
-        this.addDisposables([
-            this.props.nodepath.subscribe((np) => this.load(np))
-        ]);
-
-        this.load(ko.unwrap(this.props.nodepath));
+        this.load(this.props.nodepath);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.nodepath !== nextProps.nodepath) {
-            this.load(ko.unwrap(nextProps.nodepath));
+        if (nextProps.nodepath !== this.props.nodepath) {
+            this.load(nextProps.nodepath);
         }
     }
 
@@ -46,12 +40,6 @@ class PeoplePage extends Component {
         };
 
         if (!nodepath) {
-            return this.setState(state);
-        }
-
-        const node = ko.unwrap(nodepath.node);
-
-        if (!node) {
             return this.setState(state);
         }
 
@@ -187,7 +175,7 @@ class PeoplePage extends Component {
 }
 
 PeoplePage.propTypes = {
-    nodepath: PropTypes.func
+    nodepath: PropTypes.object.isRequired
 };
 
 export default PeoplePage;

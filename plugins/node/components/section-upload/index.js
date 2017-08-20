@@ -13,7 +13,7 @@ class NodeSectionUpload extends Knockout {
     async getModel() {
         const model = {};
 
-        model.nodepath = this.props.nodepath;
+        model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
         model.active = ko.observable(false);
         model.fileInput = ko.observableArray();
 

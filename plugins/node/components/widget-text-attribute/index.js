@@ -47,7 +47,6 @@ class NodeWidgetTextAttribute extends Component {
         });
     }
 
-
     async save() {
         const value = this.state.newValue.replace(/(^\n|\n$)/g, "");
 
@@ -91,7 +90,7 @@ class NodeWidgetTextAttribute extends Component {
                     </When>
                     <Otherwise>
                         <span
-                            style={{ whiteSpace: "pre" }}
+                            style={{ whiteSpace: "pre-line" }}
                             dangerouslySetInnerHTML={{ __html: this.state.value }}
                             ref={(ref) => this.ref = ref}
                             contentEditable={this.state.editable}

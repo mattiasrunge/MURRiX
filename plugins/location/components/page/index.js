@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import loc from "lib/location";
 import api from "api.io-client";
 import React from "react";
@@ -22,16 +21,12 @@ class LocationPage extends Component {
     }
 
     componentDidMount() {
-        this.addDisposables([
-            this.props.nodepath.subscribe((np) => this.load(np))
-        ]);
-
-        this.load(ko.unwrap(this.props.nodepath));
+        this.load(this.props.nodepath);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.nodepath !== nextProps.nodepath) {
-            this.load(ko.unwrap(nextProps.nodepath));
+        if (nextProps.nodepath !== this.props.nodepath) {
+            this.load(nextProps.nodepath);
         }
     }
 
@@ -45,15 +40,9 @@ class LocationPage extends Component {
             return this.setState(state);
         }
 
-        const node = ko.unwrap(nodepath.node);
-
-        if (!node) {
-            return this.setState(state);
-        }
-
-        if (node && node.attributes.address) {
+        if (nodepath.node.attributes.address) {
             try {
-                state.position = await api.lookup.getPositionFromAddress(node.attributes.address.replace("<br>", "\n"));
+                state.position = await api.lookup.getPositionFromAddress(nodepath.node.attributes.address.replace("<br>", "\n"));
             } catch (error) {
                 stat.printError(error);
             }
@@ -116,6 +105,7 @@ class LocationPage extends Component {
                             <div>
                                 <For each="item" of={this.state.residents}>
                                     <a
+                                        key={item.path}
                                         href="#"
                                         style={{ display: "block" }}
                                         onClick={(e) => this.onResident(e, item)}
@@ -133,7 +123,7 @@ class LocationPage extends Component {
 }
 
 LocationPage.propTypes = {
-    nodepath: PropTypes.func
+    nodepath: PropTypes.object.isRequired
 };
 
 export default LocationPage;
