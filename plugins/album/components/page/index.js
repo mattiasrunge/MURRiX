@@ -2,47 +2,34 @@
 import api from "api.io-client";
 import React from "react";
 import PropTypes from "prop-types";
-import Component from "lib/component";
+import AsyncComponent from "lib/async_component";
 import stat from "lib/status";
 import NodeWidgetPage from "plugins/node/components/widget-page";
 import NodeSectionMedia from "plugins/node/components/section-media";
 
-class AlbumPage extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            count: 0
-        };
+class AlbumPage extends AsyncComponent {
+    getInitialState() {
+        return { count: 0 };
     }
 
-    componentDidMount() {
-        this.load(this.props.nodepath);
+    onLoadError(error) {
+        stat.printError(error);
+
+        return { count: 0 };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.nodepath !== this.props.nodepath) {
-            this.load(nextProps.nodepath);
-        }
-    }
-
-    async load(nodepath) {
-        if (!nodepath) {
-            return this.setState({ count: 0 });
+    async load(props, w) {
+        if (!props.nodepath) {
+            return { count: 0 };
         }
 
-        try {
-            const node = await api.vfs.resolve(`${nodepath.path}/files`, { noerror: true });
+        const node = await w(api.vfs.resolve(`${props.nodepath.path}/files`, { noerror: true }));
 
-            if (!node) {
-                return this.setState({ count: 0 });
-            }
-
-            this.setState({ count: node.properties.children.length });
-        } catch (error) {
-            stat.printError(error);
-            this.setState({ count: 0 });
+        if (!node) {
+            return { count: 0 };
         }
+
+        return { count: node.properties.children.length };
     }
 
     render() {

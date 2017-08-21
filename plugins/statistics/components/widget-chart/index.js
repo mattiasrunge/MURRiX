@@ -21,6 +21,7 @@ class StatisticsWidgetChart extends Component {
 
     componentWillUnmount() {
         this.state.chart.destroy();
+        super.componentWillUnmount();
     }
 
     createChart(props) {

@@ -280,6 +280,7 @@ ${opts.join("\n")}
 
     componentWillUnmount() {
         $(document).off("keydown");
+        super.componentWillUnmount();
     }
 
     activate() {

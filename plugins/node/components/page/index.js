@@ -1,8 +1,8 @@
 
-import loc from "lib/location";
 import api from "api.io-client";
 import React from "react";
-import Component from "lib/component";
+import PropTypes from "prop-types";
+import AsyncComponent from "lib/async_component";
 import stat from "lib/status";
 import ui from "lib/ui";
 import PeoplePage from "plugins/people/components/page";
@@ -10,41 +10,34 @@ import AlbumPage from "plugins/album/components/page";
 import LocationPage from "plugins/location/components/page";
 import CameraPage from "plugins/camera/components/page";
 
-class NodePage extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            nodepath: false
-        };
+class NodePage extends AsyncComponent {
+    getInitialState() {
+        return { nodepath: false };
     }
 
-    componentDidMount() {
-        this.addDisposables([
-            loc.subscribe(({ path }) => this.load(path))
-        ]);
+    onLoadError(error) {
+        stat.printError(error);
+        ui.setTitle(false);
 
-        this.load(loc.get("path"));
+        return { nodepath: false };
     }
 
-    async load(path) {
-        if (!path) {
-            ui.setTitle(false);
-
-            return this.setState({ nodepath: false });
+    async load(props, w) {
+        if (this.state.nodepath && this.state.nodepath.path === props.path) {
+            return {};
         }
 
-        try {
-            const nodepath = await api.vfs.resolve(path, { noerror: true, nodepath: true });
-
-            ui.setTitle(nodepath.node.attributes.name);
-            this.setState({ nodepath });
-        } catch (error) {
-            stat.printError(error);
+        if (!props.path) {
             ui.setTitle(false);
 
-            return this.setState({ nodepath: false });
+            return { nodepath: false };
         }
+
+        const nodepath = await w(api.vfs.resolve(props.path, { noerror: true, nodepath: true }));
+
+        ui.setTitle(nodepath.node.attributes.name);
+
+        return { nodepath };
     }
 
     render() {
@@ -70,5 +63,9 @@ class NodePage extends Component {
         );
     }
 }
+
+NodePage.propTypes = {
+    path: PropTypes.string.isRequired
+};
 
 export default NodePage;

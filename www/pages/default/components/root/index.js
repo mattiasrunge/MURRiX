@@ -1,5 +1,4 @@
 
-import ko from "knockout";
 import loc from "lib/location";
 import session from "lib/session";
 import stat from "lib/status";
@@ -28,8 +27,9 @@ class DefaultRoot extends Component {
         this.state = {
             loading: stat.loading(),
             loggedIn: session.loggedIn(),
-            page: ko.unwrap(loc.current().page) || "default",
-            showPath: ko.unwrap(loc.current().showPath),
+            page: loc.get("page", "default"),
+            showPath: loc.get("showPath", false),
+            path: loc.get("path", false),
             list: session.list
         };
     }
@@ -38,9 +38,10 @@ class DefaultRoot extends Component {
         this.addDisposables([
             stat.loading.subscribe((loading) => this.setState({ loading })),
             session.loggedIn.subscribe((loggedIn) => this.setState({ loggedIn })),
-            loc.current.subscribe((current) => this.setState({
-                page: current.page || "default",
-                showPath: current.showPath
+            loc.subscribe(({ page, showPath, path }) => this.setState({
+                page: page || "default",
+                showPath: showPath,
+                path: path
             })),
             session.list.subscribe((list) => this.setState({ list }))
         ]);
@@ -68,65 +69,63 @@ class DefaultRoot extends Component {
                 <div className="page-container">
                     <div className="container">
                         <div className="row">
-                            <Choose>
-                                <When condition={this.state.page !== "node"}>
-                                    <Choose>
-                                        <When condition={this.state.loggedIn}>
-                                            <div className="col-md-2 sidebar">
-                                                <Sidebar />
-                                            </div>
-                                            <div className="col-md-10 main">
-                                                <Choose>
-                                                    <When condition={this.state.page === "news" || this.state.page === "default"}>
-                                                        <PageFeed />
-                                                    </When>
-                                                    <When condition={this.state.page === "search"}>
-                                                        <PageSearch />
-                                                    </When>
-                                                    <When condition={this.state.page === "name"}>
-                                                        <PageName />
-                                                    </When>
-                                                    <When condition={this.state.page === "year"}>
-                                                        <PageYear />
-                                                    </When>
-                                                    <When condition={this.state.page === "labels"}>
-                                                        <PageLabels />
-                                                    </When>
-                                                    <When condition={this.state.page === "charts"}>
-                                                        <PageCharts />
-                                                    </When>
-                                                    <When condition={this.state.page === "login"}>
-                                                        <PageLogin />
-                                                    </When>
-                                                    <When condition={this.state.page === "profile"}>
-                                                        <PageProfile />
-                                                    </When>
-                                                    <When condition={this.state.page === "reset"}>
-                                                        <PageReset />
-                                                    </When>
-                                                </Choose>
-                                            </div>
-                                        </When>
-                                        <Otherwise>
-                                            <div className="col-md-12">
-                                                <Choose>
-                                                    <When condition={this.state.page === "reset"}>
-                                                        <PageReset />
-                                                    </When>
-                                                    <Otherwise>
-                                                        <PageLogin />
-                                                    </Otherwise>
-                                                </Choose>
-                                            </div>
-                                        </Otherwise>
-                                    </Choose>
-                                </When>
-                                <Otherwise>
-                                    <div className="col-md-12 page-node">
-                                        <PageNode />
-                                    </div>
-                                </Otherwise>
-                            </Choose>
+                            <If condition={this.state.page !== "node"}>
+                                <Choose>
+                                    <When condition={this.state.loggedIn}>
+                                        <div className="col-md-2 sidebar">
+                                            <Sidebar />
+                                        </div>
+                                        <div className="col-md-10 main">
+                                            <Choose>
+                                                <When condition={this.state.page === "news" || this.state.page === "default"}>
+                                                    <PageFeed />
+                                                </When>
+                                                <When condition={this.state.page === "search"}>
+                                                    <PageSearch />
+                                                </When>
+                                                <When condition={this.state.page === "name"}>
+                                                    <PageName />
+                                                </When>
+                                                <When condition={this.state.page === "year"}>
+                                                    <PageYear />
+                                                </When>
+                                                <When condition={this.state.page === "labels"}>
+                                                    <PageLabels />
+                                                </When>
+                                                <When condition={this.state.page === "charts"}>
+                                                    <PageCharts />
+                                                </When>
+                                                <When condition={this.state.page === "login"}>
+                                                    <PageLogin />
+                                                </When>
+                                                <When condition={this.state.page === "profile"}>
+                                                    <PageProfile />
+                                                </When>
+                                                <When condition={this.state.page === "reset"}>
+                                                    <PageReset />
+                                                </When>
+                                            </Choose>
+                                        </div>
+                                    </When>
+                                    <Otherwise>
+                                        <div className="col-md-12">
+                                            <Choose>
+                                                <When condition={this.state.page === "reset"}>
+                                                    <PageReset />
+                                                </When>
+                                                <Otherwise>
+                                                    <PageLogin />
+                                                </Otherwise>
+                                            </Choose>
+                                        </div>
+                                    </Otherwise>
+                                </Choose>
+                            </If>
+                            <If condition={this.state.page === "node" && this.state.path}>
+                                <div className="col-md-12 page-node">
+                                    <PageNode path={this.state.path} />
+                                </div>
+                            </If>
                         </div>
                     </div>
                 </div>
