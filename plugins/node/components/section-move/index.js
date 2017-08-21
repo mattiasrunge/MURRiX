@@ -24,16 +24,17 @@ class NodeSectionMove extends Component {
     }
 
     componentDidMount() {
-        this.addDisposables([
-            this.props.nodepath.subscribe(() => this.load())
-        ]);
-
-        this.load();
+        this.load(this.props.nodepath);
     }
 
-    async load() {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.nodepath !== this.props.nodepath) {
+            this.load(nextProps.nodepath);
+        }
+    }
+
+    async load(nodepath) {
         try {
-            const nodepath = ko.unwrap(this.props.nodepath);
             const node = ko.unwrap(nodepath.node);
 
             if (!node) {
@@ -200,7 +201,7 @@ class NodeSectionMove extends Component {
 }
 
 NodeSectionMove.propTypes = {
-    nodepath: PropTypes.func
+    nodepath: PropTypes.object.isRequired
 };
 
 export default NodeSectionMove;
