@@ -3,58 +3,38 @@ import loc from "lib/location";
 import api from "api.io-client";
 import React from "react";
 import PropTypes from "prop-types";
-import Component from "lib/component";
+import AsyncComponent from "lib/async_component";
 import stat from "lib/status";
 import NodeWidgetPage from "plugins/node/components/widget-page";
 import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
 import LocatationSectionMap from "plugins/location/components/section-map";
 import NodeSectionMedia from "plugins/node/components/section-media";
 
-class LocationPage extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            position: false,
-            residents: []
-        };
+class LocationPage extends AsyncComponent {
+    getInitialState() {
+        return { position: false, residents: [] };
     }
 
-    componentDidMount() {
-        this.load(this.props.nodepath);
+    onLoadError(error) {
+        stat.printError(error);
+
+        return { position: false, residents: [] };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.nodepath !== this.props.nodepath) {
-            this.load(nextProps.nodepath);
-        }
-    }
-
-    async load(nodepath) {
-        const state = {
-            position: false,
-            residents: []
-        };
-
-        if (!nodepath) {
-            return this.setState(state);
+    async load(props, w) {
+        if (!props.nodepath) {
+            return { position: false, residents: [] };
         }
 
-        if (nodepath.node.attributes.address) {
-            try {
-                state.position = await api.lookup.getPositionFromAddress(nodepath.node.attributes.address.replace("<br>", "\n"));
-            } catch (error) {
-                stat.printError(error);
-            }
+        const state = { position: false, residents: [] };
+
+        if (props.nodepath.node.attributes.address) {
+            state.position = await w(api.lookup.getPositionFromAddress(props.nodepath.node.attributes.address.replace("<br>", "\n")));
         }
 
-        try {
-            state.residents = await api.vfs.list(`${nodepath.path}/residents`, { noerror: true });
-        } catch (error) {
-            stat.printError(error);
-        }
+        state.residents = await w(api.vfs.list(`${props.nodepath.path}/residents`, { noerror: true }));
 
-        this.setState(state);
+        return state;
     }
 
     onResident(event, resident) {

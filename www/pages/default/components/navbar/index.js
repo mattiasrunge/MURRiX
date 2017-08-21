@@ -79,7 +79,7 @@ class DefaultNavbar extends Component {
                                 <NavLink
                                     href="#"
                                     onClick={() => this.random()}
-                                    style={{ color: "white" }}
+                                    className="navbar-random-icon"
                                 >
                                     <i className="material-icons md-24">explore</i>
                                 </NavLink>

@@ -37,7 +37,7 @@
     .node-header-title .node-header-name {
         font-size: 36px;
     }
-    
+
     .node-sidebar {
         padding-left: 0;
     }
@@ -673,6 +673,17 @@ body {
 .header-search {
     width: 40%;
     position: relative;
+}
+
+.navbar-random-icon,
+.navbar-random-icon:focus,
+.navbar-random-icon:active,
+.navbar-random-icon:hover {
+    color: white;
+}
+
+.navbar-random-icon:hover {
+    animation: spin 1s infinite linear;
 }
 
 .navbar {

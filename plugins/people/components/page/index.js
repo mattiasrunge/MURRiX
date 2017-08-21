@@ -3,7 +3,7 @@ import loc from "lib/location";
 import api from "api.io-client";
 import React from "react";
 import PropTypes from "prop-types";
-import Component from "lib/component";
+import AsyncComponent from "lib/async_component";
 import stat from "lib/status";
 import NodeWidgetPage from "plugins/node/components/widget-page";
 import NodeWidgetTextAttribute from "plugins/node/components/widget-text-attribute";
@@ -15,41 +15,23 @@ import NodeSectionContact from "plugins/people/components/section-contact";
 import NodeSectionFamily from "plugins/people/components/section-family";
 import NodeSectionTimeline from "plugins/people/components/section-timeline";
 
-class PeoplePage extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            metrics: false
-        };
+class PeoplePage extends AsyncComponent {
+    getInitialState() {
+        return { metrics: false };
     }
 
-    componentDidMount() {
-        this.load(this.props.nodepath);
+    onLoadError(error) {
+        stat.printError(error);
+
+        return { metrics: false };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.nodepath !== this.props.nodepath) {
-            this.load(nextProps.nodepath);
-        }
-    }
-
-    async load(nodepath) {
-        const state = {
-            metrics: false
-        };
-
-        if (!nodepath) {
-            return this.setState(state);
+    async load(props, w) {
+        if (!props.nodepath) {
+            return { metrics: false };
         }
 
-        try {
-            state.metrics = await api.people.getMetrics(nodepath.path);
-        } catch (error) {
-            stat.printError(error);
-        }
-
-        this.setState(state);
+        return { metrics: await w(api.people.getMetrics(props.nodepath.path)) };
     }
 
     onClick(event, nodepath) {
