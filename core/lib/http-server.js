@@ -106,7 +106,7 @@ module.exports = {
         }
 
         const webpackCfg = buildWebpackCfg({
-            dev: true,
+            dev: !config.production,
             configuration: {
                 googleBrowserKey: config.googleBrowserKey
             }
