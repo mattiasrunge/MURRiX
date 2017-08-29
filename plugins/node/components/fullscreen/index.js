@@ -116,7 +116,10 @@ class NodeFullscreen extends Knockout {
         model.position = ko.pureComputed({
             read: () => {
                 if (!model.nodepath()) {
-                    return false;
+                    return {
+                        latitude: 57.657277,
+                        longitude: 11.892222
+                    };
                 }
 
                 if (model.nodepath().node().attributes.where) {
@@ -127,7 +130,10 @@ class NodeFullscreen extends Knockout {
                     }
                 }
 
-                return false;
+                return {
+                    latitude: 57.657277,
+                    longitude: 11.892222
+                };
             },
             write: (position) => {
                 let where = model.nodepath().node().attributes.where;
@@ -472,7 +478,7 @@ class NodeFullscreen extends Knockout {
                     </table>
 
                     <div style={{ position: "absolute", top: "160px", left: "0", right: "0", bottom: "0" }}>
-                        <div data-bind="react: { name: 'map', params: { position: position, zoom: 15, onClick: onPositionClick }}"></div>
+                        <div data-bind="react: { name: 'map', params: { position: position(), zoom: 15, onClick: onPositionClick }}"></div>
                     </div>
                 </div>
 

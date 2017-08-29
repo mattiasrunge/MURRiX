@@ -10,8 +10,14 @@ class LocationSectionMap extends Component {
     constructor(props) {
         super(props);
 
+        this.defaultPosition = {
+            lng: 11.892222,
+            lat: 57.657277
+        };
+
         this.state = {
-            position: false
+            position: this.defaultPosition,
+            hasPosition: false
         };
     }
 
@@ -27,11 +33,11 @@ class LocationSectionMap extends Component {
 
     async load(nodepath) {
         if (!nodepath) {
-            return this.setState({ nodepath, position: false });
+            return this.setState({ nodepath, position: this.defaultPosition, hasPosition: false });
         }
 
         if (!nodepath.node.attributes.address) {
-            return this.setState({ nodepath, position: false });
+            return this.setState({ nodepath, position: this.defaultPosition, hasPosition: false });
         }
 
         try {
@@ -43,10 +49,10 @@ class LocationSectionMap extends Component {
 
             console.log(position);
 
-            return this.setState({ nodepath, position });
+            return this.setState({ nodepath, position, hasPosition: true });
         } catch (error) {
             stat.printError(error);
-            this.setState({ nodepath, position: false });
+            this.setState({ nodepath, position: this.defaultPosition, hasPosition: false });
         }
     }
 
@@ -58,7 +64,7 @@ class LocationSectionMap extends Component {
                         <Map
                             style={{ width: "100%", height: "100%" }}
                             initialCenter={this.state.position}
-                            zoom={15}
+                            zoom={this.state.hasPosition ? 15 : 20}
                         >
                         </Map>
                     </If>

@@ -9,6 +9,10 @@ class Map extends React.PureComponent {
         return (
             <GoogleMap
                 {...this.props}
+                initialCenter={{
+                    lat: this.props.position.latitude,
+                    lng: this.props.position.longitude
+                }}
             >
                 {this.props.children}
             </GoogleMap>
@@ -21,7 +25,8 @@ Map.defaultProps = {
 };
 
 Map.propTypes = {
-    children: PropTypes.func
+    children: PropTypes.func,
+    position: PropTypes.object
 };
 
 export default wrap({
