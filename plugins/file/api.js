@@ -20,20 +20,20 @@ const file = api.register("file", {
             throw new Error("Source file does not exist");
         }
 
-        let metadata = await api.mcs.getMetadata(attributes._source.filename, {});
+        const metadata = await api.mcs.getMetadata(attributes._source.filename, {});
 
         if (attributes.sha1 && attributes.sha1 !== metadata.sha1) {
-            throw new Error("sha1 checksum for file does not match, is the file corrupt? " + attributes.sha1 + " !== " + metadata.sha1);
+            throw new Error(`sha1 checksum for file does not match, is the file corrupt? ${attributes.sha1} !== ${metadata.sha1}`);
         }
 
         if (attributes.md5 && attributes.md5 !== metadata.md5) {
-            throw new Error("md5 checksum for file does not match, is the file corrupt? " + attributes.md5 + " !== " + metadata.md5);
+            throw new Error(`md5 checksum for file does not match, is the file corrupt? ${attributes.md5} !== ${metadata.md5}`);
         }
 
         await api.vfs.create(session, abspath, "f", attributes);
         await file.regenerate(session, abspath);
 
-        await api.vfs.create(session, abspath + "/tags", "d");
+        await api.vfs.create(session, `${abspath}/tags`, "d");
 
         bus.emit("file.new", {
             uid: session.uid,
@@ -46,13 +46,11 @@ const file = api.register("file", {
     regenerate: api.export(async (session, abspath) => {
         let node = await api.vfs.resolve(session, abspath);
 
-
-
         // Update metadata
-        let attributes = {};
-        let metadata = await api.mcs.getMetadata(path.join(params.fileDirectory, node.attributes.diskfilename), { noChecksums: true });
+        const attributes = {};
+        const metadata = await api.mcs.getMetadata(path.join(params.fileDirectory, node.attributes.diskfilename), { noChecksums: true });
 
-        for (let key of Object.keys(metadata)) {
+        for (const key of Object.keys(metadata)) {
             if (key !== "raw" && key !== "name" && typeof node.attributes[key] === "undefined") {
                 attributes[key] = metadata[key];
             }
@@ -61,10 +59,8 @@ const file = api.register("file", {
         await api.vfs.setattributes(session, node, attributes);
         node = await api.vfs.resolve(session, abspath);
 
-
-
         // Update device
-        let device = await api.vfs.resolve(session, abspath + "/createdWith", { noerror: true });
+        let device = await api.vfs.resolve(session, `${abspath}/createdWith`, { noerror: true });
 
         if (node.attributes.deviceSerialNumber && !device) {
             device = (await api.vfs.list(session, "/cameras", {
@@ -73,18 +69,16 @@ const file = api.register("file", {
             }))[0];
 
             if (device) {
-                await api.vfs.symlink(session, device.path, abspath + "/createdWith");
+                await api.vfs.symlink(session, device.path, `${abspath}/createdWith`);
                 device = device.node;
             }
         }
 
-
-
         // Update time
-        let source = chron.select(node.attributes.when || {});
+        const source = chron.select(node.attributes.when || {});
 
         if (source) {
-            let options = {
+            const options = {
                 type: source.type
             };
 
@@ -93,7 +87,7 @@ const file = api.register("file", {
                     options.deviceUtcOffset = 0;
 
                     if (node.attributes.where.longitude && node.attributes.where.latitude) {
-                        let data = await api.lookup.getTimezoneFromPosition(session, node.attributes.where.latitude, node.attributes.where.longitude);
+                        const data = await api.lookup.getTimezoneFromPosition(session, node.attributes.where.latitude, node.attributes.where.longitude);
 
                         options.deviceUtcOffset = data.utcOffset;
                     }
@@ -107,7 +101,7 @@ const file = api.register("file", {
             await api.vfs.setattributes(session, abspath, {
                 time: chron.time2timestamp(source.time, options)
             });
-        } else if (node.attributes.time){
+        } else if (node.attributes.time) {
             await api.vfs.setattributes(session, abspath, {
                 time: null
             });
@@ -115,9 +109,9 @@ const file = api.register("file", {
 
         return await api.vfs.resolve(session, abspath);
     }),
-    regenerateOther: api.export(async (/*session*/) => {
-        let cache = {};
-        let nodes = await api.vfs.query(api.auth.getAdminSession(), {
+    regenerateOther: api.export(async (/* session */) => {
+        const cache = {};
+        const nodes = await api.vfs.query(api.auth.getAdminSession(), {
             "attributes.type": "other"
         }, {
             fields: {
@@ -125,15 +119,15 @@ const file = api.register("file", {
             }
         });
 
-        for (let node of nodes) {
-            let paths = await api.vfs.lookup(api.auth.getAdminSession(), node._id, cache);
+        for (const node of nodes) {
+            const paths = await api.vfs.lookup(api.auth.getAdminSession(), node._id, cache);
             await api.file.regenerate(api.auth.getAdminSession(), paths[0]);
         }
 
         return nodes.length;
     }),
     getFaces: api.export(async (session, abspath) => {
-        let node = await api.vfs.resolve(session, abspath);
+        const node = await api.vfs.resolve(session, abspath);
 
         return api.mcs.getFaces(path.join(params.fileDirectory, node.attributes.diskfilename));
     }),
@@ -169,8 +163,8 @@ const file = api.register("file", {
             throw new Error("Missing type from format");
         }
 
-        let idQuery = ids instanceof Array ? { $in: ids } : ids;
-        let nodes = await api.vfs.query(session, {
+        const idQuery = ids instanceof Array ? { $in: ids } : ids;
+        const nodes = await api.vfs.query(session, {
             _id: idQuery
         }, {
             fields: {
@@ -207,21 +201,21 @@ const file = api.register("file", {
                     height: format.height,
                     type: format.type
                 })
-                .then((filename) => {
-                    notify();
-                    resolve({ id: node._id, url: path.join("file", "media", path.basename(filename), node.attributes.name) });
-                })
-                .catch((error) => {
-                    console.error("Failed to cache file", error); // TODO: Log event somewhere nicer
-                    notify();
-                    resolve(false);
-                });
+                    .then((filename) => {
+                        notify();
+                        resolve({ id: node._id, url: path.join("file", "media", path.basename(filename), node.attributes.name) });
+                    })
+                    .catch((error) => {
+                        console.error("Failed to cache file", error); // TODO: Log event somewhere nicer
+                        notify();
+                        resolve(false);
+                    });
             });
         }));
 
         results = results.filter((result) => result);
 
-        let result = {};
+        const result = {};
 
         for (let n = 0; n < results.length; n++) {
             result[results[n].id] = results[n].url;
@@ -230,7 +224,7 @@ const file = api.register("file", {
         return ids instanceof Array ? result : (result[ids] || false);
     }),
     rotate: api.export(async (session, abspath, offset) => {
-        let node = await api.vfs.resolve(session, abspath);
+        const node = await api.vfs.resolve(session, abspath);
 
         if (!(await api.vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");

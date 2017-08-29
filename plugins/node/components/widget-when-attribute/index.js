@@ -64,6 +64,11 @@ class NodeWidgetWhenAttribute extends Component {
 
             console.log("Save of attribute when.manual successfull!");
 
+            // TODO: Do model serverside based on events
+            if (node.properties.type === "f") {
+                await api.file.regenerate(ko.unwrap(this.props.nodepath).path);
+            }
+
             this.setState({ value: value });
         } catch (error) {
             stat.printError(error);
