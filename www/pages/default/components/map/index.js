@@ -6,13 +6,15 @@ import { googleBrowserKey } from "configuration";
 
 class Map extends React.PureComponent {
     render() {
+        const initialCenter = this.props.position || {
+            lat: 57.657277,
+            lng: 11.892222
+        };
+
         return (
             <GoogleMap
                 {...this.props}
-                initialCenter={{
-                    lat: this.props.position.latitude,
-                    lng: this.props.position.longitude
-                }}
+                initialCenter={initialCenter}
             >
                 {this.props.children}
             </GoogleMap>
@@ -26,7 +28,7 @@ Map.defaultProps = {
 
 Map.propTypes = {
     children: PropTypes.func,
-    position: PropTypes.object
+    position: PropTypes.any
 };
 
 export default wrap({

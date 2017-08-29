@@ -116,10 +116,7 @@ class NodeFullscreen extends Knockout {
         model.position = ko.pureComputed({
             read: () => {
                 if (!model.nodepath()) {
-                    return {
-                        latitude: 57.657277,
-                        longitude: 11.892222
-                    };
+                    return false;
                 }
 
                 if (model.nodepath().node().attributes.where) {
@@ -130,10 +127,7 @@ class NodeFullscreen extends Knockout {
                     }
                 }
 
-                return {
-                    latitude: 57.657277,
-                    longitude: 11.892222
-                };
+                return false;
             },
             write: (position) => {
                 let where = model.nodepath().node().attributes.where;
