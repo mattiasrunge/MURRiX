@@ -105,6 +105,8 @@ module.exports = {
             app.use(route[pluginRoute.method.toLowerCase()](pluginRoute.route, pluginRoute.handler));
         }
 
+        log.info(`Webpack is running in ${config.production ? "production" : "development"} mode`);
+
         const webpackCfg = buildWebpackCfg({
             dev: !config.production,
             configuration: {

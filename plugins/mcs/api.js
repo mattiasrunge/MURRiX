@@ -3,7 +3,7 @@
 const api = require("api.io");
 const log = require("../../core/lib/log")(module);
 
-const mcsApi = api.client.create();
+const mcsApi = api.getClient().create();
 
 let params = {};
 
@@ -30,7 +30,7 @@ const mcs = api.register("mcs", {
         await mcs.authenticate();
     },
     authenticate: async () => {
-        let result = await mcsApi.auth.identify(params.mcs.key);
+        const result = await mcsApi.auth.identify(params.mcs.key);
 
         if (!result) {
             throw new Error("Failed to identify ourselves with the MCS, is the keys set up?");

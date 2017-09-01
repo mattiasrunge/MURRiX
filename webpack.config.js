@@ -17,7 +17,7 @@ module.exports = function(options) {
 
     const cfg = {
         externals: {
-            configuration: JSON.stringify(options.configuration)
+            configuration: options ? JSON.stringify(options.configuration) : {}
         },
         entry: {
             bundle: [
@@ -95,18 +95,6 @@ module.exports = function(options) {
                                     importLoaders: 2,
                                     modules: true,
                                     localIdentName: "[path]__[name]__[local]",
-                                    includePaths: [
-                                        path.join(__dirname, "..", "node_modules"),
-                                        __dirname
-                                    ]
-                                }
-                            },
-                            {
-                                loader: "sass-loader",
-                                options: {
-                                    outputStyle: "expanded",
-                                    sourceMap: !isProduction,
-                                    sourceMapContents: !isProduction,
                                     includePaths: [
                                         path.join(__dirname, "..", "node_modules"),
                                         __dirname
@@ -211,8 +199,6 @@ module.exports = function(options) {
     };
 
     if (isProduction) {
-        console.log("webpack.config is production!");
-
         cfg.plugins.concat([
             new webpack.DefinePlugin({
                 "process.env": {
@@ -233,7 +219,7 @@ module.exports = function(options) {
             })
         ]);
     } else {
-        console.log("webpack.config is development!");
+        const DuplicatePackageCheckerPlugin = require("duplicate-package-checker-webpack-plugin");
 
         cfg.plugins.concat([
             new webpack.LoaderOptionsPlugin({
@@ -241,6 +227,11 @@ module.exports = function(options) {
             })
 
         ]);
+
+        cfg.plugins.unshift(new DuplicatePackageCheckerPlugin({
+            verbose: true,
+            emitError: false
+        }));
 
         cfg.devtool = "cheap-module-source-map";
         cfg.output.publicPath = "/js";
