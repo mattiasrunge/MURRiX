@@ -1,5 +1,6 @@
 
 export default {
+    ls: require("./commands/ls").default,
     attribs: require("./commands/attribs").default,
     props: require("./commands/props").default,
     cp: require("./commands/cp").default,
@@ -31,5 +32,6 @@ export default {
     // Scripts
     "script_hiderawfiles": require("./scripts/hiderawfiles").default,
     "script_regeneratefiles": require("./scripts/regeneratefiles").default,
-    "script_findemptyalbums": require("./scripts/findemptyalbums").default
+    "script_findemptyalbums": require("./scripts/findemptyalbums").default,
+    "script_outputtest": require("./scripts/outputtest").default
 };

@@ -19,12 +19,12 @@ export default {
             const nodes = await api.vfs.list("/users");
             const list = nodes.map((node) => node.name);
 
-            return term.bestMatch(value, list);
+            return term.util.bestMatch(value, list);
         } else if (name === "groupname") {
             const nodes = await api.vfs.list("/groups");
             const list = nodes.map((node) => node.name);
 
-            return term.bestMatch(value, list);
+            return term.util.bestMatch(value, list);
         }
 
         return [];
