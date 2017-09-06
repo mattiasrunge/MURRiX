@@ -90,7 +90,7 @@
     "walk-promise": "^0.2.0",
     "webpack": "^3.5.4",
     "winston": "^2.3.1",
-    "wsh.js": "^0.0.3",
+    "wsh.js": "^0.0.6",
     "yargs": "^8.0.2"
   },
   "devDependencies": {

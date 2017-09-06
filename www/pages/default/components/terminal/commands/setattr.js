@@ -7,7 +7,7 @@ export default {
     opts: {
         j: "Parse value as JSON"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
         const attributes = {};
 

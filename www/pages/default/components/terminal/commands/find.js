@@ -4,10 +4,12 @@ import api from "api.io-client";
 export default {
     desc: "Find nodes",
     args: [ "search" ],
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = term.current().path;
         const paths = await api.vfs.find(abspath, args.search);
 
-        return paths.join("\n");
+        for (const path of paths) {
+            await streams.stdout.write(`${path}\n`);
+        }
     }
 };

@@ -8,14 +8,20 @@ export default {
     desc: "List nodes",
     args: [ "?path" ],
     opts: {
-        l: "List with details"
+        l: "List with details",
+        1: "Show as list"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
+        const separator = !streams.stdout.isPipe() && !opts[1] ? " " : "\n";
         const abspath = await term.getAbspath(args.path, true);
         const list = await api.vfs.list(abspath, { noerror: true, nofollow: true, all: opts.l });
 
         if (!opts.l) {
-            return term.templates.ls({ nodes: list });
+            for (const item of list) {
+                await streams.stdout.write(`${item.name}${separator}`);
+            }
+
+            return;
         }
 
         const ucache = {};
@@ -52,7 +58,9 @@ export default {
             showHeaders: false
         });
 
-        return columns;
+        for (const line of columns.split("\n")) {
+            await streams.stdout.write(`${line}\n`);
+        }
     },
     completion: async (term, cmd, name, value) => {
         if (name === "path") {

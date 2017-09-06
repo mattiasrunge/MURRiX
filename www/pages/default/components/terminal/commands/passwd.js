@@ -5,11 +5,14 @@ import session from "lib/session";
 export default {
     desc: "Change user password",
     args: [ "?username" ],
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const username = args.username || session.username();
 
-        const password1 = await term.ask("New password:", true);
-        const password2 = await term.ask("Confirm new password:", true);
+        term.setPrompt({ prompt: "New password:", obscure: true });
+        const password1 = await streams.stdin.read();
+
+        term.setPrompt({ prompt: "Confirm new password:", obscure: true });
+        const password2 = await streams.stdin.read();
 
         if (password1 !== password2) {
             throw new Error("Passwords do not match");
@@ -17,7 +20,7 @@ export default {
 
         await api.auth.passwd(username, password1);
 
-        return "Password updated";
+        await streams.stdout.write("Password updated");
     },
     completion: async (term, cmd, name, value) => {
         if (name === "username") {

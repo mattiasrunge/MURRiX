@@ -4,7 +4,7 @@ import columnify from "columnify";
 
 export default {
     desc: "Find albums that are empty",
-    exec: async (/* term, cmd, opts, args */) => {
+    exec: async (term, streams/* , cmd, opts, args */) => {
         const nodes = await api.vfs.list("/albums", { nofollow: true });
         const found = [];
 
@@ -18,7 +18,9 @@ export default {
         }
 
         if (found.length === 0) {
-            return "No empty albums found!";
+            await streams.stdout.write("No empty albums found!");
+
+            return;
         }
 
         const columns = columnify(found.map((item) => {
@@ -31,6 +33,8 @@ export default {
             columnSplitter: "  "
         });
 
-        return columns;
+        for (const line of columns.split("\n")) {
+            await streams.stdout.write(`${line}\n`);
+        }
     }
 };

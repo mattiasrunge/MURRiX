@@ -8,7 +8,7 @@ export default {
         r: "Recursive setfacl",
         b: "Remove all ACL entries"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
 
         if (opts.b) {

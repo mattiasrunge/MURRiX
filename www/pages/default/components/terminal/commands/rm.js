@@ -7,7 +7,7 @@ export default {
     opts: {
         f: "Force remove without confirmation"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
 
         if (opts.f) {
@@ -16,7 +16,8 @@ export default {
             return;
         }
 
-        const answer = await term.ask(`Are you sure you want to remove <span class='bold'>${abspath}</span>? [y/N]`);
+        term.setPrompt({ prompt: `Are you sure you want to remove <span class='bold'>${abspath}</span>? [y/N]` });
+        const answer = await streams.stdin.read();
 
         if (answer.toLowerCase() === "y") {
             await api.vfs.unlink(abspath);

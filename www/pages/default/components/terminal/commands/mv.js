@@ -4,7 +4,7 @@ import api from "api.io-client";
 export default {
     desc: "Move a node",
     args: [ "srcpath", "dstpath" ],
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const srcpath = await term.getAbspath(args.srcpath, false);
         const dstpath = await term.getAbspath(args.dstpath, false);
 

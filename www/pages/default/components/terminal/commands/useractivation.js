@@ -7,16 +7,16 @@ export default {
     opts: {
         i: "Set user inactive, if not given set user active"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         if (opts.i) {
             await api.auth.inactive(args.username, true);
+            await streams.stdout.write("User deactivated\n");
 
-            return "User deactivated";
+            return;
         }
 
         await api.auth.inactive(args.username, false);
-
-        return "User activated";
+        await streams.stdout.write("User activated\n");
     },
     completion: async (term, cmd, name, value) => {
         if (name === "username") {

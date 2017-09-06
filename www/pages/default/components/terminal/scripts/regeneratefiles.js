@@ -4,7 +4,7 @@ import api from "api.io-client";
 export default {
     desc: "Find and regenerate images in album",
     args: [ "?path" ],
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, true);
         const node = await api.vfs.resolve(abspath);
 
@@ -15,10 +15,10 @@ export default {
         const filespath = `${abspath}/files`;
         const nodes = await api.vfs.list(filespath, { nofollow: true });
 
-        term.log(`Found ${nodes.length} nodes`);
+        await streams.stdout.write(`Found ${nodes.length} nodes\n`);
 
         for (const nodepath of nodes) {
-            term.log(`Regenerating ${nodepath.node.attributes.name}`);
+            await streams.stdout.write(`Regenerating ${nodepath.node.attributes.name}\n`);
             await api.file.regenerate(nodepath.path);
         }
     },

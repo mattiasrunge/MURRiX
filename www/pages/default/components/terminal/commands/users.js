@@ -4,7 +4,7 @@ import columnify from "columnify";
 
 export default {
     desc: "List users",
-    exec: async (/* term, cmd, opts, args */) => {
+    exec: async (term, streams/* , cmd, opts, args */) => {
         const users = await api.vfs.list("/users");
 
         for (const user of users) {
@@ -24,6 +24,8 @@ export default {
             columnSplitter: "  "
         });
 
-        return columns;
+        for (const line of columns.split("\n")) {
+            await streams.stdout.write(`${line}\n`);
+        }
     }
 };

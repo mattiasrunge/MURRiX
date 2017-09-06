@@ -5,7 +5,7 @@ import utils from "lib/utils";
 export default {
     desc: "Print node ACL",
     args: [ "path" ],
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
         const node = await api.vfs.resolve(abspath, { nofollow: true });
         const uname = await api.auth.uname(node.properties.uid);
@@ -35,12 +35,12 @@ export default {
         const users = `\n${aclUsers.join("\n")}`;
         const groups = `\n${aclGroups.join("\n")}`;
 
-        return `# file ${abspath}
-# owner: ${uname}
-# group: ${gname}
-user::${umode} ${aclUsers.length > 0 ? users : ""}
-group::${gmode} ${aclGroups.length > 0 ? groups : ""}
-other::${omode}`;
+        await streams.stdout.write(`# file ${abspath}\n`);
+        await streams.stdout.write(`# owner: ${uname}\n`);
+        await streams.stdout.write(`# group: ${gname}\n`);
+        await streams.stdout.write(`user::${umode} ${aclUsers.length > 0 ? users : ""}\n`);
+        await streams.stdout.write(`group::${gmode} ${aclGroups.length > 0 ? groups : ""}\n`);
+        await streams.stdout.write(`other::${omode}\n`);
     },
     completion: async (term, cmd, name, value) => {
         if (name === "path") {

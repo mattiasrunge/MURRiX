@@ -4,7 +4,7 @@ import api from "api.io-client";
 export default {
     desc: "Create a new group",
     args: [ "name" ],
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const name = await term.ask("Name:");
 
         if (!name) {

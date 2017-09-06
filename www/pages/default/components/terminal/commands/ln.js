@@ -7,7 +7,7 @@ export default {
     opts: {
         s: "Create a symlink"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const srcpath = await term.getAbspath(args.srcpath, false);
         const dstpath = await term.getAbspath(args.dstpath, false);
 

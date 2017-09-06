@@ -4,14 +4,15 @@ import session from "lib/session";
 
 export default {
     desc: "Give admin access",
-    exec: async (term /* , cmd, opts, args */) => {
-        const password = await term.ask("Admin password:", true);
+    exec: async (term, streams /* , cmd, opts, args */) => {
+        term.setPrompt({ prompt: "Admin password:", obscure: true });
+        const password = await streams.stdin.read();
 
         await api.auth.becomeAdmin(password);
 
         session.adminGranted(!!password);
 
-        return password ? "Admin rights granted" : "Admin rights recinded";
+        await streams.stdout.write(password ? "Admin rights granted" : "Admin rights recinded");
     },
     completion: async (term, cmd, name, value) => {
         if (name === "username") {

@@ -8,7 +8,7 @@ export default {
         l: "Don't follow links",
         i: "Path is an id"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         let id;
 
         if (!opts.i) {
@@ -22,7 +22,9 @@ export default {
 
         const paths = await api.vfs.lookup(id);
 
-        return paths.join("\n");
+        for (const path of paths) {
+            await streams.stdout.write(`${path}\n`);
+        }
     },
     completion: async (term, cmd, name, value) => {
         if (name === "path") {

@@ -7,7 +7,7 @@ export default {
     opts: {
         r: "Recursive chmod"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
         const options = { recursive: opts.r };
 

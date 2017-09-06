@@ -7,7 +7,7 @@ import NodeWidgetCard from "plugins/node/components/widget-card";
 export default {
     desc: "View path",
     args: [ "?path" ],
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.srcpath, true);
         const nodepath = await api.vfs.resolve(abspath, { nodepath: true });
 
@@ -16,7 +16,7 @@ export default {
         );
 
 
-        return ReactDOMServer.renderToStaticMarkup(el);
+        await streams.stdout.write(ReactDOMServer.renderToStaticMarkup(el));
     },
     completion: async (term, cmd, name, value) => {
         if (name === "srcpath" || name === "dstpath") {

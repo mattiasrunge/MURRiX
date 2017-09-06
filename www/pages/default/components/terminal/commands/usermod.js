@@ -7,7 +7,7 @@ export default {
     opts: {
         r: "Remove group"
     },
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         if (opts.r) {
             await api.auth.disconnect(args.username, args.groupname);
         } else {

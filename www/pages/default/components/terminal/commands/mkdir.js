@@ -4,7 +4,7 @@ import api from "api.io-client";
 export default {
     desc: "Create a new directory node",
     args: [ "path" ],
-    exec: async (term, cmd, opts, args) => {
+    exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
 
         await api.vfs.create(abspath, "d");
