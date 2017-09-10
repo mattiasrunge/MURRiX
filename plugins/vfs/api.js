@@ -320,7 +320,7 @@ const vfs = api.register("vfs", {
             let children = parent.properties.children;
 
             if (pattern) {
-                children = children.filter((child) => child.name.match(new RegExp(pattern)));
+                children = children.filter((child) => child.name.match(new RegExp(`^${pattern}$`)));
             }
 
             if (options.reverse) {
