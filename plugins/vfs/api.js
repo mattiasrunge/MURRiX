@@ -300,6 +300,12 @@ const vfs = api.register("vfs", {
         let abspaths = abspath instanceof Array ? abspath : [ abspath ];
 
         for (let abspath of abspaths) {
+            abspath = abspath.replace(/\/$/, "");
+            const slashIndex = abspath.lastIndexOf("/");
+            const lastPart = abspath.substr(slashIndex + 1);
+            const pattern = lastPart.includes("*") ? lastPart.replace("*", ".*?") : false;
+            abspath = pattern ? abspath.substr(0, slashIndex) : abspath;
+
             // TODO: Filter options, sending in nodepath breaks things!
             let parent = await vfs.resolve(session, abspath, options);
 
@@ -311,17 +317,23 @@ const vfs = api.register("vfs", {
                 throw new Error("Permission denied");
             }
 
+            let children = parent.properties.children;
+
+            if (pattern) {
+                children = children.filter((child) => child.name.match(new RegExp(pattern)));
+            }
+
             if (options.reverse) {
-                parent.properties.children.sort((a, b) => {
+                children.sort((a, b) => {
                     return b.name.localeCompare(a.name);
                 });
             } else {
-                parent.properties.children.sort((a, b) => {
+                children.sort((a, b) => {
                     return a.name.localeCompare(b.name);
                 });
             }
 
-            let ids = parent.properties.children.map((child) => child.id);
+            let ids = children.map((child) => child.id);
 
             if (options.limit && !hasFilter) {
                 ids = ids.slice(options.skip || 0, options.limit);
@@ -345,7 +357,7 @@ const vfs = api.register("vfs", {
                 list.push({ name: "..", node: pparent, path: path.dirname(abspath) });
             }
 
-            for (let child of parent.properties.children) {
+            for (let child of children) {
                 let node = nodes.filter((node) => node._id === child.id)[0];
                 let dir = path.join(abspath, child.name);
 
