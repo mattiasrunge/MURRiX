@@ -16,6 +16,7 @@ class NodeSectionUpload extends Knockout {
         model.nodepath = ko.pureComputed(() => ko.unwrap(this.props.nodepath));
         model.active = ko.observable(false);
         model.fileInput = ko.observableArray();
+        model.extra = ko.observable(false);
 
         model.files = ko.asyncComputed([], async () => {
             let files = [];
@@ -99,7 +100,7 @@ class NodeSectionUpload extends Knockout {
             model.active(true);
 
             let delayed = [];
-            let parentPath = model.nodepath().path + "/files";
+            let parentPath = model.nodepath().path + "/" + (model.extra() ? "extra" : "files");
 
             // Pass 1: Check duplicate names
             // TODO
@@ -120,12 +121,14 @@ class NodeSectionUpload extends Knockout {
 
                 console.log(result.metadata);
 
-                if (result.metadata.rawImage) {
+                if (result.metadata.rawImage && !model.extra()) {
                     delayed.push({
                         metadata: result.metadata,
                         item: item
                     });
                 } else {
+                    await api.vfs.ensure(parentPath, "d");
+
                     let name = await api.node.getUniqueName(parentPath, item.name);
                     await model.import(parentPath + "/" + name, item);
                 }
@@ -179,26 +182,29 @@ class NodeSectionUpload extends Knockout {
                                 <td style={{ fontWeight: "bold", paddingRight: "5px" }}>
                                     Speed:
                                 </td>
-                                <td style={{ width: "100px" }}>
+                                <td style={{ width: "80px" }}>
                                     <span data-bind="htmlSize: speed"></span>/s
                                 </td>
                                 <td style={{ fontWeight: "bold", paddingRight: "5px" }}>
                                     Progress:
                                 </td>
-                                <td style={{ width: "100px" }}>
+                                <td style={{ width: "70px" }}>
                                     <span data-bind="text: progress"></span>%
                                 </td>
                                 <td style={{ fontWeight: "bold", paddingRight: "5px" }}>
                                     Files:
                                 </td>
-                                <td style={{ width: "100px" }}>
+                                <td style={{ width: "70px" }}>
                                     <span data-bind="text: files().length"></span>
                                 </td>
                                 <td style={{ fontWeight: "bold", paddingRight: "5px" }}>
                                     Total size:
                                 </td>
-                                <td style={{ width: "100px" }}>
+                                <td style={{ width: "80px" }}>
                                     <span data-bind="htmlSize: size"></span>
+                                </td>
+                                <td style={{ width: "60px" }}>
+                                    <input type="checkbox" data-bind="checked: extra" /> Extra
                                 </td>
                                 <td>
                                     <button type="button" className="btn btn-primary" data-bind="click: start, disable: active">Upload</button>
