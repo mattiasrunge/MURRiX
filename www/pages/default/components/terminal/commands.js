@@ -31,6 +31,7 @@ export default {
 
     // Scripts
     "script_hiderawfiles": require("./scripts/hiderawfiles").default,
+    "script_hidesomefiles": require("./scripts/hidesomefiles").default,
     "script_regeneratefiles": require("./scripts/regeneratefiles").default,
     "script_findemptyalbums": require("./scripts/findemptyalbums").default,
     "script_outputtest": require("./scripts/outputtest").default

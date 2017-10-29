@@ -416,8 +416,10 @@ class NodeFullscreen extends Knockout {
                                     <span> (<span data-bind="htmlSize: nodepath().node().attributes.size"></span>)</span>
                                     <div data-bind="if: versions().length > 0">
                                         <small data-bind="foreach: versions" style={{ fontSize: "80%" }}>
-                                            <a style={{ color: "#999" }} href="#" data-bind="text: $data.node().attributes.name, attr: { href: 'file/download/' + $data.node().attributes.diskfilename + '/' + $data.node().attributes.name }"></a>
-                                            <span> (<span data-bind="htmlSize: $data.node().attributes.size"></span>)</span>
+                                            <div>
+                                                <a style={{ color: "#999" }} href="#" data-bind="text: $data.node().attributes.name, attr: { href: 'file/download/' + $data.node().attributes.diskfilename + '/' + $data.node().attributes.name }"></a>
+                                                <span> (<span data-bind="htmlSize: $data.node().attributes.size"></span>)</span>
+                                            </div>
                                         </small>
                                     </div>
                                 </td>
