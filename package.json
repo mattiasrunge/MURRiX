@@ -76,6 +76,7 @@
     "server-destroy": "^1.0.1",
     "sha1": "^1.1.1",
     "shuffle-array": "^1.0.1",
+    "simple-xml2json": "^1.2.3",
     "source-map-support": "^0.4.6",
     "strip-ansi": "^4.0.0",
     "style-loader": "^0.18.2",
