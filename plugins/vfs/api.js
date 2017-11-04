@@ -34,7 +34,7 @@ const vfs = api.register("vfs", {
         if (!(await db.findOne("nodes", { "properties.type": "r" }))) {
             log.info("No root node found, creating...");
 
-            let root = {
+            const root = {
                 _id: uuid.v4(),
                 properties: {
                     type: "r",
@@ -92,10 +92,10 @@ const vfs = api.register("vfs", {
     },
     emitEvent: async (session, event, abspathOrNode) => {
         if (event === "update") {
-            let node = await vfs.resolve(session, abspathOrNode);
-            let paths = await vfs.lookup(session, node._id);
+            const node = await vfs.resolve(session, abspathOrNode);
+            const paths = await vfs.lookup(session, node._id);
 
-            for (let abspath of paths) {
+            for (const abspath of paths) {
                 vfs.emit("update", { path: abspath });
             }
         } else {
@@ -111,10 +111,10 @@ const vfs = api.register("vfs", {
             return true;
         }
 
-        let node = await vfs.resolve(session, abspathOrNode, { noerror: true });
+        const node = await vfs.resolve(session, abspathOrNode, { noerror: true });
 
         if (!node || !node._id) {
-            throw new Error("Node not valid, abspathOrNode was " + JSON.stringify(abspathOrNode, null, 2));
+            throw new Error(`Node not valid, abspathOrNode was ${JSON.stringify(abspathOrNode, null, 2)}`);
         }
 
         let mode = 0;
@@ -143,7 +143,7 @@ const vfs = api.register("vfs", {
         }
 
         if (node.properties.acl && node.properties.acl.length > 0) {
-            for (let ac of node.properties.acl) {
+            for (const ac of node.properties.acl) {
                 if ((ac.uid && ac.uid === session.uid) || (ac.gid && session.gids.includes(ac.gid))) {
                     mode = 0;
                     mode |= modestr.includes("r") ? vfs.MASK_ACL_READ : 0;
@@ -164,10 +164,10 @@ const vfs = api.register("vfs", {
             options.fields.properties = 1;
         }
 
-        let nodes = await db.find("nodes", query, options);
-        let results = [];
+        const nodes = await db.find("nodes", query, options);
+        const results = [];
 
-        for (let node of nodes) {
+        for (const node of nodes) {
             if (await vfs.access(session, node, "r")) {
                 results.push(node);
             }
@@ -180,7 +180,7 @@ const vfs = api.register("vfs", {
             options.fields.properties = 1;
         }
 
-        let node = await db.findOne("nodes", query, options);
+        const node = await db.findOne("nodes", query, options);
 
         if (node && !(await vfs.access(session, node, "r"))) {
             throw new Error("Permission denied");
@@ -203,17 +203,17 @@ const vfs = api.register("vfs", {
             return abspath;
         }
 
-        let pathParts = abspath.replace(/\/$/g, "").split("/");
-        let root = await db.findOne("nodes", { "properties.type": "r" });
+        const pathParts = abspath.replace(/\/$/g, "").split("/");
+        const root = await db.findOne("nodes", { "properties.type": "r" });
 
-        let getchild = async (session, node, pathParts, childName, options) => {
+        const getchild = async (session, node, pathParts, childName, options) => {
             if (pathParts.length === 0) {
                 if (!(await vfs.access(session, node, "r"))) {
                     throw new Error("Permission denied");
                 }
 
                 if (options.nodepath) {
-                    let editable = await vfs.access(session, node, "w");
+                    const editable = await vfs.access(session, node, "w");
 
                     return { name: childName, node: node, path: abspath, editable: editable };
                 }
@@ -221,15 +221,15 @@ const vfs = api.register("vfs", {
                 return node;
             }
 
-            let name = pathParts.shift();
-            let child = node.properties.children.filter((child) => child.name === name)[0];
+            const name = pathParts.shift();
+            const child = node.properties.children.filter((child) => child.name === name)[0];
 
             if (!child) {
                 if (options.noerror) {
                     return false;
                 }
 
-                throw new Error("No such (abspath=" + abspath + ") path: " + pathParts.join(":"));
+                throw new Error(`No such (abspath=${abspath}) path: ${pathParts.join(":")}`);
             }
 
             node = await db.findOne("nodes", { _id: child.id });
@@ -250,6 +250,7 @@ const vfs = api.register("vfs", {
         };
 
         pathParts.shift();
+
         return getchild(session, root, pathParts, "", options);
     }),
     lookup: api.export(async (session, id, cache) => {
@@ -259,8 +260,8 @@ const vfs = api.register("vfs", {
             return cache[id];
         }
 
-        let paths = [];
-        let parents = await db.find("nodes", { "properties.children.id": id }, {
+        const paths = [];
+        const parents = await db.find("nodes", { "properties.children.id": id }, {
             "properties.children": 1
         });
 
@@ -268,18 +269,19 @@ const vfs = api.register("vfs", {
             return [ "/" ];
         }
 
-        for (let parent of parents) {
-            let parentpaths = await vfs.lookup(session, parent._id, cache);
-            let names = parent.properties.children.filter((child) => child.id === id).map((child) => child.name);
+        for (const parent of parents) {
+            const parentpaths = await vfs.lookup(session, parent._id, cache);
+            const names = parent.properties.children.filter((child) => child.id === id).map((child) => child.name);
 
-            for (let parentpath of parentpaths) {
-                for (let name of names) {
+            for (const parentpath of parentpaths) {
+                for (const name of names) {
                     paths.push(path.join(parentpath, name));
                 }
             }
         }
 
         cache[id] = paths;
+
         return cache[id];
     }),
     ensure: api.export(async (session, abspath, type, attributes) => {
@@ -294,10 +296,10 @@ const vfs = api.register("vfs", {
     list: api.export(async (session, abspath, options) => {
         options = options || {};
 
-        let hasFilter = !!options.filter;
-        let query = options.filter || {};
+        const hasFilter = !!options.filter;
+        const query = options.filter || {};
         let list = [];
-        let abspaths = abspath instanceof Array ? abspath : [ abspath ];
+        const abspaths = abspath instanceof Array ? abspath : [ abspath ];
 
         for (let abspath of abspaths) {
             abspath = abspath.replace(/\/$/, "");
@@ -307,7 +309,7 @@ const vfs = api.register("vfs", {
             abspath = pattern ? abspath.substr(0, slashIndex) : abspath;
 
             // TODO: Filter options, sending in nodepath breaks things!
-            let parent = await vfs.resolve(session, abspath, options);
+            const parent = await vfs.resolve(session, abspath, options);
 
             if (!parent) {
                 continue;
@@ -341,23 +343,23 @@ const vfs = api.register("vfs", {
 
             query._id = { $in: ids };
 
-            let opts = {};
+            const opts = {};
 
             if (options.limit && hasFilter) {
                 opts.limit = options.limit;
                 opts.skip = options.skip;
             }
 
-            let nodes = await db.find("nodes", query, opts);
+            const nodes = await db.find("nodes", query, opts);
 
             if (options.all) {
-                let pparent = await vfs.resolve(session, path.dirname(abspath));
+                const pparent = await vfs.resolve(session, path.dirname(abspath));
 
                 list.push({ name: ".", node: parent, path: abspath });
                 list.push({ name: "..", node: pparent, path: path.dirname(abspath) });
             }
 
-            for (let child of children) {
+            for (const child of children) {
                 let node = nodes.filter((node) => node._id === child.id)[0];
                 let dir = path.join(abspath, child.name);
 
@@ -371,7 +373,7 @@ const vfs = api.register("vfs", {
                     }
 
                     if (node) {
-                        let readable = await vfs.access(session, node, "r");
+                        const readable = await vfs.access(session, node, "r");
                         let editable;
 
                         if (options.checkwritable) {
@@ -458,17 +460,17 @@ const vfs = api.register("vfs", {
         return result;
     }),
     find: api.export(async (session, abspath, search) => {
-        let list = [];
-        let guard = [];
-        let node = await vfs.resolve(session, abspath);
+        const list = [];
+        const guard = [];
+        const node = await vfs.resolve(session, abspath);
 
-        let rfind = async (dir, node) => {
+        const rfind = async (dir, node) => {
             if ((await vfs.access(session, node, "r"))) {
-                for (let child of node.properties.children) {
+                for (const child of node.properties.children) {
                     if (!guard.includes(child.id)) {
                         guard.push(child.id);
 
-                        let node = await db.findOne("nodes", { _id: child.id });
+                        const node = await db.findOne("nodes", { _id: child.id });
 
                         if (child.name.includes(search)) {
                             list.push(path.join(dir, child.name));
@@ -485,7 +487,7 @@ const vfs = api.register("vfs", {
         return list;
     }),
     setfacl: api.export(async (session, abspath, ac, options) => {
-        let node = await vfs.resolve(session, abspath, { nofollow: true });
+        const node = await vfs.resolve(session, abspath, { nofollow: true });
 
         options = options || {};
 
@@ -501,10 +503,10 @@ const vfs = api.register("vfs", {
         } else {
             node.properties.acl = node.properties.acl || [];
 
-            let current = node.properties.acl.filter((item) => item.uid === ac.uid || item.gid === ac.gid)[0];
+            const current = node.properties.acl.filter((item) => item.uid === ac.uid || item.gid === ac.gid)[0];
 
             if (current) {
-                let index = node.properties.acl.indexOf(current);
+                const index = node.properties.acl.indexOf(current);
                 node.properties.acl.splice(index, 1);
             }
 
@@ -528,15 +530,15 @@ const vfs = api.register("vfs", {
         await vfs.emitEvent(session, "update", abspath);
 
         if (options.recursive && node.properties.type !== "s") {
-            let children = await vfs.list(session, abspath, { nofollow: true });
+            const children = await vfs.list(session, abspath, { nofollow: true });
 
-            for (let child of children) {
+            for (const child of children) {
                 await vfs.setfacl(session, child.path, ac, options);
             }
         }
     }),
     chmod: api.export(async (session, abspath, mode, options) => {
-        let node = await vfs.resolve(session, abspath, { nofollow: true });
+        const node = await vfs.resolve(session, abspath, { nofollow: true });
 
         options = options || {};
 
@@ -559,15 +561,15 @@ const vfs = api.register("vfs", {
         await vfs.emitEvent(session, "update", abspath);
 
         if (options.recursive && node.properties.type !== "s") {
-            let children = await vfs.list(session, abspath, { nofollow: true });
+            const children = await vfs.list(session, abspath, { nofollow: true });
 
-            for (let child of children) {
+            for (const child of children) {
                 await vfs.chmod(session, child.path, mode, options);
             }
         }
     }),
     chown: api.export(async (session, abspath, username, group, options) => {
-        let node = await vfs.resolve(session, abspath, { nofollow: true });
+        const node = await vfs.resolve(session, abspath, { nofollow: true });
 
         options = options || {};
 
@@ -605,15 +607,15 @@ const vfs = api.register("vfs", {
         await vfs.emitEvent(session, "update", abspath);
 
         if (options.recursive && node.properties.type !== "s") {
-            let children = await vfs.list(session, abspath, { nofollow: true });
+            const children = await vfs.list(session, abspath, { nofollow: true });
 
-            for (let child of children) {
+            for (const child of children) {
                 await vfs.chown(session, child.path, username, group, options);
             }
         }
     }),
     setattributes: api.export(async (session, abspath, attributes) => {
-        let node = await vfs.resolve(session, abspath, { nofollow: true });
+        const node = await vfs.resolve(session, abspath, { nofollow: true });
 
         if (!(await vfs.access(session, node, "w"))) {
             throw new Error("Permission denied");
@@ -624,7 +626,7 @@ const vfs = api.register("vfs", {
         node.properties.cuid = session.uid;
         node.properties.muid = session.uid;
 
-        for (let key of Object.keys(attributes)) {
+        for (const key of Object.keys(attributes)) {
             if (attributes[key] !== null) {
                 node.attributes[key] = attributes[key];
             } else {
@@ -649,9 +651,9 @@ const vfs = api.register("vfs", {
             throw new Error("Permission denied");
         }
 
-        let node = await vfs.resolve(session, abspath, { nofollow: true });
+        const node = await vfs.resolve(session, abspath, { nofollow: true });
 
-        for (let key of Object.keys(properties)) {
+        for (const key of Object.keys(properties)) {
             if (properties[key] !== null) {
                 node.properties[key] = properties[key];
             } else {
@@ -672,20 +674,20 @@ const vfs = api.register("vfs", {
         return node;
     }),
     create: api.export(async (session, abspath, type, attributes) => {
-        let parentPath = path.dirname(abspath);
-        let parent = await vfs.resolve(session, parentPath);
-        let name = path.basename(abspath);
-        let exists = parent.properties.children.filter((child) => child.name === name).length > 0;
+        const parentPath = path.dirname(abspath);
+        const parent = await vfs.resolve(session, parentPath);
+        const name = path.basename(abspath);
+        const exists = parent.properties.children.filter((child) => child.name === name).length > 0;
 
         if (exists) {
-            throw new Error(abspath + " already exists");
+            throw new Error(`${abspath} already exists`);
         }
 
         if (!(await vfs.access(session, parent, "w"))) {
             throw new Error("Permission denied");
         }
 
-        let node = {
+        const node = {
             _id: uuid.v4(),
             properties: {
                 type: type,
@@ -717,13 +719,13 @@ const vfs = api.register("vfs", {
                 throw new Error("File must have a filename attribute");
             }
 
-            let ext = path.extname(node.attributes.name);
-            let source = node.attributes._source;
+            const ext = path.extname(node.attributes.name);
+            const source = node.attributes._source;
             delete node.attributes._source;
 
             node.attributes.diskfilename = node._id + ext;
 
-            let diskfilepath = path.join(params.fileDirectory, node.attributes.diskfilename);
+            const diskfilepath = path.join(params.fileDirectory, node.attributes.diskfilename);
 
             if (source.mode === "symlink") {
                 await fs.ensureSymlinkAsync(source.filename, diskfilepath);
@@ -762,10 +764,10 @@ const vfs = api.register("vfs", {
         return node;
     }),
     unlink: api.export(async (session, abspath) => {
-        let parentPath = path.dirname(abspath);
-        let parent = await vfs.resolve(session, parentPath, { nofollow: true });
-        let name = path.basename(abspath);
-        let child = parent.properties.children.filter((child) => child.name === name)[0];
+        const parentPath = path.dirname(abspath);
+        const parent = await vfs.resolve(session, parentPath, { nofollow: true });
+        const name = path.basename(abspath);
+        const child = parent.properties.children.filter((child) => child.name === name)[0];
 
         if (!child) {
             return;
@@ -788,11 +790,11 @@ const vfs = api.register("vfs", {
 
         await vfs.emitEvent(session, "update", parentPath);
 
-        let rremove = async (abspath, id) => {
-            let node = await db.findOne("nodes", { _id: id });
+        const rremove = async (abspath, id) => {
+            const node = await db.findOne("nodes", { _id: id });
 
             if (!node) {
-                throw new Error("Could not find node with id " + id + " and abspath " + abspath + " while removing");
+                throw new Error(`Could not find node with id ${id} and abspath ${abspath} while removing±`);
             }
 
             if (node.properties.count > 1) {
@@ -806,7 +808,7 @@ const vfs = api.register("vfs", {
                     await fs.removeAsync(path.join(params.fileDirectory, node.attributes.diskfilename));
                 }
 
-                for (let child of node.properties.children) {
+                for (const child of node.properties.children) {
                     await rremove(path.join(abspath, child.name), child.id);
                 }
 
@@ -824,10 +826,10 @@ const vfs = api.register("vfs", {
     }),
     symlink: api.export(async (session, srcpath, destpath) => {
         await vfs.resolve(session, srcpath);
-        let name = path.basename(srcpath);
+        const name = path.basename(srcpath);
 
         if (await vfs.resolve(session, destpath, { noerror: true })) {
-            destpath = destpath + "/" + name;
+            destpath = `${destpath}/${name}`;
         }
 
         return await vfs.create(session, destpath, "s", {
@@ -835,7 +837,7 @@ const vfs = api.register("vfs", {
         });
     }),
     link: api.export(async (session, srcpath, destpath) => {
-        let srcnode = await vfs.resolve(session, srcpath, { nofollow: true });
+        const srcnode = await vfs.resolve(session, srcpath, { nofollow: true });
 
         if (!(await vfs.access(session, srcnode, "r"))) {
             throw new Error("Permission denied");
@@ -859,10 +861,10 @@ const vfs = api.register("vfs", {
             throw new Error("Permission denied");
         }
 
-        let destchild = destnode.properties.children.filter((child) => child.name === name)[0];
+        const destchild = destnode.properties.children.filter((child) => child.name === name)[0];
 
         if (destchild) {
-            throw new Error(destpath + "/" + name + " already exists");
+            throw new Error(`${destpath}/${name} already exists`);
         }
 
         destnode.properties.children.push({ id: srcnode._id, name: name });
@@ -882,13 +884,13 @@ const vfs = api.register("vfs", {
         await vfs.emitEvent(session, "update", destpath);
     }),
     move: api.export(async (session, srcpath, destpath) => {
-        let srcparentPath = path.dirname(srcpath);
-        let srcparent = await vfs.resolve(session, srcparentPath);
-        let name = path.basename(srcpath);
-        let child = srcparent.properties.children.filter((child) => child.name === name)[0];
+        const srcparentPath = path.dirname(srcpath);
+        const srcparent = await vfs.resolve(session, srcparentPath);
+        const name = path.basename(srcpath);
+        const child = srcparent.properties.children.filter((child) => child.name === name)[0];
 
         if (!child) {
-            throw new Error(srcpath + " does not exists");
+            throw new Error(`${srcpath} does not exists`);
         }
 
         if (!(await vfs.access(session, srcparent, "w"))) {
@@ -899,7 +901,7 @@ const vfs = api.register("vfs", {
         srcparent.properties.ctime = new Date();
         srcparent.properties.cuid = session.uid;
 
-        let destparentPath = path.dirname(destpath) === path.dirname(srcpath) ? srcparentPath : path.dirname(destpath);
+        const destparentPath = path.dirname(destpath) === path.dirname(srcpath) ? srcparentPath : path.dirname(destpath);
         let destparent = path.dirname(destpath) === path.dirname(srcpath) ? srcparent : await vfs.resolve(session, path.dirname(destpath));
         let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
 
@@ -908,7 +910,7 @@ const vfs = api.register("vfs", {
             destchild = destparent.properties.children.filter((child) => child.name === name)[0];
 
             if (destchild) {
-                throw new Error(path.join(destpath, destchild.name) + " already exists");
+                throw new Error(`${path.join(destpath, destchild.name)} already exists`);
             }
         } else if (destpath !== "/") {
             child.name = path.basename(destpath);
@@ -939,12 +941,12 @@ const vfs = api.register("vfs", {
         });
 
         session.almighty = true;
-        let symlinks = await vfs.query(session, {
+        const symlinks = await vfs.query(session, {
             "properties.type": "s",
             "attributes.path": srcpath
         });
 
-        for (let symlink of symlinks) {
+        for (const symlink of symlinks) {
             await vfs.setattributes(session, symlink, {
                 path: path.join(destparentPath, child.name)
             });
@@ -955,19 +957,19 @@ const vfs = api.register("vfs", {
         await vfs.emitEvent(session, "update", destparentPath);
     }),
     copy: api.export(async (session, srcpath, destpath) => {
-        let srcparent = await vfs.resolve(session, path.dirname(srcpath));
-        let name = path.basename(srcpath);
-        let child = srcparent.properties.children.filter((child) => child.name === name)[0];
+        const srcparent = await vfs.resolve(session, path.dirname(srcpath));
+        const name = path.basename(srcpath);
+        const child = srcparent.properties.children.filter((child) => child.name === name)[0];
 
         if (!child) {
-            throw new Error(srcpath + " does not exists");
+            throw new Error(`${srcpath} does not exists`);
         }
 
         if (!(await vfs.access(session, srcparent, "r"))) {
             throw new Error("Permission denied");
         }
 
-        let destparentPath = path.dirname(destpath);
+        const destparentPath = path.dirname(destpath);
         let destparent = await vfs.resolve(session, destparentPath);
         let destchild = destparent.properties.children.filter((child) => child.name === path.basename(destpath))[0];
 
@@ -976,14 +978,14 @@ const vfs = api.register("vfs", {
             destchild = destparent.properties.children.filter((child) => child.name === name)[0];
 
             if (destchild) {
-                throw new Error(destpath + " already exists");
+                throw new Error(`${destpath} already exists`);
             }
         } else if (destpath !== "/") {
             child.name = path.basename(destpath);
         }
 
-        let rcopy = async (abspath, id) => {
-            let node = await db.findOne("nodes", { _id: id });
+        const rcopy = async (abspath, id) => {
+            const node = await db.findOne("nodes", { _id: id });
 
             node._id = uuid.v4();
             node.properties.birthtime = new Date();
@@ -996,17 +998,17 @@ const vfs = api.register("vfs", {
             node.properties.count = 1;
             node.properties.mode = session.umask || 0o755;
 
-            for (let child of node.properties.children) {
+            for (const child of node.properties.children) {
                 child.id = await rcopy(path.join(abspath, child.name), child.id);
             }
 
             if (node.properties.type === "f") {
-                let olddiskfilepath = path.join(params.fileDirectory, node.attributes.diskfilename);
-                let ext = path.extname(node.attributes.diskfilename);
+                const olddiskfilepath = path.join(params.fileDirectory, node.attributes.diskfilename);
+                const ext = path.extname(node.attributes.diskfilename);
 
                 node.attributes.diskfilename = node._id + ext;
 
-                let newdiskfilepath = path.join(params.fileDirectory, node.attributes.diskfilename);
+                const newdiskfilepath = path.join(params.fileDirectory, node.attributes.diskfilename);
 
                 await fs.copyAsync(olddiskfilepath, newdiskfilepath);
             }
@@ -1042,13 +1044,14 @@ const vfs = api.register("vfs", {
         await vfs.emitEvent(session, "update", destparentPath);
     }),
     allocateUploadId: api.export(async (session) => {
-        let id = uuid.v4();
+        const id = uuid.v4();
 
         if (!session.uploads) {
             session.uploads = [];
         }
 
         session.uploads[id] = true;
+
         return id;
     }),
     labels: api.export(async (session) => {

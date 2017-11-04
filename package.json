@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git://github.com/mattiasrunge/MURRiX.git"
   },
+  "scripts": {
+    "lint": "eslint ."
+  },
   "dependencies": {
     "animate.css": "^3.5.2",
     "api.io": "^1.0.0",
@@ -85,9 +88,6 @@
     "uglify-js": "^3.0.27",
     "url-loader": "^0.5.7",
     "uuid": "^3.0.1",
-    "vorpal": "git+https://github.com/mattiasrunge/vorpal.git",
-    "vorpal-autocomplete-fs": "^0.0.3",
-    "vorpal-less": "^0.0.13",
     "walk-promise": "^0.2.0",
     "webpack": "^3.5.4",
     "winston": "^2.3.1",
