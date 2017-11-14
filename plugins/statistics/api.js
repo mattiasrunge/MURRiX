@@ -3,15 +3,51 @@
 const moment = require("moment");
 const api = require("api.io");
 
-let params = {};
-
 const statistics = api.register("statistics", {
     deps: [ "vfs", "auth" ],
-    init: async (config) => {
-        params = config;
+    init: async (/* config */) => {
     },
-    getEventData: api.export(async (/*session*/) => {
-        let nodes = await api.vfs.query(api.auth.getAdminSession(), {
+    getNodeData: api.export(async (session, options) => {
+        const data = {
+            createdPerYear: {}
+        };
+
+        if (options.types) {
+            for (const type of options.types) {
+                const result = await api.vfs.aggregate(api.auth.getAdminSession(), [
+                    {
+                        $match: {
+                            "properties.type": type
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: {
+                                $year: "$properties.birthtime"
+                            },
+                            total: {
+                                $sum: 1
+                            }
+                        }
+                    }
+                ]);
+
+                data.createdPerYear[type] = {
+                    labels: [],
+                    values: []
+                };
+
+                for (const item of result.reverse()) {
+                    data.createdPerYear[type].labels.push(item._id);
+                    data.createdPerYear[type].values.push(item.total);
+                }
+            }
+        }
+
+        return data;
+    }),
+    getEventData: api.export(async (/* session */) => {
+        const nodes = await api.vfs.query(api.auth.getAdminSession(), {
             "properties.type": "t",
             "attributes.type": { $in: [ "birth", "death", "engagement", "marriage" ] }
         }, {
@@ -21,14 +57,14 @@ const statistics = api.register("statistics", {
             }
         });
 
-        let data = {
+        const data = {
             birth: Array(12).fill(0),
             engagement: Array(12).fill(0),
             marriage: Array(12).fill(0),
             death: Array(12).fill(0)
         };
 
-        for (let node of nodes) {
+        for (const node of nodes) {
             if (!node.attributes.time) {
                 continue;
             }
@@ -39,8 +75,8 @@ const statistics = api.register("statistics", {
                 node.attributes.time.accuracy === "hour" ||
                 node.attributes.time.accuracy === "day" ||
                 node.attributes.time.accuracy === "month") {
-                let time = moment(node.attributes.time.timestamp * 1000);
-                let month = parseInt(time.format("M"), 10) - 1;
+                const time = moment(node.attributes.time.timestamp * 1000);
+                const month = parseInt(time.format("M"), 10) - 1;
 
                 data[node.attributes.type][month]++;
             }

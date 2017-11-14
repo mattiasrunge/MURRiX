@@ -159,6 +159,15 @@ const vfs = api.register("vfs", {
 
         return false;
     }),
+    aggregate: api.export(async (session, pipeline) => {
+        if (session.username !== "admin") {
+            throw new Error("Permission denied");
+        }
+
+        const cursor = await db.aggregate("nodes", pipeline);
+
+        return cursor.toArray();
+    }),
     query: api.export(async (session, query, options) => {
         if (options && options.fields) {
             options.fields.properties = 1;

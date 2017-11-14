@@ -56,7 +56,8 @@ class StatisticsPageCharts extends Component {
         ];
 
         try {
-            const result = await api.statistics.getEventData();
+            const eventData = await api.statistics.getEventData();
+            const nodeData = await api.statistics.getNodeData({ types: [ "a", "f", "p", "l" ] });
 
             const dataList = [
                 {
@@ -64,7 +65,7 @@ class StatisticsPageCharts extends Component {
                     labels: moment.monthsShort(),
                     datasets: [
                         {
-                            data: result.birth,
+                            data: eventData.birth,
                             borderWidth: 1,
                             backgroundColor
                         }
@@ -75,7 +76,7 @@ class StatisticsPageCharts extends Component {
                     labels: moment.monthsShort(),
                     datasets: [
                         {
-                            data: result.engagement,
+                            data: eventData.engagement,
                             borderWidth: 1,
                             backgroundColor
                         }
@@ -86,7 +87,7 @@ class StatisticsPageCharts extends Component {
                     labels: moment.monthsShort(),
                     datasets: [
                         {
-                            data: result.marriage,
+                            data: eventData.marriage,
                             borderWidth: 1,
                             backgroundColor
                         }
@@ -97,7 +98,51 @@ class StatisticsPageCharts extends Component {
                     labels: moment.monthsShort(),
                     datasets: [
                         {
-                            data: result.death,
+                            data: eventData.death,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
+                },
+                {
+                    label: "Albums added per year",
+                    labels: nodeData.createdPerYear.a.labels,
+                    datasets: [
+                        {
+                            data: nodeData.createdPerYear.a.values,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
+                },
+                {
+                    label: "Files added per year",
+                    labels: nodeData.createdPerYear.f.labels,
+                    datasets: [
+                        {
+                            data: nodeData.createdPerYear.f.values,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
+                },
+                {
+                    label: "People added per year",
+                    labels: nodeData.createdPerYear.p.labels,
+                    datasets: [
+                        {
+                            data: nodeData.createdPerYear.p.values,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
+                },
+                {
+                    label: "Locations added per year",
+                    labels: nodeData.createdPerYear.l.labels,
+                    datasets: [
+                        {
+                            data: nodeData.createdPerYear.l.values,
                             borderWidth: 1,
                             backgroundColor
                         }

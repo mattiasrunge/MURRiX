@@ -2,23 +2,23 @@
 
 const MongoClient = require("mongodb").MongoClient;
 
-let Database = function() {
+const Database = function() {
     let db = null;
 
     this.init = async (config) => {
-        let url = config.mongoUrl;
+        const url = config.mongoUrl;
 
         db = await MongoClient.connect(url);
     };
 
     this.createIndexes = (collectionName, indexes) => {
-        let collection = db.collection(collectionName);
+        const collection = db.collection(collectionName);
 
         return collection.createIndexes(indexes);
     };
 
     this.find = (collectionName, query, options) => {
-        let collection = db.collection(collectionName);
+        const collection = db.collection(collectionName);
 
         let cursor = collection.find(query, options);
 
@@ -38,33 +38,39 @@ let Database = function() {
     };
 
     this.findOne = (collectionName, query, options) => {
-        let collection = db.collection(collectionName);
+        const collection = db.collection(collectionName);
 
         return collection.findOne(query, options);
     };
 
     this.insertOne = (collectionName, doc, options) => {
-        let collection = db.collection(collectionName);
+        const collection = db.collection(collectionName);
 
         return collection.insertOne(doc, options);
     };
 
     this.updateOne = (collectionName, doc, options) => {
-        let collection = db.collection(collectionName);
+        const collection = db.collection(collectionName);
 
         return collection.updateOne({ _id: doc._id }, doc, options);
     };
 
     this.removeOne = (collectionName, id, options) => {
-        let collection = db.collection(collectionName);
+        const collection = db.collection(collectionName);
 
         return collection.deleteOne({ _id: id }, options);
     };
 
     this.distinct = (collectionName, attribute) => {
-        let collection = db.collection(collectionName);
+        const collection = db.collection(collectionName);
 
         return collection.distinct(attribute);
+    };
+
+    this.aggregate = (collectionName, pipeline) => {
+        const collection = db.collection(collectionName);
+
+        return collection.aggregate(pipeline);
     };
 
     this.stop = async () => {
@@ -72,8 +78,9 @@ let Database = function() {
     };
 
     this.createInstance = async (config) => {
-        let db = new Database();
+        const db = new Database();
         await db.init(config);
+
         return db;
     };
 };
