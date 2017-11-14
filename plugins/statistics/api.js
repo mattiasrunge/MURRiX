@@ -3,6 +3,8 @@
 const moment = require("moment");
 const api = require("api.io");
 
+const GIB_SCALE = Math.pow(1024, 3);
+
 const statistics = api.register("statistics", {
     deps: [ "vfs", "auth" ],
     init: async (/* config */) => {
@@ -33,7 +35,8 @@ const statistics = api.register("statistics", {
 
         data.fileSizeIncreasePerYear = {
             labels: [],
-            values: []
+            values: [],
+            increase: []
         };
 
         let last = 0;
@@ -42,7 +45,8 @@ const statistics = api.register("statistics", {
             last += item.total;
 
             data.fileSizeIncreasePerYear.labels.push(item._id);
-            data.fileSizeIncreasePerYear.values.push(last / Math.pow(1024, 3));
+            data.fileSizeIncreasePerYear.values.push(item.total / GIB_SCALE);
+            data.fileSizeIncreasePerYear.increase.push(last / GIB_SCALE);
         }
 
         if (options.types) {
@@ -67,12 +71,18 @@ const statistics = api.register("statistics", {
 
                 data.createdPerYear[type] = {
                     labels: [],
-                    values: []
+                    values: [],
+                    increase: []
                 };
 
+                let last = 0;
+
                 for (const item of result.reverse()) {
+                    last += item.total;
+
                     data.createdPerYear[type].labels.push(item._id);
                     data.createdPerYear[type].values.push(item.total);
+                    data.createdPerYear[type].increase.push(last);
                 }
             }
         }

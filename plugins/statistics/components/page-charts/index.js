@@ -105,11 +105,35 @@ class StatisticsPageCharts extends Component {
                     ]
                 },
                 {
+                    label: "Album increase per year",
+                    labels: nodeData.createdPerYear.a.labels,
+                    type: "line",
+                    datasets: [
+                        {
+                            data: nodeData.createdPerYear.a.increase,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
+                },
+                {
                     label: "Albums added per year",
                     labels: nodeData.createdPerYear.a.labels,
                     datasets: [
                         {
                             data: nodeData.createdPerYear.a.values,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
+                },
+                {
+                    label: "File increase per year",
+                    labels: nodeData.createdPerYear.f.labels,
+                    type: "line",
+                    datasets: [
+                        {
+                            data: nodeData.createdPerYear.f.increase,
                             borderWidth: 1,
                             backgroundColor
                         }
@@ -127,11 +151,35 @@ class StatisticsPageCharts extends Component {
                     ]
                 },
                 {
+                    label: "People increase per year",
+                    labels: nodeData.createdPerYear.p.labels,
+                    type: "line",
+                    datasets: [
+                        {
+                            data: nodeData.createdPerYear.p.increase,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
+                },
+                {
                     label: "People added per year",
                     labels: nodeData.createdPerYear.p.labels,
                     datasets: [
                         {
                             data: nodeData.createdPerYear.p.values,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
+                },
+                {
+                    label: "Location increase per year",
+                    labels: nodeData.createdPerYear.l.labels,
+                    type: "line",
+                    datasets: [
+                        {
+                            data: nodeData.createdPerYear.l.increase,
                             borderWidth: 1,
                             backgroundColor
                         }
