@@ -9,8 +9,41 @@ const statistics = api.register("statistics", {
     },
     getNodeData: api.export(async (session, options) => {
         const data = {
-            createdPerYear: {}
+            createdPerYear: {},
+            fileSizeIncreasePerYear: {}
         };
+
+        const result = await api.vfs.aggregate(api.auth.getAdminSession(), [
+            {
+                $match: {
+                    "properties.type": "f"
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $year: "$properties.birthtime"
+                    },
+                    total: {
+                        $sum: "$attributes.size"
+                    }
+                }
+            }
+        ]);
+
+        data.fileSizeIncreasePerYear = {
+            labels: [],
+            values: []
+        };
+
+        let last = 0;
+
+        for (const item of result.reverse()) {
+            last += item.total;
+
+            data.fileSizeIncreasePerYear.labels.push(item._id);
+            data.fileSizeIncreasePerYear.values.push(last / Math.pow(1024, 3));
+        }
 
         if (options.types) {
             for (const type of options.types) {

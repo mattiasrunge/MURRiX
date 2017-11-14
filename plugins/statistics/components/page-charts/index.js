@@ -147,6 +147,18 @@ class StatisticsPageCharts extends Component {
                             backgroundColor
                         }
                     ]
+                },
+                {
+                    label: "File size increase per year (GiB)",
+                    labels: nodeData.fileSizeIncreasePerYear.labels,
+                    type: "line",
+                    datasets: [
+                        {
+                            data: nodeData.fileSizeIncreasePerYear.values,
+                            borderWidth: 1,
+                            backgroundColor
+                        }
+                    ]
                 }
             ];
 
@@ -170,7 +182,7 @@ class StatisticsPageCharts extends Component {
                             </div>
                             <div className="chart-chart">
                                 <StatisticsWidgetChart
-                                    type="bar"
+                                    type={data.type || "bar"}
                                     data={data}
                                     options={this.state.options}
                                 />
