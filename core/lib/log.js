@@ -1,43 +1,34 @@
 "use strict";
 
-const winston = require("winston");
-
 const getLabel = (callingModule) => {
     let filename = typeof callingModule === "string" ? callingModule : callingModule.filename;
     let parts = filename.split("/").reverse();
     return parts[1] + "/" + parts[0];
 };
-let loggers = [];
+
 let level = "debug";
 let silent = false;
 
 module.exports = (callingModule) => {
-    let log = new winston.Logger({
-        transports: [
-            new (winston.transports.Console)({
-                name: "console",
-                label: getLabel(callingModule),
-                prettyPrint: true,
-                timestamp: true,
-                level: level,
-                silent: silent
-            })
-        ]
-    });
+    const label = getLabel(callingModule);
+    const print = (level, msg, ...args) => {
+        console.log(`${new Date()} - ${level}: [${label}] ${msg}`, ...args);
+    };
 
-    loggers.push(log);
-
-    return log;
+    return {
+        print: (level, msg, ...args) => {
+            console.log(`${new Date()} - ${level}: [${label}] ${msg}`, ...args);
+        },
+        info: (...args) => print("info", ...args),
+        error: (...args) => print("error", ...args),
+        debug: (...args) => print("debug", ...args),
+        profile: (...args) => print("profile", ...args)
+    };
 };
 
 module.exports.init = (l) => {
     level = typeof l === "string" ? l : level;
     silent = l === false;
-
-    for (let log of loggers) {
-        log.transports.console.level = level;
-        log.transports.console.silent = silent;
-    }
 
     return Promise.resolve();
 };
