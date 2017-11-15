@@ -43,7 +43,7 @@ const file = api.register("file", {
 
         return await api.vfs.resolve(session, abspath);
     }),
-    regenerate: api.export(async (session, abspath) => {
+    regenerate: api.export(async (session, abspath, options = {}) => {
         let node = await api.vfs.resolve(session, abspath);
 
         // Update metadata
@@ -51,7 +51,7 @@ const file = api.register("file", {
         const metadata = await api.mcs.getMetadata(path.join(params.fileDirectory, node.attributes.diskfilename), { noChecksums: true });
 
         for (const key of Object.keys(metadata)) {
-            if (key !== "raw" && key !== "name" && typeof node.attributes[key] === "undefined") {
+            if (key !== "raw" && key !== "name" && (typeof node.attributes[key] === "undefined" || options.overwrite)) {
                 attributes[key] = metadata[key];
             }
         }

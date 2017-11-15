@@ -57,7 +57,7 @@ module.exports = {
     emit: (event, data) => {
         data = Object.assign({}, data, { _id: uuid.v4() });
 
-        log.debug("plugin-event[" + event + "]: " + JSON.stringify(data, null, 2));
+        //log.debug("plugin-event[" + event + "]: " + JSON.stringify(data, null, 2));
 
         module.exports._emit(event, data);
     }
