@@ -15,7 +15,7 @@
   "dependencies": {
     "animate.css": "^3.5.2",
     "api.io": "^1.0.0",
-    "async-busboy": "^0.6.1",
+    "async-busboy": "^0.6.2",
     "babel-core": "^6.18.2",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-async-to-module-method": "^6.16.0",

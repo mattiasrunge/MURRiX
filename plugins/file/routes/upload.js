@@ -14,6 +14,19 @@ module.exports = {
     init: async (config) => {
         params = config;
     },
+    onFile: (filename, file, deferred) => {
+        const writeStream = fs.createWriteStream(filename);
+
+        log.info(`Creating write stream for ${filename}...`);
+
+        writeStream
+            .on("open", () => file
+                .pipe(writeStream)
+                .on("error", deferred.reject)
+                .on("finish", deferred.resolve)
+            )
+            .on("error", deferred.reject);
+    },
     handler: async (ctx, id) => {
         if (!ctx.session.uploads || !ctx.session.uploads[id]) {
             log.info(`Could not find upload id ${id}`);
@@ -23,14 +36,19 @@ module.exports = {
 
         delete ctx.session.uploads[id];
 
-        const { files } = await asyncBusboy(ctx.req);
-
-        files[0].destroy();
-
         const filename = path.join(params.uploadDirectory, id);
-        log.info(`Will move uploaded file to ${filename}...`);
+        log.info(`Will save upload file to ${filename}...`);
 
-        await fs.moveAsync(files[0].path, filename);
+        let deferred = {};
+        const promise = new Promise((resolve, reject) => deferred = { resolve, reject });
+
+        await asyncBusboy(ctx.req, {
+            onFile: (fieldname, file) => module.exports.onFile(filename, file, deferred)
+        });
+
+        log.info(`After async busboy will await stream promise for ${filename}...`);
+
+        await promise;
 
         log.info(`Getting metadata for uploaded file ${filename}...`);
         const metadata = await api.mcs.getMetadata(filename, { noChecksums: true });

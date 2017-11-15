@@ -43,6 +43,8 @@ module.exports = {
                 console.log('Error',error);
             });*/
 
+            console.log("Starting post of file", file);
+
             $.ajax({
                 url: url,
                 type: "POST",
@@ -73,6 +75,7 @@ module.exports = {
                     return xhr;
                 },
                 success: function(data) {
+                    console.error("Upload success", file);
                     resolve(data);
                 },
                 error: function(data) {

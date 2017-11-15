@@ -83,6 +83,8 @@ class NodeSectionUpload extends Knockout {
         });
 
         model.import = async (abspath, item) => {
+            console.log("Importing " + item.name + " as " + abspath, item);
+
             let file = await api.file.mkfile(abspath, {
                 name: item.name,
                 _source: {
