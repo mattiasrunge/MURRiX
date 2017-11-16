@@ -5,13 +5,15 @@ export default {
     desc: "Create a new user",
     args: [ "username" ],
     exec: async (term, streams, cmd, opts, args) => {
-        const name = await term.ask("Name:");
+        term.setPrompt({ prompt: "Name:" });
+        const name = await streams.stdin.read();
 
         if (!name) {
             throw new Error("Name can not be empty");
         }
 
-        const groups = await term.ask("Groups:");
+        term.setPrompt({ prompt: "Groups:" });
+        const groups = await streams.stdin.read();
 
         await api.auth.mkuser(args.username, name);
 
