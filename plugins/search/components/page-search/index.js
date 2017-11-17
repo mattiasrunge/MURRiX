@@ -68,7 +68,6 @@ class SearchPageSearch extends Component {
         event.preventDefault();
 
         loc.goto({ query: event.target.value });
-        this.setState({ query: event.target.value });
     }
 
     render() {
