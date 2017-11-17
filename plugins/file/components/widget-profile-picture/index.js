@@ -16,6 +16,8 @@ class FileWidgetProfilePicture extends Component {
     }
 
     componentDidMount() {
+        this.mounted = true;
+
         if (ko.isObservable(this.props.path)) {
             this.addDisposables([
                 this.props.path.subscribe((path) => this.load(path))
@@ -31,7 +33,15 @@ class FileWidgetProfilePicture extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.mounted = false;
+    }
+
     async load(abspath) {
+        if (!this.mounted) {
+            return;
+        }
+
         try {
             this.setState({ url: false });
 
@@ -53,11 +63,15 @@ class FileWidgetProfilePicture extends Component {
                     type: "image"
                 });
 
-                this.setState({ url });
+                if (this.mounted) {
+                    this.setState({ url });
+                }
             }
         } catch (error) {
-            stat.printError(error);
-            this.setState({ url: false });
+            if (this.mounted) {
+                stat.printError(error);
+                this.setState({ url: false });
+            }
         }
     }
 

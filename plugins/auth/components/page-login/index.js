@@ -137,7 +137,6 @@ class AuthPageLogin extends Component {
                                 <Button
                                     className="float-right"
                                     color="primary"
-                                    onClick={(e) => this.login(e)}
                                     disabled={this.state.loading}
                                 >
                                     Login

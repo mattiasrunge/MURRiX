@@ -14,6 +14,8 @@ class WidgetNodeSelect extends Component {
             options: [],
             selected: []
         };
+
+        this.onChangeCalled = false;
     }
 
     load(props) {
@@ -89,11 +91,15 @@ class WidgetNodeSelect extends Component {
         if (event.which === 27) {
             this.props.onBlur && this.props.onBlur();
         } else if (event.which === 13) {
-            if (!this.state.selected[0]) {
-                this.props.onSelect(null);
-            }
+            if (this.onChangeCalled) {
+                this.onChangeCalled = false;
+            } else {
+                if (!this.state.selected[0]) {
+                    this.props.onSelect(null);
+                }
 
-            this.props.onBlur && this.props.onBlur();
+                this.props.onBlur && this.props.onBlur();
+            }
         }
     }
 
@@ -132,6 +138,10 @@ class WidgetNodeSelect extends Component {
                 }}
                 onChange={(selectedItems) => {
                     if (selectedItems[0] !== this.state.selected[0]) {
+                        if (selectedItems[0]) {
+                            this.onChangeCalled = true;
+                        }
+
                         this.setState({
                             selected: selectedItems
                         });

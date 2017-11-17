@@ -1,5 +1,4 @@
 
-import debounce from "debounce";
 import api from "api.io-client";
 import loc from "lib/location";
 import ui from "lib/ui";
@@ -17,8 +16,6 @@ class SearchPageSearch extends Component {
             query: loc.get("query"),
             list: []
         };
-
-        this.loadDebounced = debounce(this.load.bind(this), 300);
     }
 
     componentDidMount() {
@@ -28,12 +25,20 @@ class SearchPageSearch extends Component {
 
                 if (query !== this.state.query) {
                     this.setState({ query });
-                    this.load(query);
+                    this.loadDebounced(query);
                 }
             })
         ]);
 
         this.loadDebounced(this.state.query);
+    }
+
+    loadDebounced(query) {
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
+
+        this.timeout = setTimeout(() => this.load(query), 300);
     }
 
     async load(query) {
@@ -63,6 +68,7 @@ class SearchPageSearch extends Component {
         event.preventDefault();
 
         loc.goto({ query: event.target.value });
+        this.setState({ query: event.target.value });
     }
 
     render() {
@@ -72,7 +78,7 @@ class SearchPageSearch extends Component {
                     <h1>Search</h1>
                 </div>
                 <div className="box box-content">
-                    <form className="form" role="search" style={{ marginBottom: 15 }} data-bind="submit: () => false">
+                    <form className="form" role="search" style={{ marginBottom: 15 }} onSubmit={(e) => e.preventDefault()}>
                         <input
                             name="query"
                             type="search"

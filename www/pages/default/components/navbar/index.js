@@ -26,10 +26,13 @@ class DefaultNavbar extends Component {
 
     componentDidMount() {
         this.addDisposables([
-            loc.subscribe(({ page, path }) => this.setState({
-                page: page || "default",
-                path: path
-            })),
+            loc.subscribe(({ page, path }) => {
+                console.log("subscribe", page, path);
+                this.setState({
+                    page: page || "default",
+                    path: path
+                });
+            }),
             session.loggedIn.subscribe((loggedIn) => this.setState({ loggedIn }))
         ]);
     }
