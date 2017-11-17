@@ -5,6 +5,8 @@ const fs = require("fs-extra-promise");
 const api = require("api.io");
 const chron = require("chron-time");
 const bus = require("../../core/lib/bus");
+const log = require("../../core/lib/log")(module);
+const merge = require("deepmerge");
 
 let params = {};
 
@@ -52,7 +54,11 @@ const file = api.register("file", {
 
         for (const key of Object.keys(metadata)) {
             if (key !== "raw" && key !== "name" && (typeof node.attributes[key] === "undefined" || options.overwrite)) {
-                attributes[key] = metadata[key];
+                if (typeof node.attributes[key] === "object" && typeof metadata[key] === "object") {
+                    attributes[key] = merge(node.attributes[key], metadata[key]);
+                } else {
+                    attributes[key] = metadata[key];
+                }
             }
         }
 
@@ -107,6 +113,8 @@ const file = api.register("file", {
             });
         }
 
+        await file.removeCached(session, abspath, "image");
+
         return await api.vfs.resolve(session, abspath);
     }),
     regenerateOther: api.export(async (/* session */) => {
@@ -125,6 +133,16 @@ const file = api.register("file", {
         }
 
         return nodes.length;
+    }),
+    removeCached: api.export(async (session, abspath, type) => {
+        const node = await api.vfs.resolve(session, abspath);
+
+        const list = await api.mcs.getAllCached(node._id, path.join(params.fileDirectory, node.attributes.diskfilename), type);
+
+        for (const filename of list) {
+            log.info(`Removing ${filename}...`);
+            await fs.removeAsync(filename);
+        }
     }),
     getFaces: api.export(async (session, abspath) => {
         const node = await api.vfs.resolve(session, abspath);
@@ -243,6 +261,8 @@ const file = api.register("file", {
         } else if (angle > 270) {
             angle -= 360;
         }
+
+        await file.removeCached(session, abspath, "image");
 
         return await api.vfs.setattributes(session, abspath, { angle: angle });
     })

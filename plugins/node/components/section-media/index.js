@@ -160,6 +160,16 @@ class NodeSectionMedia extends Component {
             });
     }
 
+    regenerate(file) {
+        api.file.regenerate(file.path, { overwrite: true })
+            .then(() => {
+                stat.printSuccess("Regenerated successfully");
+            })
+            .catch((error) => {
+                stat.printError(error);
+            });
+    }
+
     render() {
         return (
             <div className="clearfix">
@@ -238,6 +248,7 @@ class NodeSectionMedia extends Component {
                                                 <If condition={file.editable}>
                                                     <DropdownItem onClick={() => this.rotate(file, 90)}>Rotate left</DropdownItem>
                                                     <DropdownItem onClick={() => this.rotate(file, -90)}>Rotate right</DropdownItem>
+                                                    <DropdownItem onClick={() => this.regenerate(file)}>Regenerate</DropdownItem>
                                                 </If>
                                                 <DropdownItem onClick={() => this.download(file)}>Download</DropdownItem>
                                             </DropdownMenu>

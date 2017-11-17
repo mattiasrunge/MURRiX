@@ -48,6 +48,9 @@ const mcs = api.register("mcs", {
     getCached: api.export((id, filename, format) => {
         return mcsApi.cache.get(id, filename, format, params.mcsDirectory);
     }),
+    getAllCached: api.export((id, filename, type) => {
+        return mcsApi.cache.getAll(id, filename, type, params.mcsDirectory);
+    }),
     getStatus: api.export(async () => {
         return mcsApi.cache.status();
     })
