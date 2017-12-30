@@ -12,22 +12,26 @@ const db = require("../../core/lib/db");
 const bus = require("../../core/lib/bus");
 const log = require("../../core/lib/log")(module);
 
+const { MASKS } = require("./lib/accesslib");
+const access = require("./methods/access");
+const resolve = require("./methods/resolve");
+
 let params = {};
 
 const vfs = api.register("vfs", {
     deps: [],
-    MASK_OWNER_READ: 0o400,
-    MASK_OWNER_WRITE: 0o200,
-    MASK_OWNER_EXEC: 0o100,
-    MASK_GROUP_READ: 0o040,
-    MASK_GROUP_WRITE: 0o020,
-    MASK_GROUP_EXEC: 0o010,
-    MASK_OTHER_READ: 0o004,
-    MASK_OTHER_WRITE: 0o002,
-    MASK_OTHER_EXEC: 0o001,
-    MASK_ACL_READ: 0o004,
-    MASK_ACL_WRITE: 0o002,
-    MASK_ACL_EXEC: 0o001,
+    MASK_OWNER_READ: MASKS.OWNER.READ,
+    MASK_OWNER_WRITE: MASKS.OWNER.WRITE,
+    MASK_OWNER_EXEC: MASKS.OWNER.EXEC,
+    MASK_GROUP_READ: MASKS.GROUP.READ,
+    MASK_GROUP_WRITE: MASKS.GROUP.WRITE,
+    MASK_GROUP_EXEC: MASKS.GROUP.EXEC,
+    MASK_OTHER_READ: MASKS.OTHER.READ,
+    MASK_OTHER_WRITE: MASKS.OTHER.WRITE,
+    MASK_OTHER_EXEC: MASKS.OTHER.EXEC,
+    MASK_ACL_READ: MASKS.ACL.READ,
+    MASK_ACL_WRITE: MASKS.ACL.WRITE,
+    MASK_ACL_EXEC: MASKS.ACL.EXEC,
     init: async (config) => {
         params = config;
 
@@ -103,61 +107,9 @@ const vfs = api.register("vfs", {
         }
     },
     access: api.export(async (session, abspathOrNode, modestr) => {
-        if (!session.username) {
-            throw new Error("Corrupt session, please reinitialize");
-        }
-
-        if (session.almighty || session.username === "admin" || session.admin) {
-            return true;
-        }
-
         const node = await vfs.resolve(session, abspathOrNode, { noerror: true });
 
-        if (!node || !node._id) {
-            throw new Error(`Node not valid, abspathOrNode was ${JSON.stringify(abspathOrNode, null, 2)}`);
-        }
-
-        let mode = 0;
-
-        try {
-            if (node.properties.uid === session.uid) {
-                mode |= modestr.includes("r") ? vfs.MASK_OWNER_READ : 0;
-                mode |= modestr.includes("w") ? vfs.MASK_OWNER_WRITE : 0;
-                mode |= modestr.includes("x") ? vfs.MASK_OWNER_EXEC : 0;
-            } else if (session.gids.includes(node.properties.gid)) {
-                mode |= modestr.includes("r") ? vfs.MASK_GROUP_READ : 0;
-                mode |= modestr.includes("w") ? vfs.MASK_GROUP_WRITE : 0;
-                mode |= modestr.includes("x") ? vfs.MASK_GROUP_EXEC : 0;
-            } else {
-                mode |= modestr.includes("r") ? vfs.MASK_OTHER_READ : 0;
-                mode |= modestr.includes("w") ? vfs.MASK_OTHER_WRITE : 0;
-                mode |= modestr.includes("x") ? vfs.MASK_OTHER_EXEC : 0;
-            }
-        } catch (e) {
-            console.error(JSON.stringify(node, null, 2));
-            throw e;
-        }
-
-        if ((node.properties.mode & mode) > 0) {
-            return true;
-        }
-
-        if (node.properties.acl && node.properties.acl.length > 0) {
-            for (const ac of node.properties.acl) {
-                if ((ac.uid && ac.uid === session.uid) || (ac.gid && session.gids.includes(ac.gid))) {
-                    mode = 0;
-                    mode |= modestr.includes("r") ? vfs.MASK_ACL_READ : 0;
-                    mode |= modestr.includes("w") ? vfs.MASK_ACL_WRITE : 0;
-                    mode |= modestr.includes("x") ? vfs.MASK_ACL_EXEC : 0;
-
-                    if ((ac.mode & mode) > 0) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+        return await access(session, node, modestr);
     }),
     aggregate: api.export(async (session, pipeline) => {
         if (session.username !== "admin") {
@@ -205,69 +157,15 @@ const vfs = api.register("vfs", {
 
         return dir.replace(/\/+/g, "/");
     }),
-    resolve: api.export(async (session, abspath, options) => {
-        options = options || {};
-
-        if (typeof abspath !== "string") {
-            return abspath;
-        }
-
-        const pathParts = abspath.replace(/\/$/g, "").split("/");
-        const root = await db.findOne("nodes", { "properties.type": "r" });
-
-        const getchild = async (session, node, pathParts, childName, options) => {
-            if (pathParts.length === 0) {
-                if (!(await vfs.access(session, node, "r"))) {
-                    throw new Error("Permission denied");
-                }
-
-                if (options.nodepath) {
-                    const editable = await vfs.access(session, node, "w");
-
-                    return { name: childName, node: node, path: abspath, editable: editable };
-                }
-
-                return node;
-            }
-
-            const name = pathParts.shift();
-            const child = node.properties.children.filter((child) => child.name === name)[0];
-
-            if (!child) {
-                if (options.noerror) {
-                    return false;
-                }
-
-                throw new Error(`No such (abspath=${abspath}) path: ${pathParts.join(":")}`);
-            }
-
-            node = await db.findOne("nodes", { _id: child.id });
-
-            if (!(await vfs.access(session, node, "x"))) {
-                if (options.noerror) {
-                    return false;
-                }
-
-                throw new Error("Permission denied");
-            }
-
-            if (node.properties.type === "s" && !options.nofollow) {
-                return vfs.resolve(session, path.join(node.attributes.path, pathParts.join("/")), options);
-            }
-
-            return getchild(session, node, pathParts, child.name, options);
-        };
-
-        pathParts.shift();
-
-        return getchild(session, root, pathParts, "", options);
-    }),
+    resolve: api.export(resolve),
     lookup: api.export(async (session, id, cache) => {
         cache = cache || {};
 
         if (cache[id]) {
             return cache[id];
         }
+
+        // db.nodes.aggregate( [    {       $match: { _id: "a948949b-5442-4cb1-bbe6-cf47eb272bbb" }    },    {       $graphLookup: {          from: "nodes",          startWith: "$_id",          connectFromField: "_id",          connectToField: "properties.children.id",          as: "parents"       }    },    { "$addFields": {              "parents": {                  "$reverseArray": {                      "$map": {                          "input": "$parents",                          "as": "t",                          "in": { "_id": "$$t._id", "properties": "$$t.properties" }                     }                  }              }         }} ] ).pretty()
 
         const paths = [];
         const parents = await db.find("nodes", { "properties.children.id": id }, {

@@ -1,12 +1,70 @@
 
 import React from "react";
 import Knockout from "components/knockout";
-import Comment from "components/comment";
+// import NodeWidgetGroupAccess from "plugins/node/components/widget-group-access";
 
 const ko = require("knockout");
 const api = require("api.io-client");
-const utils = require("lib/utils");
 const stat = require("lib/status");
+
+const saveAccess = async (nodepath, data) => {
+    if (data.gid === false) {
+        throw new Error("A group must be specified!");
+    }
+
+    if (nodepath.node.properties.gid !== data.gid) {
+        await api.vfs.chown(nodepath.path, null, parseInt(data.gid, 10), { recursive: true });
+    }
+
+    const currentMode = nodepath.node.properties.mode;
+    let mode = 0;
+
+    mode |= currentMode & api.vfs.MASK_OWNER_READ ? api.vfs.MASK_OWNER_READ : 0;
+    mode |= currentMode & api.vfs.MASK_OWNER_WRITE ? api.vfs.MASK_OWNER_WRITE : 0;
+    mode |= currentMode & api.vfs.MASK_OWNER_EXEC ? api.vfs.MASK_OWNER_EXEC : 0;
+
+    mode |= data.groupAccess === "read" || data.groupAccess === "write" ? api.vfs.MASK_GROUP_READ : 0;
+    mode |= data.groupAccess === "write" ? api.vfs.MASK_GROUP_WRITE : 0;
+    mode |= data.groupAccess === "read" || data.groupAccess === "write" ? api.vfs.MASK_GROUP_EXEC : 0;
+
+    mode |= data.public ? api.vfs.MASK_OTHER_READ : 0;
+    mode |= currentMode & api.vfs.MASK_OTHER_WRITE ? api.vfs.MASK_OTHER_WRITE : 0;
+    mode |= data.public ? api.vfs.MASK_OTHER_EXEC : 0;
+
+    if (mode !== currentMode) {
+        await api.vfs.chmod(nodepath.path, mode, { recursive: true });
+    }
+
+    for (const ac of data.aclGroupList) {
+        let mode = 0;
+
+        if (ac.access === "write") {
+            mode |= api.vfs.MASK_ACL_READ;
+            mode |= api.vfs.MASK_ACL_WRITE;
+            mode |= api.vfs.MASK_ACL_;
+        } else if (ac.access === "read") {
+            mode |= api.vfs.MASK_ACL_READ;
+            mode |= api.vfs.MASK_ACL_EXEC;
+        }
+
+        await api.vfs.setfacl(nodepath.path, { gid: ac.gid, mode: mode }, { recursive: true });
+    }
+
+    if (data.aclGid) {
+        let mode = 0;
+
+        if (data.aclGroupAccess === "write") {
+            mode |= api.vfs.MASK_ACL_READ;
+            mode |= api.vfs.MASK_ACL_WRITE;
+            mode |= api.vfs.MASK_ACL_EXEC;
+        } else if (data.aclGroupAccess === "read") {
+            mode |= api.vfs.MASK_ACL_READ;
+            mode |= api.vfs.MASK_ACL_EXEC;
+        }
+
+        await api.vfs.setfacl(nodepath.path, { gid: data.aclGid, mode: mode }, { recursive: true });
+    }
+};
 
 class NodeSectionShare extends Knockout {
     async getModel() {
@@ -25,66 +83,17 @@ class NodeSectionShare extends Knockout {
         model.saving(true); // While we load we don't want so save
 
         model.saveAccess = async () => {
-            if (model.gid() === false) {
-                throw new Error("A group must be specified!");
-            }
+            await saveAccess(ko.unwrap(model.nodepath), {
+                gid: model.gid(),
+                groupAccess: model.groupAccess(),
+                public: model.public(),
+                aclGroupList: model.aclGroupList().map((ac) => ({ gid: ac.gid, access: ac.access() })),
+                aclGid: model.aclGid(),
+                aclGroupAccess: model.aclGroupAccess()
+            });
 
-            if (ko.unwrap(model.nodepath().node).properties.gid !== model.gid()) {
-                await api.vfs.chown(model.nodepath().path, null, parseInt(model.gid(), 10), { recursive: true });
-            }
-
-            let mode = 0;
-
-            mode |= ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OWNER_READ ? api.vfs.MASK_OWNER_READ : 0;
-            mode |= ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OWNER_WRITE ? api.vfs.MASK_OWNER_WRITE : 0;
-            mode |= ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OWNER_EXEC ? api.vfs.MASK_OWNER_EXEC : 0;
-
-            mode |= model.groupAccess() === "read" || model.groupAccess() === "write" ? api.vfs.MASK_GROUP_READ : 0;
-            mode |= model.groupAccess() === "write" ? api.vfs.MASK_GROUP_WRITE : 0;
-            mode |= model.groupAccess() === "read" || model.groupAccess() === "write" ? api.vfs.MASK_GROUP_EXEC : 0;
-
-            mode |= model.public() ? api.vfs.MASK_OTHER_READ : 0;
-            mode |= ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OTHER_WRITE ? api.vfs.MASK_OTHER_WRITE : 0;
-            mode |= model.public() ? api.vfs.MASK_OTHER_EXEC : 0;
-
-            if (mode !== ko.unwrap(model.nodepath().node).properties.mode) {
-                await api.vfs.chmod(model.nodepath().path, mode, { recursive: true });
-            }
-
-            for (let ac of model.aclGroupList()) {
-                let mode = 0;
-
-                if (ac.access() === "write") {
-                    mode |= api.vfs.MASK_ACL_READ;
-                    mode |= api.vfs.MASK_ACL_WRITE;
-                    mode |= api.vfs.MASK_ACL_;
-                } else if (ac.access() === "read") {
-                    mode |= api.vfs.MASK_ACL_READ;
-                    mode |= api.vfs.MASK_ACL_EXEC;
-                }
-
-                await api.vfs.setfacl(model.nodepath().path, { gid: ac.gid, mode: mode }, { recursive: true });
-            }
-
-            if (model.aclGid()) {
-                let mode = 0;
-
-                if (model.aclGroupAccess() === "write") {
-                    mode |= api.vfs.MASK_ACL_READ;
-                    mode |= api.vfs.MASK_ACL_WRITE;
-                    mode |= api.vfs.MASK_ACL_EXEC;
-                } else if (model.aclGroupAccess() === "read") {
-                    mode |= api.vfs.MASK_ACL_READ;
-                    mode |= api.vfs.MASK_ACL_EXEC;
-                }
-
-                await api.vfs.setfacl(model.nodepath().path, { gid: model.aclGid(), mode: mode }, { recursive: true });
-
-                model.aclGid(false);
-                model.aclGroupAccess("read");
-            }
-
-            let node = await api.vfs.resolve(model.nodepath().path);
+            model.aclGid(false);
+            model.aclGroupAccess("read");
         };
 
         model.aclGroupList = ko.pureComputed(() => {
@@ -92,49 +101,28 @@ class NodeSectionShare extends Knockout {
                 return [];
             }
 
-            if (!ko.unwrap(model.nodepath().node).properties.acl) {
+            const acl = ko.unwrap(model.nodepath().node).properties.acl;
+
+            if (!acl) {
                 return [];
             }
 
-            let list = [];
-
-            for (let ac of ko.unwrap(model.nodepath().node).properties.acl) {
-                if (ac.gid) {
+            return acl
+                .filter((ac) => ac.gid)
+                .map((ac) => {
                     let access = "none";
                     access = ac.mode & api.vfs.MASK_ACL_READ ? "read" : access;
                     access = ac.mode & api.vfs.MASK_ACL_WRITE ? "write" : access;
 
-                    list.push({ gid: ac.gid, access: ko.observable(access) });
-                }
-            }
-
-            return list;
+                    return {
+                        gid: ac.gid,
+                        access: ko.observable(access)
+                    };
+                });
         });
 
         model.onSave = () => {
             model.saveAccess()
-            .then(() => {
-                model.saving(false);
-                stat.printSuccess("Share settings saved successfully!");
-            })
-            .catch((error) => {
-                model.saving(false);
-                stat.printError(error);
-            });
-        };
-
-        /*model.changed = ko.computed(() => {
-            model.gid();
-            model.groupAccess();
-            model.public();
-            model.aclGid();
-            for (let ac of model.aclGroupList()) {
-                ac.access();
-            }
-
-            if (!model.saving.peek()) {
-                model.saving(true);
-                model.saveAccess()
                 .then(() => {
                     model.saving(false);
                     stat.printSuccess("Share settings saved successfully!");
@@ -143,8 +131,7 @@ class NodeSectionShare extends Knockout {
                     model.saving(false);
                     stat.printError(error);
                 });
-            }
-        }).extend({ notify: "always" });*/
+        };
 
         model.whoHasAccess = ko.asyncComputed([], async () => {
             if (!model.nodepath()) {
@@ -157,51 +144,53 @@ class NodeSectionShare extends Knockout {
 
             model.loading(true);
 
+            const uid = ko.unwrap(model.nodepath().node).properties.uid;
+
             list.push({
-                name: await api.auth.name(ko.unwrap(model.nodepath().node).properties.uid),
-                uid: ko.unwrap(model.nodepath().node).properties.uid,
+                name: await api.auth.name(uid),
+                uid: uid,
                 type: "write",
-                reason: "as owner"
+                reason: " as owner"
             });
 
             if (model.public()) {
                 list.push({
                     name: "Everyone",
                     type: "read",
-                    reason: "since node is public"
+                    reason: " since node is public"
                 });
             }
 
             if (model.gid() && model.groupAccess() !== "none") {
-                let name = await api.auth.gname(model.gid());
-                let niceName = await api.auth.gnameNice(model.gid());
-                let users = await api.auth.userList(name);
+                const name = await api.auth.gname(model.gid());
+                const niceName = await api.auth.gnameNice(model.gid());
+                const users = await api.auth.userList(name);
 
-                for (let user of users) {
+                for (const user of users) {
                     if (!user.node.attributes.inactive || model.showInactive()) {
                         list.push({
                             name: user.node.attributes.name,
                             uid: user.node.attributes.uid,
                             type: model.groupAccess(),
-                            reason: "as member of " + niceName
+                            reason: ` as member of ${niceName}`
                         });
                     }
                 }
             }
 
-            for (let ac of model.aclGroupList()) {
+            for (const ac of model.aclGroupList()) {
                 if (ac.access() !== "none") {
-                    let name = await api.auth.gname(ac.gid);
-                    let niceName = await api.auth.gnameNice(ac.gid);
-                    let users = await api.auth.userList(name);
+                    const name = await api.auth.gname(ac.gid);
+                    const niceName = await api.auth.gnameNice(ac.gid);
+                    const users = await api.auth.userList(name);
 
-                    for (let user of users) {
+                    for (const user of users) {
                         if (!user.node.attributes.inactive || model.showInactive()) {
                             list.push({
                                 name: user.node.attributes.name,
                                 uid: user.node.attributes.uid,
                                 type: ac.access(),
-                                reason: "as member of " + niceName
+                                reason: ` as member of ${niceName}`
                             });
                         }
                     }
@@ -218,11 +207,12 @@ class NodeSectionShare extends Knockout {
                 return 0;
             });
 
-            let uidList = [];
+            const uidList = [];
 
             list = list.filter((item) => {
                 if (!uidList.includes(item.uid)) {
                     uidList.push(item.uid);
+
                     return true;
                 }
 
@@ -237,15 +227,16 @@ class NodeSectionShare extends Knockout {
             stat.printError(error);
         });
 
+        const currentMode = ko.unwrap(model.nodepath().node).properties.mode;
+
         model.gid(ko.unwrap(model.nodepath().node).properties.gid);
-        model.public(ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_OTHER_READ);
-        model.groupAccess(ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_GROUP_READ ? "read" : model.groupAccess());
-        model.groupAccess(ko.unwrap(model.nodepath().node).properties.mode & api.vfs.MASK_GROUP_WRITE ? "write" : model.groupAccess());
+        model.public(currentMode & api.vfs.MASK_OTHER_READ);
+        model.groupAccess(currentMode & api.vfs.MASK_GROUP_READ ? "read" : model.groupAccess());
+        model.groupAccess(currentMode & api.vfs.MASK_GROUP_WRITE ? "write" : model.groupAccess());
 
         model.saving(false);
 
         model.dispose = () => {
-            //model.changed.dispose();
             stat.destroy(model.loading);
         };
 
@@ -275,6 +266,13 @@ class NodeSectionShare extends Knockout {
                             <p>
                                 A group can be given read and write access model <span data-bind="react: { name: 'node-widget-type', params: { type: ko.unwrap(nodepath().node).properties.type } }"></span>. This will grant the group the selected rights on model <span data-bind="react: { name: 'node-widget-type', params: { type: ko.unwrap(nodepath().node).properties.type } }"></span>.
                             </p>
+                            {/*<NodeWidgetGroupAccess
+                                disabled={false}
+                                path=""
+                                access=""
+                                onGroupSelect={(group) => console.log("group", group)}
+                                onAccessSelect={(access) => console.log("access", access)}
+                            />*/}
                             <table className="table table-condensed table-striped">
                                 <thead>
                                     <tr>
@@ -374,7 +372,6 @@ class NodeSectionShare extends Knockout {
                     </div>
                 </div>
             </div>
-
         );
     }
 }
