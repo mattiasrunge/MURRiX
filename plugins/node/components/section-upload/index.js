@@ -131,7 +131,7 @@ class NodeSectionUpload extends Knockout {
                 } else {
                     await api.vfs.ensure(parentPath, "d");
 
-                    let name = await api.node.getUniqueName(parentPath, item.name);
+                    let name = await api.vfs.uniqueName(parentPath, item.name);
                     await model.import(parentPath + "/" + name, item);
                 }
             }
@@ -155,11 +155,11 @@ class NodeSectionUpload extends Knockout {
 
                     await api.vfs.ensure(versionPath, "d");
 
-                    let name = await api.node.getUniqueName(versionPath, file.item.name);
+                    let name = await api.vfs.uniqueName(versionPath, file.item.name);
 
                     await model.import(versionPath + "/" + name, file.item);
                 } else {
-                    let name = await api.node.getUniqueName(parentPath, file.item.name);
+                    let name = await api.vfs.uniqueName(parentPath, file.item.name);
                     await model.import(parentPath + "/" + name, file.item);
                 }
             }

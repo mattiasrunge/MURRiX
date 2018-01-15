@@ -15,12 +15,12 @@ export default {
         term.setPrompt({ prompt: "Groups:" });
         const groups = await streams.stdin.read();
 
-        await api.auth.mkuser(args.username, name);
+        await api.vfs.mkuser(args.username, name);
 
         const list = groups.split(" ").filter((g) => g);
 
         for (const groupname of list) {
-            await api.auth.connect(args.username, groupname);
+            await api.vfs.usermod(args.username, groupname);
         }
     }
 };

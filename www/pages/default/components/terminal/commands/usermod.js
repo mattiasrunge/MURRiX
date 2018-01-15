@@ -8,20 +8,16 @@ export default {
         r: "Remove group"
     },
     exec: async (term, streams, cmd, opts, args) => {
-        if (opts.r) {
-            await api.auth.disconnect(args.username, args.groupname);
-        } else {
-            await api.auth.connect(args.username, args.groupname);
-        }
+        await api.vfs.usermod(args.username, args.groupname, opts.r);
     },
     completion: async (term, cmd, name, value) => {
         if (name === "username") {
-            const nodes = await api.vfs.list("/users");
+            const nodes = await api.vfs.users();
             const list = nodes.map((node) => node.name);
 
             return term.util.bestMatch(value, list);
         } else if (name === "groupname") {
-            const nodes = await api.vfs.list("/groups");
+            const nodes = await api.vfs.groups();
             const list = nodes.map((node) => node.name);
 
             return term.util.bestMatch(value, list);

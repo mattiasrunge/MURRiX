@@ -18,7 +18,7 @@ export default {
             throw new Error("Passwords do not match");
         }
 
-        await api.auth.passwd(username, password1);
+        await api.vfs.passwd(username, password1);
 
         await streams.stdout.write("Password updated");
     },

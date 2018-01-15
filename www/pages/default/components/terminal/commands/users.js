@@ -5,19 +5,19 @@ import columnify from "columnify";
 export default {
     desc: "List users",
     exec: async (term, streams/* , cmd, opts, args */) => {
-        const users = await api.vfs.list("/users");
+        const users = await api.vfs.users();
 
         for (const user of users) {
-            user.groups = await api.vfs.list(`${user.path}/groups`);
+            user.groups = await api.vfs.groups(user.name);
         }
 
         const columns = columnify(users.map((item) => {
             return {
-                name: item.node.attributes.name,
+                name: item.attributes.name,
                 username: item.name,
-                uid: item.node.attributes.uid,
-                inactive: item.node.attributes.inactive ? "Yes" : "No",
-                lastLogin: item.node.attributes.loginTime || "Never",
+                uid: item.attributes.uid,
+                active: item.attributes.inactive ? "No" : "Yes",
+                lastLogin: item.attributes.loginTime || "Never",
                 groups: item.groups.map((g) => g.name).join(", ")
             };
         }), {

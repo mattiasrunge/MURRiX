@@ -24,13 +24,13 @@ export default {
             ac.uid = parseInt(name, 10);
 
             if (isNaN(ac.uid)) {
-                ac.uid = await api.auth.uid(name);
+                ac.uid = await api.vfs.uid(name);
             }
         } else if (what === "g") {
             ac.gid = parseInt(name, 10);
 
             if (isNaN(ac.gid)) {
-                ac.gid = await api.auth.gid(name);
+                ac.gid = await api.vfs.gid(name);
             }
         } else {
             throw new Error("Invalid aclentry, expected it to begin with u or g");

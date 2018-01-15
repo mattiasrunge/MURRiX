@@ -111,7 +111,9 @@ class WidgetNodeSelect extends Component {
                 className={`${this.props.className} ${this.state.selected[0] ? "valid" : ""}`}
                 options={this.state.options}
                 selected={this.state.selected}
-                labelKey={(item) => item.node.attributes.name}
+                labelKey={(item) => {
+                    return item.node.attributes.name;
+                }}
                 maxResults={this.props.limit}
                 onSearch={(query) => this.onSearch(query)}
                 onKeyDown={(e) => this.onKeyPress(e)}

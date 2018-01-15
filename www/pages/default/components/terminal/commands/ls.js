@@ -14,7 +14,7 @@ export default {
     exec: async (term, streams, cmd, opts, args) => {
         const separator = !streams.stdout.isPipe() && !opts[1] ? " " : "\n";
         const abspath = await term.getAbspath(args.path, true);
-        const list = await api.vfs.list(abspath, { noerror: true, nofollow: true, all: opts.l });
+        const list = await api.vfs.list(abspath, { noerror: true, nofollow: true });
 
         if (!opts.l) {
             for (const item of list) {
@@ -24,34 +24,45 @@ export default {
             return;
         }
 
+        const node = await api.vfs.resolve(abspath);
+        const parent = await api.vfs.resolve(await api.vfs.dirname(abspath));
+
+        list.unshift({
+            ...node,
+            name: "."
+        }, {
+            ...parent,
+            name: ".."
+        });
+
         const ucache = {};
         const gcache = {};
 
         for (const item of list) {
-            const uid = item.node.properties.uid;
-            const gid = item.node.properties.gid;
+            const uid = item.properties.uid;
+            const gid = item.properties.gid;
 
-            item.uid = ucache[uid] = ucache[uid] || await api.auth.uname(uid);
-            item.gid = gcache[gid] = gcache[gid] || await api.auth.gname(gid);
+            item.uid = ucache[uid] = ucache[uid] || await api.vfs.uid(uid);
+            item.gid = gcache[gid] = gcache[gid] || await api.vfs.gid(gid);
         }
 
         const columns = columnify(list.map((item) => {
             let name = item.name;
 
-            if (item.node.properties.type === "s") {
-                name += ` -> ${item.node.attributes.path}`;
+            if (item.properties.type === "s") {
+                name += ` -> ${item.attributes.path}`;
             }
 
-            const acl = item.node.properties.acl && item.node.properties.acl.length > 0 ? "+" : "";
-            const mode = utils.modeString(item.node.properties.mode);
+            const acl = item.properties.acl && item.properties.acl.length > 0 ? "+" : "";
+            const mode = utils.modeString(item.properties.mode);
 
             return {
-                mode: item.node.properties.type + mode + acl,
-                count: item.node.properties.count,
+                mode: item.properties.type + mode + acl,
+                count: item.properties.count,
                 uid: item.uid,
                 gid: item.gid,
-                children: Object.keys(item.node.properties.children).length,
-                mtime: moment(item.node.properties.mtime).format(),
+                children: Object.keys(item.properties.children).length,
+                mtime: moment(item.properties.mtime).format(),
                 name: name
             };
         }), {

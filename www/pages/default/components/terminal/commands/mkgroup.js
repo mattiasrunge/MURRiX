@@ -12,6 +12,6 @@ export default {
             throw new Error("Name can not be empty");
         }
 
-        await api.auth.mkgroup(args.name, name);
+        await api.vfs.mkgroup(args.name, name);
     }
 };

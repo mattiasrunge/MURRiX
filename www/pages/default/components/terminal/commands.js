@@ -25,15 +25,16 @@ export default {
     useractivation: require("./commands/useractivation").default,
     users: require("./commands/users").default,
     groups: require("./commands/groups").default,
-    view: require("./commands/view").default,
     label: require("./commands/label").default,
+    login: require("./commands/login").default,
+    logout: require("./commands/logout").default,
 
 
     // Scripts
-    "script_hiderawfiles": require("./scripts/hiderawfiles").default,
-    "script_hidesomefiles": require("./scripts/hidesomefiles").default,
-    "script_hidevideoxmlfiles": require("./scripts/hidevideoxmlfiles").default,
-    "script_regeneratefiles": require("./scripts/regeneratefiles").default,
-    "script_findemptyalbums": require("./scripts/findemptyalbums").default,
-    "script_outputtest": require("./scripts/outputtest").default
+    // "script_hiderawfiles": require("./scripts/hiderawfiles").default,
+    // "script_hidesomefiles": require("./scripts/hidesomefiles").default,
+    // "script_hidevideoxmlfiles": require("./scripts/hidevideoxmlfiles").default,
+    // "script_regeneratefiles": require("./scripts/regeneratefiles").default,
+    // "script_findemptyalbums": require("./scripts/findemptyalbums").default,
+    // "script_outputtest": require("./scripts/outputtest").default
 };

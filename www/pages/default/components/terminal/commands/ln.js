@@ -3,13 +3,13 @@ import api from "api.io-client";
 
 export default {
     desc: "Link a node",
-    args: [ "srcpath", "dstpath" ],
+    args: [ "target", "name" ],
     opts: {
         s: "Create a symlink"
     },
     exec: async (term, streams, cmd, opts, args) => {
-        const srcpath = await term.getAbspath(args.srcpath, false);
-        const dstpath = await term.getAbspath(args.dstpath, false);
+        const srcpath = await term.getAbspath(args.target, false);
+        const dstpath = await term.getAbspath(args.name, false);
 
         if (opts.s) {
             await api.vfs.symlink(srcpath, dstpath);
@@ -18,7 +18,7 @@ export default {
         }
     },
     completion: async (term, cmd, name, value) => {
-        if (name === "srcpath" || name === "dstpath") {
+        if (name === "target" || name === "name") {
             return await term.completePath(value);
         }
 

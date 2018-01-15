@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require("path");
-const fs = require("fs-extra-promise");
+const fs = require("fs-extra");
 const promisify = require("bluebird").promisify;
 
 const Koa = require("koa");
@@ -19,7 +19,7 @@ const webpack = require("webpack");
 const webpackMiddleware = require("koa-webpack-dev-middleware");
 const api = require("api.io");
 
-const plugin = require("./plugin");
+// const plugin = require("./plugin");
 const session = require("./session");
 const log = require("./log")(module);
 
@@ -99,11 +99,11 @@ module.exports = {
         });
 
         // Create plugin routes
-        const pluginRoutes = plugin.getRoutes();
-
-        for (const pluginRoute of pluginRoutes) {
-            app.use(route[pluginRoute.method.toLowerCase()](pluginRoute.route, pluginRoute.handler));
-        }
+        // const pluginRoutes = plugin.getRoutes();
+        //
+        // for (const pluginRoute of pluginRoutes) {
+        //     app.use(route[pluginRoute.method.toLowerCase()](pluginRoute.route, pluginRoute.handler));
+        // }
 
         log.info(`Webpack is running in ${config.production ? "production" : "development"} mode`);
 

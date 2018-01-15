@@ -7,7 +7,7 @@ export default {
     args: [ "?username" ],
     exec: async (term, streams, cmd, opts, args) => {
         const username = args.username || session.username();
-        const info = await api.auth.id(username);
+        const info = await api.vfs.userid(username);
         const groups = info.gids.map((group) => `${group.id}(${group.name})`);
 
         await streams.stdout.write(`uid=${info.uid.id}(${info.uid.name}) gid=${info.gid.id}(${info.gid.name}) groups=${groups.join(",")}\n`);

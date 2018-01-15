@@ -146,7 +146,7 @@ class PeopleSectionTimeline extends Knockout {
                 throw new Error("An event must must have date/time set");
             }
 
-            api.node.getUniqueName(basepath, attributes.name)
+            api.vfs.uniqueName(basepath, attributes.name)
             .then((name) => {
                 abspath = basepath + "/" + name;
                 return api.text.mktext(abspath, attributes);

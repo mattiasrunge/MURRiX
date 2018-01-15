@@ -8,8 +8,8 @@ export default {
     exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
         const node = await api.vfs.resolve(abspath, { nofollow: true });
-        const uname = await api.auth.uname(node.properties.uid);
-        const gname = await api.auth.gname(node.properties.gid);
+        const uname = await api.vfs.uid(node.properties.uid);
+        const gname = await api.vfs.gid(node.properties.gid);
         const umode = utils.modeString(node.properties.mode, { owner: true });
         const gmode = utils.modeString(node.properties.mode, { group: true });
         const omode = utils.modeString(node.properties.mode, { other: true });
@@ -19,7 +19,7 @@ export default {
         if (node.properties.acl && node.properties.acl.length > 0) {
             for (const ac of node.properties.acl) {
                 if (ac.uid) {
-                    aclUsers.push(`user:${await api.auth.uname(ac.uid)}:${utils.modeString(ac.mode, { acl: true })}`);
+                    aclUsers.push(`user:${await api.vfs.uid(ac.uid)}:${utils.modeString(ac.mode, { acl: true })}`);
                 }
             }
         }
@@ -27,7 +27,7 @@ export default {
         if (node.properties.acl && node.properties.acl.length > 0) {
             for (const ac of node.properties.acl) {
                 if (ac.gid) {
-                    aclGroups.push(`group:${await api.auth.gname(ac.gid)}:${utils.modeString(ac.mode, { acl: true })}`);
+                    aclGroups.push(`group:${await api.vfs.gid(ac.gid)}:${utils.modeString(ac.mode, { acl: true })}`);
                 }
             }
         }

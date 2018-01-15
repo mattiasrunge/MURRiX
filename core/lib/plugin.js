@@ -6,20 +6,20 @@ const fs = require("fs-extra-promise");
 const log = require("./log")(module);
 
 let params = {};
-let apis = {};
+const apis = {};
 
 module.exports = {
     init: async (config) => {
         params = config;
 
-        let pattern = path.join(__dirname, "..", "..", "plugins", "**", "api.js");
-        let filenames = await glob(pattern);
+        const pattern = path.join(__dirname, "..", "..", "plugins", "**", "api.js");
+        const filenames = await glob(pattern);
 
         // Load API files
-        for (let filename of filenames) {
-            log.info("Loading plugin from " + filename);
+        for (const filename of filenames) {
+            log.info(`Loading plugin from ${filename}`);
 
-            let api = {};
+            const api = {};
 
             api.instance = require(filename);
             api.deps = api.instance.deps;
@@ -27,12 +27,12 @@ module.exports = {
             api.priority = -1;
             api.routes = [];
 
-            let routefilenames = await glob(path.join(path.dirname(filename), "routes", "*"));
+            const routefilenames = await glob(path.join(path.dirname(filename), "routes", "*"));
 
-            for (let routefilename of routefilenames) {
-                log.info("Loading route from " + routefilename);
+            for (const routefilename of routefilenames) {
+                log.info(`Loading route from ${routefilename}`);
 
-                let route = require(routefilename);
+                const route = require(routefilename);
                 route.name = path.basename(routefilename, ".js");
                 route.method = route.method || "GET";
                 api.routes.push(route);
@@ -42,10 +42,10 @@ module.exports = {
         }
 
         // Check for missing API dependencies
-        for (let namespace of Object.keys(apis)) {
-            for (let dep of apis[namespace].deps) {
+        for (const namespace of Object.keys(apis)) {
+            for (const dep of apis[namespace].deps) {
                 if (!apis[dep]) {
-                    throw new Error("Plugin " + namespace + " specifies a dependency toward " + dep + " which was not found");
+                    throw new Error(`Plugin ${namespace} specifies a dependency toward ${dep} which was not found"`);
                 }
             }
         }
@@ -56,28 +56,28 @@ module.exports = {
                 if (apis[namespace].deps.length === 0) {
                     apis[namespace].priority = 0;
                 } else {
-                    apis[namespace].priority = Math.max.apply(Math, apis[namespace].deps.map(calcPriority)) + 1;
+                    apis[namespace].priority = Math.max(...apis[namespace].deps.map(calcPriority)) + 1;
                 }
             }
 
             return apis[namespace].priority;
         };
 
-        for (let namespace of Object.keys(apis)) {
+        for (const namespace of Object.keys(apis)) {
             calcPriority(namespace);
         }
 
         // Sort based on priority
-        let list = Object.keys(apis)
+        const list = Object.keys(apis)
         .map((namespace) => apis[namespace])
         .sort((a, b) => a.priority - b.priority);
 
         // Intialize plugins
-        for (let api of list) {
-            log.info("Initializing " + api.namespace);
+        for (const api of list) {
+            log.info(`Initializing ${api.namespace}`);
             await api.instance.init(params);
 
-            for (let route of api.routes) {
+            for (const route of api.routes) {
                 await route.init(params);
             }
         }
@@ -85,13 +85,13 @@ module.exports = {
         log.info("All plugins initialized!");
     },
     getRoutes: () => {
-        let routes = [];
+        const routes = [];
 
-        for (let namespace of Object.keys(apis)) {
-            for (let route of apis[namespace].routes) {
+        for (const namespace of Object.keys(apis)) {
+            for (const route of apis[namespace].routes) {
                 routes.push({
                     method: route.method,
-                    route: "/" + namespace + "/" + route.name + route.route,
+                    route: `/${namespace}/${route.name}${route.route}`,
                     handler: route.handler
                 });
             }
@@ -100,20 +100,20 @@ module.exports = {
         return routes;
     },
     getComponents: async (wwwPath) => {
-        let list = {};
-        let components = [];
+        const list = {};
+        const components = [];
 
         let pattern = path.join(wwwPath, "pages", "**", "components");
         let directories = await glob(pattern);
 
-        for (let name of directories) {
-            let items = await fs.readdirAsync(name);
-            let page = path.basename(path.dirname(name));
+        for (const name of directories) {
+            const items = await fs.readdirAsync(name);
+            const page = path.basename(path.dirname(name));
 
-            for (let item of items) {
-                let dirname = path.join(name, item);
+            for (const item of items) {
+                const dirname = path.join(name, item);
                 if (await fs.isDirectoryAsync(dirname)) {
-                    list[page + "-" + item] = dirname;
+                    list[`${page}-${item}`] = dirname;
                 }
             }
         }
@@ -121,26 +121,26 @@ module.exports = {
         pattern = path.join(__dirname, "..", "..", "plugins", "**", "components");
         directories = await glob(pattern);
 
-        for (let name of directories) {
-            let items = await fs.readdirAsync(name);
-            let plugin = path.basename(path.dirname(name));
+        for (const name of directories) {
+            const items = await fs.readdirAsync(name);
+            const plugin = path.basename(path.dirname(name));
 
-            for (let item of items) {
-                let dirname = path.join(name, item);
+            for (const item of items) {
+                const dirname = path.join(name, item);
                 if (await fs.isDirectoryAsync(dirname)) {
-                    list[plugin + "-" + item] = dirname;
-
+                    list[`${plugin}-${item}`] = dirname;
                 }
             }
         }
 
-        for (let name of Object.keys(list)) {
-            let component = {
+        for (const name of Object.keys(list)) {
+            const component = {
                 name: name,
                 path: list[name]
             };
-            let jsFile = path.join(component.path, "model.js");
-            let htmlFile = path.join(component.path, "template.html");
+
+            const jsFile = path.join(component.path, "model.js");
+            const htmlFile = path.join(component.path, "template.html");
 
             component.js = (await fs.readFileAsync(jsFile)).toString();
             component.html = (await fs.readFileAsync(htmlFile)).toString();

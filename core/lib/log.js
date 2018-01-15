@@ -1,13 +1,13 @@
 "use strict";
 
 const getLabel = (callingModule) => {
-    let filename = typeof callingModule === "string" ? callingModule : callingModule.filename;
-    let parts = filename.split("/").reverse();
-    return parts[1] + "/" + parts[0];
+    const filename = typeof callingModule === "string" ? callingModule : callingModule.filename;
+    const [ name, dirname ] = filename.split("/").reverse();
+
+    return `${dirname}/${name}`;
 };
 
 let level = "debug";
-let silent = false;
 
 module.exports = (callingModule) => {
     const label = getLabel(callingModule);
@@ -28,7 +28,6 @@ module.exports = (callingModule) => {
 
 module.exports.init = (l) => {
     level = typeof l === "string" ? l : level;
-    silent = l === false;
 
     return Promise.resolve();
 };

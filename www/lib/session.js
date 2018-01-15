@@ -1,38 +1,21 @@
 "use strict";
 
-const ko = require("knockout");
 const api = require("api.io/api.io-client");
 
+let user = false;
+
 module.exports = {
-    userinfo: ko.observable({}),
-    list: ko.observableArray(),
-    user: ko.observable(false),
-    username: ko.observable("guest"),
-    personPath: ko.observable(false),
-    stars: ko.observableArray(),
-    adminGranted: ko.observable(false),
-    loggedIn: ko.pureComputed(() => {
-        return module.exports.user() && module.exports.username() !== "guest";
-    }),
-    searchPaths: ko.pureComputed(() => {
-        if (module.exports.loggedIn()) {
-            return [ "/people", "/locations", "/albums", "/cameras" ];
-        }
+    user: () => user,
+    username: () => user ? user.name : "guest",
+    adminGranted: () => user && user.adminGranted,
+    loadUser: async () => user = await api.vfs.whoami(),
+    init: async () => {
+        await module.exports.loadUser();
 
-        return [];
-    }),
-    loadUser: async () => {
-        const userinfo = await api.auth.whoami();
-        module.exports.userinfo(userinfo);
-        module.exports.user(userinfo.user);
-        module.exports.username(userinfo.username);
-        module.exports.personPath(userinfo.personPath);
-        module.exports.adminGranted(userinfo.adminGranted);
-        module.exports.stars(await api.auth.getStars());
-
-        console.log(userinfo);
-    },
-    setStars: (stars) => {
-        module.exports.stars(stars);
+        api.vfs.on("session.updated", (username) => {
+            if (username !== module.exports.username()) {
+                module.exports.loadUser();
+            }
+        });
     }
 };

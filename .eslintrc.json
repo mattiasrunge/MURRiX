@@ -42,7 +42,7 @@
         "eol-last": "error",
         "camelcase": "error",
         "semi": "error",
-        "indent": [ "error", 4 ],
+        "indent": [ "error", 4, { "MemberExpression": 0 } ],
         "quotes": "error",
         "prefer-const": "error",
         "no-ex-assign": "error",

@@ -5,12 +5,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import bluebird from "bluebird";
 import Root from "components/root";
-
-import "jquery";
-import "tether";
-import "bootstrap";
-import "lib/extensions";
-import "lib/bindings";
+//
+// import "jquery";
+// import "tether";
+// import "bootstrap";
+// import "lib/extensions";
+// import "lib/bindings";
 
 import "www/style.css";
 
@@ -26,7 +26,7 @@ bluebird.config({
 
 const start = async (args) => {
     await api.connect(args);
-    await session.loadUser();
+    await session.init();
 
     ReactDOM.render((
         <Root />

@@ -97,7 +97,7 @@ class NodeWidgetNavbarNodeCreate extends Component {
         const typeInfo = typeInfoList[this.state.type];
 
         try {
-            const name = await api.node.getUniqueName(typeInfo.path, attributes.name);
+            const name = await api.vfs.uniqueName(typeInfo.path, attributes.name);
 
             await typeInfo.makefn(name, attributes);
 

@@ -8,20 +8,10 @@ export default {
         term.setPrompt({ prompt: "Admin password:", obscure: true });
         const password = await streams.stdin.read();
 
-        await api.auth.becomeAdmin(password);
+        await api.vfs.admin(password);
 
-        session.adminGranted(!!password);
+        await session.loadUser();
 
         await streams.stdout.write(password ? "Admin rights granted" : "Admin rights recinded");
-    },
-    completion: async (term, cmd, name, value) => {
-        if (name === "username") {
-            const nodes = await api.vfs.list("/users");
-            const list = nodes.map((node) => node.name);
-
-            return term.util.bestMatch(value, list);
-        }
-
-        return [];
     }
 };

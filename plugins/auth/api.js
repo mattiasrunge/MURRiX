@@ -19,61 +19,6 @@ const auth = api.register("auth", {
     deps: [ "vfs" ],
     init: async (config) => {
         params = config;
-
-        // Create folders
-        if (!(await api.vfs.resolve(auth.getAdminSession(), "/users", { noerror: true }))) {
-            await api.vfs.create(auth.getAdminSession(), "/users", "d");
-        }
-
-        if (!(await api.vfs.resolve(auth.getAdminSession(), "/groups", { noerror: true }))) {
-            await api.vfs.create(auth.getAdminSession(), "/groups", "d");
-        }
-
-        // Create admin group
-        if (!(await api.vfs.resolve(auth.getAdminSession(), "/groups/admin", { noerror: true }))) {
-            await auth.mkgroup(auth.getAdminSession(), "admin", "Administrators", "");
-            await api.vfs.setattributes(auth.getAdminSession(), "/groups/admin", {
-                gid: GID_ADMIN
-            });
-        }
-
-        // Create guest group
-        if (!(await api.vfs.resolve(auth.getAdminSession(), "/groups/guest", { noerror: true }))) {
-            await auth.mkgroup(auth.getAdminSession(), "guest", "Guest", "");
-            await api.vfs.setattributes(auth.getAdminSession(), "/groups/guest", {
-                gid: GID_GUEST
-            });
-        }
-
-        // Create users group
-        if (!(await api.vfs.resolve(auth.getAdminSession(), "/groups/users", { noerror: true }))) {
-            await auth.mkgroup(auth.getAdminSession(), "users", "Users", "");
-            await api.vfs.setattributes(auth.getAdminSession(), "/groups/users", {
-                gid: GID_USERS
-            });
-        }
-
-        // Create admin user
-        if (!(await api.vfs.resolve(auth.getAdminSession(), "/users/admin", { noerror: true }))) {
-            await auth.mkuser(auth.getAdminSession(), "admin", "Administrator");
-            await api.vfs.setattributes(auth.getAdminSession(), "/users/admin", {
-                uid: UID_ADMIN,
-                gid: GID_ADMIN,
-                password: sha1("admin")
-            });
-            await auth.connect(auth.getAdminSession(), "admin", "admin");
-        }
-
-        // Create guest user
-        if (!(await api.vfs.resolve(auth.getAdminSession(), "/users/guest", { noerror: true }))) {
-            await auth.mkuser(auth.getAdminSession(), "guest", "Guest");
-            await api.vfs.setattributes(auth.getAdminSession(), "/users/guest", {
-                uid: UID_GUEST,
-                gid: GID_GUEST,
-                password: sha1("guest")
-            });
-            await auth.connect(auth.getAdminSession(), "guest", "guest");
-        }
     },
     getAdminSession: () => {
         return {
@@ -97,25 +42,25 @@ const auth = api.register("auth", {
         }
 
         let personPath = false;
-        let user = await api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username);
-        let person = await api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", { noerror: true, nofollow: true });
+        let user = await api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username, { nodepath: true });
+        let person = await api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/person", { noerror: true, nofollow: true, nodepath: true });
 
         if (person) {
-            personPath = person.attributes.path;
+            personPath = person.node.attributes.path;
         }
 
-        delete user.attributes.password;
-        delete user.attributes.resetId;
+        delete user.node.attributes.password;
+        delete user.node.attributes.resetId;
         // TODO: Invert this
 
-        return { username: session.username, user: user, personPath: personPath, adminGranted: session.admin };
+        return { username: session.username, user: user.node, personPath: personPath, adminGranted: session.admin };
     }),
     getStars: api.export(async (session) => {
         if (session.username === "guest") {
             return [];
         }
 
-        if (await api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/stars", { noerror: true, nofollow: true })) {
+        if (await api.vfs.resolve(auth.getAdminSession(), "/users/" + session.username + "/stars", { noerror: true, nofollow: true, nodepath: true })) {
             let list = await api.vfs.list(auth.getAdminSession(), "/users/" + session.username + "/stars");
 
             return list.map((item) => {
@@ -188,32 +133,32 @@ const auth = api.register("auth", {
         session.admin = new Date();
     }),
     login: api.export(async (session, username, password) => {
-        let user = await api.vfs.resolve(auth.getAdminSession(), "/users/" + username);
+        let user = await api.vfs.resolve(auth.getAdminSession(), "/users/" + username, { nodepath:  true });
 
         if (!user) {
             log.error("login: No user called " + username + " found");
             throw new Error("Authentication failed");
         }
 
-        if (user.attributes.inactive) {
+        if (user.node.attributes.inactive) {
             log.error("login: User " + username + " marked inactive");
             throw new Error("User is marked inactive");
         }
 
-        if (!user.attributes.password) {
+        if (!user.node.attributes.password) {
             log.error("login: User " + username + " is disabled");
             throw new Error("Authentication failed");
         }
 
-        if (user.attributes.password !== sha1(password)) {
+        if (user.node.attributes.password !== sha1(password)) {
             throw new Error("Authentication failed");
         }
 
         let groups = await api.vfs.list(auth.getAdminSession(), "/users/" + username + "/groups");
 
         session.username = username;
-        session.uid = user.attributes.uid;
-        session.gid = user.attributes.gid;
+        session.uid = user.node.attributes.uid;
+        session.gid = user.node.attributes.gid;
         session.gids = groups.map((group) => group.node.attributes.gid);
 
         user.attributes.loginTime = new Date();
@@ -225,7 +170,7 @@ const auth = api.register("auth", {
         return user;
     }),
     logout: api.export(async (session) => {
-        let user = await api.vfs.resolve(auth.getAdminSession(), "/users/guest");
+        let user = await api.vfs.resolve(auth.getAdminSession(), "/users/guest", { nodepath: true});
 
         if (!user) {
             throw new Error("No user called guest found");
@@ -234,8 +179,8 @@ const auth = api.register("auth", {
         let groups = await api.vfs.list(auth.getAdminSession(), "/users/guest/groups");
 
         session.username = "guest";
-        session.uid = user.attributes.uid;
-        session.gid = user.attributes.gid;
+        session.uid = user.node.attributes.uid;
+        session.gid = user.node.attributes.gid;
         session.gids = groups.map((group) => group.node.attributes.gid);
 
         return user;

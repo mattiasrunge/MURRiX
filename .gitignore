@@ -1,5 +1,4 @@
 node_modules
 babel_cache
 conf/config.json
-yarn.loc
 *~

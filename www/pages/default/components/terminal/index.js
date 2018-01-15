@@ -3,7 +3,6 @@
 
 import Terminal from "wsh.js";
 import api from "api.io-client";
-import $ from "jquery";
 import session from "lib/session";
 import React from "react";
 import PropTypes from "prop-types";
@@ -35,6 +34,12 @@ class DefaultTerminal extends Component {
         for (const name of Object.keys(commands)) {
             this.terminal.setCommandHandler(name, commands[name]);
         }
+
+        this.onKeyDown = (event) => {
+            if (event.altKey && event.which === 84) {
+                this.toggle();
+            }
+        };
     }
 
     renderPrompt(args) {
@@ -54,46 +59,41 @@ class DefaultTerminal extends Component {
 
         const abspath = await api.vfs.normalize(this.terminal.current().path, path);
 
-        return await api.vfs.resolve(abspath, { nodepath: true, noerror: true });
+        return await api.vfs.resolve(abspath, { noerror: true });
     }
 
     componentDidMount() {
-        this.addDisposables([
-            session.loggedIn.subscribe((loggedIn) => {
-                if (this.terminal.isActive() && !loggedIn) {
-                    this.deactivate();
-                }
-            })
-        ]);
+        // this.addDisposables([
+        //     session.loggedIn.subscribe((loggedIn) => {
+        //         if (this.terminal.isActive() && !loggedIn) {
+        //             this.deactivate();
+        //         }
+        //     })
+        // ]);
 
-        $(document).keydown((event) => {
-            if (event.altKey && event.which === 84) {
-                this.toggle();
-            }
-        });
+        document.addEventListener("keydown", this.onKeyDown);
     }
 
     componentWillUnmount() {
-        $(document).off("keydown");
+        document.removeEventListener("keydown", this.onKeyDown);
         super.componentWillUnmount();
     }
 
     activate() {
-        if (!session.loggedIn()) {
-            return;
-        }
+        // if (!session.loggedIn()) {
+        //     return;
+        // }
 
         this.terminal.activate();
-        this.ref.addClass("slideInDown");
-        this.ref.removeClass("slideOutUp");
-        this.ref.show();
+        this.ref.classList.add("slideInDown");
+        this.ref.classList.remove("slideOutUp");
         this.ref.focus();
     }
 
     deactivate() {
         this.terminal.deactivate();
-        this.ref.addClass("slideOutUp");
-        this.ref.removeClass("slideInDown");
+        this.ref.classList.add("slideOutUp");
+        this.ref.classList.remove("slideInDown");
         this.ref.blur();
     }
 
@@ -110,7 +110,8 @@ class DefaultTerminal extends Component {
             return;
         }
 
-        this.ref = $(ref);
+        this.ref = ref;
+        this.activate();
     }
 
     render() {

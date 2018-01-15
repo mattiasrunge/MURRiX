@@ -5,17 +5,17 @@ import columnify from "columnify";
 export default {
     desc: "List groups",
     exec: async (term, streams/* , cmd, opts, args */) => {
-        const groups = await api.vfs.list("/groups");
+        const groups = await api.vfs.groups();
 
         for (const group of groups) {
-            group.users = await api.vfs.list(`${group.path}/users`);
+            group.users = await api.vfs.users(group.name);
         }
 
         const columns = columnify(groups.map((item) => {
             return {
                 name: item.name,
-                gid: item.node.attributes.gid,
-                description: item.node.attributes.description,
+                gid: item.attributes.gid,
+                description: item.attributes.description,
                 users: item.users.map((u) => u.name).join(", ")
             };
         }), {

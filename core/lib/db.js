@@ -1,24 +1,33 @@
 "use strict";
 
-const MongoClient = require("mongodb").MongoClient;
+const path = require("path");
+const { MongoClient } = require("mongodb");
 
-const Database = function() {
-    let db = null;
+class Database {
+    constructor() {
+        this.db = null;
+        this.client = null;
+    }
 
-    this.init = async (config) => {
+    async init(config) {
         const url = config.mongoUrl;
 
-        db = await MongoClient.connect(url);
-    };
+        this.client = await MongoClient.connect(url);
+        this.db = this.client.db(path.basename(url));
+    }
 
-    this.createIndexes = (collectionName, indexes) => {
-        const collection = db.collection(collectionName);
+    createIndexes(collectionName, indexes) {
+        const collection = this.db.collection(collectionName);
 
         return collection.createIndexes(indexes);
-    };
+    }
 
-    this.find = (collectionName, query, options) => {
-        const collection = db.collection(collectionName);
+    dropDatabase() {
+        return this.db.dropDatabase();
+    }
+
+    find(collectionName, query, options) {
+        const collection = this.db.collection(collectionName);
 
         let cursor = collection.find(query, options);
 
@@ -35,54 +44,54 @@ const Database = function() {
         }
 
         return cursor.toArray();
-    };
+    }
 
-    this.findOne = (collectionName, query, options) => {
-        const collection = db.collection(collectionName);
+    findOne(collectionName, query, options) {
+        const collection = this.db.collection(collectionName);
 
         return collection.findOne(query, options);
-    };
+    }
 
-    this.insertOne = (collectionName, doc, options) => {
-        const collection = db.collection(collectionName);
+    insertOne(collectionName, doc, options) {
+        const collection = this.db.collection(collectionName);
 
         return collection.insertOne(doc, options);
-    };
+    }
 
-    this.updateOne = (collectionName, doc, options) => {
-        const collection = db.collection(collectionName);
+    updateOne(collectionName, doc, options) {
+        const collection = this.db.collection(collectionName);
 
-        return collection.updateOne({ _id: doc._id }, doc, options);
-    };
+        return collection.updateOne({ _id: doc._id }, { $set: doc }, options);
+    }
 
-    this.removeOne = (collectionName, id, options) => {
-        const collection = db.collection(collectionName);
+    removeOne(collectionName, id, options) {
+        const collection = this.db.collection(collectionName);
 
         return collection.deleteOne({ _id: id }, options);
-    };
+    }
 
-    this.distinct = (collectionName, attribute) => {
-        const collection = db.collection(collectionName);
+    distinct(collectionName, attribute) {
+        const collection = this.db.collection(collectionName);
 
         return collection.distinct(attribute);
-    };
+    }
 
-    this.aggregate = (collectionName, pipeline) => {
-        const collection = db.collection(collectionName);
+    aggregate(collectionName, pipeline) {
+        const collection = this.db.collection(collectionName);
 
         return collection.aggregate(pipeline);
-    };
+    }
 
-    this.stop = async () => {
-        db.close();
-    };
+    async stop() {
+        this.client.close();
+    }
 
-    this.createInstance = async (config) => {
+    async createInstance(config) {
         const db = new Database();
         await db.init(config);
 
         return db;
-    };
-};
+    }
+}
 
 module.exports = new Database();

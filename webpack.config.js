@@ -47,9 +47,9 @@ module.exports = function(options) {
                     exclude: (absPath) => {
                         const isNodeModule = /node_modules/.test(absPath);
                         const isExplicitInclude = explicitModuleIncludes
-                            .map((re) => re.test(absPath))
-                            .filter((m) => m)
-                            .length > 0;
+                        .map((re) => re.test(absPath))
+                        .filter((m) => m)
+                        .length > 0;
 
                         return isNodeModule && !isExplicitInclude;
                     },

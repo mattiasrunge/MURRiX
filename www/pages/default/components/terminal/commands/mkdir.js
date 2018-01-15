@@ -7,7 +7,10 @@ export default {
     exec: async (term, streams, cmd, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
 
-        await api.vfs.create(abspath, "d");
+        const parentpath = await api.vfs.dirname(abspath);
+        const name = await api.vfs.basename(abspath);
+
+        await api.vfs.create(parentpath, "d", name);
     },
     completion: async (term, cmd, name, value) => {
         if (name === "path") {

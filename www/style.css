@@ -1,10 +1,10 @@
 
-@import "../node_modules/bootstrap/dist/css/bootstrap.css";
-@import "../node_modules/typeahead.js-bootstrap-css/typeaheadjs.css";
+/*@import "../node_modules/bootstrap/dist/css/bootstrap.css";*/
+/*@import "../node_modules/typeahead.js-bootstrap-css/typeaheadjs.css";*/
 @import "../node_modules/animate.css/animate.css";
-@import "../node_modules/bootstrap-slider/dist/css/bootstrap-slider.css";
-@import "../node_modules/jdomizio-imgareaselect/distfiles/css/imgareaselect-default.css";
-@import "../node_modules/material-design-icons/iconfont/material-icons.css";
+/*@import "../node_modules/bootstrap-slider/dist/css/bootstrap-slider.css";*/
+/*@import "../node_modules/jdomizio-imgareaselect/distfiles/css/imgareaselect-default.css";*/
+/*@import "../node_modules/material-design-icons/iconfont/material-icons.css";*/
 
 @keyframes spin {
     from {transform:rotate(360deg);}
@@ -60,7 +60,6 @@
 }
 
 .terminal {
-    display: none;
     background-color: rgba(0, 0, 0, 0.9);
     color: white;
     position: fixed;
@@ -70,7 +69,7 @@
     right: 0;
     bottom: 0;
     z-index: 2000;
-    font-family: 'Roboto Mono', sans-serif;
+    font-family: 'Roboto Mono', monospace;
     font-weight: 500;
     font-size: 13px;
     line-height: 16px;
