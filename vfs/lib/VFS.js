@@ -26,6 +26,8 @@ class VFS {
             await this._loadCommands(pkgdir);
         }
 
+        await Node.runDbMigration();
+
         for (const pkgdir of this.packages) {
             await this._runSetup(pkgdir);
         }

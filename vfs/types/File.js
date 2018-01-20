@@ -41,5 +41,6 @@ class File extends Node {
 }
 
 File.IDENTIFIER = "f";
+File.VERSION = 1;
 
 module.exports = File;

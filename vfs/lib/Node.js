@@ -5,7 +5,7 @@ const assert = require("assert");
 const { v4: uuid } = require("uuid");
 const shuffle = require("shuffle-array");
 const { checkMode, MASKS } = require("./mode");
-const { isGuest } = require("./auth");
+const { ADMIN_SESSION, isGuest } = require("./auth");
 const bus = require("./bus");
 const db = require("../../core/lib/db");
 
@@ -25,6 +25,16 @@ class Node {
 
     static register(name, Type) {
         return Types[name] = Type;
+    }
+
+    static async runDbMigration() {
+        for (const name of Object.keys(Types)) {
+            const nodes = await Node.query(ADMIN_SESSION, { "properties.type": name, $or: [ { "properties.version": { $exists: false } }, { "properties.version": { $lt: Types[name].VERSION } } ] }, { nolookup: true });
+
+            for (const node of nodes) {
+                await node._migrateDb(ADMIN_SESSION);
+            }
+        }
     }
 
     static _factory(name, data) {
@@ -154,6 +164,29 @@ class Node {
         });
     }
 
+    static async query(session, query, options) {
+        if (options.nolookup) {
+            const nodes = await db.find("nodes", query);
+
+            return nodes.map((node) => this._factory(node.properties.type, {
+                ...node,
+                name: null,
+                path: null
+            }));
+        }
+
+        const nodes = await db.find("nodes", query, { fields: [ "_id" ] });
+        const results = [];
+
+        for (const node of nodes) {
+            const list = await Node.lookup(session, node._id);
+
+            results.push(...list);
+        }
+
+        return results;
+    }
+
     static async lookup(session, id) {
         const pipeline = [
             {
@@ -193,8 +226,9 @@ class Node {
         .map((node) => {
             const pathParts = [];
             let childId = id;
+            let parent;
 
-            for (const parent of node.parents) {
+            while (parent = node.parents.find((parent) => parent.properties.children.some((child) => child.id === childId))) {
                 const child = parent.properties.children.find((child) => child.id === childId);
 
                 pathParts.push(child.name);
@@ -258,6 +292,12 @@ class Node {
             properties: { ...this.properties },
             attributes: { ...this.attributes }
         };
+    }
+
+    async _migrateDb() {
+        this.properties.version = this.constructor.VERSION;
+
+        await db.updateOne("nodes", this._serializeForDb());
     }
 
     async _doRecursive(session, method, ...args) {

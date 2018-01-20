@@ -30,5 +30,6 @@ class Symlink extends Node {
 }
 
 Symlink.IDENTIFIER = "s";
+Symlink.VERSION = 1;
 
 module.exports = Symlink;

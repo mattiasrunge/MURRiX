@@ -10,7 +10,7 @@ module.exports = async (session, username, oldPassword, newPassword) => {
     const user = await Node.resolve(ADMIN_SESSION, `/users/${username}`);
 
     if (!isAdmin(session)) {
-        assert(user.matchPassword(oldPassword), "Authentication failed");
+        assert(await user.matchPassword(oldPassword), "Authentication failed");
     }
 
     return user.setPassword(ADMIN_SESSION, newPassword);

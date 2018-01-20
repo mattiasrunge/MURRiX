@@ -10,7 +10,7 @@ module.exports = async (session, username, password) => {
 
     assert(!user.attributes.inactive, "Authentication failed");
     assert(user.attributes.password, "Authentication failed");
-    assert(user.matchPassword(password), "Authentication failed");
+    assert(await user.matchPassword(password), "Authentication failed");
 
     const grps = await groups(ADMIN_SESSION, username);
 

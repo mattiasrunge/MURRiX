@@ -55,5 +55,6 @@ class Root extends Node {
 }
 
 Root.IDENTIFIER = "r";
+Root.VERSION = 1;
 
 module.exports = Root;

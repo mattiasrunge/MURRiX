@@ -31,5 +31,6 @@ class Group extends Node {
 }
 
 Group.IDENTIFIER = "g";
+Group.VERSION = 1;
 
 module.exports = Group;

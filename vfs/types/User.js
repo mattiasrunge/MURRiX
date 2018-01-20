@@ -1,6 +1,7 @@
 "use strict";
 
 const sha1 = require("sha1");
+const bcrypt = require("bcryptjs");
 const Node = require("../lib/Node");
 const { ADMIN_SESSION } = require("../lib/auth");
 
@@ -20,6 +21,16 @@ class User extends Node {
         await this.createChild(session, "d", "groups");
     }
 
+    async _migrateDb(session) {
+        if (!this.properties.version) {
+            if (this.attributes.password) {
+                this.attributes.password = await bcrypt.hash(this.attributes.password, 13);
+            }
+        }
+
+        return super._migrateDb(session);
+    }
+
 
     // Setters
 
@@ -31,7 +42,7 @@ class User extends Node {
 
     async setPassword(session, password) {
         await this.update(session, {
-            password: sha1(password)
+            password: await bcrypt.hash(sha1(password), 13)
         });
     }
 
@@ -55,8 +66,12 @@ class User extends Node {
         return data;
     }
 
-    matchPassword(password) {
-        return this.attributes.password === sha1(password); // TODO: Constant time compare
+    async matchPassword(password) {
+        if (!this.attributes.password) {
+            return false;
+        }
+
+        return bcrypt.compare(sha1(password), this.attributes.password);
     }
 
     static async generateUID() {
@@ -68,5 +83,6 @@ class User extends Node {
 }
 
 User.IDENTIFIER = "u";
+User.VERSION = 1;
 
 module.exports = User;

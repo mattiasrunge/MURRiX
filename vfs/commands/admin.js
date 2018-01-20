@@ -10,7 +10,7 @@ module.exports = async (session, password) => {
     } else {
         const user = await Node.resolve(ADMIN_SESSION, "/users/admin");
 
-        assert(user.matchPassword(password), "Authentication failed");
+        assert(await user.matchPassword(password), "Authentication failed");
 
         session.admin = new Date();
     }
