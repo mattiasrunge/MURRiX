@@ -1,21 +1,39 @@
 "use strict";
 
-const api = require("api.io/api.io-client");
+import api from "api.io/api.io-client";
+import Emitter from "./emitter";
 
-let user = false;
+class Session extends Emitter {
+    constructor() {
+        super();
 
-module.exports = {
-    user: () => user,
-    username: () => user ? user.name : "guest",
-    adminGranted: () => user && user.adminGranted,
-    loadUser: async () => user = await api.vfs.whoami(),
-    init: async () => {
-        await module.exports.loadUser();
-
-        api.vfs.on("session.updated", (username) => {
-            if (username !== module.exports.username()) {
-                module.exports.loadUser();
-            }
-        });
+        this._user = false;
     }
-};
+
+    user() {
+        return this._user;
+    }
+
+    username() {
+        return this._user ? this._user.name : "guest";
+    }
+
+    adminGranted() {
+        return this._user && this._user.adminGranted;
+    }
+
+    async loadUser() {
+        this._user = await api.vfs.whoami();
+
+        this.emit("update", this._user);
+
+        return this._user;
+    }
+
+    async init() {
+        await this.loadUser();
+        api.vfs.on("session.updated", () => this.loadUser());
+    }
+}
+
+export default new Session();

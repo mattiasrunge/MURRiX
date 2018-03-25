@@ -45,9 +45,7 @@ module.exports = {
     init: async () => {
         await module.exports.load();
 
-        timer = setInterval(() => {
-            module.exports.store();
-        }, 1000 * 60 * 5);
+        timer = setInterval(() => module.exports.store(), 100);
     },
     getSessions: () => {
         return sessions;
@@ -64,6 +62,10 @@ module.exports = {
         await module.exports.store();
     },
     store: async () => {
+        if (updatedSessions.size === 0) {
+            return;
+        }
+
         const saveList = Array.from(updatedSessions);
         updatedSessions.clear();
 

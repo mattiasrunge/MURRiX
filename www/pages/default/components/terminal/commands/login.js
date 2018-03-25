@@ -18,7 +18,7 @@ export default {
 
         await api.vfs.login(username, password);
 
-        await session.loadUser();
+        await session.waitFor("update", 5000);
     },
     completion: async (term, cmd, name, value) => {
         if (name === "username") {

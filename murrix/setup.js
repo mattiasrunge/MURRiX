@@ -1,20 +1,14 @@
 "use strict";
 
-const log = require("../core/lib/log")(module);
-
+const { auth } = require("../vfs");
 
 const setup = async (session, api) => {
     // Create folders
-    // await api.ensure(session, "/users", "d");
-
-    if (!(await api.exists(session, "/albums"))) {
-        log.info("No directory /albums found, creating...");
-        await api.mkdir(session, "admin", "Administrators");
-
-        const group = await Node.resolve(session, "/groups/admin");
-        await group.update(session, { gid: GID_ADMIN });
-    }
-
+    await api.ensure(session, "/albums", "d", { gid: auth.GID_USERS });
+    await api.ensure(session, "/cameras", "d", { gid: auth.GID_USERS });
+    await api.ensure(session, "/locations", "d", { gid: auth.GID_USERS });
+    await api.ensure(session, "/people", "d", { gid: auth.GID_USERS });
+    await api.ensure(session, "/news", "d", { gid: auth.GID_USERS });
 };
 
 module.exports = setup;

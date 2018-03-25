@@ -38,6 +38,15 @@ class Component extends React.PureComponent {
         }
     }
 
+    async load() {}
+
+    componentWillMount() {
+        this.load()
+        .catch((error) => {
+            this.logError(error);
+        });
+    }
+
     componentWillUnmount() {
         for (const disposable of this.disposables) {
             disposable.unsubscribe && disposable.unsubscribe();

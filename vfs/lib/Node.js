@@ -29,7 +29,13 @@ class Node {
 
     static async runDbMigration() {
         for (const name of Object.keys(Types)) {
-            const nodes = await Node.query(ADMIN_SESSION, { "properties.type": name, $or: [ { "properties.version": { $exists: false } }, { "properties.version": { $lt: Types[name].VERSION } } ] }, { nolookup: true });
+            const nodes = await Node.query(ADMIN_SESSION, {
+                "properties.type": name,
+                $or: [
+                    { "properties.version": { $exists: false } },
+                    { "properties.version": { $lt: Types[name].VERSION } }
+                ]
+            }, { nolookup: true });
 
             for (const node of nodes) {
                 await node._migrateDb(ADMIN_SESSION);
@@ -159,7 +165,10 @@ class Node {
         }
 
         return parent.children(session, {
-            pattern: pathInfo.pattern,
+            pattern: options.pattern,
+            search: options.search,
+            skip: options.skip,
+            limit: options.limit,
             nofollow: options.nofollow
         });
     }
@@ -279,7 +288,7 @@ class Node {
         };
     }
 
-    static async _notify(session, method) {
+    async _notify(session, method) {
         return bus.emit(`node.${method}`, {
             uid: session.uid,
             node: this
@@ -409,7 +418,8 @@ class Node {
         let children = this.properties.children;
 
         if (options.pattern) {
-            children = children.filter((child) => child.name.match(new RegExp(`^${options.pattern}$`)));
+            const expr = new RegExp(`^${options.pattern}$`);
+            children = children.filter((child) => child.name.match(expr));
         }
 
         const ids = children.map((child) => child.id);
@@ -430,6 +440,11 @@ class Node {
 
         let list = (await Promise.all(promises))
         .filter((item) => item.hasAccess(session, "r"));
+
+        if (options.search) {
+            const expr = new RegExp(options.search, "i");
+            list = list.filter((child) => child.attributes.name.match(expr));
+        }
 
         if (options.sort === "time") {
             list.sort((a, b) => {
@@ -479,7 +494,7 @@ class Node {
 
         await this._props(session, { acl });
 
-        await this.constructor._notify(session, "setfacl");
+        await this._notify(session, "setfacl");
 
         options.recursive && await this._doRecursive(session, "setfacl", ac, options);
     }
@@ -489,7 +504,7 @@ class Node {
 
         await this._props(session, { mode });
 
-        await this.constructor._notify(session, "chmod");
+        await this._notify(session, "chmod");
 
         options.recursive && await this._doRecursive(session, "chmod", mode, options);
     }
@@ -504,7 +519,7 @@ class Node {
 
         await this._props(session, properties);
 
-        await this.constructor._notify(session, "chown");
+        await this._notify(session, "chown");
 
         options.recursive && await this._doRecursive(session, "chown", uid, gid, options);
     }
@@ -514,7 +529,7 @@ class Node {
 
         await this._attr(session, attributes);
 
-        await this.constructor._notify(session, "update");
+        await this._notify(session, "update");
     }
 
     async remove(session) {
@@ -531,7 +546,7 @@ class Node {
 
         await db.removeOne("nodes", this._id);
 
-        await this.constructor._notify(session, "remove");
+        await this._notify(session, "remove");
     }
 
     async removeChild(session, child) {
@@ -545,7 +560,7 @@ class Node {
 
         await this._props(session, { children });
 
-        await this.constructor._notify(session, "removeChild");
+        await this._notify(session, "removeChild");
     }
 
     async appendChild(session, child) {
@@ -563,7 +578,7 @@ class Node {
 
         await this._props(session, { children });
 
-        await this.constructor._notify(session, "appendChild");
+        await this._notify(session, "appendChild");
     }
 
     async appendChildCopy(session, child) {
@@ -596,7 +611,7 @@ class Node {
         await db.insertOne("nodes", nodepath._serializeForDb());
         await nodepath.constructor._ensureIndexes();
 
-        await this.constructor._notify(session, "createChild");
+        await nodepath._notify(session, "create");
 
         await this.appendChild(session, nodepath);
 

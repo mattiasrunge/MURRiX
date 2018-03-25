@@ -1,0 +1,74 @@
+
+import React from "react";
+import PropTypes from "prop-types";
+import api from "api.io-client";
+import session from "lib/session";
+import notification from "lib/notification";
+import Component from "lib/component";
+import { Rating } from "semantic-ui-react";
+
+class StarIcon extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            user: session.user(),
+            stars: []
+        };
+    }
+
+    async load() {
+        this.addDisposables([
+            session.on("update", (event, user) => this.setState({ user })),
+            api.vfs.on("node.appendChild", () => this.update()),
+            api.vfs.on("node.removeChild", () => this.update())
+        ]);
+
+        await this.update();
+    }
+
+    async update() {
+        const stars = await api.vfs.stars();
+
+        this.setState({ stars });
+    }
+
+    async onToggleStar() {
+        try {
+            await api.vfs.star(this.props.node.path);
+        } catch (error) {
+            this.printError("Failed to toggle star", error);
+            notification.add("error", "Failed to toggle star", 10000);
+        }
+    }
+
+    render() {
+        if (!this.state.user || this.state.user.name === "guest" || !this.props.node) {
+            return null;
+        }
+
+        const starred = this.state.stars.some((node) => node.path === this.props.node.path);
+
+        return (
+            <Rating
+                className={this.props.theme.navbarStarIcon}
+                icon="star"
+                size="huge"
+                rating={starred ? 1 : 0}
+                onRate={() => this.onToggleStar()}
+            />
+        );
+    }
+}
+
+StarIcon.propTypes = {
+    theme: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    node: PropTypes.object
+};
+
+StarIcon.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
+export default StarIcon;

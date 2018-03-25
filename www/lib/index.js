@@ -4,15 +4,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import bluebird from "bluebird";
-import Root from "components/root";
-//
-// import "jquery";
-// import "tether";
-// import "bootstrap";
-// import "lib/extensions";
-// import "lib/bindings";
+import { Root } from "components/root";
 
-import "www/style.css";
+import "semantic-ui-css/semantic.css";
+import "animate.css/animate.css";
+import "pages/default/styles/theme.css";
 
 import api from "api.io-client";
 import session from "lib/session";
@@ -32,7 +28,6 @@ const start = async (args) => {
         <Root />
     ), document.getElementById("main"));
 };
-
 
 window.onload = () => {
     const args = {

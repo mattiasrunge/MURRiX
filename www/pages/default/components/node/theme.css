@@ -1,0 +1,6 @@
+
+@import "pages/default/styles/theme.css";
+
+.nodeContainer {
+    margin-top: var(--navbar-height);
+}

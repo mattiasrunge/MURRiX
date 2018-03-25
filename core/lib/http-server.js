@@ -12,6 +12,7 @@ const conditional = require("koa-conditional-get");
 const etag = require("koa-etag");
 const range = require("koa-range");
 const favicon = require("koa-favicon");
+const serve = require("koa-static");
 
 const enableDestroy = require("server-destroy");
 const uuid = require("uuid");
@@ -24,7 +25,7 @@ const session = require("./session");
 const log = require("./log")(module);
 
 
-const buildWebpackCfg = require("../../webpack.config.js");
+const buildWebpackCfg = require("../../www/webpack.config.js");
 
 
 let server;
@@ -38,6 +39,9 @@ module.exports = {
         const sessions = session.getSessions();
         const sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
         const sessionName = "apiio";
+        const staticPaths = [
+            path.join(__dirname, "..", "..", "node_modules", "semantic-ui-css")
+        ];
 
         // Setup application
         app.use(compress());
@@ -89,6 +93,10 @@ module.exports = {
 
         app.use(favicon(path.join(__dirname, "..", "..", "www", "favicon.ico")));
 
+        for (const staticPath of staticPaths) {
+            app.use(serve(staticPath));
+        }
+
         app.use(async (ctx, next) => {
             if (ctx.path !== "/") {
                 return next();
@@ -107,7 +115,7 @@ module.exports = {
 
         log.info(`Webpack is running in ${config.production ? "production" : "development"} mode`);
 
-        const webpackCfg = buildWebpackCfg({
+        const webpackCfg = await buildWebpackCfg({
             dev: !config.production,
             configuration: {
                 googleBrowserKey: config.googleBrowserKey
@@ -120,6 +128,11 @@ module.exports = {
         });
 
         app.use(webpackMiddlewareConf);
+
+        app.use(route.get("*", async (ctx) => {
+            ctx.type = "text/html; charset=utf-8";
+            ctx.body = fs.createReadStream(path.join(__dirname, "..", "..", "www", "index.html"));
+        }));
 
         // app.use(route.get("*", async (ctx) => await send(ctx, "/index.html", { root: path.join(__dirname, "..", "..", "www") })));
 

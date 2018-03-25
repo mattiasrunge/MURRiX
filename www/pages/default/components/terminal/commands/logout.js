@@ -7,6 +7,6 @@ export default {
     exec: async (/* term, streams, cmd, opts, args */) => {
         await api.vfs.logout();
 
-        await session.loadUser();
+        await session.waitFor("update", 5000);
     }
 };

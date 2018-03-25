@@ -1,0 +1,12 @@
+
+@import "pages/default/styles/theme.css";
+
+.homeContainer {
+    margin-top: var(--navbar-height);
+    padding-left: var(--spacing);
+    padding-top: var(--spacing);
+}
+
+.homeSidebar {
+    padding-top: calc(var(--navbar-height) + var(--spacing));
+}

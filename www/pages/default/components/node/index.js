@@ -3,7 +3,7 @@ import themeify from "lib/themeify";
 import theme from "./theme.css";
 
 const exports = {
-    Root: require("./Root")
+    Node: require("./Node")
 };
 
 module.exports = themeify(theme, exports);

@@ -1,0 +1,29 @@
+
+.navbarSearchInput {
+    position: relative;
+    width: 100%;
+
+    & .navbarStarIcon {
+        position: absolute;
+        right: 22px;
+        top: 13px;
+
+        & i {
+            outline-color: transparent;
+        }
+    }
+
+    & .navbarSearchInputSearch {
+        flex-grow: 1 !important;
+
+        & input {
+            border-radius: 3px !important;
+        }
+    }
+
+    & .navbarSearchInputSearchSelected {
+        & input {
+            font-weight: bold;
+        }
+    }
+}

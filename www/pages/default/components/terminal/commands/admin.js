@@ -10,7 +10,7 @@ export default {
 
         await api.vfs.admin(password);
 
-        await session.loadUser();
+        await session.waitFor("update", 5000);
 
         await streams.stdout.write(password ? "Admin rights granted" : "Admin rights recinded");
     }

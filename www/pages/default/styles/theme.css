@@ -1,0 +1,7 @@
+
+@import "./fonts.css";
+
+:root {
+    --navbar-height: 47px;
+    --spacing: 20px;
+}

@@ -1,0 +1,44 @@
+
+.terminal {
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    position: fixed;
+    padding: 5px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    animation-duration: 0.2s !important;
+
+    & .promptUser {
+        font-weight: 700;
+        color: #8AE234;
+    }
+
+    & .promptPath {
+        font-weight: 700;
+        color: #729FCF;
+    }
+
+    & .error {
+        font-weight: 700;
+        color: #FF3C3C;
+    }
+
+    & .bold {
+        font-weight: bold;
+    }
+}
+
+:global(.tt-cursor) {
+    cursor: pointer;
+}
