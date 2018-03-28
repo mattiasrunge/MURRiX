@@ -147,7 +147,7 @@ NodeInput.propTypes = {
     disabled: PropTypes.bool,
     value: PropTypes.object,
     onChange: PropTypes.func.isRequired,
-    paths: PropTypes.array,
+    paths: PropTypes.array.isRequired,
     limit: PropTypes.number,
     onKeyUp: PropTypes.func,
     iconPosition: PropTypes.string,

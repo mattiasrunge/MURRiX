@@ -5,6 +5,7 @@ import Component from "lib/component";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Container, Grid, Sticky } from "semantic-ui-react";
 import { Profile } from "components/user";
+import { Search } from "components/search";
 import Sidebar from "./Sidebar";
 
 class Home extends Component {
@@ -15,16 +16,18 @@ class Home extends Component {
             ref: null
         };
     }
-    render() {
-        const { contextRef } = this.state;
-        const handleContextRef = (contextRef) => this.setState({ contextRef });
 
+    onRef(ref) {
+        this.setState({ ref });
+    }
+
+    render() {
         return (
-            <div ref={handleContextRef}>
+            <div ref={(ref) => this.onRef(ref)}>
                 <Container>
                     <Grid columns={2}>
                         <Grid.Column width={3}>
-                            <Sticky context={contextRef} >
+                            <Sticky context={this.state.ref} >
                                 <Sidebar {...this.props} />
                             </Sticky>
                         </Grid.Column>
@@ -44,9 +47,9 @@ class Home extends Component {
                                         )}
                                     />
                                     <Route
-                                        path={`${this.props.match.path}/search`}
+                                        path={`${this.props.match.path}/search/:query?`}
                                         render={(props) => (
-                                            <div>Search</div>
+                                            <Search {...props} />
                                         )}
                                     />
                                     <Route

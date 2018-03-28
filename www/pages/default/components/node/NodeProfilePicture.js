@@ -34,7 +34,7 @@ class NodeProfilePicture extends Component {
 
             this.setState({ url, loading: false });
         } catch (error) {
-            this.logError("Failed to get node url", error, 10000);
+            // this.logError("Failed to get node url", error, 10000);
             this.setState({ loading: false });
         }
     }

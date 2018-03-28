@@ -39,7 +39,6 @@ NodeIcon.propTypes = {
     className: PropTypes.string,
     type: PropTypes.string.isRequired,
     icon: PropTypes.string,
-    format: PropTypes.object.isRequired,
     bordered: PropTypes.bool,
     centered: PropTypes.bool,
     circular: PropTypes.bool,

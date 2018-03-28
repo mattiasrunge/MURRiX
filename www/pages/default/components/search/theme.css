@@ -1,0 +1,12 @@
+
+@import "pages/default/styles/theme.css";
+
+.searchList {
+    margin-top: var(--spacing);
+
+    & .emptyList {
+        text-transform: uppercase;
+        text-align: center;
+        color: #bbb;
+    }
+}

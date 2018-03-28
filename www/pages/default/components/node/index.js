@@ -6,7 +6,8 @@ const exports = {
     Node: require("./Node"),
     NodeInput: require("./NodeInput"),
     NodeProfilePicture: require("./NodeProfilePicture"),
-    NodeIcon: require("./NodeIcon")
+    NodeIcon: require("./NodeIcon"),
+    NodeCard: require("./NodeCard")
 };
 
 module.exports = themeify(theme, exports);
