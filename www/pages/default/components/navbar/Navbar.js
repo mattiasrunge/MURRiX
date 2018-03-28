@@ -13,7 +13,13 @@ import SearchInput from "./items/SearchInput";
 class Navbar extends Component {
     render() {
         return (
-            <Menu fixed="top" color="blue" inverted borderless>
+            <Menu
+                fixed="top"
+                color="blue"
+                inverted
+                borderless
+                className={this.props.theme.navbar}
+            >
                 <Container>
                     <HomeButton {...this.props} />
                     <SearchInput {...this.props} />
@@ -30,7 +36,7 @@ class Navbar extends Component {
 }
 
 Navbar.propTypes = {
-    theme: PropTypes.object
+    theme: PropTypes.object.isRequired
 };
 
 export default Navbar;

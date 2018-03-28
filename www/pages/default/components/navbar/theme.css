@@ -1,29 +1,17 @@
 
-.navbarSearchInput {
-    position: relative;
-    width: 100%;
+@import "pages/default/styles/theme.css";
 
-    & .navbarStarIcon {
-        position: absolute;
-        right: 22px;
-        top: 13px;
+.navbar {
+    height: var(--navbar-height);
+}
 
-        & i {
-            outline-color: transparent;
-        }
-    }
 
-    & .navbarSearchInputSearch {
-        flex-grow: 1 !important;
+.navbarStarIcon {
+    position: absolute;
+    right: 22px;
+    top: 13px;
 
-        & input {
-            border-radius: 3px !important;
-        }
-    }
-
-    & .navbarSearchInputSearchSelected {
-        & input {
-            font-weight: bold;
-        }
+    & i {
+        outline-color: transparent;
     }
 }

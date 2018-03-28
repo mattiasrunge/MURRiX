@@ -5,6 +5,7 @@ import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown, Icon } from "semantic-ui-react";
+import { NodeProfilePicture, NodeIcon } from "components/node";
 
 class StarMenu extends Component {
     constructor(props) {
@@ -18,7 +19,10 @@ class StarMenu extends Component {
 
     async load() {
         this.addDisposables([
-            session.on("update", (event, user) => this.setState({ user })),
+            session.on("update", async (event, user) => {
+                this.setState({ user });
+                await this.update();
+            }),
             api.vfs.on("node.appendChild", () => this.update()),
             api.vfs.on("node.removeChild", () => this.update())
         ]);
@@ -27,6 +31,10 @@ class StarMenu extends Component {
     }
 
     async update() {
+        if (!this.state.user || this.state.user.name === "guest") {
+            return;
+        }
+
         const stars = await api.vfs.stars();
 
         this.setState({ stars });
@@ -44,6 +52,8 @@ class StarMenu extends Component {
         return (
             <Dropdown
                 item
+                direction="left"
+                simple
                 trigger={(
                     <Icon
                         fitted
@@ -57,9 +67,24 @@ class StarMenu extends Component {
                     <For each="node" of={this.state.stars}>
                         <Dropdown.Item
                             key={node._id}
-                            text={node.attributes.name}
                             onClick={() => this.goto(node)}
-                        />
+                        >
+                            <NodeProfilePicture
+                                className="image"
+                                path={`${node.path}/profilePicture`}
+                                format={{
+                                    width: 28,
+                                    height: 28,
+                                    type: "image"
+                                }}
+                                rounded
+                                floated="right"
+                            />
+                            <NodeIcon
+                                type={node.properties.type}
+                            />
+                            {node.attributes.name}
+                        </Dropdown.Item>
                     </For>
                 </Dropdown.Menu>
             </Dropdown>

@@ -21,6 +21,7 @@ const webpackMiddleware = require("koa-webpack-dev-middleware");
 const api = require("api.io");
 
 // const plugin = require("./plugin");
+const media = require("./media");
 const session = require("./session");
 const log = require("./log")(module);
 
@@ -106,12 +107,11 @@ module.exports = {
             ctx.body = fs.createReadStream(path.join(__dirname, "..", "..", "www", "index.html"));
         });
 
-        // Create plugin routes
-        // const pluginRoutes = plugin.getRoutes();
-        //
-        // for (const pluginRoute of pluginRoutes) {
-        //     app.use(route[pluginRoute.method.toLowerCase()](pluginRoute.route, pluginRoute.handler));
-        // }
+        const mediaRoutes = media.routes();
+
+        for (const mroute of mediaRoutes) {
+            app.use(route[mroute.method.toLowerCase()](mroute.route, mroute.handler));
+        }
 
         log.info(`Webpack is running in ${config.production ? "production" : "development"} mode`);
 

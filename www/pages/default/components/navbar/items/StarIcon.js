@@ -19,7 +19,10 @@ class StarIcon extends Component {
 
     async load() {
         this.addDisposables([
-            session.on("update", (event, user) => this.setState({ user })),
+            session.on("update", async (event, user) => {
+                this.setState({ user });
+                await this.update();
+            }),
             api.vfs.on("node.appendChild", () => this.update()),
             api.vfs.on("node.removeChild", () => this.update())
         ]);
@@ -28,16 +31,24 @@ class StarIcon extends Component {
     }
 
     async update() {
-        const stars = await api.vfs.stars();
+        if (!this.state.user || this.state.user.name === "guest" || !this.props.node) {
+            return;
+        }
 
-        this.setState({ stars });
+        try {
+            const stars = await api.vfs.stars();
+
+            this.setState({ stars });
+        } catch (error) {
+            this.logError("Failed to get stars", error);
+        }
     }
 
     async onToggleStar() {
         try {
             await api.vfs.star(this.props.node.path);
         } catch (error) {
-            this.printError("Failed to toggle star", error);
+            this.logError("Failed to toggle star", error);
             notification.add("error", "Failed to toggle star", 10000);
         }
     }

@@ -1,59 +1,28 @@
 
-// import loc from "lib/location";
-// import session from "lib/session";
-// import stat from "lib/status";
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { Route, Switch } from "react-router-dom";
+import session from "lib/session";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Component from "lib/component";
 import { Navbar } from "components/navbar";
 import { Terminal } from "components/terminal";
 import { Notification } from "components/notification";
 import { Home } from "components/home";
 import { Node } from "components/node";
-
-// import Sidebar from "components/sidebar";
-// import Fullscreen from "plugins/node/components/fullscreen";
-// import PageFeed from "plugins/feed/components/page";
-// import PageSearch from "plugins/search/components/page-search";
-// import PageName from "plugins/search/components/page-name";
-// import PageYear from "plugins/search/components/page-year";
-// import PageLabels from "plugins/search/components/page-labels";
-// import PageCharts from "plugins/statistics/components/page-charts";
-// import PageLogin from "plugins/auth/components/page-login";
-// import PageProfile from "plugins/auth/components/page-profile";
-// import PageReset from "plugins/auth/components/page-reset";
-// import PageNode from "plugins/node/components/page";
-
-
-
+import { SignIn, Reset, Profile } from "components/authentication";
 
 class Content extends Component {
-    // constructor(props) {
-    //     super(props);
-    //
-    //     this.state = {
-    //         loading: stat.loading(),
-    //         loggedIn: session.loggedIn(),
-    //         page: loc.get("page", "default"),
-    //         showPath: loc.get("showPath", false),
-    //         path: loc.get("path", false),
-    //         list: session.list
-    //     };
-    // }
-    //
-    // componentDidMount() {
-    //     this.addDisposables([
-    //         stat.loading.subscribe((loading) => this.setState({ loading })),
-    //         session.loggedIn.subscribe((loggedIn) => this.setState({ loggedIn })),
-    //         loc.subscribe(({ page, showPath, path }) => this.setState({
-    //             page: page || "default",
-    //             showPath: showPath,
-    //             path: path
-    //         })),
-    //         session.list.subscribe((list) => this.setState({ list }))
-    //     ]);
-    // }
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            user: session.user()
+        };
+    }
+
+    async load() {
+        this.addDisposable(session.on("update", (event, user) => this.setState({ user })));
+    }
 
     render() {
         return (
@@ -61,19 +30,52 @@ class Content extends Component {
                 <Terminal />
                 <Notification />
                 <Navbar location={this.props.location} />
+
                 <Switch>
                     <Route
-                        path="/node/*"
+                        path="/reset"
                         render={(props) => (
-                            <Node {...props} />
+                            <Reset {...props} />
                         )}
                     />
-                    <Route
-                        path="*"
-                        render={(props) => (
-                            <Home {...props} />
-                        )}
-                    />
+                    <Choose>
+                        <When condition={!this.state.user || this.state.user.name === "guest"}>
+                            <Route
+                                path="*"
+                                render={(props) => (
+                                    <SignIn {...props} />
+                                )}
+                            />
+                        </When>
+                        <Otherwise>
+                            <Route
+                                path="/profile"
+                                render={(props) => (
+                                    <Profile {...props} />
+                                )}
+                            />
+                            <Route
+                                path="/node/*"
+                                render={(props) => (
+                                    <Node {...props} />
+                                )}
+                            />
+                            <Route
+                                path="/home"
+                                render={(props) => (
+                                    <Home {...props} />
+                                )}
+                            />
+                            <Route
+                                path="*"
+                                render={() => (
+                                    <Redirect
+                                        to={{ pathname: "/home" }}
+                                    />
+                                )}
+                            />
+                        </Otherwise>
+                    </Choose>
                 </Switch>
             </Fragment>
         );
@@ -166,6 +168,10 @@ class Content extends Component {
 
 Content.propTypes = {
     location: PropTypes.object.isRequired
+};
+
+Content.contextTypes = {
+    router: PropTypes.object.isRequired
 };
 
 export default Content;

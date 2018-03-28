@@ -1,9 +1,11 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
-import { Menu, Dropdown, Icon } from "semantic-ui-react";
+import { Dropdown } from "semantic-ui-react";
+import { NodeProfilePicture } from "components/node";
 
 class UserMenu extends Component {
     constructor(props) {
@@ -18,16 +20,12 @@ class UserMenu extends Component {
         this.addDisposable(session.on("update", (event, user) => this.setState({ user })));
     }
 
-    onSignIn() {
-        // this.context.router.history.push(`/node${selected.node.path}`);
-    }
-
-    onSignOut() {
-
+    async onSignOut() {
+        await api.vfs.logout();
     }
 
     onProfile() {
-
+        this.context.router.history.push("/home/profile");
     }
 
     onMe() {
@@ -35,46 +33,52 @@ class UserMenu extends Component {
     }
 
     render() {
+        if (!this.state.user || this.state.user.name === "guest") {
+            return null;
+        }
+
         return (
-            <Choose>
-                <When condition={!this.state.user || this.state.user.name === "guest"}>
-                    <Menu.Item
-                        name="Sign in"
-                        fitted="vertically"
-                        onClick={() => this.onSignIn()}
+            <Dropdown
+                item
+                fitted="vertically"
+                direction="left"
+                simple
+                trigger={(
+                    <span>
+                        <NodeProfilePicture
+                            path={`${this.state.user.path}/person/profilePicture`}
+                            format={{
+                                width: 28,
+                                height: 28,
+                                type: "image"
+                            }}
+                            avatar
+                            spaced="right"
+                            type="u"
+                        />
+                        {this.state.user.attributes.name}
+                    </span>
+                )}
+            >
+                <Dropdown.Menu>
+                    <Dropdown.Item
+                        icon="user"
+                        text="Profile"
+                        onClick={() => this.onProfile()}
                     />
-                </When>
-                <Otherwise>
-                    <Dropdown
-                        item
-                        fitted="vertically"
-                        trigger={(
-                            <span>
-                                <Icon name="user" /> {this.state.user.attributes.name}
-                            </span>
-                        )}
-                    >
-                        <Dropdown.Menu>
-                            <Dropdown.Item
-                                icon="user"
-                                text="Profile"
-                                onClick={() => this.onProfile()}
-                            />
-                            <Dropdown.Item
-                                icon="user circle"
-                                text="Me"
-                                onClick={() => this.onMe()}
-                            />
-                            <Dropdown.Divider />
-                            <Dropdown.Item
-                                icon="sign out"
-                                text="Sign out"
-                                onClick={() => this.onSignOut()}
-                            />
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Otherwise>
-            </Choose>
+                    <Dropdown.Item
+                        icon="user circle"
+                        text="Me"
+                        onClick={() => this.onMe()}
+                    />
+                    <Dropdown.Divider />
+                    <Dropdown.Item
+                        icon="sign out"
+                        text="Sign out"
+                        onClick={() => this.onSignOut()}
+                    />
+                </Dropdown.Menu>
+            </Dropdown>
         );
     }
 }

@@ -42,3 +42,7 @@
 :global(.tt-cursor) {
     cursor: pointer;
 }
+
+:global(.ui.page.dimmer) {
+    display: flex !important;
+}

@@ -4,3 +4,34 @@
 .nodeContainer {
     margin-top: var(--navbar-height);
 }
+
+
+.nodeInput {
+    /* position: relative; */
+    /* width: 100%; */
+
+
+}
+
+.nodeInputSearch {
+    flex-grow: 1 !important;
+
+    & input {
+        border-radius: 4px !important;
+    }
+}
+
+.nodeInputSearchSelected {
+    & input {
+        font-weight: bold;
+    }
+}
+
+:global(.ui.search>.results) {
+    width: 100% !important;
+}
+
+:global(.ui.search>.results .result .image) {
+    width: 18px !important;
+    height: 18px !important;
+}

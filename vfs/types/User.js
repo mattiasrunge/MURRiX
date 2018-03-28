@@ -1,5 +1,7 @@
 "use strict";
 
+const assert = require("assert");
+const uuid = require("uuid");
 const sha1 = require("sha1");
 const bcrypt = require("bcryptjs");
 const Node = require("../lib/Node");
@@ -52,6 +54,24 @@ class User extends Node {
         });
 
         return !this.attributes.inactive;
+    }
+
+    async generatePasswordReset(session) {
+        await this.update(session, {
+            resetId: uuid.v4()
+        });
+
+        return this.attributes.resetId;
+    }
+
+    async resetPassword(session, resetId, password) {
+        assert(this.attributes.resetId, "Invalid reset id");
+        assert(this.attributes.resetId === resetId, "Invalid reset id");
+
+        await this.update(session, {
+            password: await bcrypt.hash(sha1(password), 13),
+            resetId: null
+        });
     }
 
 

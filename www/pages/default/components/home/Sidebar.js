@@ -2,54 +2,64 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Menu } from "semantic-ui-react";
+import { Header } from "semantic-ui-react";
+import SidebarMenuItem from "./SidebarMenuItem";
 
 class Sidebar extends Component {
     render() {
         return (
-            <div>
-                <Menu tabular vertical borderless>
-                    <Menu.Item header>Explore</Menu.Item>
-                    <Menu.Item
-                        icon="newspaper"
-                        content="News"
-                        active
-                        link
+            <div className={this.props.theme.homeSidebar}>
+                <div className={this.props.theme.menu}>
+                    <Header>Explore</Header>
+                    <SidebarMenuItem
+                        theme={this.props.theme}
+                        text="News"
+                        path={`${this.props.match.path}/news`}
+                        location={this.props.location}
                     />
-                    <Menu.Item
-                        icon="search"
-                        content="Search"
-                        link
+                    <SidebarMenuItem
+                        theme={this.props.theme}
+                        text="Search"
+                        path={`${this.props.match.path}/search`}
+                        location={this.props.location}
                     />
-                    <Menu.Item
-                        icon="folder outline"
-                        content="Browse by name"
-                        link
+                    <SidebarMenuItem
+                        theme={this.props.theme}
+                        text="Browse by name"
+                        path={`${this.props.match.path}/name`}
+                        location={this.props.location}
                     />
-                    <Menu.Item
-                        icon="calendar"
-                        content="Browse by year"
-                        link
+                    <SidebarMenuItem
+                        theme={this.props.theme}
+                        text="Browse by year"
+                        path={`${this.props.match.path}/year`}
+                        location={this.props.location}
                     />
-                    <Menu.Item
-                        icon="tags"
-                        content="Browse by label"
-                        link
+                    <SidebarMenuItem
+                        theme={this.props.theme}
+                        text="Browse by label"
+                        path={`${this.props.match.path}/label`}
+                        location={this.props.location}
                     />
-                    <Menu.Item header>Numbers</Menu.Item>
-                    <Menu.Item
-                        icon="bar chart"
-                        content="Charts"
-                        link
+                </div>
+                <div className={this.props.theme.menu}>
+                    <Header>Numbers</Header>
+                    <SidebarMenuItem
+                        theme={this.props.theme}
+                        text="Charts"
+                        path={`${this.props.match.path}/chart`}
+                        location={this.props.location}
                     />
-                </Menu>
+                </div>
             </div>
         );
     }
 }
 
 Sidebar.propTypes = {
-    theme: PropTypes.object
+    theme: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
 };
 
 export default Sidebar;

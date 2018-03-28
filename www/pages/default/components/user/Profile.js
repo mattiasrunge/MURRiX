@@ -1,0 +1,114 @@
+
+import React from "react";
+import PropTypes from "prop-types";
+import api from "api.io-client";
+import session from "lib/session";
+import Component from "lib/component";
+import { Input, Header, Button, Form, Grid } from "semantic-ui-react";
+import { Focus } from "components/utils";
+import { NodeInput } from "components/node";
+
+class Profile extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            user: session.user(),
+            loading: false,
+            error: false,
+            username: "",
+            name: "",
+            person: null
+        };
+    }
+
+    async load() {
+        this.addDisposable(session.on("update", (event, user) => this.setState({ user })));
+    }
+
+    resetPassword() {
+        this.context.router.history.push(`/reset/${this.state.username}`);
+    }
+
+    async save() {
+        if (!this.state.username || !this.state.password) {
+            return;
+        }
+
+        this.setState({ loading: true, error: false });
+
+        try {
+            await api.vfs.login(this.state.username, this.state.password);
+            this.setState({ loading: false });
+        } catch (error) {
+            this.logError("Failed to login", error);
+            this.setState({ loading: false, error: "Failed to login" });
+        }
+    }
+
+    close() {
+        this.context.router.history.goBack();
+    }
+
+    render() {
+        return (
+            <div>
+                <Header>Profile</Header>
+                <Grid columns="2">
+                    <Grid.Column width="8">
+                        <Form>
+                            <Form.Field>
+                                <label>Name</label>
+                                <Focus>
+                                    <Input
+                                        value={this.state.name}
+                                        onChange={(e, { value }) => this.setState({ name: value })}
+                                        onKeyDown={(e) => e.which === 13 && this.save()}
+                                    />
+                                </Focus>
+                            </Form.Field>
+                            <Form.Field>
+                                <label>E-Mail</label>
+                                <Input
+                                    value={this.state.username}
+                                    onChange={(e, { value }) => this.setState({ username: value })}
+                                    onKeyDown={(e) => e.which === 13 && this.save()}
+                                />
+                            </Form.Field>
+                            <Form.Field>
+                                <label>Person</label>
+                                <NodeInput
+                                    value={this.state.person}
+                                    paths={[
+                                        "/people"
+                                    ]}
+                                    onChange={(value) => this.setState({ person: value })}
+                                    onKeyDown={(e) => e.which === 13 && this.save()}
+                                />
+                            </Form.Field>
+
+                            <Button
+                                primary
+                                loading={this.state.loading}
+                                disabled={!this.state.name || !this.state.username}
+                                icon="save"
+                                content="Save"
+                                onClick={() => this.save()}
+                            />
+                        </Form>
+                    </Grid.Column>
+                </Grid>
+            </div>
+        );
+    }
+}
+
+Profile.propTypes = {
+    theme: PropTypes.object
+};
+
+Profile.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
+export default Profile;

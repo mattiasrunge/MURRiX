@@ -1,0 +1,11 @@
+
+.resetPasswordLink {
+    float: right;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.errorMessage {
+    color: #db2828;
+    margin-left: 1em;
+}

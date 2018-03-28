@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown, Icon } from "semantic-ui-react";
+import { NodeIcon } from "components/node";
 
 class AddMenu extends Component {
     constructor(props) {
@@ -30,6 +31,8 @@ class AddMenu extends Component {
         return (
             <Dropdown
                 item
+                direction="left"
+                simple
                 trigger={(
                     <Icon
                         fitted
@@ -41,22 +44,22 @@ class AddMenu extends Component {
             >
                 <Dropdown.Menu fitted="vertically">
                     <Dropdown.Item
-                        icon="book"
+                        icon={(<NodeIcon type="a" />)}
                         text="Album"
                         onClick={() => this.onAdd("album")}
                     />
                     <Dropdown.Item
-                        icon="user circle"
+                        icon={(<NodeIcon type="p" />)}
                         text="Person"
                         onClick={() => this.onAdd("person")}
                     />
                     <Dropdown.Item
-                        icon="map"
+                        icon={(<NodeIcon type="l" />)}
                         text="Location"
                         onClick={() => this.onAdd("location")}
                     />
                     <Dropdown.Item
-                        icon="camera retro"
+                        icon={(<NodeIcon type="c" />)}
                         text="Camera"
                         onClick={() => this.onAdd("camera")}
                     />
