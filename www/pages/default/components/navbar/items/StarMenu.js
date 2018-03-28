@@ -5,7 +5,7 @@ import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown, Icon } from "semantic-ui-react";
-import { NodeProfilePicture, NodeIcon } from "components/node";
+import { NodeImage, NodeIcon } from "components/node";
 
 class StarMenu extends Component {
     constructor(props) {
@@ -69,7 +69,7 @@ class StarMenu extends Component {
                             key={node._id}
                             onClick={() => this.goto(node)}
                         >
-                            <NodeProfilePicture
+                            <NodeImage
                                 className="image"
                                 path={`${node.path}/profilePicture`}
                                 format={{

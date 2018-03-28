@@ -5,7 +5,7 @@ import theme from "./theme.css";
 const exports = {
     Node: require("./Node"),
     NodeInput: require("./NodeInput"),
-    NodeProfilePicture: require("./NodeProfilePicture"),
+    NodeImage: require("./NodeImage"),
     NodeIcon: require("./NodeIcon"),
     NodeCard: require("./NodeCard")
 };

@@ -5,7 +5,7 @@ import api from "api.io-client";
 import notification from "lib/notification";
 import Component from "lib/component";
 import { Search, Ref } from "semantic-ui-react";
-import NodeProfilePicture from "./NodeProfilePicture";
+import NodeImage from "./NodeImage";
 import NodeIcon from "./NodeIcon";
 
 class NodeInput extends Component {
@@ -111,7 +111,7 @@ class NodeInput extends Component {
                     placeholder={this.props.placeholder}
                     resultRenderer={(props) => (
                         <div className="content">
-                            <NodeProfilePicture
+                            <NodeImage
                                 theme={this.props.theme}
                                 path={`${props.node.path}/profilePicture`}
                                 format={{

@@ -6,7 +6,7 @@ import api from "api.io-client";
 import { Image } from "semantic-ui-react";
 import NodeIcon from "./NodeIcon";
 
-class NodeProfilePicture extends Component {
+class NodeImage extends Component {
     constructor(props) {
         super(props);
 
@@ -75,7 +75,7 @@ class NodeProfilePicture extends Component {
     }
 }
 
-NodeProfilePicture.propTypes = {
+NodeImage.propTypes = {
     theme: PropTypes.object,
     className: PropTypes.string,
     path: PropTypes.string.isRequired,
@@ -95,4 +95,4 @@ NodeProfilePicture.propTypes = {
     wrapped: PropTypes.bool
 };
 
-export default NodeProfilePicture;
+export default NodeImage;

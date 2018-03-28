@@ -5,7 +5,7 @@ import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown } from "semantic-ui-react";
-import { NodeProfilePicture } from "components/node";
+import { NodeImage } from "components/node";
 
 class UserMenu extends Component {
     constructor(props) {
@@ -45,7 +45,7 @@ class UserMenu extends Component {
                 simple
                 trigger={(
                     <span>
-                        <NodeProfilePicture
+                        <NodeImage
                             path={`${this.state.user.path}/person/profilePicture`}
                             format={{
                                 width: 28,

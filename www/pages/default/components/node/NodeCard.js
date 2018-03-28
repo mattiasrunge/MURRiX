@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 import { Card } from "semantic-ui-react";
-import NodeProfilePicture from "./NodeProfilePicture";
+import NodeImage from "./NodeImage";
 import NodeIcon from "./NodeIcon";
 
 class NodeCard extends Component {
@@ -14,7 +14,7 @@ class NodeCard extends Component {
     render() {
         return (
             <Card onClick={() => this.onClick()}>
-                <NodeProfilePicture
+                <NodeImage
                     theme={this.props.theme}
                     path={`${this.props.node.path}/profilePicture`}
                     format={{
