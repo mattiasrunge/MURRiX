@@ -59,7 +59,7 @@ class RequestReset extends Component {
                             <Form>
                                 <Form.Field>
                                     <label>E-Mail</label>
-                                    <Focus>
+                                    <Focus select>
                                         <Input
                                             name="username"
                                             value={this.state.username}

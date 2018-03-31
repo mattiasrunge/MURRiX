@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Header, Input } from "semantic-ui-react";
+import { Header, Input, Segment } from "semantic-ui-react";
 import { Focus } from "components/utils";
 import List from "./List";
 
@@ -22,11 +22,6 @@ class Search extends Component {
         }
     }
 
-    onChange(query) {
-        this.setState({ query });
-        this.delayQuery(query);
-    }
-
     delayQuery(query) {
         this.timer && clearTimeout(this.timer);
         this.timer = setTimeout(() => {
@@ -40,32 +35,47 @@ class Search extends Component {
         }, 500);
     }
 
+    onChange = (e, { value }) => {
+        this.setState({ query: value });
+        this.delayQuery(value);
+    }
+
+    onLoad = (loading) => {
+        this.setState({ loading });
+    }
+
     render() {
+        const query = this.props.match.params.query ? {
+            options: {
+                search: this.props.match.params.query
+            },
+            paths: [
+                "/people",
+                "/cameras",
+                "/locations",
+                "/albums"
+            ]
+        } : null;
+
         return (
             <div>
                 <Header>Search</Header>
-                <Focus>
-                    <Input
-                        loading={this.state.loading}
-                        icon="search"
-                        value={this.state.query}
-                        onChange={(e, { value }) => this.onChange(value)}
-                        placeholder="Search..."
-                        fluid
-                    />
-                </Focus>
+                <Segment>
+                    <Focus select>
+                        <Input
+                            loading={this.state.loading}
+                            icon="search"
+                            value={this.state.query}
+                            onChange={this.onChange}
+                            placeholder="Search..."
+                            fluid
+                        />
+                    </Focus>
+                </Segment>
                 <List
                     theme={this.props.theme}
-                    query={{
-                        search: this.props.match.params.query,
-                        paths: [
-                            "/people",
-                            "/cameras",
-                            "/locations",
-                            "/albums"
-                        ]
-                    }}
-                    onLoad={(loading) => this.setState({ loading })}
+                    query={query}
+                    onLoad={this.onLoad}
                 />
             </div>
         );

@@ -73,17 +73,19 @@ class StarMenu extends Component {
                                 className="image"
                                 path={`${node.path}/profilePicture`}
                                 format={{
-                                    width: 28,
-                                    height: 28,
+                                    width: 18,
+                                    height: 18,
                                     type: "image"
                                 }}
                                 rounded
                                 floated="right"
                             />
-                            <NodeIcon
-                                type={node.properties.type}
-                            />
-                            {node.attributes.name}
+                            <div className={this.props.theme.starMenuText}>
+                                <NodeIcon
+                                    type={node.properties.type}
+                                />
+                                {node.attributes.name}
+                            </div>
                         </Dropdown.Item>
                     </For>
                 </Dropdown.Menu>

@@ -10,6 +10,7 @@ class Component extends React.PureComponent {
         this.debug = false;
         this.id = instanceCounter++;
         this.disposables = [];
+        this.disposed = false;
 
         this.log("Component Constructor");
     }
@@ -28,6 +29,12 @@ class Component extends React.PureComponent {
         console.error(`${this.constructor.name}[${this.id}]`, ...args);
     }
 
+    classNames(...args) {
+        return args
+        .filter((name) => name)
+        .join(" ");
+    }
+
     addDisposable(disposable) {
         this.disposables.push(disposable);
     }
@@ -41,6 +48,8 @@ class Component extends React.PureComponent {
     async load() {}
 
     componentWillMount() {
+        this.disposed = false;
+
         this.load()
         .catch((error) => {
             this.logError(error);
@@ -48,6 +57,8 @@ class Component extends React.PureComponent {
     }
 
     componentWillUnmount() {
+        this.disposed = true;
+
         for (const disposable of this.disposables) {
             disposable.unsubscribe && disposable.unsubscribe();
             disposable.dispose && disposable.dispose();

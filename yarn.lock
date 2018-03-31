@@ -2349,6 +2349,10 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
+eslint-plugin-babel@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-4.1.2.tgz#79202a0e35757dd92780919b2336f1fa2fe53c1e"
+
 eslint-plugin-jsx-control-statements@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-control-statements/-/eslint-plugin-jsx-control-statements-2.2.0.tgz#eddbb23e39732b5516dea2354653522305517431"
@@ -5104,6 +5108,10 @@ react-router@^4.2.0:
     path-to-regexp "^1.7.0"
     prop-types "^15.5.4"
     warning "^3.0.0"
+
+react-semantic-ui-range@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-semantic-ui-range/-/react-semantic-ui-range-0.4.0.tgz#9f76438c41b2eb7a3e157c86a74c9e15324ab6c6"
 
 react-svg-core@^2.1.0:
   version "2.1.0"

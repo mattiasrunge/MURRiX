@@ -8,10 +8,15 @@ class Focus extends React.PureComponent {
         setTimeout(() => this.ref && this.ref.focus(), 100);
     }
 
+    select() {
+        setTimeout(() => this.ref && this.ref.select(), 150);
+    }
+
     onRef(ref) {
         if (ref) {
             this.ref = ref.getElementsByTagName("INPUT")[0] || ref.getElementsByTagName("TEXTAREA")[0];
             this.focus();
+            this.props.select && this.select();
         } else {
             this.ref = null;
         }
@@ -27,7 +32,8 @@ class Focus extends React.PureComponent {
 }
 
 Focus.propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node,
+    select: PropTypes.bool
 };
 
 export default Focus;

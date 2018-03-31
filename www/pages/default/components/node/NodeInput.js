@@ -19,6 +19,7 @@ class NodeInput extends Component {
         } : null;
 
         this.state = {
+            selected,
             list: selected ? [ selected ] : [],
             searchQuery: selected ? selected.title : "",
             loading: false
@@ -26,48 +27,53 @@ class NodeInput extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const selected = nextProps.value ? {
-            title: nextProps.value.attributes.name,
-            key: nextProps.value._id,
-            node: nextProps.value
-        } : null;
+        if (nextProps.value !== this.props.value) {
+            const selected = nextProps.value ? {
+                title: nextProps.value.attributes.name,
+                key: nextProps.value._id,
+                node: nextProps.value
+            } : null;
 
-        this.setState({
-            list: selected ? [ selected ] : [],
-            searchQuery: selected ? selected.title : ""
-        });
+            this.setState({
+                selected,
+                list: selected ? [ selected ] : [],
+                searchQuery: selected ? selected.title : ""
+            });
+        }
     }
 
-    onSearch(searchQuery) {
+    onSearch = (e, { value }) => {
         this.searchTimer && clearTimeout(this.searchTimer);
 
         if (this.props.value !== null) {
             this.props.onChange(null);
         }
 
-        this.setState({ searchQuery, list: [], loading: true });
+        this.setState({ searchQuery: value, list: [], loading: true });
 
         this.searchTimer = setTimeout(async () => {
+            if (this.state.searchQuery !== value) {
+                return;
+            }
+
             try {
-                const all = [];
+                const all = await api.vfs.list(this.props.paths, {
+                    search: value,
+                    limit: this.props.limit
+                });
 
-                for (const path of this.props.paths) {
-                    const list = await api.vfs.list(path, {
-                        search: searchQuery,
-                        limit: this.props.limit
-                    });
-
-                    all.push(...list.map((node) => ({
-                        title: node.attributes.name,
-                        key: node._id,
-                        node
-                    })));
-                }
+                const list = all
+                .slice(0, this.props.limit)
+                .map((node) => ({
+                    title: node.attributes.name,
+                    key: node._id,
+                    node
+                }));
 
                 // all.sort((a, b) => a.title.localeCompare(b.title));
 
                 this.setState({
-                    list: all.slice(0, this.props.limit),
+                    list,
                     loading: false
                 });
             } catch (error) {
@@ -78,36 +84,44 @@ class NodeInput extends Component {
         }, 500);
     }
 
-    onSelect(selected) {
-        this.props.onChange(selected.node);
-        this.setState({ searchQuery: selected.title, list: [ selected ] });
+    onSelect = (e, { result }) => {
+        this.props.onChange(result.node);
+        this.setState({
+            selected: result,
+            searchQuery: result.title,
+            list: [ result ]
+        });
     }
 
-    onRef(ref) {
+    onRef = (ref) => {
         this.ref = ref.getElementsByTagName("INPUT")[0];
     }
 
-    onFocus() {
+    onFocus = () => {
         this.ref && this.ref.select();
+    }
+
+    onKeyUp = (e) => {
+        this.props.onKeyUp(e, this.state.searchQuery);
     }
 
     render() {
         return (
             <Ref innerRef={(ref) => this.onRef(ref)}>
                 <Search
-                    className={`item ${this.props.theme.nodeInput} ${this.props.theme.nodeInputSearch} ${this.props.value ? this.props.theme.nodeInputSearchSelected : ""}`}
+                    className={`item ${this.props.theme.nodeInput} ${this.props.theme.nodeInputSearch} ${this.state.selected ? this.props.theme.nodeInputSearchSelected : ""}`}
                     input={{
                         icon: this.props.icon,
                         iconPosition: this.props.iconPosition
                     }}
                     loading={this.props.loading || this.state.loading}
-                    onSearchChange={(e, { value }) => this.onSearch(value)}
-                    onResultSelect={(e, { result }) => this.onSelect(result)}
+                    onSearchChange={this.onSearch}
+                    onResultSelect={this.onSelect}
                     value={this.state.searchQuery}
                     results={this.state.list}
                     disabled={this.props.disabled}
-                    onFocus={() => this.onFocus()}
-                    onKeyUp={(e) => this.props.onKeyUp(e, this.state.searchQuery)}
+                    onFocus={this.onFocus}
+                    onKeyUp={this.onKeyUp}
                     placeholder={this.props.placeholder}
                     resultRenderer={(props) => (
                         <div className="content">

@@ -32,19 +32,15 @@ class NodeImage extends Component {
         try {
             const url = await api.vfs.media(props.path, props.format);
 
-            this.setState({ url, loading: false });
+            !this.disposed && this.setState({ url, loading: false });
         } catch (error) {
             // this.logError("Failed to get node url", error, 10000);
-            this.setState({ loading: false });
+            !this.disposed && this.setState({ loading: false });
         }
     }
 
     render() {
-        if (!this.state.url) {
-            if (!this.props.type) {
-                return null;
-            }
-
+        if (!this.state.url && this.props.type) {
             return (
                 <NodeIcon
                     theme={this.props.theme}
@@ -54,10 +50,12 @@ class NodeImage extends Component {
             );
         }
 
+        const url = this.state.url || "/pixel.jpg";
+
         return (
             <Image
                 className={this.props.className}
-                src={this.state.url}
+                src={url}
                 avatar={this.props.avatar}
                 bordered={this.props.bordered}
                 centered={this.props.centered}

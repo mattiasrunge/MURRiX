@@ -27,6 +27,19 @@
     }
 }
 
+.nodeCardTags {
+    margin-top: 1em;
+}
+
+.nodeCardDescription {
+    font-size: 0.8em !important;
+}
+
+.nodeCardLabel {
+    margin-right: 3px !important;
+    margin-bottom: 3px !important;
+}
+
 :global(.ui.search>.results) {
     width: 100% !important;
 }

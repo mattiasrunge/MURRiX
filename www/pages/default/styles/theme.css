@@ -1,6 +1,10 @@
 
 @import "./fonts.css";
 
+body {
+    overflow-y: scroll;
+}
+
 :root {
     --navbar-height: 54px;
     --spacing: 2em;

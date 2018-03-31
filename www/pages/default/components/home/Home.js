@@ -5,7 +5,7 @@ import Component from "lib/component";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Container, Grid, Sticky } from "semantic-ui-react";
 import { Profile } from "components/user";
-import { Search } from "components/search";
+import { Search, Name, Label, Year } from "components/search";
 import Sidebar from "./Sidebar";
 
 class Home extends Component {
@@ -53,21 +53,21 @@ class Home extends Component {
                                         )}
                                     />
                                     <Route
-                                        path={`${this.props.match.path}/name`}
+                                        path={`${this.props.match.path}/name/:letter?`}
                                         render={(props) => (
-                                            <div>Names</div>
+                                            <Name {...props} />
                                         )}
                                     />
                                     <Route
-                                        path={`${this.props.match.path}/year`}
+                                        path={`${this.props.match.path}/year/:year?`}
                                         render={(props) => (
-                                            <div>Years</div>
+                                            <Year {...props} />
                                         )}
                                     />
                                     <Route
-                                        path={`${this.props.match.path}/label`}
+                                        path={`${this.props.match.path}/label/:label?`}
                                         render={(props) => (
-                                            <div>Labels</div>
+                                            <Label {...props} />
                                         )}
                                     />
                                     <Route

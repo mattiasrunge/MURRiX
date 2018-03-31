@@ -41,7 +41,8 @@ module.exports = {
         const sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
         const sessionName = "apiio";
         const staticPaths = [
-            path.join(__dirname, "..", "..", "node_modules", "semantic-ui-css")
+            path.join(__dirname, "..", "..", "node_modules", "semantic-ui-css"),
+            path.join(__dirname, "..", "..", "www", "pages", "default", "static")
         ];
 
         // Setup application
@@ -91,8 +92,6 @@ module.exports = {
 
             await next();
         });
-
-        app.use(favicon(path.join(__dirname, "..", "..", "www", "favicon.ico")));
 
         for (const staticPath of staticPaths) {
             app.use(serve(staticPath));

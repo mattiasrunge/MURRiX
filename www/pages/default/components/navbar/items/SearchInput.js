@@ -15,7 +15,13 @@ class SearchInput extends Component {
         this.state = {
             user: session.user(),
             selected: null,
-            loading: false
+            loading: false,
+            paths: [
+                "/people",
+                "/cameras",
+                "/locations",
+                "/albums"
+            ]
         };
     }
 
@@ -61,13 +67,15 @@ class SearchInput extends Component {
         }
     }
 
-    onSelect(selected) {
+    onSelect = (selected) => {
         this.setState({ selected });
         selected && this.context.router.history.push(`/node${selected.path}`);
     }
 
-    onSearch(query) {
-        query && this.context.router.history.push(`/home/search/${query}`);
+    onSearch = (e, query) => {
+        if (e.which === 13 && !this.state.selected && query) {
+            this.context.router.history.push(`/home/search/${query}`);
+        }
     }
 
     render() {
@@ -79,17 +87,12 @@ class SearchInput extends Component {
             <Fragment>
                 <NodeInput
                     value={this.state.selected}
-                    paths={[
-                        "/people",
-                        "/cameras",
-                        "/locations",
-                        "/albums"
-                    ]}
+                    paths={this.state.paths}
                     iconPosition="left"
-                    onChange={(value) => this.onSelect(value)}
+                    onChange={this.onSelect}
                     loading={this.state.loading}
                     placeholder="Search..."
-                    onKeyUp={(e, query) => (e.which === 13 && !this.state.selected) && this.onSearch(query)}
+                    onKeyUp={this.onSearch}
                 />
                 {/* <StarIcon {...this.props} node={this.state.selected ? this.state.selected : null} /> */}
             </Fragment>

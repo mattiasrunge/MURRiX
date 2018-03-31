@@ -5,7 +5,6 @@
     height: var(--navbar-height);
 }
 
-
 .navbarStarIcon {
     position: absolute;
     right: 22px;
@@ -14,4 +13,9 @@
     & i {
         outline-color: transparent;
     }
+}
+
+.starMenuText {
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

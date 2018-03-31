@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 import api from "api.io-client";
-import { Card, Message } from "semantic-ui-react";
+import { Card, Loader } from "semantic-ui-react";
 import { NodeCard } from "components/node";
 
 class List extends Component {
@@ -11,7 +11,8 @@ class List extends Component {
         super(props);
 
         this.state = {
-            list: []
+            list: [],
+            loading: false
         };
     }
 
@@ -26,30 +27,28 @@ class List extends Component {
     }
 
     async update(query) {
-        if (!query.search) {
+        if (!query) {
             return this.setState({ list: [] });
         }
 
         try {
-            this.props.onLoad(true);
+            this.props.onLoad && this.props.onLoad(true);
+            this.setState({ list: [], loading: true });
 
-            const p = query.paths.map((path) => api.vfs.list(path, {
-                search: query.search
-            }));
+            let list = [];
 
-            const results = await Promise.all(p);
-            const list = [];
-
-            for (const result of results) {
-                list.push(...result);
+            if (query.year) {
+                list = await api.vfs.yearlist(query.year);
+            } else {
+                list = await api.vfs.list(query.paths, query.options);
             }
 
-            this.setState({ list });
-            this.props.onLoad(false);
+            !this.disposed && this.setState({ list, loading: false });
+            this.props.onLoad && this.props.onLoad(false);
         } catch (error) {
             this.logError("Failed to list", error, 10000);
-            this.setState({ list: [] });
-            this.props.onLoad(false);
+            !this.disposed && this.setState({ list: [], loading: false });
+            this.props.onLoad && this.props.onLoad(false);
         }
     }
 
@@ -58,7 +57,7 @@ class List extends Component {
             <div className={this.props.theme.searchList}>
                 <Choose>
                     <When condition={this.state.list.length > 0}>
-                        <Card.Group stackable>
+                        <Card.Group stackable itemsPerRow="4">
                             <For each="node" of={this.state.list}>
                                 <NodeCard
                                     key={node._id}
@@ -67,11 +66,18 @@ class List extends Component {
                             </For>
                         </Card.Group>
                     </When>
-                    <When condition={this.props.query}>
+                    <Otherwise>
                         <div className={this.props.theme.emptyList}>
-                            No results
+                            <Choose>
+                                <When condition={this.state.loading}>
+                                    <Loader active>Loading...</Loader>
+                                </When>
+                                <Otherwise>
+                                    No results
+                                </Otherwise>
+                            </Choose>
                         </div>
-                    </When>
+                    </Otherwise>
                 </Choose>
             </div>
         );
@@ -80,8 +86,8 @@ class List extends Component {
 
 List.propTypes = {
     theme: PropTypes.object.isRequired,
-    query: PropTypes.object.isRequired,
-    onLoad: PropTypes.func.isRequired
+    query: PropTypes.object,
+    onLoad: PropTypes.func
 };
 
 export default List;

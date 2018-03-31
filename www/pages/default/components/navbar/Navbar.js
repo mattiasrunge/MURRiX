@@ -24,9 +24,9 @@ class Navbar extends Component {
                     <HomeButton {...this.props} />
                     <SearchInput {...this.props} />
                     <Menu.Menu position="right">
-                        <AddMenu {...this.props} />
                         <StarMenu {...this.props} />
                         <RandomButton {...this.props} />
+                        <AddMenu {...this.props} />
                         <UserMenu {...this.props} />
                     </Menu.Menu>
                 </Container>

@@ -165,6 +165,7 @@ class Node {
         }
 
         return parent.children(session, {
+            query: options.query,
             pattern: options.pattern,
             search: options.search,
             skip: options.skip,
@@ -173,7 +174,7 @@ class Node {
         });
     }
 
-    static async query(session, query, options) {
+    static async query(session, query, options = {}) {
         if (options.nolookup) {
             const nodes = await db.find("nodes", query);
 
@@ -259,11 +260,40 @@ class Node {
         assert(session.username, "Permission denied");
         assert(!isGuest(session), "Permission denied");
 
-        const labels = await db.distinct("nodes", "attributes.labels");
+        const labels = await db.aggregate("nodes", [
+            {
+                $unwind: "$attributes.labels"
+            },
+            {
+                $group: {
+                    _id: "$attributes.labels",
+                    count: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    name: "$_id",
+                    count: "$count"
+                }
+            },
+            {
+                $match: {
+                    name: { $ne: "" }
+                }
+            },
+            {
+                $sort: {
+                    count: -1
+                }
+            },
+            {
+                $project: { _id: 0 }
+            }
+        ]);
 
-        labels.sort();
-
-        return labels.filter((label) => label !== "");
+        return labels.toArray();
     }
 
 
@@ -418,12 +448,13 @@ class Node {
         let children = this.properties.children;
 
         if (options.pattern) {
-            const expr = new RegExp(`^${options.pattern}$`);
+            const expr = new RegExp(`^${options.pattern}$`, "i");
             children = children.filter((child) => child.name.match(expr));
         }
 
         const ids = children.map((child) => child.id);
-        const nodes = await db.find("nodes", { _id: { $in: ids } });
+        const query = Object.assign({}, options.query || {}, { _id: { $in: ids } });
+        const nodes = await db.find("nodes", query);
 
         const promises = children
         .map((child) => ({
@@ -431,6 +462,7 @@ class Node {
             name: child.name,
             path: path.join(this.path, child.name)
         }))
+        .filter((nodepath) => nodepath.node)
         .map((nodepath) => this.constructor._factory(nodepath.node.properties.type, {
             ...nodepath.node,
             name: nodepath.name,
