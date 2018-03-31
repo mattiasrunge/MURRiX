@@ -5,6 +5,7 @@ import Component from "lib/component";
 import api from "api.io-client";
 import { Header, Segment, Label, Loader } from "semantic-ui-react";
 import List from "./List";
+import ui from "lib/ui";
 
 class SearchLabel extends Component {
     constructor(props) {
@@ -59,6 +60,8 @@ class SearchLabel extends Component {
                 "/albums"
             ]
         } : null;
+
+        ui.setTitle(`Browsing label ${currentLabel || ""}`);
 
         return (
             <div>

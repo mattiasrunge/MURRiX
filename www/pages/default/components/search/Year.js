@@ -5,6 +5,7 @@ import Component from "lib/component";
 import { Header, Segment, Button } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
 import List from "./List";
+import ui from "lib/ui";
 
 class Year extends Component {
     constructor(props) {
@@ -79,6 +80,8 @@ class Year extends Component {
             start: this.state.year,
             onChange: this.onChange
         };
+
+        ui.setTitle(`Browsing year ${currentYear}`);
 
         return (
             <div>

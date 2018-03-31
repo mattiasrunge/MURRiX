@@ -5,6 +5,7 @@ import Component from "lib/component";
 import { Header, Input, Segment } from "semantic-ui-react";
 import { Focus } from "components/utils";
 import List from "./List";
+import ui from "lib/ui";
 
 class Search extends Component {
     constructor(props) {
@@ -56,6 +57,8 @@ class Search extends Component {
                 "/albums"
             ]
         } : null;
+
+        ui.setTitle("Searching");
 
         return (
             <div>

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import { Header, Segment, Button } from "semantic-ui-react";
 import List from "./List";
+import ui from "lib/ui";
 
 class Name extends Component {
     constructor(props) {
@@ -49,6 +50,8 @@ class Name extends Component {
                 "/albums"
             ]
         } : null;
+
+        ui.setTitle(`Browsing name ${currentLetter || ""}`);
 
         return (
             <div>
