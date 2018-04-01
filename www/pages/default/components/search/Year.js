@@ -86,7 +86,7 @@ class Year extends Component {
         return (
             <div>
                 <Header>
-                    Browse by year
+                    Browse albums by year
                     <span className={this.props.theme.headerInfo}>
                         {this.state.year}
                     </span>

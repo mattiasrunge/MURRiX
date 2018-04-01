@@ -38,7 +38,7 @@ class List extends Component {
             let list = [];
 
             if (query.year) {
-                list = await api.vfs.yearlist(query.year);
+                list = await api.murrix.albumsbyyear(query.year);
             } else {
                 list = await api.vfs.list(query.paths, query.options);
             }

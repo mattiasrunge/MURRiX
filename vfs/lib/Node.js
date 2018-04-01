@@ -229,7 +229,7 @@ class Node {
             }
         ];
 
-        const cursor = await db.aggregate("nodes", pipeline);
+        const cursor = await this.aggregate(session, pipeline);
         const nodes = await cursor.toArray();
 
         return nodes
@@ -256,11 +256,15 @@ class Node {
         .filter((node) => node.hasAccess(session, "r"));
     }
 
+    static async aggregate(session, pipeline) {
+        return db.aggregate("nodes", pipeline);
+    }
+
     static async labels(session) {
         assert(session.username, "Permission denied");
         assert(!isGuest(session), "Permission denied");
 
-        const labels = await db.aggregate("nodes", [
+        const labels = await this.aggregate(session, [
             {
                 $unwind: "$attributes.labels"
             },

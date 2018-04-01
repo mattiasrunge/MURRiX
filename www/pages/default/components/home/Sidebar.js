@@ -31,14 +31,14 @@ class Sidebar extends Component {
                     />
                     <SidebarMenuItem
                         theme={this.props.theme}
-                        text="Browse by year"
-                        path={`${this.props.match.path}/year`}
+                        text="Browse by label"
+                        path={`${this.props.match.path}/label`}
                         location={this.props.location}
                     />
                     <SidebarMenuItem
                         theme={this.props.theme}
-                        text="Browse by label"
-                        path={`${this.props.match.path}/label`}
+                        text="Browse albums by year"
+                        path={`${this.props.match.path}/year`}
                         location={this.props.location}
                     />
                 </div>
