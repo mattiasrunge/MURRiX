@@ -80,7 +80,9 @@ class Home extends Component {
                                         path="*"
                                         render={() => (
                                             <Redirect
-                                                to={{ pathname: `${this.props.match.path}/news` }}
+                                                to={{
+                                                    pathname: `${this.props.match.path}/news`
+                                                }}
                                             />
                                         )}
                                     />

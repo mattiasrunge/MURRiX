@@ -6,7 +6,7 @@ import session from "lib/session";
 import notification from "lib/notification";
 import Component from "lib/component";
 // import StarIcon from "./StarIcon";
-import { NodeInput } from "components/node";
+import { NodeInput } from "components/nodeparts";
 
 class SearchInput extends Component {
     constructor(props) {

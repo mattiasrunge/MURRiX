@@ -87,7 +87,7 @@ NodeImage.propTypes = {
     inline: PropTypes.bool,
     fluid: PropTypes.bool,
     rounded: PropTypes.bool,
-    size: PropTypes.bool,
+    size: PropTypes.string,
     spaced: PropTypes.any,
     verticalAlign: PropTypes.string,
     wrapped: PropTypes.bool

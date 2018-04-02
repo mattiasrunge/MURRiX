@@ -6,7 +6,7 @@ import session from "lib/session";
 import Component from "lib/component";
 import { Input, Header, Button, Form, Grid } from "semantic-ui-react";
 import { Focus } from "components/utils";
-import { NodeInput } from "components/node";
+import { NodeInput } from "components/nodeparts";
 
 class Profile extends Component {
     constructor(props) {

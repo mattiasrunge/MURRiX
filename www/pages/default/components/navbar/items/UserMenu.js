@@ -5,7 +5,7 @@ import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown } from "semantic-ui-react";
-import { NodeImage } from "components/node";
+import { NodeImage } from "components/nodeparts";
 
 class UserMenu extends Component {
     constructor(props) {
@@ -28,8 +28,8 @@ class UserMenu extends Component {
         this.context.router.history.push("/home/profile");
     }
 
-    onMe() {
-
+    async onMe() {
+        this.context.router.history.push(`/node${session.personPath()}`);
     }
 
     render() {
@@ -66,11 +66,13 @@ class UserMenu extends Component {
                         text="Profile"
                         onClick={() => this.onProfile()}
                     />
-                    <Dropdown.Item
-                        icon="user circle"
-                        text="Me"
-                        onClick={() => this.onMe()}
-                    />
+                    <If condition={session.personPath()}>
+                        <Dropdown.Item
+                            icon="user circle"
+                            text="Me"
+                            onClick={() => this.onMe()}
+                        />
+                    </If>
                     <Dropdown.Divider />
                     <Dropdown.Item
                         icon="sign out"

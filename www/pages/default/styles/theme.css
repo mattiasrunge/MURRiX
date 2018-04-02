@@ -1,11 +1,17 @@
 
 @import "./fonts.css";
 
+:root {
+    --navbar-height: 54px;
+    --spacing: 20px;
+    --spacing-small: 10px;
+}
+
 body {
     overflow-y: scroll;
 }
 
-:root {
-    --navbar-height: 54px;
-    --spacing: 2em;
+small {
+    font-style: italic;
+    color: #888;
 }

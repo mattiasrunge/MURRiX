@@ -5,7 +5,7 @@ import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown, Icon } from "semantic-ui-react";
-import { NodeImage, NodeIcon } from "components/node";
+import { NodeImage, NodeIcon } from "components/nodeparts";
 
 class StarMenu extends Component {
     constructor(props) {

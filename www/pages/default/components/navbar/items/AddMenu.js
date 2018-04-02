@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown, Icon } from "semantic-ui-react";
-import { NodeIcon } from "components/node";
+import { NodeIcon } from "components/nodeparts";
 
 class AddMenu extends Component {
     constructor(props) {

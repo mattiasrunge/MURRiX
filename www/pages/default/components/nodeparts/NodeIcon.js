@@ -44,7 +44,7 @@ NodeIcon.propTypes = {
     circular: PropTypes.bool,
     rotated: PropTypes.string,
     flipped: PropTypes.bool,
-    size: PropTypes.bool
+    size: PropTypes.string
 };
 
 export default NodeIcon;

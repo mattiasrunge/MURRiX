@@ -22,6 +22,10 @@ class Session extends Emitter {
         return this._user && this._user.adminGranted;
     }
 
+    personPath() {
+        return this._user && this._user.personPath;
+    }
+
     async loadUser() {
         this._user = await api.vfs.whoami();
 

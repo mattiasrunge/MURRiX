@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import api from "api.io-client";
 import { Card, Loader } from "semantic-ui-react";
-import { NodeCard } from "components/node";
+import { NodeCard } from "components/nodeparts";
 
 class List extends Component {
     constructor(props) {

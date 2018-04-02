@@ -5,46 +5,24 @@
     margin-top: var(--navbar-height);
 }
 
+.pageContainer {
+    border-left: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
 
-.nodeInput {
-    /* position: relative; */
-    /* width: 100%; */
-
-
-}
-
-.nodeInputSearch {
-    flex-grow: 1 !important;
-
-    & input {
-        border-radius: 4px !important;
+    & .pageColumn {
+        padding-bottom: 0 !important;
     }
-}
 
-.nodeInputSearchSelected {
-    & input {
-        font-weight: bold;
+    & .pageSidebar {
+        padding: var(--spacing);
+        border-left: 1px solid #d4d4d5;
+
+        & .sidebarHeader {
+            color: #2185d0;
+        }
+
+        & .sidebarInformationTable {
+            font-size: 0.8em !important;
+        }
     }
-}
-
-.nodeCardTags {
-    margin-top: 1em;
-}
-
-.nodeCardDescription {
-    font-size: 0.8em !important;
-}
-
-.nodeCardLabel {
-    margin-right: 3px !important;
-    margin-bottom: 3px !important;
-}
-
-:global(.ui.search>.results) {
-    width: 100% !important;
-}
-
-:global(.ui.search>.results .result .image) {
-    width: 18px !important;
-    height: 18px !important;
 }
