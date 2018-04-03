@@ -8,6 +8,9 @@
 .pageContainer {
     border-left: 1px solid #d4d4d5;
     border-right: 1px solid #d4d4d5;
+    border-bottom: 1px solid #d4d4d5;
+    display: flex;
+    /* padding: var(--spacing); */
 
     & .pageColumn {
         padding-bottom: 0 !important;
@@ -15,7 +18,8 @@
 
     & .pageSidebar {
         padding: var(--spacing);
-        border-left: 1px solid #d4d4d5;
+        padding-bottom: calc(var(--spacing) - 10px);
+        border-right: 1px solid #d4d4d5;
 
         & .sidebarHeader {
             color: #2185d0;
@@ -25,4 +29,21 @@
             font-size: 0.8em !important;
         }
     }
+
+    & .pageMain {
+        padding: var(--spacing);
+        flex-grow: 1;
+    }
+}
+
+.accessText {
+    font-size: 0.8em;
+}
+
+.accessHeader {
+    font-size: 0.9em;
+}
+
+.userAvatar {
+    float: left;
 }

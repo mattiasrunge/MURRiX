@@ -2,8 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import format from "lib/format";
-import { Grid, Header, Table } from "semantic-ui-react";
+import { Grid, Header } from "semantic-ui-react";
 import { Comments } from "components/comment";
 
 class Media extends Component {
@@ -22,53 +21,6 @@ class Media extends Component {
                         width="4"
                     >
                         <div className={this.props.theme.pageSidebar}>
-                            <Header
-                                className={this.props.theme.sidebarHeader}
-                                size="small"
-                            >
-                                Description
-                            </Header>
-                            <Choose>
-                                <When condition={this.props.node.attributes.description}>
-                                    <p>{this.props.node.attributes.description}</p>
-                                </When>
-                                <Otherwise>
-                                    <small>No description</small>
-                                </Otherwise>
-                            </Choose>
-
-                            <Header
-                                className={this.props.theme.sidebarHeader}
-                                size="small"
-                            >
-                                Information
-                            </Header>
-                            <Table
-                                className={this.props.theme.sidebarInformationTable}
-                                basic="very"
-                                size="small"
-                                compact
-                            >
-                                <Table.Body>
-                                    <Table.Row>
-                                        <Table.Cell>
-                                            <strong>Created</strong>
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {format.datetimeAgo(this.props.node.properties.birthtime)}
-                                        </Table.Cell>
-                                    </Table.Row>
-                                    <Table.Row>
-                                        <Table.Cell>
-                                            <strong>Modified</strong>
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {format.datetimeAgo(this.props.node.properties.mtime)}
-                                        </Table.Cell>
-                                    </Table.Row>
-                                </Table.Body>
-                            </Table>
-
                             <Header
                                 className={this.props.theme.sidebarHeader}
                                 size="small"

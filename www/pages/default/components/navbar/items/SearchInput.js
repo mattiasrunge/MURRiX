@@ -36,7 +36,8 @@ class SearchInput extends Component {
 
     async setFromLocation(location) {
         if (location.pathname.startsWith("/node")) {
-            const path = location.pathname.replace(/^\/node/, "");
+            const url = location.pathname.replace(/^\/node/, "");
+            const [ path ] = url.split("/_/");
 
             if (this.state.selected && this.state.selected.path === path) {
                 return;

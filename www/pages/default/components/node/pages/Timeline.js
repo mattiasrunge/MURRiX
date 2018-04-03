@@ -3,18 +3,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 
-class Share extends Component {
+class Timeline extends Component {
     render() {
         return (
-            <span>Share</span>
+            <span>Timeline</span>
         );
     }
 }
 
-Share.propTypes = {
+Timeline.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired
 };
 
-export default Share;
+export default Timeline;

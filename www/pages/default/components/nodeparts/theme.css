@@ -7,8 +7,8 @@
 }
 
 .labelButton {
-    margin-right: 5px !important;
-    margin-bottom: 5px !important;
+    margin-right: var(--spacing) !important;
+    margin-bottom: var(--spacing) !important;
     cursor: pointer;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25) !important;
 }
@@ -83,16 +83,33 @@
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
     }
 
-    & .nodeHeaderTitle {
+    & .nodeHeaderText {
         position: absolute !important;
         left: calc((var(--spacing) * 2) + 150px);
-        bottom: calc(var(--spacing) + 50px);
+        bottom: calc(var(--spacing) + 40px);
         right: var(--spacing);
-        font-size: 3em !important;
-        margin: 0 !important;
         text-rendering: optimizelegibility !important;
         text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+        color: white;
     }
+
+    & .nodeHeaderTitle {
+        font-size: 3em;
+        font-family: Lato,Helvetica Neue,Arial,Helvetica,sans-serif;
+        font-weight: 700;
+        line-height: 1.28571429em;
+    }
+
+    & .nodeHeaderInformation {
+        font-weight: 600;
+        font-size: 0.8em;
+    }
+
+    & .nodeHeaderDescription {
+        margin-top: var(--spacing);
+        font-size: 1em;
+    }
+
 
     & .nodeHeaderLabels {
         position: absolute !important;

@@ -519,7 +519,7 @@ class Node {
 
         if (ac) {
             acl = this.properties.acl
-            .filter((item) => item.uid !== ac.uid && item.gid !== ac.gid);
+            .filter((item) => item.uid !== ac.uid || item.gid !== ac.gid);
 
             (ac.mode > 0) && acl.push({
                 gid: ac.gid,
@@ -531,6 +531,7 @@ class Node {
         await this._props(session, { acl });
 
         await this._notify(session, "setfacl");
+        await this._notify(session, "update");
 
         options.recursive && await this._doRecursive(session, "setfacl", ac, options);
     }
@@ -541,6 +542,7 @@ class Node {
         await this._props(session, { mode });
 
         await this._notify(session, "chmod");
+        await this._notify(session, "update");
 
         options.recursive && await this._doRecursive(session, "chmod", mode, options);
     }
@@ -556,6 +558,7 @@ class Node {
         await this._props(session, properties);
 
         await this._notify(session, "chown");
+        await this._notify(session, "update");
 
         options.recursive && await this._doRecursive(session, "chown", uid, gid, options);
     }

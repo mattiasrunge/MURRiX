@@ -2,8 +2,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
+import format from "lib/format";
 import api from "api.io-client";
-import { Menu, Header } from "semantic-ui-react";
+import { Menu } from "semantic-ui-react";
 import NodeImage from "./NodeImage";
 import NodeLabels from "./NodeLabels";
 
@@ -44,10 +45,6 @@ class NodeHeader extends Component {
         }
     }
 
-    onMenuClick = (e, { name }) => {
-        this.context.router.history.push(`${this.props.match.url}?page=${name}`);
-    }
-
     render() {
         return (
             <div
@@ -77,12 +74,27 @@ class NodeHeader extends Component {
                     className={this.props.theme.nodeHeaderLabels}
                     path={this.props.node.path}
                 />
-                <Header
-                    className={this.props.theme.nodeHeaderTitle}
-                    inverted
-                >
-                    {this.props.node.attributes.name}
-                </Header>
+                <div className={this.props.theme.nodeHeaderText}>
+                    <div className={this.props.theme.nodeHeaderTitle}>
+                        {this.props.node.attributes.name}
+                    </div>
+                    <div className={this.props.theme.nodeHeaderInformation}>
+                        <span>
+                            Created {format.datetimeAgo(this.props.node.properties.birthtime)}
+                        </span>
+                        <span>
+                            &nbsp;{" "}&nbsp;
+                            {"\u00b7"}
+                            &nbsp;{" "}&nbsp;
+                        </span>
+                        <span>
+                            Modified {format.datetimeAgo(this.props.node.properties.mtime)}
+                        </span>
+                    </div>
+                    <div className={this.props.theme.nodeHeaderDescription}>
+                        {this.props.node.attributes.description}
+                    </div>
+                </div>
                 <div
                     className={this.props.theme.nodeHeaderTabContainer}
                 >
@@ -101,7 +113,7 @@ class NodeHeader extends Component {
                                 icon={page.icon}
                                 name={page.name}
                                 content={page.title}
-                                onClick={this.onMenuClick}
+                                onClick={page.onClick}
                             />
                         </For>
                     </Menu>
@@ -114,12 +126,7 @@ class NodeHeader extends Component {
 NodeHeader.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    pages: PropTypes.array.isRequired,
-    match: PropTypes.object.isRequired
-};
-
-NodeHeader.contextTypes = {
-    router: PropTypes.object.isRequired
+    pages: PropTypes.array.isRequired
 };
 
 export default NodeHeader;

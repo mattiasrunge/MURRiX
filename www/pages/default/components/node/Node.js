@@ -1,21 +1,18 @@
 
-/* global URLSearchParams */
-
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
+import { Route, Switch, Redirect } from "react-router-dom";
 import api from "api.io-client";
 import ui from "lib/ui";
 import notification from "lib/notification";
 import { Container, Loader } from "semantic-ui-react";
 import { NodeHeader } from "components/nodeparts";
 import Media from "./pages/Media";
-import Organize from "./pages/Organize";
-import Share from "./pages/Share";
-import Upload from "./pages/Upload";
 import Map from "./pages/Map";
 import Family from "./pages/Family";
-import Edit from "./pages/Edit";
+import Settings from "./pages/Settings";
+import Timeline from "./pages/Timeline";
 
 class Node extends Component {
     constructor(props) {
@@ -23,12 +20,18 @@ class Node extends Component {
 
         this.state = {
             node: false,
-            loading: false
+            loading: false,
+            page: false
         };
     }
 
     async load() {
         this.setFromMatch(this.props.match);
+        this.addDisposable(api.vfs.on("node.update", (path) => {
+            if (path === this.state.node.path) {
+                this.update(path, this.state.path);
+            }
+        }));
     }
 
     componentWillReceiveProps(nextProps) {
@@ -36,23 +39,37 @@ class Node extends Component {
     }
 
     async setFromMatch(match) {
-        const path = `/${match.params[0]}`;
+        const url = `/${match.params[0]}`;
+        const [ path, pagePart ] = url.split("/_/");
+        const [ page ] = pagePart.split("/");
 
         if (this.state.node && this.state.node.path === path) {
+            if (page !== this.state.page) {
+                this.setState({ page });
+            }
+
             return;
         }
 
-        this.setState({ loading: true, node: false });
+        await this.update(path, page);
+    }
+
+    async update(path, page) {
+        this.setState({ loading: true });
 
         try {
             const node = await api.vfs.resolve(path);
 
-            this.setState({ node, loading: false });
+            this.setState({ node, loading: false, page });
         } catch (error) {
             this.logError("Failed to load node", error);
             notification.add("error", error.message, 10000);
             this.setState({ node: false, loading: false });
         }
+    }
+
+    onPage = (e, { name }) => {
+        this.context.router.history.push(`/node${this.state.node.path}/_/${name}`);
     }
 
     render() {
@@ -63,72 +80,99 @@ class Node extends Component {
                 name: "media",
                 title: "Media",
                 icon: "image",
+                active: this.state.page === "media",
+                onClick: this.onPage,
                 Component: Media
+            },
+            {
+                name: "timeline",
+                title: "Timeline",
+                icon: "time",
+                active: this.state.page === "timeline",
+                onClick: this.onPage,
+                Component: Timeline
             },
             {
                 name: "map",
                 title: "Map",
                 icon: "map outline",
+                active: this.state.page === "map",
+                onClick: this.onPage,
                 Component: Map
             },
             {
                 name: "family",
                 title: "Family",
                 icon: "sitemap",
+                active: this.state.page === "family",
+                onClick: this.onPage,
                 Component: Family
             },
             {
-                name: "edit",
-                title: "Edit",
-                icon: "edit",
-                Component: Edit
-            },
-            {
-                name: "upload",
-                title: "Upload",
-                icon: "upload",
-                Component: Upload
-            },
-            {
-                name: "share",
-                title: "Share",
-                icon: "share alternate",
-                Component: Share
-            },
-            {
-                name: "organize",
-                title: "Organize",
-                icon: "folder open outline",
-                Component: Organize
+                name: "settings",
+                title: "Settings",
+                icon: "setting",
+                active: this.state.page === "settings",
+                onClick: this.onPage,
+                Component: Settings
             }
         ];
-
-        const params = new URLSearchParams(this.props.location.search);
-        const pageName = params.get("page") || pages[0].name;
-        const page = pages.find((page) => page.name === pageName);
-
-        page.active = true;
 
         return (
             <Container className={this.props.theme.nodeContainer}>
                 <Choose>
-                    <When condition={this.state.loading}>
-                        <Loader active>Loading...</Loader>
-                    </When>
                     <When condition={!this.state.node}>
                         Nothing loaded!
                     </When>
                     <Otherwise>
                         <NodeHeader
-                            match={this.props.match}
                             node={this.state.node}
                             pages={pages}
                         />
-                        <page.Component
-                            theme={this.props.theme}
-                            match={this.props.match}
-                            node={this.state.node}
-                        />
+                        <Switch>
+                            <Route path={`/node${this.state.node.path}/_/media`}>
+                                <Media
+                                    theme={this.props.theme}
+                                    node={this.state.node}
+                                    match={this.props.match}
+                                />
+                            </Route>
+                            <Route path={`/node${this.state.node.path}/_/timeline`}>
+                                <Timeline
+                                    theme={this.props.theme}
+                                    node={this.state.node}
+                                    match={this.props.match}
+                                />
+                            </Route>
+                            <Route path={`/node${this.state.node.path}/_/map`}>
+                                <Map
+                                    theme={this.props.theme}
+                                    node={this.state.node}
+                                    match={this.props.match}
+                                />
+                            </Route>
+                            <Route path={`/node${this.state.node.path}/_/family`}>
+                                <Family
+                                    theme={this.props.theme}
+                                    node={this.state.node}
+                                    match={this.props.match}
+                                />
+                            </Route>
+                            <Route path={`/node${this.state.node.path}/_/settings`}>
+                                <Settings
+                                    theme={this.props.theme}
+                                    node={this.state.node}
+                                    match={this.props.match}
+                                />
+                            </Route>
+                            <Route path="*">
+                                <Redirect
+                                    to={{
+                                        pathname: `/node${this.state.node.path}/_/${pages[0].name}`
+                                    }}
+                                />
+                            </Route>
+                        </Switch>
                     </Otherwise>
                 </Choose>
             </Container>
@@ -140,6 +184,10 @@ Node.propTypes = {
     theme: PropTypes.object,
     match: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired
+};
+
+Node.contextTypes = {
+    router: PropTypes.object.isRequired
 };
 
 export default Node;
