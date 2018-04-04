@@ -180,12 +180,12 @@ class Share extends Component {
                                 <Table.Header fullWidth>
                                     <Table.Row>
                                         <Table.HeaderCell
-                                            className={this.props.theme.accessHeader}
+                                            className={this.props.theme.editTableHeader}
                                         >
                                             Group
                                         </Table.HeaderCell>
                                         <Table.HeaderCell
-                                            className={this.props.theme.accessHeader}
+                                            className={this.props.theme.editTableHeader}
                                             collapsing
                                             textAlign="center"
                                             verticalAlign="middle"
@@ -193,7 +193,7 @@ class Share extends Component {
                                             Read
                                         </Table.HeaderCell>
                                         <Table.HeaderCell
-                                            className={this.props.theme.accessHeader}
+                                            className={this.props.theme.editTableHeader}
                                             collapsing
                                             textAlign="center"
                                             verticalAlign="middle"
@@ -245,12 +245,12 @@ class Share extends Component {
                                 <Table.Header fullWidth>
                                     <Table.Row>
                                         <Table.HeaderCell
-                                            className={this.props.theme.accessHeader}
+                                            className={this.props.theme.editTableHeader}
                                         >
                                             User
                                         </Table.HeaderCell>
                                         <Table.HeaderCell
-                                            className={this.props.theme.accessHeader}
+                                            className={this.props.theme.editTableHeader}
                                             collapsing
                                             textAlign="center"
                                             verticalAlign="middle"

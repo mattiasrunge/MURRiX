@@ -6,7 +6,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import api from "api.io-client";
 import ui from "lib/ui";
 import notification from "lib/notification";
-import { Container, Loader } from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 import { NodeHeader } from "components/nodeparts";
 import Media from "./pages/Media";
 import Map from "./pages/Map";
@@ -41,7 +41,7 @@ class Node extends Component {
     async setFromMatch(match) {
         const url = `/${match.params[0]}`;
         const [ path, pagePart ] = url.split("/_/");
-        const [ page ] = pagePart.split("/");
+        const [ page ] = pagePart ? pagePart.split("/") : [];
 
         if (this.state.node && this.state.node.path === path) {
             if (page !== this.state.page) {

@@ -7,7 +7,7 @@ import { Menu } from "semantic-ui-react";
 import Edit from "./sections/Edit";
 import Share from "./sections/Share";
 import Organize from "./sections/Organize";
-import Upload from "./sections/Upload";
+import { Upload } from "components/upload";
 
 class Settings extends Component {
     onSection = (e, { name }) => {
@@ -38,14 +38,14 @@ class Settings extends Component {
                 title: "Upload",
                 icon: "upload",
                 active: section === "upload",
-                Component: Organize
+                Component: Upload
             },
             {
                 name: "organize",
                 title: "Organize",
                 icon: "folder open outline",
                 active: section === "organize",
-                Component: Upload
+                Component: Organize
             }
         ];
 
@@ -82,14 +82,14 @@ class Settings extends Component {
                             />
                         </Route>
                         <Route path={`/node${this.props.node.path}/_/settings/upload`}>
-                            <Organize
+                            <Upload
                                 theme={this.props.theme}
                                 node={this.props.node}
                                 match={this.props.match}
                             />
                         </Route>
                         <Route path={`/node${this.props.node.path}/_/settings/organize`}>
-                            <Upload
+                            <Organize
                                 theme={this.props.theme}
                                 node={this.props.node}
                                 match={this.props.match}

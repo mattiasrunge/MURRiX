@@ -10,6 +10,7 @@ import { Notification } from "components/notification";
 import { Home } from "components/home";
 import { Node } from "components/node";
 import { SignIn, Reset, Profile } from "components/authentication";
+import { UploadProgress } from "components/upload";
 
 class Content extends Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class Content extends Component {
                 <Terminal />
                 <Notification />
                 <Navbar location={this.props.location} />
+                <UploadProgress />
 
                 <Switch>
                     <Route

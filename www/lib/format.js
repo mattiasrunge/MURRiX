@@ -215,5 +215,16 @@ module.exports = {
         }
 
         return dateItem.fromNow();
+    },
+    size: (fileSizeInBytes) => {
+        const byteUnits = [ " kB", " MB", " GB", " TB", "PB", "EB", "ZB", "YB" ];
+
+        let i = -1;
+        do {
+            fileSizeInBytes = fileSizeInBytes / 1024;
+            i++;
+        } while (fileSizeInBytes > 1024);
+
+        return fileSizeInBytes.toFixed(1) + byteUnits[i];
     }
 };
