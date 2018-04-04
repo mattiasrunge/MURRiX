@@ -54,8 +54,8 @@ class Media {
         return this.mcs.cache.get(id, filename, format, this.config.mcsDirectory);
     }
 
-    getAllCached(id, filename, format) {
-        return this.mcs.cache.getAll(id, filename, format, this.config.mcsDirectory);
+    getAllCached(id, filename, type) {
+        return this.mcs.cache.getAll(id, filename, type, this.config.mcsDirectory);
     }
 
     compileTime(sources) {

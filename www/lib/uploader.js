@@ -82,9 +82,6 @@ class Uploader extends Emitter {
             file.status = "importing";
             this.setState({ files: this.state.files.slice(0) });
 
-            // TODO: metadata, regenerate, cameras...
-            console.log("req", req.body);
-
             const node = await api.vfs.create(this.state.path, "f", file.name, {
                 name: file.name,
                 _source: {
@@ -92,7 +89,7 @@ class Uploader extends Emitter {
                 }
             });
 
-            console.log("node", node);
+            await api.vfs.regenerate(node.path);
 
             file.status = "complete";
             this.setState({ files: this.state.files.slice(0) });

@@ -18,6 +18,7 @@ module.exports = async (session, srcpath, dstpath) => {
 
     if (!dstparentnode) {
         srcnode.name = path.basename(dstpath);
+
         dstparentnode = await Node.resolve(session, path.dirname(dstpath));
     }
 
