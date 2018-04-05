@@ -72,7 +72,7 @@ class NodeHeader extends Component {
                 <NodeLabels
                     theme={this.props.theme}
                     className={this.props.theme.nodeHeaderLabels}
-                    path={this.props.node.path}
+                    node={this.props.node}
                 />
                 <div className={this.props.theme.nodeHeaderText}>
                     <div className={this.props.theme.nodeHeaderTitle}>

@@ -43,12 +43,39 @@ class Node {
         }
     }
 
-    static _factory(name, data) {
+    static getAttributeTypes() {
+        return [
+            {
+                name: "name",
+                label: "Name",
+                type: "textline",
+                required: true
+            },
+            {
+                name: "description",
+                label: "Description",
+                type: "text"
+            },
+            {
+                name: "labels",
+                label: "Labels",
+                type: "labels"
+            }
+        ];
+    }
+
+    static getType(name) {
         if (!Types[name]) {
             throw new Error(`No type named ${name}`);
         }
 
-        return new Types[name](data);
+        return Types[name];
+    }
+
+    static _factory(name, data) {
+        const Type = this.getType(name);
+
+        return new Type(data);
     }
 
     static async _instantiate(session, id, abspath, name) {

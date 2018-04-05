@@ -20,7 +20,7 @@ class NodeLabels extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.path !== nextProps.path) {
+        if (this.props.node !== nextProps.node) {
             this.update(nextProps);
         }
     }
@@ -29,7 +29,7 @@ class NodeLabels extends Component {
         this.setState({ labels: [], loading: true });
 
         try {
-            const labels = await api.vfs.labels(props.path);
+            const labels = await api.vfs.labels(props.node.path);
 
             !this.disposed && this.setState({
                 labels: labels.map((label) => ({
@@ -73,7 +73,7 @@ class NodeLabels extends Component {
 NodeLabels.propTypes = {
     theme: PropTypes.object,
     className: PropTypes.string,
-    path: PropTypes.string.isRequired
+    node: PropTypes.object.isRequired
 };
 
 NodeLabels.contextTypes = {

@@ -47,3 +47,8 @@
 .userAvatar {
     float: left;
 }
+
+.shareUsersToggle {
+    float: right;
+    padding-top: 2.2em;
+}

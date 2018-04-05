@@ -15,7 +15,7 @@ class Focus extends React.PureComponent {
     onRef(ref) {
         if (ref) {
             this.ref = ref.getElementsByTagName("INPUT")[0] || ref.getElementsByTagName("TEXTAREA")[0];
-            this.focus();
+            this.props.focus && this.focus();
             this.props.select && this.select();
         } else {
             this.ref = null;
@@ -31,9 +31,14 @@ class Focus extends React.PureComponent {
     }
 }
 
+Focus.defaultProps = {
+    focus: true
+};
+
 Focus.propTypes = {
     children: PropTypes.node,
-    select: PropTypes.bool
+    select: PropTypes.bool,
+    focus: PropTypes.bool
 };
 
 export default Focus;

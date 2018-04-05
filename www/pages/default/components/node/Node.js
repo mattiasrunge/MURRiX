@@ -29,7 +29,7 @@ class Node extends Component {
         this.setFromMatch(this.props.match);
         this.addDisposable(api.vfs.on("node.update", (path) => {
             if (path === this.state.node.path) {
-                this.update(path, this.state.path);
+                this.update(path, this.state.page);
             }
         }));
     }

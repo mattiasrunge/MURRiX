@@ -15,12 +15,26 @@ class Share extends Component {
             groups: [],
             users: [],
             loading: false,
-            saving: false
+            saving: false,
+            showInactive: false
         };
     }
 
     async createUserList(groups) {
-        const list = [];
+        const users = await api.vfs.users();
+
+        const owner = users.find((user) => user.attributes.uid === this.props.node.properties.uid);
+
+        const list = [
+            {
+                id: owner._id,
+                name: owner.attributes.name,
+                node: owner,
+                readable: !!(this.props.node.properties.mode & api.vfs.MASK_USER_READ),
+                writable: !!(this.props.node.properties.mode & api.vfs.MASK_USER_WRITE),
+                owner: true
+            }
+        ];
 
         for (const group of groups) {
             if (group.readable || group.readable) {
@@ -57,8 +71,8 @@ class Share extends Component {
         if (group.attributes.gid === this.props.node.properties.gid) {
             return {
                 primary: true,
-                readable: !!(this.props.node.properties.mode & api.vfs.MASK_ACL_READ),
-                writable: !!(this.props.node.properties.mode & api.vfs.MASK_ACL_WRITE)
+                readable: !!(this.props.node.properties.mode & api.vfs.MASK_GROUP_READ),
+                writable: !!(this.props.node.properties.mode & api.vfs.MASK_GROUP_WRITE)
             };
         }
 
@@ -163,16 +177,27 @@ class Share extends Component {
         }
     }
 
+    onChangeInactiveUsers = (e, { checked }) => {
+        this.setState({ showInactive: checked });
+    }
+
     render() {
+        const users = this.state.users.filter((user) => this.state.showInactive || !user.node.attributes.inactive);
+
         return (
             <div>
-                <Header
-                    as="h2"
-                    content="Share settings"
-                    subheader={{
-                        content: "Set who has what access"
-                    }}
-                />
+                <Header as="h2">
+                    <Checkbox
+                        className={this.props.theme.shareUsersToggle}
+                        label="Show inactive users"
+                        checked={this.state.showInactive}
+                        onChange={this.onChangeInactiveUsers}
+                    />
+                    Share settings
+                    <Header.Subheader>
+                        Set who has what access
+                    </Header.Subheader>
+                </Header>
                 <Grid>
                     <Grid.Row>
                         <Grid.Column width={8}>
@@ -260,7 +285,7 @@ class Share extends Component {
                                     </Table.Row>
                                 </Table.Header>
                                 <Table.Body>
-                                    <For each="user" of={this.state.users}>
+                                    <For each="user" of={users}>
                                         <Table.Row key={user.id}>
                                             <Table.Cell>
                                                 <NodeImage
@@ -276,11 +301,26 @@ class Share extends Component {
                                                     type="u"
                                                     size="mini"
                                                 />
+                                                <If condition={user.node.attributes.inactive}>
+                                                    <Label
+                                                        style={{ float: "right" }}
+                                                        color="grey"
+                                                        size="mini"
+                                                        content="Inactive"
+                                                    />
+                                                </If>
                                                 <div>
                                                     {user.name}
                                                 </div>
                                                 <small>
-                                                    Member of {user.group.name}
+                                                    <Choose>
+                                                        <When condition={user.owner}>
+                                                            Owner
+                                                        </When>
+                                                        <Otherwise>
+                                                            Member of {user.group.name}
+                                                        </Otherwise>
+                                                    </Choose>
                                                 </small>
                                             </Table.Cell>
                                             <Table.Cell
@@ -290,9 +330,6 @@ class Share extends Component {
                                                 className={this.props.theme.accessText}
                                             >
                                                 <Choose>
-                                                    <When condition={user.owner}>
-                                                        Owner
-                                                    </When>
                                                     <When condition={user.writable}>
                                                         <strong>Read</strong> and <strong>Write</strong>
                                                     </When>

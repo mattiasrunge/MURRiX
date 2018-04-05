@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
-import Edit from "./sections/Edit";
+import { Edit } from "components/edit";
 import Share from "./sections/Share";
 import Organize from "./sections/Organize";
 import { Upload } from "components/upload";

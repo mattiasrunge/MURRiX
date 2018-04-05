@@ -1,17 +1,19 @@
 
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown, Icon } from "semantic-ui-react";
 import { NodeIcon } from "components/nodeparts";
+import { Create } from "components/edit";
 
 class AddMenu extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            user: session.user()
+            user: session.user(),
+            create: null
         };
     }
 
@@ -19,8 +21,12 @@ class AddMenu extends Component {
         this.addDisposable(session.on("update", (event, user) => this.setState({ user })));
     }
 
-    onAdd(type) {
+    onAdd(type, path) {
+        this.setState({ create: { type, path } });
+    }
 
+    onCloseAdd = () => {
+        this.setState({ create: null });
     }
 
     render() {
@@ -29,42 +35,51 @@ class AddMenu extends Component {
         }
 
         return (
-            <Dropdown
-                item
-                direction="left"
-                simple
-                trigger={(
-                    <Icon
-                        fitted
-                        name="add"
-                        style={{ margin: 0 }}
+            <Fragment>
+                <If condition={this.state.create}>
+                    <Create
+                        type={this.state.create.type}
+                        path={this.state.create.path}
+                        onClose={this.onCloseAdd}
                     />
-                )}
-                icon={null}
-            >
-                <Dropdown.Menu fitted="vertically">
-                    <Dropdown.Item
-                        icon={(<NodeIcon type="a" />)}
-                        text="Album"
-                        onClick={() => this.onAdd("album")}
-                    />
-                    <Dropdown.Item
-                        icon={(<NodeIcon type="p" />)}
-                        text="Person"
-                        onClick={() => this.onAdd("person")}
-                    />
-                    <Dropdown.Item
-                        icon={(<NodeIcon type="l" />)}
-                        text="Location"
-                        onClick={() => this.onAdd("location")}
-                    />
-                    <Dropdown.Item
-                        icon={(<NodeIcon type="c" />)}
-                        text="Camera"
-                        onClick={() => this.onAdd("camera")}
-                    />
-                </Dropdown.Menu>
-            </Dropdown>
+                </If>
+                <Dropdown
+                    item
+                    direction="left"
+                    simple
+                    trigger={(
+                        <Icon
+                            fitted
+                            name="add"
+                            style={{ margin: 0 }}
+                        />
+                    )}
+                    icon={null}
+                >
+                    <Dropdown.Menu fitted="vertically">
+                        <Dropdown.Item
+                            icon={(<NodeIcon type="a" />)}
+                            text="Album"
+                            onClick={() => this.onAdd("a", "/albums")}
+                        />
+                        <Dropdown.Item
+                            icon={(<NodeIcon type="p" />)}
+                            text="Person"
+                            onClick={() => this.onAdd("p", "/people")}
+                        />
+                        <Dropdown.Item
+                            icon={(<NodeIcon type="l" />)}
+                            text="Location"
+                            onClick={() => this.onAdd("l", "/locations")}
+                        />
+                        <Dropdown.Item
+                            icon={(<NodeIcon type="c" />)}
+                            text="Camera"
+                            onClick={() => this.onAdd("c", "/cameras")}
+                        />
+                    </Dropdown.Menu>
+                </Dropdown>
+            </Fragment>
         );
     }
 }
