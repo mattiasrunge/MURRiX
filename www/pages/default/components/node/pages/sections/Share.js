@@ -38,9 +38,7 @@ class Share extends Component {
 
         for (const group of groups) {
             if (group.readable || group.readable) {
-                const users = await api.vfs.users(group.node.name);
-
-                for (const user of users) {
+                for (const user of group.users) {
                     const current = list.find((data) => data.id === user._id);
 
                     if (!current || !current.writable) {
@@ -89,20 +87,22 @@ class Share extends Component {
         return {};
     }
 
-    createGroupList(groups) {
-        return groups.map((group) => {
+    async createGroupList(groups) {
+        return Promise.all(groups.map(async (group) => {
             const access = this.getGroupAccess(group);
+            const users = await api.vfs.users(group.name);
 
             return {
                 id: group._id,
                 name: group.attributes.name,
                 description: group.attributes.description,
                 node: group,
+                users,
                 onReadableClick: (e, { checked }) => this.updateGroupAccess(group, access, checked, checked ? access.writable : false),
                 onWritableClick: (e, { checked }) => this.updateGroupAccess(group, access, checked ? true : access.readable, checked),
                 ...access
             };
-        });
+        }));
     }
 
     async updateGroupAccess(group, access, readable, writable) {
@@ -157,7 +157,7 @@ class Share extends Component {
 
         try {
             const groupNodes = await api.vfs.groups();
-            const groups = this.createGroupList(groupNodes);
+            const groups = await this.createGroupList(groupNodes);
 
             this.setState({
                 groups,
@@ -234,7 +234,7 @@ class Share extends Component {
                                                 <If condition={group.primary}>
                                                     <Label
                                                         style={{ float: "right" }}
-                                                        basic
+                                                        color="violet"
                                                         size="mini"
                                                         content="Primary"
                                                     />
@@ -245,6 +245,25 @@ class Share extends Component {
                                                 <small>
                                                     {group.description}
                                                 </small>
+                                                <div>
+                                                    <For each="user" of={group.users}>
+                                                        <NodeImage
+                                                            key={user._id}
+                                                            className={this.props.theme.groupUserAvatar}
+                                                            path={`${user.path}/person/profilePicture`}
+                                                            title={user.attributes.name}
+                                                            format={{
+                                                                width: 35,
+                                                                height: 35,
+                                                                type: "image"
+                                                            }}
+                                                            avatar
+                                                            spaced="right"
+                                                            type="u"
+                                                            size="small"
+                                                        />
+                                                    </For>
+                                                </div>
                                             </Table.Cell>
                                             <Table.Cell collapsing textAlign="center" verticalAlign="middle">
                                                 <Checkbox

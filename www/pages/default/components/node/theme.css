@@ -46,6 +46,20 @@
 
 .userAvatar {
     float: left;
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 35px !important;
+    margin-right: 9px !important;
+}
+
+.groupUserAvatar {
+    float: left;
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 18px !important;
+    margin-right: 3px !important;
+    margin-top: 3px !important;
+    margin-bottom: 0 !important;
 }
 
 .shareUsersToggle {

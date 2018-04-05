@@ -44,6 +44,8 @@ class NodeImage extends Component {
             return (
                 <NodeIcon
                     theme={this.props.theme}
+                    className={this.props.className}
+                    title={this.props.title}
                     type={this.props.type}
                     size={this.props.size}
                 />
@@ -56,6 +58,7 @@ class NodeImage extends Component {
             <Image
                 className={this.props.className}
                 src={url}
+                title={this.props.title}
                 avatar={this.props.avatar}
                 bordered={this.props.bordered}
                 centered={this.props.centered}
@@ -78,6 +81,7 @@ NodeImage.propTypes = {
     className: PropTypes.string,
     path: PropTypes.string.isRequired,
     type: PropTypes.string,
+    title: PropTypes.string,
     format: PropTypes.object.isRequired,
     avatar: PropTypes.bool,
     bordered: PropTypes.bool,

@@ -8,7 +8,8 @@ const icons = {
     a: "book",
     c: "camera retro",
     l: "map",
-    p: "user circle"
+    p: "user",
+    u: "user circle"
 };
 
 class NodeIcon extends Component {
@@ -23,6 +24,7 @@ class NodeIcon extends Component {
             <Icon
                 className={this.props.className}
                 name={icon}
+                title={this.props.title}
                 bordered={this.props.bordered}
                 centered={this.props.centered}
                 circular={this.props.circular}
@@ -38,6 +40,7 @@ NodeIcon.propTypes = {
     theme: PropTypes.object,
     className: PropTypes.string,
     type: PropTypes.string.isRequired,
+    title: PropTypes.string,
     icon: PropTypes.string,
     bordered: PropTypes.bool,
     centered: PropTypes.bool,

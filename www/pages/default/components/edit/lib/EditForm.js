@@ -10,12 +10,16 @@ import InputLabels from "./InputLabels";
 import InputTextArea from "./InputTextArea";
 import InputTextLine from "./InputTextLine";
 import InputSelect from "./InputSelect";
+import InputBoolean from "./InputBoolean";
+import InputNumber from "./InputNumber";
 
 const Components = {
     textline: InputTextLine,
     text: InputTextArea,
     labels: InputLabels,
-    select: InputSelect
+    select: InputSelect,
+    boolean: InputBoolean,
+    number: InputNumber
 };
 
 class EditForm extends Component {
