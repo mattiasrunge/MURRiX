@@ -5,6 +5,94 @@
     margin-top: var(--navbar-height);
 }
 
+.mediaLoader {
+    margin-top: var(--spacing) !important;
+    margin-bottom: var(--spacing) !important;
+    text-transform: uppercase;
+    text-align: center;
+    color: #bbb;
+}
+
+.mediaImageGroup {
+    margin: 5px 4px 4px 5px !important;
+
+    & .mediaImageContainer {
+        position: relative;
+        display: inline-block;
+    }
+
+    & .mediaImageTypeIcon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        font-size: 20px !important;
+        color: white;
+        text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+
+    }
+
+    & .mediaImage {
+        margin: 0 1px 1px 0 !important;
+        width: 222px !important;
+    }
+}
+
+.mediaContainer {
+    border-left: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
+    border-bottom: 1px solid #d4d4d5;
+    padding-top: var(--spacing);
+
+    & .mediaDay {
+        margin-top: calc(var(--spacing) * 2) !important;
+
+        &:first-child {
+            margin-top: 0 !important;
+        }
+    }
+
+    & h3 {
+        margin-top: 0 !important;
+        margin-left: var(--spacing) !important;
+        margin-right: var(--spacing) !important;
+        margin-bottom: calc(var(--spacing) / 2) !important;
+    }
+
+    & blockquote {
+        font-size: 0.9em;
+        border-left: 4px solid #d4d4d5;
+        padding-left: var(--spacing) !important;
+        margin-left: var(--spacing) !important;
+        margin-right: var(--spacing) !important;
+        margin-bottom: var(--spacing) !important;
+
+        & p {
+            white-space: pre-line;
+        }
+
+        & .mediaEditText {
+            opacity: 0 !important;
+            margin-left: 5px;
+        }
+
+        &:hover {
+            & .mediaEditText {
+                opacity: 1 !important;
+            }
+        }
+    }
+
+    & footer {
+        font-size: 0.9em;
+        font-style: italic;
+    }
+
+    & .mediaAddText {
+        margin-top: calc(var(--spacing) / -2) !important;
+        margin-right: calc(var(--spacing) / 2) !important;
+    }
+}
+
 .pageContainer {
     border-left: 1px solid #d4d4d5;
     border-right: 1px solid #d4d4d5;

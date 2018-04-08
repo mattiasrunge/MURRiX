@@ -101,21 +101,35 @@ class NodeHeader extends Component {
                     <Menu
                         className={this.props.theme.nodeHeaderTabs}
                         tabular
-                        fluid
                         borderless
                         size="small"
-                        widths={this.props.pages.length}
                     >
                         <For each="page" of={this.props.pages}>
-                            <Menu.Item
-                                key={page.name}
-                                active={page.active}
-                                icon={page.icon}
-                                name={page.name}
-                                content={page.title}
-                                onClick={page.onClick}
-                            />
+                            <If condition={!page.right}>
+                                <Menu.Item
+                                    key={page.name}
+                                    active={page.active}
+                                    icon={page.icon}
+                                    name={page.name}
+                                    content={page.title}
+                                    onClick={page.onClick}
+                                />
+                            </If>
                         </For>
+                        <Menu.Menu position="right">
+                            <For each="page" of={this.props.pages}>
+                                <If condition={page.right}>
+                                    <Menu.Item
+                                        key={page.name}
+                                        active={page.active}
+                                        icon={page.icon}
+                                        name={page.name}
+                                        content={page.title}
+                                        onClick={page.onClick}
+                                    />
+                                </If>
+                            </For>
+                        </Menu.Menu>
                     </Menu>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 "use strict";
 
 const Node = require("../lib/Node");
+const media = require("./media");
 
 // TODO: Add support for limit/skip and sorting
 
@@ -16,5 +17,14 @@ module.exports = async (session, abspath, options = {}) => {
         list = await Node.list(session, abspath, options);
     }
 
-    return Promise.all(list.map((node) => node.serialize(session)));
+    const serialized = await Promise.all(list.map((node) => node.serialize(session)));
+
+    if (options.media) {
+        return Promise.all(serialized.map(async (node) => ({
+            ...node,
+            url: await media(session, node.path, options.media)
+        })));
+    }
+
+    return serialized;
 };

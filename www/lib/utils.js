@@ -3,20 +3,17 @@
 const api = require("api.io-client");
 
 module.exports = {
-    // sortNodeList: (list) => {
-    //     list.sort((a, b) => {
-    //         a = ko.unwrap(a.node);
-    //         b = ko.unwrap(b.node);
-    //
-    //         if (!a.attributes.time) {
-    //             return a.attributes.name.localeCompare(b.attributes.name);
-    //         } else if (!b.attributes.time) {
-    //             return b.attributes.name.localeCompare(a.attributes.name);
-    //         }
-    //
-    //         return a.attributes.time.timestamp - b.attributes.time.timestamp;
-    //     });
-    // },
+    sortNodeList: (list) => {
+        list.sort((a, b) => {
+            if (!a.attributes.time) {
+                return a.attributes.name.localeCompare(b.attributes.name);
+            } else if (!b.attributes.time) {
+                return b.attributes.name.localeCompare(a.attributes.name);
+            }
+
+            return a.attributes.time.timestamp - b.attributes.time.timestamp;
+        });
+    },
     basename: (path) => {
         return path.replace(/.*\//, "");
     },

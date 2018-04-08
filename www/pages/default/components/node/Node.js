@@ -75,14 +75,15 @@ class Node extends Component {
     render() {
         ui.setTitle(this.state.node ? this.state.node.attributes.name : null);
 
-        const pages = [
+        const allPages = [
             {
                 name: "media",
                 title: "Media",
                 icon: "image",
                 active: this.state.page === "media",
                 onClick: this.onPage,
-                Component: Media
+                Component: Media,
+                validTypes: [ "p", "c", "l", "a" ]
             },
             {
                 name: "timeline",
@@ -90,7 +91,8 @@ class Node extends Component {
                 icon: "time",
                 active: this.state.page === "timeline",
                 onClick: this.onPage,
-                Component: Timeline
+                Component: Timeline,
+                validTypes: [ "p" ]
             },
             {
                 name: "map",
@@ -98,7 +100,8 @@ class Node extends Component {
                 icon: "map outline",
                 active: this.state.page === "map",
                 onClick: this.onPage,
-                Component: Map
+                Component: Map,
+                validTypes: [ "l" ]
             },
             {
                 name: "family",
@@ -106,7 +109,8 @@ class Node extends Component {
                 icon: "sitemap",
                 active: this.state.page === "family",
                 onClick: this.onPage,
-                Component: Family
+                Component: Family,
+                validTypes: [ "p" ]
             },
             {
                 name: "settings",
@@ -114,9 +118,13 @@ class Node extends Component {
                 icon: "setting",
                 active: this.state.page === "settings",
                 onClick: this.onPage,
-                Component: Settings
+                Component: Settings,
+                validTypes: [ "p", "c", "l", "a" ],
+                right: true
             }
         ];
+
+        const pages = allPages.filter((page) => this.state.node && page.validTypes.includes(this.state.node.properties.type));
 
         return (
             <Container className={this.props.theme.nodeContainer}>

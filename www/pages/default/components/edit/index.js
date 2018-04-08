@@ -4,7 +4,8 @@ import theme from "./theme.css";
 
 const exports = {
     Edit: require("./Edit"),
-    Create: require("./Create")
+    EditModal: require("./EditModal"),
+    CreateModal: require("./CreateModal")
 };
 
 module.exports = themeify(theme, exports);

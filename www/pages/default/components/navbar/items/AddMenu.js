@@ -5,7 +5,7 @@ import session from "lib/session";
 import Component from "lib/component";
 import { Dropdown, Icon } from "semantic-ui-react";
 import { NodeIcon } from "components/nodeparts";
-import { Create } from "components/edit";
+import { CreateModal } from "components/edit";
 
 class AddMenu extends Component {
     constructor(props) {
@@ -37,7 +37,7 @@ class AddMenu extends Component {
         return (
             <Fragment>
                 <If condition={this.state.create}>
-                    <Create
+                    <CreateModal
                         type={this.state.create.type}
                         path={this.state.create.path}
                         onClose={this.onCloseAdd}

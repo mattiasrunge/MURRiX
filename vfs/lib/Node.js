@@ -6,6 +6,7 @@ const { v4: uuid } = require("uuid");
 const shuffle = require("shuffle-array");
 const { checkMode, MASKS } = require("./mode");
 const { ADMIN_SESSION, isGuest } = require("./auth");
+const { unpackObjectKeys } = require("./utils");
 const bus = require("./bus");
 const db = require("../../core/lib/db");
 
@@ -593,7 +594,7 @@ class Node {
     async update(session, attributes) {
         await this.assertAccess(session, "w");
 
-        await this._attr(session, attributes);
+        await this._attr(session, unpackObjectKeys(attributes));
 
         await this._notify(session, "update");
     }
@@ -667,7 +668,7 @@ class Node {
         await this.assertAccess(session, "w");
         assert(Types[type], `No type named ${type}`);
 
-        const node = await Types[type]._createData(session, this, type, attributes);
+        const node = await Types[type]._createData(session, this, type, unpackObjectKeys(attributes));
         const nodepath = Node._factory(node.properties.type, {
             ...node,
             name,

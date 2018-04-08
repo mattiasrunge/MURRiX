@@ -7,7 +7,7 @@ import notification from "lib/notification";
 import { Modal } from "semantic-ui-react";
 import EditForm from "./lib/EditForm";
 
-class Create extends Component {
+class CreateModal extends Component {
     constructor(props) {
         super(props);
 
@@ -17,15 +17,20 @@ class Create extends Component {
     }
 
     onSave = async (attributes) => {
+        const attribs = {
+            ...attributes,
+            ...this.props.attributes
+        };
+
         this.setState({ saving: true });
 
         try {
-            const name = await api.vfs.uniquename(this.props.path, attributes.name);
-            const node = await api.vfs.create(this.props.path, this.props.type, name, attributes);
+            const name = await api.vfs.uniquename(this.props.path, attribs.name);
+            const node = await api.vfs.create(this.props.path, this.props.type, name, attribs);
 
             !this.disposed && this.setState({ saving: false });
 
-            this.context.router.history.push(`/node${node.path}/_/settings/share`);
+            this.props.gotoNew && this.context.router.history.push(`/node${node.path}/_/settings/share`);
             this.props.onClose();
         } catch (error) {
             this.logError("Failed to save node", error);
@@ -55,15 +60,22 @@ class Create extends Component {
     }
 }
 
-Create.propTypes = {
+CreateModal.defaultProps = {
+    attributes: {},
+    gotoNew: true
+};
+
+CreateModal.propTypes = {
     theme: PropTypes.object,
     type: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    attributes: PropTypes.object,
+    gotoNew: PropTypes.bool
 };
 
-Create.contextTypes = {
+CreateModal.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default Create;
+export default CreateModal;

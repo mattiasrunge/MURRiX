@@ -26,6 +26,7 @@ class FileIcon extends Component {
             <Icon
                 className={this.props.className}
                 name={icon}
+                title={this.props.type}
                 bordered={this.props.bordered}
                 centered={this.props.centered}
                 circular={this.props.circular}
@@ -41,7 +42,6 @@ FileIcon.propTypes = {
     theme: PropTypes.object,
     className: PropTypes.string,
     type: PropTypes.string.isRequired,
-    icon: PropTypes.string,
     bordered: PropTypes.bool,
     centered: PropTypes.bool,
     circular: PropTypes.bool,

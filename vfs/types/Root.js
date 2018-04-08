@@ -48,7 +48,7 @@ class Root extends Node {
         await db.insertOne("nodes", nodepath._serializeForDb());
         await nodepath.constructor._ensureIndexes();
 
-        this._notify(session, "create");
+        nodepath._notify(session, "create");
 
         return nodepath;
     }

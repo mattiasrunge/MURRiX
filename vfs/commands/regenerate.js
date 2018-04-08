@@ -11,24 +11,22 @@ const { ADMIN_SESSION } = require("../lib/auth");
 module.exports = async (session, abspath, options = {}) => {
     let node = await Node.resolve(session, abspath);
 
-    if (node.properties.type !== "f") {
-        throw new Error("Regenerate must be run on a file");
-    }
+    if (node.properties.type === "f") {
+        const attributes = {};
+        const meta = await metadata(session, abspath, { noChecksums: true });
 
-    const attributes = {};
-    const meta = await metadata(session, abspath, { noChecksums: true });
-
-    for (const key of Object.keys(meta)) {
-        if (key !== "raw" && key !== "name" && (typeof node.attributes[key] === "undefined" || options.overwrite)) {
-            if (typeof node.attributes[key] === "object" && typeof meta[key] === "object") {
-                attributes[key] = merge(node.attributes[key], meta[key]);
-            } else {
-                attributes[key] = meta[key];
+        for (const key of Object.keys(meta)) {
+            if (key !== "raw" && key !== "name" && (typeof node.attributes[key] === "undefined" || options.overwrite)) {
+                if (typeof node.attributes[key] === "object" && typeof meta[key] === "object") {
+                    attributes[key] = merge(node.attributes[key], meta[key]);
+                } else {
+                    attributes[key] = meta[key];
+                }
             }
         }
-    }
 
-    await node.update(session, attributes);
+        await node.update(session, attributes);
+    }
 
     // Update device
     let device = null;
@@ -86,4 +84,6 @@ module.exports = async (session, abspath, options = {}) => {
     }
 
     // TODO: await file.removeCached(session, abspath, "image");
+
+    return node.serialize(session);
 };

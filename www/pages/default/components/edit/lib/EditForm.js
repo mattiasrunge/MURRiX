@@ -12,6 +12,8 @@ import InputTextLine from "./InputTextLine";
 import InputSelect from "./InputSelect";
 import InputBoolean from "./InputBoolean";
 import InputNumber from "./InputNumber";
+import InputWhen from "./InputWhen";
+import chron from "chron-time";
 
 const Components = {
     textline: InputTextLine,
@@ -19,7 +21,8 @@ const Components = {
     labels: InputLabels,
     select: InputSelect,
     boolean: InputBoolean,
-    number: InputNumber
+    number: InputNumber,
+    when: InputWhen
 };
 
 class EditForm extends Component {
@@ -83,6 +86,14 @@ class EditForm extends Component {
             return false;
         }
 
+        if (field.type === "when") {
+            try {
+                chron.time2str(value);
+            } catch (e) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -125,6 +136,15 @@ class EditForm extends Component {
 
         const buttons = (
             <Fragment>
+                <If condition={this.props.attributes}>
+                    <Button
+                        basic
+                        onClick={this.onReset}
+                        disabled={this.props.saving}
+                    >
+                        Reset
+                    </Button>
+                </If>
                 <If condition={this.props.onModalClose}>
                     <Button
                         basic
@@ -143,15 +163,6 @@ class EditForm extends Component {
                 >
                     Save changes
                 </Button>
-                <If condition={this.props.attributes}>
-                    <Button
-                        basic
-                        onClick={this.onReset}
-                        disabled={this.props.saving}
-                    >
-                        Reset
-                    </Button>
-                </If>
             </Fragment>
         );
 

@@ -28,6 +28,7 @@ export default {
     label: require("./commands/label"),
     login: require("./commands/login"),
     logout: require("./commands/logout"),
+    regenerate: require("./commands/regenerate"),
 
 
     // Scripts
