@@ -70,14 +70,15 @@
             white-space: pre-line;
         }
 
-        & .mediaEditText {
+        & .mediaEditIcon {
             opacity: 0 !important;
-            margin-left: 5px;
+            margin-left: 5px !important;
+            margin-right: 0 !important
         }
 
         &:hover {
-            & .mediaEditText {
-                opacity: 1 !important;
+            & .mediaEditIcon {
+                opacity: 0.5 !important;
             }
         }
     }

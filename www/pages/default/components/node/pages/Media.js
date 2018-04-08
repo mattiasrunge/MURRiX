@@ -10,7 +10,7 @@ import api from "api.io-client";
 import { Image, Loader, Header, Button, Icon } from "semantic-ui-react";
 import { NodeImage } from "components/nodeparts";
 import { FileIcon } from "components/upload";
-import { CreateModal, EditModal } from "components/edit";
+import { CreateModal, EditModal, RemoveModal } from "components/edit";
 
 class Media extends Component {
     constructor(props) {
@@ -21,6 +21,7 @@ class Media extends Component {
             loading: false,
             addText: false,
             editNode: false,
+            removeNode: false,
             format: {
                 width: 222,
                 height: 222,
@@ -126,6 +127,14 @@ class Media extends Component {
         this.setState({ editNode: false });
     }
 
+    onRemoveNode = (node) => {
+        this.setState({ removeNode: node });
+    }
+
+    onCloseRemove = () => {
+        this.setState({ removeNode: false });
+    }
+
     render() {
         return (
             <div className={this.props.theme.mediaContainer}>
@@ -145,6 +154,12 @@ class Media extends Component {
                     <EditModal
                         node={this.state.editNode}
                         onClose={this.onCloseEdit}
+                    />
+                </If>
+                <If condition={this.state.removeNode}>
+                    <RemoveModal
+                        node={this.state.removeNode}
+                        onClose={this.onCloseRemove}
                     />
                 </If>
                 <Button
@@ -182,12 +197,18 @@ class Media extends Component {
                                     <footer>
                                         Written by <cite title="By">{text.name}</cite> on {format.datetimeUtc(text.attributes.time.timestamp)}
                                         <Icon
-                                            className={this.props.theme.mediaEditText}
+                                            className={this.props.theme.mediaEditIcon}
                                             name="edit"
-                                            color="grey"
                                             title="Edit"
                                             link
                                             onClick={() => this.onEditNode(text)}
+                                        />
+                                        <Icon
+                                            className={this.props.theme.mediaEditIcon}
+                                            name="trash"
+                                            title="Remove"
+                                            link
+                                            onClick={() => this.onRemoveNode(text)}
                                         />
                                     </footer>
                                 </blockquote>

@@ -5,7 +5,8 @@ import theme from "./theme.css";
 const exports = {
     Edit: require("./Edit"),
     EditModal: require("./EditModal"),
-    CreateModal: require("./CreateModal")
+    CreateModal: require("./CreateModal"),
+    RemoveModal: require("./RemoveModal")
 };
 
 module.exports = themeify(theme, exports);
