@@ -10,7 +10,7 @@ module.exports = async (session, abspath, format) => {
     try {
         const node = await Node.resolve(session, abspath);
 
-        assert(node.properties.type === "f", "Only files can be rotated");
+        assert(node.properties.type === "f", "Can only get media for files");
 
         const filename = path.join(config.fileDirectory, node.attributes.diskfilename);
 

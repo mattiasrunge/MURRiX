@@ -42,11 +42,16 @@
             color: white;
             text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
             opacity: 0;
+            transition: opacity .1s ease-in-out;
+
+            &:hover {
+                opacity: 1 !important;
+            }
         }
 
         &:hover {
             & .mediaImageMenu {
-                opacity: 1;
+                opacity: 0.5;
             }
         }
     }
