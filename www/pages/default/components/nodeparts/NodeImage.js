@@ -18,6 +18,19 @@ class NodeImage extends Component {
     }
 
     async load() {
+        this.addDisposables([
+            api.vfs.on("node.create", (path) => {
+                if (path === this.props.path) {
+                    this.update(this.props);
+                }
+            }),
+            api.vfs.on("node.update", (path) => {
+                if (path === this.props.path) {
+                    this.update(this.props);
+                }
+            })
+        ]);
+
         !this.props.lazy && (await this.update(this.props));
     }
 

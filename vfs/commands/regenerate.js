@@ -1,6 +1,9 @@
 "use strict";
 
+const assert = require("assert");
 const Node = require("../lib/Node");
+const access = require("./access");
+const rmmedia = require("./rmmedia");
 const metadata = require("./metadata");
 const position2timezone = require("./position2timezone");
 const symlink = require("./symlink");
@@ -10,6 +13,8 @@ const { ADMIN_SESSION } = require("../lib/auth");
 
 module.exports = async (session, abspath, options = {}) => {
     let node = await Node.resolve(session, abspath);
+
+    assert(await access(session, node, "w"), "Permission denied");
 
     if (node.properties.type === "f") {
         const attributes = {};
@@ -83,7 +88,8 @@ module.exports = async (session, abspath, options = {}) => {
         });
     }
 
-    // TODO: await file.removeCached(session, abspath, "image");
+    await rmmedia(session, node, "image");
+    // TODO: await rmmedia(session, node, "video");
 
     return node.serialize(session);
 };

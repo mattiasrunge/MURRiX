@@ -14,26 +14,41 @@
 }
 
 .mediaImageGroup {
-    margin: 5px 4px 4px 5px !important;
+    margin: var(--spacing) calc(var(--spacing) - 1) calc(var(--spacing) - 1) var(--spacing) !important;
 
     & .mediaImageContainer {
         position: relative;
         display: inline-block;
-    }
 
-    & .mediaImageTypeIcon {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        font-size: 20px !important;
-        color: white;
-        text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+        & .mediaImage {
+            margin: 0 1px 1px 0 !important;
+            width: 216px !important;
+        }
 
-    }
+        & .mediaImageTypeIcon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 20px !important;
+            color: white;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+        }
 
-    & .mediaImage {
-        margin: 0 1px 1px 0 !important;
-        width: 222px !important;
+        & .mediaImageMenu {
+            position: absolute !important;
+            top: 5px;
+            right: 5px;
+            font-size: 16px !important;
+            color: white;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+            opacity: 0;
+        }
+
+        &:hover {
+            & .mediaImageMenu {
+                opacity: 1;
+            }
+        }
     }
 }
 

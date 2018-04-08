@@ -12,6 +12,7 @@ module.exports = async (session) => {
     session.uid = user.attributes.uid;
     session.gid = user.attributes.gid;
     session.gids = grps.map((group) => group.attributes.gid);
+    delete session.admin;
 
     return user.serialize(session);
 };

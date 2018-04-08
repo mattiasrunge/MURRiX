@@ -86,7 +86,7 @@ module.exports = {
             }
 
             ctx.session = sessions[sessionId];
-            ctx.session._expires = new Date(Date.now() + sessionMaxAge);
+            ctx.session._expires = ctx.session._expires || new Date(Date.now() + sessionMaxAge);
 
             ctx.cookies.set(sessionName, sessionId, { maxAge: sessionMaxAge });
 

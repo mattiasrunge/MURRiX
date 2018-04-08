@@ -19,6 +19,19 @@ class NodeHeader extends Component {
     }
 
     async load() {
+        this.addDisposables([
+            api.vfs.on("node.create", (path) => {
+                if (path === `${this.props.node.path}/profilePicture`) {
+                    this.update(this.props);
+                }
+            }),
+            api.vfs.on("node.update", (path) => {
+                if (path === `${this.props.node.path}/profilePicture`) {
+                    this.update(this.props);
+                }
+            })
+        ]);
+
         await this.update(this.props);
     }
 
@@ -140,6 +153,7 @@ class NodeHeader extends Component {
 NodeHeader.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
+    editAllowed: PropTypes.bool.isRequired,
     pages: PropTypes.array.isRequired
 };
 

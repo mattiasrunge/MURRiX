@@ -20,6 +20,7 @@ class Node extends Component {
 
         this.state = {
             node: false,
+            editAllowed: false,
             loading: false,
             page: false
         };
@@ -59,12 +60,13 @@ class Node extends Component {
 
         try {
             const node = await api.vfs.resolve(path);
+            const editAllowed = await api.vfs.access(node.path, "w");
 
-            this.setState({ node, loading: false, page });
+            this.setState({ node, editAllowed, loading: false, page });
         } catch (error) {
             this.logError("Failed to load node", error);
             notification.add("error", error.message, 10000);
-            this.setState({ node: false, loading: false });
+            this.setState({ node: false, editAllowed: false, loading: false });
         }
     }
 
@@ -111,8 +113,11 @@ class Node extends Component {
                 onClick: this.onPage,
                 Component: Family,
                 validTypes: [ "p" ]
-            },
-            {
+            }
+        ];
+
+        if (this.state.editAllowed) {
+            allPages.push({
                 name: "settings",
                 title: "Settings",
                 icon: "setting",
@@ -121,8 +126,8 @@ class Node extends Component {
                 Component: Settings,
                 validTypes: [ "p", "c", "l", "a" ],
                 right: true
-            }
-        ];
+            });
+        }
 
         const pages = allPages.filter((page) => this.state.node && page.validTypes.includes(this.state.node.properties.type));
 
@@ -135,6 +140,7 @@ class Node extends Component {
                     <Otherwise>
                         <NodeHeader
                             node={this.state.node}
+                            editAllowed={this.state.editAllowed}
                             pages={pages}
                         />
                         <Switch>
@@ -142,6 +148,7 @@ class Node extends Component {
                                 <Media
                                     theme={this.props.theme}
                                     node={this.state.node}
+                                    editAllowed={this.state.editAllowed}
                                     match={this.props.match}
                                 />
                             </Route>
@@ -149,6 +156,7 @@ class Node extends Component {
                                 <Timeline
                                     theme={this.props.theme}
                                     node={this.state.node}
+                                    editAllowed={this.state.editAllowed}
                                     match={this.props.match}
                                 />
                             </Route>
@@ -156,6 +164,7 @@ class Node extends Component {
                                 <Map
                                     theme={this.props.theme}
                                     node={this.state.node}
+                                    editAllowed={this.state.editAllowed}
                                     match={this.props.match}
                                 />
                             </Route>
@@ -163,6 +172,7 @@ class Node extends Component {
                                 <Family
                                     theme={this.props.theme}
                                     node={this.state.node}
+                                    editAllowed={this.state.editAllowed}
                                     match={this.props.match}
                                 />
                             </Route>
@@ -170,6 +180,7 @@ class Node extends Component {
                                 <Settings
                                     theme={this.props.theme}
                                     node={this.state.node}
+                                    editAllowed={this.state.editAllowed}
                                     match={this.props.match}
                                 />
                             </Route>

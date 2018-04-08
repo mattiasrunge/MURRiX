@@ -7,10 +7,10 @@ import Component from "lib/component";
 import notification from "lib/notification";
 import utils from "lib/utils";
 import api from "api.io-client";
-import { Image, Loader, Header, Button, Icon } from "semantic-ui-react";
-import { NodeImage } from "components/nodeparts";
-import { FileIcon } from "components/upload";
+import { Image, Loader, Header, Button } from "semantic-ui-react";
 import { CreateModal, EditModal, RemoveModal } from "components/edit";
+import Text from "./media/Text";
+import Thumbnail from "./media/Thumbnail";
 
 class Media extends Component {
     constructor(props) {
@@ -21,12 +21,7 @@ class Media extends Component {
             loading: false,
             addText: false,
             editNode: false,
-            removeNode: false,
-            format: {
-                width: 222,
-                height: 222,
-                type: "image"
-            }
+            removeNode: false
         };
     }
 
@@ -138,40 +133,42 @@ class Media extends Component {
     render() {
         return (
             <div className={this.props.theme.mediaContainer}>
-                <If condition={this.state.addText}>
-                    <CreateModal
-                        type="t"
-                        path={`${this.props.node.path}/texts`}
-                        onClose={this.onCloseAddText}
-                        attributes={{
-                            name: "text",
-                            type: "generic"
-                        }}
-                        gotoNew={false}
+                <If condition={this.props.editAllowed}>
+                    <If condition={this.state.addText}>
+                        <CreateModal
+                            type="t"
+                            path={`${this.props.node.path}/texts`}
+                            onClose={this.onCloseAddText}
+                            attributes={{
+                                name: "text",
+                                type: "generic"
+                            }}
+                            gotoNew={false}
+                        />
+                    </If>
+                    <If condition={this.state.editNode}>
+                        <EditModal
+                            node={this.state.editNode}
+                            onClose={this.onCloseEdit}
+                        />
+                    </If>
+                    <If condition={this.state.removeNode}>
+                        <RemoveModal
+                            node={this.state.removeNode}
+                            onClose={this.onCloseRemove}
+                        />
+                    </If>
+                    <Button
+                        className={this.props.theme.mediaAddText}
+                        floated="right"
+                        size="small"
+                        icon="add"
+                        circular
+                        primary
+                        title="Add text"
+                        onClick={this.onAddText}
                     />
                 </If>
-                <If condition={this.state.editNode}>
-                    <EditModal
-                        node={this.state.editNode}
-                        onClose={this.onCloseEdit}
-                    />
-                </If>
-                <If condition={this.state.removeNode}>
-                    <RemoveModal
-                        node={this.state.removeNode}
-                        onClose={this.onCloseRemove}
-                    />
-                </If>
-                <Button
-                    className={this.props.theme.mediaAddText}
-                    floated="right"
-                    size="small"
-                    icon="add"
-                    circular
-                    primary
-                    title="Add text"
-                    onClick={this.onAddText}
-                />
                 <Loader
                     active={this.state.loading}
                     className={this.props.theme.mediaLoader}
@@ -190,49 +187,23 @@ class Media extends Component {
                                 </Header>
                             </If>
                             <For each="text" of={day.texts}>
-                                <blockquote key={text._id}>
-                                    <p>
-                                        {text.attributes.text}
-                                    </p>
-                                    <footer>
-                                        Written by <cite title="By">{text.name}</cite> on {format.datetimeUtc(text.attributes.time.timestamp)}
-                                        <Icon
-                                            className={this.props.theme.mediaEditIcon}
-                                            name="edit"
-                                            title="Edit"
-                                            link
-                                            onClick={() => this.onEditNode(text)}
-                                        />
-                                        <Icon
-                                            className={this.props.theme.mediaEditIcon}
-                                            name="trash"
-                                            title="Remove"
-                                            link
-                                            onClick={() => this.onRemoveNode(text)}
-                                        />
-                                    </footer>
-                                </blockquote>
+                                <Text
+                                    key={text._id}
+                                    theme={this.props.theme}
+                                    node={text}
+                                    onRemove={this.props.editAllowed ? this.onRemoveNode : null}
+                                    onEdit={this.props.editAllowed ? this.onEditNode : null}
+                                />
                             </For>
-                            <Image.Group
-                                className={this.props.theme.mediaImageGroup}
-                            >
+                            <Image.Group className={this.props.theme.mediaImageGroup}>
                                 <For each="file" of={day.files}>
-                                    <span
+                                    <Thumbnail
                                         key={file._id}
-                                        className={this.props.theme.mediaImageContainer}
-                                    >
-                                        <NodeImage
-                                            className={this.props.theme.mediaImage}
-                                            title={file.attributes.name}
-                                            path={file.path}
-                                            format={this.state.format}
-                                            lazy
-                                        />
-                                        <FileIcon
-                                            type={file.attributes.mimetype}
-                                            className={this.classNames(this.props.theme.mediaImageTypeIcon, "image")}
-                                        />
-                                    </span>
+                                        theme={this.props.theme}
+                                        node={file}
+                                        editAllowed={this.props.editAllowed}
+                                        parentNode={this.props.node}
+                                    />
                                 </For>
                             </Image.Group>
                         </div>
@@ -246,7 +217,8 @@ class Media extends Component {
 Media.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired
+    match: PropTypes.object.isRequired,
+    editAllowed: PropTypes.bool.isRequired
 };
 
 export default Media;
