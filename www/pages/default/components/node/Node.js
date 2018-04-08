@@ -13,6 +13,7 @@ import Map from "./pages/Map";
 import Family from "./pages/Family";
 import Settings from "./pages/Settings";
 import Timeline from "./pages/Timeline";
+import Tags from "./pages/Tags";
 
 class Node extends Component {
     constructor(props) {
@@ -85,7 +86,7 @@ class Node extends Component {
                 active: this.state.page === "media",
                 onClick: this.onPage,
                 Component: Media,
-                validTypes: [ "p", "c", "l", "a" ]
+                validTypes: [ "a" ]
             },
             {
                 name: "timeline",
@@ -94,6 +95,15 @@ class Node extends Component {
                 active: this.state.page === "timeline",
                 onClick: this.onPage,
                 Component: Timeline,
+                validTypes: [ "p" ]
+            },
+            {
+                name: "tags",
+                title: "Tags",
+                icon: "image",
+                active: this.state.page === "tags",
+                onClick: this.onPage,
+                Component: Tags,
                 validTypes: [ "p" ]
             },
             {
@@ -154,6 +164,14 @@ class Node extends Component {
                             </Route>
                             <Route path={`/node${this.state.node.path}/_/timeline`}>
                                 <Timeline
+                                    theme={this.props.theme}
+                                    node={this.state.node}
+                                    editAllowed={this.state.editAllowed}
+                                    match={this.props.match}
+                                />
+                            </Route>
+                            <Route path={`/node${this.state.node.path}/_/tags`}>
+                                <Tags
                                     theme={this.props.theme}
                                     node={this.state.node}
                                     editAllowed={this.state.editAllowed}
