@@ -6,6 +6,24 @@ class Text extends Node {
     static getAttributeTypes() {
         return [
             {
+                name: "name",
+                label: "Name",
+                type: "textline",
+                required: true
+            },
+            {
+                name: "type",
+                label: "Type",
+                type: "select",
+                options: {
+                    generic: "Generic",
+                    birth: "Birth",
+                    engagement: "Engagement",
+                    marriage: "Marriage",
+                    death: "Death"
+                }
+            },
+            {
                 name: "when",
                 label: "When",
                 type: "when"
