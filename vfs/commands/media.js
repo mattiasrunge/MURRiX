@@ -3,12 +3,20 @@
 const assert = require("assert");
 const path = require("path");
 const Node = require("../lib/Node");
+const { isGuest } = require("../lib/auth");
 const config = require("../../core/lib/configuration");
 const media = require("../../core/lib/media");
+const { ADMIN_SESSION } = require("../lib/auth");
 
 module.exports = async (session, abspath, format) => {
     try {
-        const node = await Node.resolve(session, abspath);
+        let sess = session;
+
+        if (!isGuest(session) && abspath.startsWith("/users")) {
+            sess = ADMIN_SESSION;
+        }
+
+        const node = await Node.resolve(sess, abspath);
 
         assert(node.properties.type === "f", "Can only get media for files");
 

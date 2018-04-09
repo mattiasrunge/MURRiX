@@ -31,6 +31,8 @@ class NodeLabels extends Component {
         try {
             const labels = await api.vfs.labels(props.node.path);
 
+            labels.sort((a, b) => b.count - a.count);
+
             !this.disposed && this.setState({
                 labels: labels.map((label) => ({
                     ...label,

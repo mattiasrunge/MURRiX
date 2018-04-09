@@ -11,7 +11,7 @@ export default {
         const abspath = await term.getAbspath(args.path, false);
         const slashIndex = abspath.lastIndexOf("/");
         const lastPart = abspath.substr(slashIndex + 1);
-        const items = lastPart.includes("*") ? await api.vfs.list(abspath) : [ await api.vfs.resolve(abspath) ];
+        const items = lastPart.includes("*") ? await api.vfs.list(abspath) : [ await api.vfs.resolve(abspath, { nofollow: true }) ];
 
         for (const item of items) {
             if (opts.f) {

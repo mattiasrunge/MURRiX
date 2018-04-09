@@ -8,7 +8,7 @@ import notification from "lib/notification";
 import utils from "lib/utils";
 import api from "api.io-client";
 import { Image, Loader, Header } from "semantic-ui-react";
-import Thumbnail from "./media/Thumbnail";
+import Thumbnail from "./lib/Thumbnail";
 
 class Tags extends Component {
     constructor(props) {
@@ -34,7 +34,7 @@ class Tags extends Component {
         for (const file of files) {
             const day = file.attributes.time ? moment.utc(file.attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
 
-            days[day] = days[day] || { texts: [], files: [], time: file.attributes.time };
+            days[day] = days[day] || { files: [], time: file.attributes.time };
             days[day].files.push(file);
         }
 

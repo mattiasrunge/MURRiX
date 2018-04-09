@@ -8,7 +8,8 @@ const exports = {
     NodeIcon: require("./NodeIcon"),
     NodeCard: require("./NodeCard"),
     NodeHeader: require("./NodeHeader"),
-    NodeLabels: require("./NodeLabels")
+    NodeLabels: require("./NodeLabels"),
+    NodeLink: require("./NodeLink")
 };
 
 module.exports = themeify(theme, exports);

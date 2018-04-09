@@ -62,6 +62,7 @@
     border-right: 1px solid #d4d4d5;
     border-bottom: 1px solid #d4d4d5;
     padding-top: var(--spacing);
+    position: relative;
 
     & .mediaDay {
         margin-top: calc(var(--spacing) * 2) !important;
@@ -77,41 +78,45 @@
         margin-right: var(--spacing) !important;
         margin-bottom: calc(var(--spacing) / 2) !important;
     }
+}
+
+.text {
+    font-size: 0.9em;
 
     & blockquote {
-        font-size: 0.9em;
         border-left: 4px solid #d4d4d5;
         padding-left: var(--spacing) !important;
         margin-left: var(--spacing) !important;
         margin-right: var(--spacing) !important;
         margin-bottom: var(--spacing) !important;
+    }
 
-        & p {
-            white-space: pre-line;
-        }
+    & p {
+        white-space: pre-line;
+    }
 
+    & .mediaEditIcon {
+        opacity: 0 !important;
+        margin-left: 5px !important;
+        margin-right: 0 !important
+    }
+
+    &:hover {
         & .mediaEditIcon {
-            opacity: 0 !important;
-            margin-left: 5px !important;
-            margin-right: 0 !important
-        }
-
-        &:hover {
-            & .mediaEditIcon {
-                opacity: 0.5 !important;
-            }
+            opacity: 0.5 !important;
         }
     }
+}
 
-    & footer {
-        font-size: 0.9em;
-        font-style: italic;
-    }
+.textBy {
+    font-size: 0.8em !important;
+    font-style: italic;
+}
 
-    & .mediaAddText {
-        margin-top: calc(var(--spacing) / -2) !important;
-        margin-right: calc(var(--spacing) / 2) !important;
-    }
+.mediaAddText {
+    position: absolute;
+    top: calc(var(--spacing) / 2) !important;
+    right: calc(var(--spacing) / 2) !important;
 }
 
 .pageContainer {
@@ -174,4 +179,79 @@
 .shareUsersToggle {
     float: right;
     padding-top: 2.2em;
+}
+
+.timelineTimeContainer {
+    color: rgba(0, 0, 0, .5);
+
+    & .timelineTimeUnknown {
+        font-size: 20px;
+        line-height: 20px;
+    }
+
+    & .timelineTimeYear {
+        font-size: 28px;
+        font-weight: 700;
+        padding-bottom: 5px;
+        line-height: 28px;
+    }
+
+    & .timelineTimeDate {
+        font-size: 14px;
+        font-weight: 600;
+        padding-bottom: 5px;
+    }
+
+    & .timelineTimeClock {
+        font-size: 12px;
+        padding-bottom: 5px;
+    }
+}
+
+.timelineContainer {
+    border-left: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
+    border-bottom: 1px solid #d4d4d5;
+    position: relative;
+
+    & .timelineTable {
+        width: 100%;
+        border-spacing: 0;
+
+        & td {
+            vertical-align: top;
+            padding: var(--spacing);
+        }
+
+        & .timelineRow {
+            &:first-child {
+                & .timelineTime, & .timelineItem {
+                    padding-top: calc(var(--spacing) * 2);
+                }
+            }
+        }
+
+        & .timelineTime {
+            background-color: #F4F4F5;
+            width: 20%;
+            text-align: right;
+        }
+
+        & .timelineItem {
+            & .text {
+                margin: 0 !important;
+                margin-bottom: var(--spacing) !important;
+
+                & h3 {
+                    margin: 0 !important;
+                    margin-bottom: 5px !important;
+                    line-height: 28px !important;
+                }
+            }
+
+            & .withOthers {
+                font-style: italic;
+            }
+        }
+    }
 }

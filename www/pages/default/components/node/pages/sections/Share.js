@@ -246,7 +246,7 @@ class Share extends Component {
                                                     {group.description}
                                                 </small>
                                                 <div>
-                                                    <For each="user" of={group.users}>
+                                                    <For each="user" of={group.users.filter((user) => this.state.showInactive || !user.attributes.inactive)}>
                                                         <NodeImage
                                                             key={user._id}
                                                             className={this.props.theme.groupUserAvatar}

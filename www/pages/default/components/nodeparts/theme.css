@@ -25,6 +25,10 @@
     }
 }
 
+.nodeLink {
+    cursor: pointer;
+}
+
 .nodeCardTags {
     margin-top: 1em;
 }

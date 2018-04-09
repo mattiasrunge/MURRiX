@@ -12,7 +12,7 @@ export default {
         let id;
 
         if (!opts.i) {
-            const abspath = await term.getAbspath(args.abspath, true);
+            const abspath = await term.getAbspath(args.path, true);
             const node = await api.vfs.resolve(abspath, { nofollow: opts.l });
 
             id = node._id;
@@ -20,10 +20,10 @@ export default {
             id = args.path;
         }
 
-        const paths = await api.vfs.lookup(id);
+        const nodes = await api.vfs.lookup(id);
 
-        for (const path of paths) {
-            await streams.stdout.write(`${path}\n`);
+        for (const node of nodes) {
+            await streams.stdout.write(`${node.path}\n`);
         }
     },
     completion: async (term, cmd, name, value) => {

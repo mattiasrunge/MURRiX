@@ -9,8 +9,8 @@ import utils from "lib/utils";
 import api from "api.io-client";
 import { Image, Loader, Header, Button } from "semantic-ui-react";
 import { CreateModal, EditModal, RemoveModal } from "components/edit";
-import Text from "./media/Text";
-import Thumbnail from "./media/Thumbnail";
+import Text from "./lib/Text";
+import Thumbnail from "./lib/Thumbnail";
 
 class Media extends Component {
     constructor(props) {

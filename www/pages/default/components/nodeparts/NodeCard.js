@@ -7,13 +7,13 @@ import NodeImage from "./NodeImage";
 import NodeIcon from "./NodeIcon";
 
 class NodeCard extends Component {
-    onClick() {
+    onClick = () => {
         this.context.router.history.push(`/node${this.props.node.path}`);
     }
 
     render() {
         return (
-            <Card onClick={() => this.onClick()}>
+            <Card onClick={this.onClick}>
                 <NodeImage
                     theme={this.props.theme}
                     path={`${this.props.node.path}/profilePicture`}

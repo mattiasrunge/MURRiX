@@ -238,50 +238,49 @@ class Node {
                     connectToField: "properties.children.id",
                     as: "parents"
                 }
-            },
-            {
-                "$addFields": {
-                    "parents": {
-                        "$reverseArray": {
-                            "$map": {
-                                "input": "$parents",
-                                "as": "t",
-                                "in": {
-                                    "_id": "$$t._id",
-                                    "properties": "$$t.properties"
-                                }
-                            }
-                        }
-                    }
-                }
             }
         ];
 
         const cursor = await this.aggregate(session, pipeline);
         const nodes = await cursor.toArray();
 
-        return nodes
-        .map((node) => {
-            const pathParts = [];
-            let childId = id;
-            let parent;
+        const getParentInfo = (parents, id) => {
+            const list = [];
 
-            while (parent = node.parents.find((parent) => parent.properties.children.some((child) => child.id === childId))) {
-                const child = parent.properties.children.find((child) => child.id === childId);
+            for (const parent of parents) {
+                const children = parent.properties.children.filter((child) => child.id === id);
 
-                pathParts.push(child.name);
-                childId = parent._id;
+                if (children.length > 0) {
+                    const paths = getParentInfo(parents, parent._id);
+
+                    for (const path of paths) {
+                        for (const child of children) {
+                            list.push(`${path}/${child.name}`);
+                        }
+                    }
+                }
             }
 
-            const abspath = `/${pathParts.reverse().join("/")}`;
+            return list.length === 0 ? [ "" ] : list;
+        };
 
-            return this._factory(node.properties.type, {
-                ...node,
-                name: path.basename(abspath) || null,
-                path: abspath
-            });
-        })
-        .filter((node) => node.hasAccess(session, "r"));
+        const list = [];
+
+        nodes.forEach((node) => {
+            const paths = getParentInfo(node.parents, node._id);
+
+            delete node.parents;
+
+            for (const abspath of paths) {
+                list.push(this._factory(node.properties.type, {
+                    ...node,
+                    name: path.basename(abspath) || null,
+                    path: abspath
+                }));
+            }
+        });
+
+        return list.filter((node) => node.hasAccess(session, "r"));
     }
 
     static async aggregate(session, pipeline) {
