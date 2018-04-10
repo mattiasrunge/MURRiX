@@ -2,11 +2,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import format from "lib/format";
 import api from "api.io-client";
 import { Menu } from "semantic-ui-react";
 import NodeImage from "./NodeImage";
 import NodeLabels from "./NodeLabels";
+import NodeAge from "./NodeAge";
 
 class NodeHeader extends Component {
     constructor(props) {
@@ -42,7 +42,7 @@ class NodeHeader extends Component {
     }
 
     async update(props) {
-        this.setState({ url: null, loading: true });
+        this.setState({ url: null, age: {}, loading: true });
 
         try {
             const url = await api.vfs.media(`${props.node.path}/profilePicture`, {
@@ -60,18 +60,14 @@ class NodeHeader extends Component {
 
     render() {
         return (
-            <div
-                className={this.props.theme.nodeHeader}
-            >
+            <div className={this.props.theme.nodeHeader}>
                 <div
                     className={this.props.theme.nodeHeaderBackground}
                     style={{
                         backgroundImage: `url('${this.state.url}')`
                     }}
                 />
-                <div
-                    className={this.props.theme.nodeHeaderBackgroundGradient}
-                />
+                <div className={this.props.theme.nodeHeaderBackgroundGradient} />
                 <NodeImage
                     theme={this.props.theme}
                     className={this.props.theme.nodeHeaderImage}
@@ -87,22 +83,18 @@ class NodeHeader extends Component {
                     className={this.props.theme.nodeHeaderLabels}
                     node={this.props.node}
                 />
+                <div className={this.props.theme.nodeHeaderInformation}>
+
+                </div>
                 <div className={this.props.theme.nodeHeaderText}>
+                    <div className={this.props.theme.nodeHeaderDetails}>
+                        <NodeAge
+                            theme={this.props.theme}
+                            node={this.props.node}
+                        />
+                    </div>
                     <div className={this.props.theme.nodeHeaderTitle}>
                         {this.props.node.attributes.name}
-                    </div>
-                    <div className={this.props.theme.nodeHeaderInformation}>
-                        <span>
-                            Created {format.datetimeAgo(this.props.node.properties.birthtime)}
-                        </span>
-                        <span>
-                            &nbsp;{" "}&nbsp;
-                            {"\u00b7"}
-                            &nbsp;{" "}&nbsp;
-                        </span>
-                        <span>
-                            Modified {format.datetimeAgo(this.props.node.properties.mtime)}
-                        </span>
                     </div>
                     <div className={this.props.theme.nodeHeaderDescription}>
                         {this.props.node.attributes.description}

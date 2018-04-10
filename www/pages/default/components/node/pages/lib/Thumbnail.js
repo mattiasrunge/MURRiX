@@ -16,8 +16,8 @@ class Thumbnail extends Component {
 
         this.state = {
             format: {
-                width: 216,
-                height: 216,
+                width: this.props.size,
+                height: this.props.size,
                 type: "image"
             }
         };
@@ -129,11 +129,16 @@ class Thumbnail extends Component {
     }
 }
 
+Thumbnail.defaultProps = {
+    size: 216
+};
+
 Thumbnail.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
     parentNode: PropTypes.object.isRequired,
-    editAllowed: PropTypes.bool.isRequired
+    editAllowed: PropTypes.bool.isRequired,
+    size: PropTypes.number
 };
 
 export default Thumbnail;

@@ -198,7 +198,10 @@ class Node {
             search: options.search,
             skip: options.skip,
             limit: options.limit,
-            nofollow: options.nofollow
+            nofollow: options.nofollow,
+            sort: options.sort,
+            reverse: options.reverse,
+            opts: options.opts
         });
     }
 
@@ -485,7 +488,7 @@ class Node {
 
         const ids = children.map((child) => child.id);
         const query = Object.assign({}, options.query || {}, { _id: { $in: ids } });
-        const nodes = await db.find("nodes", query);
+        const nodes = await db.find("nodes", query, options.opts);
 
         const promises = children
         .map((child) => ({

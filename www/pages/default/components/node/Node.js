@@ -14,6 +14,7 @@ import Family from "./pages/Family";
 import Settings from "./pages/Settings";
 import Timeline from "./pages/Timeline";
 import Tags from "./pages/Tags";
+import Details from "./pages/Details";
 
 class Node extends Component {
     constructor(props) {
@@ -98,6 +99,15 @@ class Node extends Component {
                 validTypes: [ "p" ]
             },
             {
+                name: "details",
+                title: "Details",
+                icon: "address card outline",
+                active: this.state.page === "details",
+                onClick: this.onPage,
+                Component: Details,
+                validTypes: [ "p" ]
+            },
+            {
                 name: "tags",
                 title: "Tags",
                 icon: "image",
@@ -154,61 +164,29 @@ class Node extends Component {
                             pages={pages}
                         />
                         <Switch>
-                            <Route path={`/node${this.state.node.path}/_/media`}>
-                                <Media
-                                    theme={this.props.theme}
-                                    node={this.state.node}
-                                    editAllowed={this.state.editAllowed}
-                                    match={this.props.match}
-                                />
-                            </Route>
-                            <Route path={`/node${this.state.node.path}/_/timeline`}>
-                                <Timeline
-                                    theme={this.props.theme}
-                                    node={this.state.node}
-                                    editAllowed={this.state.editAllowed}
-                                    match={this.props.match}
-                                />
-                            </Route>
-                            <Route path={`/node${this.state.node.path}/_/tags`}>
-                                <Tags
-                                    theme={this.props.theme}
-                                    node={this.state.node}
-                                    editAllowed={this.state.editAllowed}
-                                    match={this.props.match}
-                                />
-                            </Route>
-                            <Route path={`/node${this.state.node.path}/_/map`}>
-                                <Map
-                                    theme={this.props.theme}
-                                    node={this.state.node}
-                                    editAllowed={this.state.editAllowed}
-                                    match={this.props.match}
-                                />
-                            </Route>
-                            <Route path={`/node${this.state.node.path}/_/family`}>
-                                <Family
-                                    theme={this.props.theme}
-                                    node={this.state.node}
-                                    editAllowed={this.state.editAllowed}
-                                    match={this.props.match}
-                                />
-                            </Route>
-                            <Route path={`/node${this.state.node.path}/_/settings`}>
-                                <Settings
-                                    theme={this.props.theme}
-                                    node={this.state.node}
-                                    editAllowed={this.state.editAllowed}
-                                    match={this.props.match}
-                                />
-                            </Route>
-                            <Route path="*">
-                                <Redirect
-                                    to={{
-                                        pathname: `/node${this.state.node.path}/_/${pages[0].name}`
-                                    }}
-                                />
-                            </Route>
+                            <For each="page" of={pages}>
+                                <Route
+                                    key={page.name}
+                                    path={`/node${this.state.node.path}/_/${page.name}`}
+                                >
+                                    <// eslint-disable-next-line
+                                     page.Component
+                                        theme={this.props.theme}
+                                        node={this.state.node}
+                                        match={this.props.match}
+                                        editAllowed={this.state.editAllowed}
+                                    />
+                                </Route>
+                            </For>
+                            <If condition={this.state.node}>
+                                <Route path="*">
+                                    <Redirect
+                                        to={{
+                                            pathname: `/node${this.state.node.path}/_/${pages[0].name}`
+                                        }}
+                                    />
+                                </Route>
+                            </If>
                         </Switch>
                     </Otherwise>
                 </Choose>

@@ -104,13 +104,13 @@
         line-height: 1.28571429em;
     }
 
-    & .nodeHeaderInformation {
-        font-weight: 600;
-        font-size: 0.8em;
+    & .nodeHeaderDetails {
+        font-weight: 700;
+        font-size: 1.2em;
     }
 
     & .nodeHeaderDescription {
-        margin-top: var(--spacing);
+        margin-top: calc(var(--spacing) / 2);
         font-size: 1em;
     }
 
@@ -118,7 +118,19 @@
     & .nodeHeaderLabels {
         position: absolute !important;
         left: var(--spacing);
-        top: var(--spacing)
+        top: var(--spacing);
+    }
+
+    & .nodeHeaderInformation {
+        position: absolute !important;
+        right: var(--spacing);
+        top: var(--spacing);
+        text-align: right;
+        text-rendering: optimizelegibility !important;
+        text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+        color: white;
+        font-weight: 600;
+        font-size: 0.8em;
     }
 
     & .nodeHeaderTabContainer {

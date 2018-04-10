@@ -4,56 +4,40 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
-import { Edit } from "components/edit";
-import Share from "./sections/Share";
-import Organize from "./sections/Organize";
-import { Upload } from "components/upload";
+import About from "./sections/About";
 
-class Settings extends Component {
+class Details extends Component {
     onSection = (e, { name }) => {
-        this.context.router.history.push(`/node${this.props.node.path}/_/settings/${name}`);
+        this.context.router.history.push(`/node${this.props.node.path}/_/details/${name}`);
     }
 
     render() {
         const [ , pagePart ] = this.props.match.url.split("/_/");
         const [ , section ] = pagePart.split("/");
 
-        const allSections = [
+        const sections = [
             {
-                name: "edit",
-                title: "Edit",
-                icon: "edit",
-                active: section === "edit",
-                Component: Edit,
-                validTypes: [ "a", "l", "c", "p" ]
+                name: "about",
+                title: "About",
+                icon: "id card outline",
+                active: section === "about",
+                Component: About
+            }/* ,
+            {
+                name: "measurements",
+                title: "Measurements",
+                icon: "area chart",
+                active: section === "measurements",
+                Component: Share
             },
             {
-                name: "share",
-                title: "Share",
-                icon: "share alternate",
-                active: section === "share",
-                Component: Share,
-                validTypes: [ "a", "l", "c", "p" ]
-            },
-            {
-                name: "upload",
-                title: "Upload",
-                icon: "upload",
-                active: section === "upload",
-                Component: Upload,
-                validTypes: [ "a" ]
-            },
-            {
-                name: "organize",
-                title: "Organize",
+                name: "files",
+                title: "Files",
                 icon: "folder open outline",
-                active: section === "organize",
-                Component: Organize,
-                validTypes: [ "a" ]
-            }
+                active: section === "files",
+                Component: Upload
+            }*/
         ];
-
-        const sections = allSections.filter((section) => this.props.node && section.validTypes.includes(this.props.node.properties.type));
 
         return (
             <div className={this.props.theme.pageContainer}>
@@ -76,7 +60,7 @@ class Settings extends Component {
                         <For each="section" of={sections}>
                             <Route
                                 key={section.name}
-                                path={`/node${this.props.node.path}/_/settings/${section.name}`}
+                                path={`/node${this.props.node.path}/_/details/${section.name}`}
                             >
                                 <section.Component
                                     theme={this.props.theme}
@@ -88,7 +72,7 @@ class Settings extends Component {
                         <Route path="*">
                             <Redirect
                                 to={{
-                                    pathname: `/node${this.props.node.path}/_/settings/${sections[0].name}`
+                                    pathname: `/node${this.props.node.path}/_/details/${sections[0].name}`
                                 }}
                             />
                         </Route>
@@ -99,14 +83,14 @@ class Settings extends Component {
     }
 }
 
-Settings.propTypes = {
+Details.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired
 };
 
-Settings.contextTypes = {
+Details.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default Settings;
+export default Details;

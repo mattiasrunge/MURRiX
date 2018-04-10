@@ -15,44 +15,64 @@
 
 .mediaImageGroup {
     margin: var(--spacing) calc(var(--spacing) - 1) calc(var(--spacing) - 1) var(--spacing) !important;
+}
 
-    & .mediaImageContainer {
+.mediaImageContainer {
+    position: relative;
+    display: inline-block;
+
+    & .mediaImage {
+        margin: 0 1px 1px 0 !important;
+        /* width: 216px !important; */
+    }
+
+    & .mediaImageSelectable {
         position: relative;
+        cursor: pointer;
         display: inline-block;
+    }
 
-        & .mediaImage {
-            margin: 0 1px 1px 0 !important;
-            width: 216px !important;
-        }
+    & .mediaImageSelected {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, .5);
+        color: white;
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 50px;
+        text-align: center;
+    }
 
-        & .mediaImageTypeIcon {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            font-size: 20px !important;
-            color: white;
-            text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
-        }
+    & .mediaImageTypeIcon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        font-size: 20px !important;
+        color: white;
+        text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+    }
 
-        & .mediaImageMenu {
-            position: absolute !important;
-            top: 5px;
-            right: 5px;
-            font-size: 16px !important;
-            color: white;
-            text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
-            opacity: 0;
-            transition: opacity .1s ease-in-out;
-
-            &:hover {
-                opacity: 1 !important;
-            }
-        }
+    & .mediaImageMenu {
+        position: absolute !important;
+        top: 5px;
+        right: 5px;
+        font-size: 16px !important;
+        color: white;
+        text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+        opacity: 0;
+        transition: opacity .1s ease-in-out;
 
         &:hover {
-            & .mediaImageMenu {
-                opacity: 0.5;
-            }
+            opacity: 1 !important;
+        }
+    }
+
+    &:hover {
+        & .mediaImageMenu {
+            opacity: 0.5;
         }
     }
 }
@@ -254,4 +274,29 @@
             }
         }
     }
+}
+
+.organizeRemoteInput {
+    width: 100%;
+
+    & div {
+        width: 100%;
+    }
+}
+
+.organizeRemoteListItem {
+    cursor: pointer;
+
+    &:hover {
+        background-color: #F4F4F5
+    }
+}
+
+.organizeRemoteListItemContent {
+    line-height: 2em !important;
+}
+
+.organizeRemoteListItemClose {
+    float: right;
+    font-size: 0.8em !important;
 }

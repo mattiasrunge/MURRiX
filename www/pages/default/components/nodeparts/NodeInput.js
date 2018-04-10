@@ -102,14 +102,14 @@ class NodeInput extends Component {
     }
 
     onKeyUp = (e) => {
-        this.props.onKeyUp(e, this.state.searchQuery);
+        this.props.onKeyUp && this.props.onKeyUp(e, this.state.searchQuery);
     }
 
     render() {
         return (
             <Ref innerRef={(ref) => this.onRef(ref)}>
                 <Search
-                    className={`item ${this.props.theme.nodeInput} ${this.props.theme.nodeInputSearch} ${this.state.selected ? this.props.theme.nodeInputSearchSelected : ""}`}
+                    className={this.classNames("item", this.props.theme.nodeInput, this.props.className, this.props.theme.nodeInputSearch, this.state.selected ? this.props.theme.nodeInputSearchSelected : null)}
                     input={{
                         icon: this.props.icon,
                         iconPosition: this.props.iconPosition
@@ -157,6 +157,7 @@ NodeInput.defaultProps = {
 
 NodeInput.propTypes = {
     theme: PropTypes.object.isRequired,
+    className: PropTypes.string,
     children: PropTypes.node,
     disabled: PropTypes.bool,
     value: PropTypes.object,

@@ -102,6 +102,10 @@ class NodeImage extends Component {
                     spaced={this.props.spaced}
                     verticalAlign={this.props.verticalAlign}
                     wrapped={this.props.wrapped}
+                    style={{
+                        width: this.props.format.width,
+                        height: this.props.format.height
+                    }}
                 />
             </Visibility>
         );

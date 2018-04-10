@@ -8,7 +8,9 @@ module.exports = async (session, abspath) => {
     if (abspath) {
         const node = await Node.resolve(session, abspath);
 
-        return node.attributes.labels.map((name) => labels.find((label) => label.name === name));
+        return node.attributes.labels
+        .filter((name) => name)
+        .map((name) => labels.find((label) => label.name === name));
     }
 
     return labels;

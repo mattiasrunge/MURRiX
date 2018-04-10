@@ -83,6 +83,7 @@
     "shuffle-array": "^1.0.1",
     "simple-xml2json": "^1.2.3",
     "source-map-support": "^0.5.4",
+    "store": "^2.0.12",
     "strip-ansi": "^4.0.0",
     "style-loader": "^0.20.3",
     "superagent": "^3.8.2",
