@@ -30,6 +30,8 @@ export default {
     logout: require("./commands/logout"),
     regenerate: require("./commands/regenerate"),
 
+    setpartner: require("./commands/setpartner"),
+
 
     // Scripts
     // "script_hiderawfiles": require("./scripts/hiderawfiles"),
