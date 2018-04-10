@@ -145,7 +145,6 @@ class NodeHeader extends Component {
 NodeHeader.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    editAllowed: PropTypes.bool.isRequired,
     pages: PropTypes.array.isRequired
 };
 

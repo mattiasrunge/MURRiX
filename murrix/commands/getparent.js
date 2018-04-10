@@ -7,7 +7,8 @@ const list = require("../../vfs/commands/list");
 module.exports = async (session, abspath, gender) => {
     const node = await Node.resolve(session, abspath);
 
-    assert(node.properties.type === "p", "Get only get parents of persons");
+    assert(node.properties.type === "p", "Path is not a person");
+    assert(gender === "f" || gender === "m", "Gender must be f or m");
 
     const parents = await list(session, `${abspath}/parents`);
 

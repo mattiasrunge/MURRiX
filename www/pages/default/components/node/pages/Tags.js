@@ -93,7 +93,6 @@ class Tags extends Component {
                                         key={file._id}
                                         theme={this.props.theme}
                                         node={file}
-                                        editAllowed={this.props.editAllowed}
                                         parentNode={this.props.node}
                                     />
                                 </For>
@@ -109,8 +108,7 @@ class Tags extends Component {
 Tags.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    editAllowed: PropTypes.bool.isRequired
+    match: PropTypes.object.isRequired
 };
 
 export default Tags;

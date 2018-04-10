@@ -7,7 +7,7 @@ const resolve = require("../../vfs/commands/resolve");
 module.exports = async (session, abspath) => {
     const node = await Node.resolve(session, abspath);
 
-    assert(node.properties.type === "p", "Get only get partner of persons");
+    assert(node.properties.type === "p", "Path is not a person");
 
     const partner = await resolve(session, `${abspath}/partner`, { noerror: true });
 

@@ -245,8 +245,7 @@ class Organize extends Component {
 Organize.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    editAllowed: PropTypes.bool
+    match: PropTypes.object.isRequired
 };
 
 Organize.contextTypes = {

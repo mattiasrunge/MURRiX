@@ -9,7 +9,7 @@ const symlink = require("../../vfs/commands/symlink");
 module.exports = async (session, abspath, partnerpath) => {
     const node = await Node.resolve(session, abspath);
 
-    assert(node.properties.type === "p", "Get only set partner of persons");
+    assert(node.properties.type === "p", "Path is not a person");
     await node.assertAccess(session, "w");
 
     const partner = await resolve(session, `${abspath}/partner`, { noerror: true });

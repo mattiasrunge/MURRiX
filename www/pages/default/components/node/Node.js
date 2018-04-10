@@ -22,7 +22,6 @@ class Node extends Component {
 
         this.state = {
             node: false,
-            editAllowed: false,
             loading: false,
             page: false
         };
@@ -62,13 +61,12 @@ class Node extends Component {
 
         try {
             const node = await api.vfs.resolve(path);
-            const editAllowed = await api.vfs.access(node.path, "w");
 
-            this.setState({ node, editAllowed, loading: false, page });
+            this.setState({ node, loading: false, page });
         } catch (error) {
             this.logError("Failed to load node", error);
             notification.add("error", error.message, 10000);
-            this.setState({ node: false, editAllowed: false, loading: false });
+            this.setState({ node: false, loading: false });
         }
     }
 
@@ -136,7 +134,7 @@ class Node extends Component {
             }
         ];
 
-        if (this.state.editAllowed) {
+        if (this.state.node.editable) {
             allPages.push({
                 name: "settings",
                 title: "Settings",
@@ -160,7 +158,6 @@ class Node extends Component {
                     <Otherwise>
                         <NodeHeader
                             node={this.state.node}
-                            editAllowed={this.state.editAllowed}
                             pages={pages}
                         />
                         <Switch>
@@ -174,7 +171,6 @@ class Node extends Component {
                                         theme={this.props.theme}
                                         node={this.state.node}
                                         match={this.props.match}
-                                        editAllowed={this.state.editAllowed}
                                     />
                                 </Route>
                             </For>

@@ -19,6 +19,7 @@ class Node {
         this._id = data._id;
         this.properties = { ...data.properties };
         this.attributes = { ...data.attributes };
+        this.extra = data.extra || {};
     }
 
 
@@ -404,7 +405,7 @@ class Node {
             ctime: new Date(),
             mtime: new Date(),
             cuid: session.uid,
-            muid: session.mid
+            muid: session.uid
         };
 
         const attr = {
@@ -436,7 +437,8 @@ class Node {
             _id: this._id,
             attributes: this.attributes,
             properties: this.properties,
-            editable: await this.hasAccess(session, "w")
+            editable: await this.hasAccess(session, "w"),
+            extra: this.extra
         };
     }
 

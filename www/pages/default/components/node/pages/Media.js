@@ -133,7 +133,7 @@ class Media extends Component {
     render() {
         return (
             <div className={this.props.theme.mediaContainer}>
-                <If condition={this.props.editAllowed}>
+                <If condition={this.props.node.editable}>
                     <If condition={this.state.addText}>
                         <CreateModal
                             type="t"
@@ -191,8 +191,8 @@ class Media extends Component {
                                     key={text._id}
                                     theme={this.props.theme}
                                     node={text}
-                                    onRemove={this.props.editAllowed ? this.onRemoveNode : null}
-                                    onEdit={this.props.editAllowed ? this.onEditNode : null}
+                                    onRemove={this.props.node.editable ? this.onRemoveNode : null}
+                                    onEdit={this.props.node.editable ? this.onEditNode : null}
                                 />
                             </For>
                             <Image.Group className={this.props.theme.mediaImageGroup}>
@@ -201,7 +201,6 @@ class Media extends Component {
                                         key={file._id}
                                         theme={this.props.theme}
                                         node={file}
-                                        editAllowed={this.props.editAllowed}
                                         parentNode={this.props.node}
                                     />
                                 </For>
@@ -217,8 +216,7 @@ class Media extends Component {
 Media.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    editAllowed: PropTypes.bool.isRequired
+    match: PropTypes.object.isRequired
 };
 
 export default Media;

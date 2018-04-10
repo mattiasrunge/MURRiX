@@ -89,7 +89,7 @@ class Thumbnail extends Component {
                     direction="left"
                 >
                     <Dropdown.Menu>
-                        <If condition={this.props.editAllowed}>
+                        <If condition={this.props.node.editable}>
                             <Dropdown.Item
                                 icon="picture"
                                 text="Set as profile picture"
@@ -101,21 +101,21 @@ class Thumbnail extends Component {
                             text="Download"
                             onClick={this.onDownload}
                         />
-                        <If condition={this.props.editAllowed}>
+                        <If condition={this.props.node.editable}>
                             <Dropdown.Item
                                 icon="repeat"
                                 text="Rotate right"
                                 onClick={this.onRotateRight}
                             />
                         </If>
-                        <If condition={this.props.editAllowed}>
+                        <If condition={this.props.node.editable}>
                             <Dropdown.Item
                                 icon="undo"
                                 text="Rotate left"
                                 onClick={this.onRotateLeft}
                             />
                         </If>
-                        <If condition={this.props.editAllowed}>
+                        <If condition={this.props.node.editable}>
                             <Dropdown.Item
                                 icon="exchange"
                                 text="Mirror"
@@ -137,7 +137,6 @@ Thumbnail.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
     parentNode: PropTypes.object.isRequired,
-    editAllowed: PropTypes.bool.isRequired,
     size: PropTypes.number
 };
 

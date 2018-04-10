@@ -31,6 +31,7 @@ export default {
     regenerate: require("./commands/regenerate"),
 
     setpartner: require("./commands/setpartner"),
+    setparent: require("./commands/setparent"),
 
 
     // Scripts

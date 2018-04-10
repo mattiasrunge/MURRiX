@@ -10,7 +10,11 @@ class Symlink extends Node {
             return this;
         }
 
-        return Node.resolve(session, this.attributes.path, { noerror: true });
+        const node = await Node.resolve(session, this.attributes.path, { noerror: true });
+
+        node.extra.linkPath = this.path;
+
+        return node;
     }
 
 

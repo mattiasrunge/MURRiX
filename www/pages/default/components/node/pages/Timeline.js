@@ -95,7 +95,7 @@ class Timeline extends Component {
     render() {
         return (
             <div className={this.props.theme.timelineContainer}>
-                <If condition={this.props.editAllowed}>
+                <If condition={this.props.node.editable}>
                     <If condition={this.state.addText}>
                         <CreateModal
                             type="t"
@@ -154,8 +154,8 @@ class Timeline extends Component {
                                     <TimelineText
                                         theme={this.props.theme}
                                         node={node}
-                                        onRemove={this.props.editAllowed ? this.onRemoveNode : null}
-                                        onEdit={this.props.editAllowed ? this.onEditNode : null}
+                                        onRemove={this.props.node.editable ? this.onRemoveNode : null}
+                                        onEdit={this.props.node.editable ? this.onEditNode : null}
                                     />
                                 </td>
                             </tr>
@@ -170,8 +170,7 @@ class Timeline extends Component {
 Timeline.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    editAllowed: PropTypes.bool.isRequired
+    match: PropTypes.object.isRequired
 };
 
 export default Timeline;
