@@ -7,6 +7,7 @@ const server = require("./http-server");
 const db = require("./db");
 const media = require("./media");
 const session = require("./session");
+const tasks = require("./tasks");
 const apiExporter = require("./api-exporter");
 const { vfs, bus } = require("../../vfs");
 require("../../murrix");
@@ -21,6 +22,7 @@ module.exports = {
         await vfs.init();
         await session.init();
         await apiExporter.init();
+        // await tasks.init();
         await server.init(configuration);
 
         log.info("Initialization complete, core running.");
@@ -28,6 +30,7 @@ module.exports = {
     },
     stop: async () => {
         log.info("Received shutdown signal, stopping...");
+        await tasks.stop();
         await server.stop();
         await session.stop();
         await media.stop();

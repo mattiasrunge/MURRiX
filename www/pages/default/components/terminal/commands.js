@@ -29,6 +29,8 @@ export default {
     login: require("./commands/login"),
     logout: require("./commands/logout"),
     regenerate: require("./commands/regenerate"),
+    ensurefilefaces: require("./commands/ensurefilefaces"),
+    migrateoldtags: require("./commands/migrateoldtags"),
 
     setpartner: require("./commands/setpartner"),
     setparent: require("./commands/setparent"),

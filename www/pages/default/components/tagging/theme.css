@@ -1,0 +1,88 @@
+
+@import "pages/default/styles/theme.css";
+
+.loader {
+    margin-top: var(--spacing) !important;
+    margin-bottom: var(--spacing) !important;
+    text-transform: uppercase;
+    text-align: center;
+    color: #bbb;
+}
+
+.tagImageListColumn {
+    box-sizing: content-box;
+}
+
+.tagImageList {
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: var(--spacing);
+    white-space: nowrap;
+}
+
+.tagImageContainer {
+    position: relative;
+    display: inline-block;
+
+    & .tagImageRegionContainer {
+        & > div {
+            z-index: 2;
+            background-color: rgba(0, 0, 0, .5);
+            transition: opacity .1s ease-in-out;
+            border: 1px dashed white !important;
+            outline: black dashed 1px !important;
+            display:flex;
+            align-items: center; /* Vertical center alignment */
+            justify-content: center; /* Horizontal center alignment */
+            font-size: 14px;
+            font-weight: 700;
+            text-shadow: 0 0 1px black;
+            color: white;
+        }
+    }
+
+    & .tagFrame {
+        position: absolute;
+        border: 1px solid white;
+        margin: -1px;
+        box-shadow: 0 0 1px black;
+        background-color: rgba(0, 0, 0, .5);
+        transition: opacity .1s ease-in-out;
+        display:flex;
+        align-items: center; /* Vertical center alignment */
+        justify-content: center; /* Horizontal center alignment */
+        font-size: 14px;
+        font-weight: 700;
+        text-shadow: 0 0 1px black;
+        color: white;
+    }
+
+    & .tagFrameSelected {
+        border: 2px solid red;
+        margin: -2px;
+        background-color: transparent;
+        font-size: 0;
+    }
+
+    & .tagFrameHidden {
+        opacity: 0;
+    }
+}
+
+.imageCount {
+    line-height: 30px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.navigationMenu {
+    margin-bottom: var(--spacing);
+}
+
+.connectionItem {
+
+}
+
+:global(.ui.input) {
+    width: 100%;
+}

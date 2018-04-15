@@ -1,0 +1,45 @@
+
+.selectableImageListButtons {
+    margin-bottom: 10px;
+
+    & a {
+        margin-right:  10px;
+        cursor: pointer;
+    }
+
+    & .disabled {
+        pointer-events: none;
+        color: #bbb;
+    }
+}
+
+.selectableImageListContainer {
+    position: relative;
+    margin: 0 -1px -1px 0 !important;
+    display: inline;
+
+    & .selectableImageContainer {
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+
+        & .selectableImage {
+            margin: 0 1px 1px 0 !important;
+        }
+
+        & .selectedImage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0 1px 1px 0 !important;
+            background-color: rgba(0, 0, 0, .5);
+            color: white;
+            font-weight: 700;
+            font-size: 30px;
+            line-height: 50px;
+            text-align: center;
+        }
+    }
+}

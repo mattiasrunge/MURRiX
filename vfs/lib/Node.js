@@ -121,6 +121,7 @@ class Node {
     static async _ensureIndexes() {
         const indexes = [
             "properties.type",
+            "properties.birthtime",
             "properties.children.name",
             "properties.children.id",
             "attributes.name",
@@ -207,8 +208,14 @@ class Node {
     }
 
     static async query(session, query, options = {}) {
+        const dbOpts = {
+            limit: options.limit,
+            sort: options.sort,
+            skip: options.skip
+        };
+
         if (options.nolookup) {
-            const nodes = await db.find("nodes", query);
+            const nodes = await db.find("nodes", query, dbOpts);
 
             return nodes.map((node) => this._factory(node.properties.type, {
                 ...node,
@@ -217,7 +224,10 @@ class Node {
             }));
         }
 
-        const nodes = await db.find("nodes", query, { fields: [ "_id" ] });
+        const nodes = await db.find("nodes", query, {
+            ...dbOpts,
+            fields: [ "_id" ]
+        });
         const results = [];
 
         for (const node of nodes) {

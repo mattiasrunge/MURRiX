@@ -22,6 +22,7 @@ module.exports = async (session, abspath, type) => {
 
         for (const filename of list) {
             await fs.remove(filename);
+            // TODO: Remove from node.attributes.cached
         }
     } catch (error) {
     }

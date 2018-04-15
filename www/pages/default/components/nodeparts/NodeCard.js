@@ -19,8 +19,8 @@ class NodeCard extends Component {
                     path={`${this.props.node.path}/profilePicture`}
                     fluid
                     format={{
-                        width: 290,
-                        height: 290,
+                        width: 216,
+                        height: 216,
                         type: "image"
                     }}
                 />

@@ -41,7 +41,7 @@ class NodeImage extends Component {
     }
 
     async update(props) {
-        this.setState({ url: null, loading: true, failed: false });
+        this.setState({ loading: true, failed: false });
 
         try {
             const url = await api.vfs.media(props.path, props.format);
@@ -49,7 +49,7 @@ class NodeImage extends Component {
             !this.disposed && this.setState({ url, loading: false });
         } catch (error) {
             // this.logError("Failed to get node url", error, 10000);
-            !this.disposed && this.setState({ loading: false, failed: true });
+            !this.disposed && this.setState({ url: null, loading: false, failed: true });
         }
     }
 
@@ -75,6 +75,14 @@ class NodeImage extends Component {
         }
 
         const url = this.state.url || "/pixel.jpg";
+        const style = {};
+
+        // If we have exact constraints we can set it to that size
+        // before it has loaded, if not we will not be able to do that.
+        if (this.props.format.width && this.props.format.height) {
+            style.width = this.props.format.width;
+            style.height = this.props.format.height;
+        }
 
         return (
             <Visibility
@@ -102,10 +110,7 @@ class NodeImage extends Component {
                     spaced={this.props.spaced}
                     verticalAlign={this.props.verticalAlign}
                     wrapped={this.props.wrapped}
-                    style={{
-                        width: this.props.format.width,
-                        height: this.props.format.height
-                    }}
+                    style={style}
                 />
             </Visibility>
         );

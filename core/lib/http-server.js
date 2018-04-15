@@ -11,7 +11,6 @@ const compress = require("koa-compress");
 const conditional = require("koa-conditional-get");
 const etag = require("koa-etag");
 const range = require("koa-range");
-const favicon = require("koa-favicon");
 const serve = require("koa-static");
 
 const enableDestroy = require("server-destroy");

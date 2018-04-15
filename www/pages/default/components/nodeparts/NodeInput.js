@@ -99,6 +99,11 @@ class NodeInput extends Component {
 
     onFocus = () => {
         this.ref && this.ref.select();
+        this.props.onFocus && this.props.onFocus();
+    }
+
+    onBlur = () => {
+        this.props.onBlur && this.props.onBlur();
     }
 
     onKeyUp = (e) => {
@@ -112,7 +117,8 @@ class NodeInput extends Component {
                     className={this.classNames("item", this.props.theme.nodeInput, this.props.className, this.props.theme.nodeInputSearch, this.state.selected ? this.props.theme.nodeInputSearchSelected : null)}
                     input={{
                         icon: this.props.icon,
-                        iconPosition: this.props.iconPosition
+                        iconPosition: this.props.iconPosition,
+                        transparent: this.props.transparent
                     }}
                     loading={this.props.loading || this.state.loading}
                     onSearchChange={this.onSearch}
@@ -121,7 +127,9 @@ class NodeInput extends Component {
                     results={this.state.list}
                     disabled={this.props.disabled}
                     onFocus={this.onFocus}
+                    onBlur={this.onBlur}
                     onKeyUp={this.onKeyUp}
+                    size={this.props.size}
                     placeholder={this.props.placeholder}
                     resultRenderer={(props) => (
                         <div className="content">
@@ -167,8 +175,12 @@ NodeInput.propTypes = {
     onKeyUp: PropTypes.func,
     iconPosition: PropTypes.string,
     icon: PropTypes.string,
+    transparent: PropTypes.bool,
+    size: PropTypes.string,
     loading: PropTypes.bool,
-    placeholder: PropTypes.string
+    placeholder: PropTypes.string,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func
 };
 
 export default NodeInput;

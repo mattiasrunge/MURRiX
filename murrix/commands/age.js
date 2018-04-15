@@ -79,7 +79,7 @@ module.exports = async (session, abspath) => {
             age.deathdate = deathdate;
         }
 
-        if (birth) {
+        if (birth && birth.attributes.time) {
             const birthUtc = moment.utc(birth.attributes.time.timestamp * 1000);
 
             age.ageatdeath = deathUtc.diff(birthUtc.utc(), "years");

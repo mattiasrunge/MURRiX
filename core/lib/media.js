@@ -9,6 +9,12 @@ const asyncBusboy = require("async-busboy");
 class Media {
     constructor() {
         this.mcs = api.getClient().create();
+
+        this.requiredSizes = [
+            { width: 50, height: 50 },
+            { width: 216, height: 216 },
+            { width: 2000 }
+        ];
     }
 
     async init(config) {
@@ -54,8 +60,12 @@ class Media {
         return this.mcs.cache.get(id, filename, format, this.config.mcsDirectory);
     }
 
-    getAllCached(id, filename, type) {
-        return this.mcs.cache.getAll(id, filename, type, this.config.mcsDirectory);
+    getAllCached(id, filename, type, options) {
+        return this.mcs.cache.getAll(id, filename, type, this.config.mcsDirectory, options);
+    }
+
+    detectFaces(filename) {
+        return this.mcs.face.detect(filename);
     }
 
     compileTime(sources) {

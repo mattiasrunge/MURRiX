@@ -8,6 +8,7 @@ import { Edit } from "components/edit";
 import Share from "./sections/Share";
 import Organize from "./sections/Organize";
 import { Upload } from "components/upload";
+import { Tagging } from "components/tagging";
 
 class Settings extends Component {
     onSection = (e, { name }) => {
@@ -49,6 +50,14 @@ class Settings extends Component {
                 icon: "folder open outline",
                 active: section === "organize",
                 Component: Organize,
+                validTypes: [ "a" ]
+            },
+            {
+                name: "tagging",
+                title: "Tagging",
+                icon: "user",
+                active: section === "tagging",
+                Component: Tagging,
                 validTypes: [ "a" ]
             }
         ];
