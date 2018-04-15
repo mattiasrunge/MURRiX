@@ -34,7 +34,7 @@
             display:flex;
             align-items: center; /* Vertical center alignment */
             justify-content: center; /* Horizontal center alignment */
-            font-size: 14px;
+            font-size: 20px;
             font-weight: 700;
             text-shadow: 0 0 1px black;
             color: white;

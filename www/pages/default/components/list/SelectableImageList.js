@@ -13,7 +13,8 @@ class SelectableImageList extends Component {
 
         this.state = {
             files: [],
-            loading: false
+            loading: false,
+            ref: null
         };
     }
 
@@ -23,17 +24,17 @@ class SelectableImageList extends Component {
                 if (path.startsWith(this.props.path)) {
                     this.update(this.props);
                 }
-            }),
+            }, { id: "SelectableImageList" }),
             api.vfs.on("node.appendChild", (path) => {
                 if (path === this.props.path) {
                     this.update(this.props);
                 }
-            }),
+            }, { id: "SelectableImageList" }),
             api.vfs.on("node.removeChild", (path) => {
                 if (path === this.props.path) {
                     this.update(this.props);
                 }
-            })
+            }, { id: "SelectableImageList" })
         ]);
 
         await this.update(this.props);
@@ -81,13 +82,17 @@ class SelectableImageList extends Component {
             return;
         }
 
+        let selected = [];
+
         if (this.props.value.includes(file)) {
-            this.props.onChange(this.props.value.filter((f) => f !== file), this.state.files);
+            selected = this.props.value.filter((f) => f !== file);
         } else if (this.props.single) {
-            this.props.onChange([ file ], this.state.files);
+            selected = [ file ];
         } else {
-            this.props.onChange(this.props.value.slice(0).concat(file), this.state.files);
+            selected = this.props.value.slice(0).concat(file);
         }
+
+        this.props.onChange(selected, this.state.files);
     }
 
     onSelectAll = () => {
@@ -98,9 +103,24 @@ class SelectableImageList extends Component {
         this.props.onChange([], this.state.files);
     }
 
+    onRef = (ref) => {
+        this.setState({ ref });
+    }
+
     render() {
+        if (this.state.ref && this.props.single) {
+            const index = this.state.files.indexOf(this.props.value[0]);
+
+            if (index !== -1) {
+                const offset = (index * 51) + (51 / 2);
+                const scrollTo = offset - (this.state.ref.offsetWidth / 2);
+
+                this.state.ref.scrollTo(scrollTo, 0);
+            }
+        }
+
         return (
-            <div className={this.props.className}>
+            <div className={this.props.className} ref={this.onRef}>
                 <If condition={!this.props.single}>
                     <div className={this.props.theme.selectableImageListButtons}>
                         <a
@@ -117,7 +137,9 @@ class SelectableImageList extends Component {
                         </a>
                     </div>
                 </If>
-                <Image.Group className={this.props.theme.selectableImageListContainer}>
+                <Image.Group
+                    className={this.props.theme.selectableImageListContainer}
+                >
                     <For each="file" of={this.state.files}>
                         <span
                             key={file._id}

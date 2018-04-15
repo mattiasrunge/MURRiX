@@ -84,13 +84,22 @@ class NodeInput extends Component {
         }, 500);
     }
 
-    onSelect = (e, { result }) => {
-        this.props.onChange(result.node);
-        this.setState({
-            selected: result,
-            searchQuery: result.title,
-            list: [ result ]
-        });
+    onSelect = async (e, { result }) => {
+        const ret = await Promise.resolve(this.props.onChange(result.node));
+
+        if (ret === false) {
+            this.setState({
+                selected: null,
+                searchQuery: "",
+                list: [ ]
+            });
+        } else {
+            this.setState({
+                selected: result,
+                searchQuery: result.title,
+                list: [ result ]
+            });
+        }
     }
 
     onRef = (ref) => {

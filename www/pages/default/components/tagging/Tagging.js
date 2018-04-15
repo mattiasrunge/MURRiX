@@ -2,12 +2,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Header, Grid, Button, Container } from "semantic-ui-react";
+import { Header, Grid, Button } from "semantic-ui-react";
 import { SelectableImageList } from "components/list";
 import api from "api.io-client";
 import notification from "lib/notification";
 import Image from "./lib/Image";
 import Connections from "./lib/Connections";
+import ui from "lib/ui";
 
 class Tagging extends Component {
     constructor(props) {
@@ -17,6 +18,13 @@ class Tagging extends Component {
             selected: [],
             files: []
         };
+    }
+
+    async load() {
+        this.addDisposables([
+            ui.shortcut("right", this.onNext),
+            ui.shortcut("left", this.onPrevious)
+        ]);
     }
 
     onFilesChange = (selected, files) => {

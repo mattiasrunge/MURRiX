@@ -9,15 +9,52 @@ import Share from "./sections/Share";
 import Organize from "./sections/Organize";
 import { Upload } from "components/upload";
 import { Tagging } from "components/tagging";
+import ui from "lib/ui";
 
 class Settings extends Component {
+    async load() {
+        this.addDisposables([
+            ui.shortcut("shift+up", this.onPreviousSection),
+            ui.shortcut("shift+down", this.onNextSection)
+        ]);
+    }
+
     onSection = (e, { name }) => {
         this.context.router.history.push(`/node${this.props.node.path}/_/settings/${name}`);
     }
 
-    render() {
+    gotoSection = (offset) => {
+        const sections = this.getSections();
+        let index = sections.findIndex((section) => section.active);
+
+        index += offset;
+
+        if (index >= sections.length) {
+            index = 0;
+        } else if (index < 0) {
+            index = sections.length - 1;
+        }
+
+        this.onSection(null, { name: sections[index].name });
+    }
+
+    onNextSection = () => {
+        this.gotoSection(1);
+    }
+
+    onPreviousSection = () => {
+        this.gotoSection(-1);
+    }
+
+    getSection() {
         const [ , pagePart ] = this.props.match.url.split("/_/");
         const [ , section ] = pagePart.split("/");
+
+        return section;
+    }
+
+    getSections() {
+        const section = this.getSection();
 
         const allSections = [
             {
@@ -62,7 +99,11 @@ class Settings extends Component {
             }
         ];
 
-        const sections = allSections.filter((section) => this.props.node && section.validTypes.includes(this.props.node.properties.type));
+        return allSections.filter((section) => this.props.node && section.validTypes.includes(this.props.node.properties.type));
+    }
+
+    render() {
+        const sections = this.getSections();
 
         return (
             <div className={this.props.theme.pageContainer}>
@@ -87,7 +128,8 @@ class Settings extends Component {
                                 key={section.name}
                                 path={`/node${this.props.node.path}/_/settings/${section.name}`}
                             >
-                                <section.Component
+                                <// eslint-disable-next-line
+                                 section.Component
                                     theme={this.props.theme}
                                     node={this.props.node}
                                     match={this.props.match}

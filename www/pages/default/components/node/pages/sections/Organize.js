@@ -25,6 +25,8 @@ class Organize extends Component {
 
         store.set("organize_remotes", remotes);
         this.setState({ remotes });
+
+        return false;
     }
 
     onRemoveRemote(e, remote) {
