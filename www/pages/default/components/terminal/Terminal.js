@@ -4,6 +4,7 @@
 import Shell from "wsh.js";
 import api from "api.io-client";
 import session from "lib/session";
+import ui from "lib/ui";
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
@@ -35,11 +36,7 @@ class Terminal extends Component {
             this.shell.setCommandHandler(name, commands[name]);
         }
 
-        this.onKeyDown = (event) => {
-            if (event.altKey && event.which === 84) {
-                this.toggle();
-            }
-        };
+        ui.shortcut("alt+t", this.toggle, (e, element, combo) => this.shell.isActive() && combo !== "alt+t");
     }
 
     renderPrompt(args) {
@@ -62,28 +59,7 @@ class Terminal extends Component {
         return await api.vfs.resolve(abspath, { noerror: true });
     }
 
-    componentDidMount() {
-        // this.addDisposables([
-        //     session.loggedIn.subscribe((loggedIn) => {
-        //         if (this.shell.isActive() && !loggedIn) {
-        //             this.deactivate();
-        //         }
-        //     })
-        // ]);
-
-        document.addEventListener("keydown", this.onKeyDown);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener("keydown", this.onKeyDown);
-        super.componentWillUnmount();
-    }
-
     activate() {
-        // if (!session.loggedIn()) {
-        //     return;
-        // }
-
         this.shell.activate();
         this.ref.classList.add("slideInDown");
         this.ref.classList.remove("slideOutUp");
@@ -97,7 +73,7 @@ class Terminal extends Component {
         this.ref.blur();
     }
 
-    toggle() {
+    toggle = () => {
         if (this.shell.isActive()) {
             this.deactivate();
         } else {
