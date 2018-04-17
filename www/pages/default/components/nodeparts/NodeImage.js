@@ -79,7 +79,7 @@ class NodeImage extends Component {
 
         // If we have exact constraints we can set it to that size
         // before it has loaded, if not we will not be able to do that.
-        if (this.props.format.width && this.props.format.height) {
+        if (!this.props.noFixedSize && this.props.format.width && this.props.format.height) {
             style.width = this.props.format.width;
             style.height = this.props.format.height;
         }
@@ -136,7 +136,8 @@ NodeImage.propTypes = {
     spaced: PropTypes.any,
     verticalAlign: PropTypes.string,
     wrapped: PropTypes.bool,
-    lazy: PropTypes.bool
+    lazy: PropTypes.bool,
+    noFixedSize: PropTypes.bool
 };
 
 export default NodeImage;

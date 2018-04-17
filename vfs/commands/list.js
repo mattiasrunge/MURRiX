@@ -3,8 +3,6 @@
 const Node = require("../lib/Node");
 const media = require("./media");
 
-// TODO: Add support for limit/skip and sorting
-
 module.exports = async (session, abspath, options = {}) => {
     let list;
 

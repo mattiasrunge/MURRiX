@@ -6,6 +6,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { Container, Grid, Sticky } from "semantic-ui-react";
 import { Profile } from "components/user";
 import { Search, Name, Label, Year } from "components/search";
+import { News } from "components/news";
 import Sidebar from "./Sidebar";
 
 class Home extends Component {
@@ -43,7 +44,7 @@ class Home extends Component {
                                     <Route
                                         path={`${this.props.match.path}/news`}
                                         render={(props) => (
-                                            <div>News</div>
+                                            <News {...props} />
                                         )}
                                     />
                                     <Route

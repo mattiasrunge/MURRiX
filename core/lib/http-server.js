@@ -19,7 +19,6 @@ const webpack = require("webpack");
 const webpackMiddleware = require("koa-webpack-dev-middleware");
 const api = require("api.io");
 
-// const plugin = require("./plugin");
 const media = require("./media");
 const session = require("./session");
 const log = require("./log")(module);

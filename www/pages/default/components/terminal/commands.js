@@ -34,6 +34,8 @@ export default {
 
     setpartner: require("./commands/setpartner"),
     setparent: require("./commands/setparent"),
+    dayinhistory: require("./commands/dayinhistory"),
+    latest: require("./commands/latest"),
 
 
     // Scripts

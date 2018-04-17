@@ -1,6 +1,4 @@
 
-/* global document */
-
 import Shell from "wsh.js";
 import api from "api.io-client";
 import session from "lib/session";

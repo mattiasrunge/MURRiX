@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require("path");
+const assert = require("assert");
 const moment = require("moment");
 const access = require("../../vfs/commands/access");
 const ensure = require("../../vfs/commands/ensure");
@@ -8,9 +9,7 @@ const create = require("../../vfs/commands/create");
 const { ADMIN_SESSION } = require("../../vfs/lib/auth");
 
 module.exports = async (session, abspath, text) => {
-    if (!(await access(session, abspath, "r"))) {
-        throw new Error("Permission denied");
-    }
+    assert(await access(session, abspath, "r"), "Permission denied");
 
     const commentsPath = path.join(abspath, "comments");
 

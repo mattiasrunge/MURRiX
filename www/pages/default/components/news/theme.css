@@ -1,0 +1,8 @@
+
+.loader {
+    position: relative;
+    min-height: 50px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #bbb;
+}
