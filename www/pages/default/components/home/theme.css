@@ -3,7 +3,7 @@
 
 .homeContainer {
     margin-top: var(--navbar-height);
-    padding-top: var(--spacing);
+    padding-top: 2em;
 }
 
 .homeSidebar {

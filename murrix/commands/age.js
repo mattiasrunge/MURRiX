@@ -46,6 +46,9 @@ module.exports = async (session, abspath) => {
         }))[0];
     } else if (node.properties.type === "a") {
         birth = (await Node.list(session, `${abspath}/files`, {
+            query: {
+                "attributes.time.timestamp": { $ne: null }
+            },
             opts: {
                 sort: {
                     "attributes.time.timestamp": 1
@@ -55,6 +58,9 @@ module.exports = async (session, abspath) => {
         }))[0];
 
         death = (await Node.list(session, `${abspath}/files`, {
+            query: {
+                "attributes.time.timestamp": { $ne: null }
+            },
             opts: {
                 sort: {
                     "attributes.time.timestamp": -1

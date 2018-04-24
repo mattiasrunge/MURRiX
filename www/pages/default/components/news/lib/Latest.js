@@ -69,6 +69,7 @@ class Latest extends Component {
                                 <Feed.Extra images>
                                     <For each="file" of={event.files}>
                                         <NodeImage
+                                            key={file._id}
                                             path={file.path}
                                             format={{
                                                 width: 216,

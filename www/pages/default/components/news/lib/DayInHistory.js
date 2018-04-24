@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 import api from "api.io-client";
+import format from "lib/format";
 import notification from "lib/notification";
 import { List } from "semantic-ui-react";
 import { NodeLink } from "components/nodeparts";
@@ -79,10 +80,10 @@ class DayInHistory extends Component {
                                     <When condition={event.type === "birthday"}>
                                         <Choose>
                                             <When condition={event.age.ageatdeath}>
-                                                <NodeLink node={event.person} /> would have turned <strong>{event.age.age}</strong>, died age {event.age.ageatdeath}, born {event.date.year}
+                                                <NodeLink node={event.person} />, born {event.date.year}, would have celebrated {event.person.attributes.gender === "m" ? "his" : "her"} <strong>{format.number(event.age.age)}</strong>, birthday, died {event.age.ageatdeath} years old
                                             </When>
                                             <Otherwise>
-                                                <NodeLink node={event.person} /> turns <strong>{event.age.age}</strong>, born {event.date.year}
+                                                <NodeLink node={event.person} />, born {event.date.year}, celebrates {event.person.attributes.gender === "m" ? "his" : "her"} <strong>{format.number(event.age.age)}</strong> birthday
                                             </Otherwise>
                                         </Choose>
                                     </When>
