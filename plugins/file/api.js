@@ -4,8 +4,8 @@ const path = require("path");
 const fs = require("fs-extra-promise");
 const api = require("api.io");
 const chron = require("chron-time");
-const bus = require("../../core/lib/bus");
-const log = require("../../core/lib/log")(module);
+const bus = require("../../lib/bus");
+const log = require("../../lib/log")(module);
 const merge = require("deepmerge");
 
 let params = {};

@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require("path");
-const db = require("../../../core/lib/db");
+const db = require("../../../lib/db");
 const access = require("./access");
 
 const assert = (expression, message) => {

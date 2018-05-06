@@ -3,7 +3,7 @@
 const path = require("path");
 const moment = require("moment");
 const api = require("api.io");
-const log = require("../../core/lib/log")(module);
+const log = require("../../lib/log")(module);
 
 const search = api.register("search", {
     deps: [ "vfs" ],

@@ -3,7 +3,7 @@
 const assert = require("assert");
 const { isGuest } = require("../lib/auth");
 const request = require("request-promise-native");
-const config = require("../../core/lib/configuration");
+const config = require("../../lib/configuration");
 
 module.exports = async (session, longitude, latitude) => {
     assert(!isGuest(session), "Permission denied");

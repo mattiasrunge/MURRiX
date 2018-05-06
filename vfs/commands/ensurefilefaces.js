@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 const Node = require("../lib/Node");
-const log = require("../../core/lib/log")(module);
+const log = require("../../lib/log")(module);
 const detectfaces = require("./detectfaces");
 
 module.exports = async (session, abspath) => {

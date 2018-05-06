@@ -34,6 +34,15 @@ module.exports = async (session, limit = 50) => {
                 }),
                 time: node.properties.birthtime
             });
+        } else {
+            events.push({
+                type: "created",
+                userpath: userlist[node.properties.birthuid] ? userlist[node.properties.birthuid].path : false,
+                username: userlist[node.properties.birthuid] ? userlist[node.properties.birthuid].attributes.name : "Unknown",
+                node,
+                files: [],
+                time: node.properties.birthtime
+            });
         }
     }
 

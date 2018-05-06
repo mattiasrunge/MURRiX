@@ -2,8 +2,8 @@
 
 const path = require("path");
 const api = require("api.io");
-const bus = require("../../core/lib/bus");
-const log = require("../../core/lib/log")(module);
+const bus = require("../../lib/bus");
+const log = require("../../lib/log")(module);
 
 let params = {};
 

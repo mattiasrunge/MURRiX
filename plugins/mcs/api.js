@@ -1,7 +1,7 @@
 "use strict";
 
 const api = require("api.io");
-const log = require("../../core/lib/log")(module);
+const log = require("../../lib/log")(module);
 
 const mcsApi = api.getClient().create();
 

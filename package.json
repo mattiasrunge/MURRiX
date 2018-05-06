@@ -10,8 +10,9 @@
     "url": "git://github.com/mattiasrunge/MURRiX.git"
   },
   "scripts": {
-    "lint": "eslint .",
-    "test": "mocha --recursive"
+    "test": "mocha --reporter spec --ui tdd --recursive test && eslint $(git ls-files \\*.js)",
+    "start": "node index.js",
+    "release": "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push --tags"
   },
   "dependencies": {
     "animate.css": "^3.6.1",
@@ -107,6 +108,6 @@
     "mocha": "^5.0.5"
   },
   "engines": {
-    "node": ">= 8.9.0"
+    "node": ">= 10"
   }
 }

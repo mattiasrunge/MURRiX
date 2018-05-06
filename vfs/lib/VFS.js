@@ -6,7 +6,7 @@ const fs = require("fs-extra");
 const { ADMIN_SESSION } = require("./auth");
 const Node = require("./Node");
 const bus = require("./bus");
-const log = require("../../core/lib/log")(module);
+const log = require("../../lib/log")(module);
 
 class VFS {
     constructor() {

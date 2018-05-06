@@ -5,7 +5,7 @@ const sha1 = require("sha1");
 const uuid = require("uuid");
 const email = require("emailjs");
 const api = require("api.io");
-const log = require("../../core/lib/log")(module);
+const log = require("../../lib/log")(module);
 
 let params = {};
 

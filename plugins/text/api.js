@@ -2,7 +2,7 @@
 
 const api = require("api.io");
 const chron = require("chron-time");
-const bus = require("../../core/lib/bus");
+const bus = require("../../lib/bus");
 
 let params = {};
 

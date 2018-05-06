@@ -2,7 +2,7 @@
 
 const path = require("path");
 const api = require("api.io");
-const bus = require("../../core/lib/bus");
+const bus = require("../../lib/bus");
 
 const location = api.register("location", { // jshint ignore:line
     deps: [ "vfs", "auth", "file" ],

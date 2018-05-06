@@ -8,9 +8,9 @@ const sha1 = require("sha1");
 const shuffle = require("shuffle-array");
 const fs = require("fs-extra-promise");
 const api = require("api.io");
-const db = require("../../core/lib/db");
-const bus = require("../../core/lib/bus");
-const log = require("../../core/lib/log")(module);
+const db = require("../../lib/db");
+const bus = require("../../lib/bus");
+const log = require("../../lib/log")(module);
 
 
 

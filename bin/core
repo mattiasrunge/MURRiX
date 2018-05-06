@@ -1,7 +1,0 @@
-#!/bin/bash -e
-
-set +v
-
-DIR=$(dirname "$0")
-
-node $DIR/../core/index.js "$@"

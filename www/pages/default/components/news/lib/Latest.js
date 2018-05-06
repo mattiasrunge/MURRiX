@@ -63,7 +63,7 @@ class Latest extends Component {
                         <Feed.Content>
                             <Feed.Date>{format.datetimeAgo(event.time)}</Feed.Date>
                             <Feed.Summary>
-                                {event.username} created <NodeLink node={event.node} />
+                                {event.username} added <NodeLink node={event.node} icon />
                             </Feed.Summary>
                             <If condition={event.files.length > 0}>
                                 <Feed.Extra images>

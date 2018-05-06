@@ -3,7 +3,7 @@
 /* global describe before after it afterEach */
 
 const assert = require("assert");
-const db = require("../../core/lib/db");
+const db = require("../../lib/db");
 
 const { vfs, Node, auth } = require("../../vfs");
 
@@ -68,6 +68,9 @@ describe("Test", () => {
                 const resolvedFolder = await Node.resolve(auth.ADMIN_SESSION, symlink.path);
                 const resolvedSymlink = await Node.resolve(auth.ADMIN_SESSION, symlink.path, { readlink: true });
 
+                delete resolvedFolder.extra;
+                delete folder.extra;
+
                 assert.deepEqual(resolvedFolder, folder);
                 assert.deepEqual(resolvedSymlink, symlink);
             });
@@ -88,6 +91,8 @@ describe("Test", () => {
 
                 delete resolvedSymlink.path;
                 delete subsymlink.path;
+                delete resolvedSubfolder.extra;
+                delete subfolder.extra;
 
                 assert.deepEqual(resolvedSubfolder, subfolder);
                 assert.deepEqual(resolvedSymlink, subsymlink);

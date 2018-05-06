@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const db = require("../../core/lib/db");
+const db = require("../../lib/db");
 const { isAdmin } = require("../lib/auth");
 
 module.exports = async (session, pipeline) => {

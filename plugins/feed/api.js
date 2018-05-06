@@ -3,7 +3,7 @@
 const path = require("path");
 const moment = require("moment");
 const api = require("api.io");
-const bus = require("../../core/lib/bus");
+const bus = require("../../lib/bus");
 
 let params = {};
 let isCleaning = false;

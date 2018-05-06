@@ -2,7 +2,7 @@
 
 const path = require("path");
 const api = require("api.io");
-const bus = require("../../core/lib/bus");
+const bus = require("../../lib/bus");
 
 const camera = api.register("camera", {
     deps: [ "vfs", "auth" ],

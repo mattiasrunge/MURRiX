@@ -3,7 +3,7 @@
 const path = require("path");
 const fs = require("fs-extra-promise");
 const asyncBusboy = require("async-busboy");
-const log = require("../../../core/lib/log")(module);
+const log = require("../../../lib/log")(module);
 const api = require("api.io");
 
 let params = {};

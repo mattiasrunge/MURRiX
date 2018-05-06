@@ -8,7 +8,7 @@ const { checkMode, MASKS } = require("./mode");
 const { ADMIN_SESSION, isGuest } = require("./auth");
 const { unpackObjectKeys } = require("./utils");
 const bus = require("./bus");
-const db = require("../../core/lib/db");
+const db = require("../../lib/db");
 
 const Types = {};
 

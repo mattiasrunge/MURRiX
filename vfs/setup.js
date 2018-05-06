@@ -1,6 +1,6 @@
 "use strict";
 
-const log = require("../core/lib/log")(module);
+const log = require("../lib/log")(module);
 const sha1 = require("sha1");
 const Root = require("./types/Root");
 const Node = require("./lib/Node");

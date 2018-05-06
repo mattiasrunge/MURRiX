@@ -3,7 +3,7 @@
 /* global describe before after it beforeEach afterEach */
 
 const assert = require("assert");
-const db = require("../../core/lib/db");
+const db = require("../../lib/db");
 
 const { vfs, Node, auth } = require("../../vfs");
 

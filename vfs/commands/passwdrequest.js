@@ -4,7 +4,7 @@ const util = require("util");
 const email = require("emailjs");
 const Node = require("../lib/Node");
 const { ADMIN_SESSION } = require("../lib/auth");
-const config = require("../../core/lib/configuration");
+const config = require("../../lib/configuration");
 
 module.exports = async (session, username, templateUrl) => {
     const user = await Node.resolve(ADMIN_SESSION, `/users/${username}`);

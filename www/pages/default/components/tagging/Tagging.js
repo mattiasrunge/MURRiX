@@ -43,7 +43,7 @@ class Tagging extends Component {
     }
 
     onRemove = async (face) => {
-        const faces = this.state.selected[0].attributes.faces.filter((f) => f !== face);
+        const faces = (this.state.selected[0].attributes.faces || []).filter((f) => f !== face);
 
         try {
             await api.vfs.update(this.state.selected[0].path, { faces });
@@ -129,14 +129,14 @@ class Tagging extends Component {
                                 <Image
                                     theme={this.props.theme}
                                     path={this.state.selected[0].path}
-                                    faces={this.state.selected[0].attributes.faces}
+                                    faces={this.state.selected[0].attributes.faces || []}
                                     onChange={this.onFacesChanged}
                                     size={2000}
                                 />
                             </Grid.Column>
                             <Grid.Column width={6}>
 
-                                <If condition={this.state.selected[0].attributes.faces.length > 0}>
+                                <If condition={(this.state.selected[0].attributes.faces || []).length > 0}>
                                     <Connections
                                         theme={this.props.theme}
                                         node={this.state.selected[0]}

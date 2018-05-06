@@ -1,8 +1,8 @@
 "use strict";
 
 const api = require("api.io");
-const bus = require("../../core/lib/bus");
-const db = require("../../core/lib/db");
+const bus = require("../../lib/bus");
+const db = require("../../lib/db");
 
 let params = {};
 
