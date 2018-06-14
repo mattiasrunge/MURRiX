@@ -158,6 +158,8 @@ class Node {
             return list[0];
         }
 
+        abspath = path.normalize(abspath);
+
         const parts = abspath.replace(/\/$/g, "").split("/");
         parts.shift();
 

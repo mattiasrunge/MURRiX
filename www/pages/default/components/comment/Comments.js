@@ -23,9 +23,9 @@ class Comments extends Component {
         await this.update(this.props);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.path !== nextProps.path) {
-            this.update(nextProps);
+    componentDidUpdate(prevProps) {
+        if (this.props.path !== prevProps.path) {
+            this.update(this.props);
         }
     }
 

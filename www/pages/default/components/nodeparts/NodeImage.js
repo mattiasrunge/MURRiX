@@ -34,9 +34,9 @@ class NodeImage extends Component {
         !this.props.lazy && (await this.update(this.props));
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.path !== nextProps.path || JSON.stringify(this.props.format) !== JSON.stringify(nextProps.format)) {
-            this.update(nextProps);
+    componentDidUpdate(prevProps) {
+        if (this.props.path !== prevProps.path || JSON.stringify(this.props.format) !== JSON.stringify(prevProps.format)) {
+            this.update(this.props);
         }
     }
 
@@ -45,6 +45,8 @@ class NodeImage extends Component {
 
         try {
             const url = await api.vfs.media(props.path, props.format);
+
+            (this.props.autoPlay && this.props.onStarted) && this.props.onStarted();
 
             !this.disposed && this.setState({ url, loading: false });
         } catch (error) {
@@ -75,13 +77,78 @@ class NodeImage extends Component {
         }
 
         const url = this.state.url || "/pixel.jpg";
-        const style = {};
+        const style = Object.assign({}, this.props.style);
 
         // If we have exact constraints we can set it to that size
         // before it has loaded, if not we will not be able to do that.
         if (!this.props.noFixedSize && this.props.format.width && this.props.format.height) {
             style.width = this.props.format.width;
             style.height = this.props.format.height;
+        }
+
+        if (!this.props.lazy) {
+            if (this.props.format.type === "image") {
+                return (
+                    <Image
+                        className={this.props.className}
+                        src={url}
+                        title={this.props.title}
+                        avatar={this.props.avatar}
+                        bordered={this.props.bordered}
+                        centered={this.props.centered}
+                        circular={this.props.circular}
+                        floated={this.props.floated}
+                        inline={this.props.inline}
+                        fluid={this.props.fluid}
+                        rounded={this.props.rounded}
+                        size={this.props.size}
+                        spaced={this.props.spaced}
+                        verticalAlign={this.props.verticalAlign}
+                        wrapped={this.props.wrapped}
+                        style={style}
+                    />
+                );
+            } else if (this.props.format.type === "video") {
+                return (
+                    <video
+                        autoPlay={this.props.autoPlay}
+                        controls
+                        preload="metadata"
+                        title={this.props.title}
+                        className={this.props.className}
+                        style={style}
+                        src={url}
+                        type="video/webm"
+                        onEnded={this.props.onEnded}
+                    />
+                );
+            } else if (this.props.format.type === "audio") {
+                return (
+                    <audio
+                        autoPlay={this.props.autoPlay}
+                        controls
+                        preload="metadata"
+                        title={this.props.title}
+                        className={this.props.className}
+                        style={Object.assign({}, style, { width: "80%" })}
+                        src={url}
+                        type="video/webm"
+                        onEnded={this.props.onEnded}
+                    />
+                );
+            } else if (this.props.format.type === "document") {
+                return (
+                    <iframe
+                        style={Object.assign({}, style, {
+                            width: "100%",
+                            height: "100%",
+                            border: "none"
+                        })}
+                        className={this.props.className}
+                        src={url}
+                    ></iframe>
+                );
+            }
         }
 
         return (
@@ -117,6 +184,11 @@ class NodeImage extends Component {
     }
 }
 
+NodeImage.defaultProps = {
+    autoPlay: true,
+    style: {}
+};
+
 NodeImage.propTypes = {
     theme: PropTypes.object,
     className: PropTypes.string,
@@ -137,7 +209,11 @@ NodeImage.propTypes = {
     verticalAlign: PropTypes.string,
     wrapped: PropTypes.bool,
     lazy: PropTypes.bool,
-    noFixedSize: PropTypes.bool
+    noFixedSize: PropTypes.bool,
+    autoPlay: PropTypes.bool,
+    style: PropTypes.object,
+    onStarted: PropTypes.func,
+    onEnded: PropTypes.func
 };
 
 export default NodeImage;

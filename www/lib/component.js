@@ -47,7 +47,7 @@ class Component extends React.PureComponent {
 
     async load() {}
 
-    componentWillMount() {
+    componentDidMount() {
         this.disposed = false;
 
         this.load()

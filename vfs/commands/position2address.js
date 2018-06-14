@@ -9,28 +9,22 @@ module.exports = async (session, longitude, latitude) => {
     assert(!isGuest(session), "Permission denied");
 
     const options = {
-        uri: "https://maps.googleapis.com/maps/api/timezone/json",
+        uri: "https://maps.googleapis.com/maps/api/geocode/json",
         qs: {
-            location: `${latitude},${longitude}`,
-            timestamp: 0,
+            latlng: `${latitude},${longitude}`,
+            sensor: false,
             key: config.googleServerKey
         },
         json: true
     };
 
     const data = await request(options);
-    // {
-    //     "dstOffset" : 3600,
-    //     "rawOffset" : 0,
-    //     "status" : "OK",
-    //     "timeZoneId" : "America/New_York",
-    //     "timeZoneName" : "Eastern Standard Time"
-    // }
 
     assert(data.status === "OK", data.errorMessage);
 
-    return {
-        utcOffset: data.rawOffset,
-        name: data.timeZoneId
-    };
+    if (data.results.length === 0) {
+        return false;
+    }
+
+    return data.results[0].formatted_address;
 };

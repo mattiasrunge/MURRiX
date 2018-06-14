@@ -3,8 +3,7 @@ import themeify from "lib/themeify";
 import theme from "./theme.css";
 
 const exports = {
-    Focus: require("./Focus"),
-    StringList: require("./StringList")
+    Viewer: require("./Viewer")
 };
 
 module.exports = themeify(theme, exports);

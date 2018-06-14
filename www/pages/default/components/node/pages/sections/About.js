@@ -53,8 +53,8 @@ class About extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.node !== this.props.node) {
+    componentDidUpdate(prevProps) {
+        if (prevProps.node !== this.props.node) {
             this.load();
         }
     }

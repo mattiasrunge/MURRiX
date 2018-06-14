@@ -9,6 +9,7 @@ import utils from "lib/utils";
 import api from "api.io-client";
 import { Image, Loader, Header, Button } from "semantic-ui-react";
 import { CreateModal, EditModal, RemoveModal } from "components/edit";
+import { Viewer } from "components/viewer";
 import Text from "./lib/Text";
 import Thumbnail from "./lib/Thumbnail";
 
@@ -21,7 +22,8 @@ class Media extends Component {
             loading: false,
             addText: false,
             editNode: false,
-            removeNode: false
+            removeNode: false,
+            files: []
         };
     }
 
@@ -89,20 +91,20 @@ class Media extends Component {
             return a.time.timestamp - b.time.timestamp;
         });
 
-        return days;
+        return { days, files };
     }
 
     async update() {
         this.setState({ loading: true });
 
         try {
-            const days = await this.getDays();
+            const { days, files } = await this.getDays();
 
-            !this.disposed && this.setState({ days, loading: false });
+            !this.disposed && this.setState({ days, files, loading: false });
         } catch (error) {
             this.logError("Failed to load media", error);
             notification.add("error", error.message, 10000);
-            !this.disposed && this.setState({ days: [], loading: false });
+            !this.disposed && this.setState({ days: [], files: [], loading: false });
         }
     }
 
@@ -130,9 +132,32 @@ class Media extends Component {
         this.setState({ removeNode: false });
     }
 
+    onSelectNode = (selected) => {
+        if (selected) {
+            this.context.router.history.push(`/node${this.props.node.path}/_/media${selected.path}`);
+        } else {
+            this.context.router.history.push(`/node${this.props.node.path}/_/media`);
+        }
+    }
+
+    getSelectedPath() {
+        const [ , path ] = this.props.match.url.split("/_/media");
+
+        return path;
+    }
+
     render() {
+        const selectedPath = this.getSelectedPath();
+
         return (
             <div className={this.props.theme.mediaContainer}>
+                <If condition={selectedPath && this.state.files.length > 0}>
+                    <Viewer
+                        path={selectedPath}
+                        onSelect={this.onSelectNode}
+                        nodes={this.state.files}
+                    />
+                </If>
                 <If condition={this.props.node.editable}>
                     <If condition={this.state.addText}>
                         <CreateModal
@@ -202,6 +227,7 @@ class Media extends Component {
                                         theme={this.props.theme}
                                         node={file}
                                         parentNode={this.props.node}
+                                        onClick={this.onSelectNode}
                                     />
                                 </For>
                             </Image.Group>
@@ -217,6 +243,10 @@ Media.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired
+};
+
+Media.contextTypes = {
+    router: PropTypes.object.isRequired
 };
 
 export default Media;

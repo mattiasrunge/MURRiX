@@ -25,7 +25,7 @@ module.exports = {
             return "Unknown";
         }
 
-        return moment.duration(value, "seconds").format();
+        return moment.duration(value, "seconds").humanize();
     },
     datetimeDayString: (value) => {
         if (!value) {

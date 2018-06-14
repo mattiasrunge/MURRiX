@@ -69,9 +69,16 @@ class Thumbnail extends Component {
         }
     }
 
+    onClick = () => {
+        this.props.onClick(this.props.node);
+    }
+
     render() {
         return (
-            <span className={this.props.theme.mediaImageContainer}>
+            <span
+                className={this.props.theme.mediaImageContainer}
+                onClick={this.onClick}
+            >
                 <NodeImage
                     className={this.props.theme.mediaImage}
                     title={this.props.node.attributes.name}
@@ -81,7 +88,7 @@ class Thumbnail extends Component {
                 />
                 <FileIcon
                     type={this.props.node.attributes.mimetype}
-                    className={this.classNames(this.props.theme.mediaImageTypeIcon, "image")}
+                    className={this.classNames(this.props.theme.mediaImageTypeIcon)}
                 />
                 <Dropdown
                     icon="setting"
@@ -101,21 +108,17 @@ class Thumbnail extends Component {
                             text="Download"
                             onClick={this.onDownload}
                         />
-                        <If condition={this.props.node.editable}>
+                        <If condition={this.props.node.editable && (this.props.node.attributes.type === "image" || this.props.node.attributes.type === "video" || this.props.node.attributes.type === "document")}>
                             <Dropdown.Item
                                 icon="repeat"
                                 text="Rotate right"
                                 onClick={this.onRotateRight}
                             />
-                        </If>
-                        <If condition={this.props.node.editable}>
                             <Dropdown.Item
                                 icon="undo"
                                 text="Rotate left"
                                 onClick={this.onRotateLeft}
                             />
-                        </If>
-                        <If condition={this.props.node.editable}>
                             <Dropdown.Item
                                 icon="exchange"
                                 text="Mirror"
@@ -137,7 +140,8 @@ Thumbnail.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
     parentNode: PropTypes.object.isRequired,
-    size: PropTypes.number
+    size: PropTypes.number,
+    onClick: PropTypes.func.isRequired
 };
 
 export default Thumbnail;

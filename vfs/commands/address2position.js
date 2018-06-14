@@ -5,32 +5,29 @@ const { isGuest } = require("../lib/auth");
 const request = require("request-promise-native");
 const config = require("../../lib/configuration");
 
-module.exports = async (session, longitude, latitude) => {
+module.exports = async (session, address) => {
     assert(!isGuest(session), "Permission denied");
 
     const options = {
-        uri: "https://maps.googleapis.com/maps/api/timezone/json",
+        uri: "https://maps.googleapis.com/maps/api/geocode/json",
         qs: {
-            location: `${latitude},${longitude}`,
-            timestamp: 0,
+            address,
+            sensor: false,
             key: config.googleServerKey
         },
         json: true
     };
 
     const data = await request(options);
-    // {
-    //     "dstOffset" : 3600,
-    //     "rawOffset" : 0,
-    //     "status" : "OK",
-    //     "timeZoneId" : "America/New_York",
-    //     "timeZoneName" : "Eastern Standard Time"
-    // }
 
     assert(data.status === "OK", data.errorMessage);
 
+    if (data.results.length === 0) {
+        return false;
+    }
+
     return {
-        utcOffset: data.rawOffset,
-        name: data.timeZoneId
+        longitude: data.results[0].geometry.location.lng,
+        latitude: data.results[0].geometry.location.lat
     };
 };
