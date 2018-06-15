@@ -67,6 +67,7 @@ module.exports = async function(options) {
 
     return {
         context: settings.CONTEXT,
+        mode: isProduction ? "production" : "development",
         entry: {
             bundle: [
                 "babel-polyfill",
