@@ -43,10 +43,10 @@ class Viewer extends Component {
 
     getPosition(node) {
         if (node.attributes.where) {
-            if (node.attributes.where.gps) {
-                return node.attributes.where.gps;
-            } else if (node.attributes.where.manual) {
+            if (node.attributes.where.manual) {
                 return node.attributes.where.manual;
+            } else if (node.attributes.where.gps) {
+                return node.attributes.where.gps;
             }
         }
 
