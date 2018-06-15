@@ -8,6 +8,7 @@ import Fullscreen from "./lib/Fullscreen";
 import Sidebar from "./lib/Sidebar";
 import format from "lib/format";
 import ui from "lib/ui";
+import utils from "lib/utils";
 import api from "api.io-client";
 
 class Viewer extends Component {
@@ -15,12 +16,9 @@ class Viewer extends Component {
         super(props);
 
         this.state = {
-            format: {
-                width: 2000,
-                type: "image"
-            },
             loading: false,
             address: false,
+            tags: [],
             sidebar: true,
             slideshow: false
         };
@@ -69,14 +67,37 @@ class Viewer extends Component {
                 address = await api.vfs.position2address(position.longitude, position.latitude);
             }
 
+            const tagNodes = await api.vfs.list(`${node.path}/tags`, { noerror: true });
+
+            const tags = tagNodes
+            .map((tagNode) => {
+                const face = (node.attributes.faces || []).find((face) => utils.basename(tagNode.extra.linkPath) === face.id);
+
+                if (!face) {
+                    return false;
+                }
+
+                return {
+                    left: `${(face.x - (face.w / 2)) * 100}%`,
+                    top: `${(face.y - (face.h / 2)) * 100}%`,
+                    width: `${face.w * 100}%`,
+                    height: `${face.h * 100}%`,
+                    text: tagNode.attributes.name,
+                    id: tagNode.id
+                };
+            })
+            .filter((item) => item);
+
             !this.disposed && this.setState({
                 address,
+                tags,
                 loading: false
             });
         } catch (error) {
             this.logError("Failed to load node location", error, 10000);
             !this.disposed && this.setState({
                 address: false,
+                tags: [],
                 loading: false
             });
         }
@@ -174,39 +195,39 @@ class Viewer extends Component {
             <Fullscreen theme={this.props.theme}>
                 <div className={classNames} onClick={this.onStopSlideshow}>
                     <div className={this.props.theme.mediaContainer}>
-                        <NodeImage
-                            className={this.props.theme.media}
-                            title={node.attributes.name}
-                            path={node.path}
-                            format={{
-                                type: node.attributes.type,
-                                width: node.attributes.type === "image" ? 2000 : null
-                            }}
-                            lazy={false}
-                            onStarted={this.onMediaStarted}
-                            onEnded={this.onMediaEnded}
-                        />
+                        <div className={this.props.theme.mediaWrapper}>
+                            <NodeImage
+                                className={this.props.theme.media}
+                                title={node.attributes.name}
+                                path={node.path}
+                                format={{
+                                    type: node.attributes.type,
+                                    width: node.attributes.type === "image" ? 2000 : null
+                                }}
+                                lazy={false}
+                                onStarted={this.onMediaStarted}
+                                onEnded={this.onMediaEnded}
+                            />
 
-                        <NodeImage
-                            path={nextNode.path}
-                            format={{
-                                type: nextNode.attributes.type,
-                                width: nextNode.attributes.type === "image" ? 2000 : null
-                            }}
-                            lazy={false}
-                            autoPlay={false}
-                            style={{ display: "none" }}
-                        />
-                        <NodeImage
-                            path={previousNode.path}
-                            format={{
-                                type: previousNode.attributes.type,
-                                width: previousNode.attributes.type === "image" ? 2000 : null
-                            }}
-                            lazy={false}
-                            autoPlay={false}
-                            style={{ display: "none" }}
-                        />
+                            <For each="tag" of={this.state.tags}>
+                                <div
+                                    key={tag.id}
+                                    className={this.props.theme.tagFrame}
+                                    style={{
+                                        left: tag.left,
+                                        top: tag.top,
+                                        width: tag.width,
+                                        height: tag.height
+                                    }}
+                                >
+                                    <div className={this.props.theme.tagLabel}>
+                                        <span className={this.props.theme.tagLabelText}>
+                                            {tag.text}
+                                        </span>
+                                    </div>
+                                </div>
+                            </For>
+                        </div>
                     </div>
 
                     <div className={this.props.theme.infoContainer}>
@@ -314,6 +335,27 @@ class Viewer extends Component {
                         />
                     </If>
                 </If>
+
+                <NodeImage
+                    path={nextNode.path}
+                    format={{
+                        type: nextNode.attributes.type,
+                        width: nextNode.attributes.type === "image" ? 2000 : null
+                    }}
+                    lazy={false}
+                    autoPlay={false}
+                    style={{ display: "none" }}
+                />
+                <NodeImage
+                    path={previousNode.path}
+                    format={{
+                        type: previousNode.attributes.type,
+                        width: previousNode.attributes.type === "image" ? 2000 : null
+                    }}
+                    lazy={false}
+                    autoPlay={false}
+                    style={{ display: "none" }}
+                />
             </Fullscreen>
         );
     }

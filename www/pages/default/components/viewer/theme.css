@@ -1,6 +1,11 @@
 
 @import "pages/default/styles/theme.css";
 
+:root {
+    --infobar-height: 40px;
+    --sidebar-width: 400px;
+}
+
 .fullscreen {
     position: fixed;
     top: 0;
@@ -23,7 +28,7 @@
     top: 0;
     bottom: 0;
     left: 0;
-    right: 400px;
+    right: var(--sidebar-width);
     transition: right .2s ease-in-out;
 
     & .sidebarToggle {
@@ -56,7 +61,7 @@
         bottom: 0;
         left: var(--spacing-small);
         right: var(--spacing-small);
-        height: 40px;
+        height: var(--infobar-height);
         color: white;
         display: flex;
         align-items: center;
@@ -87,20 +92,76 @@
 
     & .mediaContainer {
         position: absolute;
-        bottom: 40px;
+        bottom: var(--infobar-height);
         left: 0;
         right: 0;
         top: 0;
+        display: flex;
+        align-items: center;
 
-        & .media {
+        & .mediaWrapper {
             position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-            max-width: 100%;
-            max-height: 100%;
-            margin-right: auto;
-            margin-left: auto;
             display: block;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0;
+
+            & .media {
+                max-height: calc(100vh - var(--infobar-height));
+            }
+
+            & .tagFrame {
+                position: absolute;
+                z-index: 10;
+                cursor: crosshair;
+            }
+
+            & .tagFrame:hover {
+                /* box-shadow: 0 1px 6px rgba(0,0,0,.8); */
+                /* border: 1px solid #eee; */
+                z-index: 12;
+            }
+
+            & .tagLabel {
+                white-space: nowrap;
+                float: left;
+                left: 50%;
+                bottom: -20px;
+                position: absolute;
+                opacity: 0.0;
+                transition: opacity .2s ease-in-out;
+                cursor: auto;
+            }
+
+            & .tagLabel:before {
+                content: ' ';
+                position: absolute;
+                margin-left: -5px;
+                top: -4px;
+                width: 0;
+                height: 0;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-bottom: 5px solid white;
+                z-index: 11;
+            }
+
+            & .tagFrame:hover .tagLabel {
+                opacity: 1.0;
+                transition: opacity .1s ease-in-out;
+            }
+
+            & .tagLabelText {
+                background-color: white;
+                color: black;
+                box-shadow: 0 1px 6px rgba(0,0,0,.9);
+                font-size: 12px;
+                border-radius: 2px;
+                padding: 3px 10px 3px 10px;
+                left: -50%;
+                position: relative;
+                z-index: 10;
+            }
         }
     }
 }
@@ -114,7 +175,7 @@
     top: 0;
     bottom: 0;
     right: 0;
-    width: 400px;
+    width: var(--sidebar-width);
     background-color: white;
     padding: calc(2 * var(--spacing));
     padding-top: var(--spacing-small);
