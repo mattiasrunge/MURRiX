@@ -9,6 +9,7 @@ import Share from "./sections/Share";
 import Organize from "./sections/Organize";
 import { Upload } from "components/upload";
 import { Tagging } from "components/tagging";
+import { Actions } from "components/actions";
 import ui from "lib/ui";
 
 class Settings extends Component {
@@ -96,6 +97,14 @@ class Settings extends Component {
                 active: section === "tagging",
                 Component: Tagging,
                 validTypes: [ "a" ]
+            },
+            {
+                name: "actions",
+                title: "Actions",
+                icon: "keyboard",
+                active: section === "actions",
+                Component: Actions,
+                validTypes: [ "a", "l", "c", "p" ]
             }
         ];
 

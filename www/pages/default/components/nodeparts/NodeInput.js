@@ -26,12 +26,12 @@ class NodeInput extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.value !== this.props.value) {
-            const selected = nextProps.value ? {
-                title: nextProps.value.attributes.name,
-                key: nextProps.value._id,
-                node: nextProps.value
+    componentDidUpdate(prevProps) {
+        if (prevProps.value !== this.props.value) {
+            const selected = this.props.value ? {
+                title: this.props.value.attributes.name,
+                key: this.props.value._id,
+                node: this.props.value
             } : null;
 
             this.setState({

@@ -3,6 +3,35 @@
 const { Node } = require("../../vfs");
 
 class Camera extends Node {
+    // Private
+
+    async _postCreate(session) {
+        await this.createChild(session, "d", "owners");
+    }
+
+
+    // Getters
+
+    static getActionTypes() {
+        return super.getActionTypes().concat([
+            {
+                name: "owners",
+                label: "Owners",
+                type: "list",
+                inputs: [
+                    {
+                        name: "owner",
+                        type: "node",
+                        paths: [ "/people" ]
+                    }
+                ],
+                get: "murrix.getowners $this.path",
+                add: "murrix.addowner $this.path $owner.path",
+                remove: "murrix.removeowner $this.path $remove.path"
+            }
+        ]);
+    }
+
     static getAttributeTypes() {
         return super.getAttributeTypes().concat([
             {

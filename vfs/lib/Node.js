@@ -66,6 +66,11 @@ class Node {
         ];
     }
 
+    static getActionTypes() {
+        // TODO: Should we add remove here?
+        return [];
+    }
+
     static getType(name) {
         if (!Types[name]) {
             throw new Error(`No type named ${name}`);

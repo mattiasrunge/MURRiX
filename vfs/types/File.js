@@ -38,6 +38,10 @@ class File extends Node {
 
         return data;
     }
+
+    async _postCreate(session) {
+        await this.createChild(session, "d", "tags");
+    }
 }
 
 File.IDENTIFIER = "f";

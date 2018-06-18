@@ -207,7 +207,7 @@ class About extends Component {
                             <Header as="h4">Contact</Header>
                             <Table definition>
                                 <Table.Body>
-                                    <For each="entry" index="index" of={this.props.node.attributes.contact}>
+                                    <For each="entry" index="index" of={this.props.node.attributes.contact || []}>
                                         <Table.Row key={`${entry.type}-${index}`}>
                                             <Table.Cell collapsing verticalAlign="top">
                                                 {entry.type}

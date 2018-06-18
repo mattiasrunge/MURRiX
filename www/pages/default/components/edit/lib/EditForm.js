@@ -39,8 +39,8 @@ class EditForm extends Component {
         await this.getAttributeTypes();
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.type !== this.props.type) {
+    componentDidUpdate(prevProps) {
+        if (prevProps.type !== this.props.type) {
             this.getAttributeTypes();
         }
     }

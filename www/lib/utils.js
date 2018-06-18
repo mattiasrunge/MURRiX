@@ -60,5 +60,14 @@ module.exports = {
         }
 
         return modeStr;
+    },
+    getValue: (obj, key) => {
+        if (key.includes(".")) {
+            const [ , key1, rest ] = key.split(/(.*?)\.(.*)/);
+
+            return module.exports.getValue(obj[key1], rest);
+        }
+
+        return obj[key];
     }
 };
