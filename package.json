@@ -10,7 +10,8 @@
     "url": "git://github.com/mattiasrunge/MURRiX.git"
   },
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start": "node index.js"
   },
   "dependencies": {
     "animate.css": "^3.5.2",
