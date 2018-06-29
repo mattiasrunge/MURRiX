@@ -11,7 +11,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "node index.js"
+    "start": "node core/index.js"
   },
   "dependencies": {
     "animate.css": "^3.5.2",
