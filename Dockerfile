@@ -6,6 +6,6 @@ RUN apk add --no-cache --virtual=build-dependencies git
 
 COPY . .
 
-RUN npm install --only=production
+RUN npm install
 
 CMD [ "npm", "start" ]
