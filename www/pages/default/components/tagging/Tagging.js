@@ -9,6 +9,7 @@ import notification from "lib/notification";
 import Image from "./lib/Image";
 import Connections from "./lib/Connections";
 import ui from "lib/ui";
+import CircularList from "lib/circular_list";
 
 class Tagging extends Component {
     constructor(props) {
@@ -53,22 +54,19 @@ class Tagging extends Component {
         }
     }
 
-    gotoFile(indexOffset) {
-        let index = this.state.files.indexOf(this.state.selected[0]);
+    gotoFile(offset) {
+        const list = new CircularList(this.state.files);
 
-        if (index === -1) {
+        const file = list
+        .select(this.state.selected[0])
+        .offset(offset)
+        .current;
+
+        if (!file) {
             return;
         }
 
-        index = index + indexOffset;
-
-        if (index >= this.state.files.length) {
-            index = 0;
-        } else if (index < 0) {
-            index = this.state.files.length - 1;
-        }
-
-        this.setState({ selected: [ this.state.files[index] ] });
+        this.setState({ selected: [ file ] });
     }
 
     onNext = () => {

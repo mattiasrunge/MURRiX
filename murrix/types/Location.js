@@ -13,23 +13,22 @@ class Location extends Node {
 
     // Getters
 
-    static getAttributeTypes() {
-        return super.getAttributeTypes().concat([
+    static getActionTypes() {
+        return super.getActionTypes().concat([
             {
-                name: "address",
-                label: "Address",
-                type: "text"
-            },
-            {
-                name: "owners",
-                label: "Owners",
-                type: "cmd",
-                inputs: {
-                    owner: "select"
-                },
-                get: "getowners {node.path}",
-                add: "addowner {node.path} {owner.path}",
-                remove: "removeowner {node.path} {owner.path}"
+                name: "residents",
+                label: "Residents",
+                type: "list",
+                inputs: [
+                    {
+                        name: "resident",
+                        type: "node",
+                        paths: [ "/people" ]
+                    }
+                ],
+                get: "murrix.getresidents $this.path",
+                add: "murrix.addresident $this.path $resident.path",
+                remove: "murrix.removeresident $this.path $remove.path"
             }
         ]);
     }

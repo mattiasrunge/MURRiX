@@ -5,6 +5,10 @@ const { Node } = require("../../vfs");
 const resolve = require("../../vfs/commands/resolve");
 
 const formatDate = (time) => {
+    if (!time) {
+        return;
+    }
+
     const date = moment.utc(time.timestamp * 1000);
 
     if (time.accuracy === "month") {
@@ -16,7 +20,7 @@ const formatDate = (time) => {
     return date.format("YYYY-MM-DD");
 };
 
-module.exports = async (session, abspath) => {
+module.exports = async (session, abspath, nowTime) => {
     const age = {};
     let birth;
     let death;
@@ -72,9 +76,11 @@ module.exports = async (session, abspath) => {
 
     if (birth && birth.attributes.time) {
         const birthUtc = moment.utc(birth.attributes.time.timestamp * 1000);
+        const nowDate = formatDate(nowTime);
 
         age.birthdate = formatDate(birth.attributes.time);
-        age.age = moment.utc().diff(birthUtc, "years");
+        age.age = moment.utc(nowDate).diff(birthUtc, "years");
+        age.months = moment.utc(nowDate).diff(birthUtc, "months") % 12;
     }
 
     if (death && death.attributes.time) {

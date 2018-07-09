@@ -226,5 +226,22 @@ module.exports = {
         } while (fileSizeInBytes > 1024);
 
         return fileSizeInBytes.toFixed(1) + byteUnits[i];
+    },
+    age: (age) => {
+        if (!age) {
+            return;
+        }
+
+        if (Math.abs(age.age) < 1) {
+            if (Math.abs(age.months) === 1) {
+                return `${age.months} month old`;
+            }
+
+            return `${age.months} months old`;
+        } else if (Math.abs(age.age) === 1) {
+            return `${age.age} year old`;
+        }
+
+        return `${age.age} years old`;
     }
 };

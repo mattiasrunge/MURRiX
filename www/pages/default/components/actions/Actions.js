@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import api from "api.io-client";
 import notification from "lib/notification";
-import { Header } from "semantic-ui-react";
+import { Header, Card } from "semantic-ui-react";
 import ListAction from "./lib/ListAction";
 
 class Actions extends Component {
@@ -41,18 +41,20 @@ class Actions extends Component {
                         content: "Execute actions"
                     }}
                 />
-                <For each="action" of={this.state.actions}>
-                    <Choose>
-                        <When condition={action.type === "list"}>
-                            <ListAction
-                                key={action.name}
-                                theme={this.props.theme}
-                                action={action}
-                                node={this.props.node}
-                            />
-                        </When>
-                    </Choose>
-                </For>
+                <Card.Group itemsPerRow="2">
+                    <For each="action" of={this.state.actions}>
+                        <Choose>
+                            <When condition={action.type === "list"}>
+                                <ListAction
+                                    key={action.name}
+                                    theme={this.props.theme}
+                                    action={action}
+                                    node={this.props.node}
+                                />
+                            </When>
+                        </Choose>
+                    </For>
+                </Card.Group>
             </div>
         );
     }

@@ -7,6 +7,7 @@ import Component from "lib/component";
 import { Input, Header, Button, Form, Grid } from "semantic-ui-react";
 import { Focus } from "components/utils";
 import { NodeInput } from "components/nodeparts";
+import { Edit } from "components/edit";
 
 class Profile extends Component {
     constructor(props) {
@@ -51,55 +52,62 @@ class Profile extends Component {
     }
 
     render() {
+        console.log(this.state.user);
         return (
-            <div>
-                <Header>Profile</Header>
-                <Grid columns="2">
-                    <Grid.Column width="8">
-                        <Form>
-                            <Form.Field>
-                                <label>Name</label>
-                                <Focus>
-                                    <Input
-                                        value={this.state.name}
-                                        onChange={(e, { value }) => this.setState({ name: value })}
-                                        onKeyDown={(e) => e.which === 13 && this.save()}
-                                    />
-                                </Focus>
-                            </Form.Field>
-                            <Form.Field>
-                                <label>E-Mail</label>
-                                <Input
-                                    value={this.state.username}
-                                    onChange={(e, { value }) => this.setState({ username: value })}
-                                    onKeyDown={(e) => e.which === 13 && this.save()}
-                                />
-                            </Form.Field>
-                            <Form.Field>
-                                <label>Person</label>
-                                <NodeInput
-                                    value={this.state.person}
-                                    paths={[
-                                        "/people"
-                                    ]}
-                                    onChange={(value) => this.setState({ person: value })}
-                                    onKeyDown={(e) => e.which === 13 && this.save()}
-                                />
-                            </Form.Field>
-
-                            <Button
-                                primary
-                                loading={this.state.loading}
-                                disabled={!this.state.name || !this.state.username}
-                                icon="save"
-                                content="Save"
-                                onClick={() => this.save()}
-                            />
-                        </Form>
-                    </Grid.Column>
-                </Grid>
-            </div>
+            <Edit
+                node={this.state.user}
+            />
         );
+
+        // return (
+        //     <div>
+        //         <Header>Profile</Header>
+        //         <Grid columns="2">
+        //             <Grid.Column width="8">
+        //                 <Form>
+        //                     <Form.Field>
+        //                         <label>Name</label>
+        //                         <Focus>
+        //                             <Input
+        //                                 value={this.state.name}
+        //                                 onChange={(e, { value }) => this.setState({ name: value })}
+        //                                 onKeyDown={(e) => e.which === 13 && this.save()}
+        //                             />
+        //                         </Focus>
+        //                     </Form.Field>
+        //                     <Form.Field>
+        //                         <label>E-Mail</label>
+        //                         <Input
+        //                             value={this.state.username}
+        //                             onChange={(e, { value }) => this.setState({ username: value })}
+        //                             onKeyDown={(e) => e.which === 13 && this.save()}
+        //                         />
+        //                     </Form.Field>
+        //                     <Form.Field>
+        //                         <label>Person</label>
+        //                         <NodeInput
+        //                             value={this.state.person}
+        //                             paths={[
+        //                                 "/people"
+        //                             ]}
+        //                             onChange={(value) => this.setState({ person: value })}
+        //                             onKeyDown={(e) => e.which === 13 && this.save()}
+        //                         />
+        //                     </Form.Field>
+        //
+        //                     <Button
+        //                         primary
+        //                         loading={this.state.loading}
+        //                         disabled={!this.state.name || !this.state.username}
+        //                         icon="save"
+        //                         content="Save"
+        //                         onClick={() => this.save()}
+        //                     />
+        //                 </Form>
+        //             </Grid.Column>
+        //         </Grid>
+        //     </div>
+        // );
     }
 }
 

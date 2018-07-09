@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import api from "api.io-client";
 import notification from "lib/notification";
-import { Header, Icon, Button, List } from "semantic-ui-react";
+import { Icon, Button, List, Card } from "semantic-ui-react";
 import { NodeImage, NodeInput } from "components/nodeparts";
 import utils from "lib/utils";
 
@@ -50,7 +50,9 @@ class ListAction extends Component {
                 ...this.state
             };
 
-            const list = await this.execute(this.props.action.get, env);
+            let list = await this.execute(this.props.action.get, env);
+
+            list = (Array.isArray(list) || !list ? list : [ list ]) || [];
 
             this.setState({ list, loading: false });
         } catch (error) {
@@ -107,7 +109,15 @@ class ListAction extends Component {
 
             await this.execute(this.props.action.add, env);
 
-            this.setState({ loading: false });
+            const state = {
+                loading: false
+            };
+
+            for (const input of this.props.action.inputs) {
+                state[input.name] = null;
+            }
+
+            this.setState(state);
 
             await this.update();
         } catch (error) {
@@ -119,60 +129,63 @@ class ListAction extends Component {
 
     render() {
         return (
-            <div>
-                <Header as="h2">
-                    {this.props.action.label}
-                </Header>
-                <List divided verticalAlign="middle">
-                    <For each="item" of={this.state.list}>
-                        <List.Item
-                            key={item._id}
-                            className={this.props.theme.ListActionSetListItem}
-                        >
-                            <List.Content className={this.props.theme.ListActionSetListItemContent}>
-                                <Icon
-                                    className={this.props.theme.ListActionSetListItemClose}
-                                    name="close"
-                                    title="Remove from list"
-                                    link
-                                    onClick={(e) => this.onRemove(e, item)}
+            <Card>
+                <Card.Content>
+                    <Card.Header>{this.props.action.label}</Card.Header>
+                </Card.Content>
+                <Card.Content>
+                    <List divided verticalAlign="middle">
+                        <For each="item" of={this.state.list}>
+                            <List.Item key={item._id}>
+                                <List.Content>
+                                    <NodeImage
+                                        className={this.props.theme.actionListItemImage}
+                                        path={`${item.path}/profilePicture`}
+                                        format={{
+                                            width: 28,
+                                            height: 28,
+                                            type: "image"
+                                        }}
+                                        rounded
+                                    />
+                                    {item.attributes.name}
+                                    <Icon
+                                        className={this.props.theme.actionListItemRemove}
+                                        name="close"
+                                        title="Remove from list"
+                                        link
+                                        color="red"
+                                        onClick={(e) => this.onRemove(e, item)}
+                                    />
+                                </List.Content>
+                            </List.Item>
+                        </For>
+                    </List>
+                    <For each="input" of={this.props.action.inputs}>
+                        <Choose>
+                            <When condition={input.type === "node"}>
+                                <NodeInput
+                                    key={input.name}
+                                    value={this.state[input.name]}
+                                    onChange={(value) => this.onSet(input.name, value)}
+                                    paths={input.paths}
+                                    loading={this.state.loading}
+                                    className={this.props.theme.actionInput}
+                                    size="mini"
                                 />
-
-                                <NodeImage
-                                    path={`${item.path}/profilePicture`}
-                                    format={{
-                                        width: 28,
-                                        height: 28,
-                                        type: "image"
-                                    }}
-                                    rounded
-                                    floated="left"
-                                />
-                                {item.attributes.name}
-                            </List.Content>
-                        </List.Item>
+                            </When>
+                        </Choose>
                     </For>
-                </List>
-                <For each="input" of={this.props.action.inputs}>
-                    <Choose>
-                        <When condition={input.type === "node"}>
-                            <NodeInput
-                                key={input.name}
-                                value={this.state[input.name]}
-                                onChange={(value) => this.onSet(input.name, value)}
-                                paths={input.paths}
-                                loading={this.state.loading}
-                            />
-                        </When>
-                    </Choose>
-                </For>
-                <Button
-                    primary
-                    content="Add"
-                    onClick={this.onAdd}
-                    disabled={this.state.loading}
-                />
-            </div>
+                    <Button
+                        primary
+                        fluid
+                        content="Set"
+                        size="mini"
+                        onClick={this.onAdd}
+                        disabled={this.state.loading}
+                    />
+                </Card.Content>
+            </Card>
         );
     }
 }

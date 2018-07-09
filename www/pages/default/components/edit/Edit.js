@@ -54,8 +54,7 @@ class Edit extends Component {
 
 Edit.propTypes = {
     theme: PropTypes.object,
-    node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired
+    node: PropTypes.object.isRequired
 };
 
 export default Edit;

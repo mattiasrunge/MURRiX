@@ -7,7 +7,7 @@ const list = require("../../vfs/commands/list");
 module.exports = async (session, abspath) => {
     const node = await Node.resolve(session, abspath);
 
-    assert(node.properties.type === "c", "Get only get owners of cameras");
+    assert(node.properties.type === "l", "Get only get residents of locations");
 
-    return await list(session, `${abspath}/owners`);
+    return await list(session, `${abspath}/residents`);
 };

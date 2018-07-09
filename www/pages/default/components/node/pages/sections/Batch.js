@@ -4,9 +4,8 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import { Header, Grid } from "semantic-ui-react";
 import { SelectableImageList } from "components/list";
-import MoveToList from "../lib/MoveToList";
 
-class Organize extends Component {
+class Batch extends Component {
     constructor(props) {
         super(props);
 
@@ -23,9 +22,9 @@ class Organize extends Component {
         return (
             <div>
                 <Header as="h2">
-                    Organize
+                    Batch
                     <Header.Subheader>
-                        Move files to another album
+                        Perform batch operations
                     </Header.Subheader>
                 </Header>
                 <Grid>
@@ -38,11 +37,11 @@ class Organize extends Component {
                             />
                         </Grid.Column>
                         <Grid.Column width={7}>
-                            <MoveToList
-                                theme={this.props.theme}
-                                node={this.props.node}
-                                files={this.state.selected}
-                            />
+                            <Header as="h4">Date & Time</Header>
+
+                            <Header as="h4">Camera</Header>
+
+                            <Header as="h4">Location</Header>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -51,14 +50,14 @@ class Organize extends Component {
     }
 }
 
-Organize.propTypes = {
+Batch.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired
 };
 
-Organize.contextTypes = {
+Batch.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default Organize;
+export default Batch;

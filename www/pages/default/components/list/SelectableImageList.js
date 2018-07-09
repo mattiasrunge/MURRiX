@@ -71,9 +71,9 @@ class SelectableImageList extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.path !== this.props.path) {
-            this.update(nextProps);
+    componentDidUpdate(prevProps) {
+        if (prevProps.path !== this.props.path) {
+            this.update(this.props);
         }
     }
 

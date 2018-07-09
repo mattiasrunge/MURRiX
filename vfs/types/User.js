@@ -21,6 +21,7 @@ class User extends Node {
 
     async _postCreate(session) {
         await this.createChild(session, "d", "groups");
+        await this.createChild(session, "d", "stars");
     }
 
     async _migrateDb(session) {
@@ -99,6 +100,23 @@ class User extends Node {
         const uids = users.map((user) => user.attributes.uid);
 
         return Math.max(0, ...uids) + 1;
+    }
+
+    static getAttributeTypes() {
+        return [
+            {
+                name: "name",
+                label: "Name",
+                type: "textline",
+                required: true
+            },
+            {
+                name: "username",
+                label: "E-mail",
+                type: "textline",
+                required: true
+            }
+        ];
     }
 }
 

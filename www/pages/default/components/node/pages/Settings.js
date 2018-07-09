@@ -7,10 +7,12 @@ import { Menu } from "semantic-ui-react";
 import { Edit } from "components/edit";
 import Share from "./sections/Share";
 import Organize from "./sections/Organize";
+import Batch from "./sections/Batch";
 import { Upload } from "components/upload";
 import { Tagging } from "components/tagging";
 import { Actions } from "components/actions";
 import ui from "lib/ui";
+import CircularList from "lib/circular_list";
 
 class Settings extends Component {
     async load() {
@@ -26,17 +28,14 @@ class Settings extends Component {
 
     gotoSection = (offset) => {
         const sections = this.getSections();
-        let index = sections.findIndex((section) => section.active);
+        const list = new CircularList(sections);
 
-        index += offset;
+        const section = list
+        .select((section) => section.active)
+        .offset(offset)
+        .current;
 
-        if (index >= sections.length) {
-            index = 0;
-        } else if (index < 0) {
-            index = sections.length - 1;
-        }
-
-        this.onSection(null, { name: sections[index].name });
+        this.onSection(null, { name: section.name });
     }
 
     onNextSection = () => {
@@ -75,6 +74,14 @@ class Settings extends Component {
                 validTypes: [ "a", "l", "c", "p" ]
             },
             {
+                name: "actions",
+                title: "Actions",
+                icon: "keyboard",
+                active: section === "actions",
+                Component: Actions,
+                validTypes: [ "a", "l", "c", "p" ]
+            },
+            {
                 name: "upload",
                 title: "Upload",
                 icon: "upload",
@@ -91,20 +98,20 @@ class Settings extends Component {
                 validTypes: [ "a" ]
             },
             {
+                name: "batch",
+                title: "Batch Operations",
+                icon: "cogs",
+                active: section === "batch",
+                Component: Batch,
+                validTypes: [ "a" ]
+            },
+            {
                 name: "tagging",
                 title: "Tagging",
                 icon: "user",
                 active: section === "tagging",
                 Component: Tagging,
                 validTypes: [ "a" ]
-            },
-            {
-                name: "actions",
-                title: "Actions",
-                icon: "keyboard",
-                active: section === "actions",
-                Component: Actions,
-                validTypes: [ "a", "l", "c", "p" ]
             }
         ];
 

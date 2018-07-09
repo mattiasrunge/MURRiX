@@ -9,6 +9,7 @@ import Sidebar from "./lib/Sidebar";
 import format from "lib/format";
 import ui from "lib/ui";
 import utils from "lib/utils";
+import CircularList from "lib/circular_list";
 import api from "api.io-client";
 
 class Viewer extends Component {
@@ -83,7 +84,7 @@ class Viewer extends Component {
                     width: `${face.w * 100}%`,
                     height: `${face.h * 100}%`,
                     text: tagNode.attributes.name,
-                    id: tagNode.id
+                    id: tagNode._id
                 };
             })
             .filter((item) => item);
@@ -104,17 +105,12 @@ class Viewer extends Component {
     }
 
     getIndex(offset) {
-        let index = this.props.nodes.findIndex((node) => node.path === this.props.path);
+        const list = new CircularList(this.props.nodes);
 
-        index += offset;
-
-        if (index >= this.props.nodes.length) {
-            index = 0;
-        } else if (index < 0) {
-            index = this.props.nodes.length - 1;
-        }
-
-        return index;
+        return list
+        .select((node) => node.path === this.props.path)
+        .offset(offset)
+        .index;
     }
 
     goto(offset) {

@@ -47,8 +47,8 @@ class InputWhen extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        const state = this.valueToString(nextProps.value);
+    componentDidUpdate(prevProps) {
+        const state = this.valueToString(prevProps.value);
 
         if (!state.errorMessage && state.value !== this.state.value) {
             this.setState(state);

@@ -16,6 +16,71 @@ class Person extends Node {
 
     // Getters
 
+    static getActionTypes() {
+        return super.getActionTypes().concat([
+            {
+                name: "mother",
+                label: "Mother",
+                type: "list",
+                inputs: [
+                    {
+                        name: "mother",
+                        type: "node",
+                        paths: [ "/people" ]
+                    }
+                ],
+                get: "murrix.getparent $this.path f",
+                add: "murrix.setparent $this.path f $parent.path",
+                remove: "murrix.setparent $this.path f"
+            },
+            {
+                name: "father",
+                label: "Father",
+                type: "list",
+                inputs: [
+                    {
+                        name: "father",
+                        type: "node",
+                        paths: [ "/people" ]
+                    }
+                ],
+                get: "murrix.getparent $this.path m",
+                add: "murrix.setparent $this.path m $parent.path",
+                remove: "murrix.setparent $this.path m"
+            },
+            {
+                name: "children",
+                label: "Children",
+                type: "list",
+                inputs: [
+                    {
+                        name: "child",
+                        type: "node",
+                        paths: [ "/people" ]
+                    }
+                ],
+                get: "murrix.getchildren $this.path",
+                add: "murrix.setparent $child.path $this.attributes.gender $this.path",
+                remove: "murrix.setparent $remove.path $this.attributes.gender"
+            },
+            {
+                name: "partner",
+                label: "Partner",
+                type: "list",
+                inputs: [
+                    {
+                        name: "partner",
+                        type: "node",
+                        paths: [ "/people" ]
+                    }
+                ],
+                get: "murrix.getpartner $this.path",
+                add: "murrix.setpartner $this.path $partner.path",
+                remove: "murrix.setpartner $this.path"
+            }
+        ]);
+    }
+
     static getAttributeTypes() {
         return super.getAttributeTypes().concat([
             {
@@ -38,38 +103,8 @@ class Person extends Node {
                 name: "allergies",
                 label: "Allergies",
                 type: "text"
-            },
-            // TODO: contact
-            {
-                name: "partner",
-                label: "Partner",
-                type: "cmd",
-                inputs: {
-                    partner: "select"
-                },
-                get: "getpartner {node.path}",
-                set: "setpartner {node.path} {partner.path}"
-            },
-            {
-                name: "mother",
-                label: "Mother",
-                type: "cmd",
-                inputs: {
-                    mother: "select"
-                },
-                get: "getparent {node.path} f",
-                set: "setparent {node.path} f {mother.path}"
-            },
-            {
-                name: "father",
-                label: "Father",
-                type: "cmd",
-                inputs: {
-                    father: "select"
-                },
-                get: "getparent {node.path} m",
-                set: "setparent {node.path} m {father.path}"
             }
+            // TODO: contact
         ]);
     }
 }
