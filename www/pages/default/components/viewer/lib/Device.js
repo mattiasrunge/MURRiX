@@ -2,6 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
+import { List } from "semantic-ui-react";
 import { NodeLink } from "components/nodeparts";
 import { StringList } from "components/utils";
 import api from "api.io-client";
@@ -52,26 +53,29 @@ class Device extends Component {
 
     render() {
         return (
-            <div>
-                <If condition={this.state.device}>
-                    <NodeLink
-                        node={this.state.device}
-                    />
-                    <If condition={this.state.deviceOwners.length > 0}>
-                        <div className={this.props.theme.sidebarListSecondary}>
-                            {"Owned by "}
-                            <StringList>
-                                <For each="owner" of={this.state.deviceOwners}>
-                                    <NodeLink
-                                        key={owner.path}
-                                        node={owner}
-                                    />
-                                </For>
-                            </StringList>
-                        </div>
-                    </If>
-                </If>
-            </div>
+            <If condition={this.state.device}>
+                <List.Item>
+                    <List.Icon size="big" name="camera retro" />
+                    <List.Content>
+                        <NodeLink
+                            node={this.state.device}
+                        />
+                        <If condition={this.state.deviceOwners.length > 0}>
+                            <div className={this.props.theme.sidebarListSecondary}>
+                                {"Owned by "}
+                                <StringList>
+                                    <For each="owner" of={this.state.deviceOwners}>
+                                        <NodeLink
+                                            key={owner.path}
+                                            node={owner}
+                                        />
+                                    </For>
+                                </StringList>
+                            </div>
+                        </If>
+                    </List.Content>
+                </List.Item>
+            </If>
         );
     }
 }

@@ -52,15 +52,22 @@ class Tags extends Component {
 
     render() {
         return (
-            <List className={this.props.theme.sidebarListNested}>
-                <For each="node" of={this.state.nodes}>
-                    <List.Item key={node.path}>
-                        <NodeLink node={node} />
-                        {" "}
-                        <small>({format.age(node.age)})</small>
-                    </List.Item>
-                </For>
-            </List>
+            <If condition={this.state.nodes.length > 0}>
+                <List.Item>
+                    <List.Icon size="big" name="user" />
+                    <List.Content>
+                        <List className={this.props.theme.sidebarListNested}>
+                            <For each="node" of={this.state.nodes}>
+                                <List.Item key={node.path}>
+                                    <NodeLink node={node} />
+                                    {" "}
+                                    <small>({format.age(node.age)})</small>
+                                </List.Item>
+                            </For>
+                        </List>
+                    </List.Content>
+                </List.Item>
+            </If>
         );
     }
 }

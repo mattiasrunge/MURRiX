@@ -47,32 +47,35 @@ class Versions extends Component {
 
     render() {
         return (
-            <div>
-                <a
-                    href={`/media/file/${this.props.node.attributes.diskfilename}/${this.props.node.attributes.name}`}
-                >
-                    {this.props.node.attributes.name}
-                </a>
-                {" "}
-                <small>
-                    ({format.size(this.props.node.attributes.size)})
-                </small>
-                <If condition={this.state.versions.length > 0}>
-                    <List className={this.props.theme.sidebarListSecondary}>
-                        <For each="version" of={this.state.versions}>
-                            <List.Item key={version.path}>
-                                <a
-                                    href={`/media/file/${version.attributes.diskfilename}/${version.attributes.name}`}
-                                >
-                                    {version.attributes.name}
-                                </a>
-                                {" "}
-                                ({format.size(version.attributes.size)})
-                            </List.Item>
-                        </For>
-                    </List>
-                </If>
-            </div>
+            <List.Item>
+                <List.Icon size="big" name="download" />
+                <List.Content>
+                    <a
+                        href={`/media/file/${this.props.node.attributes.diskfilename}/${this.props.node.attributes.name}`}
+                    >
+                        {this.props.node.attributes.name}
+                    </a>
+                    {" "}
+                    <small>
+                        ({format.size(this.props.node.attributes.size)})
+                    </small>
+                    <If condition={this.state.versions.length > 0}>
+                        <List className={this.props.theme.sidebarListSecondary}>
+                            <For each="version" of={this.state.versions}>
+                                <List.Item key={version.path}>
+                                    <a
+                                        href={`/media/file/${version.attributes.diskfilename}/${version.attributes.name}`}
+                                    >
+                                        {version.attributes.name}
+                                    </a>
+                                    {" "}
+                                    ({format.size(version.attributes.size)})
+                                </List.Item>
+                            </For>
+                        </List>
+                    </If>
+                </List.Content>
+            </List.Item>
         );
     }
 }

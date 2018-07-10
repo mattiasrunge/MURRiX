@@ -11,7 +11,7 @@ module.exports = async (session) => {
     const list = await Node.query(session, {
         "properties.type": "f",
         "attributes.type": { $in: [ "image", "video", "audio" ] },
-        "attributes.cached": { $exists: false }
+        "attributes.cached": { $exists: false } // TODO: $or requiredSizes
     }, {
         limit: 1,
         sort: { "properties.birthtime": -1 }

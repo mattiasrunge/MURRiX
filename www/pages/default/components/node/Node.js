@@ -36,8 +36,10 @@ class Node extends Component {
         }));
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setFromMatch(nextProps.match);
+    componentDidUpdate(prevProps) {
+        if (prevProps.match !== this.props.match) {
+            this.setFromMatch(this.props.match);
+        }
     }
 
     async setFromMatch(match) {
@@ -157,6 +159,7 @@ class Node extends Component {
                     </When>
                     <Otherwise>
                         <NodeHeader
+                            key={this.state.node._id}
                             node={this.state.node}
                             pages={pages}
                         />
@@ -168,6 +171,7 @@ class Node extends Component {
                                 >
                                     <// eslint-disable-next-line
                                      page.Component
+                                        key={this.state.node._id}
                                         theme={this.props.theme}
                                         node={this.state.node}
                                         match={this.props.match}

@@ -2,6 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
+import { List } from "semantic-ui-react";
 import { NodeLink } from "components/nodeparts";
 import api from "api.io-client";
 
@@ -47,7 +48,12 @@ class ParentNode extends Component {
     render() {
         return (
             <If condition={this.state.parent}>
-                <NodeLink node={this.state.parent} />
+                <List.Item>
+                    <List.Icon size="big" name="book" />
+                    <List.Content>
+                        <NodeLink node={this.state.parent} />
+                    </List.Content>
+                </List.Item>
             </If>
         );
     }
