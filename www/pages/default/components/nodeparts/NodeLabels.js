@@ -19,9 +19,9 @@ class NodeLabels extends Component {
         await this.update(this.props);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.node !== nextProps.node) {
-            this.update(nextProps);
+    componentDidUpdate(prevProps) {
+        if (this.props.node !== prevProps.node) {
+            this.update(this.props);
         }
     }
 
