@@ -10,7 +10,7 @@ class Description extends Component {
             <If condition={this.props.node.attributes.description}>
                 <List.Item>
                     <List.Icon size="big" name="file alternate" />
-                    <List.Content>
+                    <List.Content className={this.props.theme.sidebarText}>
                         {this.props.node.attributes.description}
                     </List.Content>
                 </List.Item>

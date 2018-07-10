@@ -42,6 +42,34 @@ class File extends Node {
     async _postCreate(session) {
         await this.createChild(session, "d", "tags");
     }
+
+
+    // Getters
+
+    static getAttributeTypes() {
+        return [
+            {
+                name: "description",
+                label: "Description",
+                type: "text"
+            },
+            {
+                name: "labels",
+                label: "Labels",
+                type: "labels"
+            },
+            {
+                name: "when",
+                label: "When",
+                type: "when"
+            } /* ,
+            {
+                name: "where",
+                label: "Where",
+                type: "where"
+            },*/
+        ];
+    }
 }
 
 File.IDENTIFIER = "f";

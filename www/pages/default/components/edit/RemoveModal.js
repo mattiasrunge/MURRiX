@@ -63,7 +63,6 @@ class RemoveModal extends Component {
                         Remove
                     </Button>
                 </Modal.Actions>
-
             </Modal>
         );
     }

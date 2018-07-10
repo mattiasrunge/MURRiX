@@ -19,6 +19,19 @@ class Tags extends Component {
 
     async load() {
         await this.update(this.props);
+
+        this.addDisposables([
+            api.vfs.on("node.appendChild", (path) => {
+                if (path === `${this.props.node.path}/tags`) {
+                    this.update(this.props);
+                }
+            }),
+            api.vfs.on("node.removeChild", (path) => {
+                if (path === `${this.props.node.path}/tags`) {
+                    this.update(this.props);
+                }
+            })
+        ]);
     }
 
     componentDidUpdate(prevProps) {

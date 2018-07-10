@@ -205,5 +205,9 @@
         & .sidebarListNested {
             padding: 0 !important;
         }
+
+        & .sidebarText {
+            white-space: pre-line;
+        }
     }
 }

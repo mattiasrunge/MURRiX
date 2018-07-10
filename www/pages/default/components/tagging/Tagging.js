@@ -2,14 +2,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Header, Grid, Button } from "semantic-ui-react";
+import { Header, Button } from "semantic-ui-react";
 import { SelectableImageList } from "components/list";
-import api from "api.io-client";
-import notification from "lib/notification";
-import Image from "./lib/Image";
-import Connections from "./lib/Connections";
 import ui from "lib/ui";
 import CircularList from "lib/circular_list";
+import TagFile from "./TagFile";
 
 class Tagging extends Component {
     constructor(props) {
@@ -30,28 +27,6 @@ class Tagging extends Component {
 
     onFilesChange = (selected, files) => {
         this.setState({ selected, files });
-    }
-
-    onFacesChanged = async (faces) => {
-        faces.sort((a, b) => a.x - b.x);
-
-        try {
-            await api.vfs.update(this.state.selected[0].path, { faces });
-        } catch (error) {
-            this.logError("Failed to save faces", error);
-            notification.add("error", error.message, 10000);
-        }
-    }
-
-    onRemove = async (face) => {
-        const faces = (this.state.selected[0].attributes.faces || []).filter((f) => f !== face);
-
-        try {
-            await api.vfs.update(this.state.selected[0].path, { faces });
-        } catch (error) {
-            this.logError("Failed to remove face", error);
-            notification.add("error", error.message, 10000);
-        }
     }
 
     gotoFile(offset) {
@@ -119,32 +94,11 @@ class Tagging extends Component {
                             {this.state.files.length}
                         </div>
                     </div>
+                    <TagFile
+                        theme={this.props.theme}
+                        node={this.state.selected[0]}
+                    />
                 </If>
-                <Grid>
-                    <Grid.Row>
-                        <If condition={this.state.selected[0]}>
-                            <Grid.Column width={10}>
-                                <Image
-                                    theme={this.props.theme}
-                                    path={this.state.selected[0].path}
-                                    faces={this.state.selected[0].attributes.faces || []}
-                                    onChange={this.onFacesChanged}
-                                    size={2000}
-                                />
-                            </Grid.Column>
-                            <Grid.Column width={6}>
-
-                                <If condition={(this.state.selected[0].attributes.faces || []).length > 0}>
-                                    <Connections
-                                        theme={this.props.theme}
-                                        node={this.state.selected[0]}
-                                        onRemove={this.onRemove}
-                                    />
-                                </If>
-                            </Grid.Column>
-                        </If>
-                    </Grid.Row>
-                </Grid>
             </div>
         );
     }

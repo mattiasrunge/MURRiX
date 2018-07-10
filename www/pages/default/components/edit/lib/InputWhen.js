@@ -17,7 +17,7 @@ class InputWhen extends Component {
         let errorMessage = "";
 
         try {
-            value = chron.time2str(valueObject ? (valueObject.manual || null) : null);
+            value = chron.time2str(valueObject ? (valueObject.manual || {}) : {});
         } catch (error) {
             errorMessage = error.message;
         }

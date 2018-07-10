@@ -17,5 +17,5 @@ module.exports = async (session, abspath) => {
     const cached = await media.getAllCached(node._id, filename, "*", { format: true });
 
     node = await Node.resolve(session, node.path); // Resolve again to make sure we do not have a stale copy and overwrite something
-    await node.update(session, { cached });
+    await node.update(session, { cached }, true);
 };

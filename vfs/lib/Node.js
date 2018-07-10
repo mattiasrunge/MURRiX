@@ -612,12 +612,14 @@ class Node {
         options.recursive && await this._doRecursive(session, "chown", uid, gid, options);
     }
 
-    async update(session, attributes) {
+    async update(session, attributes, quiet = false) {
         await this.assertAccess(session, "w");
 
         await this._attr(session, unpackObjectKeys(attributes));
 
-        await this._notify(session, "update");
+        if (!quiet) {
+            await this._notify(session, "update");
+        }
     }
 
     async remove(session) {

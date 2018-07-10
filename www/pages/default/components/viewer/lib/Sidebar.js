@@ -11,11 +11,50 @@ import ParentNode from "./ParentNode";
 import ActionMenu from "./ActionMenu";
 import Description from "./Description";
 import Attributes from "./Attributes";
+import { EditModal } from "components/edit";
+import { TagModal } from "components/tagging";
 
 class Sidebar extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            edit: false,
+            tag: false
+        };
+    }
+
+    onEdit = () => {
+        this.setState({ edit: true });
+    }
+
+    onCloseEdit = () => {
+        this.setState({ edit: false });
+    }
+
+    onTag = () => {
+        this.setState({ tag: true });
+    }
+
+    onCloseTag = () => {
+        this.setState({ tag: false });
+    }
+
     render() {
         return (
             <div className={this.props.theme.sidebarContainer}>
+                <If condition={this.state.edit}>
+                    <EditModal
+                        node={this.props.node}
+                        onClose={this.onCloseEdit}
+                    />
+                </If>
+                <If condition={this.state.tag}>
+                    <TagModal
+                        node={this.props.node}
+                        onClose={this.onCloseTag}
+                    />
+                </If>
                 <Icon
                     className={this.props.theme.sidebarCloseIcon}
                     link
@@ -28,6 +67,8 @@ class Sidebar extends Component {
                 <ActionMenu
                     theme={this.props.theme}
                     node={this.props.node}
+                    onEdit={this.onEdit}
+                    onTag={this.onTag}
                 />
 
                 <Header as="h2">Details</Header>

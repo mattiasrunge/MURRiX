@@ -7,7 +7,7 @@ import { Menu } from "semantic-ui-react";
 import { Edit } from "components/edit";
 import Share from "./sections/Share";
 import Organize from "./sections/Organize";
-import Batch from "./sections/Batch";
+// import Batch from "./sections/Batch";
 import { Upload } from "components/upload";
 import { Tagging } from "components/tagging";
 import { Actions } from "components/actions";
@@ -97,14 +97,14 @@ class Settings extends Component {
                 Component: Organize,
                 validTypes: [ "a" ]
             },
-            {
-                name: "batch",
-                title: "Batch Operations",
-                icon: "cogs",
-                active: section === "batch",
-                Component: Batch,
-                validTypes: [ "a" ]
-            },
+            // {
+            //     name: "batch",
+            //     title: "Batch Operations",
+            //     icon: "cogs",
+            //     active: section === "batch",
+            //     Component: Batch,
+            //     validTypes: [ "a" ]
+            // },
             {
                 name: "tagging",
                 title: "Tagging",

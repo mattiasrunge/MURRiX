@@ -63,6 +63,18 @@ class ActionMenu extends Component {
                                 text="Mirror"
                                 onClick={this.onMirror}
                             />
+                            <Dropdown.Item
+                                icon="edit"
+                                text="Edit"
+                                onClick={this.props.onEdit}
+                            />
+                            <If condition={this.props.onTag}>
+                                <Dropdown.Item
+                                    icon="user"
+                                    text="Tag"
+                                    onClick={this.props.onTag}
+                                />
+                            </If>
                         </If>
                     </Dropdown.Menu>
                 </Dropdown>
@@ -73,7 +85,9 @@ class ActionMenu extends Component {
 
 ActionMenu.propTypes = {
     theme: PropTypes.object,
-    node: PropTypes.object.isRequired
+    node: PropTypes.object.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onTag: PropTypes.func
 };
 
 export default ActionMenu;
