@@ -4,7 +4,7 @@ const log = require("../lib/log")(module);
 const sha1 = require("sha1");
 const Root = require("./types/Root");
 const Node = require("./lib/Node");
-const { GID_ADMIN, GID_GUEST, GID_USERS, UID_ADMIN, UID_GUEST } = require("./lib/auth");
+const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST } = require("./lib/auth");
 
 const setup = async (session, api) => {
     if (!(await api.exists(session, "/"))) {
@@ -41,6 +41,15 @@ const setup = async (session, api) => {
 
         const group = await Node.resolve(session, "/groups/users");
         await group.update(session, { gid: GID_USERS });
+    }
+
+    // Create custodian group
+    if (!(await api.exists(session, "/groups/custodians"))) {
+        log.info("No custodians group found, creating...");
+        await api.mkgroup(session, "custodians", "Content Custodians");
+
+        const group = await Node.resolve(session, "/groups/custodians");
+        await group.update(session, { gid: GID_CUSTODIANS });
     }
 
     // Create admin user

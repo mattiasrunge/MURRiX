@@ -88,8 +88,10 @@ module.exports = async (session, abspath, options = {}) => {
         });
     }
 
-    await rmmedia(session, node, "image");
-    // TODO: await rmmedia(session, node, "video");
+    if (node.properties.type === "f") {
+        await rmmedia(session, node, "image");
+        // TODO: await rmmedia(session, node, "video");
+    }
 
     return node.serialize(session);
 };
