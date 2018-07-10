@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import api from "api.io/api.io-client";
 import Component from "lib/component";
 import uploader from "lib/uploader";
 import { Header, Button, Message } from "semantic-ui-react";
@@ -17,7 +18,13 @@ class Upload extends Component {
     }
 
     async load() {
-        this.addDisposable(uploader.on("state", (name, state) => this.setState(state)));
+        this.addDisposable(uploader.on("state", async (name, state) => {
+            this.setState(state);
+
+            if (state.files.length === 0 && -!state.ongoing) {
+                await api.vfs.hiderawfiles(this.props.node.path);
+            }
+        }));
     }
 
     onDrop = (files) => {
