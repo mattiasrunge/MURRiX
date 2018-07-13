@@ -13,6 +13,7 @@ import InputSelect from "./InputSelect";
 import InputBoolean from "./InputBoolean";
 import InputNumber from "./InputNumber";
 import InputWhen from "./InputWhen";
+import InputWhere from "./InputWhere";
 import chron from "chron-time";
 
 const Components = {
@@ -22,7 +23,8 @@ const Components = {
     select: InputSelect,
     boolean: InputBoolean,
     number: InputNumber,
-    when: InputWhen
+    when: InputWhen,
+    where: InputWhere
 };
 
 class EditForm extends Component {

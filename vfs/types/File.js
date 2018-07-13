@@ -62,12 +62,12 @@ class File extends Node {
                 name: "when",
                 label: "When",
                 type: "when"
-            } /* ,
+            },
             {
                 name: "where",
-                label: "Where",
+                label: "Position",
                 type: "where"
-            },*/
+            }
         ];
     }
 }

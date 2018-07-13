@@ -44,6 +44,16 @@ class Location extends Node {
             }
         ]);
     }
+
+    static getAttributeTypes() {
+        return super.getAttributeTypes().concat([
+            {
+                name: "where",
+                label: "Position",
+                type: "where"
+            }
+        ]);
+    }
 }
 
 Location.IDENTIFIER = "l";

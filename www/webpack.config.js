@@ -30,8 +30,7 @@ const settings = {
         /node_modules\/api\.io/,
         /node_modules\/wsh\.js/,
         /node_modules\/ansi-regex/,
-        /node_modules\/url-regex/,
-        /node_modules\/[^\/]+\//
+        /node_modules\/url-regex/
     ],
     PRESETS: [
         require.resolve("babel-preset-es2015"),
@@ -68,6 +67,9 @@ module.exports = async function(options) {
     return {
         context: settings.CONTEXT,
         mode: isProduction ? "production" : "development",
+        externals: {
+            configuration: options ? JSON.stringify(options.configuration) : {}
+        },
         entry: {
             bundle: [
                 "babel-polyfill",
