@@ -74,7 +74,7 @@ class Tags extends Component {
                                 <List.Item key={node.path}>
                                     <NodeLink node={node} />
                                     {" "}
-                                    <small>({format.age(node.age)})</small>
+                                    <small>{format.age(node.age)}</small>
                                 </List.Item>
                             </For>
                         </List>

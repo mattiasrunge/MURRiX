@@ -82,6 +82,7 @@
     "semantic-ui-css": "^2.3.1",
     "semantic-ui-react": "^0.81.1",
     "server-destroy": "^1.0.1",
+    "sftp-fs": "^0.0.5",
     "sha1": "^1.1.1",
     "shuffle-array": "^1.0.1",
     "simple-xml2json": "^1.2.3",

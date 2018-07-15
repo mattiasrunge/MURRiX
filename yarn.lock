@@ -438,7 +438,7 @@ asn1.js@^4.0.0:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
 
-asn1@~0.2.3:
+asn1@~0.2.0, asn1@~0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/asn1/-/asn1-0.2.3.tgz#dac8787713c9966849fc8180777ebe9c1ddf3b86"
 
@@ -2840,7 +2840,7 @@ fs-extra@^2.1.2:
     graceful-fs "^4.1.2"
     jsonfile "^2.1.0"
 
-fs-extra@^6.0.0:
+fs-extra@^6.0.0, fs-extra@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-6.0.1.tgz#8abc128f7946e310135ddc93b98bddb410e7a34b"
   dependencies:
@@ -5711,6 +5711,14 @@ setprototypeof@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
 
+sftp-fs@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/sftp-fs/-/sftp-fs-0.0.5.tgz#44b7c4649db1f670fdce8c9f8b21c72a4aa6eace"
+  dependencies:
+    fs-extra "^6.0.1"
+    minimist "^1.2.0"
+    ssh2 "^0.6.1"
+
 sha.js@^2.4.0, sha.js@^2.4.8:
   version "2.4.11"
   resolved "https://registry.yarnpkg.com/sha.js/-/sha.js-2.4.11.tgz#37a5cf0b81ecbc6943de109ba2960d1b26584ae7"
@@ -5891,6 +5899,20 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
+ssh2-streams@~0.2.0:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/ssh2-streams/-/ssh2-streams-0.2.1.tgz#9c9c9964be60e9644575af328677f64b1e5cbd79"
+  dependencies:
+    asn1 "~0.2.0"
+    semver "^5.1.0"
+    streamsearch "~0.1.2"
+
+ssh2@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/ssh2/-/ssh2-0.6.1.tgz#5dde1a7394bb978b1f9c2f014affee2f5493bd40"
+  dependencies:
+    ssh2-streams "~0.2.0"
+
 sshpk@^1.7.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.14.1.tgz#130f5975eddad963f1d56f92b9ac6c51fa9f83eb"
@@ -5970,7 +5992,7 @@ stream-slice@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/stream-slice/-/stream-slice-0.1.2.tgz#2dc4f4e1b936fb13f3eb39a2def1932798d07a4b"
 
-streamsearch@0.1.2:
+streamsearch@0.1.2, streamsearch@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/streamsearch/-/streamsearch-0.1.2.tgz#808b9d0e56fc273d809ba57338e929919a1a9f1a"
 

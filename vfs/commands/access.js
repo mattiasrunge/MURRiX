@@ -7,7 +7,7 @@ module.exports = async (session, abspath, level) => {
         const node = await Node.resolve(session, abspath);
 
         return node.hasAccess(session, level);
-    } catch (error) {
+    } catch {
     }
 
     return false;

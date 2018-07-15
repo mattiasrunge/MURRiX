@@ -684,6 +684,8 @@ class Node {
     }
 
     async createChild(session, type, name, attributes = {}) {
+        assert(name[0] !== "$", "Node name is not allowed to start with $");
+
         const exists = this.properties.children.some((child) => child.name === name);
         const abspath = path.join(this.path, name);
 

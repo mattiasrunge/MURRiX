@@ -228,7 +228,7 @@ module.exports = {
         return fileSizeInBytes.toFixed(1) + byteUnits[i];
     },
     age: (age) => {
-        if (!age) {
+        if (!age || typeof age.age === "undefined") {
             return;
         }
 
