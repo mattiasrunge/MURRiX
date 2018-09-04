@@ -6,6 +6,15 @@
     float: right !important;
 }
 
+.folderSelect {
+    font-size: 14px;
+    margin-top: 1em !important;
+    float: right !important;
+    margin-right: 0.25em;
+    padding: 10px !important;
+    min-height: 36px !important;
+}
+
 .uploadDropZone {
     border: 2px dashed #d4d4d5;
     padding: 5%;

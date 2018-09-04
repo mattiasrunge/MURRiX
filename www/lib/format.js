@@ -2,7 +2,7 @@
 import React from "react";
 import moment from "moment";
 
-module.exports = {
+export default {
     number: (number) => {
         // http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
 

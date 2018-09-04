@@ -86,7 +86,6 @@ class SignIn extends Component {
                         <Button
                             primary
                             loading={this.state.loading}
-                            disabled={!this.state.username || !this.state.password}
                             icon="sign in"
                             content="Sign in"
                             onClick={() => this.signIn()}

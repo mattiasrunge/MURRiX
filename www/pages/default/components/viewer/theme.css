@@ -191,7 +191,7 @@
     & .sidebarEditIcon {
         position: absolute !important;
         top: var(--spacing);
-        right: calc(var(--spacing) + 16 + var(--spacing));
+        right: calc(var(--spacing) + 16px + var(--spacing)) ;
         color: black;
     }
 

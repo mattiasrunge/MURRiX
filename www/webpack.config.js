@@ -33,9 +33,14 @@ const settings = {
         /node_modules\/url-regex/
     ],
     PRESETS: [
-        require.resolve("babel-preset-es2015"),
-        require.resolve("babel-preset-stage-1"),
-        require.resolve("babel-preset-react")
+        [
+            "@babel/preset-env",
+            {
+                "useBuiltIns": "entry",
+                "shippedProposals": true
+            }
+        ],
+        "@babel/preset-react"
     ]
 };
 
@@ -72,7 +77,7 @@ module.exports = async function(options) {
         },
         entry: {
             bundle: [
-                "babel-polyfill",
+                "@babel/polyfill",
                 ...dynamicFiles,
                 settings.MAIN
             ]
@@ -102,13 +107,15 @@ module.exports = async function(options) {
                         plugins: [
                             require.resolve("jsx-control-statements"),
                             [
-                                require.resolve("babel-plugin-transform-async-to-module-method"),
+                                "@babel/plugin-transform-async-to-generator",
                                 {
                                     "module": "bluebird",
                                     "method": "coroutine"
                                 }
                             ],
-                            require.resolve("babel-plugin-add-module-exports")
+                            "@babel/plugin-proposal-class-properties",
+                            "@babel/plugin-transform-modules-commonjs",
+                            "@babel/plugin-proposal-object-rest-spread"
                         ]
                     }
                 },

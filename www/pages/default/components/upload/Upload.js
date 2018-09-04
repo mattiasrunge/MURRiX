@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import api from "api.io/api.io-client";
 import Component from "lib/component";
 import uploader from "lib/uploader";
-import { Header, Button, Message } from "semantic-ui-react";
+import { Header, Button, Message, Select } from "semantic-ui-react";
 import Dropzone from "react-dropzone";
 import FileList from "./lib/FileList";
 
@@ -13,7 +13,8 @@ class Upload extends Component {
         super(props);
 
         this.state = {
-            ...uploader.getState()
+            ...uploader.getState(),
+            folder: "files"
         };
     }
 
@@ -28,7 +29,7 @@ class Upload extends Component {
     }
 
     onDrop = (files) => {
-        uploader.addFiles(`${this.props.node.path}/files`, files);
+        uploader.addFiles(`${this.props.node.path}/${this.state.folder}`, files);
     }
 
     onUpload = () => {
@@ -39,8 +40,12 @@ class Upload extends Component {
         uploader.clear();
     }
 
+    onFolderSelect = (event, input) => {
+        this.setState({ folder: input.value });
+    }
+
     isPathAllowed() {
-        return !this.state.path || this.state.path === `${this.props.node.path}/files`;
+        return !this.state.path || this.state.path === `${this.props.node.path}/${this.state.folder}`;
     }
 
     render() {
@@ -64,6 +69,17 @@ class Upload extends Component {
                             Clear files
                         </Button>
                     </If>
+                    <Select
+                        className={this.props.theme.folderSelect}
+                        required
+                        disabled={this.state.files.length > 0}
+                        value={this.state.folder}
+                        onChange={this.onFolderSelect}
+                        options={[
+                            { key: "files", value: "files", text: "Media files" },
+                            { key: "extra", value: "extra", text: "Extra files" }
+                        ]}
+                    />
                     Upload files
                     <Header.Subheader>
                         Add content by uploading files

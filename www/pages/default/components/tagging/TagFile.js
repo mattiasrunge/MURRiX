@@ -45,13 +45,11 @@ class TagFile extends Component {
                         />
                     </Grid.Column>
                     <Grid.Column width={6}>
-                        <If condition={(this.props.node.attributes.faces || []).length > 0}>
-                            <Connections
-                                theme={this.props.theme}
-                                node={this.props.node}
-                                onRemove={this.onRemove}
-                            />
-                        </If>
+                        <Connections
+                            theme={this.props.theme}
+                            node={this.props.node}
+                            onRemove={this.onRemove}
+                        />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

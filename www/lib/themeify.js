@@ -28,7 +28,7 @@ const themify = (theme, Components) => {
     const names = Object.keys(Components);
 
     for (const name of names) {
-        const Component = Components[name];
+        const Component = Components[name].default;
 
         exports[name] = themeHOC(name, Component, theme);
         exports[name].default = exports[name];

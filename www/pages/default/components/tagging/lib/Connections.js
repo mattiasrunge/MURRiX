@@ -62,9 +62,9 @@ class Connections extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.node !== this.props.node) {
-            this.update(nextProps);
+    componentDidUpdate(prevProps) {
+        if (prevProps.node !== this.props.node) {
+            this.update(this.props);
         }
     }
 
@@ -138,51 +138,53 @@ class Connections extends Component {
 
     render() {
         const untagged = Object.keys(this.state.persons)
-        .filter((id) => !this.props.node.attributes.faces.some((face) => face.id === id))
+        .filter((id) => !(this.props.node.attributes.faces || []).some((face) => face.id === id))
         .map((id) => this.state.persons[id]);
 
         return (
             <div>
-                <Header as="h4">Tagged people</Header>
-                <Table definition compact>
-                    <Table.Body>
-                        <For each="face" index="index" of={this.props.node.attributes.faces}>
-                            <Table.Row
-                                key={index}
-                                className={this.props.theme.connectionItem}
-                            >
-                                <Table.Cell collapsing>
-                                    <span title={face.detector === "manual" ? "Manual" : "Automatic"}>
-                                        {index + 1}
-                                    </span>
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <NodeInput
-                                        value={this.state.persons[face.id] || null}
-                                        paths={[ "/people" ]}
-                                        onChange={(value) => this.onConnect(face.id, value)}
-                                        placeholder="Who is this..."
-                                        disabled={this.state.loading || this.state.saving}
-                                        icon={null}
-                                        size="small"
-                                        fluid
-                                        transparent
-                                    />
-                                </Table.Cell>
-                                <Table.Cell collapsing>
-                                    <Icon
-                                        name={this.state.loading ? "spinner" : "remove"}
-                                        link
-                                        fitted
-                                        color={this.state.loading ? null : "red"}
-                                        onClick={() => this.onRemoveFace(face)}
-                                        loading={this.state.loading}
-                                    />
-                                </Table.Cell>
-                            </Table.Row>
-                        </For>
-                    </Table.Body>
-                </Table>
+                <If condition={(this.props.node.attributes.faces || []).length > 0}>
+                    <Header as="h4">Tagged people</Header>
+                    <Table definition compact>
+                        <Table.Body>
+                            <For each="face" index="index" of={this.props.node.attributes.faces || []}>
+                                <Table.Row
+                                    key={index}
+                                    className={this.props.theme.connectionItem}
+                                >
+                                    <Table.Cell collapsing>
+                                        <span title={face.detector === "manual" ? "Manual" : "Automatic"}>
+                                            {index + 1}
+                                        </span>
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <NodeInput
+                                            value={this.state.persons[face.id] || null}
+                                            paths={[ "/people" ]}
+                                            onChange={(value) => this.onConnect(face.id, value)}
+                                            placeholder="Who is this..."
+                                            disabled={this.state.loading || this.state.saving}
+                                            icon={null}
+                                            size="small"
+                                            fluid
+                                            transparent
+                                        />
+                                    </Table.Cell>
+                                    <Table.Cell collapsing>
+                                        <Icon
+                                            name={this.state.loading ? "spinner" : "remove"}
+                                            link
+                                            fitted
+                                            color={this.state.loading ? null : "red"}
+                                            onClick={() => this.onRemoveFace(face)}
+                                            loading={this.state.loading}
+                                        />
+                                    </Table.Cell>
+                                </Table.Row>
+                            </For>
+                        </Table.Body>
+                    </Table>
+                </If>
 
                 <Header as="h4">People without tags</Header>
                 <Table compact>

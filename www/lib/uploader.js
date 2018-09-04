@@ -82,6 +82,8 @@ class Uploader extends Emitter {
             file.status = "importing";
             this.setState({ files: this.state.files.slice(0) });
 
+            await api.vfs.ensure(this.state.path, "d");
+
             const node = await api.vfs.create(this.state.path, "f", file.name, {
                 name: file.name,
                 _source: {
