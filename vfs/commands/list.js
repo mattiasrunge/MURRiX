@@ -21,7 +21,7 @@ module.exports = async (session, abspath, options = {}) => {
         if (options.media) {
             return Promise.all(serialized.map(async (node) => ({
                 ...node,
-                url: await media(session, node.path, options.media)
+                url: await media(session, node.path, options.media) // TODO: Move to extra
             })));
         }
 

@@ -20,9 +20,9 @@ class List extends Component {
         this.update(this.props.query);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (JSON.stringify(nextProps.query) !== JSON.stringify(this.props.query)) {
-            this.update(nextProps.query);
+    componentDidUpdate(prevProps) {
+        if (JSON.stringify(prevProps.query) !== JSON.stringify(this.props.query)) {
+            this.update(this.props.query);
         }
     }
 
@@ -39,6 +39,8 @@ class List extends Component {
 
             if (query.year) {
                 list = await api.murrix.albumsbyyear(query.year);
+
+                list.sort((a, b) => b.extra.age.birthdate.localeCompare(a.extra.age.birthdate));
             } else {
                 list = await api.vfs.list(query.paths, query.options);
             }

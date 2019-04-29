@@ -25,10 +25,10 @@ class Year extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.match.params.year !== this.props.match.params.year) {
+    componentDidUpdate(prevProps) {
+        if (prevProps.match.params.year !== this.props.match.params.year) {
             const thisYear = new Date().getFullYear();
-            const year = nextProps.match.params.year ? parseInt(nextProps.match.params.year, 10) : thisYear;
+            const year = prevProps.match.params.year ? parseInt(prevProps.match.params.year, 10) : thisYear;
 
             this.setState({ year });
         }

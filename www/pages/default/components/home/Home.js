@@ -28,7 +28,10 @@ class Home extends Component {
                 <Container>
                     <Grid columns={2}>
                         <Grid.Column width={3}>
-                            <Sticky context={this.state.ref} >
+                            <Sticky context={this.state.ref} style={{
+                                position: "relative",
+                                zIndex: 1
+                            }}>
                                 <Sidebar {...this.props} />
                             </Sticky>
                         </Grid.Column>

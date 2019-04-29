@@ -18,9 +18,9 @@ class NodeAge extends Component {
         await this.update(this.props);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.node.path !== nextProps.node.path) {
-            this.update(nextProps);
+    componentDidUpdate(prevProps) {
+        if (this.props.node.path !== prevProps.node.path) {
+            this.update(this.props);
         }
     }
 

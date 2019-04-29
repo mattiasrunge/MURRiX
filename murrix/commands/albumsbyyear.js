@@ -2,6 +2,7 @@
 
 const moment = require("moment");
 const { Node } = require("../../vfs");
+const age = require("./age");
 
 module.exports = async (session, year) => {
     year = parseInt(year, 10);
@@ -140,6 +141,10 @@ module.exports = async (session, year) => {
         "properties.children.id": { $in: dIds }
     });
     // console.timeEnd("3");
+
+    for (const node of nodes) {
+        node.extra.age = await age(session, node.path, { timestamp: moment.utc({ year }).unix() });
+    }
 
     // console.time("4");
     const serialized = await Promise.all(nodes.map((node) => node.serialize(session)));
