@@ -1,41 +1,58 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { withScriptjs, withGoogleMap, GoogleMap } from "react-google-maps";
-import { googleBrowserKey } from "configuration";
+import { Map, TileLayer } from "react-leaflet";
 
-const WrappedMap = withScriptjs(withGoogleMap((props) =>
-    <GoogleMap {...props}/>
-));
+class MapComponent extends React.PureComponent {
+    constructor(props) {
+        super();
 
-class Map extends React.PureComponent {
+        this.state = {
+            zoom: props.defaultZoom
+        };
+    }
+
+    onZoomEnd = (e) => {
+        this.setState({ zoom: e.target.getZoom() });
+    }
+
     render() {
         return (
-            <WrappedMap
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleBrowserKey}&v=3.exp&libraries=geometry,drawing,places`}
-                loadingElement={<div style={{ height: "100%" }} />}
-                containerElement={<div style={{ height: this.props.height }} />}
-                mapElement={<div style={{ height: "100%" }} />}
-                {...this.props}
+            <Map
+                center={this.props.center}
+                zoom={this.state.zoom}
+                style={{
+                    width: "100%",
+                    height: this.props.height
+                }}
+                onClick={this.props.onClick}
+                onZoomEnd={this.onZoomEnd}
             >
+                <TileLayer
+                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                />
                 {this.props.children}
-            </WrappedMap>
+            </Map>
         );
     }
 }
 
-Map.defaultProps = {
+MapComponent.defaultProps = {
     height: 400,
+    defaultZoom: 13,
     center: {
         lat: 57.657277,
         lng: 11.892222
     }
 };
 
-Map.propTypes = {
+MapComponent.propTypes = {
     children: PropTypes.any,
     center: PropTypes.any,
-    height: PropTypes.number
+    height: PropTypes.number,
+    defaultZoom: PropTypes.number,
+    onClick: PropTypes.func
 };
 
-export default Map;
+export default MapComponent;

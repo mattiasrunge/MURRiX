@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Component from "lib/component";
 import { Form, Grid } from "semantic-ui-react";
 import { Map } from "components/map";
-import { Marker } from "react-google-maps";
+import { Marker } from "react-leaflet";
 
 class InputWhere extends Component {
     setPosition = (longitude, latitude) => {
@@ -21,11 +21,13 @@ class InputWhere extends Component {
     }
 
     onDragEnd = (e) => {
-        this.setPosition(e.latLng.lng(), e.latLng.lat());
+        const position = e.target.getLatLng();
+
+        this.setPosition(position.lng, position.lat);
     }
 
     onMapClick = (e) => {
-        this.setPosition(e.latLng.lng(), e.latLng.lat());
+        this.setPosition(e.latlng.lng, e.latlng.lat);
     }
 
     onLongitude = (e, { value }) => {

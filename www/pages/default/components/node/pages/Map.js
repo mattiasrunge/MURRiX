@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 import { Map as MapComponent } from "components/map";
-import { Marker } from "react-google-maps";
+import { Marker } from "react-leaflet";
 
 class Map extends Component {
     getPosition = () => {

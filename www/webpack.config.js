@@ -20,7 +20,8 @@ const settings = {
         __dirname,
         path.join(__dirname, "..", "node_modules"),
         path.join(__dirname, "..", "node_modules", "semantic-ui-css"),
-        path.join(__dirname, "..", "node_modules", "animate.css")
+        path.join(__dirname, "..", "node_modules", "animate.css"),
+        path.join(__dirname, "..", "node_modules", "leaflet")
     ],
     DYNAMIC: [
         path.join(__dirname, "types"),
@@ -48,8 +49,8 @@ const getDynamicIncludes = async () => {
     const files = await walk(settings.DYNAMIC);
 
     return files
-    .filter((f) => f && (f.name === "index.js" || f.name === "links.js"))
-    .map((f) => path.join(f.root, f.name));
+        .filter((f) => f && (f.name === "index.js" || f.name === "links.js"))
+        .map((f) => path.join(f.root, f.name));
 };
 
 const getAlias = async () => {
@@ -65,7 +66,7 @@ const getAlias = async () => {
     return alias;
 };
 
-module.exports = async function(options) {
+module.exports = async function (options) {
     const isProduction = !(options && options.dev);
     const dynamicFiles = []; //await getDynamicIncludes();
 
@@ -121,7 +122,7 @@ module.exports = async function(options) {
                 },
                 {
                     test: /\.css$/,
-                    exclude: [ /semantic-ui-css|animate.css/ ],
+                    exclude: [/semantic-ui-css|animate.css|leaflet/],
                     use: ExtractTextPlugin.extract({
                         fallback: "style-loader",
                         use: [
@@ -133,9 +134,9 @@ module.exports = async function(options) {
                                     importLoaders: 1,
                                     getLocalIdent: (context, localIdentName, localName) => {
                                         const filepath = path
-                                        .relative(settings.CONTEXT, context.resourcePath)
-                                        .replace(/\.\.\//g, "")
-                                        .replace(/\:|\.|\//g, "_");
+                                            .relative(settings.CONTEXT, context.resourcePath)
+                                            .replace(/\.\.\//g, "")
+                                            .replace(/\:|\.|\//g, "_");
 
                                         return `${filepath}__${localName.replace(/\./g, "_")}`;
                                     }
@@ -160,7 +161,7 @@ module.exports = async function(options) {
                 },
                 {
                     test: /\.css$/,
-                    include: [ /semantic-ui-css|animate.css/ ],
+                    include: [/semantic-ui-css|animate.css|leaflet/],
                     use: ExtractTextPlugin.extract({
                         fallback: "style-loader",
                         use: [
@@ -194,7 +195,17 @@ module.exports = async function(options) {
                 },
                 {
                     test: /\.woff(2)?|\.ttf?|\.eot?|\.png?|\.jpg?$/,
-                    loader: "file-loader"
+                    loader: "file-loader",
+                    options:
+                    {
+                        name(file) {
+                            if (file.match(/(layers-2x\.png|layers\.png|marker-icon\.png|marker-icon-2x\.png|marker-shadow\.png)/)) {
+                                return "[name].[ext]";
+                            }
+
+                            return "[name]-[hash].[ext]";
+                        }
+                    }
                 }
             ]
         },

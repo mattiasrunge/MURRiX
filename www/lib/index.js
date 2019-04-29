@@ -8,6 +8,7 @@ import { Root } from "components/root";
 
 import "semantic-ui-css/semantic.css";
 import "animate.css/animate.css";
+import "leaflet/dist/leaflet.css";
 import "pages/default/styles/theme.css";
 
 import api from "api.io-client";
