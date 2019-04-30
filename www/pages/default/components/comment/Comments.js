@@ -97,7 +97,6 @@ class Comments extends Component {
                         disabled={this.state.saving}
                         onChange={this.onChange}
                         placeholder="Leave a comment..."
-                        autoHeight
                         rows={1}
                     />
                     <Button

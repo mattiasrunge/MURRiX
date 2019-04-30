@@ -19,7 +19,6 @@ class InputTextArea extends Component {
                     onChange={this.onChange}
                     error={this.props.error}
                     disabled={this.props.disabled}
-                    autoHeight
                 />
             </Form.Field>
         );

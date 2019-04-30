@@ -2,8 +2,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Map as MapComponent } from "components/map";
-import { Marker } from "react-leaflet";
+import { Map as MapComponent, Address } from "components/map";
+import { Marker, Tooltip } from "react-leaflet";
 
 class Map extends Component {
     getPosition = () => {
@@ -29,9 +29,12 @@ class Map extends Component {
             >
                 <If condition={position}>
                     <Marker
-                        draggable
                         position={position}
-                    />
+                    >
+                        <Tooltip>
+                            <Address longitude={position.lng} latitude={position.lat} />
+                        </Tooltip>
+                    </Marker>
                 </If>
             </MapComponent>
         );

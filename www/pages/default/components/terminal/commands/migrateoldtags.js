@@ -15,7 +15,7 @@ export default {
 
             const countBefore = (node.attributes.faces || []).length;
 
-            const faces = await api.murrix.migrateoldtags(node.path);
+            const faces = await api.media.migrateoldtags(node.path);
 
             streams.stdout.write(`${faces.length - countBefore} migrated!\n`);
         }

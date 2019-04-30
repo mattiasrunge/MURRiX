@@ -45,7 +45,7 @@ class NodeHeader extends Component {
         this.setState({ url: null, age: {}, loading: true });
 
         try {
-            const url = await api.vfs.media(`${props.node.path}/profilePicture`, {
+            const url = await api.media.url(`${props.node.path}/profilePicture`, {
                 width: 1127,
                 height: 350,
                 type: "image"

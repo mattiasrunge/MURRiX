@@ -14,7 +14,7 @@ export default {
             if (!node.attributes.faces) {
                 streams.stdout.write(`No face info found for ${node.name}, will try to detect...\n`);
 
-                const faces = await api.vfs.ensurefilefaces(node.path);
+                const faces = await api.media.ensurefilefaces(node.path);
 
                 streams.stdout.write(`${faces.length} faces found!\n`);
             }

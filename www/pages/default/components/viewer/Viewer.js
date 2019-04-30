@@ -65,7 +65,7 @@ class Viewer extends Component {
             if (location) {
                 address = location.attributes.address;
             } else if (position) {
-                address = await api.vfs.position2address(position.longitude, position.latitude);
+                address = await api.geolocation.position2address(position.longitude, position.latitude);
             }
 
             const tagNodes = await api.vfs.list(`${node.path}/tags`, { noerror: true });

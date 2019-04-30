@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "mocha --reporter spec --ui tdd --recursive test && eslint $(git ls-files \\*.js)",
+    "lint": "eslint .",
     "start": "node index.js",
     "release": "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push --tags"
   },
@@ -34,6 +35,7 @@
     "chron-time": "^0.0.4",
     "columnify": "^1.5.4",
     "compression-webpack-plugin": "^1.1.11",
+    "core-js": "2",
     "css-loader": "^1.0.0",
     "debounce": "^1.0.2",
     "deepmerge": "^2.1.0",
@@ -62,6 +64,7 @@
     "moment-duration-format": "^2.2.2",
     "mongodb": "^3.2.3",
     "mousetrap": "^1.6.3",
+    "nodinatim": "^2.1.0",
     "postcss-cssnext": "^3.1.0",
     "postcss-each": "^0.10.0",
     "postcss-import": "^12.0.0",

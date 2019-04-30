@@ -44,7 +44,7 @@ class NodeImage extends Component {
         this.setState({ loading: true, failed: false });
 
         try {
-            const url = await api.vfs.media(props.path, props.format);
+            const url = await api.media.url(props.path, props.format);
 
             (this.props.autoPlay && this.props.onStarted && (this.props.format.type === "video" || this.props.format.type === "audio")) && this.props.onStarted();
 

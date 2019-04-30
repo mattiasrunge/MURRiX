@@ -1,6 +1,5 @@
 
 const path = require("path");
-const walk = require("walk-promise");
 const fs = require("fs-extra-promise");
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
@@ -38,19 +37,12 @@ const settings = {
             "@babel/preset-env",
             {
                 "useBuiltIns": "entry",
+                "corejs": 2,
                 "shippedProposals": true
             }
         ],
         "@babel/preset-react"
     ]
-};
-
-const getDynamicIncludes = async () => {
-    const files = await walk(settings.DYNAMIC);
-
-    return files
-        .filter((f) => f && (f.name === "index.js" || f.name === "links.js"))
-        .map((f) => path.join(f.root, f.name));
 };
 
 const getAlias = async () => {
@@ -68,7 +60,6 @@ const getAlias = async () => {
 
 module.exports = async function (options) {
     const isProduction = !(options && options.dev);
-    const dynamicFiles = []; //await getDynamicIncludes();
 
     return {
         context: settings.CONTEXT,
@@ -79,7 +70,6 @@ module.exports = async function (options) {
         entry: {
             bundle: [
                 "@babel/polyfill",
-                ...dynamicFiles,
                 settings.MAIN
             ]
         },
@@ -94,8 +84,7 @@ module.exports = async function (options) {
                     loader: "babel-loader",
                     include: [
                         settings.CONTEXT,
-                        ...settings.EXPLICIT_INCLUDES,
-                        ...dynamicFiles
+                        ...settings.EXPLICIT_INCLUDES
                     ],
                     exclude: (absPath) => {
                         const isNodeModule = /node_modules/.test(absPath);
@@ -122,7 +111,7 @@ module.exports = async function (options) {
                 },
                 {
                     test: /\.css$/,
-                    exclude: [/semantic-ui-css|animate.css|leaflet/],
+                    exclude: [ /semantic-ui-css|animate.css|leaflet/ ],
                     use: ExtractTextPlugin.extract({
                         fallback: "style-loader",
                         use: [
@@ -134,9 +123,9 @@ module.exports = async function (options) {
                                     importLoaders: 1,
                                     getLocalIdent: (context, localIdentName, localName) => {
                                         const filepath = path
-                                            .relative(settings.CONTEXT, context.resourcePath)
-                                            .replace(/\.\.\//g, "")
-                                            .replace(/\:|\.|\//g, "_");
+                                        .relative(settings.CONTEXT, context.resourcePath)
+                                        .replace(/\.\.\//g, "")
+                                        .replace(/\:|\.|\//g, "_");
 
                                         return `${filepath}__${localName.replace(/\./g, "_")}`;
                                     }
@@ -161,7 +150,7 @@ module.exports = async function (options) {
                 },
                 {
                     test: /\.css$/,
-                    include: [/semantic-ui-css|animate.css|leaflet/],
+                    include: [ /semantic-ui-css|animate.css|leaflet/ ],
                     use: ExtractTextPlugin.extract({
                         fallback: "style-loader",
                         use: [
