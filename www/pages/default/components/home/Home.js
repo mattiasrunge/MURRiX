@@ -7,6 +7,7 @@ import { Container, Grid, Sticky } from "semantic-ui-react";
 import { Profile } from "components/user";
 import { Search, Name, Label, Year } from "components/search";
 import { News } from "components/news";
+import { Charts } from "components/statistics";
 import Sidebar from "./Sidebar";
 
 class Home extends Component {
@@ -77,7 +78,7 @@ class Home extends Component {
                                     <Route
                                         path={`${this.props.match.path}/chart`}
                                         render={(props) => (
-                                            <div>Charts</div>
+                                            <Charts {...props} />
                                         )}
                                     />
                                     <Route

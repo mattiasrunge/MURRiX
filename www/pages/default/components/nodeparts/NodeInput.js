@@ -103,7 +103,7 @@ class NodeInput extends Component {
     }
 
     onRef = (ref) => {
-        this.ref = ref.getElementsByTagName("INPUT")[0];
+        this.ref = ref ? ref.getElementsByTagName("INPUT")[0] : null;
     }
 
     onFocus = () => {
