@@ -13,25 +13,41 @@ class Year extends Component {
 
         const thisYear = new Date().getFullYear();
 
-        this.state = {
-            loading: false,
-            year: this.props.match.params.year ? parseInt(this.props.match.params.year, 10) : thisYear
-        };
-
         this.years = [];
 
         for (let year = 1600; year <= thisYear; year++) {
             this.years.push(year);
         }
+
+        this.state = {
+            loading: false,
+            query: {
+                year: this.getYear(props)
+            }
+        };
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.match.params.year !== this.props.match.params.year) {
-            const thisYear = new Date().getFullYear();
-            const year = prevProps.match.params.year ? parseInt(prevProps.match.params.year, 10) : thisYear;
+            const query = {
+                year: this.getYear(this.props)
+            };
 
-            this.setState({ year });
+            this.setState({ query });
         }
+    }
+
+    getYear(props) {
+        return parseInt(props.match.params.year || this.years[this.years.length - 1], 10);
+    }
+
+    setYear(year) {
+        this.timer && clearTimeout(this.timer);
+        this.timer = null;
+
+        const url = this.props.match.path.split(":")[0];
+
+        this.context.router.history.replace(`${url}${year}`);
     }
 
     delayQuery(year) {
@@ -40,15 +56,13 @@ class Year extends Component {
             if (this.state.loading) {
                 this.delayQuery(year);
             } else {
-                const url = this.props.match.path.split(":")[0];
-
-                this.context.router.history.replace(`${url}${year}`);
+                this.setYear(year);
             }
-        }, 500);
+        }, 100);
     }
 
     onChange = (year) => {
-        this.setState({ year });
+        // this.setState({ year });
         this.delayQuery(year);
     }
 
@@ -57,27 +71,25 @@ class Year extends Component {
     }
 
     onIncrease = () => {
-        const year = this.state.year + 1;
-        this.setState({ year });
+        const year = this.getYear(this.props) + 1;
+        // this.setState({ year });
         this.delayQuery(year);
     }
 
     onDecrease = () => {
-        const year = this.state.year - 1;
-        this.setState({ year });
+        const year = this.getYear(this.props) - 1;
+        // this.setState({ year });
         this.delayQuery(year);
     }
 
     render() {
-        const currentYear = this.props.match.params.year || this.years[this.years.length - 1];
-        const query = currentYear ? {
-            year: currentYear
-        } : null;
+        const currentYear = this.getYear(this.props);
+        const query = this.state.query;
         const settings = {
             min: this.years[0],
             max: this.years[this.years.length - 1],
             step: 1,
-            start: this.state.year,
+            start: currentYear,
             onChange: this.onChange
         };
 
@@ -88,7 +100,7 @@ class Year extends Component {
                 <Header>
                     Browse albums by year
                     <span className={this.props.theme.headerInfo}>
-                        {this.state.year}
+                        {currentYear}
                     </span>
                 </Header>
                 <Segment className={this.props.theme.yearSliderTable}>
@@ -98,7 +110,7 @@ class Year extends Component {
                         circular
                         basic
                         size="tiny"
-                        disabled={this.state.year === settings.min}
+                        disabled={currentYear === settings.min}
                         onClick={this.onDecrease}
                     />
                     <div className={this.props.theme.yearSliderInput}>
@@ -113,7 +125,7 @@ class Year extends Component {
                         circular
                         basic
                         size="tiny"
-                        disabled={this.state.year === settings.max}
+                        disabled={currentYear === settings.max}
                         onClick={this.onIncrease}
                     />
                 </Segment>
