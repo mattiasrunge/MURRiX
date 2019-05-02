@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 import api from "api.io-client";
-import { Image, Visibility } from "semantic-ui-react";
+import { Image, Visibility, Segment } from "semantic-ui-react";
 import NodeIcon from "./NodeIcon";
 
 class NodeImage extends Component {
@@ -136,19 +136,19 @@ class NodeImage extends Component {
                         onEnded={this.props.onEnded}
                     />
                 );
-            } else if (this.props.format.type === "document") {
-                return (
-                    <iframe
-                        style={Object.assign({}, style, {
-                            width: "100%",
-                            height: "100%",
-                            border: "none"
-                        })}
-                        className={this.props.className}
-                        src={url}
-                    ></iframe>
-                );
             }
+
+            return (
+                <Segment
+                    style={Object.assign({}, style, {
+                        width: "100%",
+                        height: "100%"
+                    })}
+                    className={this.props.className}
+                >
+                    File type can not be displayed
+                </Segment>
+            );
         }
 
         return (
