@@ -44,7 +44,7 @@ class Thumbnail extends Component {
 
     onRotateRight = async () => {
         try {
-            await api.vfs.rotate(this.props.node.path, -90);
+            await api.media.rotate(this.props.node.path, -90);
         } catch (error) {
             this.logError("Failed to rotate right", error);
             notification.add("error", error.message, 10000);
@@ -53,7 +53,7 @@ class Thumbnail extends Component {
 
     onRotateLeft = async () => {
         try {
-            await api.vfs.rotate(this.props.node.path, 90);
+            await api.media.rotate(this.props.node.path, 90);
         } catch (error) {
             this.logError("Failed to rotate right", error);
             notification.add("error", error.message, 10000);
@@ -62,7 +62,7 @@ class Thumbnail extends Component {
 
     onMirror = async () => {
         try {
-            await api.vfs.mirror(this.props.node.path);
+            await api.media.mirror(this.props.node.path);
         } catch (error) {
             this.logError("Failed to mirror", error);
             notification.add("error", error.message, 10000);
