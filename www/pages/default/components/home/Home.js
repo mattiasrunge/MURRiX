@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { Container, Grid, Sticky } from "semantic-ui-react";
 import { Profile } from "components/user";
 import { Search, Name, Label, Year } from "components/search";
@@ -107,4 +107,4 @@ Home.propTypes = {
     location: PropTypes.object.isRequired
 };
 
-export default Home;
+export default withRouter(Home);

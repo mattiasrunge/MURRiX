@@ -1,23 +1,20 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { Link, withRouter } from "react-router-dom";
 import Component from "lib/component";
 
 class SidebarMenuItem extends Component {
-    onClick() {
-        this.context.router.history.push(this.props.path);
-    }
-
     render() {
         const active = this.props.location.pathname.startsWith(this.props.path);
 
         return (
-            <a
+            <Link
                 className={`${this.props.theme.item} ${active ? this.props.theme.active : ""}`}
-                onClick={() => this.onClick()}
+                to={this.props.path}
             >
                 {this.props.text}
-            </a>
+            </Link>
         );
     }
 }
@@ -29,8 +26,4 @@ SidebarMenuItem.propTypes = {
     location: PropTypes.object.isRequired
 };
 
-SidebarMenuItem.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default SidebarMenuItem;
+export default withRouter(SidebarMenuItem);

@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import Component from "lib/component";
 import api from "api.io-client";
 import notification from "lib/notification";
@@ -30,7 +31,7 @@ class CreateModal extends Component {
 
             !this.disposed && this.setState({ saving: false });
 
-            this.props.gotoNew && this.context.router.history.push(`/node${node.path}/_/settings/share`);
+            this.props.gotoNew && this.props.history.push(`/node${node.path}/_/settings/share`);
             this.props.onClose();
         } catch (error) {
             this.logError("Failed to save node", error);
@@ -71,11 +72,8 @@ CreateModal.propTypes = {
     path: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     attributes: PropTypes.object,
-    gotoNew: PropTypes.bool
+    gotoNew: PropTypes.bool,
+    history: PropTypes.object.isRequired
 };
 
-CreateModal.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default CreateModal;
+export default withRouter(CreateModal);

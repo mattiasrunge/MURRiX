@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import api from "api.io-client";
 import Component from "lib/component";
+import { withRouter } from "react-router-dom";
 import { Input, Modal, Button, Form, Message } from "semantic-ui-react";
 import { Focus } from "components/utils";
 
@@ -20,7 +21,7 @@ class ResetPassword extends Component {
     }
 
     signIn() {
-        this.context.router.history.push("/");
+        this.props.history.push("/");
     }
 
     async set() {
@@ -115,11 +116,8 @@ class ResetPassword extends Component {
 ResetPassword.propTypes = {
     theme: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-ResetPassword.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default ResetPassword;
+export default withRouter(ResetPassword);

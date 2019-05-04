@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import Component from "lib/component";
 import { Header, Segment, Button } from "semantic-ui-react";
 import List from "./List";
@@ -25,16 +26,16 @@ class Name extends Component {
         this.letters.push(String.fromCharCode(214)); // Ö
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.match.params.letter !== this.props.match.params.letter) {
-            this.setState({ letter: nextProps.match.params.letter });
+    componentDidUpdate(prevProps) {
+        if (prevProps.match.params.letter !== this.props.match.params.letter) {
+            this.setState({ letter: this.props.match.params.letter });
         }
     }
 
     onChange(letter) {
         const url = this.props.match.path.split(":")[0];
 
-        this.context.router.history.replace(`${url}${letter}`);
+        this.props.history.replace(`${url}${letter}`);
     }
 
     render() {
@@ -84,11 +85,8 @@ class Name extends Component {
 Name.propTypes = {
     theme: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-Name.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default Name;
+export default withRouter(Name);

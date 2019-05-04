@@ -30,15 +30,13 @@ module.exports = {
 
         return str.trim().split("&").reduce((ret, param) => {
             const parts = param.replace(/\+/g, " ").split("=");
-            ret[parts[0]] = parts[1] === undefined ? null : decodeURIComponent(parts[1]);
+            ret[parts[0]] = typeof parts[1] === "undefined" ? null : decodeURIComponent(parts[1]);
 
             return ret;
         }, {});
     },
     makeUrl: (obj) => {
-        return "#" + (obj ? Object.keys(obj).map((key) => {
-            return encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]);
-        }).join("&") : "");
+        return `#${(obj ? Object.keys(obj).map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`).join("&") : "")}`;
     },
     constructUrl: (args, baseOnCurrent) => {
         const newArgs = baseOnCurrent ? JSON.parse(JSON.stringify(module.exports.current())) : {};

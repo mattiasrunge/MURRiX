@@ -2,6 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import { withRouter } from "react-router-dom";
 import format from "lib/format";
 import Component from "lib/component";
 import notification from "lib/notification";
@@ -134,14 +135,14 @@ class Media extends Component {
 
     onSelectNode = (selected) => {
         if (selected) {
-            this.context.router.history.push(`/node${this.props.node.path}/_/media${selected.path}`);
+            this.props.history.push(`/node${this.props.node.path}/_/media${selected.path}`);
         } else {
-            this.context.router.history.push(`/node${this.props.node.path}/_/media`);
+            this.props.history.push(`/node${this.props.node.path}/_/media`);
         }
     }
 
     getSelectedPath() {
-        const [ , path ] = this.props.match.url.split("/_/media");
+        const [ , path ] = this.props.location.pathname.split("/_/media");
 
         return path;
     }
@@ -242,11 +243,8 @@ class Media extends Component {
 Media.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-Media.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default Media;
+export default withRouter(Media);

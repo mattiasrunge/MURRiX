@@ -2,13 +2,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
 import About from "./sections/About";
 
 class Details extends Component {
     onSection = (e, { name }) => {
-        this.context.router.history.push(`/node${this.props.node.path}/_/details/${name}`);
+        this.props.history.push(`/node${this.props.node.path}/_/details/${name}`);
     }
 
     render() {
@@ -86,11 +86,8 @@ class Details extends Component {
 Details.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-Details.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default Details;
+export default withRouter(Details);

@@ -3,6 +3,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import api from "api.io-client";
 import Component from "lib/component";
 import { Input, Modal, Button, Form, Message } from "semantic-ui-react";
@@ -95,8 +96,4 @@ RequestReset.propTypes = {
     location: PropTypes.object.isRequired
 };
 
-RequestReset.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default RequestReset;
+export default withRouter(RequestReset);

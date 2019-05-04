@@ -93,13 +93,15 @@ class Upload extends Component {
                     </When>
                     <Otherwise>
                         <If condition={!this.state.ongoing}>
-                            <Dropzone
-                                onDrop={this.onDrop}
-                                className={this.props.theme.uploadDropZone}
-                                activeClassName={this.props.theme.uploadDropZoneActive}
-                                rejectClassName={this.props.theme.uploadDropZoneReject}
-                            >
-                                Drag files here or click to select files to upload
+                            <Dropzone onDrop={this.onDrop}>
+                                {({ getRootProps, getInputProps, isDragActive, isDragReject }) => (
+                                    <section className={`${this.props.theme.uploadDropZone} ${isDragActive ? this.props.theme.uploadDropZoneActive : ""} ${isDragReject ? this.props.theme.uploadDropZoneReject : ""}`}>
+                                        <div {...getRootProps()}>
+                                            <input {...getInputProps()} />
+                                            <p>Drag files here or click to select files to upload</p>
+                                        </div>
+                                    </section>
+                                )}
                             </Dropzone>
                         </If>
                         <If condition={this.state.files.length > 0}>

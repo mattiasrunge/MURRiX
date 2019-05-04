@@ -2,6 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
+import { withRouter } from "react-router-dom";
 import api from "api.io-client";
 import { Label } from "semantic-ui-react";
 
@@ -33,21 +34,15 @@ class NodeLabels extends Component {
 
             labels.sort((a, b) => b.count - a.count);
 
-            !this.disposed && this.setState({
-                labels: labels.map((label) => ({
-                    ...label,
-                    onClick: this.onChange.bind(this, label.name)
-                })),
-                loading: false
-            });
+            !this.disposed && this.setState({ labels, loading: false });
         } catch (error) {
             this.logError("Failed to get node labels", error, 10000);
             !this.disposed && this.setState({ labels: [], loading: false });
         }
     }
 
-    onChange(label) {
-        this.context.router.history.push(`/home/label/${label}`);
+    onClick = (e, label) => {
+        this.props.history.push(`/home/label/${label.content}`);
     }
 
     render() {
@@ -64,7 +59,7 @@ class NodeLabels extends Component {
                         color="blue"
                         size="small"
                         image
-                        onClick={label.onClick}
+                        onClick={this.onClick}
                     />
                 </For>
             </div>
@@ -75,11 +70,8 @@ class NodeLabels extends Component {
 NodeLabels.propTypes = {
     theme: PropTypes.object,
     className: PropTypes.string,
-    node: PropTypes.object.isRequired
+    node: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-NodeLabels.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default NodeLabels;
+export default withRouter(NodeLabels);

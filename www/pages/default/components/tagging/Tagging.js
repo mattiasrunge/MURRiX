@@ -109,8 +109,4 @@ Tagging.propTypes = {
     node: PropTypes.object.isRequired
 };
 
-Tagging.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
 export default Tagging;

@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
@@ -41,7 +42,7 @@ class StarMenu extends Component {
     }
 
     goto(node) {
-        this.context.router.history.push(`/node${node.path}`);
+        this.props.history.push(`/node${node.path}`);
     }
 
     render() {
@@ -96,11 +97,8 @@ class StarMenu extends Component {
 
 StarMenu.propTypes = {
     theme: PropTypes.object,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-StarMenu.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default StarMenu;
+export default withRouter(StarMenu);

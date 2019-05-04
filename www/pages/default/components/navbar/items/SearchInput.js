@@ -1,6 +1,7 @@
 
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import api from "api.io-client";
 import session from "lib/session";
 import notification from "lib/notification";
@@ -30,8 +31,10 @@ class SearchInput extends Component {
         this.setFromLocation(this.props.location);
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setFromLocation(nextProps.location);
+    componentDidUpdate(prevProps) {
+        if (prevProps.location.pathname !== this.props.location.pathname) {
+            this.setFromLocation(this.props.location);
+        }
     }
 
     async setFromLocation(location) {
@@ -70,12 +73,12 @@ class SearchInput extends Component {
 
     onSelect = (selected) => {
         this.setState({ selected });
-        selected && this.context.router.history.push(`/node${selected.path}`);
+        selected && this.props.history.push(`/node${selected.path}`);
     }
 
     onSearch = (e, query) => {
         if (e.which === 13 && !this.state.selected && query) {
-            this.context.router.history.push(`/home/search/${query}`);
+            this.props.history.push(`/home/search/${query}`);
         }
     }
 
@@ -103,11 +106,8 @@ class SearchInput extends Component {
 
 SearchInput.propTypes = {
     theme: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-SearchInput.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default SearchInput;
+export default withRouter(SearchInput);

@@ -15,10 +15,10 @@ class Image extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.faces !== nextProps.faces) {
+    componentDidUpdate(prevProps) {
+        if (this.props.faces !== prevProps.faces) {
             this.setState({
-                regions: this.faces2regions(nextProps.faces)
+                regions: this.faces2regions(this.props.faces)
             });
         }
     }

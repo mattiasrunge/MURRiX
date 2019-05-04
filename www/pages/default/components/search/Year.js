@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import Component from "lib/component";
 import { Header, Segment, Button } from "semantic-ui-react";
 import { Slider } from "react-semantic-ui-range";
@@ -47,7 +48,7 @@ class Year extends Component {
 
         const url = this.props.match.path.split(":")[0];
 
-        this.context.router.history.replace(`${url}${year}`);
+        this.props.history.replace(`${url}${year}`);
     }
 
     delayQuery(year) {
@@ -142,11 +143,8 @@ class Year extends Component {
 Year.propTypes = {
     theme: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-Year.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default Year;
+export default withRouter(Year);

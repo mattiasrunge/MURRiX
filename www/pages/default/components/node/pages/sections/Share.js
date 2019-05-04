@@ -371,8 +371,7 @@ class Share extends Component {
 
 Share.propTypes = {
     theme: PropTypes.object,
-    node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired
+    node: PropTypes.object.isRequired
 };
 
 export default Share;

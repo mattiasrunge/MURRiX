@@ -74,12 +74,7 @@ class StarIcon extends Component {
 
 StarIcon.propTypes = {
     theme: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
     node: PropTypes.object
-};
-
-StarIcon.contextTypes = {
-    router: PropTypes.object.isRequired
 };
 
 export default StarIcon;

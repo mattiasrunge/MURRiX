@@ -2,13 +2,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
+import { withRouter } from "react-router-dom";
 import { Card, Label } from "semantic-ui-react";
 import NodeImage from "./NodeImage";
 import NodeIcon from "./NodeIcon";
 
 class NodeCard extends Component {
     onClick = () => {
-        this.context.router.history.push(`/node${this.props.node.path}`);
+        this.props.history.push(`/node${this.props.node.path}`);
     }
 
     render() {
@@ -68,11 +69,8 @@ class NodeCard extends Component {
 NodeCard.propTypes = {
     theme: PropTypes.object,
     className: PropTypes.string,
-    node: PropTypes.object.isRequired
+    node: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-NodeCard.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default NodeCard;
+export default withRouter(NodeCard);

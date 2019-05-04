@@ -37,13 +37,7 @@ class News extends Component {
 }
 
 News.propTypes = {
-    theme: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
-};
-
-News.contextTypes = {
-    router: PropTypes.object.isRequired
+    theme: PropTypes.object.isRequired
 };
 
 export default News;

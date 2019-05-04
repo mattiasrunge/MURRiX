@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
 import { Edit } from "components/edit";
 import Share from "./sections/Share";
@@ -23,7 +23,7 @@ class Settings extends Component {
     }
 
     onSection = (e, { name }) => {
-        this.context.router.history.push(`/node${this.props.node.path}/_/settings/${name}`);
+        this.props.history.push(`/node${this.props.node.path}/_/settings/${name}`);
     }
 
     gotoSection = (offset) => {
@@ -169,11 +169,8 @@ class Settings extends Component {
 Settings.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-Settings.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default Settings;
+export default withRouter(Settings);

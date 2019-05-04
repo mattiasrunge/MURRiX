@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import api from "api.io-client";
 import session from "lib/session";
 import notification from "lib/notification";
@@ -36,7 +37,7 @@ class RandomButton extends Component {
 
             this.setState({ loading: false });
 
-            this.context.router.history.push(`/node${node.path}`);
+            this.props.history.push(`/node${node.path}`);
         } catch (error) {
             this.logError("Failed to get random", error);
             notification.add("error", error.message, 10000);
@@ -62,11 +63,8 @@ class RandomButton extends Component {
 
 RandomButton.propTypes = {
     theme: PropTypes.object,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-RandomButton.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default RandomButton;
+export default withRouter(RandomButton);

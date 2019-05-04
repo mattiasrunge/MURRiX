@@ -1,12 +1,13 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import Component from "lib/component";
 import { Menu } from "semantic-ui-react";
 
 class HomeButton extends Component {
     onHome() {
-        this.context.router.history.push("/");
+        this.props.history.push("/");
     }
 
     render() {
@@ -21,11 +22,8 @@ class HomeButton extends Component {
 }
 
 HomeButton.propTypes = {
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    history: PropTypes.object.isRequired
 };
 
-HomeButton.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default HomeButton;
+export default withRouter(HomeButton);

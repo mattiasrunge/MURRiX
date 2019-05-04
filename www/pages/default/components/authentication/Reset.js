@@ -1,7 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import Component from "lib/component";
 import RequestReset from "./RequestReset";
 import ResetPassword from "./ResetPassword";
@@ -32,4 +32,4 @@ Reset.propTypes = {
     match: PropTypes.object.isRequired
 };
 
-export default Reset;
+export default withRouter(Reset);

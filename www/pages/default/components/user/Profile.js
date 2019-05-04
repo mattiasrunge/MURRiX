@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
@@ -28,7 +29,7 @@ class Profile extends Component {
     }
 
     resetPassword() {
-        this.context.router.history.push(`/reset/${this.state.username}`);
+        this.props.history.push(`/reset/${this.state.username}`);
     }
 
     async save() {
@@ -48,7 +49,7 @@ class Profile extends Component {
     }
 
     close() {
-        this.context.router.history.goBack();
+        this.props.history.goBack();
     }
 
     render() {
@@ -112,11 +113,8 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    history: PropTypes.object.isRequired
 };
 
-Profile.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default Profile;
+export default withRouter(Profile);

@@ -1,6 +1,5 @@
 
 import React, { Fragment } from "react";
-import PropTypes from "prop-types";
 import session from "lib/session";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Component from "lib/component";
@@ -30,7 +29,7 @@ class Content extends Component {
             <Fragment>
                 <Terminal />
                 <Notification />
-                <Navbar location={this.props.location} />
+                <Navbar />
                 <UploadProgress />
 
                 <Switch>
@@ -167,13 +166,5 @@ class Content extends Component {
         // );
     }
 }
-
-Content.propTypes = {
-    location: PropTypes.object.isRequired
-};
-
-Content.contextTypes = {
-    router: PropTypes.object.isRequired
-};
 
 export default Content;

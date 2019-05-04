@@ -3,10 +3,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import api from "api.io-client";
 import session from "lib/session";
+import { withRouter } from "react-router-dom";
 import Component from "lib/component";
 import { Input, Modal, Button, Form } from "semantic-ui-react";
 import { Focus } from "components/utils";
 
+// TODO: Switch to Link instead of onclick and resetPassword func
 class SignIn extends Component {
     constructor(props) {
         super(props);
@@ -25,7 +27,7 @@ class SignIn extends Component {
     }
 
     resetPassword() {
-        this.context.router.history.push(`/reset/${this.state.username}`);
+        this.props.history.push(`/reset/${this.state.username}`);
     }
 
     async signIn() {
@@ -103,11 +105,8 @@ class SignIn extends Component {
 }
 
 SignIn.propTypes = {
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    history: PropTypes.object.isRequired
 };
 
-SignIn.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default SignIn;
+export default withRouter(SignIn);

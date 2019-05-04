@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import api from "api.io-client";
 import session from "lib/session";
 import Component from "lib/component";
@@ -25,11 +26,11 @@ class UserMenu extends Component {
     }
 
     onProfile() {
-        this.context.router.history.push("/home/profile");
+        this.props.history.push("/home/profile");
     }
 
     async onMe() {
-        this.context.router.history.push(`/node${session.personPath()}`);
+        this.props.history.push(`/node${session.personPath()}`);
     }
 
     render() {
@@ -87,11 +88,8 @@ class UserMenu extends Component {
 
 UserMenu.propTypes = {
     theme: PropTypes.object,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-UserMenu.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default UserMenu;
+export default withRouter(UserMenu);

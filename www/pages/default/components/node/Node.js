@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import api from "api.io-client";
 import ui from "lib/ui";
 import notification from "lib/notification";
@@ -73,7 +73,7 @@ class Node extends Component {
     }
 
     onPage = (e, { name }) => {
-        this.context.router.history.push(`/node${this.state.node.path}/_/${name}`);
+        this.props.history.push(`/node${this.state.node.path}/_/${name}`);
     }
 
     render() {
@@ -198,11 +198,8 @@ class Node extends Component {
 Node.propTypes = {
     theme: PropTypes.object,
     match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-Node.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default Node;
+export default withRouter(Node);

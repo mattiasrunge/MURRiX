@@ -1,6 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import Component from "lib/component";
 import { Header, Input, Segment } from "semantic-ui-react";
 import { Focus } from "components/utils";
@@ -17,9 +18,9 @@ class Search extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.match.params.query !== this.props.match.params.query) {
-            this.setState({ query: nextProps.match.params.query || "" });
+    componentDidUpdate(prevProps) {
+        if (prevProps.match.params.query !== this.props.match.params.query) {
+            this.setState({ query: this.props.match.params.query || "" });
         }
     }
 
@@ -31,7 +32,7 @@ class Search extends Component {
             } else {
                 const url = this.props.match.path.split(":")[0];
 
-                this.context.router.history.replace(`${url}${query}`);
+                this.props.history.replace(`${url}${query}`);
             }
         }, 500);
     }
@@ -88,11 +89,8 @@ class Search extends Component {
 Search.propTypes = {
     theme: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-Search.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default Search;
+export default withRouter(Search);

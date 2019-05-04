@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
 import api from "api.io-client";
+import { Link } from "react-router-dom";
 import { Header, Segment, Label, Loader } from "semantic-ui-react";
 import List from "./List";
 import ui from "lib/ui";
@@ -18,27 +19,16 @@ class SearchLabel extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.match.params.label !== this.props.match.params.label) {
-            this.setState({ label: nextProps.match.params.label });
+    componentDidUpdate(prevProps) {
+        if (prevProps.match.params.label !== this.props.match.params.label) {
+            this.setState({ label: this.props.match.params.label });
         }
     }
 
     async load() {
         const labels = await api.vfs.labels();
 
-        this.setState({
-            labels: labels.map((label) => ({
-                ...label,
-                onClick: this.onChange.bind(this, label.name)
-            }))
-        });
-    }
-
-    onChange(label) {
-        const url = this.props.match.path.split(":")[0];
-
-        this.context.router.history.replace(`${url}${label}`);
+        this.setState({ labels });
     }
 
     onLoad = (loading) => {
@@ -69,16 +59,19 @@ class SearchLabel extends Component {
                 <Segment textAlign="center">
                     <Loader active={this.state.loading}>Loading...</Loader>
                     <For each="label" of={this.state.labels}>
-                        <Label
+                        <Link
                             key={label.name}
-                            className={this.props.theme.labelButton}
-                            content={label.name}
-                            detail={label.count}
-                            color={label.name === currentLabel ? "blue" : null}
-                            size="small"
-                            image
-                            onClick={label.onClick}
-                        />
+                            to={`${this.props.match.path.split(":")[0]}${label.name}`}
+                        >
+                            <Label
+                                className={this.props.theme.labelButton}
+                                content={label.name}
+                                detail={label.count}
+                                color={label.name === currentLabel ? "blue" : null}
+                                size="small"
+                                image
+                            />
+                        </Link>
                     </For>
                 </Segment>
                 <List
@@ -94,10 +87,6 @@ SearchLabel.propTypes = {
     theme: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired
-};
-
-SearchLabel.contextTypes = {
-    router: PropTypes.object.isRequired
 };
 
 export default SearchLabel;

@@ -88,8 +88,4 @@ AddMenu.propTypes = {
     theme: PropTypes.object
 };
 
-AddMenu.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
 export default AddMenu;

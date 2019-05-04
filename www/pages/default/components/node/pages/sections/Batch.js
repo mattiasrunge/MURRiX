@@ -52,12 +52,7 @@ class Batch extends Component {
 
 Batch.propTypes = {
     theme: PropTypes.object,
-    node: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired
-};
-
-Batch.contextTypes = {
-    router: PropTypes.object.isRequired
+    node: PropTypes.object.isRequired
 };
 
 export default Batch;

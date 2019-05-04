@@ -2,6 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import store from "store";
+import { withRouter } from "react-router-dom";
 import Component from "lib/component";
 import api from "api.io-client";
 import notification from "lib/notification";
@@ -62,7 +63,7 @@ class MoveToList extends Component {
     }
 
     onClickRemote(remote) {
-        this.context.router.history.push(`/node${remote.path}`);
+        this.props.history.push(`/node${remote.path}`);
     }
 
     render() {
@@ -131,11 +132,8 @@ class MoveToList extends Component {
 MoveToList.propTypes = {
     theme: PropTypes.object,
     node: PropTypes.object.isRequired,
-    files: PropTypes.array.isRequired
+    files: PropTypes.array.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-MoveToList.contextTypes = {
-    router: PropTypes.object.isRequired
-};
-
-export default MoveToList;
+export default withRouter(MoveToList);
