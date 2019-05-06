@@ -9,7 +9,7 @@
 .navbarStarIcon {
     position: absolute;
     right: 22px;
-    top: 13px;
+    top: 17px;
 
     & i {
         outline-color: transparent;
@@ -19,4 +19,10 @@
 .starMenuText {
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.nodeSearchContainer {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
 }

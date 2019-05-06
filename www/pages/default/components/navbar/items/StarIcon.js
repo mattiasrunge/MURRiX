@@ -31,7 +31,7 @@ class StarIcon extends Component {
     }
 
     async update() {
-        if (!this.state.user || this.state.user.name === "guest" || !this.props.node) {
+        if (!this.state.user || this.state.user.name === "guest") {
             return;
         }
 

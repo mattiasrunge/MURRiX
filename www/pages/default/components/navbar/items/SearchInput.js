@@ -6,7 +6,7 @@ import api from "api.io-client";
 import session from "lib/session";
 import notification from "lib/notification";
 import Component from "lib/component";
-// import StarIcon from "./StarIcon";
+import StarIcon from "./StarIcon";
 import { NodeInput } from "components/nodeparts";
 
 class SearchInput extends Component {
@@ -89,16 +89,18 @@ class SearchInput extends Component {
 
         return (
             <Fragment>
-                <NodeInput
-                    value={this.state.selected}
-                    paths={this.state.paths}
-                    iconPosition="left"
-                    onChange={this.onSelect}
-                    loading={this.state.loading}
-                    placeholder="Search..."
-                    onKeyUp={this.onSearch}
-                />
-                {/* <StarIcon {...this.props} node={this.state.selected ? this.state.selected : null} /> */}
+                <div className={this.props.theme.nodeSearchContainer}>
+                    <NodeInput
+                        value={this.state.selected}
+                        paths={this.state.paths}
+                        iconPosition="left"
+                        onChange={this.onSelect}
+                        loading={this.state.loading}
+                        placeholder="Search..."
+                        onKeyUp={this.onSearch}
+                    />
+                    <StarIcon {...this.props} node={this.state.selected ? this.state.selected : null} />
+                </div>
             </Fragment>
         );
     }
