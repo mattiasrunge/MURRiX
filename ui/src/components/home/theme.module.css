@@ -1,0 +1,42 @@
+
+@import "~styles/theme.css";
+
+.homeContainer {
+    margin-top: var(--navbar-height);
+    padding-top: 2em;
+}
+
+.homeSidebar {
+    padding-top: calc(var(--navbar-height) + 2em);
+    border-right: 0.5px solid rgba(34, 36 ,38, .15);
+
+    & .menu {
+        margin-bottom: 2em;
+        margin-right: 0.5px;
+
+        & .item {
+            display: block;
+            padding: 0.5em 1em;
+            color: rgba(34, 36 ,38, 0.8);
+            cursor: pointer;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+
+            & .icon {
+                display: none;
+                padding-right: 1.5em;
+            }
+
+            &.active {
+                pointer-events: none;
+                color: black;
+                background-color: rgba(34, 36 ,38, .15);
+            }
+
+            &:hover {
+                color: black;
+                background-color: rgba(34, 36 ,38, .05);
+            }
+        }
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "extends": [
+        "../.eslintrc.json",
+        "plugin:jsx-control-statements/recommended",
+        "plugin:react/recommended",
+        "plugin:import/recommended"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": [
+        "jsx-control-statements",
+        "react",
+        "import"
+    ],
+    "settings": {
+        "import/resolver": {
+            "alias": {
+                "map": [
+                  [ "components", "./ui/src/components" ],
+                  [ "lib", "./ui/src/lib" ],
+                  [ "styles", "./ui/src/styles" ]
+                ],
+                "extensions": [ ".ts", ".js", ".jsx", ".json" ]
+              }
+        },
+        "react": {
+            "pragma": "React",
+            "version": "16.8.6"
+        }
+    },
+    "env": {
+        "jsx-control-statements/jsx-control-statements": true
+    },
+    "rules": {
+        "jsx-control-statements/jsx-jcs-no-undef": 1,
+        "no-undef": 0,
+        "no-invalid-this": 0,
+        "react/jsx-no-undef": [2, { "allowGlobals": true }],
+        "node/no-unpublished-require": 0,
+        "sonarjs/cognitive-complexity": 0,
+        "import/no-unresolved": 0,
+        "node/no-unsupported-features/es-syntax": 0,
+        "node/no-unsupported-features/node-builtins": 0,
+        "no-console": 0,
+        "unicorn/prefer-node-append": "error",
+        "jsx-quotes": "error",
+        "import/no-duplicates": "error",
+        "import/no-absolute-path": "error",
+        "import/no-cycle": "error",
+        "import/no-useless-path-segments": "error",
+        "import/no-deprecated": "error",
+        "import/no-mutable-exports": "error",
+        "import/first": "error",
+        "import/exports-last": "error",
+        "import/extensions": "error",
+        "import/order": [ "error", { "groups": [ "builtin", "external", "index" ] } ],
+        "import/newline-after-import": "error"
+    }
+}

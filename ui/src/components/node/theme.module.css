@@ -1,0 +1,303 @@
+
+@import "~styles/theme.css";
+
+.nodeContainer {
+    margin-top: var(--navbar-height);
+}
+
+.mediaLoader {
+    margin-top: var(--spacing) !important;
+    margin-bottom: var(--spacing) !important;
+    text-transform: uppercase;
+    text-align: center;
+    color: #bbb;
+}
+
+.mediaImageGroup {
+    margin: var(--spacing) calc(var(--spacing) - 1) calc(var(--spacing) - 1) var(--spacing) !important;
+}
+
+.mediaImageContainer {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+
+    & .mediaImage {
+        margin: 0 1px 1px 0 !important;
+        /* width: 216px !important; */
+    }
+
+    & .mediaImageSelectable {
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    & .mediaImageSelected {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, .5);
+        color: white;
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 50px;
+        text-align: center;
+    }
+
+    & .mediaImageTypeIcon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        font-size: 20px !important;
+        color: white;
+        text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+    }
+
+    & .mediaImageMenu {
+        position: absolute !important;
+        top: 5px;
+        right: 5px;
+        font-size: 16px !important;
+        color: white;
+        text-shadow: 0 0 3px rgba(0, 0, 0, 1) !important;
+        opacity: 0;
+        transition: opacity .1s ease-in-out;
+
+        &:hover {
+            opacity: 1 !important;
+        }
+    }
+
+    &:hover {
+        & .mediaImageMenu {
+            opacity: 0.5;
+        }
+    }
+}
+
+.mediaContainer {
+    border-left: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
+    border-bottom: 1px solid #d4d4d5;
+    padding-top: var(--spacing);
+    position: relative;
+
+    & .mediaDay {
+        margin-top: calc(var(--spacing) * 2) !important;
+
+        &:first-child {
+            margin-top: 0 !important;
+        }
+    }
+
+    & h3 {
+        margin-top: 0 !important;
+        margin-left: var(--spacing) !important;
+        margin-right: var(--spacing) !important;
+        margin-bottom: calc(var(--spacing) / 2) !important;
+    }
+}
+
+.text {
+    font-size: 0.9em;
+
+    & blockquote {
+        border-left: 4px solid #d4d4d5;
+        padding-left: var(--spacing) !important;
+        margin-left: var(--spacing) !important;
+        margin-right: var(--spacing) !important;
+        margin-bottom: var(--spacing) !important;
+    }
+
+    & p {
+        white-space: pre-line;
+    }
+
+    & .mediaEditIcon {
+        opacity: 0 !important;
+        margin-left: 5px !important;
+        margin-right: 0 !important
+    }
+
+    &:hover {
+        & .mediaEditIcon {
+            opacity: 0.5 !important;
+        }
+    }
+}
+
+.textBy {
+    font-size: 0.8em !important;
+    font-style: italic;
+}
+
+.mediaAddText {
+    position: absolute;
+    top: calc(var(--spacing) / 2) !important;
+    right: calc(var(--spacing) / 2) !important;
+}
+
+.pageContainer {
+    border-left: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
+    border-bottom: 1px solid #d4d4d5;
+    display: flex;
+    /* padding: var(--spacing); */
+
+    & .pageColumn {
+        padding-bottom: 0 !important;
+    }
+
+    & .pageSidebar {
+        padding: var(--spacing);
+        padding-bottom: calc(var(--spacing) - 10px);
+        border-right: 1px solid #d4d4d5;
+
+        & .sidebarHeader {
+            color: #2185d0;
+        }
+
+        & .sidebarInformationTable {
+            font-size: 0.8em !important;
+        }
+    }
+
+    & .pageMain {
+        padding: var(--spacing);
+        flex-grow: 1;
+    }
+}
+
+.accessText {
+    font-size: 0.8em;
+}
+
+.editTableHeader {
+    font-size: 0.9em;
+}
+
+.userAvatar {
+    float: left;
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 35px !important;
+    margin-right: 9px !important;
+}
+
+.groupUserAvatar {
+    float: left;
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 18px !important;
+    margin-right: 3px !important;
+    margin-top: 3px !important;
+    margin-bottom: 0 !important;
+}
+
+.shareUsersToggle {
+    float: right;
+    padding-top: 2.2em;
+}
+
+.timelineTimeContainer {
+    color: rgba(0, 0, 0, .5);
+
+    & .timelineTimeUnknown {
+        font-size: 20px;
+        line-height: 20px;
+    }
+
+    & .timelineTimeYear {
+        font-size: 28px;
+        font-weight: 700;
+        padding-bottom: 5px;
+        line-height: 28px;
+    }
+
+    & .timelineTimeDate {
+        font-size: 14px;
+        font-weight: 600;
+        padding-bottom: 5px;
+    }
+
+    & .timelineTimeClock {
+        font-size: 12px;
+        padding-bottom: 5px;
+    }
+}
+
+.timelineContainer {
+    border-left: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
+    border-bottom: 1px solid #d4d4d5;
+    position: relative;
+
+    & .timelineTable {
+        width: 100%;
+        border-spacing: 0;
+
+        & td {
+            vertical-align: top;
+            padding: var(--spacing);
+        }
+
+        & .timelineRow {
+            &:first-child {
+                & .timelineTime, & .timelineItem {
+                    padding-top: calc(var(--spacing) * 2);
+                }
+            }
+        }
+
+        & .timelineTime {
+            background-color: #F4F4F5;
+            width: 20%;
+            text-align: right;
+        }
+
+        & .timelineItem {
+            & .text {
+                margin: 0 !important;
+                margin-bottom: var(--spacing) !important;
+
+                & h3 {
+                    margin: 0 !important;
+                    margin-bottom: 5px !important;
+                    line-height: 28px !important;
+                }
+            }
+
+            & .withOthers {
+                font-style: italic;
+            }
+        }
+    }
+}
+
+.organizeRemoteInput {
+    width: 100%;
+
+    & div {
+        width: 100%;
+    }
+}
+
+.organizeRemoteListItem {
+    cursor: pointer;
+
+    &:hover {
+        background-color: #F4F4F5
+    }
+}
+
+.organizeRemoteListItemContent {
+    line-height: 2em !important;
+}
+
+.organizeRemoteListItemClose {
+    float: right;
+    font-size: 0.8em !important;
+}

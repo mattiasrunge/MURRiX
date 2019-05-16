@@ -1,31 +1,38 @@
 {
     "extends": [
-        "plugin:jsx-control-statements/recommended",
-        "plugin:react/recommended"
+        "eslint:recommended",
+        "plugin:node/recommended",
+        "plugin:sonarjs/recommended",
+        "plugin:unicorn/recommended",
+        "plugin:promise/recommended"
     ],
     "root": true,
     "parser": "babel-eslint",
     "parserOptions": {
         "ecmaVersion": 7,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": true
-        }
+        "sourceType": "module"
     },
     "plugins": [
-        "jsx-control-statements",
         "babel",
-        "react"
+        "json",
+        "node",
+        "sonarjs",
+        "unicorn",
+        "promise"
     ],
+
     "env": {
         "node": true,
-        "es6": true,
-        "jsx-control-statements/jsx-control-statements": true
+        "es6": true
     },
     "rules": {
-        "jsx-control-statements/jsx-jcs-no-undef": 1,
         "no-undef": 0,
-        "react/jsx-no-undef": [2, { "allowGlobals": true }],
+        "unicorn/filename-case": 0,
+        "promise/always-return": 0,
+        "unicorn/no-abusive-eslint-disable": 0,
+        "unicorn/prefer-node-append": 0,
+        "sonarjs/cognitive-complexity": 0,
+        "node/no-unsupported-features/es-syntax": 0,
         "space-before-function-paren": [ "error", { "anonymous": "ignore", "named": "never" } ],
         "no-empty": [ "error", { "allowEmptyCatch": true } ],
         "space-in-parens": "error",
@@ -95,7 +102,6 @@
         "block-spacing": "error",
         "comma-spacing": "error",
         "func-call-spacing": "error",
-        "jsx-quotes": "error",
         "linebreak-style": "error",
         "lines-around-directive": "error",
         "new-cap": "error",
@@ -133,6 +139,11 @@
         "prefer-rest-params": "error",
         "prefer-spread": "error",
         "prefer-template": "error",
-        "template-curly-spacing": "error"
+        "template-curly-spacing": "error",
+        "no-invalid-this": "error",
+        "arrow-body-style": [ "error", "as-needed", { "requireReturnForObjectLiteral": false } ],
+        "unicorn/no-process-exit": "off",
+        "node/no-extraneous-require": "off",
+        "sonarjs/no-duplicate-string": "off"
     }
 }

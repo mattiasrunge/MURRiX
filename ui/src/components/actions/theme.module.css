@@ -1,0 +1,16 @@
+
+@import "~styles/theme.css";
+
+.actionInput {
+    margin-bottom: var(--spacing-small);
+}
+
+.actionListItemImage {
+    margin-right: var(--spacing-small);
+}
+
+.actionListItemRemove {
+    float: right;
+    margin-top: 5px !important;
+    margin-right: 0 !important;
+}

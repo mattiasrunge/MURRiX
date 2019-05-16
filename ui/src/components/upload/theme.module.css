@@ -1,0 +1,62 @@
+
+@import "~styles/theme.css";
+
+.uploadButton {
+    margin-top: 1em !important;
+    float: right !important;
+}
+
+.folderSelect {
+    font-size: 14px;
+    margin-top: 1em !important;
+    float: right !important;
+    margin-right: 0.25em;
+    padding: 10px !important;
+    min-height: 36px !important;
+}
+
+.uploadDropZone {
+    border: 2px dashed #d4d4d5;
+    padding: 5%;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: rgba(0,0,0,.4);
+
+    &:hover {
+        cursor: pointer;
+        border-color: #276f86;
+        background-color: #f8ffff;
+        color: #276f86;
+    }
+}
+
+.uploadDropZoneActive {
+    border-color: #2c662d;
+    background-color: #fcfff5;
+    color: #2c662d;
+}
+
+.uploadDropZoneReject {
+    border-color: #9f3a38;
+    background-color: #fff6f6;
+    color: #9f3a38;
+}
+
+.uploadProgress {
+    position: fixed;
+    bottom: -1px;
+    right: var(--spacing);
+    width: 400px;
+    background-color: white;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom: none;
+    box-shadow: 0 1px 1px rgba(0,0,0,.25) !important;
+    z-index: 100000;
+}
+
+.uploadProgressTitle {
+    font-size: 0.8em;
+}

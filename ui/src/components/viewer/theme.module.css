@@ -1,0 +1,213 @@
+
+@import "~styles/theme.css";
+
+:root {
+    --infobar-height: 40px;
+    --sidebar-width: 400px;
+}
+
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: black;
+    z-index: 1000;
+
+    & .closeIcon {
+        position: absolute;
+        top: var(--spacing-small);
+        right: var(--spacing-small);
+        color: white;
+    }
+}
+
+.contentContainer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: var(--sidebar-width);
+    transition: right .2s ease-in-out;
+
+    & .sidebarToggle {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        background-color: white;
+        opacity: 0.3;
+        width: 20px;
+        height: 40px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        cursor: pointer;
+        transition: opacity .1s ease-in-out;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        & .sidebarToggleIcon {
+            padding-left: 5px;
+        }
+    }
+
+    & .infoContainer {
+        position: absolute;
+        bottom: 0;
+        left: var(--spacing-small);
+        right: var(--spacing-small);
+        height: var(--infobar-height);
+        color: white;
+        display: flex;
+        align-items: center;
+
+        & .mediaLeft {
+
+        }
+
+        & .mediaRight {
+
+        }
+
+        & .infoContent {
+            text-align: center;
+            flex-grow: 2;
+
+            & .infoItem {
+                margin-left: var(--spacing);
+                margin-right: var(--spacing);
+            }
+
+            & .slideshowButton {
+                margin-left: var(--spacing-small) !important;
+                font-size: .9em;
+            }
+        }
+    }
+
+    & .mediaContainer {
+        position: absolute;
+        bottom: var(--infobar-height);
+        left: 0;
+        right: 0;
+        top: 0;
+        display: flex;
+        align-items: center;
+
+        & .mediaWrapper {
+            position: relative;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0;
+
+            & .media {
+                max-height: calc(100vh - var(--infobar-height));
+            }
+
+            & .tagFrame {
+                position: absolute;
+                z-index: 10;
+                cursor: crosshair;
+            }
+
+            & .tagFrame:hover {
+                /* box-shadow: 0 1px 6px rgba(0,0,0,.8); */
+                /* border: 1px solid #eee; */
+                z-index: 12;
+            }
+
+            & .tagLabel {
+                white-space: nowrap;
+                float: left;
+                left: 50%;
+                bottom: -20px;
+                position: absolute;
+                opacity: 0.0;
+                transition: opacity .2s ease-in-out;
+                cursor: auto;
+            }
+
+            & .tagLabel:before {
+                content: ' ';
+                position: absolute;
+                margin-left: -5px;
+                top: -4px;
+                width: 0;
+                height: 0;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-bottom: 5px solid white;
+                z-index: 11;
+            }
+
+            & .tagFrame:hover .tagLabel {
+                opacity: 1.0;
+                transition: opacity .1s ease-in-out;
+            }
+
+            & .tagLabelText {
+                background-color: white;
+                color: black;
+                box-shadow: 0 1px 6px rgba(0,0,0,.9);
+                font-size: 12px;
+                border-radius: 2px;
+                padding: 3px 10px 3px 10px;
+                left: -50%;
+                position: relative;
+                z-index: 10;
+            }
+        }
+    }
+}
+
+.contentContainerLarge {
+    right: 0;
+}
+
+.sidebarContainer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: var(--sidebar-width);
+    background-color: white;
+    padding: calc(2 * var(--spacing));
+    padding-top: var(--spacing-small);
+    overflow: auto;
+
+    & .sidebarCloseIcon {
+        position: absolute;
+        top: var(--spacing);
+        right: var(--spacing);
+        color: black;
+    }
+
+    & .sidebarEditIcon {
+        position: absolute !important;
+        top: var(--spacing);
+        right: calc(var(--spacing) + 16px + var(--spacing)) ;
+        color: black;
+    }
+
+    & .sidebarList {
+        color: var(--secondary-color);
+
+        & .sidebarListSecondary {
+            font-size: 80%;
+        }
+
+        & .sidebarListNested {
+            padding: 0 !important;
+        }
+
+        & .sidebarText {
+            white-space: pre-line;
+        }
+    }
+}

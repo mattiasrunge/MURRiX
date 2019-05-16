@@ -1,0 +1,60 @@
+{
+  "name": "@murrix/core",
+  "version": "4.0.0",
+  "private": true,
+  "description": "MURRiX is a specialized Content Management System",
+  "main": "index.js",
+  "author": "Mattias Runge-Broberg <mattias@runge.se>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mattiasrunge/MURRiX.git"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint .",
+    "start": "node index.js",
+    "release": "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push --tags"
+  },
+  "dependencies": {
+    "api.io": "^1.0.3",
+    "async-busboy": "^0.7.0",
+    "bcryptjs": "^2.4.3",
+    "chron-time": "^0.0.4",
+    "cookie": "^0.3.1",
+    "deepmerge": "^3.2.0",
+    "emailjs": "^2.1.0",
+    "fs-extra": "^7.0.0",
+    "glob-promise": "^3.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.1.0",
+    "koa-compress": "^3.0.0",
+    "koa-conditional-get": "^2.0.0",
+    "koa-etag": "^3.0.0",
+    "koa-range": "^0.3.0",
+    "koa-route": "^3.2.0",
+    "koa-stream": "^0.2.0",
+    "moment": "^2.24.0",
+    "mongodb": "^3.2.3",
+    "nodinatim": "^2.1.0",
+    "request": "^2.85.0",
+    "request-promise-native": "^1.0.7",
+    "server-destroy": "^1.0.1",
+    "sftp-fs": "^0.0.6",
+    "sha1": "^1.1.1",
+    "shuffle-array": "^1.0.1",
+    "typeson": "^5.12.0",
+    "typeson-registry": "^1.0.0-alpha.27",
+    "uuid": "^3.2.1",
+    "walk-promise": "^0.2.0",
+    "ws": "^7.0.0",
+    "yargs": "^13.2.2"
+  },
+  "devDependencies": {
+    "jest": "24.7.1"
+  },
+  "engines": {
+    "node": ">= 11"
+  }
+}
