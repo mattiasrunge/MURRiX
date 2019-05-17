@@ -13,7 +13,8 @@
     "install_webpack": "node scripts/webpack.js",
     "start": "yarn install_webpack && BROWSER=none react-scripts start",
     "build": "yarn install_webpack && react-scripts build",
-    "test": "yarn install_webpack && react-scripts test"
+    "test": "yarn install_webpack && react-scripts test",
+    "serve": "serve -s build"
   },
   "dependencies": {
     "animate.css": "^3.7.0",
@@ -35,11 +36,12 @@
     "react-notification": "^6.8.4",
     "react-region-select": "^2.3.0",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "3.0.0",
+    "react-scripts": "3.0.1",
     "react-semantic-ui-range": "^0.6.2",
     "reconnecting-websocket": "^4.1.10",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.87.1",
+    "serve": "^11.0.0",
     "store": "^2.0.12",
     "superagent": "^5.0.5",
     "typeson": "^5.12.0",
@@ -49,7 +51,6 @@
   "browserslist": {
     "production": [
       ">0.2%",
-      "not dead",
       "not op_mini all"
     ],
     "development": [

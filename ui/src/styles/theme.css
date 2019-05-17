@@ -1,13 +1,6 @@
 
 @import "./fonts.css";
 
-:root {
-    --navbar-height: 54px;
-    --spacing: 20px;
-    --spacing-small: 10px;
-    --secondary-color: #636c72;
-}
-
 body {
     overflow-y: scroll;
 }
