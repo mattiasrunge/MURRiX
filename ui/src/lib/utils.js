@@ -22,7 +22,7 @@ const MASKS = {
     }
 };
 
-module.exports = {
+const utils = {
     MASKS,
     sortNodeList: (list) => {
         list.sort((a, b) => {
@@ -84,9 +84,11 @@ module.exports = {
         if (key.includes(".")) {
             const [ , key1, rest ] = key.split(/(.*?)\.(.*)/);
 
-            return module.exports.getValue(obj[key1], rest);
+            return utils.getValue(obj[key1], rest);
         }
 
         return obj[key];
     }
 };
+
+export default utils;
