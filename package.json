@@ -1,5 +1,5 @@
 {
-  "name": "@murrix/ui",
+  "name": "murrix",
   "version": "4.0.0",
   "private": true,
   "description": "MURRiX is a specialized Content Management System",
@@ -19,7 +19,11 @@
     ]
   },
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "core": "cd core && yarn start",
+    "build": "cd ui && yarn build",
+    "ui": "cd ui && yarn start",
+    "servce": "cd ui && yarn serve"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

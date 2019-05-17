@@ -26,13 +26,14 @@
         "es6": true
     },
     "rules": {
-        "no-undef": 0,
         "unicorn/filename-case": 0,
-        "promise/always-return": 0,
+        "unicorn/prevent-abbreviations": 0,
         "unicorn/no-abusive-eslint-disable": 0,
         "unicorn/prefer-node-append": 0,
+        "promise/always-return": 0,
         "sonarjs/cognitive-complexity": 0,
         "node/no-unsupported-features/es-syntax": 0,
+        "no-undef": "error",
         "space-before-function-paren": [ "error", { "anonymous": "ignore", "named": "never" } ],
         "no-empty": [ "error", { "allowEmptyCatch": true } ],
         "space-in-parens": "error",
