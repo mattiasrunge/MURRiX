@@ -12,23 +12,23 @@ class Server extends Emitter {
     constructor() {
         super();
 
-        this.args = {};
+        this.url = null;
         this.address = null;
         this.ws = null;
         this.ready = new Deferred();
     }
 
     _log(...args) {
-        console.log(`${new Date().toISOString()} - API[${this.address}]:`, ...args);
+        console.log(`${new Date().toISOString()} - API[${this.url}]:`, ...args);
     }
 
     getAddress() {
-        return `${this.args.secure ? "https" : "http"}://${this.args.hostname}:${this.args.port}`;
+        return this.url;
     }
 
-    async connect(args) {
-        this.args = args;
-        this.address = `${args.secure ? "wss" : "ws"}://${args.hostname}:${args.port}`;
+    async connect(url) {
+        this.url = url;
+        this.address = url.replace(/^http/, "ws");
         this._log(`Connecting to ${this.address}`);
 
         this.ws = new ReconnectingWebSocket(this.address);

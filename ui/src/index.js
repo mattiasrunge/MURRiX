@@ -13,8 +13,8 @@ import "animate.css/animate.css";
 import "leaflet/dist/leaflet.css";
 import "styles/theme.css";
 
-const start = async (args) => {
-    await backend.connect(args);
+const start = async () => {
+    await backend.connect(process.env.REACT_APP_BACKEND_URL);
     await session.init();
 
     ReactDOM.render((
@@ -24,16 +24,16 @@ const start = async (args) => {
     serviceWorker.register();
 };
 
-window.addEventListener("load", () => {
-    const args = {
-        hostname: document.location.hostname,
-        port: 8080,
-        secure: document.location.protocol.includes("https")
-    };
+window.addEventListener("load", async () => {
+    try {
+        if (!process.env.REACT_APP_BACKEND_URL) {
+            throw new Error("REACT_APP_BACKEND_ÙRL must be set");
+        }
 
-    start(args).catch((error) => {
+        await start();
+    } catch (error) {
         console.error("FATAL ERROR");
         console.error(error);
         console.error(error.stack);
-    });
+    }
 });

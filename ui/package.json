@@ -11,7 +11,7 @@
   },
   "scripts": {
     "install_webpack": "node scripts/webpack.js",
-    "start": "yarn install_webpack && BROWSER=none react-scripts start",
+    "start": "yarn install_webpack && REACT_APP_BACKEND_URL=http://localhost:8080 BROWSER=none react-scripts start",
     "build": "yarn install_webpack && react-scripts build",
     "test": "yarn install_webpack && react-scripts test",
     "serve": "serve -s build"
