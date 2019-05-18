@@ -1,5 +1,5 @@
 
-/* global window document */
+/* global window document fetch */
 
 import React from "react";
 import ReactDOM from "react-dom";
@@ -14,7 +14,10 @@ import "leaflet/dist/leaflet.css";
 import "styles/theme.css";
 
 const start = async () => {
-    await backend.connect(process.env.REACT_APP_BACKEND_URL);
+    const response = await fetch("/backend.txt");
+    const url = await response.text();
+
+    await backend.connect(url.replace(/\n/g, ""));
     await session.init();
 
     ReactDOM.render((
@@ -26,10 +29,6 @@ const start = async () => {
 
 window.addEventListener("load", async () => {
     try {
-        if (!process.env.REACT_APP_BACKEND_URL) {
-            throw new Error("REACT_APP_BACKEND_ÙRL must be set");
-        }
-
         await start();
     } catch (error) {
         console.error("FATAL ERROR");

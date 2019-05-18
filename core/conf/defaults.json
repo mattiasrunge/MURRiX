@@ -1,6 +1,10 @@
 {
-    "uploadDirectory": "/tmp",
-    "cacheDirectory": "/tmp/murrix_cache",
-    "port": 8080,
-    "pages": {}
+    "mongoUrl": "mongodb://localhost:27017/murrix_v4",
+    "fileDirectory": "/murrix_files",
+    "mcsDirectory": "/murrix_cache",
+    "sftp": {
+        "port": 8282,
+        "keyFile": "/murrix_keys/id_rsa"
+    },
+    "port": 8080
 }

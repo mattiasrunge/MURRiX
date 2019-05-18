@@ -22,5 +22,6 @@ yarn-debug.log*
 yarn-error.log*
 
 babel_cache
-conf/config.json
+core/conf/config*.json
+public/backend.txt
 *~
