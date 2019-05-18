@@ -1,0 +1,4 @@
+node_modules
+babel_cache
+npm-debug.log
+conf/config*.json
