@@ -1,7 +1,8 @@
 "use strict";
 
 import request from "superagent";
-import { cmd } from "lib/backend";
+import cookies from "browser-cookies";
+import { backend, cmd } from "lib/backend";
 import notification from "lib/notification";
 import Emitter from "./emitter";
 
@@ -60,6 +61,8 @@ class Uploader extends Emitter {
 
     async _uploadFile(file) {
         try {
+            const session = cookies.get("session"); // TODO: Wrap in backend function
+
             file.status = "uploading";
             this.setState({
                 files: this.state.files.slice(0),
@@ -67,7 +70,8 @@ class Uploader extends Emitter {
             });
 
             const req = await request
-            .post(`/media/upload/${file.id}`)
+            .post(`${backend.getAddress()}/media/upload/${file.id}`)
+            .set("session", session)
             .attach("file", file.file)
             .on("progress", (event) => {
                 if (event.direction === "upload") {

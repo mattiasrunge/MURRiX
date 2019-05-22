@@ -2,6 +2,7 @@
 
 const util = require("util");
 const Koa = require("koa");
+const cors = require("@koa/cors");
 const bodyParser = require("koa-bodyparser");
 const route = require("koa-route");
 const compress = require("koa-compress");
@@ -25,6 +26,7 @@ module.exports = {
 
         // Setup application
         app.use(compress());
+        app.use(cors());
         app.use(bodyParser({ enableTypes: [ "json", "form", "text" ] }));
         app.use(conditional());
         app.use(etag());
@@ -48,7 +50,7 @@ module.exports = {
 
         // Configure sessions
         app.use(async (ctx, next) => {
-            const sessionCookie = ctx.cookies.get(COOKIE_NAME);
+            const sessionCookie = ctx.cookies.get(COOKIE_NAME) || ctx.request.header[COOKIE_NAME];
 
             ctx.client = await api.getClientByCookie(sessionCookie);
 

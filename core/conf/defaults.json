@@ -2,6 +2,7 @@
     "mongoUrl": "mongodb://localhost:27017/murrix_v4",
     "fileDirectory": "/murrix_files",
     "mcsDirectory": "/murrix_cache",
+    "uploadDirectory": "/tmp",
     "sftp": {
         "port": 8282,
         "keyFile": "/murrix_keys/id_rsa"

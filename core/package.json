@@ -17,6 +17,7 @@
     "release": "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push --tags"
   },
   "dependencies": {
+    "@koa/cors": "2",
     "api.io": "^1.0.3",
     "async-busboy": "^0.7.0",
     "bcryptjs": "^2.4.3",

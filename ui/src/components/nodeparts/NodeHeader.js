@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Menu } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd, event } from "lib/backend";
+import { backend, cmd, event } from "lib/backend";
 import NodeImage from "./NodeImage";
 import NodeLabels from "./NodeLabels";
 import NodeAge from "./NodeAge";
@@ -58,12 +58,14 @@ class NodeHeader extends Component {
     }
 
     render() {
+        const url = this.state.url ? `${backend.getAddress()}${this.state.url}` : "/pixel.jpg";
+
         return (
             <div className={theme.nodeHeader}>
                 <div
                     className={theme.nodeHeaderBackground}
                     style={{
-                        backgroundImage: `url('${this.state.url}')`
+                        backgroundImage: `url('${url}')`
                     }}
                 />
                 <div className={theme.nodeHeaderBackgroundGradient} />
