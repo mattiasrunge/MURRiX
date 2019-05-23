@@ -25,7 +25,6 @@ class ListAction extends Component {
 
     async execute(command, env) {
         const [ name, ...params ] = command.split(" ");
-        const [ , func ] = name.split(".");
         const args = params
         .map((param) => {
             if (param[0] === "$") {
@@ -35,7 +34,7 @@ class ListAction extends Component {
             return param;
         });
 
-        return cmd[func](...args);
+        return cmd[name](...args);
     }
 
     async load() {

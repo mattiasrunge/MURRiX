@@ -43,9 +43,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "murrix.getparent $this.path f",
-                add: "murrix.setparent $this.path f $parent.path",
-                remove: "murrix.setparent $this.path f"
+                get: "getparent $this.path f",
+                add: "setparent $this.path f $parent.path",
+                remove: "setparent $this.path f"
             },
             {
                 name: "father",
@@ -58,9 +58,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "murrix.getparent $this.path m",
-                add: "murrix.setparent $this.path m $parent.path",
-                remove: "murrix.setparent $this.path m"
+                get: "getparent $this.path m",
+                add: "setparent $this.path m $parent.path",
+                remove: "setparent $this.path m"
             },
             {
                 name: "children",
@@ -73,9 +73,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "murrix.getchildren $this.path",
-                add: "murrix.setparent $child.path $this.attributes.gender $this.path",
-                remove: "murrix.setparent $remove.path $this.attributes.gender"
+                get: "getchildren $this.path",
+                add: "setparent $child.path $this.attributes.gender $this.path",
+                remove: "setparent $remove.path $this.attributes.gender"
             },
             {
                 name: "partner",
@@ -88,9 +88,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "murrix.getpartner $this.path",
-                add: "murrix.setpartner $this.path $partner.path",
-                remove: "murrix.setpartner $this.path"
+                get: "getpartner $this.path",
+                add: "setpartner $this.path $partner.path",
+                remove: "setpartner $this.path"
             }
         ]);
     }

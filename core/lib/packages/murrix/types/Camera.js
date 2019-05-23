@@ -39,9 +39,9 @@ class Camera extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "murrix.getowners $this.path",
-                add: "murrix.addowner $this.path $owner.path",
-                remove: "murrix.removeowner $this.path $remove.path"
+                get: "getowners $this.path",
+                add: "addowner $this.path $owner.path",
+                remove: "removeowner $this.path $remove.path"
             }
         ]);
     }

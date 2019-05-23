@@ -40,9 +40,9 @@ class Location extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "murrix.getresidents $this.path",
-                add: "murrix.addresident $this.path $resident.path",
-                remove: "murrix.removeresident $this.path $remove.path"
+                get: "getresidents $this.path",
+                add: "addresident $this.path $resident.path",
+                remove: "removeresident $this.path $remove.path"
             }
         ]);
     }
