@@ -12,7 +12,7 @@ export default {
         1: "Show as list"
     },
     exec: async (term, streams, command, opts, args) => {
-        const separator = !streams.stdout.isPipe() && !opts[1] ? " " : "\n";
+        const separator = !streams.stdout.isPipe() && !opts[1] ? "  " : "\n";
         const abspath = await term.getAbspath(args.path, true);
         const list = await cmd.list(abspath, { noerror: true, nofollow: true });
 

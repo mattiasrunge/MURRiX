@@ -12,7 +12,7 @@ module.exports = async (client, password) => {
 
         assert(await user.matchPassword(password), "Authentication failed");
 
-        client.makeAdmin();
+        client.giveAdmin();
     }
 
     return client.isAdmin();
