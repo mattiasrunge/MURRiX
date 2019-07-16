@@ -5,7 +5,7 @@ const request = require("request-promise-native");
 const config = require("../../../configuration");
 
 module.exports = async (client, longitude, latitude) => {
-    assert(!client.isGuest, "Permission denied");
+    assert(!client.isGuest(), "Permission denied");
 
     const options = {
         uri: "https://maps.googleapis.com/maps/api/geocode/json",

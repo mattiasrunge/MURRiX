@@ -206,6 +206,8 @@ export default {
             dateItem = moment.unix(value);
         } else if (typeof value === "string") {
             dateItem = moment(`${value}+0000`, "YYYY-MM-DD HH:mm:ss Z");
+        } else if (typeof value === "object" && value instanceof Date) {
+            dateItem = moment(value);
         } else {
             return "never";
         }

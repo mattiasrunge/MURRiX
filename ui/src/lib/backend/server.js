@@ -62,7 +62,7 @@ class Server extends Emitter {
         try {
             const message = TSON.parse(data.data);
 
-            this._log("Message received", message);
+            // this._log("Message received", message);
             await this.emit("message", message);
         } catch (error) {
             this._log("Failed to parse message", data, error);

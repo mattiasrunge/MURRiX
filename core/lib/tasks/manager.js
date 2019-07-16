@@ -9,15 +9,13 @@ class TaskManager {
     }
 
     async init() {
-        for (const [ , ns ] of Object.entries(core.namespaces)) {
-            for (const [ name, command ] of Object.entries(ns)) {
-                if (name.startsWith("task_")) {
-                    const task = new Task(command);
+        for (const [ name, command ] of Object.entries(core.commands)) {
+            if (name.startsWith("task_")) {
+                const task = new Task(command);
 
-                    this.tasks.push(task);
+                this.tasks.push(task);
 
-                    await task.init();
-                }
+                await task.init();
             }
         }
     }

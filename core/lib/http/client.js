@@ -110,7 +110,7 @@ class Client extends BaseClient {
         try {
             const message = TSON.parse(data);
 
-            log.debug("Message received", message);
+            // log.debug("Message received", message);
 
             this._handleMessage(message);
         } catch (error) {
