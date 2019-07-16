@@ -10,7 +10,7 @@ class Emitter {
 
     on(event, fn, options = {}) {
         const subscription = {
-            id: options.id || `${Date.now()}_${counter++}`,
+            id: options.id ? `${options.id}_${event}` : `${Date.now()}_${counter++}`,
             event,
             fn,
             dispose: () => {
@@ -20,7 +20,8 @@ class Emitter {
             }
         };
 
-        this.subscriptions = this.subscriptions.filter((s) => s.id !== subscription.id);
+        const current = this.subscriptions.find((s) => s.id === subscription.id);
+        current && current.dispose();
 
         this.subscriptions.push(subscription);
 

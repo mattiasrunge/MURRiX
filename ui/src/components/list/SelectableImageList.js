@@ -21,7 +21,7 @@ class SelectableImageList extends Component {
 
     async load() {
         this.addDisposables([
-            event.on("node.update", (path) => {
+            event.on("node.update", (event, path) => {
                 if (path.startsWith(this.props.path)) {
                     this.update(this.props);
                 }
@@ -33,7 +33,7 @@ class SelectableImageList extends Component {
         await this.update(this.props);
     }
 
-    onNodeUpdated = (path) => {
+    onNodeUpdated = (event, path) => {
         if (path === this.props.path) {
             this.update(this.props);
         }
