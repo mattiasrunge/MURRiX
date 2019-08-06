@@ -25,7 +25,7 @@ module.exports = {
         await db.init(configuration);
         await media.init(configuration);
         await core.init();
-        await taskManager.init();
+        // await taskManager.init();
         await httpServer.init(configuration);
         await sftpServer.init(configuration);
 
@@ -34,7 +34,7 @@ module.exports = {
     },
     stop: async () => {
         log.info("Received shutdown signal, stopping...");
-        await taskManager.stop();
+        // await taskManager.stop();
         await sftpServer.stop();
         await httpServer.stop();
         await media.stop();

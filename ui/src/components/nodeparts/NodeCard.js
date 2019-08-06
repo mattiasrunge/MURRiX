@@ -16,16 +16,17 @@ class NodeCard extends Component {
     render() {
         return (
             <Card onClick={this.onClick}>
-                <NodeImage
-                    theme={theme}
-                    path={`${this.props.node.path}/profilePicture`}
-                    fluid
-                    format={{
-                        width: 216,
-                        height: 216,
-                        type: "image"
-                    }}
-                />
+                <div className={theme.nodeCardImageContainer}>
+                    <NodeImage
+                        path={`${this.props.node.path}/profilePicture`}
+                        fluid
+                        format={{
+                            width: 216,
+                            height: 216,
+                            type: "image"
+                        }}
+                    />
+                </div>
                 <Card.Content>
                     <Card.Header>
                         <NodeIcon

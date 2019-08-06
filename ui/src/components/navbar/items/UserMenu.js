@@ -62,19 +62,19 @@ class UserMenu extends Component {
                 )}
             >
                 <Dropdown.Menu>
-                    <Dropdown.Item
+                    {/* <Dropdown.Item
                         icon="user circle"
                         text="Profile"
                         onClick={() => this.onProfile()}
-                    />
+                    /> */}
                     <If condition={session.personPath()}>
                         <Dropdown.Item
                             icon="user"
                             text="Me"
                             onClick={() => this.onMe()}
                         />
+                        <Dropdown.Divider />
                     </If>
-                    <Dropdown.Divider />
                     <Dropdown.Item
                         icon="sign out"
                         text="Sign out"

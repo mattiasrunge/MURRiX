@@ -2,12 +2,11 @@
 @import "~styles/theme.css";
 
 .homeContainer {
-    margin-top: var(--navbar-height);
     padding-top: 2em;
 }
 
 .homeSidebar {
-    padding-top: calc(var(--navbar-height) + 2em);
+    padding-top: 2em;
     border-right: 0.5px solid rgba(34, 36 ,38, .15);
 
     & .menu {

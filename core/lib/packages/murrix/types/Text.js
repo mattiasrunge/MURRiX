@@ -36,8 +36,7 @@ class Text extends Node {
             {
                 name: "text",
                 label: "Text",
-                type: "text",
-                required: true
+                type: "text"
             }
         ];
     }

@@ -2,7 +2,7 @@
 @import "~styles/theme.css";
 
 .nodeContainer {
-    margin-top: var(--navbar-height);
+
 }
 
 .mediaLoader {
@@ -300,4 +300,31 @@
 .organizeRemoteListItemClose {
     float: right;
     font-size: 0.8em !important;
+}
+
+.familyContainer {
+    background-color: #d4d4d5;
+    /* position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20000; */
+    height: 600px;
+    overflow: hidden;
+    border-left: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
+    border-bottom: 1px solid #d4d4d5;
+    position: relative;
+
+    & .familyDragable {
+        height: 100%;
+    }
+
+    & .familyPersonName {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 200px;
+    }
 }

@@ -2,6 +2,8 @@
 @import "~styles/theme.css";
 
 .inputWhereFrameMap {
+    position: relative;
+    z-index: 1;
     border: 1px solid rgba(34,36,38,.15);
     border-radius: .28571429rem;
     margin-right: -1em;

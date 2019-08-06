@@ -30,10 +30,14 @@ class Home extends Component {
                 <Container>
                     <Grid columns={2}>
                         <Grid.Column width={3}>
-                            <Sticky context={this.state.ref} style={{
-                                position: "relative",
-                                zIndex: 1
-                            }}>
+                            <Sticky
+                                context={this.state.ref}
+                                style={{
+                                    position: "relative",
+                                    zIndex: 1
+                                }}
+                                offset={54}
+                            >
                                 <Sidebar {...this.props} />
                             </Sticky>
                         </Grid.Column>

@@ -45,8 +45,10 @@ class Tags extends Component {
         try {
             const nodes = await cmd.list(`${props.node.path}/tags`, { noerror: true });
 
-            for (const node of nodes) {
-                node.age = await cmd.age(node.path, props.node.attributes.time);
+            if (props.node.attributes.time) {
+                for (const node of nodes) {
+                    node.age = await cmd.age(node.path, props.node.attributes.time);
+                }
             }
 
             !this.disposed && this.setState({
@@ -72,8 +74,10 @@ class Tags extends Component {
                             <For each="node" of={this.state.nodes}>
                                 <List.Item key={node.path}>
                                     <NodeLink node={node} />
-                                    {" "}
-                                    <small>{format.age(node.age)}</small>
+                                    <If condition={node.age}>
+                                        {" "}
+                                        <small>{format.age(node.age)}</small>
+                                    </If>
                                 </List.Item>
                             </For>
                         </List>

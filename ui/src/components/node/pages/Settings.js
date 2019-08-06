@@ -48,7 +48,7 @@ class Settings extends Component {
     }
 
     getSection() {
-        const [ , pagePart ] = this.props.match.url.split("/_/");
+        const [ , pagePart ] = this.props.location.pathname.split("/_/");
         const [ , section ] = pagePart.split("/");
 
         return section;
@@ -170,6 +170,7 @@ class Settings extends Component {
 Settings.propTypes = {
     node: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
 };
 

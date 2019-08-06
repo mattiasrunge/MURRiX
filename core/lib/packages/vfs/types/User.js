@@ -25,10 +25,8 @@ class User extends Node {
     }
 
     async _migrateDb(client) {
-        if (!this.properties.version) {
-            if (this.attributes.password) {
-                this.attributes.password = await bcrypt.hash(this.attributes.password, 13);
-            }
+        if (!this.properties.version && this.attributes.password) {
+            this.attributes.password = await bcrypt.hash(this.attributes.password, 13);
         }
 
         return super._migrateDb(client);

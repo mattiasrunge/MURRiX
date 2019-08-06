@@ -2,11 +2,11 @@
 @import "./fonts.css";
 
 body {
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 body.fullscreen {
-    overflow: hidden !important;
+    /* overflow: hidden !important; */
 }
 
 small {

@@ -11,6 +11,7 @@ import { Node } from "components/node";
 import { SignIn, Reset } from "components/authentication";
 import { Profile } from "components/user";
 import { UploadProgress } from "components/upload";
+import theme from "./theme.module.css";
 
 class Content extends Component {
     constructor(props) {
@@ -33,138 +34,56 @@ class Content extends Component {
                 <Navbar />
                 <UploadProgress />
 
-                <Switch>
-                    <Route
-                        path="/reset"
-                        render={(props) => (
-                            <Reset {...props} />
-                        )}
-                    />
-                    <Choose>
-                        <When condition={!this.state.user || this.state.user.name === "guest"}>
-                            <Route
-                                path="*"
-                                render={(props) => (
-                                    <SignIn {...props} />
-                                )}
-                            />
-                        </When>
-                        <Otherwise>
-                            <Route
-                                path="/profile"
-                                render={(props) => (
-                                    <Profile {...props} />
-                                )}
-                            />
-                            <Route
-                                path="/node/*"
-                                render={(props) => (
-                                    <Node {...props} />
-                                )}
-                            />
-                            <Route
-                                path="/home"
-                                render={(props) => (
-                                    <Home {...props} />
-                                )}
-                            />
-                            <Route
-                                path="*"
-                                render={() => (
-                                    <Redirect
-                                        to={{ pathname: "/home" }}
-                                    />
-                                )}
-                            />
-                        </Otherwise>
-                    </Choose>
-                </Switch>
+                <div className={theme.rootContainer}>
+                    <Switch>
+                        <Route
+                            path="/reset"
+                            render={(props) => (
+                                <Reset {...props} />
+                            )}
+                        />
+                        <Choose>
+                            <When condition={!this.state.user || this.state.user.name === "guest"}>
+                                <Route
+                                    path="*"
+                                    render={(props) => (
+                                        <SignIn {...props} />
+                                    )}
+                                />
+                            </When>
+                            <Otherwise>
+                                <Route
+                                    path="/profile"
+                                    render={(props) => (
+                                        <Profile {...props} />
+                                    )}
+                                />
+                                <Route
+                                    path="/node/*"
+                                    render={(props) => (
+                                        <Node {...props} />
+                                    )}
+                                />
+                                <Route
+                                    path="/home"
+                                    render={(props) => (
+                                        <Home {...props} />
+                                    )}
+                                />
+                                <Route
+                                    path="*"
+                                    render={() => (
+                                        <Redirect
+                                            to={{ pathname: "/home" }}
+                                        />
+                                    )}
+                                />
+                            </Otherwise>
+                        </Choose>
+                    </Switch>
+                </div>
             </Fragment>
         );
-
-        // return (
-        //     <div>
-        //         <If condition={this.state.loading}>
-        //             <div className="loader"></div>
-        //         </If>
-        //
-        //
-        //
-        //         <If condition={this.state.showPath}>
-        //             <Fullscreen
-        //                 list={session.list}
-        //             />
-        //         </If>
-        //
-        //         <Terminal />
-        //
-        //         <Notification />
-        //
-        //         <div className="page-container">
-        //             <div className="container">
-        //                 <div className="row">
-        //                     <If condition={this.state.page !== "node"}>
-        //                         <Choose>
-        //                             <When condition={this.state.loggedIn}>
-        //                                 <div className="col-md-2 sidebar">
-        //                                     <Sidebar />
-        //                                 </div>
-        //                                 <div className="col-md-10 main">
-        //                                     <Choose>
-        //                                         <When condition={this.state.page === "news" || this.state.page === "default"}>
-        //                                             <PageFeed />
-        //                                         </When>
-        //                                         <When condition={this.state.page === "search"}>
-        //                                             <PageSearch />
-        //                                         </When>
-        //                                         <When condition={this.state.page === "name"}>
-        //                                             <PageName />
-        //                                         </When>
-        //                                         <When condition={this.state.page === "year"}>
-        //                                             <PageYear />
-        //                                         </When>
-        //                                         <When condition={this.state.page === "labels"}>
-        //                                             <PageLabels />
-        //                                         </When>
-        //                                         <When condition={this.state.page === "charts"}>
-        //                                             <PageCharts />
-        //                                         </When>
-        //                                         <When condition={this.state.page === "login"}>
-        //                                             <PageLogin />
-        //                                         </When>
-        //                                         <When condition={this.state.page === "profile"}>
-        //                                             <PageProfile />
-        //                                         </When>
-        //                                         <When condition={this.state.page === "reset"}>
-        //                                             <PageReset />
-        //                                         </When>
-        //                                     </Choose>
-        //                                 </div>
-        //                             </When>
-        //                             <Otherwise>
-        //                                 <div className="col-md-12">
-        //                                     <Choose>
-        //                                         <When condition={this.state.page === "reset"}>
-        //                                             <PageReset />
-        //                                         </When>
-        //                                         <Otherwise>
-        //                                             <PageLogin />
-        //                                         </Otherwise>
-        //                                     </Choose>
-        //                                 </div>
-        //                             </Otherwise>
-        //                         </Choose>
-        //                     </If>
-        //                     <If condition={this.state.page === "node" && this.state.path}>
-        //                         <div className="col-md-12 page-node">
-        //                             <PageNode path={this.state.path} />
-        //                         </div>
-        //                     </If>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     </div>
-        // );
     }
 }
 
