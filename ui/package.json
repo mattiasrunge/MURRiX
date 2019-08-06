@@ -32,7 +32,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
-    "react-dropzone": "^10.1.5",
+    "react-dropzone": "^10.1.7",
     "react-leaflet": "^2.4.0",
     "react-notification": "^6.8.4",
     "react-region-select": "^2.3.0",
