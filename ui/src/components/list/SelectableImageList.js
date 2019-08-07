@@ -83,10 +83,14 @@ class SelectableImageList extends Component {
 
         let selected = [];
 
-        if (this.props.value.includes(file)) {
-            selected = this.props.value.filter((f) => f !== file);
-        } else if (this.props.single) {
+        if (this.props.single) {
+            if (this.props.value.includes(file)) {
+                return;
+            }
+
             selected = [ file ];
+        } else if (this.props.value.includes(file)) {
+            selected = this.props.value.filter((f) => f !== file);
         } else {
             selected = this.props.value.slice(0).concat(file);
         }

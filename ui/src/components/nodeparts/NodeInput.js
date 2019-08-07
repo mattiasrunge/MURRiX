@@ -13,31 +13,31 @@ class NodeInput extends Component {
     constructor(props) {
         super(props);
 
-        const selected = props.value ? {
-            title: props.value.attributes.name,
-            key: props.value._id,
-            node: props.value
-        } : null;
+        const selected = props.value ? this.toListItem(props.value) : null;
 
         this.state = {
             selected,
-            list: selected ? [ selected ] : [],
+            list: selected ? [ selected ] : props.suggestions.map(this.toListItem),
             searchQuery: selected ? selected.title : "",
             loading: false
         };
     }
 
+    toListItem = (node) => {
+        return {
+            title: node.attributes.name,
+            key: node._id,
+            node
+        }
+    }
+
     componentDidUpdate(prevProps) {
-        if (prevProps.value !== this.props.value) {
-            const selected = this.props.value ? {
-                title: this.props.value.attributes.name,
-                key: this.props.value._id,
-                node: this.props.value
-            } : null;
+        if (prevProps.value !== this.props.value || prevProps.suggestions !== this.props.suggestions) {
+            const selected = this.props.value ? this.toListItem(this.props.value) : null;
 
             this.setState({
                 selected,
-                list: selected ? [ selected ] : [],
+                list: selected ? [ selected ] : this.props.suggestions.map(this.toListItem),
                 searchQuery: selected ? selected.title : ""
             });
         }
@@ -141,6 +141,7 @@ class NodeInput extends Component {
                     onKeyUp={this.onKeyUp}
                     size={this.props.size}
                     placeholder={this.props.placeholder}
+                    minCharacters={0}
                     resultRenderer={(props) => (
                         <div className="content">
                             <NodeImage
@@ -170,7 +171,8 @@ class NodeInput extends Component {
 
 NodeInput.defaultProps = {
     limit: 10,
-    icon: "search"
+    icon: "search",
+    suggestions: []
 };
 
 NodeInput.propTypes = {
@@ -189,7 +191,8 @@ NodeInput.propTypes = {
     loading: PropTypes.bool,
     placeholder: PropTypes.string,
     onFocus: PropTypes.func,
-    onBlur: PropTypes.func
+    onBlur: PropTypes.func,
+    suggestions: PropTypes.array
 };
 
 export default NodeInput;

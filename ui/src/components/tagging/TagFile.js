@@ -49,6 +49,7 @@ class TagFile extends Component {
                         <Connections
                             theme={theme}
                             node={this.props.node}
+                            suggestions={this.props.suggestions}
                             onRemove={this.onRemove}
                         />
                     </Grid.Column>
@@ -59,7 +60,8 @@ class TagFile extends Component {
 }
 
 TagFile.propTypes = {
-    node: PropTypes.object.isRequired
+    node: PropTypes.object.isRequired,
+    suggestions: PropTypes.array
 };
 
 export default TagFile;

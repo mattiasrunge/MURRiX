@@ -3,6 +3,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Header, Button } from "semantic-ui-react";
 import Component from "lib/component";
+import notification from "lib/notification";
+import { cmd, event } from "lib/backend";
 import { SelectableImageList } from "components/list";
 import ui from "lib/ui";
 import CircularList from "lib/circular_list";
@@ -14,6 +16,7 @@ class Tagging extends Component {
         super(props);
 
         this.state = {
+            suggestions: [],
             selected: [],
             files: []
         };
@@ -24,6 +27,45 @@ class Tagging extends Component {
             ui.shortcut("right", this.onNext),
             ui.shortcut("left", this.onPrevious)
         ]);
+
+        this.addDisposables([
+            event.on("node.appendChild", this.onNodeUpdated, { id: "Tagging" }),
+            event.on("node.removeChild", this.onNodeUpdated, { id: "Tagging" })
+        ]);
+
+        await this.update(this.props);
+    }
+
+    onNodeUpdated = (event, path) => {
+        if (path.startsWith(this.props.node.path) && path.endsWith("/tags")) {
+            this.update(this.props);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.node !== this.props.node) {
+            this.update(this.props);
+        }
+    }
+
+    async update(props) {
+        if (props.node.properties.type !== "a") {
+            return;
+        }
+
+        try {
+            const suggestions = await cmd.albumtags(props.node.path);
+
+            this.setState({
+                suggestions
+            });
+        } catch (error) {
+            this.logError("Failed to get tag suggestions", error);
+            notification.add("error", error.message, 10000);
+            this.setState({
+                suggestions: []
+            });
+        }
     }
 
     onFilesChange = (selected, files) => {
@@ -98,6 +140,7 @@ class Tagging extends Component {
                     <TagFile
                         theme={theme}
                         node={this.state.selected[0]}
+                        suggestions={this.state.suggestions}
                     />
                 </If>
             </div>

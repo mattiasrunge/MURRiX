@@ -5,7 +5,7 @@ import { Table, Icon, Header } from "semantic-ui-react";
 import Component from "lib/component";
 import notification from "lib/notification";
 import { cmd, event } from "lib/backend";
-import { basename } from "lib/utils";
+import utils from "lib/utils";
 import { NodeInput } from "components/nodeparts";
 import theme from "../theme.module.css";
 
@@ -15,6 +15,7 @@ class Connections extends Component {
 
         this.state = {
             persons: {},
+            suggestions: [],
             loading: false,
             saving: false
         };
@@ -29,7 +30,7 @@ class Connections extends Component {
         await this.update(this.props);
     }
 
-    onNodeUpdated = (path) => {
+    onNodeUpdated = (event, path) => {
         if (path === `${this.props.node.path}/tags`) {
             this.update(this.props);
         }
@@ -40,14 +41,17 @@ class Connections extends Component {
 
         try {
             const tags = await cmd.list(`${props.node.path}/tags`);
-
             const persons = {};
 
             for (const tag of tags) {
-                persons[basename(tag.extra.linkPath)] = tag;
+                persons[utils.basename(tag.extra.linkPath)] = tag;
             }
 
+            const tagIds = tags.map((tag) => tag._id);
+            const suggestions = this.props.suggestions.filter(({ _id }) => !tagIds.includes(_id));
+
             this.setState({
+                suggestions,
                 persons,
                 loading: false
             });
@@ -55,6 +59,7 @@ class Connections extends Component {
             this.logError("Failed to get tags", error);
             notification.add("error", error.message, 10000);
             this.setState({
+                suggestions: [],
                 persons: {},
                 loading: false
             });
@@ -167,6 +172,7 @@ class Connections extends Component {
                                             size="small"
                                             fluid
                                             transparent
+                                            suggestions={this.state.suggestions}
                                         />
                                     </Table.Cell>
                                     <Table.Cell collapsing>
@@ -202,6 +208,7 @@ class Connections extends Component {
                                     size="small"
                                     fluid
                                     transparent
+                                    suggestions={this.state.suggestions}
                                 />
                             </Table.Cell>
                         </Table.Row>
@@ -242,8 +249,13 @@ class Connections extends Component {
     }
 }
 
+Connections.defaultProps = {
+    suggestions: []
+};
+
 Connections.propTypes = {
     node: PropTypes.object.isRequired,
+    suggestions: PropTypes.array,
     onRemove: PropTypes.func.isRequired
 };
 
