@@ -27,6 +27,8 @@ class Family extends Component {
             position: { x: 0, y: 0 },
             width: 100,
             height: 100,
+            containerWidth: 100,
+            containerHeight: 100,
             dragging: false
         };
     }
@@ -199,20 +201,20 @@ class Family extends Component {
     }
 
     clampPosition(width, height, position) {
-        if (width < 1126) {
+        if (width < this.state.containerWidth) {
             position.x = Math.max(0, position.x);
-            position.x = Math.min(1126 - width, position.x);
+            position.x = Math.min(this.state.containerWidth - width, position.x);
         } else {
             position.x = Math.min(0, position.x);
-            position.x = Math.max(1126 - width, position.x);
+            position.x = Math.max(this.state.containerWidth - width, position.x);
         }
 
-        if (height < 600) {
+        if (height < this.state.containerHeight) {
             position.y = Math.max(0, position.y);
-            position.y = Math.min(600 - height, position.y);
+            position.y = Math.min(this.state.containerHeight - height, position.y);
         } else {
             position.y = Math.min(0, position.y);
-            position.y = Math.max(600 - height, position.y);
+            position.y = Math.max(this.state.containerHeight - height, position.y);
         }
 
         return position;
@@ -232,14 +234,21 @@ class Family extends Component {
             const person = people[people.length - 1];
 
             if (person) {
-                position.x = (-(person.location.x + (person.location.w / 2)) * this.state.scale) + (1126 / 2);
-                position.y = (-(person.location.y + (person.location.h / 2)) * this.state.scale) + (600 / 2);
+                position.x = (-(person.location.x + (person.location.w / 2)) * this.state.scale) + (this.state.containerWidth / 2);
+                position.y = (-(person.location.y + (person.location.h / 2)) * this.state.scale) + (this.state.containerHeight / 2);
             }
 
             const width = Math.max(...people.map((person) => person.location.x + person.location.w)) + BOX_PADDING;
             const height = Math.max(...people.map((person) => person.location.y + person.location.h)) + BOX_PADDING;
 
-            !this.disposed && this.setState({ position, people, links, loading: false, width, height });
+            !this.disposed && this.setState({
+                position: this.clampPosition(width * this.state.scale, height * this.state.scale, position),
+                people,
+                links,
+                loading: false,
+                width,
+                height
+            });
         } catch (error) {
             this.logError("Failed to load family", error);
             notification.add("error", error.message, 10000);
@@ -249,6 +258,13 @@ class Family extends Component {
 
     onContainerRef = (ref) => {
         if (ref) {
+            const rect = ref.getBoundingClientRect();
+
+            this.setState({
+                containerWidth: rect.width,
+                containerHeight: rect.height
+            });
+
             ref.addEventListener("wheel", this.onWheel);
             ref.addEventListener("mousedown", this.onMouseDown);
         }
@@ -338,8 +354,8 @@ class Family extends Component {
 
     render() {
         return (
-            <If condition={this.state.people.length > 0}>
-                <div className={theme.familyContainer} ref={this.onContainerRef}>
+            <div className={theme.familyContainer} ref={this.onContainerRef}>
+                <If condition={this.state.people.length > 0}>
                     <svg
                         ref={this.onSvgRef}
                         width={this.state.width * this.state.scale}
@@ -376,8 +392,8 @@ class Family extends Component {
                             </For>
                         </g>
                     </svg>
-                </div>
-            </If>
+                </If>
+            </div>
         );
     }
 }
