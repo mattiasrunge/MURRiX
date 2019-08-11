@@ -53,10 +53,7 @@ class FamilyPerson extends Component {
                     }}
                 >
                     <NodeImage
-                        className="ui tiny image"
-                        style={{
-                            margin: -10
-                        }}
+                        className={`ui tiny image ${theme.familyPersonImage}`}
                         path={`${this.props.person.node.path}/profilePicture`}
                         format={{
                             width: this.props.person.location.h - 2,

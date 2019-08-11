@@ -1,7 +1,8 @@
 
+/* global document */
+
 import React from "react";
 import PropTypes from "prop-types";
-import Draggable from "react-draggable";
 import { cmd, event } from "lib/backend";
 import Component from "lib/component";
 import notification from "lib/notification";
@@ -22,10 +23,11 @@ class Family extends Component {
             people: [],
             links: [],
             loading: false,
-            scale: 0.5,
+            scale: 1,
             position: { x: 0, y: 0 },
             width: 100,
-            height: 100
+            height: 100,
+            dragging: false
         };
     }
 
@@ -37,7 +39,13 @@ class Family extends Component {
                 }
             }),
             event.on("node.appendChild", this.onNodeUpdated),
-            event.on("node.removeChild", this.onNodeUpdated)
+            event.on("node.removeChild", this.onNodeUpdated),
+            {
+                dispose: () => {
+                    document.body.removeEventListener("mousemove", this.onMouseMove);
+                    document.body.removeEventListener("mouseup", this.onMouseUp);
+                }
+            }
         ]);
 
         await this.update();
@@ -190,6 +198,26 @@ class Family extends Component {
         return links;
     }
 
+    clampPosition(width, height, position) {
+        if (width < 1126) {
+            position.x = Math.max(0, position.x);
+            position.x = Math.min(1126 - width, position.x);
+        } else {
+            position.x = Math.min(0, position.x);
+            position.x = Math.max(1126 - width, position.x);
+        }
+
+        if (height < 600) {
+            position.y = Math.max(0, position.y);
+            position.y = Math.min(600 - height, position.y);
+        } else {
+            position.y = Math.min(0, position.y);
+            position.y = Math.max(600 - height, position.y);
+        }
+
+        return position;
+    }
+
     async update() {
         this.setState({ loading: true });
 
@@ -203,16 +231,13 @@ class Family extends Component {
 
             const person = people[people.length - 1];
 
-            // if (person) {
-            //     position.x = -(person.location.x + (person.location.w / 2)) + (1126 / 2);
-            //     position.y = -(person.location.y + (person.location.h / 2)) + (600 / 2);
-            // }
+            if (person) {
+                position.x = (-(person.location.x + (person.location.w / 2)) * this.state.scale) + (1126 / 2);
+                position.y = (-(person.location.y + (person.location.h / 2)) * this.state.scale) + (600 / 2);
+            }
 
             const width = Math.max(...people.map((person) => person.location.x + person.location.w)) + BOX_PADDING;
             const height = Math.max(...people.map((person) => person.location.y + person.location.h)) + BOX_PADDING;
-
-            // position.x = (width - 1126) / 2;
-            // position.y = (height - 600) / 2;
 
             !this.disposed && this.setState({ position, people, links, loading: false, width, height });
         } catch (error) {
@@ -222,116 +247,135 @@ class Family extends Component {
         }
     }
 
-    onRef = (ref) => {
+    onContainerRef = (ref) => {
         if (ref) {
-            ref.addEventListener("wheel", (event) => {
-                event.stopPropagation();
-                event.preventDefault();
-
-                console.log(event)
-
-                this.setState((state) => {
-                    console.log("state.position", state.position);
-                    const currentScale = Math.round(state.scale * 10);
-                    const currentPosition = {
-                        x: Math.round(state.position.x * 10),
-                        y: Math.round(state.position.y * 10)
-                    };
-
-                    const scale = Math.max(1, currentScale + (event.deltaY < 0 ? 1 : -1));
-                    console.log("scale", currentScale, "=>", scale)
-
-
-
-console.log("layer", event.layerX, event.layerY)
-                    const offsetX = event.layerX - state.position.x;
-                    const offsetY = event.layerY - state.position.y;
-
-                    const moveX = offsetX * (1 - (scale / 10));
-                    const moveY = offsetY * (1 - (scale / 10));
-
-                    // const offsetXScaled = offsetX * scale;
-                    // const offsetYScaled = offsetY * scale;
-
-                    // const diffY = offsetYScaled - offsetY;
-                    // const diffX = offsetXScaled - offsetX;
-
-                    console.log("offset", moveX, moveY)
-                    // console.log("offsetScaled", offsetXScaled, offsetYScaled)
-                    // console.log("diff", diffX, diffY)
-
-                    // const position = {
-                    //     x: currentPosition.x - diffX,
-                    //     y: currentPosition.y - diffY
-                    // };
-
-                    // console.log("position", position);
-
-                    return {
-                        scale: scale / 10,
-                        // position: {
-                        //     x: state.position.x - moveX,
-                        //     y: state.position.y - moveY
-                        // }
-                    };
-                });
-            });
+            ref.addEventListener("wheel", this.onWheel);
+            ref.addEventListener("mousedown", this.onMouseDown);
         }
     }
 
-    onDrag = (e, { x, y }) => {
-        this.setState({
-            position: { x, y }
+    onSvgRef = (ref) => {
+        this.svg = ref;
+    }
+
+    onWheel = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.setState((state) => {
+            const scale = Math.max(1, (state.scale * 10) + (e.deltaY < 0 ? 1 : -1)) / 10;
+            const scaleRatio = scale / state.scale;
+            const rects = this.svg.getBoundingClientRect();
+
+            const offsetX = e.clientX - rects.x;
+            const offsetY = e.clientY - rects.y;
+
+            const newOffsetX = offsetX * scaleRatio;
+            const newOffsetY = offsetY * scaleRatio;
+
+            const diffX = newOffsetX - offsetX;
+            const diffY = newOffsetY - offsetY;
+
+            const position = {
+                x: state.position.x - diffX,
+                y: state.position.y - diffY
+            };
+
+            const width = state.width * scale;
+            const height = state.height * scale;
+
+            return {
+                scale,
+                position: this.clampPosition(width, height, position)
+            };
         });
+    }
+
+    onMouseDown = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.setState((state) => ({ dragging: { x: e.clientX - state.position.x, y: e.clientY - state.position.y } }));
+
+        document.body.removeEventListener("mousemove", this.onMouseMove);
+        document.body.removeEventListener("mouseup", this.onMouseUp);
+        document.body.addEventListener("mousemove", this.onMouseMove);
+        document.body.addEventListener("mouseup", this.onMouseUp);
+    }
+
+    onMouseMove = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (!this.state.dragging) {
+            return;
+        }
+
+        this.setState((state) => {
+            const position = {
+                x: e.clientX - state.dragging.x,
+                y: e.clientY - state.dragging.y
+            };
+
+            const width = state.width * state.scale;
+            const height = state.height * state.scale;
+
+            return {
+                position: this.clampPosition(width, height, position)
+            };
+        });
+    }
+
+    onMouseUp = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.setState(() => ({ dragging: false }));
+
+        document.body.removeEventListener("mousemove", this.onMouseMove);
+        document.body.removeEventListener("mouseup", this.onMouseUp);
     }
 
     render() {
         return (
             <If condition={this.state.people.length > 0}>
-                <div className={theme.familyContainer}>
-                    <Draggable
-                        position={this.state.position}
-                        grid={[ 1, 1 ]}
-                        onDrag={this.onDrag}
+                <div className={theme.familyContainer} ref={this.onContainerRef}>
+                    <svg
+                        ref={this.onSvgRef}
+                        width={this.state.width * this.state.scale}
+                        height={this.state.height * this.state.scale}
+                        style={{
+                            backgroundColor: "white",
+                            transform: `translate(${this.state.position.x}px,${this.state.position.y}px)`
+                        }}
                     >
-                        <svg
-                            width={this.state.width * this.state.scale}
-                            height={this.state.height * this.state.scale}
-                            ref={this.onRef}
+                        <g
                             style={{
-                                backgroundColor: "white"
+                                transform: `scale(${this.state.scale})`
                             }}
                         >
-                            <g
-                                style={{
-                                    transform: `scale(${this.state.scale})`
-                                }}
-                            >
-                                <For each="link" of={this.state.links}>
-                                    <path
-                                        key={link}
-                                        d={link}
-                                        strokeWidth={2}
-                                        stroke="#d4d4d5"
-                                        fill="transparent"
-                                    />
-                                </For>
-                                <For each="person" of={this.state.people}>
-                                    <foreignObject
-                                        key={person.id}
-                                        x={person.location.x}
-                                        y={person.location.y}
-                                        width={person.location.w}
-                                        height={person.location.h}
-                                    >
-                                        <FamilyPerson
-                                            person={person}
-                                        />
-                                    </foreignObject>
-                                </For>
-                            </g>
-                        </svg>
-                    </Draggable>
+                            <For each="link" of={this.state.links}>
+                                <path
+                                    key={link}
+                                    d={link}
+                                    strokeWidth={2}
+                                    stroke="#d4d4d5"
+                                    fill="transparent"
+                                />
+                            </For>
+                            <For each="person" of={this.state.people}>
+                                <foreignObject
+                                    key={person.id}
+                                    x={person.location.x}
+                                    y={person.location.y}
+                                    width={person.location.w}
+                                    height={person.location.h}
+                                >
+                                    <FamilyPerson person={person} />
+                                </foreignObject>
+                            </For>
+                        </g>
+                    </svg>
                 </div>
             </If>
         );
