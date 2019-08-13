@@ -73,6 +73,8 @@ class Family extends Component {
             level,
             parentIds,
             childrenIds,
+            showChildren: false,
+            showParents: false,
             location: {
                 x: (offset * BOX_WIDTH) + ((width * BOX_WIDTH) / 2) - (BOX_WIDTH / 2),
                 y: (level * BOX_HEIGHT) - (BOX_HEIGHT / 2),
@@ -352,6 +354,22 @@ class Family extends Component {
         document.body.removeEventListener("mouseup", this.onMouseUp);
     }
 
+    onParentExpanderClick = (e, node) => {
+        node.showParents = !node.showParents;
+
+        this.setState((state) => ({
+            people: state.people.slice(0)
+        }));
+    }
+
+    onChildExpanderClick = (e, node) => {
+        node.showChildren = !node.showChildren;
+
+        this.setState((state) => ({
+            people: state.people.slice(0)
+        }));
+    }
+
     render() {
         return (
             <div className={theme.familyContainer} ref={this.onContainerRef}>
@@ -380,15 +398,72 @@ class Family extends Component {
                                 />
                             </For>
                             <For each="person" of={this.state.people}>
-                                <foreignObject
-                                    key={person.id}
-                                    x={person.location.x}
-                                    y={person.location.y}
-                                    width={person.location.w}
-                                    height={person.location.h}
-                                >
-                                    <FamilyPerson person={person} />
-                                </foreignObject>
+                                <g key={person.id}>
+                                    <If condition={person.parentIds.length > 0}>
+                                        <circle
+                                            className={theme.familyExpander}
+                                            cx={person.location.x + (person.location.w / 2)}
+                                            cy={person.location.y - 10}
+                                            r={10}
+                                            onClick={(e) => this.onParentExpanderClick(e, person)}
+                                        />
+                                        <rect
+                                            className={theme.familyExpanderSymbol}
+                                            x={person.location.x + (person.location.w / 2) - 5}
+                                            y={person.location.y - 10 - 1}
+                                            width={10}
+                                            height={2}
+                                            rx={1}
+                                        />
+                                        <If condition={!person.showParents}>
+                                            <rect
+                                                className={theme.familyExpanderSymbol}
+                                                x={person.location.x + (person.location.w / 2) - 1}
+                                                y={person.location.y - 10 - 5}
+                                                width={2}
+                                                height={10}
+                                                rx={1}
+                                            />
+                                        </If>
+                                    </If>
+
+                                    <If condition={person.childrenIds.length > 0}>
+                                        <circle
+                                            className={theme.familyExpander}
+                                            cx={person.location.x + (person.location.w / 2)}
+                                            cy={person.location.y + person.location.h + 10}
+                                            r={10}
+                                            onClick={(e) => this.onChildExpanderClick(e, person)}
+                                        />
+                                        <rect
+                                            className={theme.familyExpanderSymbol}
+                                            x={person.location.x + (person.location.w / 2) - 5}
+                                            y={person.location.y + person.location.h + 10 - 1}
+                                            width={10}
+                                            height={2}
+                                            rx={1}
+                                        />
+                                        <If condition={!person.showChildren}>
+                                            <rect
+                                                className={theme.familyExpanderSymbol}
+                                                x={person.location.x + (person.location.w / 2) - 1}
+                                                y={person.location.y + person.location.h + 10 - 5}
+                                                width={2}
+                                                height={10}
+                                                rx={1}
+                                            />
+                                        </If>
+                                    </If>
+
+                                    <foreignObject
+                                        x={person.location.x}
+                                        y={person.location.y}
+                                        width={person.location.w}
+                                        height={person.location.h}
+                                    >
+                                        <FamilyPerson person={person} />
+                                    </foreignObject>
+                                </g>
                             </For>
                         </g>
                     </svg>

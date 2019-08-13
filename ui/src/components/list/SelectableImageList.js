@@ -1,12 +1,15 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Icon, Image } from "semantic-ui-react";
+import moment from "moment";
+import { Image, Header } from "semantic-ui-react";
 import Component from "lib/component";
 import { cmd, event } from "lib/backend";
 import notification from "lib/notification";
-import { NodeImage } from "components/nodeparts";
+import utils from "lib/utils";
+import format from "lib/format";
 import theme from "./theme.module.css";
+import SelectableImage from "./SelectableImage";
 
 class SelectableImageList extends Component {
     constructor(props) {
@@ -14,6 +17,7 @@ class SelectableImageList extends Component {
 
         this.state = {
             files: [],
+            days: [],
             loading: false,
             ref: null
         };
@@ -43,7 +47,11 @@ class SelectableImageList extends Component {
         this.setState({ loading: true });
 
         try {
+            let days = {};
             const files = await cmd.list(props.path, { noerror: true });
+
+            utils.sortNodeList(files);
+
             const selected = this.props.value
             .map((node) => files.find((f) => f._id === node._id))
             .filter((node) => node);
@@ -52,7 +60,27 @@ class SelectableImageList extends Component {
                 selected.push(files[0]);
             }
 
+            for (const file of files) {
+                const day = file.attributes.time ? moment.utc(file.attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
+
+                days[day] = days[day] || { texts: [], files: [], time: file.attributes.time };
+                days[day].files.push(file);
+            }
+
+            days = Object.keys(days).map((key) => days[key]);
+
+            days.sort((a, b) => {
+                if (!a.time) {
+                    return -1;
+                } else if (!b.time) {
+                    return 1;
+                }
+
+                return a.time.timestamp - b.time.timestamp;
+            });
+
             this.setState({
+                days,
                 files,
                 loading: false
             });
@@ -62,6 +90,7 @@ class SelectableImageList extends Component {
             this.logError("Failed to load files", error);
             notification.add("error", error.message, 10000);
             this.setState({
+                days: [],
                 files: [],
                 loading: false
             });
@@ -76,24 +105,46 @@ class SelectableImageList extends Component {
         }
     }
 
-    onClick(file) {
+    onClick = (e, file) => {
         if (this.state.loading) {
             return;
         }
 
         let selected = [];
 
-        if (this.props.single) {
-            if (this.props.value.includes(file)) {
-                return;
+        if (this.props.single || (!e.shiftKey && !e.ctrlKey)) {
+            if (this.props.value.includes(file) && this.props.value.length === 1) {
+                selected = [];
+            } else {
+                selected = [ file ];
             }
+        } else if (e.ctrlKey) {
+            if (this.props.value.includes(file)) {
+                selected = this.props.value.filter((f) => f !== file);
+            } else {
+                selected = this.props.value.slice(0).concat(file);
+            }
+        } else if (e.shiftKey) {
+            if (this.props.value.length === 0) {
+                selected = [ file ];
+            } else if (this.props.value.length === 1 && this.props.value[0] === file) {
+                return;
+            } else {
+                const fileIndex = this.state.files.indexOf(file);
+                const firstIndex = this.state.files.indexOf(this.props.value[0]);
+                const lastIndex = this.state.files.indexOf(this.props.value[this.props.value.length - 1]);
 
-            selected = [ file ];
-        } else if (this.props.value.includes(file)) {
-            selected = this.props.value.filter((f) => f !== file);
-        } else {
-            selected = this.props.value.slice(0).concat(file);
+                if (fileIndex === firstIndex) {
+                    selected = [ file ];
+                } else if (fileIndex < firstIndex) {
+                    selected = this.state.files.slice(fileIndex, lastIndex + 1);
+                } else {
+                    selected = this.state.files.slice(firstIndex, fileIndex + 1);
+                }
+            }
         }
+
+        selected.sort((a, b) => this.state.files.indexOf(a) - this.state.files.indexOf(b));
 
         this.props.onChange(selected, this.state.files);
     }
@@ -140,34 +191,44 @@ class SelectableImageList extends Component {
                         </a>
                     </div>
                 </If>
-                <Image.Group
-                    className={theme.selectableImageListContainer}
-                >
-                    <For each="file" of={this.state.files}>
-                        <span
-                            key={file._id}
-                            className={theme.selectableImageContainer}
-                            onClick={() => this.onClick(file)}
-                        >
-                            <NodeImage
-                                className={theme.selectableImage}
-                                title={file.attributes.name}
-                                path={file.path}
-                                format={{
-                                    width: 50,
-                                    height: 50,
-                                    type: "image"
-                                }}
-                                lazy
-                            />
-                            <If condition={this.props.value.includes(file)}>
-                                <div className={theme.selectedImage}>
-                                    <Icon name="check" />
-                                </div>
-                            </If>
-                        </span>
-                    </For>
-                </Image.Group>
+                <Choose>
+                    <When condition={this.props.single}>
+                        <Image.Group className={theme.selectableImageListContainer}>
+                            <For each="file" of={this.state.files}>
+                                <SelectableImage
+                                    key={file._id}
+                                    file={file}
+                                    selected={this.props.value.includes(file)}
+                                    onClick={this.onClick}
+                                />
+                            </For>
+                        </Image.Group>
+                    </When>
+                    <Otherwise>
+                        <For each="day" of={this.state.days}>
+                            <div
+                                key={day.time ? day.time.timestamp : 0}
+                                className={theme.mediaDay}
+                            >
+                                <If condition={day.time && day.time.timestamp}>
+                                    <Header as="h5">
+                                        {format.displayTimeDay(day.time)}
+                                    </Header>
+                                </If>
+                                <Image.Group className={theme.selectableImageListContainer}>
+                                    <For each="file" of={day.files}>
+                                        <SelectableImage
+                                            key={file._id}
+                                            file={file}
+                                            selected={this.props.value.includes(file)}
+                                            onClick={this.onClick}
+                                        />
+                                    </For>
+                                </Image.Group>
+                            </div>
+                        </For>
+                    </Otherwise>
+                </Choose>
             </div>
         );
     }

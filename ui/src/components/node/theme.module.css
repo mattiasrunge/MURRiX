@@ -317,9 +317,24 @@
     border-bottom: 1px solid #d4d4d5;
     position: relative;
 
-    & .familyDragable {
-        height: 100%;
+    & .familyExpander {
+        fill: white;
+        stroke: #d4d4d5;
+        stroke-width: 2;
+        cursor: pointer;
+
+        &:hover {
+            fill: #d4d4d5;
+        }
     }
+
+    & .familyExpanderSymbol {
+        fill: #4183C4;
+        cursor: pointer;
+        pointer-events: none;
+    }
+
+
 
     & .familyPersonName {
         overflow: hidden;
