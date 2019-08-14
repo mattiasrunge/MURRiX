@@ -44,6 +44,7 @@
     "serve": "^11.1.0",
     "store": "^2.0.12",
     "superagent": "^5.1.0",
+    "template-strings": "^0.0.6",
     "typeson": "^5.13.0",
     "typeson-registry": "^1.0.0-alpha.28",
     "wsh.js": "^0.0.8"

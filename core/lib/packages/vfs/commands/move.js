@@ -3,8 +3,11 @@
 const path = require("path");
 const Node = require("../../../core/Node");
 const { ADMIN_CLIENT } = require("../../../core/auth");
+const chown = require("./chown");
+const chmod = require("./chmod");
+const setfacl = require("./setfacl");
 
-module.exports = async (client, srcpath, dstpath) => {
+module.exports = async (client, srcpath, dstpath, options = {}) => {
     const srcnode = await Node.resolve(client, srcpath);
     const srcparentnode = await Node.resolve(client, path.dirname(srcpath));
 
@@ -35,6 +38,10 @@ module.exports = async (client, srcpath, dstpath) => {
 
     srcnode.name = name;
     await dstparentnode.appendChild(client, srcnode);
+
+    if (options.inherit) {
+        await srcnode.cloneAccess(client, dstparentnode, { recursive: true });
+    }
 
     // Find all symlinks that point to the old path and redirect them
     const links = await Node.query(ADMIN_CLIENT, {

@@ -22,6 +22,7 @@ class User extends Node {
     async _postCreate(client) {
         await this.createChild(client, "d", "groups");
         await this.createChild(client, "d", "stars");
+        await this.createChild(client, "d", "files");
     }
 
     async _migrateDb(client) {
@@ -100,17 +101,31 @@ class User extends Node {
         return Math.max(0, ...uids) + 1;
     }
 
+    static getActionTypes() {
+        return super.getActionTypes().concat([
+            {
+                name: "person",
+                label: "Person",
+                type: "list",
+                inputs: [
+                    {
+                        name: "person",
+                        type: "node",
+                        paths: [ "/people" ]
+                    }
+                ],
+                get: "getuserperson ${this.node.path}",
+                add: "setuserperson ${this.node.path} ${this.person.path}",
+                remove: "removeuserperson ${this.node.path}"
+            }
+        ]);
+    }
+
     static getAttributeTypes() {
         return [
             {
                 name: "name",
                 label: "Name",
-                type: "textline",
-                required: true
-            },
-            {
-                name: "username",
-                label: "E-mail",
                 type: "textline",
                 required: true
             }

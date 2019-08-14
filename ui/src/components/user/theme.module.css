@@ -1,0 +1,41 @@
+
+@import "~styles/theme.css";
+
+.profileContainer {
+    display: flex;
+    /* padding: var(--spacing); */
+    padding-top: var(--spacing);
+    border-top: 1px solid #d4d4d5;
+    clear: both;
+
+    & .profileColumn {
+        padding-bottom: 0 !important;
+    }
+
+    & .profileSidebar {
+        padding: var(--spacing);
+        padding-left: 0;
+        border-right: 1px solid #d4d4d5;
+
+        & .sidebarHeader {
+            color: #2185d0;
+            margin-left: 10px;
+            font-weight: bold;
+            margin-top: calc(var(--spacing) * 2);
+            margin-bottom: 6px;
+            font-size: 18px;
+            border-bottom: 1px solid #d4d4d5;
+            padding-bottom: calc(var(--spacing) / 2);
+        }
+
+        & .sidebarInformationTable {
+            font-size: 0.8em !important;
+        }
+    }
+
+    & .profileMain {
+        padding: var(--spacing);
+        padding-right: 0;
+        flex-grow: 1;
+    }
+}

@@ -2,10 +2,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Icon, Button, List, Card } from "semantic-ui-react";
+import stringTemplate from "template-strings";
 import Component from "lib/component";
 import { cmd } from "lib/backend";
 import notification from "lib/notification";
-import utils from "lib/utils";
 import { NodeImage, NodeInput } from "components/nodeparts";
 import theme from "../theme.module.css";
 
@@ -26,13 +26,7 @@ class ListAction extends Component {
     async execute(command, env) {
         const [ name, ...params ] = command.split(" ");
         const args = params
-        .map((param) => {
-            if (param[0] === "$") {
-                return utils.getValue(env, param.substr(1));
-            }
-
-            return param;
-        });
+        .map((param) => stringTemplate(param, env));
 
         return cmd[name](...args);
     }
@@ -46,7 +40,7 @@ class ListAction extends Component {
 
         try {
             const env = {
-                this: this.props.node,
+                node: this.props.node,
                 ...this.state
             };
 
@@ -73,7 +67,7 @@ class ListAction extends Component {
 
         try {
             const env = {
-                this: this.props.node,
+                node: this.props.node,
                 remove: item,
                 ...this.state
             };
@@ -103,7 +97,7 @@ class ListAction extends Component {
 
         try {
             const env = {
-                this: this.props.node,
+                node: this.props.node,
                 ...this.state
             };
 

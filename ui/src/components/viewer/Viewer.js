@@ -29,7 +29,8 @@ class Viewer extends Component {
     async load() {
         this.addDisposables([
             ui.shortcut("right", this.onNext),
-            ui.shortcut("left", this.onPrevious)
+            ui.shortcut("left", this.onPrevious),
+            ui.shortcut("esc", this.onStopSlideshow)
         ]);
 
         await this.update(this.props);

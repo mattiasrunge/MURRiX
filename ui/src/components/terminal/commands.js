@@ -19,6 +19,7 @@ export default {
     whoami: require("./commands/whoami").default,
     passwd: require("./commands/passwd").default,
     admin: require("./commands/admin").default,
+    fixusers: require("./commands/fixusers").default,
     mkuser: require("./commands/mkuser").default,
     mkgroup: require("./commands/mkgroup").default,
     usermod: require("./commands/usermod").default,

@@ -7,11 +7,15 @@ import { NodeImage } from "components/nodeparts";
 import theme from "./theme.module.css";
 
 class SelectableImage extends Component {
+    onClick = (e) => {
+        this.props.onClick(e, this.props.file);
+    }
+
     render() {
         return (
             <span
                 className={theme.selectableImageContainer}
-                onClick={(e) => this.props.onClick(e, this.props.file)}
+                onClick={this.onClick}
             >
                 <NodeImage
                     className={theme.selectableImage}

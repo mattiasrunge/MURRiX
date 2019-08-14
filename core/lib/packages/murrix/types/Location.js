@@ -40,9 +40,9 @@ class Location extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getresidents $this.path",
-                add: "addresident $this.path $resident.path",
-                remove: "removeresident $this.path $remove.path"
+                get: "getresidents ${this.node.path}",
+                add: "addresident ${this.node.path} ${this.resident.path}",
+                remove: "removeresident ${this.node.path} ${this.remove.path}"
             }
         ]);
     }

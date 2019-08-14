@@ -33,10 +33,19 @@ class Session extends Emitter {
         return this._user;
     }
 
+    _onUserUpdated = (event, path) => {
+        if (path.startsWith(this._user.path)) {
+            this.loadUser()
+        }
+    }
+
     async init() {
         await this.loadUser();
 
         event.on("session.updated", () => this.loadUser());
+        event.on("node.update", this._onUserUpdated);
+        event.on("node.appendChild", this._onUserUpdated);
+        event.on("node.removeChild", this._onUserUpdated);
     }
 }
 

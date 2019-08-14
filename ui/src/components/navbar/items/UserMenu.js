@@ -47,7 +47,7 @@ class UserMenu extends Component {
                 trigger={(
                     <span>
                         <NodeImage
-                            path={`${this.state.user.path}/person/profilePicture`}
+                            path={`${this.state.user.personPath}/profilePicture`}
                             format={{
                                 width: 28,
                                 height: 28,
@@ -62,11 +62,11 @@ class UserMenu extends Component {
                 )}
             >
                 <Dropdown.Menu>
-                    {/* <Dropdown.Item
+                    <Dropdown.Item
                         icon="user circle"
                         text="Profile"
                         onClick={() => this.onProfile()}
-                    /> */}
+                    />
                     <If condition={session.personPath()}>
                         <Dropdown.Item
                             icon="user"

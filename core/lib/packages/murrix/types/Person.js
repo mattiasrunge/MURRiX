@@ -43,9 +43,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getparent $this.path f",
-                add: "setparent $this.path f $parent.path",
-                remove: "setparent $this.path f"
+                get: "getparent ${this.node.path} f",
+                add: "setparent ${this.node.path} f ${this.mother.path}",
+                remove: "setparent ${this.node.path} f"
             },
             {
                 name: "father",
@@ -58,9 +58,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getparent $this.path m",
-                add: "setparent $this.path m $parent.path",
-                remove: "setparent $this.path m"
+                get: "getparent ${this.node.path} m",
+                add: "setparent ${this.node.path} ${this.father.path}",
+                remove: "setparent ${this.node.path} m"
             },
             {
                 name: "children",
@@ -73,9 +73,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getchildren $this.path",
-                add: "setparent $child.path $this.attributes.gender $this.path",
-                remove: "setparent $remove.path $this.attributes.gender"
+                get: "getchildren ${this.node.path}",
+                add: "setparent ${this.child.path} ${this.node.attributes.gender} ${this.node.path}",
+                remove: "setparent ${this.remove.path} ${this.node.attributes.gender}"
             },
             {
                 name: "partner",
@@ -88,9 +88,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getpartner $this.path",
-                add: "setpartner $this.path $partner.path",
-                remove: "setpartner $this.path"
+                get: "getpartner ${this.node.path}",
+                add: "setpartner ${this.node.path} ${this.partner.path}",
+                remove: "setpartner ${this.node.path}"
             }
         ]);
     }

@@ -11397,6 +11397,11 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
+template-strings@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/template-strings/-/template-strings-0.0.6.tgz#f30504adcc55c7f80ee85ceae3c9438113c39c2a"
+  integrity sha512-GNhWUCmHr2DW09aiK63tfJX0rFEeEcU0gKAx8/8g9OSImy3zQiiBaXlJ+S/RrSDC5cL8aNkCpG0pM+ZYvYF+ug==
+
 term-size@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/term-size/-/term-size-1.2.0.tgz#458b83887f288fc56d6fffbfad262e26638efa69"

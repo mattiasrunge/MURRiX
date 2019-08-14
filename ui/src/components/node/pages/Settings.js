@@ -80,7 +80,7 @@ class Settings extends Component {
                 icon: "keyboard",
                 active: section === "actions",
                 Component: Actions,
-                validTypes: [ "a", "l", "c", "p" ]
+                validTypes: [ "l", "c", "p" ]
             },
             {
                 name: "upload",

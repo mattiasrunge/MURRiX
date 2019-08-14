@@ -186,9 +186,9 @@ class Node {
 
             const readlink = options.nofollow || (options.readlink && parts.length === 0);
             nodepath = await nodepath.get(client, { readlink });
-
-            await nodepath.assertAccess(client, "r");
         }
+
+        await nodepath.assertAccess(client, "r");
 
         return nodepath;
     }
@@ -559,6 +559,22 @@ class Node {
 
 
     // Setters
+
+    async cloneAccess(client, template, options = {}) {
+        await this.assertAccess(client, "w");
+
+        await this._props(client, {
+            acl: template.properties.acl,
+            mode: template.properties.mode,
+            gid: template.properties.gid,
+            uid: template.properties.uid
+        });
+
+        await this._notify(client, "cloneAccess");
+        await this._notify(client, "update");
+
+        options.recursive && await this._doRecursive(client, "cloneAccess", template, options);
+    }
 
     async setfacl(client, ac, options = {}) {
         await this.assertAccess(client, "w");

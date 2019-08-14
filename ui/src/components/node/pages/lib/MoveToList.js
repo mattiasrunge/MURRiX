@@ -47,7 +47,7 @@ class MoveToList extends Component {
             const selected = this.props.files.slice(0);
 
             for (const file of selected) {
-                await cmd.move(file.path, `${remote.path}/files`);
+                await cmd.move(file.path, `${remote.path}/files`, { inherit: true });
             }
 
             notification.add("success", `Moved ${selected.length} file(s) successfully`);

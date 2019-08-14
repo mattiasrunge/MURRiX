@@ -70,17 +70,19 @@ class Upload extends Component {
                             Clear files
                         </Button>
                     </If>
-                    <Select
-                        className={theme.folderSelect}
-                        required
-                        disabled={this.state.files.length > 0}
-                        value={this.state.folder}
-                        onChange={this.onFolderSelect}
-                        options={[
-                            { key: "files", value: "files", text: "Media files" },
-                            { key: "extra", value: "extra", text: "Extra files" }
-                        ]}
-                    />
+                    <If condition={this.props.node.properties.type === "a"}>
+                        <Select
+                            className={theme.folderSelect}
+                            required
+                            disabled={this.state.files.length > 0}
+                            value={this.state.folder}
+                            onChange={this.onFolderSelect}
+                            options={[
+                                { key: "files", value: "files", text: "Media files" },
+                                { key: "extra", value: "extra", text: "Extra files" }
+                            ]}
+                        />
+                    </If>
                     Upload files
                     <Header.Subheader>
                         Add content by uploading files

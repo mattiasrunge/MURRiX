@@ -9,8 +9,6 @@ const move = require("./move");
 module.exports = async (client, abspath) => {
     const node = await Node.resolve(client, abspath);
 
-    assert(node.properties.type === "a", "Can only hide files in albums");
-
     const filespath = `${abspath}/files`;
     const nodes = await Node.list(client, filespath, { nofollow: true });
 
