@@ -18,10 +18,12 @@ class Commands {
             delete this.pending[operation.id];
 
             if (message.error) {
-                const error = new Error(message.error.messsage);
+                const error = new Error(message.error.message);
 
                 error.code = message.error.code;
                 message.error.stack && (error.stack = message.error.stack);
+
+                console.error(error);
 
                 return operation.reject(error);
             }
