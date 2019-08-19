@@ -1,6 +1,8 @@
 
-import Charts from "./Charts";
+import Events from "./Events";
+import Content from "./Content";
 
 export {
-    Charts
+    Events,
+    Content
 };

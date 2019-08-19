@@ -2,7 +2,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Header, Segment, Label, Loader } from "semantic-ui-react";
+import { Segment, Label, Loader } from "semantic-ui-react";
+import { Header } from "components/home";
 import Component from "lib/component";
 import { cmd } from "lib/backend";
 import List from "./List";
@@ -56,7 +57,11 @@ class SearchLabel extends Component {
 
         return (
             <div>
-                <Header>Browse by label</Header>
+                <Header
+                    icon="tags"
+                    title="Browse by label"
+                    subtitle="Find content with specific label"
+                />
                 <Segment textAlign="center">
                     <Loader active={this.state.loading}>Loading...</Loader>
                     <For each="label" of={this.state.labels}>

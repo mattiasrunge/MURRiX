@@ -29,6 +29,10 @@
     cursor: pointer;
 }
 
+.nodeCardName {
+    font-size: 1.1em !important;
+}
+
 .nodeCardTags {
     margin-top: 1em;
 }

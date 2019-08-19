@@ -40,11 +40,16 @@ class Sidebar extends Component {
                     />
                 </div>
                 <div className={theme.menu}>
-                    <Header>Numbers</Header>
+                    <Header>Charts</Header>
                     <SidebarMenuItem
                         theme={theme}
-                        text="Charts"
-                        path={`${this.props.match.path}/chart`}
+                        text="Events"
+                        path={`${this.props.match.path}/charts/events`}
+                    />
+                    <SidebarMenuItem
+                        theme={theme}
+                        text="Content"
+                        path={`${this.props.match.path}/charts/content`}
                     />
                 </div>
             </div>

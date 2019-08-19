@@ -2,7 +2,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { Header, Segment, Button } from "semantic-ui-react";
+import { Segment, Button } from "semantic-ui-react";
+import { Header } from "components/home";
 import Component from "lib/component";
 import List from "./List";
 import ui from "lib/ui";
@@ -57,7 +58,11 @@ class Name extends Component {
 
         return (
             <div>
-                <Header>Browse by name</Header>
+                <Header
+                    icon="keyboard outline"
+                    title="Browse by name"
+                    subtitle="Find content by first letter in name"
+                />
                 <Segment>
                     <div className={theme.nameLetterContainer}>
                         <For each="letter" of={this.letters}>

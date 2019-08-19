@@ -2,29 +2,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { Loader, Header, Card } from "semantic-ui-react";
+import { Loader, Card } from "semantic-ui-react";
+import { Header } from "components/home";
 import { cmd } from "lib/backend";
 import Component from "lib/component";
 import notification from "lib/notification";
 import ui from "lib/ui";
 import Chart from "./Chart";
+import backgroundColor from "./lib/colors";
 
-const backgroundColor = [
-    "rgba(255, 204, 204, 0.8)",
-    "rgba(255, 230, 204, 0.8)",
-    "rgba(255, 255, 204, 0.8)",
-    "rgba(230, 255, 204, 0.8)",
-    "rgba(204, 255, 204, 0.8)",
-    "rgba(204, 255, 230, 0.8)",
-    "rgba(204, 255, 255, 0.8)",
-    "rgba(204, 230, 255, 0.8)",
-    "rgba(255, 204, 255, 0.8)",
-    "rgba(230, 204, 255, 0.8)",
-    "rgba(255, 204, 255, 0.8)",
-    "rgba(255, 204, 230, 0.8)"
-];
-
-class Charts extends Component {
+class Content extends Component {
     constructor(props) {
         super(props);
 
@@ -59,54 +46,9 @@ class Charts extends Component {
         this.setState({ loading: true });
 
         try {
-            const eventData = await cmd.eventdata();
             const nodeData = await cmd.nodedata({ types: [ "a", "f", "p", "l" ] });
 
             const dataList = [
-                {
-                    label: "Births",
-                    labels: moment.monthsShort(),
-                    datasets: [
-                        {
-                            data: eventData.birth,
-                            borderWidth: 1,
-                            backgroundColor
-                        }
-                    ]
-                },
-                {
-                    label: "Engagements",
-                    labels: moment.monthsShort(),
-                    datasets: [
-                        {
-                            data: eventData.engagement,
-                            borderWidth: 1,
-                            backgroundColor
-                        }
-                    ]
-                },
-                {
-                    label: "Marriages",
-                    labels: moment.monthsShort(),
-                    datasets: [
-                        {
-                            data: eventData.marriage,
-                            borderWidth: 1,
-                            backgroundColor
-                        }
-                    ]
-                },
-                {
-                    label: "Deaths",
-                    labels: moment.monthsShort(),
-                    datasets: [
-                        {
-                            data: eventData.death,
-                            borderWidth: 1,
-                            backgroundColor
-                        }
-                    ]
-                },
                 {
                     label: "Album increase",
                     labels: nodeData.createdPerYear.a.labels,
@@ -235,29 +177,26 @@ class Charts extends Component {
     }
 
     render() {
-        ui.setTitle("Charts");
+        ui.setTitle("Content");
 
         return (
             <div>
-                <Header>Charts</Header>
+                <Header
+                    title="Content"
+                    subtitle="Charts of content in the system"
+                    icon="chart line"
+                />
                 <Loader
                     active={this.state.loading}
                     inline="centered"
                 />
                 <Card.Group itemsPerRow="2">
                     <For each="data" of={this.state.dataList}>
-                        <Card key={data.label}>
-                            <Card.Content>
-                                <Card.Header>{data.label}</Card.Header>
-                                <Card.Description style={{ marginTop: "2em" }}>
-                                    <Chart
-                                        type={data.type || "bar"}
-                                        data={data}
-                                        options={this.state.options}
-                                    />
-                                </Card.Description>
-                            </Card.Content>
-                        </Card>
+                        <Chart
+                            key={data.label}
+                            data={data}
+                            options={this.state.options}
+                        />
                     </For>
                 </Card.Group>
             </div>
@@ -265,8 +204,8 @@ class Charts extends Component {
     }
 }
 
-Charts.propTypes = {
+Content.propTypes = {
     theme: PropTypes.object
 };
 
-export default Charts;
+export default Content;

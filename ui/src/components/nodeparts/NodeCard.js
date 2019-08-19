@@ -28,16 +28,14 @@ class NodeCard extends Component {
                     />
                 </div>
                 <Card.Content>
-                    <Card.Header>
+                    <Card.Header className={theme.nodeCardName}>
                         <NodeIcon
                             theme={theme}
                             type={this.props.node.properties.type}
                         />
                         {this.props.node.attributes.name}
                     </Card.Header>
-                    <Card.Description
-                        className={theme.nodeCardDescription}
-                    >
+                    <Card.Description className={theme.nodeCardDescription}>
                         <Choose>
                             <When condition={this.props.node.attributes.description && this.props.node.attributes.description.length > 150}>
                                 {this.props.node.attributes.description.substr(0, 150).trim()}...

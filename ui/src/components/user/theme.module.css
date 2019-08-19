@@ -1,20 +1,19 @@
 
 @import "~styles/theme.css";
 
-.profileContainer {
+.userContainer {
     display: flex;
     /* padding: var(--spacing); */
-    padding-top: var(--spacing);
-    border-top: 1px solid #d4d4d5;
     clear: both;
 
-    & .profileColumn {
+    & .userColumn {
         padding-bottom: 0 !important;
     }
 
-    & .profileSidebar {
+    & .userSidebar {
         padding: var(--spacing);
         padding-left: 0;
+        padding-top: 0;
         border-right: 1px solid #d4d4d5;
 
         & .sidebarHeader {
@@ -26,14 +25,14 @@
             font-size: 18px;
             border-bottom: 1px solid #d4d4d5;
             padding-bottom: calc(var(--spacing) / 2);
-        }
 
-        & .sidebarInformationTable {
-            font-size: 0.8em !important;
+            &:first-child {
+                margin-top: 0;
+            }
         }
     }
 
-    & .profileMain {
+    & .userMain {
         padding: var(--spacing);
         padding-right: 0;
         flex-grow: 1;

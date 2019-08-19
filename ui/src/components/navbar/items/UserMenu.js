@@ -21,16 +21,20 @@ class UserMenu extends Component {
         this.addDisposable(session.on("update", (event, user) => this.setState({ user })));
     }
 
-    async onSignOut() {
+    onSignOut = async () => {
         await cmd.logout();
     }
 
-    onProfile() {
-        this.props.history.push("/home/profile");
+    onProfile = () => {
+        this.props.history.push("/home/user");
     }
 
-    async onMe() {
+    onMe = () => {
         this.props.history.push(`/node${session.personPath()}`);
+    }
+
+    onStaging = () => {
+        this.props.history.push("/home/user/upload");
     }
 
     render() {
@@ -63,22 +67,27 @@ class UserMenu extends Component {
             >
                 <Dropdown.Menu>
                     <Dropdown.Item
+                        icon="upload"
+                        text="Staging"
+                        onClick={this.onStaging}
+                    />
+                    <Dropdown.Item
                         icon="user circle"
                         text="Profile"
-                        onClick={() => this.onProfile()}
+                        onClick={this.onProfile}
                     />
                     <If condition={session.personPath()}>
                         <Dropdown.Item
                             icon="user"
                             text="Me"
-                            onClick={() => this.onMe()}
+                            onClick={this.onMe}
                         />
                         <Dropdown.Divider />
                     </If>
                     <Dropdown.Item
                         icon="sign out"
                         text="Sign out"
-                        onClick={() => this.onSignOut()}
+                        onClick={this.onSignOut}
                     />
                 </Dropdown.Menu>
             </Dropdown>

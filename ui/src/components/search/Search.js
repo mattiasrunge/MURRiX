@@ -2,7 +2,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { Header, Input, Segment } from "semantic-ui-react";
+import { Input, Segment } from "semantic-ui-react";
+import { Header } from "components/home";
 import Component from "lib/component";
 import { Focus } from "components/utils";
 import List from "./List";
@@ -64,7 +65,11 @@ class Search extends Component {
 
         return (
             <div>
-                <Header>Search</Header>
+                <Header
+                    icon="search"
+                    title="Search"
+                    subtitle="Find content by searching for the name"
+                />
                 <Segment>
                     <Focus select>
                         <Input

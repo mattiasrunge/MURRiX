@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { Container, Grid, Sticky } from "semantic-ui-react";
 import Component from "lib/component";
-import { Profile } from "components/user";
+import { User } from "components/user";
 import { Search, Name, Label, Year } from "components/search";
 import { News } from "components/news";
-import { Charts } from "components/statistics";
+import { Events, Content } from "components/statistics";
 import Sidebar from "./Sidebar";
 import theme from "./theme.module.css";
 
@@ -45,9 +45,9 @@ class Home extends Component {
                             <div className={theme.homeContainer}>
                                 <Switch>
                                     <Route
-                                        path={`${this.props.match.path}/profile`}
+                                        path={`${this.props.match.path}/user`}
                                         render={(props) => (
-                                            <Profile {...props} />
+                                            <User {...props} />
                                         )}
                                     />
                                     <Route
@@ -81,9 +81,15 @@ class Home extends Component {
                                         )}
                                     />
                                     <Route
-                                        path={`${this.props.match.path}/chart`}
+                                        path={`${this.props.match.path}/charts/events`}
                                         render={(props) => (
-                                            <Charts {...props} />
+                                            <Events {...props} />
+                                        )}
+                                    />
+                                    <Route
+                                        path={`${this.props.match.path}/charts/content`}
+                                        render={(props) => (
+                                            <Content {...props} />
                                         )}
                                     />
                                     <Route

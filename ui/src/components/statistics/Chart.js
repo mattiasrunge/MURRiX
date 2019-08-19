@@ -4,6 +4,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Chart as ChartJS } from "chart.js";
+import { Card } from "semantic-ui-react";
 import Component from "lib/component";
 
 class Chart extends Component {
@@ -40,22 +41,30 @@ class Chart extends Component {
 
     render() {
         return (
-            <canvas
-                ref={this.onRef}
-                height={this.props.height}
-                width={this.props.width}
-            />
+            <Card>
+                <Card.Content>
+                    <Card.Header>{this.props.data.label}</Card.Header>
+                    <Card.Description style={{ marginTop: "2em" }}>
+                        <canvas
+                            ref={this.onRef}
+                            height={this.props.height}
+                            width={this.props.width}
+                        />
+                    </Card.Description>
+                </Card.Content>
+            </Card>
         );
     }
 }
 
 Chart.defaultProps = {
-    options: ChartJS.defaults.global
+    options: ChartJS.defaults.global,
+    type: "bar"
 };
 
 
 Chart.propTypes = {
-    type: PropTypes.oneOf([ "bar", "line" ]).isRequired,
+    type: PropTypes.oneOf([ "bar", "line" ]),
     height: PropTypes.number,
     width: PropTypes.number,
     data: PropTypes.object,

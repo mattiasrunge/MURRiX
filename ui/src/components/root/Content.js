@@ -9,7 +9,6 @@ import { Notification } from "components/notification";
 import { Home } from "components/home";
 import { Node } from "components/node";
 import { SignIn, Reset } from "components/authentication";
-import { Profile } from "components/user";
 import { UploadProgress } from "components/upload";
 import theme from "./theme.module.css";
 
@@ -52,12 +51,6 @@ class Content extends Component {
                                 />
                             </When>
                             <Otherwise>
-                                <Route
-                                    path="/profile"
-                                    render={(props) => (
-                                        <Profile {...props} />
-                                    )}
-                                />
                                 <Route
                                     path="/node/*"
                                     render={(props) => (

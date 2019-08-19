@@ -2,7 +2,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { Header, Segment, Button } from "semantic-ui-react";
+import { Segment, Button } from "semantic-ui-react";
+import { Header } from "components/home";
 import { Slider } from "react-semantic-ui-range";
 import Component from "lib/component";
 import List from "./List";
@@ -99,12 +100,17 @@ class Year extends Component {
 
         return (
             <div>
-                <Header>
-                    Browse albums by year
-                    <span className={theme.headerInfo}>
-                        {currentYear}
-                    </span>
-                </Header>
+                <Header
+                    icon="calendar alternate outline"
+                    title="Browse albums by year"
+                    subtitle="Find content by year"
+                    extra={(
+                        <span className={theme.headerInfo}>
+                            {currentYear}
+                        </span>
+                    )}
+                />
+
                 <Segment className={theme.yearSliderTable}>
                     <Button
                         className={theme.yearSliderButton}

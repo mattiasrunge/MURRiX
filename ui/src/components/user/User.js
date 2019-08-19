@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
-import { Menu, Header } from "semantic-ui-react";
+import { Menu } from "semantic-ui-react";
 import { cmd } from "lib/backend";
 import session from "lib/session";
 import Component from "lib/component";
@@ -13,10 +13,11 @@ import Organize from "components/node/pages/sections/Organize";
 import { Upload } from "components/upload";
 import { Tagging } from "components/tagging";
 import { Actions } from "components/actions";
+import { Header } from "components/home";
 import CircularList from "lib/circular_list";
 import theme from "./theme.module.css";
 
-class Profile extends Component {
+class User extends Component {
     constructor(props) {
         super(props);
 
@@ -61,7 +62,7 @@ class Profile extends Component {
     }
 
     onSection = (e, { name }) => {
-        this.props.history.push(`/home/profile/${name}`);
+        this.props.history.push(`/home/user/${name}`);
     }
 
     gotoSection = (offset) => {
@@ -92,6 +93,10 @@ class Profile extends Component {
         const section = this.getSection();
 
         return [
+            {
+                name: "profile",
+                title: "Profile"
+            },
             {
                 name: "edit",
                 title: "Edit",
@@ -139,25 +144,14 @@ class Profile extends Component {
 
         return (
             <div>
-                <NodeImage
-                    path={`${this.state.user.personPath}/profilePicture`}
-                    format={{
-                        width: 50,
-                        height: 50,
-                        type: "image"
-                    }}
-                    avatar
-                    floated="left"
+                <Header
+                    profilePath={`${this.state.user.personPath}/profilePicture`}
+                    title={this.state.user.attributes.name}
+                    subtitle="User profile and staging area"
                 />
-                <Header as="h2">
-                    Profile
-                    <Header.Subheader>
-                        {this.state.user.attributes.name}
-                    </Header.Subheader>
-                </Header>
 
-                <div className={theme.profileContainer}>
-                    <div className={theme.profileSidebar}>
+                <div className={theme.userContainer}>
+                    <div className={theme.userSidebar}>
                         <Menu vertical secondary color="blue">
                             <For each="section" of={sections}>
                                 <Choose>
@@ -182,13 +176,13 @@ class Profile extends Component {
                             </For>
                         </Menu>
                     </div>
-                    <div className={theme.profileMain}>
+                    <div className={theme.userMain}>
                         <Switch>
                             <For each="section" of={sections}>
                                 <If condition={section.Component}>
                                     <Route
                                         key={section.name}
-                                        path={`/home/profile/${section.name}`}
+                                        path={`/home/user/${section.name}`}
                                     >
                                         {/* eslint-disable-next-line react/jsx-no-undef */}
                                         <section.Component
@@ -202,7 +196,7 @@ class Profile extends Component {
                             <Route path="*">
                                 <Redirect
                                     to={{
-                                        pathname: `/home/profile/${sections[0].name}`
+                                        pathname: `/home/user/${sections.filter((s) => s.Component)[0].name}`
                                     }}
                                 />
                             </Route>
@@ -211,63 +205,13 @@ class Profile extends Component {
                 </div>
             </div>
         );
-
-        // return (
-        //     <div>
-        //         <Header>Profile</Header>
-        //         <Grid columns="2">
-        //             <Grid.Column width="8">
-        //                 <Form>
-        //                     <Form.Field>
-        //                         <label>Name</label>
-        //                         <Focus>
-        //                             <Input
-        //                                 value={this.state.name}
-        //                                 onChange={(e, { value }) => this.setState({ name: value })}
-        //                                 onKeyDown={(e) => e.which === 13 && this.save()}
-        //                             />
-        //                         </Focus>
-        //                     </Form.Field>
-        //                     <Form.Field>
-        //                         <label>E-Mail</label>
-        //                         <Input
-        //                             value={this.state.username}
-        //                             onChange={(e, { value }) => this.setState({ username: value })}
-        //                             onKeyDown={(e) => e.which === 13 && this.save()}
-        //                         />
-        //                     </Form.Field>
-        //                     <Form.Field>
-        //                         <label>Person</label>
-        //                         <NodeInput
-        //                             value={this.state.person}
-        //                             paths={[
-        //                                 "/people"
-        //                             ]}
-        //                             onChange={(value) => this.setState({ person: value })}
-        //                             onKeyDown={(e) => e.which === 13 && this.save()}
-        //                         />
-        //                     </Form.Field>
-        //
-        //                     <Button
-        //                         primary
-        //                         loading={this.state.loading}
-        //                         disabled={!this.state.name || !this.state.username}
-        //                         icon="save"
-        //                         content="Save"
-        //                         onClick={() => this.save()}
-        //                     />
-        //                 </Form>
-        //             </Grid.Column>
-        //         </Grid>
-        //     </div>
-        // );
     }
 }
 
-Profile.propTypes = {
+User.propTypes = {
     match: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
 };
 
-export default withRouter(Profile);
+export default withRouter(User);

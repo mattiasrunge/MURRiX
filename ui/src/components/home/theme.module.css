@@ -1,6 +1,12 @@
 
 @import "~styles/theme.css";
 
+.homeHeader {
+    padding-bottom: var(--spacing);
+    border-bottom: 1px solid #d4d4d5;
+    margin-bottom: var(--spacing);
+}
+
 .homeContainer {
     padding-top: 2em;
 }
