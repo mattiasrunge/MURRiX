@@ -70,7 +70,7 @@ module.exports = {
 
         api.listen(server);
 
-        log.info(`Now listening for http request on port ${params.port}`);
+        log.info(`Now listening for http requests on port ${params.port}`);
     },
     stop: async () => {
         if (server) {
