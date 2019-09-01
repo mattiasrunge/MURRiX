@@ -34,7 +34,7 @@ module.exports = {
     },
     stop: async () => {
         log.info("Received shutdown signal, stopping...");
-        // await taskManager.stop();
+        await taskManager.stop();
         await sftpServer.stop();
         await httpServer.stop();
         await media.stop();

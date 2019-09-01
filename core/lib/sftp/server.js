@@ -17,6 +17,8 @@ class SFTPServer {
         this.server.on("error", (error) => log.error(error));
 
         await this.server.start(config.sftp.keyFile, config.sftp.port);
+
+        log.info(`Now listening for sftp requests on port ${config.sftp.port}`);
     }
 
     async stop() {

@@ -189,12 +189,12 @@ class Share extends Component {
         return (
             <div>
                 <Header as="h2">
-                    <Checkbox
+                    {/* <Checkbox
                         className={theme.shareUsersToggle}
                         label="Show inactive users"
                         checked={this.state.showInactive}
                         onChange={this.onChangeInactiveUsers}
-                    />
+                    /> */}
                     Share settings
                     <Header.Subheader>
                         Set who has what access

@@ -123,7 +123,7 @@ class Year extends Component {
                     />
                     <div className={theme.yearSliderInput}>
                         <Slider
-                            color="blue"
+                            color="invalidInputTrackFill"
                             settings={settings}
                         />
                     </div>
