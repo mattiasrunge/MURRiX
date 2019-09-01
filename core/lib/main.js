@@ -25,7 +25,7 @@ module.exports = {
         await db.init(configuration);
         await media.init(configuration);
         await core.init();
-        // await taskManager.init();
+        await taskManager.init();
         await httpServer.init(configuration);
         await sftpServer.init(configuration);
 
