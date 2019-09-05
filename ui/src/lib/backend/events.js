@@ -12,7 +12,7 @@ class Events extends Emitter {
             }
 
             if (message.event === "set-cookie") {
-                cookies.set(message.data.name, message.data.value);
+                cookies.set(message.data.name, message.data.value, { domain: document.location.toString().replace(/^(?:https?:\/\/)?(?:[^\/]+\.)?([^.\/]+\.[^.\/]+).*$/, "$1") });
             } else if (message.event === "ready") {
                 backend.onReady();
             } else {
