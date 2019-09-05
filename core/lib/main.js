@@ -4,7 +4,7 @@ const configuration = require("./configuration");
 const logger = require("./log");
 const log = logger(module);
 const httpServer = require("./http/server");
-const sftpServer = require("./sftp/server");
+// const sftpServer = require("./sftp/server");
 const db = require("./core/db");
 const media = require("./media");
 const taskManager = require("./tasks/manager");
@@ -27,7 +27,7 @@ module.exports = {
         await core.init();
         await taskManager.init();
         await httpServer.init(configuration);
-        await sftpServer.init(configuration);
+        // await sftpServer.init(configuration);
 
         log.info("Initialization complete, core running.");
         await bus.open();
@@ -35,7 +35,7 @@ module.exports = {
     stop: async () => {
         log.info("Received shutdown signal, stopping...");
         await taskManager.stop();
-        await sftpServer.stop();
+        // await sftpServer.stop();
         await httpServer.stop();
         await media.stop();
         await db.stop();
