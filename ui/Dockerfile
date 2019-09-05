@@ -13,5 +13,5 @@ COPY . .
 # Build UI
 RUN yarn build
 
-EXPOSE 5000
+EXPOSE 8080
 CMD [ "yarn", "serve" ]
