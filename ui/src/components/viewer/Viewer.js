@@ -38,7 +38,7 @@ class Viewer extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.path !== prevProps.path) {
-            this.update(prevProps);
+            this.update(this.props);
         }
     }
 
