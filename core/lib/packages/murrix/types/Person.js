@@ -59,7 +59,7 @@ class Person extends Node {
                     }
                 ],
                 get: "getparent ${this.node.path} m",
-                add: "setparent ${this.node.path} ${this.father.path}",
+                add: "setparent ${this.node.path} m ${this.father.path}",
                 remove: "setparent ${this.node.path} m"
             },
             {

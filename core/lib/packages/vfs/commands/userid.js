@@ -6,7 +6,7 @@ const { ADMIN_CLIENT } = require("../../../core/auth");
 const groups = require("./groups");
 
 module.exports = async (client, username) => {
-    assert(!client.sGuest(), "Permission denied");
+    assert(!client.isGuest(), "Permission denied");
 
     const user = await Node.resolve(ADMIN_CLIENT, `/users/${username}`);
     const grps = await groups(ADMIN_CLIENT, username);
