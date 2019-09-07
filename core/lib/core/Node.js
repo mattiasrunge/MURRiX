@@ -301,7 +301,15 @@ class Node {
             }
         });
 
-        return list.filter((node) => node.hasAccess(client, "r"));
+        const result = [];
+
+        for (const node of list) {
+            if (await node.hasAccess(client, "r")) {
+                result.push(node);
+            }
+        }
+
+        return result;
     }
 
     static async aggregate(client, pipeline) {
