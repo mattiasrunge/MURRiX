@@ -147,5 +147,9 @@ module.exports = async (client, year) => {
     }
 
     // console.time("4");
-    return await Promise.all(nodes.map((node) => node.serialize(client)));
+    const list = await Promise.all(nodes.map((node) => node.serialize(client)));
+
+    list.sort((a, b) => (b.extra.age.birthdate || "").localeCompare(a.extra.age.birthdate || ""));
+
+    return list;
 };

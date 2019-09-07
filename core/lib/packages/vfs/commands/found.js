@@ -1,5 +1,6 @@
 "use strict";
 
+const assert = require("assert");
 const path = require("path");
 const Node = require("../../../core/Node");
 const link = require("./link");
@@ -8,7 +9,7 @@ const resolve = require("./resolve");
 module.exports = async (client, id) => {
     const node = await Node.resolve(client, id);
 
-    // TODO: Assert that we have a stray
+    assert(!node.path, `Node ${node._id} is not lost!`);
 
     await link(client, node, `/lost+found/${node._id}`);
 

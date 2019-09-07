@@ -40,8 +40,6 @@ class List extends Component {
 
             if (query.year) {
                 list = await cmd.albumsbyyear(query.year);
-
-                list.sort((a, b) => b.extra.age.birthdate.localeCompare(a.extra.age.birthdate));
             } else {
                 list = await cmd.list(query.paths, query.options);
             }
