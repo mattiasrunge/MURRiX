@@ -15,8 +15,8 @@ const setup = async (client, api) => {
     // Create folders
     await api.ensure(client, "/users", "d");
     await api.chmod(client, "/users", 0o771);
-
     await api.ensure(client, "/groups", "d");
+    await api.ensure(client, "/lost+found", "d");
 
     // Create admin group
     if (!(await api.exists(client, "/groups/admin"))) {

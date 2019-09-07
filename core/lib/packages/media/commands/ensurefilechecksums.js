@@ -11,7 +11,7 @@ module.exports = async (client, abspath) => {
     assert(node.properties.type === "f", "Can only ensure faces for files");
 
     if (!node.attributes.sha1) {
-        log.info(`No sha1 info found for ${node.path}, will calculate...`);
+        log.info(`No sha1 info found for ${node.path} with id ${node._id}, will calculate...`);
 
         const { sha1, md5 } = await metadata(client, node.path);
 

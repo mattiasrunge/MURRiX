@@ -16,7 +16,7 @@ module.exports = async (client) => {
     });
 
     if (list[0]) {
-        await ensurefilechecksums(client, list[0].path);
+        await ensurefilechecksums(client, list[0]);
 
         return true;
     }

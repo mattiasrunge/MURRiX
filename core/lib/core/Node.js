@@ -738,7 +738,7 @@ class Node {
 
     async getUniqueChildName(client, name) {
         const names = this.properties.children.map((child) => child.name);
-        const escapedName = name.replace(/ |\//g, "_");
+        const escapedName = name.trim().replace(/ |\//g, "_").replace(/\?/g, "");
 
         let result = escapedName;
         let counter = 1;
@@ -746,6 +746,11 @@ class Node {
         while (names.includes(result)) {
             result = `${escapedName}_${counter}`;
             counter++;
+
+            if (counter < 1) {
+                // Catch for if counter overflows, should probably never happen in the real world but to be safe
+                throw new Error(`Could not generate a unique child name, counter overflowed`);
+            }
         }
 
         return result;
