@@ -50,7 +50,7 @@ class InputWhen extends Component {
     componentDidUpdate(prevProps) {
         const state = this.valueToString(prevProps.value);
 
-        if (!state.errorMessage && state.value !== this.state.value) {
+        if (!state.errorMessage && state.value && state.value !== this.state.value) {
             this.setState(state);
         }
     }
