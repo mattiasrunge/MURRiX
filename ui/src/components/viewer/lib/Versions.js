@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { List } from "semantic-ui-react";
 import Component from "lib/component";
 import format from "lib/format";
-import { cmd } from "lib/backend";
+import { cmd, backend } from "lib/backend";
 import theme from "../theme.module.css";
 
 class Versions extends Component {
@@ -52,7 +52,7 @@ class Versions extends Component {
                 <List.Icon size="big" name="download" />
                 <List.Content>
                     <a
-                        href={`/media/file/${this.props.node.attributes.diskfilename}/${this.props.node.attributes.name}`}
+                        href={`${backend.getAddress()}/media/file/${this.props.node.attributes.diskfilename}/${this.props.node.attributes.name}`}
                     >
                         {this.props.node.attributes.name}
                     </a>
