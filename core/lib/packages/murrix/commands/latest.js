@@ -1,6 +1,7 @@
 "use strict";
 
 const Node = require("../../../core/Node");
+const log = require("../../../log")(module);
 const users = require("../../vfs/commands/users");
 const list = require("../../vfs/commands/list");
 
@@ -23,17 +24,21 @@ module.exports = async (client, limit = 50) => {
 
     for (const node of nodes) {
         if (node.properties.type === "a") {
-            events.push({
-                type: "created",
-                userpath: userlist[node.properties.birthuid] ? userlist[node.properties.birthuid].path : false,
-                username: userlist[node.properties.birthuid] ? userlist[node.properties.birthuid].attributes.name : "Unknown",
-                node,
-                files: await list(client, `${node.path}/files`, {
-                    sort: "shuffle",
-                    limit: 4
-                }),
-                time: node.properties.birthtime
-            });
+            try {
+                events.push({
+                    type: "created",
+                    userpath: userlist[node.properties.birthuid] ? userlist[node.properties.birthuid].path : false,
+                    username: userlist[node.properties.birthuid] ? userlist[node.properties.birthuid].attributes.name : "Unknown",
+                    node,
+                    files: await list(client, `${node.path}/files`, {
+                        sort: "shuffle",
+                        limit: 4
+                    }),
+                    time: node.properties.birthtime
+                });
+            } catch (error) {
+                log.error(`Failed to list ${node.path}/files when creating latest list, skipping...`, error);
+            }
         } else {
             events.push({
                 type: "created",
