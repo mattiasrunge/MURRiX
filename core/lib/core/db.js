@@ -12,7 +12,10 @@ class Database {
     async init(config) {
         const url = config.mongoUrl;
 
-        this.client = await MongoClient.connect(url, { useNewUrlParser: true });
+        this.client = await MongoClient.connect(url, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
         this.db = this.client.db(path.basename(url));
     }
 

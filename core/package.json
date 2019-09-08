@@ -28,7 +28,7 @@
     "fs-extra": "^8.1.0",
     "glob-promise": "^3.4.0",
     "jsonwebtoken": "^8.5.1",
-    "koa": "^2.7.0",
+    "koa": "^2.8.1",
     "koa-bodyparser": "^4.1.0",
     "koa-compress": "^3.0.0",
     "koa-conditional-get": "^2.0.0",
@@ -37,7 +37,7 @@
     "koa-route": "^3.2.0",
     "koa-stream": "^0.2.0",
     "moment": "^2.24.0",
-    "mongodb": "^3.2.7",
+    "mongodb": "^3.3.2",
     "nodinatim": "^2.1.0",
     "request": "^2.85.0",
     "request-promise-native": "^1.0.7",
@@ -47,10 +47,10 @@
     "shuffle-array": "^1.0.1",
     "typeson": "^5.13.0",
     "typeson-registry": "^1.0.0-alpha.28",
-    "uuid": "^3.2.1",
+    "uuid": "^3.3.3",
     "walk-promise": "^0.2.0",
-    "ws": "^7.1.1",
-    "yargs": "^13.3.0"
+    "ws": "^7.1.2",
+    "yargs": "^14.0.0"
   },
   "engines": {
     "node": ">= 12"
