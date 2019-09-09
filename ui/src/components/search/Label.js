@@ -30,6 +30,8 @@ class SearchLabel extends Component {
     async load() {
         const labels = await cmd.labels();
 
+        labels.sort((a, b) => a.name.localeCompare(b.name));
+
         this.setState({ labels });
     }
 
