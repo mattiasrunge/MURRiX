@@ -30,7 +30,7 @@ class Node extends Component {
 
     async load() {
         this.setFromMatch(this.props.match);
-        this.addDisposable(event.on("node.update", (path) => {
+        this.addDisposable(event.on("node.update", (event, path) => {
             if (path === this.state.node.path) {
                 this.update(path, this.state.page);
             }

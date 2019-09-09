@@ -27,7 +27,7 @@ class NodeImage extends Component {
         !this.props.lazy && (await this.update(this.props));
     }
 
-    onNodeUpdated = (path) => {
+    onNodeUpdated = (event, path) => {
         if (path === this.props.path) {
             this.update(this.props);
         }

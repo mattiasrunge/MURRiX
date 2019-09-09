@@ -45,8 +45,10 @@ class Share extends Component {
 
                     if (!current || !current.writable) {
                         if (current) {
-                            current.writable = true;
-                            current.group = group;
+                            if (!current.writable && group.writable) {
+                                current.writable = true;
+                                current.group = group;
+                            }
                         } else {
                             list.push({
                                 id: user._id,
@@ -270,14 +272,14 @@ class Share extends Component {
                                             <Table.Cell collapsing textAlign="center" verticalAlign="middle">
                                                 <Checkbox
                                                     disabled={this.state.saving}
-                                                    checked={group.readable}
+                                                    checked={group.readable || false}
                                                     onClick={group.onReadableClick}
                                                 />
                                             </Table.Cell>
                                             <Table.Cell collapsing textAlign="center" verticalAlign="middle">
                                                 <Checkbox
                                                     disabled={this.state.saving}
-                                                    checked={group.writable}
+                                                    checked={group.writable || false}
                                                     onClick={group.onWritableClick}
                                                 />
                                             </Table.Cell>

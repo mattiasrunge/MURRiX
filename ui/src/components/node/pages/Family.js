@@ -35,7 +35,7 @@ class Family extends Component {
 
     async load() {
         this.addDisposables([
-            event.on("node.update", (path) => {
+            event.on("node.update", (event, path) => {
                 if (path.startsWith(this.props.node.path)) {
                     this.update();
                 }
