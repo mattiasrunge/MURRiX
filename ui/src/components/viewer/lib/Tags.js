@@ -27,7 +27,7 @@ class Tags extends Component {
         ]);
     }
 
-    onNodeUpdated = (path) => {
+    onNodeUpdated = (event, path) => {
         if (path === `${this.props.node.path}/tags`) {
             this.update(this.props);
         }

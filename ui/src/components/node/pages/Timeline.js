@@ -37,7 +37,7 @@ class Timeline extends Component {
         await this.update();
     }
 
-    onNodeUpdated = (path) => {
+    onNodeUpdated = (event, path) => {
         if (path === `${this.props.node.path}/texts`) {
             this.update(this.props);
         }

@@ -53,7 +53,7 @@ class Family extends Component {
         await this.update();
     }
 
-    onNodeUpdated = (path) => {
+    onNodeUpdated = (event, path) => {
         if (path === this.props.node.path) {
             this.update(this.props);
         }
