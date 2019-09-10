@@ -6,7 +6,6 @@ import chron from "chron-time";
 import { cmd } from "lib/backend";
 import notification from "lib/notification";
 import Component from "lib/component";
-import { Focus } from "components/utils";
 import InputLabels from "./InputLabels";
 import InputTextArea from "./InputTextArea";
 import InputTextLine from "./InputTextLine";
@@ -117,22 +116,17 @@ class EditForm extends Component {
         const form = (
             <Form>
                 <For each="field" index="index" of={this.state.__fields}>
-                    <Focus
-                        key={field.name}
-                        focus={index === 0}
-                    >
-                        {/* eslint-disable-next-line react/jsx-no-undef */}
-                        <field.Component
-                            theme={theme}
-                            label={field.label}
-                            name={field.name}
-                            disabled={this.props.saving}
-                            value={this.state[field.name]}
-                            error={!this.validate(field, this.state[field.name])}
-                            onChange={this.onChange}
-                            options={field.options}
-                        />
-                    </Focus>
+                    {/* eslint-disable-next-line react/jsx-no-undef */}
+                    <field.Component
+                        theme={theme}
+                        label={field.label}
+                        name={field.name}
+                        disabled={this.props.saving}
+                        value={this.state[field.name]}
+                        error={!this.validate(field, this.state[field.name])}
+                        onChange={this.onChange}
+                        options={field.options}
+                    />
                 </For>
             </Form>
         );
