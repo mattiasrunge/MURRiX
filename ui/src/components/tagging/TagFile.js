@@ -11,7 +11,7 @@ import theme from "./theme.module.css";
 
 class TagFile extends Component {
     onFacesChanged = async (faces) => {
-        faces.sort((a, b) => a.x - b.x);
+        faces.sort((a, b) => a.y - b.y);
 
         try {
             await cmd.update(this.props.node.path, { faces });
