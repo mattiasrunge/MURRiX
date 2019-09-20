@@ -4,6 +4,20 @@ import PropTypes from "prop-types";
 import { Ref } from "semantic-ui-react";
 
 class Focus extends React.PureComponent {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            rendered: false
+        };
+    }
+
+    componentDidUpdate() {
+        this.setState({
+            rendered: true
+        });
+    }
+
     focus() {
         setTimeout(() => this.ref && this.ref.focus(), 100);
     }
@@ -13,6 +27,10 @@ class Focus extends React.PureComponent {
     }
 
     onRef(ref) {
+        if (this.state.rendered) {
+            return;
+        }
+
         if (ref) {
             this.ref = ref.querySelector("input") || ref.querySelector("textarea");
             this.props.focus && this.focus();
