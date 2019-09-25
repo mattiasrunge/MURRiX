@@ -51,7 +51,10 @@ class Server extends Emitter {
 
     _onClose({ code, reason }) {
         this._log(`Disconnected, got code ${code} and reason: ${reason}`);
-        this.ready = new Deferred();
+
+        if (this.ready.resolved) {
+            this.ready = new Deferred();
+        }
     }
 
     _onError(error) {
