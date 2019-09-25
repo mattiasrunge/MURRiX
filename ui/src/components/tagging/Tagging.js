@@ -132,6 +132,8 @@ class Tagging extends Component {
                             onClick={this.onNext}
                         />
                         <div className={theme.imageCount}>
+                            {this.state.selected[0].attributes.name}
+                            {" - "}
                             {this.state.files.indexOf(this.state.selected[0]) + 1}
                             {" of "}
                             {this.state.files.length}

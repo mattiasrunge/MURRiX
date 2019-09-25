@@ -37,7 +37,7 @@ class TagFile extends Component {
 
         return (
             <Choose>
-                <When condition={this.props.node.attributes.faces}>
+                <When condition={this.props.node.attributes.faces || this.props.node.attributes.type !== "image"}>
                     <Grid>
                         <Grid.Row>
                             <Grid.Column width={10}>
