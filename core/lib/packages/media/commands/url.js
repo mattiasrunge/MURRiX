@@ -31,6 +31,8 @@ module.exports = async (client, abspath, format) => {
             type: format.type || node.attributes.type
         };
 
+        // TODO: Check if format exists in node.attributes.cached, then no need to contact mcs
+
         // Get cached name and create if not existing
         const cached = await media.getCached(node._id, filename, {
             timeindex: node.attributes.timeindex,

@@ -24,7 +24,7 @@ class NodeImage extends Component {
             event.on("node.update", this.onNodeUpdated)
         ]);
 
-        !this.props.lazy && (await this.update(this.props));
+        await this.update(this.props);
     }
 
     onNodeUpdated = (event, path) => {
@@ -35,15 +35,27 @@ class NodeImage extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.path !== prevProps.path || JSON.stringify(this.props.format) !== JSON.stringify(prevProps.format)) {
-            this.update(this.props);
+            this.update(this.props, this.props.path !== prevProps.path);
         }
     }
 
-    async update(props) {
-        this.setState({ loading: true, failed: false });
+    async update(props, newPath) {
+        const state = { loading: true, failed: false };
+
+        if (newPath) {
+            state.url = null;
+        }
+
+        this.setState(state);
+
+        const loadId = this._loadId = Date.now();
 
         try {
             const url = await cmd.url(props.path, props.format);
+
+            if (loadId !== this._loadId) {
+                return;
+            }
 
             (this.props.autoPlay && this.props.onStarted && (this.props.format.type === "video" || this.props.format.type === "audio")) && this.props.onStarted();
 
@@ -52,14 +64,6 @@ class NodeImage extends Component {
             this.logError("Failed to get node url", error, 10000);
             !this.disposed && this.setState({ url: null, loading: false, failed: true });
         }
-    }
-
-    onVisible = () => {
-        if (this.state.loading || this.state.url || this.state.failed) {
-            return;
-        }
-
-        this.update(this.props);
     }
 
     render() {
@@ -151,34 +155,25 @@ class NodeImage extends Component {
         }
 
         return (
-            <Visibility
-                as="span"
-                onTopVisible={this.onVisible}
-                onBottomVisible={this.onVisible}
-                onTopPassed={this.onVisible}
-                onBottomPassed={this.onVisible}
-                onOnScreen={this.onVisible}
-                fireOnMount
-            >
-                <Image
-                    className={this.props.className}
-                    src={url}
-                    title={this.props.title}
-                    avatar={this.props.avatar}
-                    bordered={this.props.bordered}
-                    centered={this.props.centered}
-                    circular={this.props.circular}
-                    floated={this.props.floated}
-                    inline={this.props.inline}
-                    fluid={this.props.fluid}
-                    rounded={this.props.rounded}
-                    size={this.props.size}
-                    spaced={this.props.spaced}
-                    verticalAlign={this.props.verticalAlign}
-                    wrapped={this.props.wrapped}
-                    style={style}
-                />
-            </Visibility>
+            <Image
+                loading={this.props.lazy ? "lazy" : "auto"}
+                className={this.props.className}
+                src={url}
+                title={this.props.title}
+                avatar={this.props.avatar}
+                bordered={this.props.bordered}
+                centered={this.props.centered}
+                circular={this.props.circular}
+                floated={this.props.floated}
+                inline={this.props.inline}
+                fluid={this.props.fluid}
+                rounded={this.props.rounded}
+                size={this.props.size}
+                spaced={this.props.spaced}
+                verticalAlign={this.props.verticalAlign}
+                wrapped={this.props.wrapped}
+                style={style}
+            />
         );
     }
 }
