@@ -22,7 +22,7 @@ module.exports = async (client, longitude, latitude) => {
     try {
         assert(data.status === "OK", data.errorMessage);
     } catch (error) {
-        console.error(JSON.stringify(options, null, 2), error);
+        console.error(JSON.stringify(options, null, 2), JSON.stringify(data, null, 2), error);
         throw error;
     }
 
