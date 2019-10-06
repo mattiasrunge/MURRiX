@@ -3,6 +3,7 @@
 const assert = require("assert");
 const request = require("request-promise-native");
 const config = require("../../../configuration");
+const log = require("../../../log")(module);
 
 module.exports = async (client, longitude, latitude) => {
     assert(!client.isGuest(), "Permission denied");
@@ -20,9 +21,14 @@ module.exports = async (client, longitude, latitude) => {
     const data = await request(options);
 
     try {
-        assert(data.status === "OK", data.errorMessage);
+        assert(data.status === "OK", data.error_message);
     } catch (error) {
-        console.error(JSON.stringify(options, null, 2), JSON.stringify(data, null, 2), error);
+        if (data.status === "REQUEST_DENIED") {
+            log.error("Request denied", data.error_message);
+
+            return false;
+        }
+
         throw error;
     }
 

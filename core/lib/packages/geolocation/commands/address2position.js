@@ -19,7 +19,17 @@ module.exports = async (client, address) => {
 
     const data = await request(options);
 
-    assert(data.status === "OK", data.errorMessage);
+    try {
+        assert(data.status === "OK", data.error_message);
+    } catch (error) {
+        if (data.status === "REQUEST_DENIED") {
+            log.error("Request denied", data.error_message);
+
+            return false;
+        }
+
+        throw error;
+    }
 
     if (data.results.length === 0) {
         return false;

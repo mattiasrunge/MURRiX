@@ -26,7 +26,17 @@ module.exports = async (client, longitude, latitude) => {
     //     "timeZoneName" : "Eastern Standard Time"
     // }
 
-    assert(data.status === "OK", data.errorMessage);
+    try {
+        assert(data.status === "OK", data.error_message);
+    } catch (error) {
+        if (data.status === "REQUEST_DENIED") {
+            log.error("Request denied", data.error_message);
+
+            return false;
+        }
+
+        throw error;
+    }
 
     return {
         utcOffset: data.rawOffset,
