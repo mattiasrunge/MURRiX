@@ -19,7 +19,12 @@ module.exports = async (client, longitude, latitude) => {
 
     const data = await request(options);
 
-    assert(data.status === "OK", data.errorMessage);
+    try {
+        assert(data.status === "OK", data.errorMessage);
+    } catch (error) {
+        console.error(JSON.stringify(options, null, 2), error);
+        throw error;
+    }
 
     if (data.results.length === 0) {
         return false;
