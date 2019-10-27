@@ -25,8 +25,10 @@ class FileList extends Component {
                             Size
                         </Table.HeaderCell>
                         <Table.HeaderCell
-                            collapsing
                             verticalAlign="middle"
+                            style={{
+                                width: 120
+                            }}
                         >
                             Status
                         </Table.HeaderCell>
@@ -45,7 +47,9 @@ class FileList extends Component {
                             <Table.Cell collapsing verticalAlign="middle" textAlign="right">
                                 {format.size(file.size)}
                             </Table.Cell>
-                            <Table.Cell collapsing verticalAlign="middle">
+                            <Table.Cell verticalAlign="middle" style={{
+                                width: 120
+                            }}>
                                 <FileStatus
                                     theme={theme}
                                     status={file.status}

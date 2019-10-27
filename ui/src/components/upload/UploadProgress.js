@@ -51,6 +51,7 @@ class UploadProgress extends Component {
                                     value={current}
                                     total={total}
                                     progress="ratio"
+                                    precision={0}
                                 />
                             </Table.Cell>
                         </Table.Row>
@@ -64,6 +65,7 @@ class UploadProgress extends Component {
                                     value={this.state.progress}
                                     total={100}
                                     progress="percent"
+                                    precision={0}
                                 />
                             </Table.Cell>
                         </Table.Row>
