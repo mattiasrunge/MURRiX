@@ -23,7 +23,7 @@ module.exports = async (client) => {
                         $all: media.requiredSizes.map((s) => ({
                             $elemMatch: {
                                 width: s.width || 0,
-                                height: s.height,
+                                height: s.height || 0,
                                 type: s.type || "image"
                             }
                         }))
@@ -37,7 +37,7 @@ module.exports = async (client) => {
                         $all: media.requiredSizes.map((s) => ({
                             $elemMatch: {
                                 width: s.width || 0,
-                                height: s.height,
+                                height: s.height || 0,
                                 type: s.type || "video"
                             }
                         }))
@@ -47,13 +47,10 @@ module.exports = async (client) => {
         ]
     };
 
-    console.log("query", JSON.stringify(query, null, 2));
     const list = await Node.query(client, query, {
         limit: 1,
         sort: { "properties.birthtime": -1 }
     });
-
-    console.log("got", list);
 
     if (list[0]) {
         await cachemedia(client, list[0]);
