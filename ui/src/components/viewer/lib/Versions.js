@@ -65,7 +65,7 @@ class Versions extends Component {
                             <For each="version" of={this.state.versions}>
                                 <List.Item key={version.path}>
                                     <a
-                                        href={`/media/file/${version.attributes.diskfilename}/${version.attributes.name}`}
+                                        href={`${backend.getAddress()}/media/file/${version.attributes.diskfilename}/${version.attributes.name}`}
                                     >
                                         {version.attributes.name}
                                     </a>
