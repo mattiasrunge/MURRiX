@@ -23,7 +23,7 @@ module.exports = async (client, abspath) => {
             assert(result !== null, "Failed to get url for media");
         }
     } catch (error) {
-        node = await Node.resolve(client, node.path); // Resolve again to make sure we do not have a stale copy and overwrite something
+        const node = await Node.resolve(client, node.path); // Resolve again to make sure we do not have a stale copy and overwrite something
         await node.update(client, { cacheError: error.stack.toString() }, true);
     }
 
