@@ -7,7 +7,7 @@ const url = require("./url");
 const syncmedia = require("./syncmedia");
 
 module.exports = async (client, abspath) => {
-    const node = await Node.resolve(client, abspath);
+    let node = await Node.resolve(client, abspath);
 
     assert(node.properties.type === "f", "Can only get media for files");
     assert(node.path, `Node with id ${node._id} seems to not be present in the tree, it has no path, can not cache media`);
@@ -23,7 +23,7 @@ module.exports = async (client, abspath) => {
             assert(result !== null, "Failed to get url for media");
         }
     } catch (error) {
-        const node = await Node.resolve(client, node.path); // Resolve again to make sure we do not have a stale copy and overwrite something
+        node = await Node.resolve(client, node.path); // Resolve again to make sure we do not have a stale copy and overwrite something
         await node.update(client, { cacheError: error.stack.toString() }, true);
     }
 
