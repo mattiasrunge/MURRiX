@@ -11,13 +11,14 @@ module.exports = async (client) => {
     const query = {
         "properties.type": "f",
         "attributes.rawImage": { $ne: true },
+        "attributes.cacheError": { $exists: false },
         "$or": [
             {
                 "attributes.type": { $in: [ "image", "video", "audio" ] },
                 "attributes.cached": { $exists: false }
             },
             {
-                "attributes.type": "image",
+                "attributes.type": { $in: [ "image", "document" ] },
                 "attributes.cached": {
                     $not: {
                         $all: media.requiredSizes.map((s) => ({
