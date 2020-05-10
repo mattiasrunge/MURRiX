@@ -14,11 +14,13 @@ module.exports = async (client, abspath) => {
 
     try {
         for (const size of media.requiredSizes) {
-            await url(client, node.path, {
+            const result = await url(client, node.path, {
                 width: size.width,
                 height: size.height,
                 type: size.type
             });
+
+            assert(result !== null, "Failed to get url for media");
         }
     } catch (error) {
         node = await Node.resolve(client, node.path); // Resolve again to make sure we do not have a stale copy and overwrite something
