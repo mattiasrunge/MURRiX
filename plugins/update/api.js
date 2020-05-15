@@ -30,7 +30,8 @@ const update = api.register("update", {
             albums: 0,
             measurments: 0,
             files: 0,
-            texts: 0
+            texts: 0,
+            missingFiles: []
         };
         let idTransNodes = {};
         let idTransItems = {};
@@ -1108,7 +1109,19 @@ const update = api.register("update", {
                 filename: path.join(filepath, obj._id)
             };
 
-            await api.file.mkfile(session, abspath, attributes);
+            try {
+                await api.file.mkfile(session, abspath, attributes);
+            } catch (error) {
+                result.missingFiles.push({
+                    error: error.stack.toString(),
+                    filename: attributes._source.filename,
+                    abspath,
+                    obj
+                });
+                console.log(attributes._source.filename + "was missing...");
+                continue;
+            }
+
             await api.vfs.setproperties(session, abspath, {
                 birthtime: moment(obj.added.timestamp * 1000).toDate(),
                 birthuid: idTransUsersUid[obj.added._by]
@@ -1139,17 +1152,21 @@ const update = api.register("update", {
             }
 
             for (let showing of obj.showing) {
-                console.log("Creating tag to " + idTransNodes[showing._id] + " in " + path.join(abspath, "tags", path.basename(idTransNodes[showing._id])));
+                if (idTransNodes[showing._id]) {
+                    console.log("Creating tag to " + idTransNodes[showing._id] + " in " + path.join(abspath, "tags", path.basename(idTransNodes[showing._id])));
 
-                let link = await api.vfs.symlink(session, idTransNodes[showing._id], path.join(abspath, "tags", path.basename(idTransNodes[showing._id])));
+                    let link = await api.vfs.symlink(session, idTransNodes[showing._id], path.join(abspath, "tags", path.basename(idTransNodes[showing._id])));
 
-                await api.vfs.setattributes(session, link, {
-                    type: "tag",
-                    width: showing.width,
-                    height: showing.height,
-                    x: showing.x,
-                    y: showing.y
-                });
+                    await api.vfs.setattributes(session, link, {
+                        type: "tag",
+                        width: showing.width,
+                        height: showing.height,
+                        x: showing.x,
+                        y: showing.y
+                    });
+                } else {
+                    console.log("Could not create tag to with id " + showing._id + ". No such node exist");
+                }
             }
 
             let item = await api.vfs.resolve(session, abspath);
@@ -1261,7 +1278,8 @@ const update = api.register("update", {
                         labels: []
                     };
 
-                    let versionabspath = path.join(versionsdir, version.name);
+                    const uniqueName = await api.node.getUniqueName(session, versionsdir, version.name);
+                    let versionabspath = path.join(versionsdir, uniqueName);
 
                     attributes._source = {
                         mode: copyMode,
@@ -1312,10 +1330,15 @@ const update = api.register("update", {
 
             if (obj._profilePicture) {
                 await api.vfs.unlink(session, idTransNodes[obj._id] + "/profilePicture");
-                await api.vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                try {
+                    await api.vfs.symlink(session, idTransItems[obj._profilePicture], idTransNodes[obj._id] + "/profilePicture");
+                } catch (error) {
+                    console.error(error);
+                }
             }
 
             for (let parent of obj.family.parents) {
+                try {
 //                 let gender = peopleList.filter((person) => person._id === parent._id)[0].gender;
 //                 let name = "parent";
 //
@@ -1325,7 +1348,7 @@ const update = api.register("update", {
 //                     name = "father";
 //                 }
 
-                await api.vfs.symlink(session, idTransNodes[parent._id], idTransNodes[obj._id] + "/parents");
+                 await api.vfs.symlink(session, idTransNodes[parent._id], idTransNodes[obj._id] + "/parents");
 
 //                 name = "child";
 //
@@ -1335,7 +1358,11 @@ const update = api.register("update", {
 //                     name = "son";
 //                 }
 
-                await api.vfs.symlink(session, idTransNodes[obj._id], idTransNodes[parent._id] + "/children");
+                    await api.vfs.symlink(session, idTransNodes[obj._id], idTransNodes[parent._id] + "/children");
+                } catch (error) {
+                    console.error(error);
+                    console.error("Failed to connect parents or children", parent._id, "or", obj._id, "does not exist in idTransNodes");
+                }
             }
 
             for (let locationId of obj._homes) {

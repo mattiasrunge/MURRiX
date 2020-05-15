@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require("path");
-const api = require("api.io").client;
+const api = require("api.io").getClient();
 const expandvar = require("expand-var");
 const fs = require("fs-extra-promise");
 const vorpal = require("./vorpal");

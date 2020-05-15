@@ -1,7 +1,7 @@
 "use strict";
 
 const vorpal = require("../../../cli/lib/vorpal");
-const api = require("api.io").client;
+const api = require("api.io").getClient();
 
 vorpal
 .command("update import <dbname> <filespath> <copymode>", "Import old MURRiX v1 mongodb database.")

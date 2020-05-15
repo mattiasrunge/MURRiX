@@ -6,7 +6,7 @@ const fsAutocomplete = require("vorpal-autocomplete-fs");
 const checksum = require("bluebird").promisifyAll(require("checksum"));
 const uploader = require("bluebird").promisifyAll(require("file-uploader"));
 const vorpal = require("../../../cli/lib/vorpal");
-const api = require("api.io").client;
+const api = require("api.io").getClient();
 const terminal = require("../lib/terminal");
 
 vorpal

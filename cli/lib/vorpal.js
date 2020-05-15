@@ -17,6 +17,7 @@ module.exports.wrap = function(fn) {
 
             await fn(this, module.exports.cliSession, args);
         } catch (e) {
+            console.error(e);
             if (typeof e === "string") {
                 this.log(e.split("\n")[0].replace(/^Error: /, "").red);
             } else {

@@ -1,6 +1,6 @@
 "use strict";
 
-const api = require("api.io").client;
+const api = require("api.io").getClient();
 const session = require("./session");
 const shell = require("./shell");
 const vorpal = require("./vorpal");
