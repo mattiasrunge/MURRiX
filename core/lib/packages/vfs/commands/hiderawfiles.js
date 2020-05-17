@@ -1,14 +1,11 @@
 "use strict";
 
 const path = require("path");
-const assert = require("assert");
 const Node = require("../../../core/Node");
 const ensure = require("./ensure");
 const move = require("./move");
 
 module.exports = async (client, abspath) => {
-    const node = await Node.resolve(client, abspath);
-
     const filespath = `${abspath}/files`;
     const nodes = await Node.list(client, filespath, { nofollow: true });
 

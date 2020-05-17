@@ -43,9 +43,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getparent ${this.node.path} f",
-                add: "setparent ${this.node.path} f ${this.mother.path}",
-                remove: "setparent ${this.node.path} f"
+                get: "getparent ${this.node.path} f", // eslint-disable-line no-template-curly-in-string
+                add: "setparent ${this.node.path} f ${this.mother.path}", // eslint-disable-line no-template-curly-in-string
+                remove: "setparent ${this.node.path} f" // eslint-disable-line no-template-curly-in-string
             },
             {
                 name: "father",
@@ -58,9 +58,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getparent ${this.node.path} m",
-                add: "setparent ${this.node.path} m ${this.father.path}",
-                remove: "setparent ${this.node.path} m"
+                get: "getparent ${this.node.path} m", // eslint-disable-line no-template-curly-in-string
+                add: "setparent ${this.node.path} m ${this.father.path}", // eslint-disable-line no-template-curly-in-string
+                remove: "setparent ${this.node.path} m" // eslint-disable-line no-template-curly-in-string
             },
             {
                 name: "children",
@@ -73,9 +73,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getchildren ${this.node.path}",
-                add: "setparent ${this.child.path} ${this.node.attributes.gender} ${this.node.path}",
-                remove: "setparent ${this.remove.path} ${this.node.attributes.gender}"
+                get: "getchildren ${this.node.path}", // eslint-disable-line no-template-curly-in-string
+                add: "setparent ${this.child.path} ${this.node.attributes.gender} ${this.node.path}", // eslint-disable-line no-template-curly-in-string
+                remove: "setparent ${this.remove.path} ${this.node.attributes.gender}" // eslint-disable-line no-template-curly-in-string
             },
             {
                 name: "partner",
@@ -88,9 +88,9 @@ class Person extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getpartner ${this.node.path}",
-                add: "setpartner ${this.node.path} ${this.partner.path}",
-                remove: "setpartner ${this.node.path}"
+                get: "getpartner ${this.node.path}", // eslint-disable-line no-template-curly-in-string
+                add: "setpartner ${this.node.path} ${this.partner.path}", // eslint-disable-line no-template-curly-in-string
+                remove: "setpartner ${this.node.path}" // eslint-disable-line no-template-curly-in-string
             }
         ]);
     }

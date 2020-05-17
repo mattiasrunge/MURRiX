@@ -17,7 +17,7 @@ module.exports = async (client, abspath) => {
         try {
             faces = await detectfaces(client, node);
         } catch (error) {
-            log.error(`Failed to detect faces for ${node.path}, will write empty list instead`);
+            log.error(`Failed to detect faces for ${node.path}, will write empty list instead`, error);
         }
 
         await node.update(client, { faces });

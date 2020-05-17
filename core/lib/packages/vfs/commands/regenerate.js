@@ -38,8 +38,7 @@ module.exports = async (client, abspath, options = {}) => {
 
     try {
         device = await Node.resolve(client, `${node.path}/createdWith`);
-    } catch (error) {
-    }
+    } catch {}
 
     if (node.attributes.deviceSerialNumber && !device) {
         device = (await Node.list(ADMIN_CLIENT, "/cameras", {

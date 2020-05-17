@@ -5,7 +5,7 @@ const Node = require("../../../core/Node");
 const age = require("./age");
 
 module.exports = async (client, year) => {
-    year = parseInt(year, 10);
+    year = Number.parseInt(year, 10);
     //
     // console.log("ALBUM BY YEAR ", year);
     //

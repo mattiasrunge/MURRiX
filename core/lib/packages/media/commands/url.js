@@ -68,16 +68,16 @@ module.exports = async (client, abspath, format) => {
         };
 
         if (cacheformat.angle) {
-            cacheformat.angle = parseInt(cacheformat.angle, 10);
+            cacheformat.angle = Number.parseInt(cacheformat.angle, 10);
 
-            if (cacheformat.angle === 0 || isNaN(cacheformat.angle)) {
+            if (cacheformat.angle === 0 || Number.isNaN(cacheformat.angle)) {
                 delete cacheformat.angle;
             } else if (![ 90, 180, 270 ].includes(Math.abs(cacheformat.angle))) {
                 throw new Error("Valid angle values are: -270, -180, -90, 90, 180 and 270");
             }
         }
 
-        if (cacheformat.timeindex === 0 || isNaN(cacheformat.timeindex)) {
+        if (cacheformat.timeindex === 0 || Number.isNaN(cacheformat.timeindex)) {
             delete cacheformat.timeindex;
         }
 

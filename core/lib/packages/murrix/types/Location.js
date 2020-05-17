@@ -40,9 +40,9 @@ class Location extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getresidents ${this.node.path}",
-                add: "addresident ${this.node.path} ${this.resident.path}",
-                remove: "removeresident ${this.node.path} ${this.remove.path}"
+                get: "getresidents ${this.node.path}", // eslint-disable-line no-template-curly-in-string
+                add: "addresident ${this.node.path} ${this.resident.path}", // eslint-disable-line no-template-curly-in-string
+                remove: "removeresident ${this.node.path} ${this.remove.path}" // eslint-disable-line no-template-curly-in-string
             }
         ]);
     }

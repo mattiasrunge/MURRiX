@@ -114,9 +114,9 @@ class User extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getuserperson ${this.node.path}",
-                add: "setuserperson ${this.node.path} ${this.person.path}",
-                remove: "removeuserperson ${this.node.path}"
+                get: "getuserperson ${this.node.path}", // eslint-disable-line no-template-curly-in-string
+                add: "setuserperson ${this.node.path} ${this.person.path}", // eslint-disable-line no-template-curly-in-string
+                remove: "removeuserperson ${this.node.path}" // eslint-disable-line no-template-curly-in-string
             }
         ]);
     }

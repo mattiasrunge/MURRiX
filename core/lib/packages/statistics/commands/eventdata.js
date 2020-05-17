@@ -37,7 +37,7 @@ module.exports = async (client) => {
             node.attributes.time.accuracy === "day" ||
             node.attributes.time.accuracy === "month") {
             const time = moment(node.attributes.time.timestamp * 1000);
-            const month = parseInt(time.format("M"), 10) - 1;
+            const month = Number.parseInt(time.format("M"), 10) - 1;
 
             data[node.attributes.type][month]++;
         }

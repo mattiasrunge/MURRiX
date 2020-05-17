@@ -3,9 +3,6 @@
 const path = require("path");
 const Node = require("../../../core/Node");
 const { ADMIN_CLIENT } = require("../../../core/auth");
-const chown = require("./chown");
-const chmod = require("./chmod");
-const setfacl = require("./setfacl");
 
 module.exports = async (client, srcpath, dstpath, options = {}) => {
     const srcnode = await Node.resolve(client, srcpath);
@@ -20,7 +17,7 @@ module.exports = async (client, srcpath, dstpath, options = {}) => {
 
     try {
         dstparentnode = await Node.resolve(client, dstpath);
-    } catch (error) {}
+    } catch {}
 
     if (!dstparentnode) {
         name = path.basename(dstpath);

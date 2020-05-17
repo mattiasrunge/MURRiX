@@ -21,8 +21,7 @@ module.exports = async (client, abspath, type) => {
     for (const filename of list) {
         try {
             await fs.remove(filename);
-        } catch (error) {
-        }
+        } catch {}
     }
 
     if (node.attributes.cached) {

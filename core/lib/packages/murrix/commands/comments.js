@@ -30,8 +30,7 @@ module.exports = async (client, abspath) => {
         });
 
         return await Promise.all(promises);
-    } catch (error) {
-    }
+    } catch {}
 
     return [];
 };

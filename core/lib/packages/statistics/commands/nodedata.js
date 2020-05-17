@@ -34,7 +34,7 @@ module.exports = async (client, options) => {
 
     const list = result.map((item) => ({
         ...item,
-        year: parseInt(item._id, 10)
+        year: Number.parseInt(item._id, 10)
     }));
 
     data.fileSizeIncreasePerYear = {
@@ -89,7 +89,7 @@ module.exports = async (client, options) => {
 
             const list = result.map((item) => ({
                 ...item,
-                year: parseInt(item._id, 10)
+                year: Number.parseInt(item._id, 10)
             }));
 
             data.createdPerYear[type] = {

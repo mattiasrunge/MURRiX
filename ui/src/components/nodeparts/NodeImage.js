@@ -133,7 +133,7 @@ class NodeImage extends Component {
                         preload="metadata"
                         title={this.props.title}
                         className={this.props.className}
-                        style={Object.assign({}, style, { width: "80%" })}
+                        style={Object.assign({}, style, { width: "80%", minWidth: 600 })}
                         src={url}
                         type="video/webm"
                         onEnded={this.props.onEnded}

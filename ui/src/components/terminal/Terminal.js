@@ -60,15 +60,15 @@ class Terminal extends Component {
 
     activate() {
         this.shell.activate();
-        this.ref.classList.add("slideInDown");
-        this.ref.classList.remove("slideOutUp");
+        this.ref.classList.add("animate__slideInDown");
+        this.ref.classList.remove("animate__slideOutUp");
         this.ref.focus();
     }
 
     deactivate() {
         this.shell.deactivate();
-        this.ref.classList.add("slideOutUp");
-        this.ref.classList.remove("slideInDown");
+        this.ref.classList.add("animate__slideOutUp");
+        this.ref.classList.remove("animate__slideInDown");
         this.ref.blur();
     }
 
@@ -93,7 +93,7 @@ class Terminal extends Component {
         return (
             <div
                 id={this.props.shellPanelId}
-                className={`${theme.terminal} animated`}
+                className={`${theme.terminal} animate__animated`}
                 ref={(ref) => this.onLoad(ref)}
             >
                 <div id={this.props.shellViewId}></div>

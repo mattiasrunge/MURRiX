@@ -3,6 +3,7 @@
 const assert = require("assert");
 const request = require("request-promise-native");
 const config = require("../../../configuration");
+const log = require("../../../log")(module);
 
 module.exports = async (client, address) => {
     assert(!client.isGuest(), "Permission denied");

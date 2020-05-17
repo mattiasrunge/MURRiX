@@ -11,7 +11,7 @@ module.exports = async (client, abspaths, excludePaths = []) => {
 
         try {
             parent = await Node.resolve(client, abspath);
-        } catch (error) {
+        } catch {
             continue;
         }
 

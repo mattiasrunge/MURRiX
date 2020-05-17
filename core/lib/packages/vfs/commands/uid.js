@@ -7,9 +7,9 @@ module.exports = async (client, value) => {
     assert(!client.isGuest(), "Permission denied");
 
     const usrs = await users(client);
-    const id = parseInt(value, 10);
+    const id = Number.parseInt(value, 10);
 
-    if (isNaN(id)) {
+    if (Number.isNaN(id)) {
         const user = usrs.find((user) => user.name === value);
 
         assert(user, `No user matching ${value} found`);

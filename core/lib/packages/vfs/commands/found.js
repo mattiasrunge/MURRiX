@@ -1,7 +1,6 @@
 "use strict";
 
 const assert = require("assert");
-const path = require("path");
 const Node = require("../../../core/Node");
 const link = require("./link");
 const resolve = require("./resolve");

@@ -39,9 +39,9 @@ class Camera extends Node {
                         paths: [ "/people" ]
                     }
                 ],
-                get: "getowners ${this.node.path}",
-                add: "addowner ${this.node.path} ${this.owner.path}",
-                remove: "removeowner ${this.node.path} ${this.remove.path}"
+                get: "getowners ${this.node.path}", // eslint-disable-line no-template-curly-in-string
+                add: "addowner ${this.node.path} ${this.owner.path}", // eslint-disable-line no-template-curly-in-string
+                remove: "removeowner ${this.node.path} ${this.remove.path}" // eslint-disable-line no-template-curly-in-string
             }
         ]);
     }

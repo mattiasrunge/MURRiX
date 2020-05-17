@@ -7,9 +7,9 @@ module.exports = async (client, value) => {
     assert(!client.isGuest(), "Permission denied");
 
     const grps = await groups(client);
-    const id = parseInt(value, 10);
+    const id = Number.parseInt(value, 10);
 
-    if (isNaN(id)) {
+    if (Number.isNaN(id)) {
         const group = grps.find((group) => group.name === value);
 
         assert(group, `No group matching ${value} found`);

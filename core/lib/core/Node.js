@@ -142,8 +142,7 @@ class Node {
             await this.resolve(client, abspath, options);
 
             return true;
-        } catch (error) {
-        }
+        } catch {}
 
         return false;
     }
@@ -364,10 +363,10 @@ class Node {
         if (typeof abspath === "string") {
             abspath = abspath.replace(/\/$/, "");
             const slashIndex = abspath.lastIndexOf("/");
-            const lastPart = abspath.substr(slashIndex + 1);
+            const lastPart = abspath.slice(slashIndex + 1);
 
             pattern = lastPart.includes("*") ? lastPart.replace("*", ".*?") : false;
-            abspath = pattern ? abspath.substr(0, slashIndex) : abspath;
+            abspath = pattern ? abspath.slice(0, Math.max(0, slashIndex)) : abspath;
             abspath = abspath === "" ? "/" : abspath;
         }
 
@@ -481,9 +480,13 @@ class Node {
 
         if (this.properties.uid === client.getUid() && checkMode(mode, level, MASKS.OWNER)) {
             return true;
-        } else if (client.getGids().includes(this.properties.gid) && checkMode(mode, level, MASKS.GROUP)) {
+        }
+
+        if ((client.getGids().includes(this.properties.gid) && checkMode(mode, level, MASKS.GROUP))) {
             return true;
-        } else if (checkMode(mode, level, MASKS.OTHER)) {
+        }
+
+        if (checkMode(mode, level, MASKS.OTHER)) {
             return true;
         }
 
@@ -745,19 +748,19 @@ class Node {
     }
 
     async getUniqueChildName(client, name) {
-        const names = this.properties.children.map((child) => child.name);
+        const names = new Set(this.properties.children.map((child) => child.name));
         const escapedName = name.trim().replace(/ |\//g, "_").replace(/\?/g, "");
 
         let result = escapedName;
         let counter = 1;
 
-        while (names.includes(result)) {
+        while (names.has(result)) {
             result = `${escapedName}_${counter}`;
             counter++;
 
             if (counter < 1) {
                 // Catch for if counter overflows, should probably never happen in the real world but to be safe
-                throw new Error(`Could not generate a unique child name, counter overflowed`);
+                throw new Error("Could not generate a unique child name, counter overflowed");
             }
         }
 

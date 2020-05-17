@@ -1,4 +1,6 @@
 
+/* global document */
+
 import cookies from "browser-cookies";
 import Emitter from "../emitter";
 
@@ -12,7 +14,10 @@ class Events extends Emitter {
             }
 
             if (message.event === "set-cookie") {
-                cookies.set(message.data.name, message.data.value, { domain: document.location.toString().replace(/^(?:https?:\/\/)?(?:[^\/]+\.)?([^.\/]+\.[^.\/]+).*$/, "$1") });
+                const location = document.location.toString();
+                const domain = location.startsWith("localhost") ? "localhost" : location.toString().replace(/^(?:https?:\/\/)?(?:[^/]+\.)?([^./]+\.[^./]+).*$/, "$1");
+
+                cookies.set(message.data.name, message.data.value, { domain });
             } else if (message.event === "ready") {
                 backend.onReady();
             } else {

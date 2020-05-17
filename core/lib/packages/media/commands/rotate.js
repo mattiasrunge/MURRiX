@@ -11,13 +11,13 @@ module.exports = async (client, abspath, offset) => {
     assert(node.properties.type === "f", "Only files can be rotated");
     assert(await access(client, node, "w"), "Permission denied");
 
-    offset = parseInt(offset, 10);
+    offset = Number.parseInt(offset, 10);
 
     if (node.attributes.mirror) {
         offset = -offset;
     }
 
-    let angle = parseInt(node.attributes.angle || 0, 10) + offset;
+    let angle = Number.parseInt(node.attributes.angle || 0, 10) + offset;
 
     angle = angle % 360;
     angle = angle < 0 ? angle + 360 : angle;

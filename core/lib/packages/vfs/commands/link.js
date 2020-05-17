@@ -14,7 +14,7 @@ module.exports = async (client, srcpath, dstpath) => {
 
     try {
         dstparentnode = await Node.resolve(client, dstpath);
-    } catch (error) {}
+    } catch {}
 
     if (!dstparentnode) {
         srcnode.name = path.basename(dstpath);
