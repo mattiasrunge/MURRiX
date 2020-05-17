@@ -118,6 +118,7 @@ class EditForm extends Component {
                 <For each="field" index="index" of={this.state.__fields}>
                     {/* eslint-disable-next-line react/jsx-no-undef */}
                     <field.Component
+                        key={field.name}
                         theme={theme}
                         label={field.label}
                         name={field.name}

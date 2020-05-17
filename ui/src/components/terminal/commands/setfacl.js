@@ -1,5 +1,6 @@
 
-import { cmd, MASKS } from "lib/backend";
+import { cmd } from "lib/backend";
+import { MASKS } from "lib/utils";
 
 export default {
     desc: "Set node ACL",

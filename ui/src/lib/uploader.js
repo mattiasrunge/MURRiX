@@ -107,7 +107,7 @@ class Uploader extends Emitter {
     }
 
     clear() {
-        this.setState({ files: [], currentFile: false, progress: 0 });
+        this.setState({ files: [], path: false, currentFile: false, progress: 0 });
     }
 
     async start() {
@@ -122,7 +122,7 @@ class Uploader extends Emitter {
                 await this._uploadFile(this.state.files[n]);
             }
 
-            this.setState({ files: [], ongoing: false, currentFile: false, progress: 0 });
+            this.setState({ files: [], path: false, ongoing: false, currentFile: false, progress: 0 });
         } catch (error) {
             notification.add("error", error.message, 10000);
             this.setState({ files: this.state.files.slice(0), ongoing: false, currentFile: false, progress: 0 });
