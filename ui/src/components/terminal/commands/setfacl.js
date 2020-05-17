@@ -1,6 +1,6 @@
 
 import { cmd } from "lib/backend";
-import { MASKS } from "lib/utils";
+import utils from "lib/utils";
 
 export default {
     desc: "Set node ACL",
@@ -40,9 +40,9 @@ export default {
         ac.mode = 0;
 
         if (modestr) {
-            ac.mode |= modestr.includes("r") ? MASKS.ACL.READ : 0;
-            ac.mode |= modestr.includes("w") ? MASKS.ACL.WRITE : 0;
-            ac.mode |= modestr.includes("x") ? MASKS.ACL.EXEC : 0;
+            ac.mode |= modestr.includes("r") ? utils.MASKS.ACL.READ : 0;
+            ac.mode |= modestr.includes("w") ? utils.MASKS.ACL.WRITE : 0;
+            ac.mode |= modestr.includes("x") ? utils.MASKS.ACL.EXEC : 0;
         }
 
         await cmd.setfacl(abspath, ac, { recursive: opts.r });
