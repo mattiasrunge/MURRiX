@@ -593,14 +593,15 @@ class Node {
         let acl = [];
 
         if (ac) {
-            acl = this.properties.acl
-            .filter((item) => item.uid !== ac.uid || item.gid !== ac.gid);
+            acl = this.properties.acl.slice(0).filter((item) => item.uid !== (ac.uid || null) || item.gid !== (ac.gid || null));
 
-            (ac.mode > 0) && acl.push({
-                gid: ac.gid,
-                uid: ac.uid,
-                mode: ac.mode
-            });
+            if (ac.mode > 0) {
+                acl.push({
+                    gid: (ac.gid || null),
+                    uid: (ac.uid || null),
+                    mode: ac.mode
+                });
+            }
         }
 
         await this._props(client, { acl });

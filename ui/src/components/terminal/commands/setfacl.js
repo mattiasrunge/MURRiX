@@ -1,5 +1,5 @@
 
-import { cmd } from "lib/backend";
+import { cmd, MASKS } from "lib/backend";
 
 export default {
     desc: "Set node ACL",
@@ -21,15 +21,15 @@ export default {
         const [ what, name, modestr ] = args.aclentry.split(":");
 
         if (what === "u") {
-            ac.uid = parseInt(name, 10);
+            ac.uid = Number.parseInt(name, 10);
 
-            if (isNaN(ac.uid)) {
+            if (Number.isNaN(ac.uid)) {
                 ac.uid = await cmd.uid(name);
             }
         } else if (what === "g") {
-            ac.gid = parseInt(name, 10);
+            ac.gid = Number.parseInt(name, 10);
 
-            if (isNaN(ac.gid)) {
+            if (Number.isNaN(ac.gid)) {
                 ac.gid = await cmd.gid(name);
             }
         } else {
@@ -39,9 +39,9 @@ export default {
         ac.mode = 0;
 
         if (modestr) {
-            ac.mode |= modestr.includes("r") ? cmd.MASK_ACL_READ : 0;
-            ac.mode |= modestr.includes("w") ? cmd.MASK_ACL_WRITE : 0;
-            ac.mode |= modestr.includes("x") ? cmd.MASK_ACL_EXEC : 0;
+            ac.mode |= modestr.includes("r") ? MASKS.ACL.READ : 0;
+            ac.mode |= modestr.includes("w") ? MASKS.ACL.WRITE : 0;
+            ac.mode |= modestr.includes("x") ? MASKS.ACL.EXEC : 0;
         }
 
         await cmd.setfacl(abspath, ac, { recursive: opts.r });
