@@ -1,5 +1,6 @@
 "use strict";
 
+const { pipeline } = require("stream");
 const path = require("path");
 const fs = require("fs-extra");
 const api = require("api.io");
@@ -86,17 +87,23 @@ class Media {
     }
 
     onFile(filename, file, deferred) {
-        const writeStream = fs.createWriteStream(filename);
+        log.info(`Creating write pipeline for ${filename}...`);
 
-        log.info(`Creating write stream for ${filename}...`);
+        pipeline(
+            file,
+            fs.createWriteStream(filename),
+            (error) => {
+                // Important to destroy or asyncBusboy will not return
 
-        writeStream
-        .on("open", () => file
-        .pipe(writeStream)
-        .on("error", deferred.reject)
-        .on("finish", deferred.resolve)
-        )
-        .on("error", deferred.reject);
+                if (error) {
+                    return deferred.reject(error);
+                }
+
+                file.destroy();
+
+                deferred.resolve();
+            }
+        );
     }
 
     routes() {

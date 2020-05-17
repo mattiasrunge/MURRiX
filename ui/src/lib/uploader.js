@@ -99,6 +99,7 @@ class Uploader extends Emitter {
 
             file.status = "complete";
             this.setState({ files: this.state.files.slice(0) });
+
         } catch (error) {
             file.error = error.message;
             file.status = "error";
