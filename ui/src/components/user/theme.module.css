@@ -17,7 +17,7 @@
         border-right: 1px solid #d4d4d5;
 
         & .sidebarHeader {
-            color: #2185d0;
+            /* color: #2185d0; */
             margin-left: 10px;
             font-weight: bold;
             margin-top: calc(var(--spacing) * 2);

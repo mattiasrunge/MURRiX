@@ -2,12 +2,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
-import { Menu } from "semantic-ui-react";
+import { Menu, Container } from "semantic-ui-react";
 import { cmd } from "lib/backend";
 import session from "lib/session";
 import Component from "lib/component";
 import ui from "lib/ui";
-import { NodeImage } from "components/nodeparts";
 import { Edit } from "components/edit";
 import Organize from "components/node/pages/sections/Organize";
 import { Upload } from "components/upload";
@@ -62,7 +61,7 @@ class User extends Component {
     }
 
     onSection = (e, { name }) => {
-        this.props.history.push(`/home/user/${name}`);
+        this.props.history.push(`/user/${name}`);
     }
 
     gotoSection = (offset) => {
@@ -143,7 +142,7 @@ class User extends Component {
         const sections = this.getSections();
 
         return (
-            <div>
+            <Container>
                 <Header
                     profilePath={`${this.state.user.personPath}/profilePicture`}
                     title={this.state.user.attributes.name}
@@ -182,7 +181,7 @@ class User extends Component {
                                 <If condition={section.Component}>
                                     <Route
                                         key={section.name}
-                                        path={`/home/user/${section.name}`}
+                                        path={`/user/${section.name}`}
                                     >
                                         {/* eslint-disable-next-line react/jsx-no-undef */}
                                         <section.Component
@@ -196,14 +195,14 @@ class User extends Component {
                             <Route path="*">
                                 <Redirect
                                     to={{
-                                        pathname: `/home/user/${sections.filter((s) => s.Component)[0].name}`
+                                        pathname: `/user/${sections.filter((s) => s.Component)[0].name}`
                                     }}
                                 />
                             </Route>
                         </Switch>
                     </div>
                 </div>
-            </div>
+            </Container>
         );
     }
 }

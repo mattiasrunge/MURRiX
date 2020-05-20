@@ -26,7 +26,7 @@ class UserMenu extends Component {
     }
 
     onProfile = () => {
-        this.props.history.push("/home/user");
+        this.props.history.push("/user");
     }
 
     onMe = () => {
@@ -34,7 +34,7 @@ class UserMenu extends Component {
     }
 
     onStaging = () => {
-        this.props.history.push("/home/user/upload");
+        this.props.history.push("/user/upload");
     }
 
     render() {

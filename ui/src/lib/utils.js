@@ -36,7 +36,7 @@ const utils = {
         });
     },
     basename: (path) => path.replace(/.*\//, ""),
-    dirname: (path) => path.match(/(.*)[/]/)[1],
+    dirname: (path) => path.match(/(.*)\//)[1],
     modeString: (mode, options) => {
         let modeStr = "";
 

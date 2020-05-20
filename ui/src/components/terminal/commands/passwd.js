@@ -7,6 +7,12 @@ export default {
     args: [ "?username" ],
     exec: async (term, streams, command, opts, args) => {
         const username = args.username || session.username();
+        let oldPassword = null;
+
+        if (!session.adminGranted()) {
+            term.setPrompt({ prompt: "Current password:", obscure: true });
+            oldPassword = await streams.stdin.read();
+        }
 
         term.setPrompt({ prompt: "New password:", obscure: true });
         const password1 = await streams.stdin.read();
@@ -18,7 +24,7 @@ export default {
             throw new Error("Passwords do not match");
         }
 
-        await cmd.passwd(username, password1);
+        await cmd.passwd(username, oldPassword, password1);
 
         await streams.stdout.write("Password updated");
     },

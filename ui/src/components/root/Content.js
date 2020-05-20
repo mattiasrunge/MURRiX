@@ -8,6 +8,7 @@ import { Terminal } from "components/terminal";
 import { Notification } from "components/notification";
 import { Home } from "components/home";
 import { Node } from "components/node";
+import { User } from "components/user";
 import { SignIn, Reset } from "components/authentication";
 import { UploadProgress } from "components/upload";
 import theme from "./theme.module.css";
@@ -55,6 +56,12 @@ class Content extends Component {
                                     path="/node/*"
                                     render={(props) => (
                                         <Node {...props} />
+                                    )}
+                                />
+                                <Route
+                                    path={"/user"}
+                                    render={(props) => (
+                                        <User {...props} />
                                     )}
                                 />
                                 <Route
