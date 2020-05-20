@@ -27,6 +27,10 @@ module.exports = async (client) => {
     await people.chown(ADMIN_CLIENT, UID_ADMIN, GID_USERS);
     await people.chmod(ADMIN_CLIENT, 0o770);
 
+    const lostfound = await Node.resolve(ADMIN_CLIENT, "/lost+found");
+    await lostfound.chown(ADMIN_CLIENT, UID_ADMIN, GID_ADMIN);
+    await lostfound.chmod(ADMIN_CLIENT, 0o771);
+
     const groups = await Node.resolve(ADMIN_CLIENT, "/groups");
     await groups.chown(ADMIN_CLIENT, UID_ADMIN, GID_ADMIN);
     await groups.chmod(ADMIN_CLIENT, 0o770);
