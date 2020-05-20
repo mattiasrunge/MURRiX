@@ -10,7 +10,7 @@ class Group extends Node {
         const data = await super._createData(client, parent, type, attributes);
 
         data.properties.mode = 0o770;
-        data.attributes.uid = data.attributes.uid || (await Group.generateGID());
+        data.attributes.gid = data.attributes.gid || (await Group.generateGID());
 
         return data;
     }
