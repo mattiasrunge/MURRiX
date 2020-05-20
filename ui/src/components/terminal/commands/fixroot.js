@@ -2,10 +2,10 @@
 import { cmd } from "lib/backend";
 
 export default {
-    desc: "Fix user rights and integrity",
+    desc: "Fix root rights",
     exec: async (term, streams /* , command, opts, args */) => {
         try {
-            await cmd.fixusers();
+            await cmd.fixroot();
         } catch (error) {
             console.log(error);
         }
