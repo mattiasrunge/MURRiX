@@ -8,13 +8,22 @@ const ERROR_TIMEOUT = 1000 * 10;
 const IDLE_TIMEOUT = 1000;
 
 class Task {
-    constructor(command) {
+    constructor(name, command) {
+        this.name = name;
         this.command = command;
-        this.stopped = false;
+        this.stopped = true;
         this.timer = null;
     }
 
-    init() {
+    start() {
+        if (!this.stopped) {
+            return;
+        }
+
+        log.info(`Task ${this.name} started...`);
+
+        this.stopped = false;
+
         this.check();
     }
 
@@ -35,11 +44,19 @@ class Task {
         }
     }
 
+    status() {
+        return {
+            running: !this.stopped
+        };
+    }
+
     async stop() {
         this.stopped = true;
 
         this.timer && clearTimeout(this.timer);
         this.timer = null;
+
+        log.info(`Task ${this.name} stopped...`);
     }
 }
 

@@ -35,6 +35,10 @@ export default {
     ensurefilefaces: require("./commands/ensurefilefaces").default,
     migrateoldtags: require("./commands/migrateoldtags").default,
 
+    listtasks: require("./commands/listtasks").default,
+    stoptask: require("./commands/stoptask").default,
+    starttask: require("./commands/starttask").default,
+
     setpartner: require("./commands/setpartner").default,
     setparent: require("./commands/setparent").default,
     dayinhistory: require("./commands/dayinhistory").default,
