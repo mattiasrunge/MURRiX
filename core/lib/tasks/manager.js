@@ -17,15 +17,15 @@ class TaskManager {
             if (name.startsWith("task_")) {
                 const niceName = name.slice(5);
 
-                log.info(`Starting task: ${niceName}`);
 
                 this.tasks[niceName] = new Task(niceName, command);
 
-                await this.tasks[niceName].start();
+                setTimeout(() => {
+                    log.info(`Starting task: ${niceName}`);
+                    this.tasks[niceName].start();
+                }, 1000 * 60 * 60); // Wait one minute
             }
         }
-
-        log.info("All tasks started.");
     }
 
     async stopTask(name) {

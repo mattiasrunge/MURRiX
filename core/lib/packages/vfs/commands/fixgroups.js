@@ -26,7 +26,10 @@ module.exports = async (client) => {
         const users = await Node.list(ADMIN_CLIENT, `${group.path}/users`);
 
         for (const user of users) {
-            await usermod(ADMIN_CLIENT, user.name, group.name, true);
+            try {
+                await usermod(ADMIN_CLIENT, user.name, group.name, true);
+            } catch {}
+
             await usermod(ADMIN_CLIENT, user.name, group.name);
         }
     }
