@@ -14,7 +14,7 @@ module.exports = async (client, username, groupname, remove = false) => {
         // TODO: Disallow joining the admin group
         // TODO: Disallow joining the guest group
 
-        await symlink(client, `/groups/${groupname}`, `/users/${username}/groups`);
-        await symlink(client, `/users/${username}`, `/groups/${groupname}/users`);
+        await symlink(client, `/groups/${groupname}`, `/users/${username}/groups/${groupname}`);
+        await symlink(client, `/users/${username}`, `/groups/${groupname}/users/${username}`);
     }
 };
