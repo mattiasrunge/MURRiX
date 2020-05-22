@@ -10,14 +10,14 @@ export default {
     exec: async (term, streams, command, opts, args) => {
         const abspath = await term.getAbspath(args.path, false);
         const slashIndex = abspath.lastIndexOf("/");
-        const lastPart = abspath.substr(slashIndex + 1);
+        const lastPart = abspath.slice(slashIndex + 1);
         const items = lastPart.includes("*") ? await cmd.list(abspath) : [ await cmd.resolve(abspath, { nofollow: true }) ];
 
         for (const item of items) {
             if (opts.f) {
                 await cmd.unlink(item.path);
 
-                return;
+                continue;
             }
 
             term.setPrompt({ prompt: `Are you sure you want to remove <span class='bold'>${item.name}</span>? [y/N]` });
