@@ -5,6 +5,8 @@ const core = require("../core");
 const Task = require("./task");
 const log = require("../log")(module);
 
+const TASK_START_DELAY = 1000 * 60 * 60 * 3; // Three minutes
+
 class TaskManager {
     constructor() {
         this.tasks = {};
@@ -17,13 +19,9 @@ class TaskManager {
             if (name.startsWith("task_")) {
                 const niceName = name.slice(5);
 
-
                 this.tasks[niceName] = new Task(niceName, command);
 
-                setTimeout(() => {
-                    log.info(`Starting task: ${niceName}`);
-                    this.tasks[niceName].start();
-                }, 1000 * 60 * 60); // Wait one minute
+                setTimeout(() => this.tasks[niceName].init(), TASK_START_DELAY);
             }
         }
     }

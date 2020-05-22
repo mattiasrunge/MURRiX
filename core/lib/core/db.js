@@ -1,5 +1,7 @@
 "use strict";
 
+// TODO: This abstraction is unneccessary, remove!
+
 const path = require("path");
 const { MongoClient } = require("mongodb");
 
@@ -83,6 +85,12 @@ class Database {
         const collection = this.db.collection(collectionName);
 
         return collection.aggregate(pipeline);
+    }
+
+    countDocuments(collectionName, query, options) {
+        const collection = this.db.collection(collectionName);
+
+        return collection.countDocuments(query, options);
     }
 
     async stop() {

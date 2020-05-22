@@ -213,6 +213,10 @@ class Node {
         });
     }
 
+    static async count(client, query, options = {}) {
+        return await db.countDocuments("nodes", query, options);
+    }
+
     static async query(client, query, options = {}) {
         const dbOpts = {
             limit: options.limit,

@@ -2,6 +2,7 @@
 
 const assert = require("assert");
 const Node = require("../../../core/Node");
+const log = require("../../../log")(module);
 const media = require("../../../media");
 const cachemedia = require("./cachemedia");
 
@@ -48,15 +49,21 @@ module.exports = async (client) => {
         ]
     };
 
-    const list = await Node.query(client, query, {
-        limit: 1,
-        sort: { "properties.birthtime": -1 }
-    });
+    const count = await Node.count(client, query);
 
-    if (list[0]) {
-        await cachemedia(client, list[0]);
+    if (count > 0) {
+        log.info(`Task cache media found ${count} nodes that needs to be cached`);
 
-        return true;
+        const list = await Node.query(client, query, {
+            limit: 1,
+            sort: { "properties.birthtime": -1 }
+        });
+
+        if (list[0]) {
+            await cachemedia(client, list[0]);
+
+            return true;
+        }
     }
 
     return false;

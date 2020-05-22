@@ -11,8 +11,12 @@ class Task {
     constructor(name, command) {
         this.name = name;
         this.command = command;
-        this.stopped = true;
+        this.stopped = false;
         this.timer = null;
+    }
+
+    init() {
+        this.check();
     }
 
     start() {
@@ -20,7 +24,7 @@ class Task {
             return;
         }
 
-        log.info(`Task ${this.name} started...`);
+        log.info(`Task ${this.name} started`);
 
         this.stopped = false;
 
@@ -56,7 +60,7 @@ class Task {
         this.timer && clearTimeout(this.timer);
         this.timer = null;
 
-        log.info(`Task ${this.name} stopped...`);
+        log.info(`Task ${this.name} stopped`);
     }
 }
 
