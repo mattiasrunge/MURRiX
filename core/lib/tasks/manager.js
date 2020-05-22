@@ -5,7 +5,7 @@ const core = require("../core");
 const Task = require("./task");
 const log = require("../log")(module);
 
-const TASK_START_DELAY = 1000 * 60 * 60 * 3; // Three minutes
+const TASK_START_DELAY = 1000 * 60 * 3; // Three minutes
 
 class TaskManager {
     constructor() {

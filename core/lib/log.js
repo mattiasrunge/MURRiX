@@ -13,13 +13,13 @@ module.exports = (callingModule) => {
     const label = getLabel(callingModule);
     const print = (level, msg, ...args) => {
         // eslint-disable-next-line no-console
-        console.log(`${new Date()} - ${level}: [${label}] ${msg}`, ...args);
+        console.log(`${new Date().toISOString()} - ${level}: [${label}] ${msg}`, ...args);
     };
 
     return {
         print: (level, msg, ...args) => {
             // eslint-disable-next-line no-console
-            console.log(`${new Date()} - ${level}: [${label}] ${msg}`, ...args);
+            console.log(`${new Date().toISOString()} - ${level}: [${label}] ${msg}`, ...args);
         },
         info: (...args) => print("info", ...args),
         error: (...args) => print("error", ...args),
