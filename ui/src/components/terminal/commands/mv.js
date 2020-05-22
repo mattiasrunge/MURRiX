@@ -5,7 +5,7 @@ export default {
     desc: "Move a node",
     args: [ "srcpath", "dstpath" ],
     opts: {
-        f: "Force remove without confirmation"
+        f: "Move without confirmation"
     },
     exec: async (term, streams, command, opts, args) => {
         const srcpath = await term.getAbspath(args.srcpath, false);
@@ -13,7 +13,10 @@ export default {
 
         const slashIndex = srcpath.lastIndexOf("/");
         const lastPart = srcpath.slice(slashIndex + 1);
-        const items = lastPart.includes("*") ? await cmd.list(srcpath) : [ await cmd.resolve(srcpath, { nofollow: true }) ];
+        const items = lastPart.includes("*") ? await cmd.list(srcpath, {
+            pattern: lastPart.replace(/\./g, "\\.").replace(/\*/g, ".*"),
+            nofollow: true
+        }) : [ await cmd.resolve(srcpath, { nofollow: true }) ];
 
         for (const item of items) {
             if (opts.f) {

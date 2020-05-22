@@ -1,5 +1,6 @@
 "use strict";
 
+const assert = require("assert");
 const path = require("path");
 const Node = require("../../../core/Node");
 const { ADMIN_CLIENT } = require("../../../core/auth");
@@ -23,6 +24,8 @@ module.exports = async (client, srcpath, dstpath, options = {}) => {
         name = path.basename(dstpath);
         dstparentnode = await Node.resolve(client, path.dirname(dstpath));
     }
+
+    assert(srcnode._id !== dstparentnode._id, `${srcnode.path} can not be moved into itself`);
 
     await srcparentnode.removeChild(client, srcnode);
 

@@ -5,7 +5,7 @@ export default {
     desc: "Modify a user's groups",
     args: [ "username", "groupname" ],
     opts: {
-        r: "Remove group"
+        r: "Remove from group"
     },
     exec: async (term, streams, command, opts, args) => {
         await cmd.usermod(args.username, args.groupname, opts.r);
