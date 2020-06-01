@@ -2,7 +2,7 @@
 
 import request from "superagent";
 import cookies from "browser-cookies";
-import { backend, cmd } from "lib/backend";
+import { backend, api } from "lib/backend";
 import notification from "lib/notification";
 import Emitter from "./emitter";
 
@@ -86,20 +86,19 @@ class Uploader extends Emitter {
             file.status = "importing";
             this.setState({ files: this.state.files.slice(0) });
 
-            await cmd.ensure(this.state.path, "d");
+            await api.ensure(this.state.path, "d");
 
-            const node = await cmd.create(this.state.path, "f", file.name, {
+            const node = await api.create(this.state.path, "f", file.name, {
                 name: file.name,
                 _source: {
                     filename: req.body.filename
                 }
             });
 
-            await cmd.regenerate(node.path);
+            await api.regenerate(node.path);
 
             file.status = "complete";
             this.setState({ files: this.state.files.slice(0) });
-
         } catch (error) {
             file.error = error.message;
             file.status = "error";

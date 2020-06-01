@@ -1,11 +1,10 @@
 "use strict";
 
-const assert = require("assert");
-const core = require("../core");
+const { api } = require("../api");
+const { ADMIN_CLIENT } = require("../lib/auth");
+const bus = require("../lib/bus");
+const log = require("../lib/log")(module);
 const Task = require("./task");
-const log = require("../log")(module);
-
-const TASK_START_DELAY = 1000 * 60 * 3; // Three minutes
 
 class TaskManager {
     constructor() {
@@ -15,35 +14,48 @@ class TaskManager {
     async init() {
         log.info("Initializing task manager...");
 
-        for (const [ name, command ] of Object.entries(core.commands)) {
-            if (name.startsWith("task_")) {
-                const niceName = name.slice(5);
+        bus.on("node.create", (e, { node }) => this._addTask(node));
+        bus.on("node.update", (e, { node }) => this._updateTask(node));
+        bus.on("node.remove", (e, { node }) => this._removeTask(node));
 
-                this.tasks[niceName] = new Task(niceName, command);
+        const nodes = await api.list(ADMIN_CLIENT, "/system/tasks");
 
-                setTimeout(() => this.tasks[niceName].init(), TASK_START_DELAY);
-            }
+        for (const node of nodes) {
+            await this._addTask(node);
         }
     }
 
-    async stopTask(name) {
-        assert(this.tasks[name], `No task named ${name} found`);
+    _addTask(node) {
+        if (node.attributes.enabled && !this.tasks[node.name]) {
+            this.tasks[node.name] = new Task(node);
 
-        await this.tasks[name].stop();
+            this.tasks[node.name].start();
+        }
     }
 
-    async startTask(name) {
-        assert(this.tasks[name], `No task named ${name} found`);
-
-        await this.tasks[name].start();
+    _updateTask(node) {
+        if (!node.attributes.enabled && this.tasks[node.name]) {
+            this._removeTask(node);
+        } else if (node.attributes.enabled && !this.tasks[node.name]) {
+            this._addTask(node);
+        } else if (this.tasks[node.name]) {
+            this.tasks[node.name].update(node);
+        }
     }
 
-    async listTasks() {
-        return Object.fromEntries(Object.entries(this.tasks).map(([ name, task ]) => ([ name, task.status() ])));
+    _removeTask(node) {
+        const task = this.tasks[node.name];
+
+        if (task) {
+            delete this.tasks[node.name];
+
+            task.stop();
+        }
     }
 
     async stop() {
-        await Promise.all(Object.values(this.tasks).map((task) => task.stop()));
+        Object.values(this.tasks).map((task) => task.stop());
+        this.tasks = {};
     }
 }
 

@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Menu } from "semantic-ui-react";
 import Component from "lib/component";
-import { backend, cmd, event } from "lib/backend";
+import { backend, api, event } from "lib/backend";
 import NodeImage from "./NodeImage";
 import NodeLabels from "./NodeLabels";
 import NodeAge from "./NodeAge";
@@ -44,7 +44,7 @@ class NodeHeader extends Component {
         this.setState({ url: null, age: {}, loading: true });
 
         try {
-            const url = await cmd.url(`${props.node.path}/profilePicture`, {
+            const url = await api.url(`${props.node.path}/profilePicture`, {
                 width: 1127,
                 height: 350,
                 type: "image"

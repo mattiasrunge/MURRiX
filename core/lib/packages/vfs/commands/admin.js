@@ -1,19 +1,14 @@
 "use strict";
 
-const assert = require("assert");
-const Node = require("../../../core/Node");
-const { ADMIN_CLIENT } = require("../../../core/auth");
+const chalk = require("chalk");
+const { api } = require("../../../api");
 
-module.exports = async (client, password) => {
-    if (!password) {
-        client.revokeAdmin();
-    } else {
-        const user = await Node.resolve(ADMIN_CLIENT, "/users/admin");
+module.exports = async (client, term
+// Give admin access
+) => {
+    const password = await term.ask("Admin password:", true);
 
-        assert(await user.matchPassword(password), "Authentication failed");
+    await api.admin(client, password);
 
-        client.giveAdmin();
-    }
-
-    return client.isAdmin();
+    term.writeln(password ? chalk.green`Admin rights granted` : chalk.bold`Admin rights recinded`);
 };

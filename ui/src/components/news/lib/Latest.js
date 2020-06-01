@@ -2,7 +2,7 @@
 import React from "react";
 import { Feed, Loader } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import format from "lib/format";
 import { NodeLink, NodeImage } from "components/nodeparts";
@@ -22,7 +22,7 @@ class Latest extends Component {
         this.setState({ loading: true });
 
         try {
-            const events = await cmd.latest(20);
+            const events = await api.latest(20);
 
             this.setState({
                 events,

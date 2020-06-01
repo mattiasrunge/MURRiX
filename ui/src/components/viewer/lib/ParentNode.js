@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { List } from "semantic-ui-react";
 import Component from "lib/component";
 import { NodeLink } from "components/nodeparts";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 
 class ParentNode extends Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class ParentNode extends Component {
         this.setState({ loading: true });
 
         try {
-            const parent = await cmd.resolve(`${props.node.path}/../..`, { noerror: true });
+            const parent = await api.resolve(`${props.node.path}/../..`, { noerror: true });
 
             !this.disposed && this.setState({
                 parent,

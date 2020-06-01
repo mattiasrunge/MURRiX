@@ -5,7 +5,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Input, Modal, Button, Form, Message } from "semantic-ui-react";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import Component from "lib/component";
 import { Focus } from "components/utils";
 import theme from "./theme.module.css";
@@ -32,7 +32,7 @@ class RequestReset extends Component {
         this.setState({ loading: true, error: false });
 
         try {
-            await cmd.passwdrequest(this.state.username, templateUrl);
+            await api.passwdrequest(this.state.username, templateUrl);
             this.setState({ loading: false, sent: true });
         } catch (error) {
             this.logError("Failed to reset password", error);

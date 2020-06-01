@@ -1,22 +1,17 @@
 "use strict";
 
-const configuration = require("./configuration");
-const logger = require("./log");
+const configuration = require("./lib/configuration");
+const logger = require("./lib/log");
 const log = logger(module);
+const commander = require("./commander");
 const httpServer = require("./http/server");
-// const sftpServer = require("./sftp/server");
-const db = require("./core/db");
-const media = require("./media");
+const sshServer = require("./ssh/server");
+const db = require("./lib/db");
+const media = require("./lib/media");
 const taskManager = require("./tasks/manager");
 
-const core = require("./core");
-const bus = require("./core/bus");
-
-require("./packages/vfs");
-require("./packages/geolocation");
-require("./packages/statistics");
-require("./packages/media");
-require("./packages/murrix");
+const packages = require("./packages");
+const bus = require("./lib/bus");
 
 module.exports = {
     start: async (args) => {
@@ -24,10 +19,11 @@ module.exports = {
         await configuration.init(args);
         await db.init(configuration);
         await media.init(configuration);
-        await core.init();
+        await commander.init();
+        await packages.init();
         await taskManager.init();
         await httpServer.init(configuration);
-        // await sftpServer.init(configuration);
+        await sshServer.init(configuration);
 
         log.info("Initialization complete, core running.");
         await bus.open();
@@ -35,7 +31,7 @@ module.exports = {
     stop: async () => {
         log.info("Received shutdown signal, stopping...");
         await taskManager.stop();
-        // await sftpServer.stop();
+        await sshServer.stop();
         await httpServer.stop();
         await media.stop();
         await db.stop();

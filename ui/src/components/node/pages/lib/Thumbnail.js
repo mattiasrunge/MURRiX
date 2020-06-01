@@ -8,7 +8,7 @@ import Component from "lib/component";
 import { NodeImage } from "components/nodeparts";
 import { FileIcon } from "components/upload";
 import notification from "lib/notification";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import theme from "../../theme.module.css";
 
 class Thumbnail extends Component {
@@ -28,11 +28,11 @@ class Thumbnail extends Component {
         const path = `${this.props.parentNode.path}/profilePicture`;
 
         try {
-            await cmd.unlink(path);
+            await api.unlink(path);
         } catch (error) {}
 
         try {
-            await cmd.symlink(this.props.node.path, path);
+            await api.symlink(this.props.node.path, path);
         } catch (error) {
             this.logError("Failed to set profile picture", error);
             notification.add("error", error.message, 10000);
@@ -45,7 +45,7 @@ class Thumbnail extends Component {
 
     onRotateRight = async () => {
         try {
-            await cmd.rotate(this.props.node.path, -90);
+            await api.rotate(this.props.node.path, -90);
         } catch (error) {
             this.logError("Failed to rotate right", error);
             notification.add("error", error.message, 10000);
@@ -54,7 +54,7 @@ class Thumbnail extends Component {
 
     onRotateLeft = async () => {
         try {
-            await cmd.rotate(this.props.node.path, 90);
+            await api.rotate(this.props.node.path, 90);
         } catch (error) {
             this.logError("Failed to rotate right", error);
             notification.add("error", error.message, 10000);
@@ -63,7 +63,7 @@ class Thumbnail extends Component {
 
     onMirror = async () => {
         try {
-            await cmd.mirror(this.props.node.path);
+            await api.mirror(this.props.node.path);
         } catch (error) {
             this.logError("Failed to mirror", error);
             notification.add("error", error.message, 10000);

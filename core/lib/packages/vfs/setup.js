@@ -1,12 +1,13 @@
 "use strict";
 
 const sha1 = require("sha1");
-const log = require("../../log")(module);
+const log = require("../../lib/log")(module);
 const Root = require("./types/Root");
 const Node = require("../../core/Node");
-const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST, USERNAME_ADMIN, USERNAME_GUEST } = require("../../core/auth");
+const { api } = require("../../api");
+const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST, USERNAME_ADMIN, USERNAME_GUEST } = require("../../lib/auth");
 
-const setup = async (client, api) => {
+const setup = async (client) => {
     if (!(await api.exists(client, "/"))) {
         log.info("No root node found, creating...");
         await Root.create(client);
@@ -65,7 +66,7 @@ const setup = async (client, api) => {
             gid: GID_ADMIN,
             password: sha1(USERNAME_ADMIN)
         });
-        await api.usermod(client, USERNAME_ADMIN, "admin");
+        await api.groupjoin(client, "admin", USERNAME_ADMIN);
     }
 
     // Create guest user
@@ -79,5 +80,7 @@ const setup = async (client, api) => {
         });
     }
 };
+
+setup.PRIORITY = 1;
 
 module.exports = setup;

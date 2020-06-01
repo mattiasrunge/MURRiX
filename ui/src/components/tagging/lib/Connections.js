@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Table, Icon, Header } from "semantic-ui-react";
 import Component from "lib/component";
 import notification from "lib/notification";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import utils from "lib/utils";
 import { NodeInput } from "components/nodeparts";
 import theme from "../theme.module.css";
@@ -40,7 +40,7 @@ class Connections extends Component {
         this.setState({ loading: true });
 
         try {
-            const tags = await cmd.list(`${props.node.path}/tags`);
+            const tags = await api.list(`${props.node.path}/tags`);
             const persons = {};
 
             for (const tag of tags) {
@@ -77,11 +77,11 @@ class Connections extends Component {
 
         try {
             if (this.state.persons[id]) {
-                await cmd.unlink(`${this.props.node.path}/tags/${id}`);
+                await api.unlink(`${this.props.node.path}/tags/${id}`);
             }
 
             if (person) {
-                await cmd.symlink(person.path, `${this.props.node.path}/tags/${id}`);
+                await api.symlink(person.path, `${this.props.node.path}/tags/${id}`);
             }
 
             this.setState({ saving: false });
@@ -97,7 +97,7 @@ class Connections extends Component {
 
         try {
             if (this.state.persons[face.id]) {
-                await cmd.unlink(`${this.props.node.path}/tags/${face.id}`);
+                await api.unlink(`${this.props.node.path}/tags/${face.id}`);
             }
 
             this.props.onRemove(face);
@@ -114,7 +114,7 @@ class Connections extends Component {
         this.setState({ saving: true });
 
         try {
-            await cmd.symlink(person.path, `${this.props.node.path}/tags`);
+            await api.symlink(person.path, `${this.props.node.path}/tags`);
 
             this.setState({ saving: false });
 
@@ -130,7 +130,7 @@ class Connections extends Component {
         this.setState({ saving: true });
 
         try {
-            await cmd.unlink(person.extra.linkPath);
+            await api.unlink(person.extra.linkPath);
 
             this.setState({ saving: false });
         } catch (error) {

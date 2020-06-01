@@ -1,14 +1,17 @@
 "use strict";
 
-const Node = require("../../../core/Node");
+const assert = require("assert");
+const { api } = require("../../../api");
 
-module.exports = async (client, name, title, description = "") => {
-    const groups = await Node.resolve(client, "/groups");
+module.exports = async (client, term,
+    // Create a group
+    opts,
+    name // Generic
+) => {
+    assert(client.isAdmin(), "Only administrators can create groups");
 
-    const group = await groups.createChild(client, "g", name, {
-        name: title,
-        description
-    });
+    const title = await term.ask("Title:");
+    const description = await term.ask("Description:");
 
-    return group.serialize(client);
+    await api.mkgroup(client, name, title, description);
 };

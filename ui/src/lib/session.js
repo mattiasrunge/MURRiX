@@ -1,5 +1,5 @@
 
-import { cmd, event } from "./backend";
+import { api, event } from "./backend";
 import Emitter from "./emitter";
 
 class Session extends Emitter {
@@ -26,7 +26,7 @@ class Session extends Emitter {
     }
 
     async loadUser() {
-        this._user = await cmd.whoami();
+        this._user = await api.whoami();
 
         this.emit("update", this._user);
 

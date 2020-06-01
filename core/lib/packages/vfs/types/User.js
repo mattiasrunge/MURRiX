@@ -5,7 +5,7 @@ const uuid = require("uuid");
 const sha1 = require("sha1");
 const bcrypt = require("bcryptjs");
 const Node = require("../../../core/Node");
-const { ADMIN_CLIENT } = require("../../../core/auth");
+const { ADMIN_CLIENT } = require("../../../lib/auth");
 
 class User extends Node {
     // Private

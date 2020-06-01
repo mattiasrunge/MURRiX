@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import session from "lib/session";
 import notification from "lib/notification";
 import Component from "lib/component";
@@ -33,7 +33,7 @@ class RandomButton extends Component {
         this.setState({ loading: true });
 
         try {
-            const node = await cmd.random(includePaths, excludePaths);
+            const node = await api.random(includePaths, excludePaths);
 
             this.setState({ loading: false });
 

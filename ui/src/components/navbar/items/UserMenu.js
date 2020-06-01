@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Dropdown } from "semantic-ui-react";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import session from "lib/session";
 import Component from "lib/component";
 import { NodeImage } from "components/nodeparts";
@@ -22,7 +22,7 @@ class UserMenu extends Component {
     }
 
     onSignOut = async () => {
-        await cmd.logout();
+        await api.logout();
     }
 
     onProfile = () => {

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Modal } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import EditForm from "./lib/EditForm";
 import theme from "./theme.module.css";
@@ -27,8 +27,8 @@ class CreateModal extends Component {
         this.setState({ saving: true });
 
         try {
-            const name = await cmd.uniquename(this.props.path, attribs.name);
-            const node = await cmd.create(this.props.path, this.props.type, name, attribs);
+            const name = await api.uniquename(this.props.path, attribs.name);
+            const node = await api.create(this.props.path, this.props.type, name, attribs);
 
             !this.disposed && this.setState({ saving: false });
 

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Label } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import theme from "./theme.module.css";
 
 class NodeLabels extends Component {
@@ -31,7 +31,7 @@ class NodeLabels extends Component {
         this.setState({ labels: [], loading: true });
 
         try {
-            const labels = await cmd.labels(props.node.path);
+            const labels = await api.labels(props.node.path);
 
             labels.sort((a, b) => b.count - a.count);
 

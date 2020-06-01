@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Image, Visibility, Segment } from "semantic-ui-react";
 import Component from "lib/component";
-import { backend, cmd, event } from "lib/backend";
+import { backend, api, event } from "lib/backend";
 import NodeIcon from "./NodeIcon";
 import theme from "./theme.module.css";
 
@@ -51,7 +51,7 @@ class NodeImage extends Component {
         const loadId = this._loadId = Date.now();
 
         try {
-            const url = await cmd.url(props.path, props.format);
+            const url = await api.url(props.path, props.format);
 
             if (loadId !== this._loadId) {
                 return;

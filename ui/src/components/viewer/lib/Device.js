@@ -5,7 +5,7 @@ import { List } from "semantic-ui-react";
 import Component from "lib/component";
 import { NodeLink } from "components/nodeparts";
 import { StringList } from "components/utils";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import theme from "../theme.module.css";
 
 class Device extends Component {
@@ -33,9 +33,9 @@ class Device extends Component {
         this.setState({ loading: true });
 
         try {
-            const device = await cmd.resolve(`${props.node.path}/createdWith`, { noerror: true });
+            const device = await api.resolve(`${props.node.path}/createdWith`, { noerror: true });
 
-            const deviceOwners = await cmd.list(`${props.node.path}/createdWith/owners`, { noerror: true });
+            const deviceOwners = await api.list(`${props.node.path}/createdWith/owners`, { noerror: true });
 
             !this.disposed && this.setState({
                 device,

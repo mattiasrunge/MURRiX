@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Form } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 
 class InputTextLabels extends Component {
     constructor(props) {
@@ -19,7 +19,7 @@ class InputTextLabels extends Component {
         this.setState({ labels: [], loading: true });
 
         try {
-            const labels = await cmd.labels();
+            const labels = await api.labels();
 
             labels.sort((a, b) => b.count - a.count);
 

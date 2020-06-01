@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { List } from "semantic-ui-react";
 import Component from "lib/component";
 import { NodeLink } from "components/nodeparts";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import format from "lib/format";
 import theme from "../theme.module.css";
 
@@ -43,11 +43,11 @@ class Tags extends Component {
         this.setState({ loading: true });
 
         try {
-            const nodes = await cmd.list(`${props.node.path}/tags`, { noerror: true });
+            const nodes = await api.list(`${props.node.path}/tags`, { noerror: true });
 
             if (props.node.attributes.time) {
                 for (const node of nodes) {
-                    node.age = await cmd.age(node.path, props.node.attributes.time);
+                    node.age = await api.age(node.path, props.node.attributes.time);
                 }
             }
 

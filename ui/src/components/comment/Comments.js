@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Comment, Form, Button } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import format from "lib/format";
 import { NodeImage } from "components/nodeparts";
 import theme from "./theme.module.css";
@@ -34,7 +34,7 @@ class Comments extends Component {
         this.setState({ loading: true });
 
         try {
-            const comments = await cmd.comments(props.path);
+            const comments = await api.comments(props.path);
 
             !this.disposed && this.setState({ comments, loading: false });
         } catch (error) {
@@ -51,7 +51,7 @@ class Comments extends Component {
         this.setState({ saving: true });
 
         try {
-            await cmd.comment(this.props.path, this.state.comment);
+            await api.comment(this.props.path, this.state.comment);
 
             !this.disposed && this.setState({ comment: "", saving: false });
             this.update(this.props);

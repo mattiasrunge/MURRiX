@@ -4,10 +4,12 @@ const assert = require("assert");
 const Typeson = require("typeson");
 const { v4: uuid } = require("uuid");
 const TypesonBuiltin = require("typeson-registry/dist/presets/builtin");
-const log = require("../log")(module);
-const { commands } = require("../core");
-const BaseClient = require("../core/client");
+const log = require("../lib/log")(module);
+const { api } = require("../api");
+const BaseClient = require("../terminal/client");
+const Terminal = require("../terminal");
 const jwt = require("./jwt");
+const ClientStream = require("./Stream");
 
 const TSON = new Typeson().register([ TypesonBuiltin ]);
 const COOKIE_NAME = "session";
@@ -43,7 +45,7 @@ class Client extends BaseClient {
         const client = new Client(ws, session);
 
         if (!cookies[COOKIE_NAME]) {
-            await commands.logout(client);
+            await api.logout(client);
         }
 
         return client;
@@ -53,7 +55,7 @@ class Client extends BaseClient {
         try {
             await this.sendEvent("set-cookie", {
                 name: COOKIE_NAME,
-                value: await jwt.encode(this.session)
+                value: await jwt.encode({ ...this.session })
             });
 
             // TODO: sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
@@ -70,6 +72,7 @@ class Client extends BaseClient {
 
     async sendEvent(event, data) {
         this.ws.send(TSON.stringify({
+            type: "event",
             event,
             data
         }));
@@ -118,15 +121,44 @@ class Client extends BaseClient {
         }
     }
 
+    _onWrite(data) {
+        this.ws.send(TSON.stringify({
+            type: "term",
+            data
+        }));
+    }
+
+    _ensureTerminal() {
+        if (!this.terminal) {
+            this.stream = new ClientStream({
+                onWrite: (data) => this._onWrite(data)
+            });
+
+            this.terminal = new Terminal(this, this.stream);
+
+            this.terminal.initialize();
+        }
+    }
+
     async _handleMessage(message) {
-        try {
-            assert(commands[message.name], `No command named ${message.name} found`);
+        if (message.type === "api") {
+            try {
+                assert(api[message.name], `No command named ${message.name} found`);
 
-            const result = await commands[message.name](this, ...(message.args || []));
+                const result = await api[message.name](this, ...(message.args || []));
 
-            await this.sendResult(message, result);
-        } catch (error) {
-            await this.sendError(message, error);
+                await this.sendResult(message, result);
+            } catch (error) {
+                await this.sendError(message, error);
+            }
+        } else if (message.type === "term") {
+            this._ensureTerminal();
+
+            if (message.data) {
+                this.stream.insert(message.data);
+            } else if (message.size) {
+                this.terminal.setSize(message.size.cols, message.size.rows);
+            }
         }
     }
 }

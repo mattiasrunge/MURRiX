@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 
 class NodeAge extends Component {
     constructor(props) {
@@ -28,7 +28,7 @@ class NodeAge extends Component {
         this.setState({ age: {}, loading: true });
 
         try {
-            const age = await cmd.age(props.node.path);
+            const age = await api.age(props.node.path);
 
             !this.disposed && this.setState({ age, loading: false });
         } catch (error) {

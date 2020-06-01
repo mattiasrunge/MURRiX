@@ -21,14 +21,13 @@
     "browser-cookies": "^1.2.0",
     "chart.js": "^2.9.3",
     "chron-time": "^0.0.4",
-    "columnify": "^1.5.4",
-    "eslint-plugin-jsx-control-statements": "^2.2.1",
     "jsx-control-statements": "^3.2.8",
     "leaflet": "^1.6.0",
     "moment": "^2.25.3",
     "moment-duration-format": "^2.3.2",
     "mousetrap": "^1.6.5",
     "postcss-cssnext": "^3.1.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.1",
@@ -47,7 +46,8 @@
     "template-strings": "^0.0.6",
     "typeson": "^5.18.2",
     "typeson-registry": "^1.0.0-alpha.36",
-    "wsh.js": "^0.0.8"
+    "xterm-addon-fit": "^0.4.0",
+    "xterm-for-react": "^1.0.4"
   },
   "browserslist": {
     "production": [

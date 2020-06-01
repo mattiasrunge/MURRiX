@@ -4,11 +4,11 @@ const path = require("path");
 const assert = require("assert");
 const { v4: uuid } = require("uuid");
 const shuffle = require("shuffle-array");
-const { checkMode, MASKS } = require("./mode");
-const { ADMIN_CLIENT } = require("./auth");
-const { unpackObjectKeys } = require("./utils");
-const bus = require("./bus");
-const db = require("./db");
+const { checkMode, MASKS } = require("../lib/mode");
+const { ADMIN_CLIENT } = require("../lib/auth");
+const { unpackObjectKeys } = require("../lib/utils");
+const bus = require("../lib/bus");
+const db = require("../lib/db");
 
 const Types = {};
 
@@ -77,6 +77,18 @@ class Node {
         }
 
         return Types[name];
+    }
+
+    static getTypes(filtered) {
+        if (filtered) {
+            const restricted = new Set([ "r", "s", "g", "u" ]);
+
+            return Object
+            .keys(Types)
+            .filter((type) => !restricted.has(type));
+        }
+
+        return Object.keys(Types);
     }
 
     static _factory(name, data) {
@@ -179,7 +191,7 @@ class Node {
 
             currentpath = path.join(currentpath, name);
 
-            assert(child, `Path not found (abspath: ${abspath}, parts: ${parts.join(":")}, current: ${currentpath})`);
+            assert(child, `${abspath}: Path not found`);
 
             nodepath = await this._instantiate(client, child.id, currentpath, child.name);
 
@@ -516,10 +528,10 @@ class Node {
 
         if (options.pattern) {
             const expr = new RegExp(`^${options.pattern}$`, "i");
-            children = children.filter((child) => child.name.match(expr));
+            children = children.filter(({ name }) => expr.test(name));
         }
 
-        const ids = children.map((child) => child.id);
+        const ids = children.map(({ id }) => id);
         const query = Object.assign({}, options.query || {}, { _id: { $in: ids } });
         const nodes = await db.find("nodes", query, options.opts);
 
@@ -707,8 +719,6 @@ class Node {
             umask: child.properties.mode
         });
         const copy = await this.createChild(newClient, child.properties.type, child.name, child.attributes);
-
-        await this.appendChild(client, copy);
 
         const children = await child.children(client);
 

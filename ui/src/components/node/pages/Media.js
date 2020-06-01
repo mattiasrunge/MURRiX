@@ -8,7 +8,7 @@ import format from "lib/format";
 import Component from "lib/component";
 import notification from "lib/notification";
 import utils from "lib/utils";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import { CreateModal, EditModal, RemoveModal } from "components/edit";
 import { Viewer } from "components/viewer";
 import Text from "./lib/Text";
@@ -51,9 +51,9 @@ class Media extends Component {
     }
 
     async getDays() {
-        const files = await cmd.list(`${this.props.node.path}/files`);
-        const texts = await cmd.list(`${this.props.node.path}/texts`);
-        const users = await cmd.users();
+        const files = await api.list(`${this.props.node.path}/files`);
+        const texts = await api.list(`${this.props.node.path}/texts`);
+        const users = await api.users();
 
         utils.sortNodeList(texts);
         utils.sortNodeList(files);

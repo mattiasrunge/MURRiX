@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Dropdown, Icon } from "semantic-ui-react";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import session from "lib/session";
 import Component from "lib/component";
 import { NodeImage, NodeIcon } from "components/nodeparts";
@@ -37,7 +37,7 @@ class StarMenu extends Component {
             return;
         }
 
-        const stars = await cmd.stars();
+        const stars = await api.stars();
 
         this.setState({ stars });
     }

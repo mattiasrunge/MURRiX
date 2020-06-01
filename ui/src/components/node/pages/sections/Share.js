@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Header, Grid, Table, Label, Checkbox } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import utils from "lib/utils";
 import { NodeImage } from "components/nodeparts";
@@ -23,7 +23,7 @@ class Share extends Component {
     }
 
     async createUserList(groups) {
-        const users = await cmd.users();
+        const users = await api.users();
 
         const owner = users.find((user) => user.attributes.uid === this.props.node.properties.uid);
 
@@ -94,7 +94,7 @@ class Share extends Component {
     async createGroupList(groups) {
         return Promise.all(groups.map(async (group) => {
             const access = this.getGroupAccess(group);
-            const users = await cmd.users(group.name);
+            const users = await api.users(group.name);
 
             return {
                 id: group._id,
@@ -130,7 +130,7 @@ class Share extends Component {
                 mode |= currentMode & utils.MASKS.OTHER.EXEC ? utils.MASKS.OTHER.EXEC : 0;
 
                 if (mode !== currentMode) {
-                    await cmd.chmod(this.props.node.path, mode, { recursive: true });
+                    await api.chmod(this.props.node.path, mode, { recursive: true });
                 }
             } else {
                 const currentMode = access.ac ? access.ac.mode : 0;
@@ -141,7 +141,7 @@ class Share extends Component {
                 mode |= readable || writable ? utils.MASKS.ACL.EXEC : 0;
 
                 if (mode !== currentMode) {
-                    await cmd.setfacl(this.props.node.path, {
+                    await api.setfacl(this.props.node.path, {
                         uid: null,
                         gid: group.attributes.gid,
                         mode
@@ -160,7 +160,7 @@ class Share extends Component {
         this.setState({ loading: true });
 
         try {
-            const groupNodes = await cmd.groups();
+            const groupNodes = await api.groups();
             const groups = await this.createGroupList(groupNodes);
 
             this.setState({

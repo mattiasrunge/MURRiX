@@ -3,7 +3,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import Component from "lib/component";
 import notification from "lib/notification";
 import FamilyPerson from "./lib/FamilyPerson";
@@ -228,7 +228,7 @@ class Family extends Component {
         const position = { x: 0, y: 0 };
 
         try {
-            const root = await cmd.getfamily(this.props.node.path);
+            const root = await api.getfamily(this.props.node.path);
 
             const people = this.makePeople(root);
             const links = this.makeLinks(people);

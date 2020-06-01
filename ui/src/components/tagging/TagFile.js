@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Grid, Message } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import Image from "./lib/Image";
 import Connections from "./lib/Connections";
@@ -14,7 +14,7 @@ class TagFile extends Component {
         faces.sort((a, b) => a.y - b.y);
 
         try {
-            await cmd.update(this.props.node.path, { faces });
+            await api.update(this.props.node.path, { faces });
         } catch (error) {
             this.logError("Failed to save faces", error);
             notification.add("error", error.message, 10000);
@@ -25,7 +25,7 @@ class TagFile extends Component {
         const faces = (this.props.node.attributes.faces || []).filter((f) => f !== face);
 
         try {
-            await cmd.update(this.props.node.path, { faces });
+            await api.update(this.props.node.path, { faces });
         } catch (error) {
             this.logError("Failed to remove face", error);
             notification.add("error", error.message, 10000);

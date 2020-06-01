@@ -9,13 +9,13 @@ class Events extends Emitter {
         super();
 
         backend.on("message", async (event, message) => {
-            if (message.id) {
+            if (message.type !== "event") {
                 return;
             }
 
             if (message.event === "set-cookie") {
                 const location = document.location.toString();
-                const domain = location.startsWith("localhost") ? "localhost" : location.toString().replace(/^(?:https?:\/\/)?(?:[^/]+\.)?([^./]+\.[^./]+).*$/, "$1");
+                const domain = location.startsWith("http://localhost") ? "localhost" : location.toString().replace(/^(?:https?:\/\/)?(?:[^/]+\.)?([^./]+\.[^./]+).*$/, "$1");
 
                 cookies.set(message.data.name, message.data.value, { domain });
             } else if (message.event === "ready") {

@@ -2,7 +2,7 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import session from "lib/session";
 import notification from "lib/notification";
 import Component from "lib/component";
@@ -50,7 +50,7 @@ class SearchInput extends Component {
             this.setState({ loading: true });
 
             try {
-                const node = await cmd.resolve(path);
+                const node = await api.resolve(path);
 
                 this.setState({
                     selected: node,

@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Rating } from "semantic-ui-react";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import session from "lib/session";
 import notification from "lib/notification";
 import Component from "lib/component";
@@ -37,7 +37,7 @@ class StarIcon extends Component {
         }
 
         try {
-            const stars = await cmd.stars();
+            const stars = await api.stars();
 
             this.setState({ stars });
         } catch (error) {
@@ -47,7 +47,7 @@ class StarIcon extends Component {
 
     async onToggleStar() {
         try {
-            await cmd.star(this.props.node.path);
+            await api.star(this.props.node.path);
         } catch (error) {
             this.logError("Failed to toggle star", error);
             notification.add("error", "Failed to toggle star", 10000);

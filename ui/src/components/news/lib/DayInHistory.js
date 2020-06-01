@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { List } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import format from "lib/format";
 import notification from "lib/notification";
 import { NodeLink } from "components/nodeparts";
@@ -22,7 +22,7 @@ class DayInHistory extends Component {
         this.setState({ loading: true });
 
         try {
-            const events = await cmd.dayinhistory(this.props.date);
+            const events = await api.dayinhistory(this.props.date);
 
             this.setState({
                 events,

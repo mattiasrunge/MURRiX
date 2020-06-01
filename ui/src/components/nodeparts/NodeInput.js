@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Search, Ref } from "semantic-ui-react";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import Component from "lib/component";
 import NodeImage from "./NodeImage";
@@ -58,7 +58,7 @@ class NodeInput extends Component {
             }
 
             try {
-                const all = await cmd.list(this.props.paths, {
+                const all = await api.list(this.props.paths, {
                     search: value,
                     limit: this.props.limit
                 });

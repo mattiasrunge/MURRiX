@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Modal } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import EditForm from "./lib/EditForm";
 import theme from "./theme.module.css";
@@ -21,7 +21,7 @@ class EditModal extends Component {
         this.setState({ saving: true });
 
         try {
-            await cmd.update(this.props.node.path, attributes);
+            await api.update(this.props.node.path, attributes);
 
             !this.disposed && this.setState({ saving: false });
             this.props.onClose();

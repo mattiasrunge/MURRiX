@@ -4,13 +4,13 @@ import PropTypes from "prop-types";
 import { Dropdown } from "semantic-ui-react";
 import Component from "lib/component";
 import notification from "lib/notification";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import theme from "../theme.module.css";
 
 class ActionMenu extends Component {
     onRotateRight = async () => {
         try {
-            await cmd.rotate(this.props.node.path, -90);
+            await api.rotate(this.props.node.path, -90);
         } catch (error) {
             this.logError("Failed to rotate right", error);
             notification.add("error", error.message, 10000);
@@ -19,7 +19,7 @@ class ActionMenu extends Component {
 
     onRotateLeft = async () => {
         try {
-            await cmd.rotate(this.props.node.path, 90);
+            await api.rotate(this.props.node.path, 90);
         } catch (error) {
             this.logError("Failed to rotate right", error);
             notification.add("error", error.message, 10000);
@@ -28,7 +28,7 @@ class ActionMenu extends Component {
 
     onMirror = async () => {
         try {
-            await cmd.mirror(this.props.node.path);
+            await api.mirror(this.props.node.path);
         } catch (error) {
             this.logError("Failed to mirror", error);
             notification.add("error", error.message, 10000);

@@ -3,7 +3,7 @@
 /* global describe it */
 
 const assert = require("assert");
-const { unpackObjectKeys } = require("../../lib/core/utils");
+const { unpackObjectKeys } = require("../../lib/lib/utils");
 
 describe("Test", () => {
     describe("VFS", () => {

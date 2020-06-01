@@ -3,16 +3,11 @@
 /* global describe beforeAll afterAll it afterEach */
 
 const assert = require("assert");
-const db = require("../../lib/core/db");
-const core = require("../../lib/core");
+const db = require("../../lib/lib/db");
+const packages = require("../../lib/packages");
+const commander = require("../../lib/commander");
 const Node = require("../../lib/core/Node");
-const { ADMIN_CLIENT } = require("../../lib/core/auth");
-
-require("../../lib/packages/vfs");
-require("../../lib/packages/geolocation");
-require("../../lib/packages/statistics");
-require("../../lib/packages/media");
-require("../../lib/packages/murrix");
+const { ADMIN_CLIENT } = require("../../lib/lib/auth");
 
 const destroyNodes = async (client) => {
     const root = await Node.resolve(client, "/");
@@ -40,7 +35,8 @@ describe("Test", () => {
         beforeAll(async () => {
             await db.init({ mongoUrl: "mongodb://localhost:27017/murrix_test_types" });
             await db.dropDatabase();
-            await core.init();
+            await commander.init();
+            await packages.init();
         }, 15000);
 
         afterAll(async () => {

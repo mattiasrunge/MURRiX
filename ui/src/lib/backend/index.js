@@ -1,14 +1,14 @@
 
 import Server from "./server";
 import Events from "./events";
-import Commands from "./commands";
+import Api from "./api";
 
 const backend = new Server();
 const event = new Events(backend);
-const cmd = new Commands(backend);
+const api = new Api(backend);
 
 export {
     backend,
-    cmd,
+    api,
     event
 };

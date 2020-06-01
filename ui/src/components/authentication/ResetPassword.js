@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Input, Modal, Button, Form, Message } from "semantic-ui-react";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import Component from "lib/component";
 import { Focus } from "components/utils";
 import theme from "./theme.module.css";
@@ -33,7 +33,7 @@ class ResetPassword extends Component {
         this.setState({ loading: true, error: false });
 
         try {
-            await cmd.passwdreset(this.props.match.params.username, this.props.match.params.id, this.state.password1);
+            await api.passwdreset(this.props.match.params.username, this.props.match.params.id, this.state.password1);
             this.setState({ loading: false, set: true });
         } catch (error) {
             this.logError("Failed to reset password", error);

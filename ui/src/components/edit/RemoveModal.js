@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Modal, Button } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 
 class RemoveModal extends Component {
@@ -19,7 +19,7 @@ class RemoveModal extends Component {
         this.setState({ removing: true });
 
         try {
-            await cmd.unlink(this.props.node.path);
+            await api.unlink(this.props.node.path);
 
             !this.disposed && this.setState({ removing: false });
             this.props.onClose();

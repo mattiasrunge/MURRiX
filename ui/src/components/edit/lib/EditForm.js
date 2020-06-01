@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { Form, Button, Modal } from "semantic-ui-react";
 import chron from "chron-time";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import Component from "lib/component";
 import InputLabels from "./InputLabels";
@@ -49,7 +49,7 @@ class EditForm extends Component {
 
     async getAttributeTypes() {
         try {
-            const types = await cmd.attribtypes(this.props.type);
+            const types = await api.attribtypes(this.props.type);
             const fields = types.map((atype) => ({
                 ...atype,
                 Component: Components[atype.type]

@@ -1,17 +1,28 @@
 "use strict";
 
 const assert = require("assert");
-const Node = require("../../../core/Node");
-const { ADMIN_CLIENT } = require("../../../core/auth");
+const chalk = require("chalk");
+const { api } = require("../../../api");
 
-module.exports = async (client, username, oldPassword, newPassword) => {
-    assert(username === client.getUsername() || client.isAdmin(), "Permission denied");
+module.exports = async (client, term,
+    // Change user password
+    opts,
+    username = "" // Username
+) => {
+    let oldPassword = null;
 
-    const user = await Node.resolve(ADMIN_CLIENT, `/users/${username}`);
+    assert(client.isAdmin() || username === client.getUsername(), "Only administrators are allowed to change the password of another user");
 
     if (!client.isAdmin()) {
-        assert(await user.matchPassword(oldPassword), "Authentication failed");
+        oldPassword = await term.ask("Current password:", true);
     }
 
-    return user.setPassword(ADMIN_CLIENT, newPassword);
+    const password1 = await term.ask("New password:", true);
+    const password2 = await term.ask("Confirm new password:", true);
+
+    assert(password1 === password2, "Passwords do not match");
+
+    await api.passwd(client, username, oldPassword, password1);
+
+    term.writeln(chalk.green`Password updated`);
 };

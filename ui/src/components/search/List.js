@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Card, Loader } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import { NodeCard } from "components/nodeparts";
 import theme from "./theme.module.css";
 
@@ -39,9 +39,9 @@ class List extends Component {
             let list = [];
 
             if (query.year) {
-                list = await cmd.albumsbyyear(query.year);
+                list = await api.albumsbyyear(query.year);
             } else {
-                list = await cmd.list(query.paths, query.options);
+                list = await api.list(query.paths, query.options);
             }
 
             !this.disposed && this.setState({ list, loading: false });

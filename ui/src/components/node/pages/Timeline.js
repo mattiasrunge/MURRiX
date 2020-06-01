@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Loader, Button } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import notification from "lib/notification";
 import { CreateModal, EditModal, RemoveModal } from "components/edit";
 import TimelineText from "./lib/TimelineText";
@@ -47,7 +47,7 @@ class Timeline extends Component {
         this.setState({ loading: true });
 
         try {
-            const texts = await cmd.list(`${this.props.node.path}/texts`);
+            const texts = await api.list(`${this.props.node.path}/texts`);
 
             texts.sort((a, b) => {
                 if (!a.attributes.time) {

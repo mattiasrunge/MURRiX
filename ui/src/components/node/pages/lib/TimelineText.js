@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Icon, Header } from "semantic-ui-react";
 import Component from "lib/component";
 import utils from "lib/utils";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import { NodeLink } from "components/nodeparts";
 import theme from "../../theme.module.css";
 
@@ -26,12 +26,12 @@ class TimelineText extends Component {
 
     async load() {
         try {
-            const nodes = await cmd.lookup(this.props.node._id);
+            const nodes = await api.lookup(this.props.node._id);
             const promises = nodes
             .map((node) => node.path)
             .filter((path) => path !== this.props.node.path)
             .map((path) => utils.dirname(utils.dirname(path)))
-            .map((path) => cmd.resolve(path));
+            .map((path) => api.resolve(path));
 
             const other = await Promise.all(promises);
 

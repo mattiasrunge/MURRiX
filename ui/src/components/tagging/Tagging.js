@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Header, Button } from "semantic-ui-react";
 import Component from "lib/component";
 import notification from "lib/notification";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import { SelectableImageList } from "components/list";
 import ui from "lib/ui";
 import CircularList from "lib/circular_list";
@@ -54,7 +54,7 @@ class Tagging extends Component {
         }
 
         try {
-            const suggestions = await cmd.albumtags(props.node.path);
+            const suggestions = await api.albumtags(props.node.path);
 
             this.setState({
                 suggestions

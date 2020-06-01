@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Header, Button, Message, Select } from "semantic-ui-react";
 import Dropzone from "react-dropzone";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import Component from "lib/component";
 import uploader from "lib/uploader";
 import FileList from "./lib/FileList";
@@ -24,7 +24,7 @@ class Upload extends Component {
             this.setState(state);
 
             if (state.files.length === 0 && -!state.ongoing) {
-                await cmd.hiderawfiles(this.props.node.path);
+                await api.hiderawfiles(this.props.node.path);
             }
         }));
     }

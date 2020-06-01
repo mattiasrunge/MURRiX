@@ -1,8 +1,8 @@
 "use strict";
 
 const Node = require("../../../core/Node");
-const auth = require("../../../core/auth");
-const mode = require("../../../core/mode");
+const auth = require("../../../lib/auth");
+const mode = require("../../../lib/mode");
 
 class Album extends Node {
     // Private

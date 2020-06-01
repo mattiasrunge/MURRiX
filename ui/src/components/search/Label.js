@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Segment, Label, Loader } from "semantic-ui-react";
 import { Header } from "components/home";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import List from "./List";
 import ui from "lib/ui";
 import theme from "./theme.module.css";
@@ -28,7 +28,7 @@ class SearchLabel extends Component {
     }
 
     async load() {
-        const labels = await cmd.labels();
+        const labels = await api.labels();
 
         labels.sort((a, b) => a.name.localeCompare(b.name));
 

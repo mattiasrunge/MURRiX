@@ -11,8 +11,8 @@ const etag = require("koa-etag");
 const range = require("koa-range");
 const enableDestroy = require("server-destroy");
 const api = require("./api");
-const media = require("../media");
-const log = require("../log")(module);
+const media = require("../lib/media");
+const log = require("../lib/log")(module);
 const { COOKIE_NAME } = require("./client");
 
 let server;
@@ -70,7 +70,7 @@ module.exports = {
 
         api.listen(server);
 
-        log.info(`Now listening for http requests on port ${params.port}`);
+        log.info(`Now listening for HTTP requests on port ${params.port}`);
     },
     stop: async () => {
         if (server) {

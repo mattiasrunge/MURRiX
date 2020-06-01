@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import { Image, Header } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import notification from "lib/notification";
 import utils from "lib/utils";
 import format from "lib/format";
@@ -48,7 +48,7 @@ class SelectableImageList extends Component {
 
         try {
             let days = {};
-            const files = await cmd.list(props.path, { noerror: true });
+            const files = await api.list(props.path, { noerror: true });
 
             utils.sortNodeList(files);
 

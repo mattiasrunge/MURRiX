@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Header, Grid, Table } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import { NodeLink } from "components/nodeparts";
 
@@ -25,11 +25,11 @@ class About extends Component {
         this.setState({ loading: true });
 
         try {
-            const age = await cmd.age(this.props.node.path);
-            const partner = await cmd.getpartner(this.props.node.path);
-            const children = await cmd.getchildren(this.props.node.path);
-            const mother = await cmd.getparent(this.props.node.path, "f");
-            const father = await cmd.getparent(this.props.node.path, "m");
+            const age = await api.age(this.props.node.path);
+            const partner = await api.getpartner(this.props.node.path);
+            const children = await api.getchildren(this.props.node.path);
+            const mother = await api.getparent(this.props.node.path, "f");
+            const father = await api.getparent(this.props.node.path, "m");
 
             this.setState({
                 partner,

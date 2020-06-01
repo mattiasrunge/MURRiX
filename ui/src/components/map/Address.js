@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Loader } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 
 class Address extends Component {
     constructor(props) {
@@ -29,7 +29,7 @@ class Address extends Component {
         try {
             this.setState({ address: "", loading: true });
 
-            const address = await cmd.position2address(longitude, latitude);
+            const address = await api.position2address(longitude, latitude);
 
             this.setState({ address, loading: false });
         } catch (error) {

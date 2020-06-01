@@ -10,7 +10,7 @@ import format from "lib/format";
 import ui from "lib/ui";
 import utils from "lib/utils";
 import CircularList from "lib/circular_list";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import theme from "./theme.module.css";
 
 class Viewer extends Component {
@@ -62,15 +62,15 @@ class Viewer extends Component {
         try {
             let address = false;
             const position = this.getPosition(node);
-            const location = await cmd.resolve(`${node.path}/location`, { noerror: true });
+            const location = await api.resolve(`${node.path}/location`, { noerror: true });
 
             if (location) {
                 address = location.attributes.address;
             } else if (position) {
-                address = await cmd.position2address(position.longitude, position.latitude);
+                address = await api.position2address(position.longitude, position.latitude);
             }
 
-            const tagNodes = await cmd.list(`${node.path}/tags`, { noerror: true });
+            const tagNodes = await api.list(`${node.path}/tags`, { noerror: true });
 
             const tags = tagNodes
             .map((tagNode) => {

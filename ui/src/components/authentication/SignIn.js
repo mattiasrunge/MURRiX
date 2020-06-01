@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Input, Modal, Button, Form } from "semantic-ui-react";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import session from "lib/session";
 import Component from "lib/component";
 import { Focus } from "components/utils";
@@ -39,7 +39,7 @@ class SignIn extends Component {
         this.setState({ loading: true, error: false });
 
         try {
-            await cmd.login(this.state.username, this.state.password);
+            await api.login(this.state.username, this.state.password);
             this.setState({ loading: false });
         } catch (error) {
             this.logError("Failed to login", error);

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Icon, Button, List, Card } from "semantic-ui-react";
 import stringTemplate from "template-strings";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import { NodeImage, NodeInput } from "components/nodeparts";
 import theme from "../theme.module.css";
@@ -28,7 +28,7 @@ class ListAction extends Component {
         const args = params
         .map((param) => stringTemplate(param, env));
 
-        return cmd[name](...args);
+        return api[name](...args);
     }
 
     async load() {

@@ -1,115 +1,101 @@
 
 import React from "react";
-import PropTypes from "prop-types";
-import Shell from "wsh.js";
-import { cmd } from "lib/backend";
-import session from "lib/session";
+import { XTerm } from "xterm-for-react";
+import { FitAddon } from "xterm-addon-fit";
+import { backend } from "lib/backend";
 import ui from "lib/ui";
 import Component from "lib/component";
-import commands from "./commands";
 import theme from "./theme.module.css";
 
 class Terminal extends Component {
     constructor(props) {
         super(props);
 
-        this.shell = new Shell({
-            getNode: async (path) => this.getNode(path),
-            getChildNodes: async (path) => this.getChildNodes(path),
-            shellViewId: props.shellViewId,
-            shellPanelId: props.shellPanelId
-        });
+        this.fitAddon = new FitAddon();
 
-        this.shell.templates.prompt = (args) => this.renderPrompt(args);
-        this.shell.getAbspath = async (path, useCwd) => {
-            const cwd = this.shell.current().path;
+        backend.on("message", this.onMessage);
 
-            if (useCwd && !path) {
-                return cwd;
-            }
+        ui.shortcut("alt+t", this.activate);
 
-            return await cmd.normalize(cwd, path);
+        this.state = {
+            active: false
         };
-
-        for (const name of Object.keys(commands)) {
-            this.shell.setCommandHandler(name, commands[name]);
-        }
-
-        ui.shortcut("alt+t", this.toggle, (e, element, combo) => this.shell.isActive() && combo !== "alt+t");
     }
 
-    renderPrompt(args) {
-        return `<span class="${theme.promptUser}">${session.adminGranted() ? "+" : ""}${session.username()}</span> <span class="${theme.promptPath}">${args.node.path} $</span>`;
-    }
-
-    async getChildNodes(path) {
-        const abspath = await cmd.normalize(this.shell.current().path, path);
-
-        return await cmd.list(abspath, { noerror: true, nofollow: true });
-    }
-
-    async getNode(path) {
-        if (!path) {
-            return this.shell.current();
-        }
-
-        const abspath = await cmd.normalize(this.shell.current().path, path);
-
-        return await cmd.resolve(abspath, { noerror: true });
-    }
-
-    activate() {
-        this.shell.activate();
-        this.ref.classList.add("animate__slideInDown");
-        this.ref.classList.remove("animate__slideOutUp");
-        this.ref.focus();
-    }
-
-    deactivate() {
-        this.shell.deactivate();
-        this.ref.classList.add("animate__slideOutUp");
-        this.ref.classList.remove("animate__slideInDown");
-        this.ref.blur();
-    }
-
-    toggle = () => {
-        if (this.shell.isActive()) {
-            this.deactivate();
-        } else {
-            this.activate();
-        }
-    }
-
-    onLoad(ref) {
-        if (!ref) {
+    onMessage = (event, message) => {
+        if (message.type !== "term") {
             return;
         }
 
+        this.ref.terminal.write(message.data);
+    }
+
+    activate = () => {
+        this.setState({ active: true });
+        this.ref.terminal.focus();
+
+        // TODO: This is a bit hackish, when is the animation done? We need to trigger on that
+        // TODO: We need to listen to resize events, when the user resizes the window
+        setTimeout(() => this.fitAddon.fit(), 1000);
+    }
+
+    deactivate = () => {
+        this.setState({ active: false });
+        this.ref.terminal.blur();
+    }
+
+    onWindowRef = (ref) => {
         this.ref = ref;
-        this.deactivate();
+
+        backend.send({
+            type: "term"
+        });
+    }
+
+    onData = (data) => {
+        backend.send({
+            type: "term",
+            data
+        });
+    }
+
+    onResize = (size) => {
+        backend.send({
+            type: "term",
+            size
+        });
+    }
+
+    onKey = ({ domEvent }) => {
+        if (domEvent.key === "t" && domEvent.altKey && !domEvent.ctrlKey && !domEvent.shiftKey && !domEvent.metaKey) {
+            this.deactivate();
+        }
     }
 
     render() {
         return (
-            <div
-                id={this.props.shellPanelId}
-                className={`${theme.terminal} animate__animated`}
-                ref={(ref) => this.onLoad(ref)}
-            >
-                <div id={this.props.shellViewId}></div>
-            </div>
+            <XTerm
+                className={`${theme.terminal} animate__animated ${this.state.active ? "animate__slideInDown" : "animate__slideOutUp"}`}
+                ref={this.onWindowRef}
+                options={{
+                    allowTransparency: true,
+                    fontFamily: "\"DejaVu Sans Mono\",monospace",
+                    fontSize: 13,
+                    letterSpacing: 1,
+                    theme: {
+                        background: "transparent",
+                        foreground: "white"
+                    }
+                }}
+                onData={this.onData}
+                onResize={this.onResize}
+                onKey={this.onKey}
+                addons={[
+                    this.fitAddon
+                ]}
+            />
         );
     }
 }
-
-Terminal.defaultProps = {
-    shellViewId: "shell-view",
-    shellPanelId: "shell-panel"
-};
-
-Terminal.propTypes = {
-    shellViewId: PropTypes.string,
-    shellPanelId: PropTypes.string
-};
 
 export default Terminal;

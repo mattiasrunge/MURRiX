@@ -2,8 +2,8 @@
 
 const WebSocket = require("ws");
 const cookie = require("cookie");
-const log = require("../log")(module);
-const bus = require("../core/bus");
+const log = require("../lib/log")(module);
+const bus = require("../lib/bus");
 const Client = require("./client");
 
 const HEARTBEAT_MS = 30000;
@@ -19,7 +19,11 @@ class Api {
             }
 
             if (event.startsWith("node.")) {
-                this.ws.clients.forEach(({ client }) => client.sendEvent(event, data.node.path));
+                this.ws.clients.forEach(({ client }) => {
+                    if (!client.isGuest()) {
+                        client.sendEvent(event, data.node.path);
+                    }
+                });
             }
         });
     }

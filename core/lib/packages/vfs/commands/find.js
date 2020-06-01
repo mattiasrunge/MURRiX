@@ -1,24 +1,29 @@
+
 "use strict";
 
-const Node = require("../../../core/Node");
+const chalk = require("chalk");
+const { api } = require("../../../api");
 
-module.exports = async (client, abspath, search) => {
-    const guard = [];
-    const node = await Node.resolve(client, abspath);
+module.exports = async (client, term,
+    // Find nodes
+    opts,
+    search // Generic
+) => {
+    const abspath = client.getCurrentDirectory();
 
-    const children = await node.children(client);
-    const matched = children.filter((child) => child.name.includes(search));
+    // TODO: Find should maybe be generator function so we can
+    // abort and maybe
+    const nodes = await api.find(client, abspath, search);
 
-    for (const child of children) {
-        if (guard.includes(child._id)) {
-            continue;
+    const colorize = search.split("*");
+
+    for (const node of nodes) {
+        let path = node.path;
+
+        for (const part of colorize) {
+            path = path.split(part).join(chalk.bold.yellow(part));
         }
 
-        guard.push(child._id);
-
-        const list = await module.exports(client, child, search);
-        matched.push(...list);
+        term.writeln(path);
     }
-
-    return matched;
 };

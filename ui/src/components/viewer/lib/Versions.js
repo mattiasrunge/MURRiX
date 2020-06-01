@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { List } from "semantic-ui-react";
 import Component from "lib/component";
 import format from "lib/format";
-import { cmd, backend } from "lib/backend";
+import { api, backend } from "lib/backend";
 import theme from "../theme.module.css";
 
 class Versions extends Component {
@@ -31,7 +31,7 @@ class Versions extends Component {
         this.setState({ loading: true });
 
         try {
-            const versions = await cmd.list(`${props.node.path}/versions`, { noerror: true });
+            const versions = await api.list(`${props.node.path}/versions`, { noerror: true });
 
             !this.disposed && this.setState({
                 versions,

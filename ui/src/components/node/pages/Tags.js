@@ -8,7 +8,7 @@ import format from "lib/format";
 import Component from "lib/component";
 import notification from "lib/notification";
 import utils from "lib/utils";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import { Viewer } from "components/viewer";
 import Thumbnail from "./lib/Thumbnail";
 import theme from "../theme.module.css";
@@ -29,7 +29,7 @@ class Tags extends Component {
     }
 
     async getDays() {
-        const files = await cmd.filesbytags(this.props.node.path);
+        const files = await api.filesbytags(this.props.node.path);
 
         utils.sortNodeList(files);
 

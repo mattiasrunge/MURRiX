@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Header, Card } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import ListAction from "./lib/ListAction";
 import theme from "./theme.module.css";
@@ -22,7 +22,7 @@ class Actions extends Component {
         this.setState({ loading: true });
 
         try {
-            const actions = await cmd.actiontypes(this.props.node.properties.type);
+            const actions = await api.actiontypes(this.props.node.properties.type);
 
             !this.disposed && this.setState({ loading: false, actions });
         } catch (error) {

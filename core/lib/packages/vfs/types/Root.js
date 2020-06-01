@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 const { v4: uuid } = require("uuid");
-const db = require("../../../core/db");
+const db = require("../../../lib/db");
 const Node = require("../../../core/Node");
 
 class Root extends Node {

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Icon, Item } from "semantic-ui-react";
 import Component from "lib/component";
 import { NodeImage, NodeLink } from "components/nodeparts";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import theme from "../../theme.module.css";
 
 class FamilyPerson extends Component {
@@ -32,8 +32,8 @@ class FamilyPerson extends Component {
         this.setState({ age: {}, loading: true });
 
         try {
-            const age = await cmd.age(props.person.node.path);
-            const partner = await cmd.getpartner(props.person.node.path);
+            const age = await api.age(props.person.node.path);
+            const partner = await api.getpartner(props.person.node.path);
 
             !this.disposed && this.setState({ age, partner, loading: false });
         } catch (error) {

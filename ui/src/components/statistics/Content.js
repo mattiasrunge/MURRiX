@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import { Loader, Card } from "semantic-ui-react";
 import { Header } from "components/home";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import Component from "lib/component";
 import notification from "lib/notification";
 import ui from "lib/ui";
@@ -46,7 +46,7 @@ class Content extends Component {
         this.setState({ loading: true });
 
         try {
-            const nodeData = await cmd.nodedata({ types: [ "a", "f", "p", "l" ] });
+            const nodeData = await api.nodedata({ types: [ "a", "f", "p", "l" ] });
 
             const dataList = [
                 {

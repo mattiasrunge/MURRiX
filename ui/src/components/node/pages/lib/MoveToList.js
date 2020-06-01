@@ -5,7 +5,7 @@ import store from "store";
 import { withRouter } from "react-router-dom";
 import { Icon, Button, List } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import notification from "lib/notification";
 import { NodeImage, NodeInput } from "components/nodeparts";
 import theme from "../../theme.module.css";
@@ -47,7 +47,7 @@ class MoveToList extends Component {
             const selected = this.props.files.slice(0);
 
             for (const file of selected) {
-                await cmd.move(file.path, `${remote.path}/files`, { inherit: true });
+                await api.move(file.path, `${remote.path}/files`, { inherit: true });
             }
 
             notification.add("success", `Moved ${selected.length} file(s) successfully`);

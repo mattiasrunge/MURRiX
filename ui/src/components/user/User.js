@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { Menu, Container } from "semantic-ui-react";
-import { cmd } from "lib/backend";
+import { api } from "lib/backend";
 import session from "lib/session";
 import Component from "lib/component";
 import ui from "lib/ui";
@@ -52,7 +52,7 @@ class User extends Component {
         this.setState({ loading: true, error: false });
 
         try {
-            await cmd.login(this.state.username, this.state.password);
+            await api.login(this.state.username, this.state.password);
             this.setState({ loading: false });
         } catch (error) {
             this.logError("Failed to login", error);

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import Component from "lib/component";
-import { cmd, event } from "lib/backend";
+import { api, event } from "lib/backend";
 import ui from "lib/ui";
 import notification from "lib/notification";
 import { NodeHeader } from "components/nodeparts";
@@ -63,7 +63,7 @@ class Node extends Component {
         this.setState({ loading: true });
 
         try {
-            const node = await cmd.resolve(path);
+            const node = await api.resolve(path);
 
             this.setState({ node, loading: false, page });
         } catch (error) {

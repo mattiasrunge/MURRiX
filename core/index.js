@@ -1,5 +1,7 @@
 "use strict";
 
+Error.stackTraceLimit = Infinity;
+
 const path = require("path");
 const main = require("./lib/main");
 const argv = require("yargs")
@@ -9,7 +11,7 @@ const argv = require("yargs")
 .strict()
 .option("c", {
     alias: "config",
-    default: path.relative(__dirname, path.join("..", "conf", "config.json")),
+    default: path.relative(__dirname, path.join("..", "..", "conf", "config.json")),
     describe: "Configuration file",
     type: "string"
 })
@@ -23,8 +25,8 @@ const argv = require("yargs")
 /* eslint-disable */
 
 process
-.on("SIGINT", () => { main.stop().then(process.exit); })
-.on("SIGTERM", () => { main.stop().then(process.exit); });
+.on("SIGINT", () => main.stop().then(process.exit))
+.on("SIGTERM", () => main.stop().then(process.exit));
 
 main.start(argv)
 .catch((error) => {
