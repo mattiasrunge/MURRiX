@@ -20,6 +20,6 @@ const setup = async (client) => {
     });
 };
 
-setup.PRIORITY = 2;
+setup.PRIORITY = 3;
 
 module.exports = setup;
