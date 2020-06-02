@@ -1,6 +1,6 @@
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term,
@@ -12,8 +12,8 @@ module.exports = async (client, term,
     await api.setpartner(client, person.path, partner?.path);
 
     if (partner) {
-        term.writeln(`${chalk.bold(person.attributes.name)} is now partner with ${chalk.bold(partner.attributes.name)}`);
+        term.writeln(`${color.bold(person.attributes.name)} is now partner with ${color.bold(partner.attributes.name)}`);
     } else {
-        term.writeln(`${chalk.bold(person.attributes.name)} has no partner now`);
+        term.writeln(`${color.bold(person.attributes.name)} has no partner now`);
     }
 };

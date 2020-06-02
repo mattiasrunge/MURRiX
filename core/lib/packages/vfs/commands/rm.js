@@ -1,7 +1,7 @@
 
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term,
@@ -23,7 +23,7 @@ module.exports = async (client, term,
     }
 
     for (const node of nodes) {
-        const answer = await term.ask(`Are you sure you want to remove ${chalk.bold(node.name)}? [y/N]`);
+        const answer = await term.ask(`Are you sure you want to remove ${color.bold(node.name)}? [y/N]`);
 
         if (answer.toLowerCase() === "y") {
             await api.unlink(client, node.path);

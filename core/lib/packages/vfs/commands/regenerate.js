@@ -1,7 +1,7 @@
 
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term,
@@ -15,7 +15,7 @@ module.exports = async (client, term,
     });
 
     for (const node of nodes) {
-        term.writeln(`Regenerating ${chalk.bold(node.name)}...`);
+        term.writeln(`Regenerating ${color.bold(node.name)}...`);
         await api.regenerate(client, node.path);
     }
 };

@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const chalk = require("chalk");
+const color = require("../lib/color");
 const types = require("./types");
 
 class Commander {
@@ -126,7 +126,7 @@ class Commander {
 
     _printHelp(term, cmd, error) {
         if (error) {
-            term.writeln(`${chalk.bold.redBright(error)}`);
+            term.writeln(`${color.bold.redBright(error)}`);
         }
 
         const params = Object.entries(cmd.def.params).map(([ name, param ]) => typeof param.value !== "undefined" ? `[${name}]` : `<${name}>`);

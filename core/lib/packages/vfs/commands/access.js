@@ -1,6 +1,6 @@
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 const { getModeString } = require("../../../lib/mode");
 
@@ -18,19 +18,19 @@ module.exports = async (client, term,
     const data = [];
 
     data.push([
-        chalk.bold`Owner:`,
+        color.bold`Owner:`,
         " ",
         umode,
         uname
     ]);
     data.push([
-        chalk.bold`Group:`,
+        color.bold`Group:`,
         " ",
         gmode,
         gname
     ]);
     data.push([
-        chalk.bold`Other:`,
+        color.bold`Other:`,
         " ",
         omode,
         ""
@@ -40,7 +40,7 @@ module.exports = async (client, term,
         for (const ac of node.properties.acl) {
             if (ac.uid) {
                 data.push([
-                    chalk.bold`User:`,
+                    color.bold`User:`,
                     "ACL",
                     getModeString(ac.mode, { acl: true }),
                     await api.uid(client, ac.uid)
@@ -49,7 +49,7 @@ module.exports = async (client, term,
 
             if (ac.gid) {
                 data.push([
-                    chalk.bold`Group:`,
+                    color.bold`Group:`,
                     "ACL",
                     getModeString(ac.mode, { acl: true }),
                     await api.gid(client, ac.gid)

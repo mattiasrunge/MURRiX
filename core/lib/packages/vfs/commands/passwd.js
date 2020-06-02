@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term,
@@ -24,5 +24,5 @@ module.exports = async (client, term,
 
     await api.passwd(client, username, oldPassword, password1);
 
-    term.writeln(chalk.green`Password updated`);
+    term.writeln(color.green`Password updated`);
 };

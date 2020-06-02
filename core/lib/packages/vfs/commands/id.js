@@ -1,6 +1,6 @@
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term,
@@ -13,11 +13,11 @@ module.exports = async (client, term,
     if (opts.l) {
         term.writeln(`uid=${info.uid.id}(${info.uid.name}) gid=${info.gid.id}(${info.gid.name}) groups=${info.gids.map((group) => `${group.id}(${group.name})`).join(",")}`);
     } else {
-        term.writeln(`${chalk.bold`Username:`} ${info.uid.name}`);
-        term.writeln(`${chalk.bold`UID:`} ${chalk.magenta(info.uid.id)}`);
-        term.writeln(chalk.bold`Groups:`);
+        term.writeln(`${color.bold`Username:`} ${info.uid.name}`);
+        term.writeln(`${color.bold`UID:`} ${color.magenta(info.uid.id)}`);
+        term.writeln(color.bold`Groups:`);
 
-        const data = info.gids.map(({ name, id }) => [ name, `(${chalk.bold`GID:`} ${chalk.magenta(id)})` ]);
+        const data = info.gids.map(({ name, id }) => [ name, `(${color.bold`GID:`} ${color.magenta(id)})` ]);
 
         term.writeTable(data, {
             columnDefault: {

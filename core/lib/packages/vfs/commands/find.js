@@ -1,7 +1,7 @@
 
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term,
@@ -21,7 +21,7 @@ module.exports = async (client, term,
         let path = node.path;
 
         for (const part of colorize) {
-            path = path.split(part).join(chalk.bold.yellow(part));
+            path = path.split(part).join(color.bold.yellow(part));
         }
 
         term.writeln(path);

@@ -1,6 +1,6 @@
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 const { datetimeAgo } = require("../../../lib/format");
 
@@ -12,9 +12,9 @@ module.exports = async (client, term,
     const events = await api.latest(client, count);
 
     const header = [
-        chalk.bold`Name`,
-        chalk.bold`Who`,
-        chalk.bold`When`
+        color.bold`Name`,
+        color.bold`Who`,
+        color.bold`When`
     ];
 
     const data = events

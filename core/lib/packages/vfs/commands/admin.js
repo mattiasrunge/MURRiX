@@ -1,6 +1,6 @@
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term
@@ -10,5 +10,5 @@ module.exports = async (client, term
 
     await api.admin(client, password);
 
-    term.writeln(password ? chalk.green`Admin rights granted` : chalk.bold`Admin rights recinded`);
+    term.writeln(password ? color.green`Admin rights granted` : color.bold`Admin rights recinded`);
 };

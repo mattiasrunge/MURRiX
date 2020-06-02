@@ -1,6 +1,6 @@
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term
@@ -23,10 +23,10 @@ module.exports = async (client, term
 
     term.writeTable([
         [
-            chalk.bold`Name`,
-            chalk.bold`GID`,
-            chalk.bold`Description`,
-            chalk.bold`Users`
+            color.bold`Name`,
+            color.bold`GID`,
+            color.bold`Description`,
+            color.bold`Users`
         ],
         ...data
     ], {

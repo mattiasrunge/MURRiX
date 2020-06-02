@@ -2,11 +2,11 @@
 
 const assert = require("assert");
 const readline = require("readline");
-const chalk = require("chalk");
 const cjson = require("color-json");
 const { table, getBorderCharacters } = require("table");
 const parser = require("yargs-parser");
 const { parseArgsStringToArgv } = require("string-argv");
+const color = require("../lib/color");
 const Deferred = require("../lib/Deferred");
 const log = require("../lib/log")(module);
 const commander = require("../commander");
@@ -33,7 +33,7 @@ class Terminal {
 
         await this._hookHistory();
 
-        this.write(`Welcome ${this.client.getUsername()}!`);
+        this.write(`Welcome ${color.bold(this.client.getUsername())}!`);
 
         this.readline.on("line", (line) => this._onLine(line));
         this.readline.on("close", () => this.stream.close());
@@ -90,7 +90,7 @@ class Terminal {
     }
 
     _getPrompt() {
-        return chalk.bold(`${this.client.isAdmin() ? chalk.greenBright("+") : ""}${chalk.greenBright(this.client.getUsername())} ${chalk.blueBright(this.client.getCurrentDirectory())} ${chalk.blueBright("$")} `);
+        return color.bold(`${this.client.isAdmin() ? color.greenBright("+") : ""}${color.greenBright(this.client.getUsername())} ${color.blueBright(this.client.getCurrentDirectory())} ${color.blueBright("$")} `);
     }
 
     _parseCommandLine(line) {
@@ -166,7 +166,7 @@ class Terminal {
         } catch (error) {
             log.error(error);
             this.readline.clearLine();
-            this.writeln(`${chalk.bold.redBright(error.message)}`);
+            this.writeln(`${color.bold.redBright(error.message)}`);
         }
 
         this.currentCmd = false;

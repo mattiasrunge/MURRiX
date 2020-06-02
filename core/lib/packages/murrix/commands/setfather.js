@@ -1,6 +1,6 @@
 "use strict";
 
-const chalk = require("chalk");
+const color = require("../../../lib/color");
 const { api } = require("../../../api");
 
 module.exports = async (client, term,
@@ -12,8 +12,8 @@ module.exports = async (client, term,
     await api.setparent(client, person.path, "m", father?.path);
 
     if (father) {
-        term.writeln(`${chalk.bold(father.attributes.name)} is now father to ${chalk.bold(person.attributes.name)}`);
+        term.writeln(`${color.bold(father.attributes.name)} is now father to ${color.bold(person.attributes.name)}`);
     } else {
-        term.writeln(`${chalk.bold(person.attributes.name)} has no father set anymore`);
+        term.writeln(`${color.bold(person.attributes.name)} has no father set anymore`);
     }
 };
