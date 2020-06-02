@@ -38,8 +38,7 @@ class TimelineText extends Component {
             !this.disposed && this.setState({
                 other: other.filter((node) => node)
             });
-        } catch (error) {
-        }
+        } catch {}
     }
 
     render() {

@@ -31,7 +31,7 @@ class NodeAge extends Component {
             const age = await api.age(props.node.path);
 
             !this.disposed && this.setState({ age, loading: false });
-        } catch (error) {
+        } catch {
             // this.logError("Failed to get node url", error, 10000);
             !this.disposed && this.setState({ age: {}, loading: false });
         }

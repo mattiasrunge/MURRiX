@@ -23,13 +23,11 @@ class NodeInput extends Component {
         };
     }
 
-    toListItem = (node) => {
-        return {
-            title: node.attributes.name,
-            key: node._id,
-            node
-        }
-    }
+    toListItem = (node) => ({
+        title: node.attributes.name,
+        key: node._id,
+        node
+    })
 
     componentDidUpdate(prevProps) {
         if (prevProps.value !== this.props.value || prevProps.suggestions !== this.props.suggestions) {
@@ -65,11 +63,7 @@ class NodeInput extends Component {
 
                 const list = all
                 .slice(0, this.props.limit)
-                .map((node) => ({
-                    title: node.attributes.name,
-                    key: node._id,
-                    node
-                }));
+                .map(this.toListItem);
 
                 // all.sort((a, b) => a.title.localeCompare(b.title));
 

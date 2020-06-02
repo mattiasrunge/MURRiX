@@ -6,7 +6,7 @@ import Component from "lib/component";
 
 class InputNumber extends Component {
     onChange = (e, { value }) => {
-        this.props.onChange(this.props.name, parseInt(value, 10));
+        this.props.onChange(this.props.name, Number.parseInt(value, 10));
     }
 
     render() {

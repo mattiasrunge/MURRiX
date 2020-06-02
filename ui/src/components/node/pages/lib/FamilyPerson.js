@@ -36,7 +36,7 @@ class FamilyPerson extends Component {
             const partner = await api.getpartner(props.person.node.path);
 
             !this.disposed && this.setState({ age, partner, loading: false });
-        } catch (error) {
+        } catch {
             // this.logError("Failed to get node url", error, 10000);
             !this.disposed && this.setState({ age: {}, partner: false, loading: false });
         }

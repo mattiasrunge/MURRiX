@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import { Loader, Card } from "semantic-ui-react";
-import { Header } from "components/home";
+import { Header } from "components/header";
 import { api } from "lib/backend";
 import Component from "lib/component";
 import notification from "lib/notification";

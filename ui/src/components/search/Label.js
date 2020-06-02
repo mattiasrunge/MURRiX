@@ -3,11 +3,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Segment, Label, Loader } from "semantic-ui-react";
-import { Header } from "components/home";
+import { Header } from "components/header";
 import Component from "lib/component";
 import { api } from "lib/backend";
-import List from "./List";
 import ui from "lib/ui";
+import List from "./List";
 import theme from "./theme.module.css";
 
 class SearchLabel extends Component {

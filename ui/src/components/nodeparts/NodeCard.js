@@ -38,7 +38,7 @@ class NodeCard extends Component {
                     <Card.Description className={theme.nodeCardDescription}>
                         <Choose>
                             <When condition={this.props.node.attributes.description && this.props.node.attributes.description.length > 150}>
-                                {this.props.node.attributes.description.substr(0, 150).trim()}...
+                                {this.props.node.attributes.description.slice(0, 150).trim()}...
                             </When>
                             <Otherwise>
                                 {this.props.node.attributes.description}

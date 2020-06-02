@@ -47,8 +47,8 @@ class Connections extends Component {
                 persons[utils.basename(tag.extra.linkPath)] = tag;
             }
 
-            const tagIds = tags.map((tag) => tag._id);
-            const suggestions = this.props.suggestions.filter(({ _id }) => !tagIds.includes(_id));
+            const tagIds = new Set(tags.map((tag) => tag._id));
+            const suggestions = this.props.suggestions.filter(({ _id }) => !tagIds.has(_id));
 
             this.setState({
                 suggestions,

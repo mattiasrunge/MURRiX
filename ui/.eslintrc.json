@@ -17,9 +17,6 @@
     ],
     "settings": {
         "import/resolver": {
-            "webpack": {
-                "config": "webpack.config.js"
-            },
             "alias": {
                 "map": [
                   [ "components", "./ui/src/components" ],
@@ -38,6 +35,13 @@
         "jsx-control-statements/jsx-control-statements": true
     },
     "rules": {
+        "node/no-missing-import": 0,
+
+        "import/extensions": [
+            "error",
+            "never",
+            { "css": "always"}
+        ],
         "jsx-control-statements/jsx-jcs-no-undef": 1,
         "no-undef": 0,
         "no-invalid-this": 0,
@@ -58,7 +62,6 @@
         "import/no-mutable-exports": "error",
         "import/first": "error",
         "import/exports-last": "error",
-        "import/extensions": "error",
         "import/order": [ "error", { "groups": [ "builtin", "external", "index" ] } ],
         "import/newline-after-import": "error",
         "node/no-extraneous-import": ["error", {

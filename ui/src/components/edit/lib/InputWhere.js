@@ -32,11 +32,11 @@ class InputWhere extends Component {
     }
 
     onLongitude = (e, { value }) => {
-        this.setPosition(parseFloat(value), this.getPosition().latitude || 0);
+        this.setPosition(Number.parseFloat(value), this.getPosition().latitude || 0);
     }
 
     onLatitude = (e, { value }) => {
-        this.setPosition(this.getPosition().longitude || 0, parseFloat(value));
+        this.setPosition(this.getPosition().longitude || 0, Number.parseFloat(value));
     }
 
     getPosition = () => {

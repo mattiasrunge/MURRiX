@@ -2,7 +2,7 @@
 import React from "react";
 import moment from "moment";
 import { Grid, Header } from "semantic-ui-react";
-import { Header as HomeHeader } from "components/home";
+import { Header as HomeHeader } from "components/header";
 import Component from "lib/component";
 import ui from "lib/ui";
 import DayInHistory from "./lib/DayInHistory";

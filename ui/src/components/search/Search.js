@@ -3,11 +3,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Input, Segment } from "semantic-ui-react";
-import { Header } from "components/home";
+import { Header } from "components/header";
 import Component from "lib/component";
 import { Focus } from "components/utils";
-import List from "./List";
 import ui from "lib/ui";
+import List from "./List";
 import theme from "./theme.module.css";
 
 class Search extends Component {

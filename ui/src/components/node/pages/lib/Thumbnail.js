@@ -29,7 +29,7 @@ class Thumbnail extends Component {
 
         try {
             await api.unlink(path);
-        } catch (error) {}
+        } catch {}
 
         try {
             await api.symlink(this.props.node.path, path);

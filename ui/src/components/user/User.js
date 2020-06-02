@@ -12,7 +12,7 @@ import Organize from "components/node/pages/sections/Organize";
 import { Upload } from "components/upload";
 import { Tagging } from "components/tagging";
 import { Actions } from "components/actions";
-import { Header } from "components/home";
+import { Header } from "components/header";
 import CircularList from "lib/circular_list";
 import theme from "./theme.module.css";
 

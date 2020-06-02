@@ -3,11 +3,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Segment, Button } from "semantic-ui-react";
-import { Header } from "components/home";
 import { Slider } from "react-semantic-ui-range";
+import { Header } from "components/header";
 import Component from "lib/component";
-import List from "./List";
 import ui from "lib/ui";
+import List from "./List";
 import theme from "./theme.module.css";
 
 class Year extends Component {
@@ -41,7 +41,7 @@ class Year extends Component {
     }
 
     getYear(props) {
-        return parseInt(props.match.params.year || this.years[this.years.length - 1], 10);
+        return Number.parseInt(props.match.params.year || this.years[this.years.length - 1], 10);
     }
 
     setYear(year) {

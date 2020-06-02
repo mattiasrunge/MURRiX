@@ -91,7 +91,7 @@ class EditForm extends Component {
         if (field.type === "when") {
             try {
                 chron.time2str(value);
-            } catch (error) {
+            } catch {
                 return false;
             }
         }

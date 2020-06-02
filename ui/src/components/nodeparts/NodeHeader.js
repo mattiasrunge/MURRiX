@@ -51,7 +51,7 @@ class NodeHeader extends Component {
             });
 
             !this.disposed && this.setState({ url, loading: false });
-        } catch (error) {
+        } catch {
             // this.logError("Failed to get node url", error, 10000);
             !this.disposed && this.setState({ loading: false });
         }

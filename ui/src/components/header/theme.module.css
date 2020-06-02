@@ -1,0 +1,8 @@
+
+@import "~styles/theme.css";
+
+.header {
+    padding-bottom: var(--spacing);
+    border-bottom: 1px solid #d4d4d5;
+    margin-bottom: var(--spacing);
+}

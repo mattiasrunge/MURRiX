@@ -1,7 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Image, Visibility, Segment } from "semantic-ui-react";
+import { Image, Segment } from "semantic-ui-react";
 import Component from "lib/component";
 import { backend, api, event } from "lib/backend";
 import NodeIcon from "./NodeIcon";
