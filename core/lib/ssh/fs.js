@@ -22,14 +22,11 @@ class FileSystem extends FileSystemInterface {
     }
 
     async opendir(session, handle) {
-        console.log("opendir", handle);
         handle.setParam("eof", false);
     }
 
     async open(session, handle, flags) {
         const client = session.client;
-
-        console.log("open", handle, flags);
         const { abspath, what } = utils.transformPath(handle.pathname);
         const level = utils.flags2level(flags);
         let node;
@@ -59,7 +56,8 @@ class FileSystem extends FileSystemInterface {
             const file = await fs.open(filename, utils.flags2mode(flags));
 
             handle.setParam("file", file);
-            handle.addDisposable(async () => await file.close());
+            handle.setParam("filename", filename);
+            handle.addDisposable(async () => fs.close(file));
         } else {
             const action = utils.flags2write(flags);
 
@@ -83,13 +81,9 @@ class FileSystem extends FileSystemInterface {
 
     async stat(session, pathname, options) {
         const client = session.client;
-
-        console.log("stat", pathname, options);
         const { abspath, what } = utils.transformPath(pathname);
-        console.log("what", what);
-        console.log("abspath", abspath);
+
         const node = await api.resolve(client, abspath, options);
-        console.log("node", node);
         let size = 0;
         let mode = node.properties.mode;
 
@@ -143,18 +137,15 @@ class FileSystem extends FileSystemInterface {
     }
 
     async lstat(session, pathname) {
-        const client = session.client;
-
-        return this.stat(client, pathname, { readlink: true });
+        return this.stat(session, pathname, { readlink: true });
     }
 
     async write(session, handle, offset, data) {
-        console.log("write", handle, offset, data);
         const what = handle.getParam("what");
 
         if (what === "file") {
             const file = handle.getParam("file");
-            await file.write(data, offset);
+            await fs.write(file, data, offset);
         } else {
             let buffer = handle.getParam("buffer");
 
@@ -171,19 +162,19 @@ class FileSystem extends FileSystemInterface {
     }
 
     async read(session, handle, offset, length) {
-        console.log("read", handle, offset, length);
         const what = handle.getParam("what");
 
         if (what === "file") {
+            const filename = handle.getParam("filename");
             const file = handle.getParam("file");
-            const attrs = await file.stat();
+            const attrs = await fs.stat(filename);
 
             if (offset >= attrs.size) {
                 return;
             }
 
             const buffer = Buffer.alloc(length);
-            const { bytesRead } = await file.read(buffer, 0, length, offset);
+            const { bytesRead } = await fs.read(file, buffer, 0, length, offset);
 
             return buffer.slice(0, bytesRead);
         }
@@ -200,7 +191,6 @@ class FileSystem extends FileSystemInterface {
     async listdir(session, handle) {
         const client = session.client;
 
-        console.log("listdir", handle);
         if (handle.getParam("eof")) {
             return;
         }
@@ -215,7 +205,7 @@ class FileSystem extends FileSystemInterface {
 
             for (const node of nodes) {
                 const filename = node.name;
-                const attrs = await this.lstat(client, path.join(node.path, "$file"));
+                const attrs = await this.lstat(session, path.join(node.path, "$file"));
                 const num = 1; // TODO: Number of links and directories inside this directory
 
                 result.push({
@@ -232,7 +222,7 @@ class FileSystem extends FileSystemInterface {
             const num = 1; // TODO: Number of links and directories inside this directory
 
             filename = "$attributes.json";
-            attrs = await this.stat(client, path.join(abspath, filename));
+            attrs = await this.stat(session, path.join(abspath, filename));
             result.push({
                 filename,
                 longname: utils.longname(filename, attrs, num),
@@ -240,7 +230,7 @@ class FileSystem extends FileSystemInterface {
             });
 
             filename = "$properties.json";
-            attrs = await this.lstat(client, path.join(abspath, filename));
+            attrs = await this.lstat(session, path.join(abspath, filename));
             result.push({
                 filename,
                 longname: utils.longname(filename, attrs, num),
@@ -248,7 +238,7 @@ class FileSystem extends FileSystemInterface {
             });
 
             filename = "$files";
-            attrs = await this.lstat(client, path.join(abspath, filename));
+            attrs = await this.lstat(session, path.join(abspath, filename));
             result.push({
                 filename,
                 longname: utils.longname(filename, attrs, num),
@@ -257,15 +247,13 @@ class FileSystem extends FileSystemInterface {
 
             if (node.properties.type === "f") {
                 filename = "$file";
-                attrs = await this.lstat(client, path.join(abspath, filename));
+                attrs = await this.lstat(session, path.join(abspath, filename));
                 result.push({
                     filename,
                     longname: utils.longname(filename, attrs, num),
                     attrs
                 });
             }
-
-            // console.log("listdir-node", node);
 
             for (const child of node.properties.children) {
                 try {
@@ -280,8 +268,6 @@ class FileSystem extends FileSystemInterface {
                 } catch {}
             }
         }
-
-        // console.log("result", result);
 
         handle.setParam("eof", true);
 
@@ -331,29 +317,18 @@ class FileSystem extends FileSystemInterface {
 
     async realpath(session, pathname) {
         const client = session.client;
-
-        console.log("realpath", pathname);
-
         const { abspath } = utils.transformPath(pathname);
         const node = await api.resolve(client, abspath);
-
-        console.log("realpath", abspath, "=", node.path);
 
         return node.path;
     }
 
     async readlink(session, pathname) {
         const client = session.client;
-
-        console.log("readlink", pathname);
-
         const { abspath } = utils.transformPath(pathname);
         const node = await api.resolve(client, abspath, { readlink: true });
-        console.log(abspath);
-        console.log(node);
-        assert(node.properties.type === "s");
 
-        console.log("readlink", abspath, "=", node.attributes.path);
+        assert(node.properties.type === "s");
 
         return node.attributes.path;
     }
