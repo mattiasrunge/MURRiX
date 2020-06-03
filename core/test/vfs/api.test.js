@@ -9,6 +9,7 @@ const commander = require("../../lib/commander");
 const { api } = require("../../lib/api");
 const Node = require("../../lib/lib/Node");
 const { ADMIN_CLIENT } = require("../../lib/auth");
+const configuration = require("../../lib/config");
 
 const createNodes = async (client) => {
     const root = await Node.resolve(client, "/");
@@ -36,7 +37,8 @@ const destroyNodes = async (client) => {
 describe("Test", () => {
     describe("VFS", () => {
         beforeAll(async () => {
-            await db.init({ mongoUrl: "mongodb://localhost:27017/murrix_test_api" });
+            configuration.mongoUrl = "mongodb://localhost:27017/murrix_test_api";
+            await db.init();
             await db.dropDatabase();
             await commander.init();
             await packages.init();

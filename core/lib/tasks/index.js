@@ -4,7 +4,7 @@ const { api } = require("../api");
 const { ADMIN_CLIENT } = require("../auth");
 const bus = require("../bus");
 const log = require("../lib/log")(module);
-const Task = require("./task");
+const Task = require("./Task");
 
 class TaskManager {
     constructor() {
