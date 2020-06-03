@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath, gender, parentpath) => {

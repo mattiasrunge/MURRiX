@@ -2,7 +2,7 @@
 
 const path = require("path");
 const escapeStringRegexp = require("escape-string-regexp");
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 const { api } = require("../../../api");
 
 const parsePattern = (abspath) => {

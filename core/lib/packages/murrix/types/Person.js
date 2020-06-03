@@ -1,7 +1,7 @@
 "use strict";
 
-const Node = require("../../../core/Node");
-const auth = require("../../../lib/auth");
+const Node = require("../../../lib/Node");
+const auth = require("../../../auth");
 const mode = require("../../../lib/mode");
 
 class Person extends Node {

@@ -1,6 +1,6 @@
 "use strict";
 
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 
 class Comment extends Node {}
 

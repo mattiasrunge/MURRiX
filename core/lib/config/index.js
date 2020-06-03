@@ -2,7 +2,7 @@
 
 const path = require("path");
 const fs = require("fs-extra");
-const log = require("./log")(module);
+const log = require("../lib/log")(module);
 
 module.exports = {
     init: async (args) => {

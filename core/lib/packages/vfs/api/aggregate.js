@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const db = require("../../../lib/db");
+const db = require("../../../db");
 
 module.exports = async (client, pipeline) => {
     assert(client.isAdmin(), "Permission denied");

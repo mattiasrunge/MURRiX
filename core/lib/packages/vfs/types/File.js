@@ -3,8 +3,8 @@
 const assert = require("assert");
 const path = require("path");
 const fs = require("fs-extra");
-const Node = require("../../../core/Node");
-const config = require("../../../lib/configuration");
+const Node = require("../../../lib/Node");
+const config = require("../../../config");
 
 class File extends Node {
     // Private

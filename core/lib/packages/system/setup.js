@@ -1,6 +1,6 @@
 "use strict";
 
-const { GID_ADMIN } = require("../../lib/auth");
+const { GID_ADMIN } = require("../../auth");
 const { api } = require("../../api");
 
 const setup = async (client) => {

@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const Session = require("./session");
+const Session = require("./Session");
 
 class Client {
     constructor(session) {

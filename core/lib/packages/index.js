@@ -4,9 +4,9 @@ const path = require("path");
 const fs = require("fs-extra");
 const commander = require("../commander");
 const api = require("../api");
-const { ADMIN_CLIENT } = require("../lib/auth");
-const Node = require("../core/Node");
-const bus = require("../lib/bus");
+const { ADMIN_CLIENT } = require("../auth");
+const Node = require("../lib/Node");
+const bus = require("../bus");
 const log = require("../lib/log")(module);
 
 class Packages {

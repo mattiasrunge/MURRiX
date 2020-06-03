@@ -2,9 +2,9 @@
 
 const path = require("path");
 const assert = require("assert");
-const Node = require("../../../core/Node");
-const config = require("../../../lib/configuration");
-const media = require("../../../lib/media");
+const Node = require("../../../lib/Node");
+const config = require("../../../config");
+const media = require("../../../media");
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath) => {

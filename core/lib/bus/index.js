@@ -1,6 +1,6 @@
 "use strict";
 
-const uuid = require("uuid");
+const { v4: uuid } = require("uuid");
 
 class Bus {
     constructor() {
@@ -56,7 +56,7 @@ class Bus {
     async emit(event, data) {
         return this._emit(event, {
             ...data,
-            _id: uuid.v4()
+            _id: uuid()
         });
     }
 }

@@ -1,10 +1,16 @@
 "use strict";
 
 const jwt = require("jsonwebtoken");
+const configuration = require("../config");
+const log = require("../lib/log")(module);
 
 class Jwt {
     constructor() {
-        this.key = "secret"; // TODO
+        this.key = "secret";
+
+        if (!configuration.jwtKey) {
+            log.info("No jwtKey specified in configuration, will use hardcoded fallback (insecure)");
+        }
     }
 
     async encode(data) {

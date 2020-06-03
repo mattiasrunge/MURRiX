@@ -3,9 +3,9 @@
 const sha1 = require("sha1");
 const log = require("../../lib/log")(module);
 const Root = require("./types/Root");
-const Node = require("../../core/Node");
+const Node = require("../../lib/Node");
 const { api } = require("../../api");
-const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST, USERNAME_ADMIN, USERNAME_GUEST } = require("../../lib/auth");
+const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST, USERNAME_ADMIN, USERNAME_GUEST } = require("../../auth");
 
 const setup = async (client) => {
     if (!(await api.exists(client, "/"))) {

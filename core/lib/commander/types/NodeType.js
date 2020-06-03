@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const Node = require("../../core/Node");
+const { api } = require("../../api");
 const Generic = require("./Generic");
 
 class NodeType extends Generic {
@@ -14,12 +14,12 @@ class NodeType extends Generic {
             return [ [], partial ];
         }
 
-        return [ Node.getTypes(true), partial ];
+        return [ api.nodetypes(client, true), partial ];
     }
 
     static async validate(client, value) {
         assert(value.length === 1, "node type should be one letter long");
-        assert(Node.getTypes(true).includes(value), `allowed types are: ${Node.getTypes(true).join(", ")}`);
+        assert(api.nodetypes(client, true).includes(value), `allowed types are: ${api.nodetypes(client, true).join(", ")}`);
     }
 }
 

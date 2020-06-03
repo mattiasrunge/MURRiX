@@ -3,8 +3,8 @@
 const assert = require("assert");
 const chron = require("chron-time");
 const merge = require("deepmerge");
-const Node = require("../../../core/Node");
-const { ADMIN_CLIENT } = require("../../../lib/auth");
+const Node = require("../../../lib/Node");
+const { ADMIN_CLIENT } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath, options = {}) => {

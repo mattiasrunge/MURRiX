@@ -1,6 +1,6 @@
 "use strict";
 
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 
 module.exports = async (client, query, options) => {
     const nodes = await Node.query(client, query, options);

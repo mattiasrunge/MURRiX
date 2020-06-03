@@ -1,6 +1,6 @@
 "use strict";
 
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath, type, name, attributes = {}) => {

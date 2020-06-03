@@ -2,12 +2,13 @@
 
 const { Server: SSHServer } = require("sftp-fs");
 const log = require("../lib/log")(module);
-const FS = require("./fs");
-const Shell = require("./shell");
+const configuration = require("../config");
+const FileSystem = require("./FileSystem");
+const Shell = require("./Shell");
 
 class Server {
-    async init(config) {
-        this.server = new SSHServer(new FS());
+    async init() {
+        this.server = new SSHServer(new FileSystem());
         this.shell = new Shell();
 
         this.server.on("error", (error) => log.error(error));
@@ -15,9 +16,10 @@ class Server {
             this.shell.onSession(connection, session);
         });
 
-        await this.server.start(config.sftp.keyFile, config.sftp.port);
+        // TODO: Generate keys if none exists
+        await this.server.start(configuration.sftp.keyFile, configuration.sftp.port);
 
-        log.info(`Now listening for SSH requests on port ${config.sftp.port}`);
+        log.info(`Now listening for SSH requests on port ${configuration.sftp.port}`);
     }
 
     async stop() {

@@ -3,9 +3,10 @@
 const { pipeline } = require("stream");
 const path = require("path");
 const fs = require("fs-extra");
-const api = require("api.io");
-const log = require("./log")(module);
 const asyncBusboy = require("async-busboy");
+const api = require("api.io");
+const log = require("../lib/log")(module);
+const configuration = require("../config");
 
 class Media {
     constructor() {
@@ -19,16 +20,14 @@ class Media {
         ];
     }
 
-    async init(config) {
-        this.config = config;
-
-        if (!this.config.mcs) {
+    async init() {
+        if (!configuration.mcs) {
             throw new Error("Missing MCS configuration");
         }
 
         await this.mcs.connect({
-            hostname: this.config.mcs.host,
-            port: this.config.mcs.port
+            hostname: configuration.mcs.host,
+            port: configuration.mcs.port
         }, (...args) => this.onStatus(...args));
 
         await this.authenticate();
@@ -47,7 +46,7 @@ class Media {
     }
 
     async authenticate() {
-        const result = await this.mcs.auth.identify(this.config.mcs.key);
+        const result = await this.mcs.auth.identify(configuration.mcs.key);
 
         if (!result) {
             throw new Error("Failed to identify ourselves with the MCS, is the keys set up?");
@@ -59,11 +58,11 @@ class Media {
     }
 
     getCached(id, filename, format) {
-        return this.mcs.cache.get(id, filename, format, this.config.mcsDirectory);
+        return this.mcs.cache.get(id, filename, format, configuration.mcsDirectory);
     }
 
     getAllCached(id, filename, type, options) {
-        return this.mcs.cache.getAll(id, filename, type, this.config.mcsDirectory, options);
+        return this.mcs.cache.getAll(id, filename, type, configuration.mcsDirectory, options);
     }
 
     detectFaces(filename) {
@@ -112,7 +111,7 @@ class Media {
                 method: "GET",
                 route: "/media/cache/:filename/:name",
                 handler: async (ctx, filename, name) => {
-                    const filepath = path.join(this.config.mcsDirectory, path.basename(filename));
+                    const filepath = path.join(configuration.mcsDirectory, path.basename(filename));
                     const stat = await fs.stat(filepath);
 
                     ctx.set("Content-disposition", `filename=${encodeURIComponent(name)}`);
@@ -125,7 +124,7 @@ class Media {
                 method: "GET",
                 route: "/media/file/:filename/:name",
                 handler: async (ctx, filename, name) => {
-                    const filepath = path.join(this.config.fileDirectory, path.basename(filename));
+                    const filepath = path.join(configuration.fileDirectory, path.basename(filename));
                     const stat = await fs.stat(filepath);
 
                     ctx.set("Content-disposition", `attachment; filename=${encodeURIComponent(name)}`);
@@ -145,7 +144,7 @@ class Media {
                     //
                     // delete ctx.client.session.uploads[id];
 
-                    const filename = path.join(this.config.uploadDirectory, id);
+                    const filename = path.join(configuration.uploadDirectory, id);
                     log.info(`Will save upload file to ${filename}...`);
 
                     let deferred = {};

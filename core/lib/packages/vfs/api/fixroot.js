@@ -1,8 +1,8 @@
 "use strict";
 
 const assert = require("assert");
-const Node = require("../../../core/Node");
-const { ADMIN_CLIENT, GID_ADMIN, UID_ADMIN, GID_USERS } = require("../../../lib/auth");
+const Node = require("../../../lib/Node");
+const { ADMIN_CLIENT, GID_ADMIN, UID_ADMIN, GID_USERS } = require("../../../auth");
 
 module.exports = async (client) => {
     assert(client.isAdmin(), "Permission denied");

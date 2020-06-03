@@ -1,6 +1,6 @@
 "use strict";
 
-const Client = require("../terminal/client");
+const Client = require("./Client");
 
 const USERNAME_ADMIN = "admin";
 const USERNAME_GUEST = "guest";
@@ -32,5 +32,6 @@ module.exports = {
     UID_GUEST,
     ADMIN_CLIENT,
     USERNAME_ADMIN,
-    USERNAME_GUEST
+    USERNAME_GUEST,
+    Client
 };

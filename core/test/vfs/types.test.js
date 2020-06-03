@@ -3,11 +3,11 @@
 /* global describe beforeAll afterAll it afterEach */
 
 const assert = require("assert");
-const db = require("../../lib/lib/db");
+const db = require("../../lib/db");
 const packages = require("../../lib/packages");
 const commander = require("../../lib/commander");
-const Node = require("../../lib/core/Node");
-const { ADMIN_CLIENT } = require("../../lib/lib/auth");
+const Node = require("../../lib/lib/Node");
+const { ADMIN_CLIENT } = require("../../lib/auth");
 
 const destroyNodes = async (client) => {
     const root = await Node.resolve(client, "/");

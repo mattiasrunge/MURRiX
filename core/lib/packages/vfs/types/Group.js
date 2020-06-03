@@ -1,7 +1,7 @@
 "use strict";
 
-const Node = require("../../../core/Node");
-const { ADMIN_CLIENT } = require("../../../lib/auth");
+const Node = require("../../../lib/Node");
+const { ADMIN_CLIENT } = require("../../../auth");
 
 class Group extends Node {
     // Private

@@ -4,6 +4,7 @@
 
 const path = require("path");
 const { MongoClient } = require("mongodb");
+const configuration = require("../config");
 
 class Database {
     constructor() {
@@ -11,8 +12,8 @@ class Database {
         this.client = null;
     }
 
-    async init(config) {
-        const url = config.mongoUrl;
+    async init() {
+        const url = configuration.mongoUrl;
 
         this.client = await MongoClient.connect(url, {
             useNewUrlParser: true,

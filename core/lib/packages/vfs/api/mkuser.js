@@ -1,7 +1,7 @@
 "use strict";
 
-const Node = require("../../../core/Node");
-const { GID_GUEST, GID_USERS } = require("../../../lib/auth");
+const Node = require("../../../lib/Node");
+const { GID_GUEST, GID_USERS } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client, username, fullname) => {

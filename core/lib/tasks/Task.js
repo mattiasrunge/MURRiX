@@ -1,7 +1,7 @@
 "use strict";
 
 const log = require("../lib/log")(module);
-const { ADMIN_CLIENT } = require("../lib/auth");
+const { ADMIN_CLIENT } = require("../auth");
 const { api } = require("../api");
 
 const NEXT_RUN_TIMEOUT = 1000 * 60;

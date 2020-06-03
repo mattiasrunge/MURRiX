@@ -3,8 +3,8 @@
 const WebSocket = require("ws");
 const cookie = require("cookie");
 const log = require("../lib/log")(module);
-const bus = require("../lib/bus");
-const Client = require("./client");
+const bus = require("../bus");
+const Client = require("./Client");
 
 const HEARTBEAT_MS = 30000;
 

@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 const request = require("request-promise-native");
-const config = require("../../../lib/configuration");
+const config = require("../../../config");
 const log = require("../../../lib/log")(module);
 
 module.exports = async (client, address) => {

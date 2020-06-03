@@ -4,11 +4,11 @@ const path = require("path");
 const assert = require("assert");
 const { v4: uuid } = require("uuid");
 const shuffle = require("shuffle-array");
-const { checkMode, MASKS } = require("../lib/mode");
-const { ADMIN_CLIENT } = require("../lib/auth");
-const { unpackObjectKeys } = require("../lib/utils");
-const bus = require("../lib/bus");
-const db = require("../lib/db");
+const { checkMode, MASKS } = require("./mode");
+const { ADMIN_CLIENT } = require("../auth");
+const { unpackObjectKeys } = require("./utils");
+const bus = require("../bus");
+const db = require("../db");
 
 const Types = {};
 
@@ -786,10 +786,8 @@ class Node {
             result = `${escapedName}_${counter}`;
             counter++;
 
-            if (counter < 1) {
-                // Catch for if counter overflows, should probably never happen in the real world but to be safe
-                throw new Error("Could not generate a unique child name, counter overflowed");
-            }
+            // Catch for if counter overflows, should probably never happen in the real world but to be safe
+            assert(counter > 0, "Could not generate a unique child name, counter overflowed");
         }
 
         return result;

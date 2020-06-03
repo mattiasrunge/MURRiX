@@ -1,7 +1,7 @@
 "use strict";
 
 const { v4: uuid } = require("uuid");
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 
 module.exports = async (client, abspaths, id = uuid()) => {
     for (const abspath of abspaths) {

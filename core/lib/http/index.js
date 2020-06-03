@@ -11,17 +11,17 @@ const etag = require("koa-etag");
 const range = require("koa-range");
 const enableDestroy = require("server-destroy");
 const api = require("./api");
-const media = require("../lib/media");
+const media = require("../media");
 const log = require("../lib/log")(module);
-const { COOKIE_NAME } = require("./client");
+const configuration = require("../config");
+const { COOKIE_NAME } = require("./Client");
 
-let server;
-let params = {};
+class Server {
+    constructor() {
+        this.server = null;
+    }
 
-module.exports = {
-    init: async (config) => {
-        params = config;
-
+    async init() {
         const app = new Koa();
 
         // Setup application
@@ -64,18 +64,22 @@ module.exports = {
             app.use(route[mroute.method.toLowerCase()](mroute.route, mroute.handler));
         }
 
-        server = app.listen(params.port);
+        this.server = app.listen(configuration.port);
 
-        enableDestroy(server);
+        enableDestroy(this.server);
 
-        api.listen(server);
+        api.listen(this.server);
 
-        log.info(`Now listening for HTTP requests on port ${params.port}`);
-    },
-    stop: async () => {
-        if (server) {
+        log.info(`Now listening for HTTP requests on port ${configuration.port}`);
+    }
+
+    async stop() {
+        if (this.server) {
             api.close();
-            await util.promisify(server.destroy.bind(server))();
+            await util.promisify(this.server.destroy.bind(this.server))();
+            this.server = null;
         }
     }
-};
+}
+
+module.exports = new Server();

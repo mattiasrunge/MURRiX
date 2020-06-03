@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require("path");
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 
 module.exports = async (client, srcpath, dstpath) => {
     const srcnode = await Node.resolve(client, srcpath);

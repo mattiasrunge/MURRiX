@@ -3,9 +3,9 @@
 const assert = require("assert");
 const path = require("path");
 const fs = require("fs-extra");
-const Node = require("../../../core/Node");
-const config = require("../../../lib/configuration");
-const media = require("../../../lib/media");
+const Node = require("../../../lib/Node");
+const config = require("../../../config");
+const media = require("../../../media");
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath, type) => {

@@ -1,7 +1,7 @@
 "use strict";
 
 const escapeStringRegexp = require("escape-string-regexp");
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 
 module.exports = async (client, abspath, search) => {
     const guard = [];

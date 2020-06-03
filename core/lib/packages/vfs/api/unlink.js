@@ -1,8 +1,8 @@
 "use strict";
 
 const path = require("path");
-const { ADMIN_CLIENT } = require("../../../lib/auth");
-const Node = require("../../../core/Node");
+const { ADMIN_CLIENT } = require("../../../auth");
+const Node = require("../../../lib/Node");
 
 module.exports = async (client, abspath) => {
     const child = await Node.resolve(client, abspath, {

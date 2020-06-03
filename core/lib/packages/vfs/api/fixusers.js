@@ -1,8 +1,8 @@
 "use strict";
 
 const assert = require("assert");
-const Node = require("../../../core/Node");
-const { ADMIN_CLIENT, GID_ADMIN, UID_ADMIN } = require("../../../lib/auth");
+const Node = require("../../../lib/Node");
+const { ADMIN_CLIENT, GID_ADMIN, UID_ADMIN } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client) => {

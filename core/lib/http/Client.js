@@ -6,15 +6,15 @@ const { v4: uuid } = require("uuid");
 const TypesonBuiltin = require("typeson-registry/dist/presets/builtin");
 const log = require("../lib/log")(module);
 const { api } = require("../api");
-const BaseClient = require("../terminal/client");
+const { Client } = require("../auth");
 const Terminal = require("../terminal");
-const jwt = require("./jwt");
+const jwt = require("../lib/jwt");
 const ClientStream = require("./Stream");
 
 const TSON = new Typeson().register([ TypesonBuiltin ]);
 const COOKIE_NAME = "session";
 
-class Client extends BaseClient {
+class HttpClient extends Client {
     constructor(ws, session) {
         super(session);
 
@@ -42,7 +42,7 @@ class Client extends BaseClient {
             session.id = uuid();
         }
 
-        const client = new Client(ws, session);
+        const client = new HttpClient(ws, session);
 
         if (!cookies[COOKIE_NAME]) {
             await api.logout(client);
@@ -163,7 +163,7 @@ class Client extends BaseClient {
     }
 }
 
-Client.COOKIE_NAME = COOKIE_NAME;
+HttpClient.COOKIE_NAME = COOKIE_NAME;
 
-module.exports = Client;
+module.exports = HttpClient;
 

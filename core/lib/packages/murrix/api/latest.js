@@ -1,6 +1,6 @@
 "use strict";
 
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 const log = require("../../../lib/log")(module);
 const { api } = require("../../../api");
 

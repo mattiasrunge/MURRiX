@@ -1,6 +1,6 @@
 "use strict";
 
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 
 module.exports = async (client, abspath, mode, options = {}) => {
     const nodepath = await Node.resolve(client, abspath, { readlink: true });

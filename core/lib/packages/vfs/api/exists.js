@@ -1,5 +1,5 @@
 "use strict";
 
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 
 module.exports = async (client, abspath, options = {}) => Node.exists(client, abspath, options);

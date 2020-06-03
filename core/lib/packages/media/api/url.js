@@ -3,10 +3,10 @@
 const assert = require("assert");
 const path = require("path");
 const fs = require("fs-extra");
-const Node = require("../../../core/Node");
-const { ADMIN_CLIENT } = require("../../../lib/auth");
-const config = require("../../../lib/configuration");
-const media = require("../../../lib/media");
+const Node = require("../../../lib/Node");
+const { ADMIN_CLIENT } = require("../../../auth");
+const config = require("../../../config");
+const media = require("../../../media");
 const log = require("../../../lib/log")(module);
 const { api } = require("../../../api");
 

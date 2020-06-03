@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 const { api } = require("../../../api");
-const { ADMIN_CLIENT } = require("../../../lib/auth");
+const { ADMIN_CLIENT } = require("../../../auth");
 
 module.exports = async (client, term,
     // Change directory

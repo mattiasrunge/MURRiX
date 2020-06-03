@@ -2,8 +2,8 @@
 
 const assert = require("assert");
 const { v4: uuid } = require("uuid");
-const db = require("../../../lib/db");
-const Node = require("../../../core/Node");
+const db = require("../../../db");
+const Node = require("../../../lib/Node");
 
 class Root extends Node {
     // Private

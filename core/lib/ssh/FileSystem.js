@@ -5,8 +5,8 @@ const path = require("path");
 const fs = require("fs-extra");
 const { FileSystemInterface, PermissionDeniedError, NoSuchFileError } = require("sftp-fs");
 const utils = require("./utils");
-const Client = require("../terminal/client");
-const configuration = require("../lib/configuration");
+const Client = require("../auth/Client");
+const configuration = require("../config");
 const { api } = require("../api");
 
 class FileSystem extends FileSystemInterface {

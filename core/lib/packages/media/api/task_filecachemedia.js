@@ -1,9 +1,9 @@
 "use strict";
 
 const assert = require("assert");
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 const log = require("../../../lib/log")(module);
-const media = require("../../../lib/media");
+const media = require("../../../media");
 const { api } = require("../../../api");
 
 module.exports = async (client, taskNode) => {

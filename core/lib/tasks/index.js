@@ -1,8 +1,8 @@
 "use strict";
 
 const { api } = require("../api");
-const { ADMIN_CLIENT } = require("../lib/auth");
-const bus = require("../lib/bus");
+const { ADMIN_CLIENT } = require("../auth");
+const bus = require("../bus");
 const log = require("../lib/log")(module);
 const Task = require("./task");
 

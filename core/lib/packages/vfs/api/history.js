@@ -1,8 +1,8 @@
 "use strict";
 
 const assert = require("assert");
-const Node = require("../../../core/Node");
-const { ADMIN_CLIENT } = require("../../../lib/auth");
+const Node = require("../../../lib/Node");
+const { ADMIN_CLIENT } = require("../../../auth");
 
 module.exports = async (client, history = false) => {
     // Do not save history for a guest

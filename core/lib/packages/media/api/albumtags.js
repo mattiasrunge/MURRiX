@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const Node = require("../../../core/Node");
+const Node = require("../../../lib/Node");
 const { api } = require("../../../api");
 
 // TODO: This loads lots of duplicates (slow), should be avoided if possible; maybe load the symlinks, then make unique before loading the people nodes

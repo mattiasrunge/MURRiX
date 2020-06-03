@@ -1,9 +1,9 @@
 "use strict";
 
 const path = require("path");
-const Node = require("../../../core/Node");
-const config = require("../../../lib/configuration");
-const media = require("../../../lib/media");
+const Node = require("../../../lib/Node");
+const config = require("../../../config");
+const media = require("../../../media");
 
 module.exports = async (client, abspath, options = {}) => {
     const node = await Node.resolve(client, abspath);
