@@ -22,7 +22,7 @@ module.exports = async (client, srcpath, dstpath) => {
         dstparentnode = await Node.resolve(client, path.dirname(dstpath));
     }
 
-    await dstparentnode.createChild(client, "s", srcnode.name, {
+    return await dstparentnode.createChild(client, "s", srcnode.name, {
         path: srcnode.path
     });
 };

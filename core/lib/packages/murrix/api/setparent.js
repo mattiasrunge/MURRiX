@@ -11,21 +11,17 @@ module.exports = async (client, abspath, gender, parentpath) => {
     assert(gender === "f" || gender === "m", "Gender must be f or m");
 
     const parents = await api.list(client, `${abspath}/parents`);
-    const parent = parents.find((parent) => parent.attributes.gender === gender);
+    const parent = parents.find(({ attributes }) => attributes.gender === gender);
 
     if (parent) {
-        // Remove current parent symlink from parents
         await api.unlink(client, parent.extra.linkPath);
-
-        // Remove child from parents children
-        const children = await api.list(client, `${parent.path}/children`, { nofollow: true });
-        const childLink = children.find((link) => link.attributes.path === abspath);
-        await api.unlink(client, childLink.path);
     }
 
     if (parentpath) {
-        await api.symlink(client, parentpath, `${abspath}/parents`);
-        await api.symlink(client, abspath, `${parentpath}/children`);
+        const s1 = await api.symlink(client, parentpath, `${abspath}/parents`);
+        const s2 = await api.symlink(client, abspath, `${parentpath}/children`);
+
+        await api.groupnodes(client, [ s1, s2 ]);
 
         return api.resolve(client, parentpath);
     }

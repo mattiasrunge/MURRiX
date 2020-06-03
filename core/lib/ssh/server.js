@@ -21,8 +21,8 @@ class Server {
     }
 
     async stop() {
-        await this.shell.stop();
-        await this.server.stop();
+        this.shell && await this.shell.stop();
+        this.server && await this.server.stop();
     }
 }
 

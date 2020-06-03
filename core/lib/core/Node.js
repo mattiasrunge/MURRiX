@@ -655,6 +655,19 @@ class Node {
         options.recursive && await this._doRecursive(client, "chown", uid, gid, options);
     }
 
+    async setGroup(client, groupId) {
+        await this.assertAccess(client, "w");
+
+        const properties = {
+            group: groupId ?? null
+        };
+
+        await this._props(client, properties);
+
+        await this._notify(client, "setgroup");
+        await this._notify(client, "update");
+    }
+
     async update(client, attributes, quiet = false) {
         await this.assertAccess(client, "w");
 

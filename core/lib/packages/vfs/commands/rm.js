@@ -11,7 +11,8 @@ module.exports = async (client, term,
 ) => {
     const nodes = await api.resolve(client, abspath, {
         list: true,
-        noerror: true
+        noerror: true,
+        nofollow: true
     });
 
     if (opts.f) {

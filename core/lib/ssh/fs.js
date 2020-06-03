@@ -200,12 +200,11 @@ class FileSystem extends FileSystemInterface {
         const result = [];
 
         if (what === "files") {
-            let nodes = await api.list(client, abspath); // TODO: filter directly
-            nodes = nodes.filter((node) => node.properties.type === "f");
+            const nodes = await api.list(client, abspath, { query: { "properties.type": "f" } });
 
             for (const node of nodes) {
                 const filename = node.name;
-                const attrs = await this.lstat(session, path.join(node.path, "$file"));
+                const attrs = await this.lstat(session, path.join(node.path, `$${filename}`));
                 const num = 1; // TODO: Number of links and directories inside this directory
 
                 result.push({
@@ -237,16 +236,19 @@ class FileSystem extends FileSystemInterface {
                 attrs
             });
 
-            filename = "$files";
-            attrs = await this.lstat(session, path.join(abspath, filename));
-            result.push({
-                filename,
-                longname: utils.longname(filename, attrs, num),
-                attrs
-            });
+            const childfiles = await api.list(client, abspath, { query: { "properties.type": "f" } });
+            if (childfiles.length > 0) {
+                filename = "$files";
+                attrs = await this.lstat(session, path.join(abspath, filename));
+                result.push({
+                    filename,
+                    longname: utils.longname(filename, attrs, num),
+                    attrs
+                });
+            }
 
             if (node.properties.type === "f") {
-                filename = "$file";
+                filename = `$${node.name}`;
                 attrs = await this.lstat(session, path.join(abspath, filename));
                 result.push({
                     filename,

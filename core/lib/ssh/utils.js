@@ -131,14 +131,14 @@ const transformPath = (pathname) => {
     } else if (name === "$properties.json") {
         name = "";
         what = "properties";
-    } else if (name === "$file") {
-        name = "";
-        what = "file";
     } else if (name === "$files") {
         name = "";
         what = "files";
     } else if (path.basename(parentpath) === "$files") {
         parentpath = path.dirname(parentpath);
+        what = "file";
+    } else if (name.startsWith("$")) {
+        name = "";
         what = "file";
     }
 
