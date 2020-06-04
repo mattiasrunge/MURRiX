@@ -1,6 +1,8 @@
 "use strict";
 
 const Client = require("./Client");
+const sha1 = require("sha1");
+const bcrypt = require("bcryptjs");
 
 const USERNAME_ADMIN = "admin";
 const USERNAME_GUEST = "guest";
@@ -23,6 +25,9 @@ ADMIN_CLIENT.setUser({
     umask: 0o770
 });
 
+const hashPassword = async (password) => bcrypt.hash(sha1(password), 13);
+const matchPassword = async (hash, password) => hash && await bcrypt.compare(sha1(password), hash);
+
 module.exports = {
     GID_ADMIN,
     GID_GUEST,
@@ -33,5 +38,7 @@ module.exports = {
     ADMIN_CLIENT,
     USERNAME_ADMIN,
     USERNAME_GUEST,
-    Client
+    Client,
+    hashPassword,
+    matchPassword
 };

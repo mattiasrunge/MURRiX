@@ -1,15 +1,17 @@
 "use strict";
 
-// TODO: This abstraction is unneccessary, remove!
+// TODO: Most methods here are unneccessary, remove!
 
 const path = require("path");
 const { MongoClient } = require("mongodb");
 const configuration = require("../config");
+const { History } = require("db-history");
 
 class Database {
     constructor() {
         this.db = null;
         this.client = null;
+        this.history = null;
     }
 
     async init() {
@@ -19,7 +21,10 @@ class Database {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
+
         this.db = this.client.db(path.basename(url));
+
+        this.history = new History(configuration.historyDirectory);
     }
 
     createIndexes(collectionName, indexes) {

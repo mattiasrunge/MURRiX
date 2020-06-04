@@ -2,10 +2,8 @@
 
 const assert = require("assert");
 const uuid = require("uuid");
-const sha1 = require("sha1");
-const bcrypt = require("bcryptjs");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { ADMIN_CLIENT, matchPassword, hashPassword } = require("../../../auth");
 
 class User extends Node {
     // Private
@@ -25,15 +23,6 @@ class User extends Node {
         await this.createChild(client, "d", "files");
     }
 
-    async _migrateDb(client) {
-        if (!this.properties.version && this.attributes.password) {
-            this.attributes.password = await bcrypt.hash(this.attributes.password, 13);
-        }
-
-        return super._migrateDb(client);
-    }
-
-
     // Setters
 
     async updateLoginTime(client) {
@@ -44,7 +33,7 @@ class User extends Node {
 
     async setPassword(client, password) {
         await this.update(client, {
-            password: await bcrypt.hash(sha1(password), 13)
+            password: await hashPassword(password)
         });
     }
 
@@ -69,7 +58,7 @@ class User extends Node {
         assert(this.attributes.resetId === resetId, "Invalid reset id");
 
         await this.update(client, {
-            password: await bcrypt.hash(sha1(password), 13),
+            password: await hashPassword(password),
             resetId: null
         });
     }
@@ -91,7 +80,7 @@ class User extends Node {
             return false;
         }
 
-        return bcrypt.compare(sha1(password), this.attributes.password);
+        return matchPassword(this.attributes.password, password);
     }
 
     static async generateUID() {

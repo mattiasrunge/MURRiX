@@ -5,7 +5,6 @@ const assert = require("assert");
 const { v4: uuid } = require("uuid");
 const shuffle = require("shuffle-array");
 const { checkMode, MASKS } = require("./mode");
-const { ADMIN_CLIENT } = require("../auth");
 const { unpackObjectKeys } = require("./utils");
 const bus = require("../bus");
 const db = require("../db");
@@ -27,22 +26,6 @@ class Node {
 
     static register(name, Type) {
         return Types[name] = Type;
-    }
-
-    static async runDbMigration() {
-        for (const name of Object.keys(Types)) {
-            const nodes = await Node.query(ADMIN_CLIENT, {
-                "properties.type": name,
-                $or: [
-                    { "properties.version": { $exists: false } },
-                    { "properties.version": { $lt: Types[name].VERSION } }
-                ]
-            }, { nolookup: true });
-
-            for (const node of nodes) {
-                await node._migrateDb(ADMIN_CLIENT);
-            }
-        }
     }
 
     static getAttributeTypes() {
@@ -407,12 +390,6 @@ class Node {
         };
     }
 
-    async _migrateDb() {
-        this.properties.version = this.constructor.VERSION;
-
-        await db.updateOne("nodes", this._serializeForDb());
-    }
-
     async _doRecursive(client, method, ...args) {
         const children = await this.children(client, { nofollow: true });
 
@@ -435,7 +412,10 @@ class Node {
 
         this.properties = props;
 
-        await db.updateOne("nodes", this._serializeForDb());
+        const serialized = this._serializeForDb();
+
+        await db.updateOne("nodes", serialized);
+        await db.history.store(this._id, serialized, client.getUsername());
     }
 
     async _attr(client, attributes) {
@@ -459,7 +439,10 @@ class Node {
         this.attributes = attr;
         this.properties = props;
 
-        await db.updateOne("nodes", this._serializeForDb());
+        const serialized = this._serializeForDb();
+
+        await db.updateOne("nodes", serialized);
+        await db.history.store(serialized._id, serialized, client.getUsername());
     }
 
     async _postCreate(/* client */) {
@@ -691,6 +674,7 @@ class Node {
         }
 
         await db.removeOne("nodes", this._id);
+        await db.history.remove(this._id, client.getUsername());
 
         await this._notify(client, "remove");
     }
@@ -757,7 +741,10 @@ class Node {
             path: abspath
         });
 
-        await db.insertOne("nodes", nodepath._serializeForDb());
+        const serialized = nodepath._serializeForDb();
+
+        await db.insertOne("nodes", serialized);
+        await db.history.store(serialized._id, serialized, client.getUsername());
         await nodepath.constructor._ensureIndexes();
 
         await nodepath._notify(client, "create");
@@ -773,6 +760,18 @@ class Node {
         const children = await this.children(client, { pattern: name });
 
         return children[0];
+    }
+
+    async revisions(client) {
+        await this.assertAccess(client, "r");
+
+        return await db.history.revisions(this._id);
+    }
+
+    async revision(client, rev) {
+        await this.assertAccess(client, "r");
+
+        return await db.history.fetch(this._id, rev);
     }
 
     async getUniqueChildName(client, name) {

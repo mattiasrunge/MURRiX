@@ -15,8 +15,6 @@ class Packages {
 
         const setups = await this._loadPackages();
 
-        await Node.runDbMigration();
-
         for (const setup of setups) {
             await setup(ADMIN_CLIENT);
         }

@@ -14,12 +14,14 @@ class NodeType extends Generic {
             return [ [], partial ];
         }
 
-        return [ api.nodetypes(client, true), partial ];
+        return [ await api.nodetypes(client, true), partial ];
     }
 
     static async validate(client, value) {
+        const types = await api.nodetypes(client, true);
+
         assert(value.length === 1, "node type should be one letter long");
-        assert(api.nodetypes(client, true).includes(value), `allowed types are: ${api.nodetypes(client, true).join(", ")}`);
+        assert(types.includes(value), `allowed types are: ${types.join(", ")}`);
     }
 }
 
