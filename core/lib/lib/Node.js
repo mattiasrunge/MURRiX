@@ -390,6 +390,17 @@ class Node {
         };
     }
 
+    async _storeRevision(client) {
+        const serialized = {
+            name: this.name,
+            path: this.path,
+            id: this._id,
+            attributes: this.attributes
+        };
+
+        await db.history.store(this._id, serialized, client.getUsername());
+    }
+
     async _doRecursive(client, method, ...args) {
         const children = await this.children(client, { nofollow: true });
 
@@ -412,10 +423,7 @@ class Node {
 
         this.properties = props;
 
-        const serialized = this._serializeForDb();
-
-        await db.updateOne("nodes", serialized);
-        await db.history.store(this._id, serialized, client.getUsername());
+        await db.updateOne("nodes", this._serializeForDb());
     }
 
     async _attr(client, attributes) {
@@ -439,10 +447,8 @@ class Node {
         this.attributes = attr;
         this.properties = props;
 
-        const serialized = this._serializeForDb();
-
-        await db.updateOne("nodes", serialized);
-        await db.history.store(serialized._id, serialized, client.getUsername());
+        await db.updateOne("nodes", this._serializeForDb());
+        await this._storeRevision(client);
     }
 
     async _postCreate(/* client */) {
@@ -741,10 +747,8 @@ class Node {
             path: abspath
         });
 
-        const serialized = nodepath._serializeForDb();
-
-        await db.insertOne("nodes", serialized);
-        await db.history.store(serialized._id, serialized, client.getUsername());
+        await db.insertOne("nodes", nodepath._serializeForDb());
+        await nodepath._storeRevision(client);
         await nodepath.constructor._ensureIndexes();
 
         await nodepath._notify(client, "create");
