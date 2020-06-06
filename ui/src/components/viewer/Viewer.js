@@ -200,7 +200,7 @@ class Viewer extends Component {
                                 path={node.path}
                                 format={{
                                     type: node.attributes.type,
-                                    width: node.attributes.type === "image" ? 2000 : null
+                                    width: 2000
                                 }}
                                 lazy={false}
                                 onStarted={this.onMediaStarted}
@@ -338,7 +338,7 @@ class Viewer extends Component {
                     path={nextNode.path}
                     format={{
                         type: nextNode.attributes.type,
-                        width: nextNode.attributes.type === "image" ? 2000 : null
+                        width: 2000
                     }}
                     lazy={false}
                     autoPlay={false}
@@ -348,7 +348,7 @@ class Viewer extends Component {
                     path={previousNode.path}
                     format={{
                         type: previousNode.attributes.type,
-                        width: previousNode.attributes.type === "image" ? 2000 : null
+                        width: 2000
                     }}
                     lazy={false}
                     autoPlay={false}
