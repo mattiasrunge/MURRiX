@@ -2,7 +2,6 @@
     "mongoUrl": "mongodb://localhost:27017/murrix_v4",
     "fileDirectory": "/murrix_files",
     "mcsDirectory": "/murrix_cache",
-    "historyDirectory": "/murrix_history",
     "uploadDirectory": "/tmp",
     "sftp": {
         "port": 8282,
