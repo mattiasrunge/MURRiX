@@ -35,7 +35,6 @@ module.exports = async (client, taskNode) => {
                 node = await api.found(client, node);
             }
 
-            await api.migrateoldtags(client, node.path);
             await api.ensurefilefaces(client, node.path);
 
             return true;
