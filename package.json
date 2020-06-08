@@ -28,10 +28,10 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.0.1",
-    "eslint": "^7.1.0",
+    "eslint": "^7.2.0",
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-babel": "^5.0.0",
-    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-import": "^2.21.1",
     "eslint-plugin-json": "^2.1.1",
     "eslint-plugin-jsx-control-statements": "^2.2.0",
     "eslint-plugin-node": "^11.1.0",
