@@ -54,13 +54,13 @@ class NodeLabels extends Component {
                 <For each="label" of={this.state.labels}>
                     <Label
                         key={label.name}
-                        className={theme.labelButton}
+                        className={this.props.labelClassName}
                         content={label.name}
-                        detail={label.count}
+                        detail={this.props.detailed ? label.count : null}
                         color="blue"
-                        size="small"
-                        image
-                        onClick={this.onClick}
+                        size={this.props.size}
+                        image={this.detailed}
+                        onClick={theme.nodeCardLabel ? this.onClick : null}
                     />
                 </For>
             </div>
@@ -68,10 +68,20 @@ class NodeLabels extends Component {
     }
 }
 
+NodeLabels.defaultProps = {
+    size: "small",
+    detailed: true,
+    labelClassName: theme.labelButton
+};
+
 NodeLabels.propTypes = {
     className: PropTypes.string,
     node: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    clickable: PropTypes.bool,
+    detailed: PropTypes.bool,
+    size: PropTypes.string,
+    labelClassName: PropTypes.string
 };
 
 export default withRouter(NodeLabels);

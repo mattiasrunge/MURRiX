@@ -2,10 +2,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { Card, Label } from "semantic-ui-react";
+import { Card } from "semantic-ui-react";
 import Component from "lib/component";
 import NodeImage from "./NodeImage";
 import NodeIcon from "./NodeIcon";
+import NodeLabels from "./NodeLabels";
 import theme from "./theme.module.css";
 
 class NodeCard extends Component {
@@ -45,21 +46,16 @@ class NodeCard extends Component {
                             </Otherwise>
                         </Choose>
                     </Card.Description>
-                    <If condition={this.props.node.attributes.labels.length > 0}>
-                        <Card.Meta
-                            className={theme.nodeCardTags}
-                        >
-                            <For each="label" of={this.props.node.attributes.labels}>
-                                <Label
-                                    key={label}
-                                    className={theme.nodeCardLabel}
-                                    color="blue"
-                                    content={label}
-                                    size="tiny"
-                                />
-                            </For>
-                        </Card.Meta>
-                    </If>
+                    <Card.Meta className={theme.nodeCardTags}>
+                        <NodeLabels
+                            node={this.props.node}
+                            history={this.props.history}
+                            clickable={false}
+                            detailed={false}
+                            size="tiny"
+                            labelClassName={theme.nodeCardLabel}
+                        />
+                    </Card.Meta>
                 </Card.Content>
             </Card>
         );

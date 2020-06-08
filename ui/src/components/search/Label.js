@@ -40,22 +40,12 @@ class SearchLabel extends Component {
     }
 
     render() {
-        const currentLabel = this.props.match.params.label || false;
-        const query = currentLabel ? {
-            options: {
-                query: {
-                    "attributes.labels": currentLabel
-                }
-            },
-            paths: [
-                "/people",
-                "/cameras",
-                "/locations",
-                "/albums"
-            ]
+        const label = this.props.match.params.label || false;
+        const query = label ? {
+            label
         } : null;
 
-        ui.setTitle(`Browsing label ${currentLabel || ""}`);
+        ui.setTitle(`Browsing label ${label || ""}`);
 
         return (
             <div>
@@ -66,16 +56,16 @@ class SearchLabel extends Component {
                 />
                 <Segment textAlign="center">
                     <Loader active={this.state.loading}>Loading...</Loader>
-                    <For each="label" of={this.state.labels}>
+                    <For each="item" of={this.state.labels}>
                         <Link
-                            key={label.name}
-                            to={`${this.props.match.path.split(":")[0]}${label.name}`}
+                            key={item.name}
+                            to={`${this.props.match.path.split(":")[0]}${item.name}`}
                         >
                             <Label
                                 className={theme.labelButton}
-                                content={label.name}
-                                detail={label.count}
-                                color={label.name === currentLabel ? "blue" : null}
+                                content={item.name}
+                                detail={item.count}
+                                color={item.name === label ? "blue" : null}
                                 size="small"
                                 image
                             />

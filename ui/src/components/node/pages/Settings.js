@@ -7,6 +7,7 @@ import Component from "lib/component";
 import { Edit } from "components/edit";
 import Share from "./sections/Share";
 import Organize from "./sections/Organize";
+import Labels from "./sections/Labels";
 // import Batch from "./sections/Batch";
 import { Upload } from "components/upload";
 import { Tagging } from "components/tagging";
@@ -64,6 +65,14 @@ class Settings extends Component {
                 icon: "edit",
                 active: section === "edit",
                 Component: Edit,
+                validTypes: [ "a", "l", "c", "p" ]
+            },
+            {
+                name: "labels",
+                title: "Labels",
+                icon: "tag",
+                active: section === "label",
+                Component: Labels,
                 validTypes: [ "a", "l", "c", "p" ]
             },
             {

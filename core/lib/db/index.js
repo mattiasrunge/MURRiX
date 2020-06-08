@@ -24,7 +24,9 @@ class Database {
 
         this.db = this.client.db(path.basename(url));
 
-        this.history = new History(configuration.historyDirectory);
+        if (configuration.historyDirectory) {
+            this.history = new History(configuration.historyDirectory);
+        }
     }
 
     createIndexes(collectionName, indexes) {

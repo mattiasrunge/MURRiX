@@ -69,10 +69,6 @@ class Media {
         return this.mcs.face.detect(filename);
     }
 
-    compileTime(sources) {
-        return this.mcs.time.compile(sources);
-    }
-
     getStatus() {
         return this.mcs.cache.status();
     }

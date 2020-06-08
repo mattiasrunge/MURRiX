@@ -40,6 +40,8 @@ class List extends Component {
 
             if (query.year) {
                 list = await api.albumsbyyear(query.year);
+            } else if (query.label) {
+                list = await api.list(`/labels/${query.label}`);
             } else {
                 list = await api.list(query.paths, query.options);
             }

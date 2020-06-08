@@ -40,11 +40,6 @@ class Node {
                 name: "description",
                 label: "Description",
                 type: "text"
-            },
-            {
-                name: "labels",
-                label: "Labels",
-                type: "labels"
             }
         ];
     }
@@ -111,10 +106,7 @@ class Node {
                 children: [],
                 count: 0
             },
-            attributes: {
-                labels: [],
-                ...attributes
-            }
+            attributes
         };
     }
 
@@ -314,45 +306,6 @@ class Node {
         return db.aggregate("nodes", pipeline);
     }
 
-    static async labels(client) {
-        assert(!client.isGuest(), "Permission denied");
-
-        const labels = await this.aggregate(client, [
-            {
-                $unwind: "$attributes.labels"
-            },
-            {
-                $group: {
-                    _id: "$attributes.labels",
-                    count: {
-                        $sum: 1
-                    }
-                }
-            },
-            {
-                $addFields: {
-                    name: "$_id",
-                    count: "$count"
-                }
-            },
-            {
-                $match: {
-                    name: { $ne: "" }
-                }
-            },
-            {
-                $sort: {
-                    count: -1
-                }
-            },
-            {
-                $project: { _id: 0 }
-            }
-        ]);
-
-        return labels.toArray();
-    }
-
 
     // Private
 
@@ -391,6 +344,10 @@ class Node {
     }
 
     async _storeRevision(client) {
+        if (!db.history) {
+            return;
+        }
+
         const serialized = {
             name: this.name,
             path: this.path,
@@ -399,6 +356,14 @@ class Node {
         };
 
         await db.history.store(this._id, serialized, client.getUsername());
+    }
+
+    async _removeRevision(client) {
+        if (!db.history) {
+            return;
+        }
+
+        await db.history.store(this._id, {}, client.getUsername());
     }
 
     async _doRecursive(client, method, ...args) {
@@ -680,7 +645,7 @@ class Node {
         }
 
         await db.removeOne("nodes", this._id);
-        await db.history.remove(this._id, client.getUsername());
+        await this._removeRevision(client);
 
         await this._notify(client, "remove");
     }
@@ -768,12 +733,14 @@ class Node {
 
     async revisions(client) {
         await this.assertAccess(client, "r");
+        await assert(db.history, `Revision history is not enabled`);
 
         return await db.history.revisions(this._id);
     }
 
     async revision(client, rev) {
         await this.assertAccess(client, "r");
+        await assert(db.history, `Revision history is not enabled`);
 
         return await db.history.fetch(this._id, rev);
     }

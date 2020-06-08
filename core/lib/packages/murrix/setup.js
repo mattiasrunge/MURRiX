@@ -12,6 +12,6 @@ const setup = async (client) => {
     await api.ensure(client, "/news", "d", { gid: GID_USERS });
 };
 
-setup.PRIORITY = 4;
+setup.PRIORITY = 5;
 
 module.exports = setup;
