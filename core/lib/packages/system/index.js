@@ -9,6 +9,8 @@ const setup = async (client) => {
     await api.ensure(client, "/system/tasks", "d", { gid: GID_ADMIN });
 };
 
-setup.PRIORITY = 2;
+setup.dependencies = [
+    "vfs"
+];
 
 module.exports = setup;

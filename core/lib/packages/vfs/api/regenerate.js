@@ -1,5 +1,7 @@
 "use strict";
 
+// TODO: Can we split this into event listeners setup in respective package?
+
 const assert = require("assert");
 const chron = require("chron-time");
 const merge = require("deepmerge");

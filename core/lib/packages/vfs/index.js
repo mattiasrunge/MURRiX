@@ -81,6 +81,6 @@ const setup = async (client) => {
     }
 };
 
-setup.PRIORITY = 1;
+setup.dependencies = [];
 
 module.exports = setup;

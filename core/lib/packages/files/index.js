@@ -20,6 +20,9 @@ const setup = async (client) => {
     });
 };
 
-setup.PRIORITY = 4;
+setup.dependencies = [
+    "system",
+    "vfs"
+];
 
 module.exports = setup;

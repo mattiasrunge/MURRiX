@@ -2,6 +2,7 @@
 
 const path = require("path");
 const fs = require("fs-extra");
+const graph = require("node-resolve-dependency-graph/lib");
 const commander = require("../commander");
 const api = require("../api");
 const { ADMIN_CLIENT } = require("../auth");
@@ -27,22 +28,18 @@ class Packages {
 
         for (const name of names.filter((name) => !name.endsWith(".js"))) {
             const pkgdir = path.join(dir, name);
+            const setup = require(pkgdir);
 
-            const pkg = {
+            packages.push({
                 name,
                 dir: pkgdir,
-                prio: Number.MAX_SAFE_INTEGER
-            };
-
-            const setupfile = path.join(pkgdir, "setup.js");
-
-            if (await fs.pathExists(setupfile)) {
-                pkg.setup = require(setupfile);
-                pkg.prio = pkg.setup.PRIORITY ?? Number.MAX_SAFE_INTEGER;
-            }
-
-            packages.push(pkg);
+                setup,
+                dependencies: setup.dependencies ?? [],
+                prio: 0
+            });
         }
+
+        this._prioritizePackages(packages);
 
         packages.sort((a, b) => a.prio - b.prio);
 
@@ -55,6 +52,14 @@ class Packages {
         }
 
         return packages.map(({ setup }) => setup).filter(Boolean);
+    }
+
+    _prioritizePackages(packages) {
+        const depList = packages.map((pkg) => [ pkg.name, pkg.dependencies ]);
+        const depMap = Object.fromEntries(depList);
+        const priority = graph.flat(graph.resolve(depMap));
+
+        packages.forEach((pkg) => pkg.prio = priority.indexOf(pkg.name));
     }
 
     async _loadApi(pkgdir) {

@@ -21,7 +21,6 @@ class Person extends Node {
 
     async _postCreate(client) {
         await this.createChild(client, "d", "children");
-        await this.createChild(client, "d", "homes");
         await this.createChild(client, "d", "measurments");
         await this.createChild(client, "d", "parents");
         await this.createChild(client, "d", "texts");
