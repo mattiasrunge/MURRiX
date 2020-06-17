@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Header, Grid } from "semantic-ui-react";
 import Component from "lib/component";
 import { SelectableImageList } from "components/list";
+import { Viewer } from "components/viewer";
 import MoveToList from "../lib/MoveToList";
 import theme from "../../theme.module.css";
 
@@ -12,7 +13,9 @@ class Organize extends Component {
         super(props);
 
         this.state = {
-            selected: []
+            selected: [],
+            file: false,
+            files: []
         };
     }
 
@@ -20,9 +23,24 @@ class Organize extends Component {
         this.setState({ selected });
     }
 
+    onView = (file, files) => {
+        if (files) {
+            this.setState({ file, files });
+        } else {
+            this.setState({ file });
+        }
+    }
+
     render() {
         return (
             <div>
+                <If condition={this.state.file}>
+                    <Viewer
+                        path={this.state.file.path}
+                        onSelect={this.onView}
+                        nodes={this.state.files}
+                    />
+                </If>
                 <Header as="h2">
                     Organize
                     <Header.Subheader>
@@ -36,6 +54,7 @@ class Organize extends Component {
                                 path={`${this.props.node.path}/files`}
                                 value={this.state.selected}
                                 onChange={this.onSelectedChange}
+                                onView={this.onView}
                             />
                         </Grid.Column>
                         <Grid.Column width={7}>

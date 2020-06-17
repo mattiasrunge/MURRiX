@@ -19,6 +19,7 @@ class SelectableImageList extends Component {
             files: [],
             days: [],
             loading: false,
+            pending: false,
             ref: null
         };
     }
@@ -44,6 +45,10 @@ class SelectableImageList extends Component {
     }
 
     async update(props) {
+        if (this.state.loading) {
+            return this.setState({ pending: true });
+        }
+
         this.setState({ loading: true });
 
         try {
@@ -97,6 +102,11 @@ class SelectableImageList extends Component {
 
             this.onSelectNone();
         }
+
+        if (this.state.pending) {
+            this.setState({ pending: false });
+            this.update(props);
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -108,6 +118,10 @@ class SelectableImageList extends Component {
     onClick = (e, file) => {
         if (this.state.loading) {
             return;
+        }
+
+        if (this.props.onView && e.shiftKey && e.ctrlKey) {
+            return this.props.onView(file, this.state.files);
         }
 
         let selected = [];
@@ -239,6 +253,7 @@ SelectableImageList.propTypes = {
     path: PropTypes.string.isRequired,
     value: PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired,
+    onView: PropTypes.func,
     single: PropTypes.bool
 };
 
