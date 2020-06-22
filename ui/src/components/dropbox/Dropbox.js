@@ -12,7 +12,7 @@ class Dropbox extends Component {
     constructor(props) {
         super(props);
 
-        this.folder = document.location.host.includes("localhost") ? "/test" : "/Camera Upload";
+        this.folder = document.location.host.includes("localhost") ? "/test" : "/Camera Uploads";
 
         this.state = {
             loading: true,
