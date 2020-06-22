@@ -26,13 +26,15 @@ const request = async (token, resource, parameters) => {
                 parameters
             }, (error, result) => {
                 if (error) {
-                    return reject(new Error(error));
+                    log.error(error);
+
+                    return reject(typeof error === "string" ? new Error(error) : error);
                 }
 
                 resolve(result);
             });
         } catch (error) {
-            reject(new Error(error));
+            reject(typeof error === "string" ? new Error(error) : error);
         }
     });
 };
@@ -87,7 +89,7 @@ const download = async (token, file, targetfolder) => {
             }
         }, (error) => {
             if (error) {
-                return reject(error);
+                return reject(typeof error === "string" ? new Error(error) : error);
             }
 
             resolve(targetfile);
