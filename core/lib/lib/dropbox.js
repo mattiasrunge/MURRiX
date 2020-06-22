@@ -14,6 +14,16 @@ const checkConfiguration = () => {
     assert(config.dropbox.secret, "Configuration is missing dropbox secret");
 }
 
+const createError = (data) => {
+    if (typeof data === "string") {
+        return new Error(data);
+    } else if (data instanceof Error) {
+        return data;
+    }
+
+    return new Error(data.error_summary);
+};
+
 const request = async (token, resource, parameters) => {
     checkConfiguration();
 
@@ -26,15 +36,15 @@ const request = async (token, resource, parameters) => {
                 parameters
             }, (error, result) => {
                 if (error) {
-                    log.error(error);
+                    log.error(resource, parameters, error);
 
-                    return reject(typeof error === "string" ? new Error(error) : error);
+                    return reject(createError(error));
                 }
 
                 resolve(result);
             });
         } catch (error) {
-            reject(typeof error === "string" ? new Error(error) : error);
+            reject(createError(error));
         }
     });
 };
@@ -89,7 +99,7 @@ const download = async (token, file, targetfolder) => {
             }
         }, (error) => {
             if (error) {
-                return reject(typeof error === "string" ? new Error(error) : error);
+                return reject(createError(error));
             }
 
             resolve(targetfile);
