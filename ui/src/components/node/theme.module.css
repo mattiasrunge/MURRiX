@@ -277,6 +277,10 @@
     }
 }
 
+.organizeRemoteDelete {
+    margin-bottom: var(--spacing) !important;
+}
+
 .organizeRemoteInput {
     width: 100%;
 

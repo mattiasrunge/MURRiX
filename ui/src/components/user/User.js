@@ -12,6 +12,7 @@ import Organize from "components/node/pages/sections/Organize";
 import { Upload } from "components/upload";
 import { Tagging } from "components/tagging";
 import { Actions } from "components/actions";
+import { Dropbox } from "components/dropbox";
 import { Header } from "components/header";
 import CircularList from "lib/circular_list";
 import theme from "./theme.module.css";
@@ -113,6 +114,13 @@ class User extends Component {
             {
                 name: "staging",
                 title: "Staging"
+            },
+            {
+                name: "dropbox",
+                title: "Dropbox",
+                icon: "dropbox",
+                active: section === "dropbox",
+                Component: Dropbox
             },
             {
                 name: "upload",

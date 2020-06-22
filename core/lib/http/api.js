@@ -21,6 +21,7 @@ class Api {
             if (event.startsWith("node.")) {
                 this.ws.clients.forEach(({ client }) => {
                     if (!client.isGuest()) {
+                        // TODO: Check if user has access
                         client.sendEvent(event, data.node.path);
                     }
                 });

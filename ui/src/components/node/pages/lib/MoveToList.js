@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import store from "store";
 import { withRouter } from "react-router-dom";
-import { Icon, Button, List } from "semantic-ui-react";
+import { Icon, Button, List, Divider, Modal, Message } from "semantic-ui-react";
 import Component from "lib/component";
 import { api } from "lib/backend";
 import notification from "lib/notification";
@@ -16,6 +16,7 @@ class MoveToList extends Component {
 
         this.state = {
             loading: false,
+            deleteConfirm: false,
             remotes: store.get("organize_remotes") || []
         };
     }
@@ -67,9 +68,75 @@ class MoveToList extends Component {
         this.props.history.push(`/node${remote.path}`);
     }
 
+    onDeleteRequest = () => {
+        this.setState({ deleteConfirm: true });
+    }
+
+    onDeleteCancel = () => {
+        this.setState({ deleteConfirm: false });
+    }
+
+    onDelete = async () => {
+        this.setState({ deleteConfirm: false, loading: true });
+
+        try {
+            const selected = this.props.files.slice(0);
+
+            for (const file of selected) {
+                await api.unlink(file.path);
+            }
+
+            notification.add("success", `Deleted ${selected.length} file(s) successfully`);
+
+            this.setState({ loading: false, selected: [] });
+
+            await this.load();
+        } catch (error) {
+            this.logError("Failed to delete files", error);
+            notification.add("error", error.message, 10000);
+
+            this.setState({ loading: false });
+        }
+    }
+
     render() {
         return (
             <div>
+                <If condition={this.state.deleteConfirm}>
+                    <Modal
+                        size="mini"
+                        defaultOpen
+                        onClose={this.onDeleteCancel}
+                    >
+                        <Modal.Header>
+                            Delete confirmaation
+                        </Modal.Header>
+                        <Modal.Content>
+                            <p>
+                                Are you sure you want to delete {this.props.files.length} file(s)?
+                            </p>
+                            <Message negative>
+                                <p>
+                                    <strong>This action can not be reversed!</strong>
+                                </p>
+                            </Message>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button
+                                primary
+                                onClick={this.onDeleteCancel}
+                                content="No"
+                            />
+                            <Button
+                                negative
+                                icon="checkmark"
+                                content="Delete"
+                                onClick={this.onDelete}
+                            />
+                        </Modal.Actions>
+                    </Modal>
+                </If>
+
                 <NodeInput
                     className={theme.organizeRemoteInput}
                     value={null}
@@ -120,11 +187,23 @@ class MoveToList extends Component {
                                     />
                                     {remote.attributes.name}
                                 </List.Content>
-
                             </List.Item>
                         </If>
                     </For>
                 </List>
+
+                <Divider />
+
+                <Button
+                    disabled={this.props.files.length === 0}
+                    className={theme.organizeRemoteDelete}
+                    color="red"
+                    icon="delete"
+                    content="Delete selected"
+                    fluid
+                    size="small"
+                    onClick={this.onDeleteRequest}
+                />
             </div>
         );
     }

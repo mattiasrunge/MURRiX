@@ -218,7 +218,7 @@ export default {
 
         return dateItem.fromNow();
     },
-    size: (fileSizeInBytes) => {
+    size: (fileSizeInBytes, precision = 1) => {
         const byteUnits = [ " kB", " MB", " GB", " TB", "PB", "EB", "ZB", "YB" ];
 
         let i = -1;
@@ -227,7 +227,7 @@ export default {
             i++;
         } while (fileSizeInBytes > 1024);
 
-        return fileSizeInBytes.toFixed(1) + byteUnits[i];
+        return fileSizeInBytes.toFixed(precision) + byteUnits[i];
     },
     age: (age) => {
         if (!age || typeof age.age === "undefined") {

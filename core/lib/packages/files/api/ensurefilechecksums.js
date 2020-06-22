@@ -12,9 +12,11 @@ module.exports = async (client, abspath) => {
 
     if (!node.attributes.sha1) {
         if (!node.path) {
-            log.info(`Node with id ${node._id} seems to not be present in the tree, it has no path, will run found on it`);
+            log.info(`Node with id ${node._id} seems to not be present in the tree, it has no path...`);
 
-            node = await api.found(client, node);
+            return;
+
+            //node = await api.found(client, node);
         }
 
         const { sha1, md5 } = await api.metadata(client, node.path);

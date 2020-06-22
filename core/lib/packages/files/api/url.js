@@ -101,7 +101,7 @@ module.exports = async (client, abspath, format) => {
         // Return url
         return media.createCacheUrl(path.basename(filepath), node.attributes.name);
     } catch (error) {
-        log.warn(error, abspath, format);
+        log.debug(error, abspath, format);
 
         return null;
     }

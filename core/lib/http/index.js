@@ -12,6 +12,7 @@ const range = require("koa-range");
 const enableDestroy = require("server-destroy");
 const api = require("./api");
 const media = require("../media");
+const dropbox = require("../lib/dropbox");
 const log = require("../lib/log")(module);
 const configuration = require("../config");
 const { COOKIE_NAME } = require("./Client");
@@ -63,6 +64,8 @@ class Server {
         for (const mroute of mediaRoutes) {
             app.use(route[mroute.method.toLowerCase()](mroute.route, mroute.handler));
         }
+
+        app.use(route.get("/dropbox", dropbox.handler));
 
         this.server = app.listen(configuration.port);
 

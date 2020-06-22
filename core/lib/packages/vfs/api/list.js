@@ -39,6 +39,17 @@ module.exports = async (client, abspath, options = {}) => {
                 ...node,
                 url: await api.url(client, node.path, options.media) // TODO: Move to extra
             })));
+        } else if (options.duplicates) {
+            return Promise.all(serialized.map(async (node) => {
+                const result = {
+                    extra: {},
+                    ...node
+                };
+
+                result.extra.duplicates = await api.duplicates(client, node.path);
+
+                return result;
+            }));
         }
 
         return serialized;

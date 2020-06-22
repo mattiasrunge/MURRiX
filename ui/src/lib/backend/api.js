@@ -18,6 +18,7 @@ class Api {
             delete this.pending[operation.id];
 
             if (message.error) {
+                console.log(message);
                 const error = new Error(message.error.message);
 
                 error.code = message.error.code;

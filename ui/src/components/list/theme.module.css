@@ -3,8 +3,13 @@
     margin-bottom: 10px;
 
     & a {
-        margin-right:  10px;
+        margin-right: 10px;
         cursor: pointer;
+    }
+
+    & span {
+        margin-right: 10px;
+        color: #888A85;
     }
 
     & .disabled {
@@ -39,6 +44,17 @@
             font-weight: 700;
             font-size: 30px;
             line-height: 50px;
+            text-align: center;
+        }
+
+        & .hasDuplicates {
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: #EF2929;
+            text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+            margin: 2px -2px !important;
+            font-size: 18px;
             text-align: center;
         }
     }

@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { Image, Header } from "semantic-ui-react";
+import { Image, Header, Loader, Menu } from "semantic-ui-react";
 import Component from "lib/component";
 import { api, event } from "lib/backend";
 import notification from "lib/notification";
@@ -20,7 +20,8 @@ class SelectableImageList extends Component {
             days: [],
             loading: false,
             pending: false,
-            ref: null
+            ref: null,
+            size: 50
         };
     }
 
@@ -44,6 +45,31 @@ class SelectableImageList extends Component {
         }
     }
 
+    getDays(files) {
+        let days = {};
+
+        for (const file of files) {
+            const day = file.attributes.time ? moment.utc(file.attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
+
+            days[day] = days[day] || { texts: [], files: [], time: file.attributes.time };
+            days[day].files.push(file);
+        }
+
+        days = Object.keys(days).map((key) => days[key]);
+
+        days.sort((a, b) => {
+            if (!a.time) {
+                return -1;
+            } else if (!b.time) {
+                return 1;
+            }
+
+            return a.time.timestamp - b.time.timestamp;
+        });
+
+        return days;
+    }
+
     async update(props) {
         if (this.state.loading) {
             return this.setState({ pending: true });
@@ -52,8 +78,10 @@ class SelectableImageList extends Component {
         this.setState({ loading: true });
 
         try {
-            let days = {};
-            const files = await api.list(props.path, { noerror: true });
+            const files = await api.list(props.path, {
+                noerror: true,
+                duplicates: !!this.props.onClickDuplicate
+            });
 
             utils.sortNodeList(files);
 
@@ -65,24 +93,7 @@ class SelectableImageList extends Component {
                 selected.push(files[0]);
             }
 
-            for (const file of files) {
-                const day = file.attributes.time ? moment.utc(file.attributes.time.timestamp * 1000).format("YYYY-MM-DD") : "noday";
-
-                days[day] = days[day] || { texts: [], files: [], time: file.attributes.time };
-                days[day].files.push(file);
-            }
-
-            days = Object.keys(days).map((key) => days[key]);
-
-            days.sort((a, b) => {
-                if (!a.time) {
-                    return -1;
-                } else if (!b.time) {
-                    return 1;
-                }
-
-                return a.time.timestamp - b.time.timestamp;
-            });
+            const days = this.getDays(files);
 
             this.setState({
                 days,
@@ -171,6 +182,19 @@ class SelectableImageList extends Component {
         this.props.onChange([], this.state.files);
     }
 
+    onSelectAllDuplicates = () => {
+        const duplicates = this.state.files.filter(({ extra }) => extra.duplicates.length);
+        this.props.onChange(duplicates, this.state.files);
+    }
+
+    onSelectSmall = () => {
+        this.setState({ size: 50 });
+    }
+
+    onSelectLarge = () => {
+        this.setState({ size: 216 });
+    }
+
     onRef = (ref) => {
         this.setState({ ref });
     }
@@ -180,31 +204,66 @@ class SelectableImageList extends Component {
             const index = this.state.files.indexOf(this.props.value[0]);
 
             if (index !== -1) {
-                const offset = (index * 51) + (51 / 2);
+                const offset = (index * (this.state.size + 1)) + ((this.state.size + 1) / 2);
                 const scrollTo = offset - (this.state.ref.offsetWidth / 2);
 
                 this.state.ref.scrollTo(scrollTo, 0);
             }
         }
 
+        const duplicates = this.state.files.filter(({ extra }) => extra?.duplicates?.length).length;
+
         return (
             <div className={this.props.className} ref={this.onRef}>
                 <If condition={!this.props.single}>
+                    <Menu size="mini">
+                        <Menu.Menu position="right">
+                            <Menu.Item
+                                icon="grid layout"
+                                active={this.state.size === 50}
+                                onClick={this.onSelectSmall}
+                            />
+
+                            <Menu.Item
+                                icon="block layout"
+                                active={this.state.size !== 50}
+                                onClick={this.onSelectLarge}
+                            />
+                        </Menu.Menu>
+                    </Menu>
                     <div className={theme.selectableImageListButtons}>
+                        <span>
+                            Select:
+                        </span>
                         <a
                             className={this.props.value.length === 0 || this.state.loading ? theme.disabled : ""}
                             onClick={this.onSelectNone}
                         >
-                            Select none
+                            None
                         </a>
+                        <span>&#124;</span>
                         <a
                             className={this.props.value.length === this.state.files.length || this.state.loading ? theme.disabled : ""}
                             onClick={this.onSelectAll}
                         >
-                            Select all
+                            All
                         </a>
+                        <If condition={duplicates}>
+                        <span>&#124;</span>
+                            <a
+                                className={this.state.loading ? theme.disabled : ""}
+                                onClick={this.onSelectAllDuplicates}
+                            >
+                                Duplicates
+                            </a>
+                        </If>
                     </div>
                 </If>
+
+                <If condition={this.state.loading}>
+                    <Loader active>Loading...</Loader>
+                </If>
+
                 <Choose>
                     <When condition={this.props.single}>
                         <Image.Group className={theme.selectableImageListContainer}>
@@ -214,6 +273,7 @@ class SelectableImageList extends Component {
                                     file={file}
                                     selected={this.props.value.includes(file)}
                                     onClick={this.onClick}
+                                    size={this.state.size}
                                 />
                             </For>
                         </Image.Group>
@@ -236,6 +296,8 @@ class SelectableImageList extends Component {
                                             file={file}
                                             selected={this.props.value.includes(file)}
                                             onClick={this.onClick}
+                                            onClickDuplicate={this.props.onClickDuplicate}
+                                            size={this.state.size}
                                         />
                                     </For>
                                 </Image.Group>
@@ -254,7 +316,8 @@ SelectableImageList.propTypes = {
     value: PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired,
     onView: PropTypes.func,
-    single: PropTypes.bool
+    single: PropTypes.bool,
+    onClickDuplicate: PropTypes.func
 };
 
 export default SelectableImageList;
