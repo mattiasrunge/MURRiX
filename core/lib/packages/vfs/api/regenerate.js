@@ -18,12 +18,12 @@ module.exports = async (client, abspath, options = {}) => {
         const attributes = {};
         const meta = await api.metadata(client, abspath, { noChecksums: true });
 
-        for (const key of Object.keys(meta)) {
+        for (const [ key, value ] of Object.entries(meta)) {
             if (key !== "raw" && key !== "name" && (typeof node.attributes[key] === "undefined" || options.overwrite)) {
-                if (typeof node.attributes[key] === "object" && typeof meta[key] === "object") {
-                    attributes[key] = merge(node.attributes[key], meta[key]);
+                if (typeof node.attributes[key] === "object" && typeof value === "object") {
+                    attributes[key] = merge(node.attributes[key], value);
                 } else {
-                    attributes[key] = meta[key];
+                    attributes[key] = value;
                 }
             }
         }

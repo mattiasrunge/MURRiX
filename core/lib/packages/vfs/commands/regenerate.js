@@ -6,7 +6,7 @@ const { api } = require("../../../api");
 
 module.exports = async (client, term,
     // Regenerate node
-    opts,
+    opts, // o Overwrite existing metadata
     abspath = "" // AbsolutePath
 ) => {
     const nodes = await api.resolve(client, abspath, {
@@ -16,6 +16,8 @@ module.exports = async (client, term,
 
     for (const node of nodes) {
         term.writeln(`Regenerating ${color.bold(node.name)}...`);
-        await api.regenerate(client, node.path);
+        await api.regenerate(client, node.path, {
+            overwrite: opts.o
+        });
     }
 };

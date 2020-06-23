@@ -8,6 +8,10 @@ module.exports = async (client, abspath) => {
 
     assert (node.properties.type === "f", "Metadata must be run on a file");
 
+    if (!node.attributes.sha1) {
+        return [];
+    }
+
     const nodes = await Node.query(client, {
         "attributes.sha1": node.attributes.sha1
     });
