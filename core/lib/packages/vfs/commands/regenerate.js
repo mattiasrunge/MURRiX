@@ -21,7 +21,7 @@ module.exports = async (client, term,
 
         const node = nodes[n];
 
-        term.writeln(`${nodes.length > 0 ? `[${n + 1}/${nodes.length}] ` : ""}Regenerating ${color.bold(node.name)}...`);
+        term.writeln(`${nodes.length > 1 ? `[${n + 1}/${nodes.length}] ` : ""}Regenerating ${color.bold(node.name)}...`);
         await api.regenerate(client, node.path, {
             overwrite: opts.o
         });
