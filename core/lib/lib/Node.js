@@ -3,9 +3,9 @@
 const path = require("path");
 const assert = require("assert");
 const { v4: uuid } = require("uuid");
-const dot = require("dot-object");
 const shuffle = require("shuffle-array");
 const { checkMode, MASKS } = require("./mode");
+const { unpackObjectKeys } = require("./utils");
 const bus = require("../bus");
 const db = require("../db");
 
@@ -118,7 +118,8 @@ class Node {
             "properties.children.id",
             "attributes.name",
             "attributes.time.timestamp",
-            "attributes.path"
+            "attributes.path", // TODO: This is for symlinks, move out
+            "attributes.sha1"  // TODO: This is for files, move out
         ].map((index) => ({ key: { [index]: 1 } }));
 
         return db.createIndexes("nodes", indexes);
@@ -398,7 +399,6 @@ class Node {
     }
 
     async _props(client, properties) {
-        const dotProps = dot.dot(properties);
         const operation = {
             $set: {},
             $unset: {}
@@ -407,7 +407,7 @@ class Node {
         operation.$set["properties.ctime"] = new Date();
         operation.$set["properties.cuid"] = client.getUid();
 
-        for (const [ key, value ] of Object.entries(dotProps)) {
+        for (const [ key, value ] of Object.entries(properties)) {
             if (value === null) {
                 operation.$unset[`properties.${key}`] = "";
             } else {
@@ -419,7 +419,6 @@ class Node {
     }
 
     async _attr(client, attributes) {
-        const dotAttr = dot.dot(attributes);
         const operation = {
             $set: {},
             $unset: {}
@@ -430,7 +429,7 @@ class Node {
         operation.$set["properties.cuid"] = client.getUid();
         operation.$set["properties.muid"] = client.getUid();
 
-        for (const [ key, value ] of Object.entries(dotAttr)) {
+        for (const [ key, value ] of Object.entries(attributes)) {
             if (value === null) {
                 operation.$unset[`attributes.${key}`] = "";
             } else {
@@ -651,7 +650,7 @@ class Node {
     async update(client, attributes, quiet = false) {
         await this.assertAccess(client, "w");
 
-        await this._attr(client, dot.object(attributes));
+        await this._attr(client, unpackObjectKeys(attributes));
 
         if (!quiet) {
             await this._notify(client, "update");
@@ -735,7 +734,7 @@ class Node {
         await this.assertAccess(client, "w");
         assert(Types[type], `No type named ${type}`);
 
-        const node = await Types[type]._createData(client, this, type, dot.object(attributes));
+        const node = await Types[type]._createData(client, this, type, unpackObjectKeys(attributes));
         const nodepath = Node._factory(node.properties.type, {
             ...node,
             name,

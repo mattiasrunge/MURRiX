@@ -88,7 +88,8 @@ class Uploader extends Emitter {
 
             await api.ensure(this.state.path, "d");
 
-            const node = await api.create(this.state.path, "f", file.name, {
+            const name = await api.uniquename(this.state.path, file.name);
+            const node = await api.create(this.state.path, "f", name, {
                 name: file.name,
                 _source: {
                     filename: req.body.filename
