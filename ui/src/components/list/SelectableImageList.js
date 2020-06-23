@@ -27,6 +27,7 @@ class SelectableImageList extends Component {
 
     async load() {
         this.addDisposables([
+            // TODO: Synchronize, only handle one update at a time
             event.on("node.update", this.onFileUpdated, { id: "SelectableImageList" }),
             event.on("node.appendChild", this.onFileAdded, { id: "SelectableImageList" }),
             event.on("node.removeChild", this.onFileRemoved, { id: "SelectableImageList" })

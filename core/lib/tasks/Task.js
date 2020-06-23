@@ -53,7 +53,7 @@ class Task {
         } catch (error) {
             log.error(`Task failed, will wait ${errorTimeout / 1000}s until next run`, error);
 
-            const errorStack = error.stack.toString().split("\n").map((l) => l.trim()).filter(Boolean);
+            const errorStack = error.stack ? error.stack.toString().split("\n").map((l) => l.trim()).filter(Boolean) : [];
 
             await api.update(ADMIN_CLIENT, this.node.path, { lastDuration: false, didWork: false, error: errorStack });
 
