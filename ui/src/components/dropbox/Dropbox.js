@@ -1,4 +1,6 @@
 
+/* global document window */
+
 import React from "react";
 import PropTypes from "prop-types";
 import { Header, Message, Button, Grid, Table, List, Dimmer, Loader } from "semantic-ui-react";
@@ -6,7 +8,7 @@ import Component from "lib/component";
 import notification from "lib/notification";
 import { api, event, backend } from "lib/backend";
 import format from "lib/format";
-import theme from "./theme.module.css";
+// import theme from "./theme.module.css";
 
 class Dropbox extends Component {
     constructor(props) {
@@ -42,7 +44,7 @@ class Dropbox extends Component {
         }
     }
 
-    async update(props) {
+    async update() {
         this.setState({ loading: true });
         try {
             const settings = await api.dropboxsettings();
@@ -114,6 +116,7 @@ class Dropbox extends Component {
                                                     <a
                                                         href={`mailto:${this.state.settings.account.email}`}
                                                         target="_blank"
+                                                        rel="noreferrer"
                                                     >
                                                         {this.state.settings.account.email}
                                                     </a>
@@ -125,6 +128,7 @@ class Dropbox extends Component {
                                                     <a
                                                         href="https://www.dropbox.com"
                                                         target="_blank"
+                                                        rel="noreferrer"
                                                     >
                                                         Goto Dropbox
                                                     </a>
@@ -177,7 +181,7 @@ class Dropbox extends Component {
                                 <Message.Header>Set it up</Message.Header>
                                 <List ordered>
                                     <List.Item>
-                                        Install the <a href="https://play.google.com/store/apps/details?id=com.dropbox.android" target="_blank">Dropbox app</a>
+                                        Install the <a href="https://play.google.com/store/apps/details?id=com.dropbox.android" target="_blank" rel="noreferrer">Dropbox app</a>
                                     </List.Item>
                                     <List.Item>
                                         Enable <i>Camera Uploads</i> in the app

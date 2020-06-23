@@ -6,7 +6,7 @@ const log = require("../../../lib/log")(module);
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath) => {
-    let node = await Node.resolve(client, abspath);
+    const node = await Node.resolve(client, abspath);
 
     assert(node.properties.type === "f", "Can only ensure faces for files");
 
@@ -16,7 +16,7 @@ module.exports = async (client, abspath) => {
 
             return;
 
-            //node = await api.found(client, node);
+            // node = await api.found(client, node);
         }
 
         const { sha1, md5 } = await api.metadata(client, node.path);

@@ -1,6 +1,6 @@
 "use strict";
 
-const setup = async (client) => {};
+const setup = async () => {};
 
 setup.dependencies = [
     "vfs",

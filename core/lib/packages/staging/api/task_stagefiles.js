@@ -3,13 +3,12 @@
 const assert = require("assert");
 const path = require("path");
 const fs = require("fs-extra");
-const Node = require("../../../lib/Node");
 const log = require("../../../lib/log")(module);
 const { api } = require("../../../api");
 const config = require("../../../config");
 const { Client } = require("../../../auth");
 
-module.exports = async (client, taskNode) => {
+module.exports = async (client /* , taskNode */) => {
     assert(client.isAdmin(), "Permission denied");
     assert(config.stagingDirectory, "Staging is disabled");
 

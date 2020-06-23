@@ -119,8 +119,8 @@ class Node {
             "attributes.name",
             "attributes.time.timestamp",
             "attributes.path", // TODO: This is for symlinks, move out
-            "attributes.type",  // TODO: This is for files, move out
-            "attributes.sha1"  // TODO: This is for files, move out
+            "attributes.type", // TODO: This is for files, move out
+            "attributes.sha1" // TODO: This is for files, move out
         ].map((index) => ({ key: { [index]: 1 } }));
 
         return db.createIndexes("nodes", indexes);
@@ -390,8 +390,8 @@ class Node {
             { _id: this._id },
             operation,
             {
-                upsert:true,
-                returnNewDocument : true
+                upsert: true,
+                returnNewDocument: true
             }
         );
 
@@ -763,14 +763,14 @@ class Node {
 
     async revisions(client) {
         await this.assertAccess(client, "r");
-        await assert(db.history, `Revision history is not enabled`);
+        await assert(db.history, "Revision history is not enabled");
 
         return await db.history.revisions(this._id);
     }
 
     async revision(client, rev) {
         await this.assertAccess(client, "r");
-        await assert(db.history, `Revision history is not enabled`);
+        await assert(db.history, "Revision history is not enabled");
 
         return await db.history.fetch(this._id, rev);
     }

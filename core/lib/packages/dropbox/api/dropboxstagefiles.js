@@ -1,8 +1,7 @@
 "use strict";
 
-const assert = require("assert");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT, Client } = require("../../../auth");
+const { ADMIN_CLIENT } = require("../../../auth");
 const { download, remove } = require("../../../lib/dropbox");
 const { api } = require("../../../api");
 const config = require("../../../config");

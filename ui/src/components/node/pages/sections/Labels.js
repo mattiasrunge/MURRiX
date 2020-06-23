@@ -1,12 +1,12 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Header, Grid, Table, Label, Checkbox } from "semantic-ui-react";
+import { Header } from "semantic-ui-react";
 import Component from "lib/component";
 import { api } from "lib/backend";
 import notification from "lib/notification";
 import InputLabels from "components/edit/lib/InputLabels"; // TODO: Break out? should not import something from lib in another component
-import theme from "../../theme.module.css";
+// import theme from "../../theme.module.css";
 
 class Labels extends Component {
     constructor(props) {

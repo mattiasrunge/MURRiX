@@ -22,10 +22,10 @@ module.exports = async (client, abspath) => {
             "attributes.path": abspath
         });
 
-        const labelNames = Array.from(new Set(links
+        const labelNames = [ ...new Set(links
         .map(({ path }) => path)
         .filter((path) => path.startsWith("/labels/"))
-        .map((path) => path.split("/")[2])));
+        .map((path) => path.split("/")[2])) ];
 
         return labelNames
         .map((label) => labels.find(({ name }) => name === label));

@@ -12,7 +12,7 @@ const checkConfiguration = () => {
     assert(config.dropbox, "Configuration is missing dropbox configuration");
     assert(config.dropbox.key, "Configuration is missing dropbox key");
     assert(config.dropbox.secret, "Configuration is missing dropbox secret");
-}
+};
 
 const createError = (data) => {
     if (typeof data === "string") {
@@ -49,17 +49,11 @@ const request = async (token, resource, parameters) => {
     });
 };
 
-const revoke = async(token) => {
-    return await request(token, "auth/token/revoke");
-};
+const revoke = async (token) => request(token, "auth/token/revoke");
 
-const account = async(token) => {
-    return await request(token, "users/get_current_account");
-};
+const account = async (token) => request(token, "users/get_current_account");
 
-const space = async(token) => {
-    return await request(token, "users/get_space_usage");
-};
+const space = async (token) => request(token, "users/get_space_usage");
 
 const list = async (token, folder) => {
     let result = await request(token, "files/list_folder", {
@@ -122,9 +116,9 @@ const authenticate = (baseUrl, resultFn) => {
 
     const id = uuid();
     const dropbox = dropboxV2Api.authenticate({
-        client_id: config.dropbox.key,
-        client_secret: config.dropbox.secret,
-        redirect_uri: `${baseUrl}/dropbox`,
+        client_id: config.dropbox.key, // eslint-disable-line camelcase
+        client_secret: config.dropbox.secret, // eslint-disable-line camelcase
+        redirect_uri: `${baseUrl}/dropbox`, // eslint-disable-line camelcase
         state: id
     });
 
@@ -167,7 +161,7 @@ const handler = async (ctx) => {
 
     ctx.status = 200;
     ctx.body = "Authorization complete, you can close this window now";
-}
+};
 
 module.exports = {
     list,

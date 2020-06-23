@@ -332,7 +332,7 @@ class SelectableImageList extends Component {
                             All
                         </a>
                         <If condition={duplicates}>
-                        <span>&#124;</span>
+                            <span>&#124;</span>
                             <a
                                 className={this.state.loading ? theme.disabled : ""}
                                 onClick={this.onSelectAllDuplicates}

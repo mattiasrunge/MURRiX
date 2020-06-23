@@ -6,7 +6,7 @@ const { api } = require("../../../api");
 const config = require("../../../config");
 const { Client } = require("../../../auth");
 
-module.exports = async (client, taskNode) => {
+module.exports = async (client /* , taskNode */) => {
     assert(client.isAdmin(), "Permission denied");
     assert(config.dropbox, "Dropbox is not configured");
 
