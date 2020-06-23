@@ -24,6 +24,10 @@ module.exports = async (client, term,
     }
 
     for (const node of nodes) {
+        if (term.hasInterrupt()) {
+            break;
+        }
+
         const answer = await term.ask(`Are you sure you want to remove ${color.bold(node.name)}? [y/N]`);
 
         if (answer.toLowerCase() === "y") {

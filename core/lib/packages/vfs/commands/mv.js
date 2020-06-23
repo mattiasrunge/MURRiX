@@ -15,6 +15,10 @@ module.exports = async (client, term,
     });
 
     for (const node of nodes) {
+        if (term.hasInterrupt()) {
+            break;
+        }
+
         await api.move(client, node.path, path.join(dstpath, "/"));
     }
 };

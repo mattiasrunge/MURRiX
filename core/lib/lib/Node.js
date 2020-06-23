@@ -119,6 +119,7 @@ class Node {
             "attributes.name",
             "attributes.time.timestamp",
             "attributes.path", // TODO: This is for symlinks, move out
+            "attributes.type",  // TODO: This is for files, move out
             "attributes.sha1"  // TODO: This is for files, move out
         ].map((index) => ({ key: { [index]: 1 } }));
 

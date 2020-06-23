@@ -14,8 +14,14 @@ module.exports = async (client, term,
         noerror: true
     });
 
-    for (const node of nodes) {
-        term.writeln(`Regenerating ${color.bold(node.name)}...`);
+    for (let n = 0; n < nodes.length; n++) {
+        if (term.hasInterrupt()) {
+            break;
+        }
+
+        const node = nodes[n];
+
+        term.writeln(`${nodes.length > 0 ? `[${n + 1}/${nodes.length}] ` : ""}Regenerating ${color.bold(node.name)}...`);
         await api.regenerate(client, node.path, {
             overwrite: opts.o
         });
