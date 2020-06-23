@@ -27,21 +27,99 @@ class SelectableImageList extends Component {
 
     async load() {
         this.addDisposables([
-            event.on("node.update", (event, path) => {
-                if (path.startsWith(this.props.path)) {
-                    this.update(this.props);
-                }
-            }, { id: "SelectableImageList" }),
-            event.on("node.appendChild", this.onNodeUpdated, { id: "SelectableImageList" }),
-            event.on("node.removeChild", this.onNodeUpdated, { id: "SelectableImageList" })
+            event.on("node.update", this.onFileUpdated, { id: "SelectableImageList" }),
+            event.on("node.appendChild", this.onFileAdded, { id: "SelectableImageList" }),
+            event.on("node.removeChild", this.onFileRemoved, { id: "SelectableImageList" })
         ]);
 
         await this.update(this.props);
     }
 
-    onNodeUpdated = (event, path) => {
-        if (path === this.props.path) {
+    onFileUpdated = async (event, data) => {
+        if (data.path === this.props.path) {
             this.update(this.props);
+        } else if (data.path.startsWith(this.props.path)) {
+            const index = this.state.files.findIndex(({ path }) => path === data.path);
+
+            if (index !== -1) {
+                this.setState({ loading: true });
+
+                const file = await api.resolve(data.path);
+
+                if (this.props.onClickDuplicate) {
+                    file.extra = file.extra ?? {};
+
+                    file.extra.duplicates = await api.duplicates(file.path);
+                }
+
+                const files = this.state.files.slice(0);
+
+                files.splice(index, 1);
+                files.push(file);
+
+                utils.sortNodeList(files);
+
+                const selected = this.getSelected(files);
+                const days = this.getDays(files);
+
+                this.setState({
+                    days,
+                    files,
+                    loading: false
+                });
+
+                this.props.onChange(selected, files);
+            }
+        }
+    }
+
+    onFileAdded = async (event, data) => {
+        if (data.path === this.props.path) {
+            this.setState({ loading: true });
+
+            const file = await api.resolve(data.extra.childId);
+
+            if (this.props.onClickDuplicate) {
+                file.extra = file.extra ?? {};
+
+                file.extra.duplicates = await api.duplicates(file.path);
+            }
+
+            const files = [ file, ...this.state.files ];
+
+            utils.sortNodeList(files);
+
+            const selected = this.getSelected(files);
+            const days = this.getDays(files);
+
+            this.setState({
+                days,
+                files,
+                loading: false
+            });
+
+            this.props.onChange(selected, files);
+        }
+    }
+
+    onFileRemoved = async (event, data) => {
+        if (data.path === this.props.path) {
+            this.setState({ loading: true });
+
+            const files = this.state.files.filter(({ _id }) => _id !== data.extra.childId);
+
+            utils.sortNodeList(files);
+
+            const selected = this.getSelected(files);
+            const days = this.getDays(files);
+
+            this.setState({
+                days,
+                files,
+                loading: false
+            });
+
+            this.props.onChange(selected, files);
         }
     }
 
@@ -70,6 +148,18 @@ class SelectableImageList extends Component {
         return days;
     }
 
+    getSelected(files) {
+        const selected = this.props.value
+        .map((node) => files.find((f) => f._id === node._id))
+        .filter((node) => node);
+
+        if (this.props.single && selected.length === 0 && files.length > 0) {
+            selected.push(files[0]);
+        }
+
+        return selected;
+    }
+
     async update(props) {
         if (this.state.loading) {
             return this.setState({ pending: true });
@@ -85,14 +175,7 @@ class SelectableImageList extends Component {
 
             utils.sortNodeList(files);
 
-            const selected = this.props.value
-            .map((node) => files.find((f) => f._id === node._id))
-            .filter((node) => node);
-
-            if (this.props.single && selected.length === 0 && files.length > 0) {
-                selected.push(files[0]);
-            }
-
+            const selected = this.getSelected(files);
             const days = this.getDays(files);
 
             this.setState({

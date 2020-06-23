@@ -30,7 +30,7 @@ class Connections extends Component {
         await this.update(this.props);
     }
 
-    onNodeUpdated = (event, path) => {
+    onNodeUpdated = (event, { path }) => {
         if (path === `${this.props.node.path}/tags`) {
             this.update(this.props);
         }

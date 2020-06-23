@@ -36,7 +36,7 @@ class Tagging extends Component {
         await this.update(this.props);
     }
 
-    onNodeUpdated = (event, path) => {
+    onNodeUpdated = (event, { path }) => {
         if (path.startsWith(this.props.node.path) && path.endsWith("/tags")) {
             this.update(this.props);
         }

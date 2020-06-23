@@ -21,17 +21,15 @@ module.exports = async (client, taskNode) => {
         log.info(`Task ensure checksums found ${count} nodes that needs to be processed`);
 
         const list = await Node.query(client, query, {
-            limit: 1,
+            limit: 3,
             sort: { "properties.birthtime": -1 }
         });
 
-        if (list[0]) {
-            let node = list[0];
-
+        for (const node of list) {
             if (!node.path) {
-                log.info(`Node with id ${node._id} seems to not be present in the tree, it has no path, will run found on it`);
+                log.info(`Node with id ${node._id} seems to not be present in the tree, it has no path...`);
 
-                node = await api.found(client, node);
+                continue;
             }
 
             await api.ensurefilechecksums(client, node);

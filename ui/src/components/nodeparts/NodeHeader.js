@@ -28,7 +28,7 @@ class NodeHeader extends Component {
         await this.update(this.props);
     }
 
-    onNodeUpdated = (event, path) => {
+    onNodeUpdated = (event, { path }) => {
         if (path === `${this.props.node.path}/profilePicture`) {
             this.update(this.props);
         }

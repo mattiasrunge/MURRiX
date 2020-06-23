@@ -3,9 +3,9 @@
 const path = require("path");
 const assert = require("assert");
 const { v4: uuid } = require("uuid");
+const dot = require("dot-object");
 const shuffle = require("shuffle-array");
 const { checkMode, MASKS } = require("./mode");
-const { unpackObjectKeys } = require("./utils");
 const bus = require("../bus");
 const db = require("../db");
 
@@ -328,10 +328,11 @@ class Node {
         };
     }
 
-    async _notify(client, method) {
+    async _notify(client, method, extra = {}) {
         return bus.emit(`node.${method}`, {
             uid: client.getUid(),
-            node: this
+            node: this,
+            extra
         });
     }
 
@@ -374,45 +375,70 @@ class Node {
         }
     }
 
+    async _update(operation) {
+        if (operation.$set && Object.keys(operation.$set).length === 0) {
+            delete operation.$set;
+        }
+
+        if (operation.$unset && Object.keys(operation.$unset).length === 0) {
+            delete operation.$unset;
+        }
+
+        const doc = await db.findOneAndUpdate("nodes",
+            { _id: this._id },
+            operation,
+            {
+                upsert:true,
+                returnNewDocument : true
+            }
+        );
+
+        this.properties = doc.value.properties;
+        this.attributes = doc.value.attributes;
+    }
+
     async _props(client, properties) {
-        const props = {
-            ...this.properties,
-            ...properties,
-            ctime: new Date(),
-            cuid: client.getUid()
+        const dotProps = dot.dot(properties);
+        const operation = {
+            $set: {},
+            $unset: {}
         };
 
-        Object.keys(properties)
-        .filter((key) => properties[key] === null)
-        .forEach((key) => delete props[key]);
+        operation.$set["properties.ctime"] = new Date();
+        operation.$set["properties.cuid"] = client.getUid();
 
-        this.properties = props;
+        for (const [ key, value ] of Object.entries(dotProps)) {
+            if (value === null) {
+                operation.$unset[`properties.${key}`] = "";
+            } else {
+                operation.$set[`properties.${key}`] = value;
+            }
+        }
 
-        await db.updateOne("nodes", this._serializeForDb());
+        await this._update(operation);
     }
 
     async _attr(client, attributes) {
-        const props = {
-            ...this.properties,
-            ctime: new Date(),
-            mtime: new Date(),
-            cuid: client.getUid(),
-            muid: client.getUid()
+        const dotAttr = dot.dot(attributes);
+        const operation = {
+            $set: {},
+            $unset: {}
         };
 
-        const attr = {
-            ...this.attributes,
-            ...attributes
-        };
+        operation.$set["properties.ctime"] = new Date();
+        operation.$set["properties.mtime"] = new Date();
+        operation.$set["properties.cuid"] = client.getUid();
+        operation.$set["properties.muid"] = client.getUid();
 
-        Object.keys(attributes)
-        .filter((key) => attributes[key] === null)
-        .forEach((key) => delete attr[key]);
+        for (const [ key, value ] of Object.entries(dotAttr)) {
+            if (value === null) {
+                operation.$unset[`attributes.${key}`] = "";
+            } else {
+                operation.$set[`attributes.${key}`] = value;
+            }
+        }
 
-        this.attributes = attr;
-        this.properties = props;
-
-        await db.updateOne("nodes", this._serializeForDb());
+        await this._update(operation);
         await this._storeRevision(client);
     }
 
@@ -625,7 +651,7 @@ class Node {
     async update(client, attributes, quiet = false) {
         await this.assertAccess(client, "w");
 
-        await this._attr(client, unpackObjectKeys(attributes));
+        await this._attr(client, dot.object(attributes));
 
         if (!quiet) {
             await this._notify(client, "update");
@@ -661,7 +687,9 @@ class Node {
 
         await this._props(client, { children });
 
-        await this._notify(client, "removeChild");
+        await this._notify(client, "removeChild", {
+            childId: child._id
+        });
     }
 
     async appendChild(client, child) {
@@ -679,7 +707,9 @@ class Node {
 
         await this._props(client, { children });
 
-        await this._notify(client, "appendChild");
+        await this._notify(client, "appendChild", {
+            childId: child._id
+        });
     }
 
     async appendChildCopy(client, child) {
@@ -705,7 +735,7 @@ class Node {
         await this.assertAccess(client, "w");
         assert(Types[type], `No type named ${type}`);
 
-        const node = await Types[type]._createData(client, this, type, unpackObjectKeys(attributes));
+        const node = await Types[type]._createData(client, this, type, dot.object(attributes));
         const nodepath = Node._factory(node.properties.type, {
             ...node,
             name,

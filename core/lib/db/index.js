@@ -65,6 +65,12 @@ class Database {
         return collection.findOne(query, options);
     }
 
+    findOneAndUpdate(collectionName, query, update, options) {
+        const collection = this.db.collection(collectionName);
+
+        return collection.findOneAndUpdate(query, update, options);
+    }
+
     insertOne(collectionName, doc, options) {
         const collection = this.db.collection(collectionName);
 

@@ -37,6 +37,7 @@ module.exports = async (client, srcpath, dstpath, options = {}) => {
     }
 
     srcnode.name = name;
+    srcnode.path = path.join(dstparentnode.path, name);
     await dstparentnode.appendChild(client, srcnode);
 
     if (options.inherit) {

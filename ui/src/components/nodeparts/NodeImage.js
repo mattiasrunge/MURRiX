@@ -27,7 +27,7 @@ class NodeImage extends Component {
         await this.update(this.props);
     }
 
-    onNodeUpdated = (event, path) => {
+    onNodeUpdated = (event, { path }) => {
         if (path === this.props.path) {
             this.update(this.props);
         }

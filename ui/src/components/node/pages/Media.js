@@ -31,7 +31,7 @@ class Media extends Component {
 
     async load() {
         this.addDisposables([
-            event.on("node.update", (event, path) => {
+            event.on("node.update", (event, { path }) => {
                 if (path.startsWith(this.props.node.path)) {
                     this.update();
                 }
@@ -43,7 +43,7 @@ class Media extends Component {
         await this.update();
     }
 
-    onNodeUpdated = (event, path) => {
+    onNodeUpdated = (event, { path }) => {
         if (path === `${this.props.node.path}/files` ||
             path === `${this.props.node.path}/texts`) {
             this.update();

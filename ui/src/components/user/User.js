@@ -149,6 +149,8 @@ class User extends Component {
     render() {
         const sections = this.getSections();
 
+        ui.setTitle("Profile");
+
         return (
             <Container>
                 <Header

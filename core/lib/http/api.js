@@ -22,7 +22,10 @@ class Api {
                 this.ws.clients.forEach(({ client }) => {
                     if (!client.isGuest()) {
                         // TODO: Check if user has access
-                        client.sendEvent(event, data.node.path);
+                        client.sendEvent(event, {
+                            path: data.node.path,
+                            extra: data.extra
+                        });
                     }
                 });
             }
