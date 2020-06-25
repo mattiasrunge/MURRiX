@@ -47,7 +47,7 @@ module.exports = async (client /* , taskNode */) => {
 
             for (const file of files) {
                 const filename = path.join(directory, file);
-                const name = await api.uniquename(filesPath, file);
+                const name = await api.uniquename(client, filesPath, file);
                 const node = await api.create(userClient, filesPath, "f", name, {
                     name: file,
                     _source: {
