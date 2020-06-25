@@ -19,5 +19,5 @@ module.exports = async (client, id, options) => {
         }
     }
 
-    await Promise.all(nodes.map((node) => node.serialize(client)));
+    return await Promise.all(nodes.map((node) => node.serialize(client)));
 };
