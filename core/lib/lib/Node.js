@@ -117,6 +117,7 @@ class Node {
             "properties.children.name",
             "properties.children.id",
             "attributes.name",
+            "attributes.group",
             "attributes.time.timestamp",
             "attributes.path", // TODO: This is for symlinks, move out
             "attributes.type", // TODO: This is for files, move out

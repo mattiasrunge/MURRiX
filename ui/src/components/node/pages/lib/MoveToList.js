@@ -233,7 +233,7 @@ class MoveToList extends Component {
                 <Divider />
 
                 <Button
-                    disabled={this.props.files.length === 0}
+                    disabled={this.state.loading || this.props.files.length === 0}
                     className={theme.organizeRemoteDelete}
                     color="red"
                     icon="delete"

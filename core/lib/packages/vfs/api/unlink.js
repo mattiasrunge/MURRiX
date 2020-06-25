@@ -24,7 +24,7 @@ module.exports = async (client, abspath) => {
     // If child belongs to a group find one in that group
     // and delete it. The next delete will take the next
     // node in the group until there are no more.
-    if (child.properties.group) {
+    if (child.properties.count === 0 && child.properties.group) {
         const groupNodes = await Node.query(ADMIN_CLIENT, {
             "properties.group": child.properties.group
         }, {
