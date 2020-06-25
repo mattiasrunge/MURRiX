@@ -391,7 +391,10 @@ class Node {
             operation,
             {
                 upsert: true,
-                returnNewDocument: true
+
+                // https://jira.mongodb.org/browse/NODE-1807
+                // returnNewDocument: true,
+                returnOriginal: false
             }
         );
 
