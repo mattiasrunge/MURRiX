@@ -65,7 +65,16 @@
 
     & .mediaDaySelect {
         float: right;
-        cursor: pointer;
         font-weight: normal;
+
+        & a {
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        & span {
+            margin-right: 5px;
+            color: #888A85;
+        }
     }
 }

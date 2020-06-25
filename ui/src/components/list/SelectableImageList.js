@@ -272,7 +272,14 @@ class SelectableImageList extends Component {
     }
 
     onSelectDay = (day) => {
-        const selected = day.files.slice(0);
+        const selected = [ ...new Set([ ...this.props.value, ...day.files ]) ];
+        selected.sort((a, b) => this.state.files.indexOf(a) - this.state.files.indexOf(b));
+
+        this.props.onChange(selected, this.state.files);
+    }
+
+    onDeselectDay = (day) => {
+        const selected = this.props.value.slice(0).filter((file) => !day.files.includes(file));
         selected.sort((a, b) => this.state.files.indexOf(a) - this.state.files.indexOf(b));
 
         this.props.onChange(selected, this.state.files);
@@ -382,7 +389,14 @@ class SelectableImageList extends Component {
                                                 className={this.state.loading ? theme.disabled : ""}
                                                 onClick={() => this.onSelectDay(day)}
                                             >
-                                                Select day
+                                                Select
+                                            </a>
+                                            <span>&#124;</span>
+                                            <a
+                                                className={this.state.loading ? theme.disabled : ""}
+                                                onClick={() => this.onDeselectDay(day)}
+                                            >
+                                                Deselect
                                             </a>
                                         </span>
                                         {format.displayTimeDay(day.time)}

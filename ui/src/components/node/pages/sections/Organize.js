@@ -2,6 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Header, Grid, Modal, List } from "semantic-ui-react";
+
 import Component from "lib/component";
 import { SelectableImageList } from "components/list";
 import { NodeImage } from "components/nodeparts";
