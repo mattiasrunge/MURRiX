@@ -7,6 +7,7 @@ const dropboxV2Api = require("dropbox-v2-api");
 const config = require("../config");
 const { assert } = require("console");
 const log = require("../lib/log")(module);
+const request = require("request");
 
 const checkConfiguration = () => {
     assert(config.dropbox, "Configuration is missing dropbox configuration");
@@ -24,7 +25,7 @@ const createError = (data) => {
     return new Error(data.error_summary);
 };
 
-const request = async (token, resource, parameters) => {
+const requestDropbox = async (token, resource, parameters) => {
     checkConfiguration();
 
     const dropbox = dropboxV2Api.authenticate({ token });
@@ -49,20 +50,20 @@ const request = async (token, resource, parameters) => {
     });
 };
 
-const revoke = async (token) => request(token, "auth/token/revoke");
+const revoke = async (token) => requestDropbox(token, "auth/token/revoke");
 
-const account = async (token) => request(token, "users/get_current_account");
+const account = async (token) => requestDropbox(token, "users/get_current_account");
 
-const space = async (token) => request(token, "users/get_space_usage");
+const space = async (token) => requestDropbox(token, "users/get_space_usage");
 
 const list = async (token, folder) => {
-    let result = await request(token, "files/list_folder", {
+    let result = await requestDropbox(token, "files/list_folder", {
         path: folder
     });
     let items = result.entries;
 
     while (result.has_more) {
-        result = await request(token, "files/list_folder/continue", {
+        result = await requestDropbox(token, "files/list_folder/continue", {
             cursor: result.cursor
         });
 
@@ -82,16 +83,22 @@ const list = async (token, folder) => {
 const download = async (token, file, targetfolder) => {
     checkConfiguration();
 
-    const dropbox = dropboxV2Api.authenticate({ token });
+    const opts = {
+        method: "POST",
+        uri: "https://content.dropboxapi.com/2/files/download",
+        json: true,
+        followRedirect: false,
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Dropbox-API-Arg": `{"path":"${file.id}"}`
+        }
+    };
+
+    // const dropbox = dropboxV2Api.authenticate({ token });
 
     return new Promise((resolve, reject) => {
         const targetfile = path.join(targetfolder, file.name);
-        const stream = dropbox({
-            resource: "files/download",
-            parameters: {
-                path: file.id
-            }
-        }, (error) => {
+        request(opts).pipe(fs.createWriteStream(targetfile)).on("close", (error) => {
             if (error) {
                 return reject(createError(error));
             }
@@ -99,12 +106,28 @@ const download = async (token, file, targetfolder) => {
             resolve(targetfile);
         });
 
-        stream.pipe(fs.createWriteStream(targetfile));
+        // This code stores the file in the body as well as
+        // pipe it to a file. With large files it failes on a
+        // toString convertion, with a string is to long error
+        // const stream = dropbox({
+        //     resource: "files/download",
+        //     parameters: {
+        //         path: file.id
+        //     }
+        // }, (error) => {
+        //     if (error) {
+        //         return reject(createError(error));
+        //     }
+
+        //     resolve(targetfile);
+        // });
+
+        // stream.pipe(fs.createWriteStream(targetfile));
     });
 };
 
 const remove = async (token, file) => {
-    await request(token, "files/delete", {
+    await requestDropbox(token, "files/delete", {
         path: file.id
     });
 };

@@ -25,7 +25,7 @@ class Session extends Emitter {
         return this._user && this._user.personPath;
     }
 
-    async loadUser() {
+    loadUser = async () => {
         this._user = await api.whoami();
 
         this.emit("update", this._user);
@@ -34,7 +34,11 @@ class Session extends Emitter {
     }
 
     _onUserUpdated = (event, { path }) => {
-        if (path.startsWith(this._user.path)) {
+        if (path === this._user.path ||
+            path.startsWith(`${this._user.path}/users`) ||
+            path.startsWith(`${this._user.path}/groups`) ||
+            path.startsWith(`${this._user.path}/stars`) ||
+            path.startsWith(`${this._user.path}/person`)) {
             this.loadUser();
         }
     }
@@ -42,7 +46,7 @@ class Session extends Emitter {
     async init() {
         await this.loadUser();
 
-        event.on("session.updated", () => this.loadUser());
+        event.on("session.updated", this.loadUser);
         event.on("node.update", this._onUserUpdated);
         event.on("node.appendChild", this._onUserUpdated);
         event.on("node.removeChild", this._onUserUpdated);

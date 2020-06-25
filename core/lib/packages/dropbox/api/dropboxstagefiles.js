@@ -18,7 +18,6 @@ module.exports = async (client, limit = 10) => {
 
     for (const file of files) {
         const filename = await download(user.attributes.dropbox.token, file, config.uploadDirectory);
-
         const name = await api.uniquename(client, filesPath, file.name);
         const node = await api.create(client, filesPath, "f", name, {
             name: file.name,
