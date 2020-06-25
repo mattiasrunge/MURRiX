@@ -11,5 +11,5 @@ module.exports = async (client, term,
         nofollow: opts.l
     });
 
-    term.writeJson(node._id);
+    term.writeln(node._id);
 };
