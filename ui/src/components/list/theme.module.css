@@ -62,4 +62,10 @@
 
 .mediaDay {
     margin-top: 30px;
+
+    & .mediaDaySelect {
+        float: right;
+        cursor: pointer;
+        font-weight: normal;
+    }
 }

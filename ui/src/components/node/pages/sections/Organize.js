@@ -8,6 +8,7 @@ import { NodeImage } from "components/nodeparts";
 import { Viewer } from "components/viewer";
 import MoveToList from "../lib/MoveToList";
 import theme from "../../theme.module.css";
+import { api } from "../../../../lib/backend";
 
 class Organize extends Component {
     constructor(props) {
@@ -17,7 +18,8 @@ class Organize extends Component {
             selected: [],
             file: false,
             files: [],
-            showDuplicates: false
+            duplicatesFile: false,
+            duplicatesList: []
         };
     }
 
@@ -33,30 +35,39 @@ class Organize extends Component {
         }
     }
 
-    onClickDuplicate = (file) => {
-        this.setState({ showDuplicates: file });
+    onClickDuplicate = async (file) => {
+        try {
+            const paths = await api.duplicates(file.path);
+
+            this.setState({
+                duplicatesFile: file,
+                duplicatesList: paths
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     onCloseDuplicate = () => {
-        this.setState({ showDuplicates: false });
+        this.setState({ duplicatesFile: false, duplicatesList: [] });
     }
 
     render() {
         return (
             <div>
-                <If condition={this.state.showDuplicates}>
+                <If condition={this.state.duplicatesFile}>
                     <Modal
                         closeIcon
                         defaultOpen
                         onClose={this.onCloseDuplicate}
                     >
                         <Modal.Header>
-                            Duplicates of {this.state.showDuplicates.name}
+                            Duplicates of {this.state.duplicatesFile.name}
                         </Modal.Header>
                         <Modal.Content image>
                             <NodeImage
-                                title={this.state.showDuplicates.name}
-                                path={this.state.showDuplicates.path}
+                                title={this.state.duplicatesFile.name}
+                                path={this.state.duplicatesFile.path}
                                 format={{
                                     width: 216,
                                     height: 216,
@@ -65,7 +76,7 @@ class Organize extends Component {
                             />
                             <Modal.Description>
                                 <List>
-                                    <For each="path" of={this.state.showDuplicates.extra.duplicates}>
+                                    <For each="path" of={this.state.duplicatesList}>
                                         <List.Item key={path}>
                                             {path}
                                         </List.Item>

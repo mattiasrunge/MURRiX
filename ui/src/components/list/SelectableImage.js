@@ -35,7 +35,7 @@ class SelectableImage extends Component {
                     }}
                     lazy
                 />
-                <If condition={this.props.file.extra.duplicates && this.props.file.extra.duplicates.length > 0}>
+                <If condition={this.props.file.extra.duplicates > 0}>
                     <div
                         className={theme.hasDuplicates}
                         title="This file has one or more duplicates"

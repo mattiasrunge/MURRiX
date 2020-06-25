@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { Image, Header, Loader, Menu } from "semantic-ui-react";
+import { Image, Header, Loader, Menu, Divider } from "semantic-ui-react";
 import Component from "lib/component";
 import { api, event } from "lib/backend";
 import notification from "lib/notification";
@@ -50,7 +50,7 @@ class SelectableImageList extends Component {
                 if (this.props.onClickDuplicate) {
                     file.extra = file.extra ?? {};
 
-                    file.extra.duplicates = await api.duplicates(file.path);
+                    file.extra.duplicates = await api.duplicates(file.path, { count: true });
                 }
 
                 const files = this.state.files.slice(0);
@@ -83,7 +83,7 @@ class SelectableImageList extends Component {
             if (this.props.onClickDuplicate) {
                 file.extra = file.extra ?? {};
 
-                file.extra.duplicates = await api.duplicates(file.path);
+                file.extra.duplicates = await api.duplicates(file.path, { count: true });
             }
 
             const files = [ file, ...this.state.files ];
@@ -271,6 +271,13 @@ class SelectableImageList extends Component {
         this.props.onChange(duplicates, this.state.files);
     }
 
+    onSelectDay = (day) => {
+        const selected = day.files.slice(0);
+        selected.sort((a, b) => this.state.files.indexOf(a) - this.state.files.indexOf(b));
+
+        this.props.onChange(selected, this.state.files);
+    }
+
     onSelectSmall = () => {
         this.setState({ size: 50 });
     }
@@ -370,9 +377,18 @@ class SelectableImageList extends Component {
                             >
                                 <If condition={day.time && day.time.timestamp}>
                                     <Header as="h5">
+                                        <span className={theme.mediaDaySelect}>
+                                            <a
+                                                className={this.state.loading ? theme.disabled : ""}
+                                                onClick={() => this.onSelectDay(day)}
+                                            >
+                                                Select day
+                                            </a>
+                                        </span>
                                         {format.displayTimeDay(day.time)}
                                     </Header>
                                 </If>
+                                <Divider />
                                 <Image.Group className={theme.selectableImageListContainer}>
                                     <For each="file" of={day.files}>
                                         <SelectableImage

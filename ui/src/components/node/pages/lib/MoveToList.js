@@ -3,11 +3,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import store from "store";
 import { withRouter } from "react-router-dom";
-import { Icon, Button, List, Divider, Modal, Message } from "semantic-ui-react";
+import { Icon, Button, List, Divider, Modal, Message, Grid } from "semantic-ui-react";
 import Component from "lib/component";
 import { api } from "lib/backend";
 import notification from "lib/notification";
 import { NodeImage, NodeInput } from "components/nodeparts";
+import { CreateModal } from "components/edit";
 import theme from "../../theme.module.css";
 
 class MoveToList extends Component {
@@ -17,7 +18,8 @@ class MoveToList extends Component {
         this.state = {
             loading: false,
             deleteConfirm: false,
-            remotes: store.get("organize_remotes") || []
+            remotes: store.get("organize_remotes") || [],
+            create: null
         };
     }
 
@@ -99,6 +101,17 @@ class MoveToList extends Component {
         }
     }
 
+    onCreateRequest = () => {
+        this.setState({
+            create: { type: "a", path: "/albums" } });
+    }
+
+    onCreateClose = (remote) => {
+        this.setState({ create: null });
+
+        remote && this.onRemote(remote);
+    }
+
     render() {
         return (
             <div>
@@ -137,18 +150,43 @@ class MoveToList extends Component {
                     </Modal>
                 </If>
 
-                <NodeInput
-                    className={theme.organizeRemoteInput}
-                    value={null}
-                    onChange={this.onRemote}
-                    paths={[
-                        "/albums"
-                    ]}
-                    icon="book"
-                    loading={this.state.loading}
-                    placeholder="Add album to list..."
-                    size="mini"
-                />
+                <If condition={this.state.create}>
+                    <CreateModal
+                        type={this.state.create.type}
+                        path={this.state.create.path}
+                        onClose={this.onCreateClose}
+                        gotoNew={false}
+                    />
+                </If>
+
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column width={2}>
+                            <Button
+                                disabled={this.state.loading}
+                                className={theme.organizeCreateAlbum}
+                                primary
+                                icon="add"
+                                size="mini"
+                                onClick={this.onCreateRequest}
+                            />
+                        </Grid.Column>
+                        <Grid.Column width={14}>
+                            <NodeInput
+                                className={theme.organizeRemoteInput}
+                                value={null}
+                                onChange={this.onRemote}
+                                paths={[
+                                    "/albums"
+                                ]}
+                                icon="book"
+                                loading={this.state.loading}
+                                placeholder="Add album to list..."
+                                size="mini"
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
 
                 <List divided verticalAlign="middle">
                     <For each="remote" of={this.state.remotes}>

@@ -32,21 +32,25 @@ module.exports = async (client, abspath, options = {}) => {
         }));
         const results = await Promise.all(promises);
         const list = results.flat();
-        const serialized = await Promise.all(list.map((node) => node.serialize(client)));
+        let serialized = await Promise.all(list.map((node) => node.serialize(client)));
 
         if (options.media) { // Make something more generic of this, no hard dep to media module
-            return Promise.all(serialized.map(async (node) => ({
+            serialized = await Promise.all(serialized.map(async (node) => ({
                 ...node,
                 url: await api.url(client, node.path, options.media) // TODO: Move to extra
             })));
-        } else if (options.duplicates) {
-            return Promise.all(serialized.map(async (node) => {
+        }
+
+        if (options.duplicates) {
+            serialized = await Promise.all(serialized.map(async (node) => {
                 const result = {
                     extra: {},
                     ...node
                 };
 
-                result.extra.duplicates = await api.duplicates(client, node.path);
+                result.extra.duplicates = await api.duplicates(client, node.path, {
+                    count: true
+                });
 
                 return result;
             }));

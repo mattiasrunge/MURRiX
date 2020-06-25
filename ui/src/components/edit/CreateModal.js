@@ -33,7 +33,7 @@ class CreateModal extends Component {
             !this.disposed && this.setState({ saving: false });
 
             this.props.gotoNew && this.props.history.push(`/node${node.path}/_/settings/share`);
-            this.props.onClose();
+            this.props.onClose(node);
         } catch (error) {
             this.logError("Failed to save node", error);
             notification.add("error", error.message, 10000);
@@ -41,11 +41,15 @@ class CreateModal extends Component {
         }
     }
 
+    onClose = () => {
+        this.props.onClose();
+    }
+
     render() {
         return (
             <Modal
                 open
-                onClose={this.props.onClose}
+                onClose={this.onClose}
                 style={{ marginTop: 0 }}
                 size="small"
             >
@@ -55,7 +59,7 @@ class CreateModal extends Component {
                     type={this.props.type}
                     saving={this.state.saving}
                     onSave={this.onSave}
-                    onModalClose={this.props.onClose}
+                    onModalClose={this.onClose}
                 />
             </Modal>
         );

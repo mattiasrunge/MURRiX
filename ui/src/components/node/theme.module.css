@@ -277,6 +277,10 @@
     }
 }
 
+.organizeCreateAlbum {
+    margin-bottom: calc(var(--spacing) / 2) !important;
+}
+
 .organizeRemoteDelete {
     margin-bottom: var(--spacing) !important;
 }
