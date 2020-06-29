@@ -97,7 +97,7 @@ class Organize extends Component {
                 <Header as="h2">
                     Organize
                     <Header.Subheader>
-                        Move files to another album
+                        Move files to other albums
                     </Header.Subheader>
                 </Header>
                 <Grid>

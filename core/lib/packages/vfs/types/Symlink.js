@@ -10,11 +10,15 @@ class Symlink extends Node {
             return this;
         }
 
-        const node = await Node.resolve(client, this.attributes.path, { noerror: true });
+        try {
+            const node = await Node.resolve(client, this.attributes.path);
 
-        node.extra.linkPath = this.path;
+            node.extra.linkPath = this.path;
 
-        return node;
+            return node;
+        } catch {
+            return null;
+        }
     }
 
 

@@ -184,23 +184,23 @@ class Node {
 
     static async list(client, abspath, options = {}) {
         const pathInfo = this._parsePath(abspath);
-        const parent = await this.resolve(client, pathInfo.abspath);
+        try {
+            const parent = await this.resolve(client, pathInfo.abspath);
 
-        if (!parent) {
+            return parent.children(client, {
+                query: options.query,
+                pattern: options.pattern,
+                search: options.search,
+                skip: options.skip,
+                limit: options.limit,
+                nofollow: options.nofollow,
+                sort: options.sort,
+                reverse: options.reverse,
+                opts: options.opts
+            });
+        } catch {
             return [];
         }
-
-        return parent.children(client, {
-            query: options.query,
-            pattern: options.pattern,
-            search: options.search,
-            skip: options.skip,
-            limit: options.limit,
-            nofollow: options.nofollow,
-            sort: options.sort,
-            reverse: options.reverse,
-            opts: options.opts
-        });
     }
 
     static async count(client, query, options = {}) {
@@ -534,6 +534,7 @@ class Node {
         .map((item) => item.get(client, { readlink: options.nofollow }));
 
         let list = (await Promise.all(promises))
+        .filter(Boolean)
         .filter((item) => item.hasAccess(client, "r"));
 
         if (options.search) {
