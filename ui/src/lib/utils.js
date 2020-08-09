@@ -34,6 +34,11 @@ const utils = {
 
             return a.attributes.time.timestamp - b.attributes.time.timestamp;
         });
+
+        return list;
+    },
+    classNames(...args) {
+        return args.filter(Boolean).join(" ");
     },
     basename: (path) => path.replace(/.*\//, ""),
     dirname: (path) => path.match(/(.*)\//)[1],

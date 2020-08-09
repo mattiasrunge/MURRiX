@@ -1,0 +1,8 @@
+
+.jobContainer {
+    position: fixed;
+    bottom: 0;
+    left: 30%;
+    right: 30%;
+    z-index: 2000;
+}

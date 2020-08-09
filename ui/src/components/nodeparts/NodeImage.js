@@ -109,6 +109,7 @@ class NodeImage extends Component {
                         verticalAlign={this.props.verticalAlign}
                         wrapped={this.props.wrapped}
                         style={style}
+                        draggable="false"
                     />
                 );
             } else if (this.props.format.type === "video") {
@@ -173,6 +174,7 @@ class NodeImage extends Component {
                 verticalAlign={this.props.verticalAlign}
                 wrapped={this.props.wrapped}
                 style={style}
+                draggable="false"
             />
         );
     }

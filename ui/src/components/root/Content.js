@@ -1,14 +1,16 @@
 
 import React, { Fragment } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
+import { NotificationContainer } from "react-notifications";
 import session from "lib/session";
 import Component from "lib/component";
 import { Navbar } from "components/navbar";
 import { Terminal } from "components/terminal";
-import { Notification } from "components/notification";
+import { JobsContainer } from "components/jobs";
 import { Home } from "components/home";
 import { Node } from "components/node";
 import { User } from "components/user";
+import { Organize } from "components/organize";
 import { SignIn, Reset } from "components/authentication";
 import { UploadProgress } from "components/upload";
 import theme from "./theme.module.css";
@@ -30,8 +32,9 @@ class Content extends Component {
         return (
             <Fragment>
                 <Terminal />
-                <Notification />
+                <NotificationContainer />
                 <Navbar />
+                <JobsContainer />
                 <UploadProgress />
 
                 <div className={theme.rootContainer}>
@@ -68,6 +71,12 @@ class Content extends Component {
                                     path="/home"
                                     render={(props) => (
                                         <Home {...props} />
+                                    )}
+                                />
+                                <Route
+                                    path="/organize"
+                                    render={(props) => (
+                                        <Organize {...props} />
                                     )}
                                 />
                                 <Route

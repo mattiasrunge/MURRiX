@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Header, Button, Message, Select } from "semantic-ui-react";
 import Dropzone from "react-dropzone";
+import { JobsManager } from "components/jobs";
 import { api } from "lib/backend";
 import Component from "lib/component";
 import uploader from "lib/uploader";
@@ -23,14 +24,15 @@ class Upload extends Component {
         this.addDisposable(uploader.on("state", async (name, state) => {
             this.setState(state);
 
-            if (state.files.length === 0 && -!state.ongoing) {
+            if (state.files.length === 0 && !state.ongoing) {
                 await api.hiderawfiles(this.props.node.path);
             }
         }));
     }
 
     onDrop = (files) => {
-        uploader.addFiles(`${this.props.node.path}/${this.state.folder}`, files);
+        JobsManager.create("upload", files, `${this.props.node.path}/${this.state.folder}`);
+        // uploader.addFiles(`${this.props.node.path}/${this.state.folder}`, files);
     }
 
     onUpload = () => {

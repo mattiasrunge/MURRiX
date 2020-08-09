@@ -26,8 +26,6 @@ module.exports = async (client, limit = 10) => {
             }
         });
 
-        await api.regenerate(client, node.path);
-
         staged.push(node.path);
 
         await remove(user.attributes.dropbox.token, file);

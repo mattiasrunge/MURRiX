@@ -32,9 +32,9 @@ class UI {
         } else {
             this.shortcuts[keys] = [ fn ];
 
-            mousetrap.bind(keys, () => {
+            mousetrap.bind(keys, (e) => {
                 for (const fn of this.shortcuts[keys]) {
-                    fn();
+                    fn(e);
                 }
             });
         }

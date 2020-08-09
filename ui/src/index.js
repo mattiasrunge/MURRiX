@@ -11,7 +11,9 @@ import { Root } from "components/root";
 import "semantic-ui-css/semantic.css";
 import "animate.css/animate.css";
 import "leaflet/dist/leaflet.css";
+import "react-notifications/lib/notifications.css";
 import "styles/theme.css";
+import "styles/select.css";
 
 const start = async () => {
     const response = await fetch("/backend.txt");

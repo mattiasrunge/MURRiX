@@ -1,9 +1,7 @@
 "use strict";
 
-const { pipeline } = require("stream");
 const path = require("path");
 const fs = require("fs-extra");
-const asyncBusboy = require("async-busboy");
 const api = require("api.io");
 const log = require("../lib/log")(module);
 const configuration = require("../config");
@@ -81,26 +79,6 @@ class Media {
         return `/media/file/${filename}/${name}`;
     }
 
-    onFile(filename, file, deferred) {
-        log.info(`Creating write pipeline for ${filename}...`);
-
-        pipeline(
-            file,
-            fs.createWriteStream(filename),
-            (error) => {
-                // Important to destroy or asyncBusboy will not return
-
-                if (error) {
-                    return deferred.reject(error);
-                }
-
-                file.destroy();
-
-                deferred.resolve();
-            }
-        );
-    }
-
     routes() {
         return [
             {
@@ -126,45 +104,6 @@ class Media {
                     ctx.set("Content-disposition", `attachment; filename=${encodeURIComponent(name)}`);
                     ctx.length = stat.size;
                     ctx.body = fs.createReadStream(filepath);
-                }
-            },
-            {
-                method: "POST",
-                route: "/media/upload/:id",
-                handler: async (ctx, id) => {
-                    // if (!ctx.client.session.uploads || !ctx.client.session.uploads[id]) {
-                    //     log.info(`Could not find upload id ${id}`);
-                    //     log.info(JSON.stringify(ctx.client.session.uploads, null, 2));
-                    //     throw new Error("Invalid upload id");
-                    // }
-                    //
-                    // delete ctx.client.session.uploads[id];
-
-                    const filename = path.join(configuration.uploadDirectory, id);
-                    log.info(`Will save upload file to ${filename}...`);
-
-                    let deferred = {};
-                    const promise = new Promise((resolve, reject) => deferred = { resolve, reject });
-
-                    await asyncBusboy(ctx.req, {
-                        onFile: (fieldname, file) => this.onFile(filename, file, deferred)
-                    });
-
-                    log.info(`After async busboy will await stream promise for ${filename}...`);
-
-                    await promise;
-
-                    log.info(`Getting metadata for uploaded file ${filename}...`);
-                    const metadata = await this.getMetadata(filename, { noChecksums: true });
-
-                    log.info(`Upload of file ${filename} completed successfully!`);
-
-                    ctx.type = "json";
-                    ctx.body = JSON.stringify({
-                        status: "success",
-                        metadata,
-                        filename
-                    }, null, 2);
                 }
             }
         ];

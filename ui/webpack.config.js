@@ -313,6 +313,7 @@ module.exports = function(webpackEnv) {
         }),
         ...(modules.webpackAliases || {}),
         'components': path.join(paths.appSrc, 'components'),
+        'hooks': path.join(paths.appSrc, 'hooks'),
         'lib': path.join(paths.appSrc, 'lib'),
         'styles': path.join(paths.appSrc, 'styles'),
         'semantic-ui-css': path.join(paths.appNodeModules, 'semantic-ui-css')

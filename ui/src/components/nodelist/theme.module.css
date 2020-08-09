@@ -1,0 +1,180 @@
+
+@import "~styles/theme.css";
+
+.nodeInputWrapper {
+    display: inline-flex;
+    flex-grow: 4;
+}
+
+.nodeInput {
+    /* position: relative; */
+    /* width: 100%; */
+}
+
+.nodeInputClear {
+    margin: 12px !important;
+    margin-left: 0 !important;
+}
+
+.nodeInputSearch {
+    flex-grow: 4 !important;
+    background-color: transparent !important;
+
+    & input {
+        border-radius: 4px !important;
+    }
+
+    &::before {
+        display: none !important;
+    }
+}
+
+.nodeInputSearchSelected {
+    & input {
+        font-weight: bold;
+    }
+}
+
+.dragLayer {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.dropTarget > div {
+    background-color: #EBEBEB;
+}
+
+.dropTargetActive {
+
+}
+
+.dropTargetSelected > div {
+    background-color: white;
+}
+
+.dragItem {
+
+}
+
+.dragItemActive {
+
+}
+
+.draggingItem {
+    position: relative;
+    display: inline-block;
+
+}
+
+.draggingItemCount {
+    position: absolute;
+    display: inline-block;
+    bottom: -26px;
+    right: -38px;
+    text-align: right;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    text-shadow: -1px 1px 0 #000,
+				  1px 1px 0 #000,
+				  1px -1px 0 #000,
+				 -1px -1px 0 #000;
+}
+
+.draggingItemImageContainer {
+    position: absolute;
+    display: inline-block;
+}
+
+.draggingItemImage {
+    box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.gridItem {
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    padding: 1px !important;
+    transition: padding .2s ease-in-out;
+
+    & .gridItemImage {
+        box-sizing: border-box;
+        transition: width .2s ease-in-out,
+                    height .2s ease-in-out;
+    }
+
+    & .gridItemSelectedCover {
+        box-sizing: border-box;
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        right: 1px;
+        bottom: 1px;
+        pointer-events: none;
+        background-color: rgba(104, 186, 249, 0.2);
+        box-shadow: 0 0 6px #555753;
+        border: 3px solid #3BABFF;
+        border-radius: 1px;
+        opacity: 0;
+        transition: opacity .2s ease-in-out,
+                    top .2s ease-in-out,
+                    left .2s ease-in-out,
+                    right .2s ease-in-out,
+                    bottom .2s ease-in-out;
+    }
+
+    & .gridItemType {
+        box-sizing: border-box;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        opacity: 0.8;
+        color: white;
+        font-weight: 700;
+        text-align: right;
+        text-shadow: -1px 1px 0 #000,
+				      1px 1px 0 #000,
+				      1px -1px 0 #000,
+                     -1px -1px 0 #000;
+        transition: right .2s ease-in-out,
+                    bottom .2s ease-in-out;
+    }
+}
+
+.gridItemSelected {
+    padding: 7px !important;
+    transition: padding .2s ease-in-out;
+
+    & .gridItemImage {
+        border-radius: 1px;
+        transition: width .2s ease-in-out,
+                    height .2s ease-in-out;
+    }
+
+    & .gridItemSelectedCover {
+        top: 7px;
+        left: 7px;
+        right: 7px;
+        bottom: 7px;
+        opacity: 1;
+        transition: opacity .2s ease-in-out,
+                    top .2s ease-in-out,
+                    left .2s ease-in-out,
+                    right .2s ease-in-out,
+                    bottom .2s ease-in-out;
+    }
+
+    & .gridItemType {
+        right: 7px;
+        bottom: 7px;
+        transition: right .2s ease-in-out,
+                    bottom .2s ease-in-out;
+    }
+}

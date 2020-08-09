@@ -539,7 +539,7 @@ class Node {
 
         if (options.search) {
             const expr = new RegExp(options.search, "i");
-            list = list.filter((child) => child.attributes.name.match(expr));
+            list = list.filter((child) => (child.attributes?.name ?? child.name).match(expr));
         }
 
         if (options.sort === "time") {
