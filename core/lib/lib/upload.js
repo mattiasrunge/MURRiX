@@ -25,13 +25,13 @@ const handler = async (ctx) => {
             busboy.on("file", (fieldname, file) => {
                 const stream = fs.createWriteStream(filename);
 
-                stream.error((error) => {
+                stream.on("error", (error) => {
                     log.error("Steam error", error);
                 });
 
                 const pipe = file.pipe(stream);
 
-                pipe.error((error) => {
+                pipe.on("error", (error) => {
                     log.error("Pipe error", error);
                 });
             });
