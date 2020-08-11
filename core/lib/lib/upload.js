@@ -10,8 +10,6 @@ const log = require("../lib/log")(module);
 const configuration = require("../config");
 
 const handler = async (ctx) => {
-    ctx.request.socket.setTimeout(30 * 60 * 1000);
-
     const filename = path.join(configuration.fileDirectory, uuid());
 
     try {
