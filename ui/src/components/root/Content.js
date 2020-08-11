@@ -6,6 +6,7 @@ import session from "lib/session";
 import Component from "lib/component";
 import { Navbar } from "components/navbar";
 import { Terminal } from "components/terminal";
+import { Notification } from "components/notification";
 import { JobsContainer } from "components/jobs";
 import { Home } from "components/home";
 import { Node } from "components/node";
@@ -32,6 +33,7 @@ class Content extends Component {
         return (
             <Fragment>
                 <Terminal />
+                <Notification />
                 <NotificationContainer />
                 <Navbar />
                 <JobsContainer />

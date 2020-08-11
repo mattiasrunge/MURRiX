@@ -50,6 +50,12 @@ class Server {
             }
         });
 
+        app.use(async (ctx, next) => {
+            ctx.set("Access-Control-Allow-Origin", "*");
+
+            await next();
+        });
+
         // Configure sessions
         app.use(async (ctx, next) => {
             const sessionCookie = ctx.cookies.get(COOKIE_NAME) || ctx.request.header[COOKIE_NAME];

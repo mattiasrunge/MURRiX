@@ -12720,6 +12720,13 @@ react-leaflet@^2.7.0:
     hoist-non-react-statics "^3.3.2"
     warning "^4.0.3"
 
+react-notification@^6.8.5:
+  version "6.8.5"
+  resolved "https://registry.yarnpkg.com/react-notification/-/react-notification-6.8.5.tgz#7ea90a633bb2a280d899e30c93cf372265cce4f0"
+  integrity sha512-3pJPhSsWNYizpyeMeWuC+jVthqE9WKqQ6rHq2naiiP4fLGN4irwL2Xp2Q8Qn7agW/e4BIDxarab6fJOUp1cKUw==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-notifications@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/react-notifications/-/react-notifications-1.6.0.tgz#434e564d17d3271f43dfd2d052b9ea15b496f32f"
