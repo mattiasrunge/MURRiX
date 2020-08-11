@@ -21,26 +21,33 @@ const handler = async (ctx) => {
             const fields = {};
 
             busboy.on("file", (fieldname, file) => {
+                console.log("FILE", fieldname, file);
                 const stream = fs.createWriteStream(filename);
 
                 stream.on("error", (error) => {
                     log.error("Steam error", error);
                 });
 
+                console.log("before file.pipe(stream);");
                 const pipe = file.pipe(stream);
+                console.log("after file.pipe(stream);");
 
                 pipe.on("error", (error) => {
                     log.error("Pipe error", error);
                 });
+
+                console.log("AFTER FILE");
             });
 
             busboy.on("field", (name, value) => fields[name] = value);
             busboy.on("error", reject);
             busboy.on("finish", () => resolve(fields));
 
+            console.log("before ctx.req.pipe(busboy);")
             ctx.req.pipe(busboy);
+            console.log("after ctx.req.pipe(busboy);")
         });
-
+console.log("AFTER promise!!!");
         assert(fields.name, "Missing the name field");
         assert(fields.path, "Missing the path field");
 
@@ -62,6 +69,7 @@ const handler = async (ctx) => {
             path: node.path
         }, null, 2);
     } catch (error) {
+        console.error("ERROR", error);
         log.error(`Upload of ${filename} failed`, error);
 
         await fs.remove(filename);
