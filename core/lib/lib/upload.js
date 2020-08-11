@@ -23,7 +23,17 @@ const handler = async (ctx) => {
             const fields = {};
 
             busboy.on("file", (fieldname, file) => {
-                file.pipe(fs.createWriteStream(filename));
+                const stream = fs.createWriteStream(filename);
+
+                stream.error((error) => {
+                    log.error("Steam error", error);
+                });
+
+                const pipe = file.pipe(stream);
+
+                pipe.error((error) => {
+                    log.error("Pipe error", error);
+                });
             });
 
             busboy.on("field", (name, value) => fields[name] = value);
