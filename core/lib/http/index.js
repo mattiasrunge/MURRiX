@@ -26,6 +26,10 @@ class Server {
     async init() {
         const app = new Koa();
 
+        app.on("error", (error) => {
+            log.error("HTTP server encountered an error", error);
+        });
+
         // Setup application
         app.use(compress());
         app.use(cors());
@@ -39,7 +43,7 @@ class Server {
             try {
                 await next();
             } catch (error) {
-                log.error(error);
+                log.error("HTTP server got error while processing", error);
                 ctx.status = error.status || 500;
                 ctx.type = "json";
                 ctx.body = JSON.stringify({
