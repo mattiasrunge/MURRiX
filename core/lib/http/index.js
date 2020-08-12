@@ -13,7 +13,7 @@ const enableDestroy = require("server-destroy");
 const api = require("./api");
 const media = require("../media");
 const dropbox = require("../lib/dropbox");
-const upload = require("../lib/upload");
+const upload = require("../upload");
 const log = require("../lib/log")(module);
 const configuration = require("../config");
 const { COOKIE_NAME } = require("./Client");
@@ -71,7 +71,8 @@ class Server {
         }
 
         app.use(route.get("/dropbox", dropbox.handler));
-        app.use(route.post("/upload", upload.handler));
+        app.use(route.get("/upload", upload.getHandler));
+        app.use(route.post("/upload", upload.postHandler));
 
         this.server = app.listen(configuration.port);
         this.server.setTimeout(0);

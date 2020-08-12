@@ -1,5 +1,5 @@
 
-import axios from "axios";
+import Flow from "@flowjs/flow.js";
 import cookies from "browser-cookies";
 import { backend } from "lib/backend";
 import Job from "./Job";
@@ -15,35 +15,38 @@ class UploadJob extends Job {
 
         for (let n = 0; n < files.length; n++) {
             const file = files[n];
-            const formData = new FormData();
-
-            formData.append("file", file);
-            formData.append("path", targetPath);
-            formData.append("name", file.name);
 
             this.update({
-                text: `Uploading ${files.length - n} file(s) to ${targetPath}`
+                text: `Uploading ${file.name} to ${targetPath}, ${files.length - n} left`
             });
 
-            const result = await axios.request({
-                method: "post",
-                url: `${backend.getAddress()}/upload`,
+            const flow = new Flow({
+                target: `${backend.getAddress()}/upload`,
+                chunkSize: 1 * 1024 * 1024 * 3, // 3 Mb
                 headers: {
-                    "session": session,
-                    "Content-Type": "multipart/form-data"
+                    "session": session
                 },
-                data: formData,
-                onUploadProgress: (p) => {
-                    this.update({
-                        progress: (step * n) + ((p.loaded * step) / p.total)
-                    });
+                query: {
+                    path: targetPath
                 }
             });
 
-            if (result.status !== 200) {
-                console.error("Upload failure", file. targetPath, result);
-                throw new Error(result.statusText);
-            }
+            flow.on("progress", () => {
+                const p = flow.progress();
+
+                this.update({
+                    progress: (step * n) + (p * step)
+                });
+            })
+
+            flow.addFile(file);
+
+            await new Promise((resolve, reject) => {
+                flow.on("complete", resolve);
+                flow.on("error", (error) => console.error(error));
+
+                flow.upload();
+            });
 
             this.update({
                 progress: step * (n + 1)

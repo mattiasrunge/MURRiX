@@ -17,8 +17,8 @@
     "serve": "echo $BACKEND_URL > ./build/backend.txt && serve -s build"
   },
   "dependencies": {
+    "@flowjs/flow.js": "^2.14.1",
     "animate.css": "^4.1.0",
-    "axios": "^0.19.2",
     "browser-cookies": "^1.2.0",
     "chart.js": "^2.9.3",
     "chron-time": "^0.0.4",
