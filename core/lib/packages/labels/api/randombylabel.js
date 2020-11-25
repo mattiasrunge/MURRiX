@@ -4,7 +4,7 @@ const path = require("path");
 const { api } = require("../../../api");
 
 module.exports = async (client, label, types, excludePaths = []) => {
-    const nodes = await api.list(path.join("/labels", label, "*"), {
+    const nodes = await api.list(client, path.join("/labels", label, "*"), {
         noerror: true
     });
     const list = nodes
