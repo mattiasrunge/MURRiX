@@ -3,10 +3,22 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Chart as ChartJS } from "chart.js";
+import {
+    Chart as ChartJS,
+    BarElement,
+    BarController,
+    LinearScale,
+    CategoryScale
+} from 'chart.js';
 import { Card } from "semantic-ui-react";
 import Component from "lib/component";
 
+ChartJS.register(
+    BarElement,
+    BarController,
+    LinearScale,
+    CategoryScale
+  );
 class Chart extends Component {
     constructor(props) {
         super(props);

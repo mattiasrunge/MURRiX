@@ -22,9 +22,9 @@ class UploadJob extends Job {
 
             const flow = new Flow({
                 target: `${backend.getAddress()}/upload`,
-                chunkSize: 1 * 1024 * 1024 * 3, // 3 Mb
+                chunkSize: 3 * 1024 * 1024, // 3 Mb
                 headers: {
-                    "session": session
+                    session
                 },
                 query: {
                     path: targetPath

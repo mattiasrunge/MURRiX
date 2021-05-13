@@ -1,7 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Map, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 
 class MapComponent extends React.PureComponent {
     constructor(props) {
@@ -18,7 +18,7 @@ class MapComponent extends React.PureComponent {
 
     render() {
         return (
-            <Map
+            <MapContainer
                 center={this.props.center}
                 zoom={this.state.zoom}
                 style={{
@@ -33,7 +33,7 @@ class MapComponent extends React.PureComponent {
                     url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
                 />
                 {this.props.children}
-            </Map>
+            </MapContainer>
         );
     }
 }
