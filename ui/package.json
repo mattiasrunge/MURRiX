@@ -26,7 +26,7 @@
     "chron-time": "^0.0.4",
     "jsx-control-statements": "^3.2.8",
     "leaflet": "^1.6.0",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "moment-duration-format": "^2.3.2",
     "mousetrap": "^1.6.5",
     "postcss-cssnext": "^3.1.0",
