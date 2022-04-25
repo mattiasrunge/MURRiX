@@ -6,6 +6,7 @@ const handleCheck = require("./handleCheck");
 const processChunks = require("./processChunks");
 
 const getHandler = async (ctx) => {
+    console.log("upload: GET start")
     const {
         exists,
         name,
@@ -26,9 +27,11 @@ const getHandler = async (ctx) => {
     }
 
     ctx.status = 200;
+    console.log("upload: GET end")
 };
 
 const postHandler = async (ctx) => {
+    console.log("upload: POST start")
     const {
         name,
         identifier,
@@ -39,6 +42,12 @@ const postHandler = async (ctx) => {
     await processChunks(ctx.client, configuration.uploadDirectory, configuration.fileDirectory, name, identifier, numberOfChunks, abspath);
 
     ctx.status = 200;
+
+    console.log("upload: POST end")
+    console.log(" - name: ", name)
+    console.log(" - identifier: ", identifier)
+    console.log(" - numberOfChunks: ", numberOfChunks)
+    console.log(" - abspath: ", abspath)
 };
 
 module.exports = {

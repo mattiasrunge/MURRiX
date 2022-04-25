@@ -40,7 +40,7 @@ module.exports = async (client, options) => {
     data.fileSizeIncreasePerYear = {
         labels: [],
         values: [],
-        increase: []
+        totals: []
     };
 
     let last = 0;
@@ -64,7 +64,7 @@ module.exports = async (client, options) => {
 
         data.fileSizeIncreasePerYear.labels.push(item.year);
         data.fileSizeIncreasePerYear.values.push(item.total / GIB_SCALE);
-        data.fileSizeIncreasePerYear.increase.push(last / GIB_SCALE);
+        data.fileSizeIncreasePerYear.totals.push(last / GIB_SCALE);
     }
 
     if (options.types) {
@@ -95,7 +95,7 @@ module.exports = async (client, options) => {
             data.createdPerYear[type] = {
                 labels: [],
                 values: [],
-                increase: []
+                totals: []
             };
 
             let last = 0;
@@ -119,7 +119,7 @@ module.exports = async (client, options) => {
 
                 data.createdPerYear[type].labels.push(item.year);
                 data.createdPerYear[type].values.push(item.total);
-                data.createdPerYear[type].increase.push(last);
+                data.createdPerYear[type].totals.push(last);
             }
         }
     }

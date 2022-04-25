@@ -15,6 +15,7 @@ module.exports = async (client) => {
 
     user.adminGranted = client.isAdmin();
     user.personPath = person ? person.path : false;
+    user.isGuest = user.name === "guest";
 
     return user;
 };
