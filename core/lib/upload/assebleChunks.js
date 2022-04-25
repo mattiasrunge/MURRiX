@@ -22,12 +22,25 @@ const assembleChunks = async (tmpdir, identifier, numberOfChunks, filename) => {
             console.log("chunkFilename:", chunkFilename);
 
             await new Promise((resolve, reject) => {
-                fs.createReadStream(chunkFilename)
-                .on("error", reject)
-                .on("end", resolve)
-                .pipe(target, {
-                    end: false
+                const rs = fs.createReadStream(chunkFilename);
+                rs.on('data', (data) => {
+                    console.log("data:", data.length);
+
+                    target.write(data, () => {
+                        console.log("write:", data.length);
+                    });
                 });
+
+                rs.on("end", resolve);
+                rs.on("error", reject);
+
+
+                // fs.createReadStream(chunkFilename)
+                // .on("error", reject)
+                // .on("end", resolve)
+                // .pipe(target, {
+                //     end: false
+                // });
             });
         }
 console.log("ABC")
