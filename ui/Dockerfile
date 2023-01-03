@@ -10,6 +10,8 @@ RUN yarn
 # Copy app source
 COPY . .
 
+ENV DISABLE_ESLINT_PLUGIN=true
+
 # Build UI
 RUN yarn build
 

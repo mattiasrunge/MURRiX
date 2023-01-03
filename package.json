@@ -12,7 +12,8 @@
   "workspaces": {
     "packages": [
       "core",
-      "ui"
+      "ui",
+      "nextui"
     ],
     "nohoist": [
       "**/semantic-ui-css"
