@@ -38,7 +38,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
 const postcssNormalize = require('postcss-normalize');
-const excludeFiles = require("postcss-exclude-files");
+const excludeFiles = require("postcss-exclude-files").default;
 
 const appPackageJson = require(paths.appPackageJson);
 
