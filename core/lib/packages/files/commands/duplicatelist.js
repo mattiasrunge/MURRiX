@@ -7,7 +7,7 @@ module.exports = async (client, term,
     opts,
     abspath = "" // AbsolutePath
 ) => {
-    const nodes = await api.duplicateslist(client, abspath);
+    const nodes = await api.duplicatelist(client, abspath);
 
     for (const node of nodes) {
         term.writeln(node.path);
