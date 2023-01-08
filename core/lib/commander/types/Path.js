@@ -31,6 +31,7 @@ class Path extends Generic {
         const basename = partial.endsWith("/") ? "" : path.basename(partial);
         const nodes = await api.list(client, dirname, {
             pattern: `${escapeStringRegexp(basename)}.*`,
+            patternFlags: "",
             nofollow: true
         });
         const names = nodes.map((node) => node.name);

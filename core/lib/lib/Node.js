@@ -190,6 +190,7 @@ class Node {
             return parent.children(client, {
                 query: options.query,
                 pattern: options.pattern,
+                patternFlags: options.patternFlags,
                 search: options.search,
                 skip: options.skip,
                 limit: options.limit,
@@ -511,7 +512,7 @@ class Node {
         let children = this.properties.children;
 
         if (options.pattern) {
-            const expr = new RegExp(`^${options.pattern}$`, "i");
+            const expr = new RegExp(`^${options.pattern}$`, typeof options.patternFlags === "undefined" ? "i" : options.patternFlags);
             children = children.filter(({ name }) => expr.test(name));
         }
 
