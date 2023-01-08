@@ -31,11 +31,14 @@ module.exports = async (client, abspath) => {
 
         let duplicatesInTheSameFolder = 0;
 
-        // Find duplicates in the same folder
+        // Find duplicates in other places
         for (const duplicate of duplicates) {
             const parentPath = path.dirname(duplicate.path);
 
-            if (filespath === parentPath) {
+            if (filespath !== parentPath) {
+                duplicatesInSameFolder[node._id] = node;
+                break;
+            } else {
                 duplicatesInSameFolder[duplicate._id] = duplicate;
                 duplicatesInTheSameFolder++;
             }
