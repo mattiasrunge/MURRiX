@@ -29,12 +29,20 @@ module.exports = async (client, abspath) => {
             _id: { $ne: node._id }
         });
 
+        let duplicatesInTheSameFolder = 0;
+
+        // Find duplicates in the same folder
         for (const duplicate of duplicates) {
             const parentPath = path.dirname(duplicate.path);
 
             if (filespath === parentPath) {
                 duplicatesInSameFolder[duplicate._id] = duplicate;
+                duplicatesInTheSameFolder++;
             }
+        }
+
+        if (duplicates.length > 0 && duplicatesInTheSameFolder === 0) {
+            duplicatesInSameFolder[node._id] = node;
         }
     }
 
