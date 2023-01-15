@@ -6,7 +6,7 @@ const assert = require("assert");
 const chron = require("chron-time");
 const merge = require("deepmerge");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath, options = {}) => {
@@ -39,7 +39,7 @@ module.exports = async (client, abspath, options = {}) => {
     } catch {}
 
     if (node.attributes.deviceSerialNumber && !device) {
-        device = (await Node.list(ADMIN_CLIENT, "/cameras", {
+        device = (await Node.list(await getAdminClient(), "/cameras", {
             query: {
                 "attributes.serialNumber": node.attributes.deviceSerialNumber }
         }))[0];

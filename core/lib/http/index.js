@@ -16,7 +16,7 @@ const dropbox = require("../lib/dropbox");
 const upload = require("../upload");
 const log = require("../lib/log")(module);
 const configuration = require("../config");
-const { COOKIE_NAME } = require("./Client");
+const { COOKIE_NAME } = require("./HttpClient");
 
 class Server {
     constructor() {
@@ -56,9 +56,10 @@ class Server {
 
         // Configure sessions
         app.use(async (ctx, next) => {
-            const sessionCookie = ctx.cookies.get(COOKIE_NAME) || ctx.request.header[COOKIE_NAME];
+            const sessionId = ctx.cookies.get(COOKIE_NAME) || ctx.request.header[COOKIE_NAME];
 
-            ctx.client = await api.getClientByCookie(sessionCookie);
+            const httpClient = await api.getClientById(sessionId);
+            ctx.client = httpClient.client;
 
             await next();
         });

@@ -1,5 +1,7 @@
 {
     "mongoUrl": "mongodb://localhost:27017/murrix_v4",
+    "rabbitUrl": "amqp://localhost:5672",
+    "redisUrl": "redis://localhost:6379",
     "fileDirectory": "/murrix_files",
     "mcsDirectory": "/murrix_cache",
     "uploadDirectory": "/tmp",

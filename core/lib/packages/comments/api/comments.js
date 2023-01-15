@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require("path");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath) => {
@@ -9,17 +9,17 @@ module.exports = async (client, abspath) => {
         throw new Error("Permission denied");
     }
 
-    const usrs = await api.users(ADMIN_CLIENT);
+    const usrs = await api.users(await getAdminClient());
 
     try {
-        const comments = await api.list(ADMIN_CLIENT, path.join(abspath, "comments"));
+        const comments = await api.list(await getAdminClient(), path.join(abspath, "comments"));
 
         const promises = comments.map(async (comment) => {
             const user = usrs.find((user) => user.attributes.uid === comment.properties.birthuid);
 
             // TODO: Maybe we should remove this to keep dependencies clear? Lookup picuture in ui
             // or redo the profilePicture add it to the user directly and just depend on File
-            const avatar = await api.resolve(ADMIN_CLIENT, `${user.path}/person/profilePicture`, { noerror: true });
+            const avatar = await api.resolve(await getAdminClient(), `${user.path}/person/profilePicture`, { noerror: true });
 
             return {
                 time: comment.properties.birthtime,

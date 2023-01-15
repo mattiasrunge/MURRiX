@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { api } = require("../../../api");
 
 const GIB_SCALE = 1024 ** 3;
@@ -14,7 +14,7 @@ module.exports = async (client, options) => {
         fileSizeIncreasePerYear: {}
     };
 
-    const result = await api.aggregate(ADMIN_CLIENT, [
+    const result = await api.aggregate(await getAdminClient(), [
         {
             $match: {
                 "properties.type": "f"
@@ -69,7 +69,7 @@ module.exports = async (client, options) => {
 
     if (options.types) {
         for (const type of options.types) {
-            const result = await api.aggregate(ADMIN_CLIENT, [
+            const result = await api.aggregate(await getAdminClient(), [
                 {
                     $match: {
                         "properties.type": type

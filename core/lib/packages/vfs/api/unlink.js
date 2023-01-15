@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require("path");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const Node = require("../../../lib/Node");
 
 module.exports = async (client, abspath) => {
@@ -25,7 +25,7 @@ module.exports = async (client, abspath) => {
     // and delete it. The next delete will take the next
     // node in the group until there are no more.
     if (child.properties.count === 0 && child.properties.group) {
-        const groupNodes = await Node.query(ADMIN_CLIENT, {
+        const groupNodes = await Node.query(await getAdminClient(), {
             "properties.group": child.properties.group
         }, {
             limit: 1

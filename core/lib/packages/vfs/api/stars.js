@@ -2,16 +2,16 @@
 
 const assert = require("assert");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client) => {
     assert(!client.isGuest(), "Permission denied");
 
     const abspath = `/users/${client.getUsername()}/stars`;
-    await api.ensure(ADMIN_CLIENT, abspath, "d");
+    await api.ensure(await getAdminClient(), abspath, "d");
 
-    const list = await Node.list(ADMIN_CLIENT, abspath);
+    const list = await Node.list(await getAdminClient(), abspath);
 
     return Promise.all(list.map((nodepath) => nodepath.serialize(client)));
 };

@@ -3,12 +3,12 @@
 const util = require("util");
 const email = require("emailjs");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const config = require("../../../config");
 
 module.exports = async (client, username, templateUrl) => {
-    const user = await Node.resolve(ADMIN_CLIENT, `/users/${username}`);
-    const resetId = await user.generatePasswordReset(ADMIN_CLIENT);
+    const user = await Node.resolve(await getAdminClient(), `/users/${username}`);
+    const resetId = await user.generatePasswordReset(await getAdminClient());
     const url = templateUrl.replace("$ID", resetId);
     const server = email.server.connect(config.email);
     const send = util.promisify(server.send).bind(server);

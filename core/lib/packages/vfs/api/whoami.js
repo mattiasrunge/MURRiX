@@ -1,15 +1,15 @@
 "use strict";
 
 const path = require("path");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client) => {
     const dir = path.join("/users", client.getUsername());
-    const user = await api.resolve(ADMIN_CLIENT, dir);
+    const user = await api.resolve(await getAdminClient(), dir);
 
     const personPath = path.join(dir, "person");
-    const person = await api.resolve(ADMIN_CLIENT, personPath, {
+    const person = await api.resolve(await getAdminClient(), personPath, {
         noerror: true
     });
 

@@ -2,13 +2,13 @@
 
 const assert = require("assert");
 const moment = require("moment");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client) => {
     assert(!client.isGuest(), "Permission denied");
 
-    const nodes = await api.query(ADMIN_CLIENT, {
+    const nodes = await api.query(await getAdminClient(), {
         "properties.type": "t",
         "attributes.type": { $in: [ "birth", "death", "engagement", "marriage" ] }
     }, {

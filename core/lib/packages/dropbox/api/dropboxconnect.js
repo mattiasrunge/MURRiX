@@ -4,16 +4,16 @@ const assert = require("assert");
 const { v4: uuid } = require("uuid");
 const Node = require("../../../lib/Node");
 const dropbox = require("../../../lib/dropbox");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 
 module.exports = async (client, baseUrl, folder) => {
     assert(!client.isGuest(), "Permission denied");
 
-    const user = await Node.resolve(ADMIN_CLIENT, `/users/${client.getUsername()}`);
+    const user = await Node.resolve(await getAdminClient(), `/users/${client.getUsername()}`);
 
     assert(user, `No user found, with username ${client.getUsername()}, strange...`);
 
-    await user.update(ADMIN_CLIENT, { dropbox: null }, true);
+    await user.update(await getAdminClient(), { dropbox: null }, true);
 
     const id = uuid();
     const url = dropbox.authenticate(baseUrl, async (error, token) => {
@@ -22,9 +22,9 @@ module.exports = async (client, baseUrl, folder) => {
                 throw error;
             }
 
-            const user = await Node.resolve(ADMIN_CLIENT, `/users/${client.getUsername()}`);
+            const user = await Node.resolve(await getAdminClient(), `/users/${client.getUsername()}`);
 
-            await user.update(ADMIN_CLIENT, {
+            await user.update(await getAdminClient(), {
                 dropbox: {
                     token,
                     folder

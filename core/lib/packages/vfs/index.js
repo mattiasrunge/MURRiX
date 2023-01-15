@@ -5,7 +5,7 @@ const log = require("../../lib/log")(module);
 const Root = require("./types/Root");
 const Node = require("../../lib/Node");
 const { api } = require("../../api");
-const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST, USERNAME_ADMIN, USERNAME_GUEST } = require("../../auth");
+const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST, USERNAME_ADMIN, USERNAME_GUEST, hashPassword } = require("../../auth");
 
 const setup = async (client) => {
     if (!(await api.exists(client, "/"))) {
@@ -64,7 +64,7 @@ const setup = async (client) => {
         await user.update(client, {
             uid: UID_ADMIN,
             gid: GID_ADMIN,
-            password: sha1(USERNAME_ADMIN)
+            password: await hashPassword(USERNAME_ADMIN)
         });
         await api.groupjoin(client, "admin", USERNAME_ADMIN);
     }

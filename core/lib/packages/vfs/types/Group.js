@@ -1,7 +1,7 @@
 "use strict";
 
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 
 class Group extends Node {
     // Private
@@ -23,7 +23,7 @@ class Group extends Node {
     // Getters
 
     static async generateGID() {
-        const groups = await Node.list(ADMIN_CLIENT, "/groups");
+        const groups = await Node.list(await getAdminClient(), "/groups");
         const gids = groups.map((group) => group.attributes.gid);
 
         return Math.max(0, ...gids) + 1;

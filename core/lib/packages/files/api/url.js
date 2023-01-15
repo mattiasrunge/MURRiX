@@ -4,7 +4,7 @@ const assert = require("assert");
 const path = require("path");
 const fs = require("fs-extra");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const config = require("../../../config");
 const media = require("../../../media");
 const log = require("../../../lib/log")(module);
@@ -49,7 +49,7 @@ module.exports = async (client, abspath, format) => {
 
         // If logged in and request a user profile picture allow
         if (typeof abspath === "string" && !client.isGuest() && abspath.startsWith("/users")) {
-            c = ADMIN_CLIENT;
+            c = await getAdminClient();
         }
 
         const node = await Node.resolve(c, abspath);

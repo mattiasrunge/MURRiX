@@ -29,3 +29,18 @@ git clone https://github.com/mattiasrunge/MURRiX
 cd MURRiX
 yarn
 ```
+
+
+# Redis
+
+docker run -d --name murrix-redis -p 6379:6379 redis:latest
+
+# RabbitMQ
+
+docker run -d --name murrix-rabbitmq -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+
+http://localhost:15672/
+
+# MongoDB
+
+docker run -d --name murrix-mongodb -p 27017:27017 mongo:latest

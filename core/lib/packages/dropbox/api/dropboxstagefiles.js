@@ -1,14 +1,14 @@
 "use strict";
 
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { download, remove } = require("../../../lib/dropbox");
 const { api } = require("../../../api");
 const config = require("../../../config");
 
 module.exports = async (client, limit = 10) => {
     const files = await api.dropboxlist(client);
-    const user = await Node.resolve(ADMIN_CLIENT, `/users/${client.getUsername()}`);
+    const user = await Node.resolve(await getAdminClient(), `/users/${client.getUsername()}`);
     const filesPath = `/users/${client.getUsername()}/files`;
     const staged = [];
 

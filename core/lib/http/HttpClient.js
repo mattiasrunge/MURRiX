@@ -14,10 +14,9 @@ const ClientStream = require("./Stream");
 const TSON = new Typeson().register([ TypesonBuiltin ]);
 const COOKIE_NAME = "session";
 
-class HttpClient extends Client {
-    constructor(ws, session) {
-        super(session);
-
+class HttpClient {
+    constructor(ws, client) {
+        this.client = client;
         this.ws = ws;
         this.isAlive = true;
 
@@ -25,48 +24,31 @@ class HttpClient extends Client {
         this.ws.on("message", this._onMessage.bind(this));
     }
 
-    static async getIdFromCookie(cookie) {
-        const session = await jwt.decode(cookie);
+    static async create(ws, sessionId) {
+        // TODO: sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
+        // Session will live forever if not explicitly destroyed,
+        // thus we need a timeout!
+        const id = sessionId || uuid();
 
-        return session.id;
-    }
+        assert(id !== "admin", "Invalid sessionId");
 
-    static async create(ws, cookies = {}) {
-        let session = {};
+        const client = await Client.create(id);
+        const httpClient = new HttpClient(ws, client);
 
-        // TODO: Expiration?
-
-        if (cookies[COOKIE_NAME]) {
-            session = await jwt.decode(cookies[COOKIE_NAME]);
-        } else {
-            session.id = uuid();
+        if (!sessionId) {
+            await api.logout(httpClient.client);
         }
 
-        const client = new HttpClient(ws, session);
-
-        if (!cookies[COOKIE_NAME]) {
-            await api.logout(client);
-        }
-
-        return client;
-    }
-
-    async sessionUpdated() {
-        try {
-            await this.sendEvent("set-cookie", {
-                name: COOKIE_NAME,
-                value: await jwt.encode({ ...this.session })
-            });
-
-            // TODO: sessionMaxAge = 1000 * 60 * 60 * 24 * 7;
-
-            await this.sendEvent("session.updated", {});
-        } catch (error) {
-            log.error("Failed to update session cookie", error);
-        }
+        return httpClient;
     }
 
     async clientReady() {
+        console.log("clientReady", this.client.getId());
+        await this.sendEvent("set-cookie", {
+            name: COOKIE_NAME,
+            value: this.client.getId()
+        });
+
         return this.sendEvent("ready", {});
     }
 
@@ -134,7 +116,7 @@ class HttpClient extends Client {
                 onWrite: (data) => this._onWrite(data)
             });
 
-            this.terminal = new Terminal(this, this.stream);
+            this.terminal = new Terminal(this.client, this.stream);
 
             this.terminal.initialize();
         }
@@ -145,7 +127,7 @@ class HttpClient extends Client {
             try {
                 assert(api[message.name], `No command named ${message.name} found`);
 
-                const result = await api[message.name](this, ...(message.args || []));
+                const result = await api[message.name](this.client, ...(message.args || []));
 
                 await this.sendResult(message, result);
             } catch (error) {
@@ -156,7 +138,7 @@ class HttpClient extends Client {
 
             if (message.data) {
                 this.stream.insert(message.data);
-            } else if (message.size) {
+            } else if (message.size > 0) {
                 this.terminal.setSize(message.size.cols, message.size.rows);
             }
         }

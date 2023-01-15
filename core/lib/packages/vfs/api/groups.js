@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client, username = false) => {
@@ -9,5 +9,5 @@ module.exports = async (client, username = false) => {
 
     const dir = username ? `/users/${username}/groups` : "/groups";
 
-    return api.list(ADMIN_CLIENT, dir);
+    return api.list(await getAdminClient(), dir);
 };

@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 
 module.exports = async (client, history = false) => {
     // Do not save history for a guest
@@ -10,12 +10,12 @@ module.exports = async (client, history = false) => {
         return [];
     }
 
-    const user = await Node.resolve(ADMIN_CLIENT, `/users/${client.getUsername()}`);
+    const user = await Node.resolve(await getAdminClient(), `/users/${client.getUsername()}`);
 
     assert(user, `No user found, with username ${client.getUsername()}, strange...`);
 
     if (history) {
-        return await user.update(ADMIN_CLIENT, { history }, true);
+        return await user.update(await getAdminClient(), { history }, true);
     }
 
     return user.attributes.history ?? [];

@@ -3,7 +3,7 @@
 const assert = require("assert");
 const path = require("path");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 
 module.exports = async (client, srcpath, dstpath, options = {}) => {
     const srcnode = await Node.resolve(client, srcpath);
@@ -45,13 +45,13 @@ module.exports = async (client, srcpath, dstpath, options = {}) => {
     }
 
     // Find all symlinks that point to the old path and redirect them
-    const links = await Node.query(ADMIN_CLIENT, {
+    const links = await Node.query(await getAdminClient(), {
         "properties.type": "s",
         "attributes.path": srcpath
     });
 
     for (const link of links) {
-        await link.update(ADMIN_CLIENT, {
+        await link.update(await getAdminClient(), {
             path: dstpath
         });
     }

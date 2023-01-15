@@ -4,7 +4,8 @@ const WebSocket = require("ws");
 const cookie = require("cookie");
 const log = require("../lib/log")(module);
 const bus = require("../bus");
-const Client = require("./Client");
+const HttpClient = require("./HttpClient");
+const mb = require("../mb");
 
 const HEARTBEAT_MS = 30000;
 
@@ -19,10 +20,10 @@ class Api {
             }
 
             if (event.startsWith("node.")) {
-                this.ws.clients.forEach(({ client }) => {
-                    if (!client.isGuest()) {
+                this.ws.clients.forEach(({ httpClient }) => {
+                    if (!httpClient.client.isGuest()) {
                         // TODO: Check if user has access
-                        client.sendEvent(event, {
+                        httpClient.sendEvent(event, {
                             path: data.node.path,
                             extra: data.extra
                         });
@@ -32,16 +33,27 @@ class Api {
         });
     }
 
+    async _sessionUpdated({ id }) {
+        const httpClient = await this.getClientById(id);
+
+        if (httpClient) {
+            await httpClient.sessionUpdated();
+        }
+    }
+
     listen(server) {
+        mb.on("session-updated", this._sessionUpdated.bind(this));
+
         this.ws = new WebSocket.Server({ server });
 
         this.ws.on("connection", async (ws, req) => {
             try {
                 const cookies = req.headers.cookie ? cookie.parse(req.headers.cookie) : {};
+                const sessionId = cookies[HttpClient.COOKIE_NAME];
 
-                ws.client = await Client.create(ws, cookies);
+                ws.httpClient = await HttpClient.create(ws, sessionId);
 
-                ws.client.clientReady();
+                ws.httpClient.clientReady();
             } catch (error) {
                 log.error("Failed to create Client object for web socket connection", error);
                 ws.terminate();
@@ -49,14 +61,12 @@ class Api {
         });
 
         this.interval = setInterval(() => {
-            this.ws.clients.forEach(({ client }) => client.heartbeat());
+            this.ws.clients.forEach(({ httpClient }) => httpClient.heartbeat());
         }, HEARTBEAT_MS);
     }
 
-    async getClientByCookie(cookie) {
-        const id = await Client.getIdFromCookie(cookie);
-
-        return [ ...this.ws.clients ].map(({ client }) => client).find((client) => client.getId() === id);
+    async getClientById(id) {
+        return [ ...this.ws.clients ].map(({ httpClient }) => httpClient).find((hc) => hc.client.getId() === id);
     }
 
     close() {

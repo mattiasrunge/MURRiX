@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@koa/cors": "3.1.0",
+    "amqplib": "^0.10.3",
     "api.io": "^1.0.3",
     "as-table": "^1.0.55",
     "bcryptjs": "^2.4.3",
@@ -33,7 +34,6 @@
     "escape-string-regexp": "^4.0.0",
     "fs-extra": "^10.0.0",
     "glob-promise": "^4.1.0",
-    "jsonwebtoken": "^8.5.1",
     "koa": "^2.12.0",
     "koa-bodyparser": "^4.3.0",
     "koa-compress": "^5.0.1",
@@ -46,6 +46,7 @@
     "mongodb": "^3.5.8",
     "node-resolve-dependency-graph": "^1.3.7",
     "nodinatim": "^2.1.0",
+    "redis": "^4.5.1",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8",
     "server-destroy": "^1.0.1",

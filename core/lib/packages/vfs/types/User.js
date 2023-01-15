@@ -3,7 +3,7 @@
 const assert = require("assert");
 const uuid = require("uuid");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT, matchPassword, hashPassword } = require("../../../auth");
+const { getAdminClient, matchPassword, hashPassword } = require("../../../auth");
 
 class User extends Node {
     // Private
@@ -84,7 +84,7 @@ class User extends Node {
     }
 
     static async generateUID() {
-        const users = await Node.list(ADMIN_CLIENT, "/users");
+        const users = await Node.list(await getAdminClient(), "/users");
         const uids = users.map((user) => user.attributes.uid);
 
         return Math.max(0, ...uids) + 1;

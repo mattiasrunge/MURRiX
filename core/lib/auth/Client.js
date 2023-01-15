@@ -1,18 +1,31 @@
 "use strict";
 
 const assert = require("assert");
+const { v4: uuid } = require("uuid");
 const Session = require("./Session");
 
 class Client {
     constructor(session) {
-        this.session = new Session(session, this);
+        this.session = session;
     }
 
-    clone(session) {
-        return new Client({
+    static async create(sessionId, initialData) {
+        return new Client(await Session.create(sessionId, initialData));
+    }
+
+    async clone(session) {
+        const id = uuid();
+
+        return await Client.create(id, {
             ...this.session,
-            ...session
+            session,
+            id
         });
+    }
+
+    async destroy() {
+        // TODO: try/catch here?
+        await this.session.destroy();
     }
 
     setUser(user) {
@@ -83,14 +96,6 @@ class Client {
     setCurrentDirectory(dir) {
         this.session.cd = dir;
     }
-
-    async sessionUpdated() {}
-
-    async sendEvent() {}
-
-    async sendResult() {}
-
-    async sendError() {}
 }
 
 module.exports = Client;

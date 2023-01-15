@@ -8,7 +8,7 @@ const packages = require("../../lib/packages");
 const commander = require("../../lib/commander");
 const { api } = require("../../lib/api");
 const Node = require("../../lib/lib/Node");
-const { ADMIN_CLIENT } = require("../../lib/auth");
+const { getAdminClient } = require("../../lib/auth");
 const configuration = require("../../lib/config");
 
 const createNodes = async (client) => {
@@ -51,19 +51,19 @@ describe("Test", () => {
 
         describe("Api", () => {
             beforeEach(async () => {
-                await createNodes(ADMIN_CLIENT);
+                await createNodes(await getAdminClient());
             });
 
             afterEach(async () => {
-                await destroyNodes(ADMIN_CLIENT);
+                await destroyNodes(await getAdminClient());
             });
 
             it("should resolve a folder and then find the same folder by id", async () => {
-                const folder = await api.resolve(ADMIN_CLIENT, "/folderA/folderA1");
+                const folder = await api.resolve(await getAdminClient(), "/folderA/folderA1");
 
                 assert(folder);
 
-                const folder2 = await api.resolve(ADMIN_CLIENT, folder._id);
+                const folder2 = await api.resolve(await getAdminClient(), folder._id);
 
                 assert.deepStrictEqual(folder, folder2);
             });

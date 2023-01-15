@@ -138,6 +138,8 @@ class Node {
     }
 
     static async resolve(client, abspath, options = {}) {
+        console.log("resolve", client, abspath, options);
+
         if (typeof abspath === "undefined") {
             throw new TypeError("Resolve can not be called without abspath set");
         } else if (typeof abspath === "object") {
@@ -719,15 +721,20 @@ class Node {
     }
 
     async appendChildCopy(client, child) {
-        const newClient = client.clone({
+        const newClient = await client.clone({
             umask: child.properties.mode
         });
-        const copy = await this.createChild(newClient, child.properties.type, child.name, child.attributes);
 
-        const children = await child.children(client);
+        try {
+            const copy = await this.createChild(newClient, child.properties.type, child.name, child.attributes);
 
-        for (const child of children) {
-            await copy.appendChildCopy(client, child);
+            const children = await child.children(client);
+
+            for (const child of children) {
+                await copy.appendChildCopy(client, child);
+            }
+        } finally {
+            await newClient.destroy();
         }
     }
 

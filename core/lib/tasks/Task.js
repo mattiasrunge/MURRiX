@@ -1,7 +1,7 @@
 "use strict";
 
 const log = require("../lib/log")(module);
-const { ADMIN_CLIENT } = require("../auth");
+const { getAdminClient } = require("../auth");
 const { api } = require("../api");
 
 const NEXT_RUN_TIMEOUT = 1000 * 60;
@@ -44,10 +44,10 @@ class Task {
             // findfileswitoutfaces | head -n 1 | findfaces
 
             const t1 = Date.now();
-            const didWork = await api[this.node.attributes.command](ADMIN_CLIENT, this.node);
+            const didWork = await api[this.node.attributes.command](await getAdminClient(), this.node);
             const lastDuration = Date.now() - t1;
 
-            await api.update(ADMIN_CLIENT, this.node.path, { lastDuration, didWork, error: null });
+            await api.update(await getAdminClient(), this.node.path, { lastDuration, didWork, error: null });
 
             this.timer = setTimeout(() => this.check(), didWork ? idleTimeout : nextRunTimeout);
         } catch (error) {
@@ -55,7 +55,7 @@ class Task {
 
             const errorStack = error.stack ? error.stack.toString().split("\n").map((l) => l.trim()).filter(Boolean) : [];
 
-            await api.update(ADMIN_CLIENT, this.node.path, { lastDuration: false, didWork: false, error: errorStack });
+            await api.update(await getAdminClient(), this.node.path, { lastDuration: false, didWork: false, error: errorStack });
 
             this.timer = setTimeout(() => this.check(), errorTimeout);
         }

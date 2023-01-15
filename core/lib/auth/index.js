@@ -13,16 +13,17 @@ const GID_CUSTODIANS = 1003;
 const UID_ADMIN = 1000;
 const UID_GUEST = 1001;
 
-const ADMIN_CLIENT = new Client({});
 
-ADMIN_CLIENT.setUser({
-    username: USERNAME_ADMIN,
-    almighty: true,
-    admin: new Date(),
-    uid: UID_ADMIN,
-    gid: GID_ADMIN,
-    gids: [ GID_ADMIN, GID_USERS, GID_CUSTODIANS ],
-    umask: 0o770
+const getAdminClient = async () => Client.create("admin", {
+    user: {
+        username: USERNAME_ADMIN,
+        almighty: true,
+        admin: new Date(),
+        uid: UID_ADMIN,
+        gid: GID_ADMIN,
+        gids: [ GID_ADMIN, GID_USERS, GID_CUSTODIANS ],
+        umask: 0o770
+    }
 });
 
 const hashPassword = async (password) => bcrypt.hash(sha1(password), 13);
@@ -35,10 +36,10 @@ module.exports = {
     GID_CUSTODIANS,
     UID_ADMIN,
     UID_GUEST,
-    ADMIN_CLIENT,
     USERNAME_ADMIN,
     USERNAME_GUEST,
     Client,
+    getAdminClient,
     hashPassword,
     matchPassword
 };

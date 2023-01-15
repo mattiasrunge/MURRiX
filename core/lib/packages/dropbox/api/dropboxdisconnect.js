@@ -3,12 +3,12 @@
 const assert = require("assert");
 const Node = require("../../../lib/Node");
 const dropbox = require("../../../lib/dropbox");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 
 module.exports = async (client) => {
     assert(!client.isGuest(), "Permission denied");
 
-    const user = await Node.resolve(ADMIN_CLIENT, `/users/${client.getUsername()}`);
+    const user = await Node.resolve(await getAdminClient(), `/users/${client.getUsername()}`);
 
     assert(user, `No user found, with username ${client.getUsername()}, strange...`);
 
@@ -18,5 +18,5 @@ module.exports = async (client) => {
 
     await dropbox.revoke(user.attributes.dropbox.token);
 
-    await user.update(ADMIN_CLIENT, { dropbox: null }, true);
+    await user.update(await getAdminClient(), { dropbox: null }, true);
 };

@@ -1,12 +1,12 @@
 "use strict";
 
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT, USERNAME_GUEST } = require("../../../auth");
+const { getAdminClient, USERNAME_GUEST } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client) => {
-    const user = await Node.resolve(ADMIN_CLIENT, `/users/${USERNAME_GUEST}`);
-    const grps = await api.groups(ADMIN_CLIENT, USERNAME_GUEST);
+    const user = await Node.resolve(await getAdminClient(), `/users/${USERNAME_GUEST}`);
+    const grps = await api.groups(await getAdminClient(), USERNAME_GUEST);
 
     client.setUser({
         username: USERNAME_GUEST,

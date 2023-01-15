@@ -72,9 +72,6 @@
                 "./ui/src/styles"
             ],
             "tryExtensions": []
-        }],
-        "indent": [ "error", {
-            "SwitchCase": 1
         }]
     }
 }

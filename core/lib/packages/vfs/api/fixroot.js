@@ -2,40 +2,40 @@
 
 const assert = require("assert");
 const Node = require("../../../lib/Node");
-const { ADMIN_CLIENT, GID_ADMIN, UID_ADMIN, GID_USERS } = require("../../../auth");
+const { getAdminClient, GID_ADMIN, UID_ADMIN, GID_USERS } = require("../../../auth");
 
 module.exports = async (client) => {
     assert(client.isAdmin(), "Permission denied");
 
-    const root = await Node.resolve(ADMIN_CLIENT, "/");
-    await root.chown(ADMIN_CLIENT, UID_ADMIN, GID_ADMIN);
-    await root.chmod(ADMIN_CLIENT, 0o775);
+    const root = await Node.resolve(await getAdminClient(), "/");
+    await root.chown(await getAdminClient(), UID_ADMIN, GID_ADMIN);
+    await root.chmod(await getAdminClient(), 0o775);
 
-    const albums = await Node.resolve(ADMIN_CLIENT, "/albums");
-    await albums.chown(ADMIN_CLIENT, UID_ADMIN, GID_USERS);
-    await albums.chmod(ADMIN_CLIENT, 0o770);
+    const albums = await Node.resolve(await getAdminClient(), "/albums");
+    await albums.chown(await getAdminClient(), UID_ADMIN, GID_USERS);
+    await albums.chmod(await getAdminClient(), 0o770);
 
-    const cameras = await Node.resolve(ADMIN_CLIENT, "/cameras");
-    await cameras.chown(ADMIN_CLIENT, UID_ADMIN, GID_USERS);
-    await cameras.chmod(ADMIN_CLIENT, 0o770);
+    const cameras = await Node.resolve(await getAdminClient(), "/cameras");
+    await cameras.chown(await getAdminClient(), UID_ADMIN, GID_USERS);
+    await cameras.chmod(await getAdminClient(), 0o770);
 
-    const locations = await Node.resolve(ADMIN_CLIENT, "/locations");
-    await locations.chown(ADMIN_CLIENT, UID_ADMIN, GID_USERS);
-    await locations.chmod(ADMIN_CLIENT, 0o770);
+    const locations = await Node.resolve(await getAdminClient(), "/locations");
+    await locations.chown(await getAdminClient(), UID_ADMIN, GID_USERS);
+    await locations.chmod(await getAdminClient(), 0o770);
 
-    const people = await Node.resolve(ADMIN_CLIENT, "/people");
-    await people.chown(ADMIN_CLIENT, UID_ADMIN, GID_USERS);
-    await people.chmod(ADMIN_CLIENT, 0o770);
+    const people = await Node.resolve(await getAdminClient(), "/people");
+    await people.chown(await getAdminClient(), UID_ADMIN, GID_USERS);
+    await people.chmod(await getAdminClient(), 0o770);
 
-    const lostfound = await Node.resolve(ADMIN_CLIENT, "/lost+found");
-    await lostfound.chown(ADMIN_CLIENT, UID_ADMIN, GID_ADMIN);
-    await lostfound.chmod(ADMIN_CLIENT, 0o771);
+    const lostfound = await Node.resolve(await getAdminClient(), "/lost+found");
+    await lostfound.chown(await getAdminClient(), UID_ADMIN, GID_ADMIN);
+    await lostfound.chmod(await getAdminClient(), 0o771);
 
-    const groups = await Node.resolve(ADMIN_CLIENT, "/groups");
-    await groups.chown(ADMIN_CLIENT, UID_ADMIN, GID_ADMIN);
-    await groups.chmod(ADMIN_CLIENT, 0o770);
+    const groups = await Node.resolve(await getAdminClient(), "/groups");
+    await groups.chown(await getAdminClient(), UID_ADMIN, GID_ADMIN);
+    await groups.chmod(await getAdminClient(), 0o770);
 
-    const users = await Node.resolve(ADMIN_CLIENT, "/users");
-    await users.chown(ADMIN_CLIENT, UID_ADMIN, GID_ADMIN);
-    await users.chmod(ADMIN_CLIENT, 0o771);
+    const users = await Node.resolve(await getAdminClient(), "/users");
+    await users.chown(await getAdminClient(), UID_ADMIN, GID_ADMIN);
+    await users.chmod(await getAdminClient(), 0o771);
 };

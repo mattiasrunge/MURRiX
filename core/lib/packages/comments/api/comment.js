@@ -3,7 +3,7 @@
 const path = require("path");
 const assert = require("assert");
 const moment = require("moment");
-const { ADMIN_CLIENT } = require("../../../auth");
+const { getAdminClient } = require("../../../auth");
 const { api } = require("../../../api");
 
 module.exports = async (client, abspath, text) => {
@@ -11,9 +11,13 @@ module.exports = async (client, abspath, text) => {
 
     const commentsPath = path.join(abspath, "comments");
 
-    await api.ensure(ADMIN_CLIENT, commentsPath, "d");
+    await api.ensure(await getAdminClient(), commentsPath, "d");
 
-    const newClient = client.clone({ almighty: true });
+    const newClient = await client.clone({ almighty: true });
 
-    return api.create(newClient, commentsPath, "k", moment().format(), { text });
+    try {
+        return api.create(newClient, commentsPath, "k", moment().format(), { text });
+    } finally {
+        await newClient.destroy();
+    }
 };

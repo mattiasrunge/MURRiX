@@ -5,7 +5,7 @@ const fs = require("fs-extra");
 const graph = require("node-resolve-dependency-graph/lib");
 const commander = require("../commander");
 const api = require("../api");
-const { ADMIN_CLIENT } = require("../auth");
+const { getAdminClient } = require("../auth");
 const Node = require("../lib/Node");
 const bus = require("../bus");
 const log = require("../lib/log")(module);
@@ -17,7 +17,7 @@ class Packages {
         const setups = await this._loadPackages();
 
         for (const setup of setups) {
-            await setup(ADMIN_CLIENT);
+            await setup(await getAdminClient());
         }
     }
 
@@ -72,7 +72,7 @@ class Packages {
                 const name = path.basename(filename, ".js");
                 const fn = require(path.join(dir, filename));
 
-                api.register(name, fn);
+                await api.register(name, fn);
             }
         }
     }
