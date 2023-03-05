@@ -8,8 +8,4 @@ const setup = async (client) => {
     await api.chmod(client, "/labels", 0o775);
 };
 
-setup.dependencies = [
-    "vfs"
-];
-
 module.exports = setup;

@@ -22,7 +22,6 @@ const parsePattern = (abspath) => {
 };
 
 module.exports = async (client, abspath, options = {}) => {
-    console.log("api.list", client);
     try {
         const paths = Array.isArray(abspath) ? abspath : [ abspath ];
         const promises = paths

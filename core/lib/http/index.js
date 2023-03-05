@@ -59,7 +59,7 @@ class Server {
             const sessionId = ctx.cookies.get(COOKIE_NAME) || ctx.request.header[COOKIE_NAME];
 
             const httpClient = await api.getClientById(sessionId);
-            ctx.client = httpClient.client;
+            ctx.client = httpClient ? httpClient.client : null;
 
             await next();
         });

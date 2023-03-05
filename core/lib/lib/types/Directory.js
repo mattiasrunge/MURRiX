@@ -1,6 +1,6 @@
 "use strict";
 
-const Node = require("../../../lib/Node");
+const Node = require("../Node");
 
 class Directory extends Node {}
 

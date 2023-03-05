@@ -138,8 +138,6 @@ class Node {
     }
 
     static async resolve(client, abspath, options = {}) {
-        console.log("resolve", client, abspath, options);
-
         if (typeof abspath === "undefined") {
             throw new TypeError("Resolve can not be called without abspath set");
         } else if (typeof abspath === "object") {
@@ -806,5 +804,7 @@ class Node {
         return result;
     }
 }
+
+Node.TYPES = Types;
 
 module.exports = Node;

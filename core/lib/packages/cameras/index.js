@@ -8,9 +8,4 @@ const setup = async (client) => {
     await api.ensure(client, "/cameras", "d", { gid: GID_USERS });
 };
 
-setup.dependencies = [
-    "vfs",
-    "people"
-];
-
 module.exports = setup;

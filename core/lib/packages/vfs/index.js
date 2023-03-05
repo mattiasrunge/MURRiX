@@ -2,7 +2,6 @@
 
 const sha1 = require("sha1");
 const log = require("../../lib/log")(module);
-const Root = require("./types/Root");
 const Node = require("../../lib/Node");
 const { api } = require("../../api");
 const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST, USERNAME_ADMIN, USERNAME_GUEST, hashPassword } = require("../../auth");
@@ -10,7 +9,7 @@ const { GID_ADMIN, GID_GUEST, GID_USERS, GID_CUSTODIANS, UID_ADMIN, UID_GUEST, U
 const setup = async (client) => {
     if (!(await api.exists(client, "/"))) {
         log.info("No root node found, creating...");
-        await Root.create(client);
+        await Node.TYPES.Root.create(client);
     }
 
     // Create folders
@@ -80,7 +79,5 @@ const setup = async (client) => {
         });
     }
 };
-
-setup.dependencies = [];
 
 module.exports = setup;

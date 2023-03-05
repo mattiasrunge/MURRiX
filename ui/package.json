@@ -11,7 +11,7 @@
   },
   "scripts": {
     "install_webpack": "node scripts/webpack.js",
-    "start": "yarn install_webpack && echo 'http://localhost:8080' > ./public/backend.txt && BROWSER=none react-scripts start",
+    "start": "yarn install_webpack && echo 'http://localhost:8080' > ./public/backend.txt && BROWSER=none DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "build": "yarn install_webpack && react-scripts build",
     "test": "yarn install_webpack && react-scripts test",
     "serve": "echo $BACKEND_URL > ./build/backend.txt && serve -s build"

@@ -19,7 +19,7 @@ class TaskManager {
         bus.on("node.remove", (e, { node }) => this._removeTask(node));
 
         const nodes = await api.list(await getAdminClient(), "/system/tasks");
-console.log("NODES", nodes);
+
         for (const node of nodes) {
             await this._addTask(node);
         }

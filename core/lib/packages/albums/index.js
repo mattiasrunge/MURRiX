@@ -8,11 +8,4 @@ const setup = async (client) => {
     await api.ensure(client, "/albums", "d", { gid: GID_USERS });
 };
 
-setup.dependencies = [
-    "vfs",
-    "files",
-    "people",
-    "texts"
-];
-
 module.exports = setup;

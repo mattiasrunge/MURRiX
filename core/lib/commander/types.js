@@ -6,9 +6,16 @@ const fs = require("fs-extra");
 class Types {
     constructor() {
         this.types = {};
+        this.initialized = false;
     }
 
     async init() {
+        if (this.initialized) {
+            return;
+        }
+
+        this.initialized = true;
+
         const dir = path.join(__dirname, "types");
         const names = await fs.readdir(dir);
 

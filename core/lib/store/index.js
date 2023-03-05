@@ -16,7 +16,7 @@ class Store {
     }
 
     async set(key, obj) {
-        console.log("redis-set", key, obj);
+        // console.log("redis-set", key, obj);
         const ok = await this.client.set(key, JSON.stringify(obj));
 
         if (ok !== "OK") {
@@ -25,7 +25,7 @@ class Store {
     }
 
     async get(key) {
-        console.log("redis-get", key);
+        // console.log("redis-get", key);
         const value = await this.client.get(key);
 
         if (value) {
@@ -36,7 +36,7 @@ class Store {
     }
 
     async unset(key) {
-        console.log("redis-unset", key);
+        // console.log("redis-unset", key);
         await this.client.del(key);
     }
 

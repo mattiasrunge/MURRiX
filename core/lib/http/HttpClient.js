@@ -8,7 +8,6 @@ const log = require("../lib/log")(module);
 const { api } = require("../api");
 const { Client } = require("../auth");
 const Terminal = require("../terminal");
-const jwt = require("../lib/jwt");
 const ClientStream = require("./Stream");
 
 const TSON = new Typeson().register([ TypesonBuiltin ]);
@@ -43,7 +42,6 @@ class HttpClient {
     }
 
     async clientReady() {
-        console.log("clientReady", this.client.getId());
         await this.sendEvent("set-cookie", {
             name: COOKIE_NAME,
             value: this.client.getId()

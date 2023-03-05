@@ -2,7 +2,6 @@
 
 const path = require("path");
 const fs = require("fs-extra");
-const graph = require("node-resolve-dependency-graph/lib");
 const commander = require("../commander");
 const api = require("../api");
 const { getAdminClient } = require("../auth");
@@ -34,32 +33,23 @@ class Packages {
                 name,
                 dir: pkgdir,
                 setup,
-                dependencies: setup.dependencies ?? [],
                 prio: 0
             });
         }
 
-        this._prioritizePackages(packages);
+        packages.sort((a, b) => a.name.localeCompare(b.name));
 
-        packages.sort((a, b) => a.prio - b.prio);
+        log.info("Loading node types");
+        await this._loadTypes();
 
         for (const pkg of packages) {
             log.info(`Initializing package ${pkg.name}`);
 
-            await this._loadTypes(pkg.dir);
             await this._loadApi(pkg.dir);
             await this._loadCommands(pkg.dir);
         }
 
         return packages.map(({ setup }) => setup).filter(Boolean);
-    }
-
-    _prioritizePackages(packages) {
-        const depList = packages.map((pkg) => [ pkg.name, pkg.dependencies ]);
-        const depMap = Object.fromEntries(depList);
-        const priority = graph.flat(graph.resolve(depMap));
-
-        packages.forEach((pkg) => pkg.prio = priority.indexOf(pkg.name));
     }
 
     async _loadApi(pkgdir) {
@@ -92,8 +82,8 @@ class Packages {
         }
     }
 
-    async _loadTypes(pkgdir) {
-        const dir = path.join(pkgdir, "types");
+    async _loadTypes() {
+        const dir = path.join(__dirname, "..", "lib", "types");
 
         if (await fs.pathExists(dir)) {
             const names = await fs.readdir(dir);

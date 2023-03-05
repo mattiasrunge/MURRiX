@@ -2,8 +2,8 @@
 
 const assert = require("assert");
 const uuid = require("uuid");
-const Node = require("../../../lib/Node");
-const { getAdminClient, matchPassword, hashPassword } = require("../../../auth");
+const Node = require("../Node");
+const { getAdminClient, matchPassword, hashPassword } = require("../../auth");
 
 class User extends Node {
     // Private

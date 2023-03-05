@@ -1,9 +1,7 @@
 "use strict";
 
 const assert = require("assert");
-const amqp = require("amqplib");
 const { v4: uuid } = require("uuid");
-const configuration = require("../config");
 const Deferred = require("../lib/Deferred");
 const { Client } = require("../auth");
 const mb = require("../mb");
@@ -26,8 +24,6 @@ class Api {
         });
     }
 
-    async init() {}
-
     async call(name, client, args) {
         const id = uuid();
 
@@ -40,7 +36,7 @@ class Api {
             args
         });
 
-        console.log(`CALL[${id}]:`, name, sessionId, args);
+        // console.log(`CALL[${id}]:`, name, sessionId, args);
 
         return this._calls[id].promise;
     }
@@ -60,17 +56,15 @@ class Api {
 
                     const result = await this._functions[name](client, ...args);
 
-                    console.log(`RESULT[${id}]:`, sessionId, result);
+                    // console.log(`RESULT[${id}]:`, sessionId, result);
                     d.resolve(result);
                 } catch (error) {
-                    console.log(`ERROR[${id}]:`, sessionId);
+                    // console.log(`ERROR[${id}]:`, sessionId);
                     d.reject(error);
                 }
             }
         });
     }
-
-    async stop() {}
 }
 
 module.exports = new Api();

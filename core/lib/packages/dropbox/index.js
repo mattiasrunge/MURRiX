@@ -15,9 +15,5 @@ const setup = async (client) => {
     }
 };
 
-setup.dependencies = [
-    "system",
-    "vfs"
-];
 
 module.exports = setup;
