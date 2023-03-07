@@ -3,7 +3,8 @@
   "version": "4.0.0",
   "private": true,
   "description": "MURRiX is a specialized Content Management System",
-  "main": "index.js",
+  "main": "index.mjs",
+  "type": "module",
   "author": "Mattias Runge-Broberg <mattias@runge.se>",
   "license": "MIT",
   "repository": {
@@ -13,7 +14,7 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint .",
-    "start": "node index.js",
+    "start": "node index.mjs",
     "release": "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push --tags"
   },
   "dependencies": {

@@ -1,0 +1,30 @@
+import assert from "node:assert";
+import Node from "../../../lib/Node.mjs";
+import { createLog } from "../../../lib/log.mjs";
+import { api } from "../../../api/index.mjs";
+
+const log = createLog(import.meta.url);
+
+export default async (client, abspath) => {
+    const node = await Node.resolve(client, abspath);
+
+    assert(node.properties.type === "f", "Can only ensure faces for files");
+
+    if (!node.attributes.sha1) {
+        if (!node.path) {
+            log.info(`Node with id ${node._id} seems to not be present in the tree, it has no path...`);
+
+            return;
+
+            // node = await api.found(client, node);
+        }
+
+        const { sha1, md5 } = await api.metadata(client, node.path);
+
+        await node.update(client, { sha1, md5 });
+
+        return sha1;
+    }
+
+    return node.attributes.sha1;
+};

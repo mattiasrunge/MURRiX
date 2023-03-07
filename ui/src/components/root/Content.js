@@ -23,6 +23,8 @@ class Content extends Component {
         this.state = {
             user: session.user()
         };
+
+        console.log("s", this.state);
     }
 
     async load() {

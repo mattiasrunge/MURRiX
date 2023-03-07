@@ -1,0 +1,41 @@
+import Node from "../Node.mjs";
+
+class Symlink extends Node {
+    // Getters
+
+    async get(client, options = {}) {
+        if (options.readlink) {
+            return this;
+        }
+
+        try {
+            const node = await Node.resolve(client, this.attributes.path);
+
+            node.extra.linkPath = this.path;
+
+            return node;
+        } catch {
+            return null;
+        }
+    }
+
+
+    // Setters
+
+    async setfacl(client, ac, options = {}) {
+        return super.setfacl(client, ac, { ...options, recursive: false });
+    }
+
+    async chmod(client, mode, options = {}) {
+        return super.chmod(client, mode, { ...options, recursive: false });
+    }
+
+    async chown(client, user, group, options = {}) {
+        return super.chown(client, user, group, { ...options, recursive: false });
+    }
+}
+
+Symlink.IDENTIFIER = "s";
+Symlink.VERSION = 1;
+
+export default Symlink;

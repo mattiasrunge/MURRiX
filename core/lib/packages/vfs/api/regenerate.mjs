@@ -1,0 +1,92 @@
+// TODO: Can we split this into event listeners setup in respective package?
+
+import assert from "node:assert";
+import chron from "chron-time";
+import merge from "deepmerge";
+import Node from "../../../lib/Node.mjs";
+import { getAdminClient } from "../../../auth/index.mjs";
+import { api } from "../../../api/index.mjs";
+
+export default async (client, abspath, options = {}) => {
+    let node = await Node.resolve(client, abspath);
+
+    assert(await api.access(client, node, "w"), "Permission denied");
+
+    if (node.properties.type === "f") {
+        const attributes = {};
+        const meta = await api.metadata(client, abspath, { noChecksums: true });
+
+        for (const [ key, value ] of Object.entries(meta)) {
+            if (key !== "raw" && key !== "name" && (typeof node.attributes[key] === "undefined" || options.overwrite)) {
+                if (typeof node.attributes[key] === "object" && typeof value === "object") {
+                    attributes[key] = merge(node.attributes[key], value);
+                } else {
+                    attributes[key] = value;
+                }
+            }
+        }
+
+        await node.update(client, attributes);
+    }
+
+    // Update device
+    let device = null;
+
+    try {
+        device = await Node.resolve(client, `${node.path}/createdWith`);
+    } catch {}
+
+    if (node.attributes.deviceSerialNumber && !device) {
+        device = (await Node.list(await getAdminClient(), "/cameras", {
+            query: {
+                "attributes.serialNumber": node.attributes.deviceSerialNumber }
+        }))[0];
+
+        if (device) {
+            await api.symlink(client, device.path, `${node.path}/createdWith`);
+        }
+    }
+
+    // After symlink we must reread node!
+    node = await Node.resolve(client, abspath);
+
+    // Update time
+    const source = chron.select(node.attributes.when || {});
+
+    if (source) {
+        const options = {
+            type: source.type
+        };
+
+        if (source.type === "device" && device) {
+            if (device.attributes.type === "offset_relative_to_position") {
+                options.deviceUtcOffset = 0;
+
+                if (node.attributes.where.longitude && node.attributes.where.latitude) {
+                    const data = await api.position2timezone(client, node.attributes.where.latitude, node.attributes.where.longitude);
+
+                    options.deviceUtcOffset = data.utcOffset;
+                }
+            } else if (device.attributes.type === "offset_fixed") {
+                options.deviceUtcOffset = device.attributes.utcOffset;
+            }
+
+            options.deviceAutoDst = device.attributes.deviceAutoDst;
+        }
+
+        await node.update(client, {
+            time: chron.time2timestamp(source.time, options)
+        });
+    } else if (node.attributes.time) {
+        await node.update(client, {
+            time: null
+        });
+    }
+
+    if (node.properties.type === "f") {
+        await api.rmmedia(client, node, "image");
+        // TODO: await rmmedia(client, node, "video");
+    }
+
+    return node.serialize(client);
+};

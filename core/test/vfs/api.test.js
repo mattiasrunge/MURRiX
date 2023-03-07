@@ -3,13 +3,13 @@
 /* global describe beforeAll afterAll it beforeEach afterEach */
 
 const assert = require("assert");
-const db = require("../../lib/db");
-const packages = require("../../lib/packages");
-const commander = require("../../lib/commander");
-const { api } = require("../../lib/api");
-const Node = require("../../lib/lib/Node");
-const { getAdminClient } = require("../../lib/auth");
-const configuration = require("../../lib/config");
+const db = require("../../lib/db/index.mjs").default;
+const packages = require("../../lib/packages/index.mjs").default;
+const commander = require("../../lib/commander/index.mjs").default;
+const { api } = require("../../lib/api/index.mjs").default;
+const Node = require("../../lib/lib/Node.mjs").default;
+const { getAdminClient } = require("../../lib/auth/index.mjs").default;
+const configuration = require("../../lib/config/index.mjs");
 
 const createNodes = async (client) => {
     const root = await Node.resolve(client, "/");
