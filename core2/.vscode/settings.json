@@ -1,0 +1,12 @@
+{
+    "deno.enable": true,
+    "deno.enablePaths": [
+        "."
+    ],
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "denoland.vscode-deno",
+    "[yaml]":  {
+		"editor.tabSize": 2,
+	},
+
+}

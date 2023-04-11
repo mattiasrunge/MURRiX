@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "lint": {
+    "rules": {
+      "exclude": [
+        "require-await",
+        "no-explicit-any"
+      ]
+    }
+  },
+  "fmt": {
+    "options": {
+      "lineWidth": 175,
+      "indentWidth": 2,
+      "singleQuote": true,
+      "proseWrap": "preserve"
+    }
+  },
+  "importMap": "import_map.json",
+  "tasks": {
+    "test": "rm -rf coverage && deno test -A --coverage=coverage && deno coverage --lcov coverage --output=coverage/coverage.lcov && genhtml -o coverage/html coverage/coverage.lcov"
+  }
+}
