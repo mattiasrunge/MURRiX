@@ -1,0 +1,9 @@
+
+.rootContainer {
+    overflow-y: scroll;
+    position: absolute;
+    top: var(--navbar-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

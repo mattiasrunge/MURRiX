@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "lint": {
+    "rules": {
+      "exclude": [
+        "require-await",
+        "no-explicit-any"
+      ]
+    }
+  },
+  "fmt": {
+    "lineWidth": 175,
+    "indentWidth": 2,
+    "singleQuote": true,
+    "proseWrap": "preserve"
+  },
+  "imports": {
+    "~/": "./",
+    "std/": "https://deno.land/std@0.210.0/",
+    "oak": "https://deno.land/x/oak@v12.6.1/mod.ts",
+    "oakCors": "https://deno.land/x/cors@v1.2.2/mod.ts",
+    "crc32": "https://deno.land/x/crc32@v0.2.2/mod.ts",
+    "yargs/": "https://deno.land/x/yargs@v17.7.2-deno/",
+    "@tus/server": "npm:@tus/server@1.2.0",
+    "@tus/file-store": "npm:@tus/file-store@1.1.0"
+  },
+  "tasks": {
+    "test": "rm -rf coverage && deno test --trace-ops -A --coverage=coverage && deno coverage --lcov coverage --output=coverage/coverage.lcov && genhtml -o coverage/html coverage/coverage.lcov",
+    "dev": "deno run -A src/index.ts",
+    "start": "deno run --lock=deno.lock --cached-only -A src/index.ts production",
+    "cache": "deno cache --reload --lock=deno.lock src/index.ts",
+    "cli": "deno run -A src/client-cli.ts"
+  }
+}

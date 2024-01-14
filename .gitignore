@@ -25,3 +25,5 @@ babel_cache
 core/conf/config*.json
 public/backend.txt
 *~
+.yarn
+.next

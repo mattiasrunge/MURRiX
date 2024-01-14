@@ -1,0 +1,20 @@
+---
+version: '3'
+services:
+  mfs:
+    container_name: archive-mfs
+    build: .
+    network_mode: host
+    ports:
+      - "9090:9090"
+    volumes:
+      - ~/mfs:/data
+
+  mfs-sftp:
+    container_name: archive-mfs-sftp
+    build: ./sftp
+    network_mode: host
+    ports:
+      - "9022:22"
+    volumes:
+      - ~/mfs/files:/data/files:ro

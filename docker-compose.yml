@@ -1,0 +1,24 @@
+version: '2'
+services:
+  core:
+    container_name: murrix-core
+    build: ./core
+    ports:
+      - "8080:8080"
+      - "8282:8282"
+    volumes:
+      - /home/mattias/projects/MURRiX/core/conf/config_docker.json:/usr/src/app/conf/config.json
+      - /home/mattias/murrix_data/files:/murrix_files
+      - /home/mattias/murrix_data/cache:/murrix_cache
+      - /home/mattias/.ssh:/murrix_keys
+      - /tmp:/tmp
+    restart: always
+    network_mode: "host"
+  ui:
+    container_name: murrix-ui
+    build: ./ui
+    ports:
+      - "5000:5000"
+    environment:
+      BACKEND_URL: http://localhost:8080
+    restart: always

@@ -1,0 +1,133 @@
+
+import request from "superagent";
+import cookies from "browser-cookies";
+import { NotificationManager } from "react-notifications";
+import { backend, api } from "lib/backend";
+import Emitter from "lib/emitter";
+
+class Uploader extends Emitter {
+    constructor() {
+        super();
+
+        this.state = {
+            files: [],
+            ongoing: false,
+            path: false,
+            currentFile: 0,
+            progress: 0
+        };
+    }
+
+    setState(state) {
+        let updated = false;
+
+        for (const key of Object.keys(state)) {
+            updated = updated || this.state[key] !== state[key];
+            this.state[key] = state[key];
+        }
+
+        updated && this.emit("state", this.state);
+    }
+
+    getState() {
+        return this.state;
+    }
+
+    isPathAllowed(path) {
+        return !this.state.path || this.state.path === path;
+    }
+
+    addFiles(path, files) {
+        if (this._ongoing || !this.isPathAllowed(path)) {
+            throw new Error("Can no add more files when upload is in progress");
+        }
+
+        const newFiles = files.map((file, index) => ({
+            file,
+            id: `${Date.now()}__${index}`,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            preview: file.preview,
+            status: "queued"
+        }));
+
+        this.setState({
+            files: [ ...this.state.files, ...newFiles ],
+            path
+        });
+    }
+
+    async _uploadFile(file) {
+        try {
+            const session = cookies.get("session"); // TODO: Wrap in backend function
+
+            file.status = "uploading";
+            this.setState({
+                files: [ ...this.state.files ],
+                currentFile: file
+            });
+
+            const req = await request
+            .post(`${backend.getAddress()}/media/upload/${file.id}`)
+            .set("session", session)
+            .attach("file", file.file)
+            .on("progress", (event) => {
+                if (event.direction === "upload") {
+                    this.setState({ progress: Math.ceil(event.percent) });
+                }
+            });
+
+            if (req.body.status !== "success") {
+                throw new Error(req.body.status);
+            }
+
+            file.status = "importing";
+            this.setState({ files: [ ...this.state.files ] });
+
+            await api.ensure(this.state.path, "d");
+
+            const name = await api.uniquename(this.state.path, file.name);
+            const node = await api.create(this.state.path, "f", name, {
+                name: file.name,
+                _source: {
+                    filename: req.body.filename
+                }
+            });
+
+            await api.regenerate(node.path);
+
+            file.status = "complete";
+            this.setState({ files: [ ...this.state.files ] });
+        } catch (error) {
+            file.error = error.message;
+            file.status = "error";
+            throw error;
+        }
+    }
+
+    clear() {
+        this.setState({ files: [], path: false, currentFile: false, progress: 0 });
+    }
+
+    async start() {
+        this.setState({ ongoing: true });
+
+        try {
+            for (let n = 0; n < this.state.files.length; n++) {
+                if (this.state.files[n].status !== "queued") {
+                    continue;
+                }
+
+                await this._uploadFile(this.state.files[n]);
+            }
+
+            this.setState({ files: [], path: false, ongoing: false, currentFile: false, progress: 0 });
+        } catch (error) {
+            NotificationManager.error(`Failed to upload, ${error.message}`);
+            this.setState({ files: [ ...this.state.files ], ongoing: false, currentFile: false, progress: 0 });
+        }
+    }
+}
+
+export default new Uploader();

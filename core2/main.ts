@@ -1,6 +1,6 @@
 import { Common, Config } from '~/layers/0_common/mod.ts';
 import { Physical } from '~/layers/1_physical/mod.ts';
-import { ADMIN_ACCESS, NodeFS, NodeRoot } from '~/layers/2_nodefs/mod.ts';
+import { ADMIN_ACCESS, NodeFS, NodeRoot } from '~/lib/nodefs/mod.ts';
 
 const config: Config = {
   fs: {

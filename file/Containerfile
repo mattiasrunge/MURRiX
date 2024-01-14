@@ -1,0 +1,48 @@
+# Use the official Ubuntu base image
+FROM ubuntu:24.04
+
+# Set environment variables for versions
+ENV DENO_VERSION=1.39.2
+ENV EXIFTOOL_VERSION=12.72
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    curl \
+    make \
+    unzip \
+    perl \
+    file \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Download and install Deno
+RUN curl -fsSL https://deno.land/x/install/install.sh | sh -s v$DENO_VERSION
+ENV DENO_INSTALL="/root/.deno"
+ENV PATH="$DENO_INSTALL/bin:$PATH"
+
+# Download and install ExifTool
+RUN curl -L https://exiftool.org/Image-ExifTool-$EXIFTOOL_VERSION.tar.gz | tar -xz \
+    && cd Image-ExifTool-$EXIFTOOL_VERSION \
+    && perl Makefile.PL \
+    && make install \
+    && cd /app \
+    && rm -rf Image-ExifTool-$EXIFTOOL_VERSION
+
+
+# Expose the required port for HTTP traffic
+EXPOSE 9090
+
+# Mount the data directory
+VOLUME /data
+
+# Copy the Deno application source code to the container
+COPY src /app/src
+COPY deno.json deno.lock /app/
+
+# Cache dependencies
+RUN deno task cache
+
+# Start
+CMD ["deno", "task", "start"]

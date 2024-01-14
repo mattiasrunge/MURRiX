@@ -1,0 +1,33 @@
+# Use a minimal Ubuntu base image with Podman installed
+FROM ubuntu:24.04
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y openssh-server nano && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+RUN mkdir -p /data/files \
+    && chmod 555 /data \
+    && chmod 555 /data/files
+
+# Create a chrooted SFTP user and configure SSH for key-based authentication and chroot
+RUN mkdir -p /root/.ssh \
+    && chmod 700 /root/.ssh \
+    && echo "PasswordAuthentication no" >> /etc/ssh/sshd_config \
+    && echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
+    && echo "ChrootDirectory /data/files" >> /etc/ssh/sshd_config \
+    && sed -E -i 's/^(\s*Subsystem\s+sftp\s+).*/\1internal-sftp/' /etc/ssh/sshd_config \
+    && mkdir -p -m0755 /var/run/sshd
+
+# Copy public keys for key-based authentication
+COPY authorized_keys /root/.ssh/authorized_keys
+
+RUN chown -R root:root /root \
+    && chmod 600 /root/.ssh/authorized_keys
+
+# Expose SSH port
+EXPOSE 22
+
+# CMD to start SSH server for SFTP
+CMD ["/usr/sbin/sshd", "-D"]

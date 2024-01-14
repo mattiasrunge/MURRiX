@@ -1,0 +1,94 @@
+
+MURRiX
+======
+
+DATA: Since the setfacl bug we have bloated ACL-list with duplicates that should be cleaned up
+DATA: Remove all person/homes, we only have residents on locations going forward
+
+
+
+Fixa tid, jävla röra... https://www.npmjs.com/package/geo-tz
+NEW: Move away from google geocode stuff, nodinatim? openstreetmaps är vädelösa för lokalt... borde cacha positionen på bilden eller på något sätt ha en översättningstabell som inte behöver fråga varje gång
+
+NEW: Historiskt väder på platsen för en bild vore coolt
+NEW: Autocomplete case problems
+NEW: Create real filesystem structure with links or similar
+NEW: MCS interface and queueing needs to be reworked
+NEW: lost+found task
+
+BUG: Tidzon i timeline är fel: Oscars Tryggs födelse
+BUG: Text i timeline sparar inte alla fält första gången
+BUG: Henrik och stefan horrdins födelsedag (delat event) syns inte korrekt på förstasidan
+BUG: Om saknar tid på nån fil, blir datum rangen i headern knepig: Andreas och EMilias bröllop 2005
+BUG: Fix first letter disappear in search box
+BUG: Age of person i viewer list is wrong if date of file is only year: http://localhost:3000/node/albums/Birgitta_1947-1951/_/media/albums/Birgitta_1947-1951/files/IMG_20141119_0082.jpg
+BUG: If mcs is not started, murrix crashes on startup, should wait and try to reconnect
+BUG: Tagging, why the image delay?
+
+MISSING: section in home with photos with detected faces but not tags
+MISSING: Batch tools, time and camera set/adjust
+MISSING: Family Tree: expand/collapse levels/branches, controls for zoom, fullscreen mode
+MISSING: Show Extra files in albums
+MISSING: Comments on Albums etc
+MISSING: Persons Homes UI
+MISSING: Edit Person contact info
+MISSING: Add person measurment
+MISSING: Camera UI, show pictures
+MISSING: Location UI, show pictures
+MISSING: User update username/email with action
+MISSING: User update password with action
+
+NEW: Tagging, highlight box on image when person select has focus
+NEW: Tagging on videos....
+NEW: Archive should be split into subfolders to allow some manual browsing.. split the filename id somehow
+NEW: First page of profile should show overview, name, email, groups maybe resent work
+NEW: Show duplicate files based on checksums with a icon or similar
+NEW: Add child births to parent timeline
+NEW: Set profile picture for all task
+NEW: batch tools (filter on criteria): set camera, adjust time, rotate
+NEW: sort people in viewer sidebar
+NEW: Select which version should be the primary (of several files, deblurred could be selected)
+NEW: Label search, filter on name, sort by name or use count
+NEW: Message, system mostly for system events
+NEW: Node revision diffing CLI and restore earlier version CLI
+NEW: Make labels into a fs structure with symlinks, so we can get files per label via the sftp interface
+NEW: Album group, several albums that belong together, like our round the world trip or Ellens month pictures, have "see also" or related or similar in header of albums belonging to a group
+NEW: Remove group or user should purge accesses for any nodes, if owner, put content custodians or administratior, acl remove
+DOCS: Document keyboard shortcuts
+
+
+MCS
+===
+BUG: video square wrong for vertical videos
+NEW: VP9/AV1?
+NEW: Deblurring
+NEW: Face recognition
+
+Other
+=====
+Det är lite oklart om logik ligger i commands eller i types... nu är det mesta nog i types men kanske vill man ha nån policy för vilken funktionallitet som skall ligga var.
+- Lägga till och ta bort användare från en grupp borde in i user-typen och kanske motsvarande i group-typen också
+- Commands borde inte behöva använda db direkt (aggregate och query)
+
+Vill vi hämta profilbild för en användare från en person som idag eller koppla direkt mot en fil (om fil så hur håller man båda uppdaterad men då kan man lättare separera ut vfs i ett lib)
+ // "script_hiderawfiles": require("./scripts/hiderawfiles").default,
+    // "script_hidesomefiles": require("./scripts/hidesomefiles").default,
+    // "script_hidevideoxmlfiles": require("./scripts/hidevideoxmlfiles").default,
+    // "script_regeneratefiles": require("./scripts/regeneratefiles").default,
+    // "script_findemptyalbums": require("./scripts/findemptyalbums").default,
+    // "script_outputtest": require("./scripts/outputtest")
+
+https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+
+
+NodeInput:
+* Search bar
+- Examples: Topbar
+- No match goes to search
+
+* Select one
+- Examples: Profile person, Mother, Father, Partner
+- Select and keep filled in or Select and clear
+
+* Select list
+- Examples: Residents, Owners, Children

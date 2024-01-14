@@ -1,0 +1,73 @@
+{
+  "name": "@murrix/nextui",
+  "version": "4.0.0",
+  "private": true,
+  "description": "MURRiX is a specialized Content Management System",
+  "author": "Mattias Runge-Broberg <mattias@runge.se>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mattiasrunge/MURRiX.git"
+  },
+  "scripts": {
+    "start": "NEXT_TELEMETRY_DISABLED=1 next dev -p 3001",
+    "build": "next build",
+    "test": "echo NONE",
+    "serve": "echo $BACKEND_URL > ./build/backend.txt && NEXT_TELEMETRY_DISABLED=1 next start"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@flowjs/flow.js": "^2.14.1",
+    "animate.css": "^4.1.0",
+    "babel-plugin-jsx-control-statements": "^4.1.0",
+    "browser-cookies": "^1.2.0",
+    "chart.js": "^3.2.1",
+    "chron-time": "^0.0.4",
+    "leaflet": "^1.7.1",
+    "moment": "^2.29.1",
+    "mousetrap": "^1.6.5",
+    "next": "^10.2.0",
+    "next-transpile-modules": "^7.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-chartjs-2": "^3.0.3",
+    "react-dnd": "^14.0.2",
+    "react-dnd-html5-backend": "^14.0.0",
+    "react-dom": "^17.0.2",
+    "react-dropzone": "^11.3.2",
+    "react-leaflet": "^3.2.0",
+    "react-notifications": "^1.7.2",
+    "react-semantic-ui-range": "^0.7.1",
+    "react-virtualized-auto-sizer": "^1.0.5",
+    "react-window": "^1.8.6",
+    "react-yearly-calendar": "^1.2.6",
+    "reconnecting-websocket": "^4.4.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.3",
+    "superagent": "^6.1.0",
+    "typeson": "^6.1.0",
+    "typeson-registry": "^1.0.0-alpha.39",
+    "use-debounce": "^6.0.1",
+    "xterm-addon-fit": "^0.5.0",
+    "xterm-for-react": "^1.0.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint-plugin-import": "^2.23.2",
+    "eslint-plugin-jest": "^24.3.5",
+    "eslint-plugin-jsx-control-statements": "^2.2.1",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^4.1.0",
+    "jest": "^26.6.3"
+  }
+}
