@@ -1,0 +1,26 @@
+{
+    "fileDirectory": "/home/mattias/murrix_data/files",
+    "mcsDirectory": "/home/mattias/murrix_data/cache",
+    "stagingDirectory": "/home/mattias/murrix_data/staging",
+    "email": {
+        "user": "admin@runge.se",
+        "password": "uhfg@EFjv*2k&G@NkyU4k4zWZkF3T*",
+        "host": "smtp.gmail.com",
+        "port": 465,
+        "ssl": true
+    },
+    "mcs": {
+        "host": "localhost",
+        "port": 8181,
+        "key": "let-me-in"
+    },
+    "sftp": {
+        "port": 8282,
+        "keyFile": "/home/mattias/.ssh/id_rsa"
+    },
+    "googleServerKey": "AIzaSyAKlYOmX1NblI-cQrsjl9pwf6j8R17o0-k",
+    "dropbox": {
+        "key": "fgn26gjfm7h1xqk",
+        "secret": "6wjqksxxcmvr5df"
+    }
+}

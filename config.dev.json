@@ -1,0 +1,12 @@
+{
+  "db": {
+    "db": "murrix-dev",
+    "servers": [
+      {
+        "host": "localhost",
+        "port": 27017
+      }
+    ]
+  },
+  "mq": {}
+}

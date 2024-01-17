@@ -1,18 +1,12 @@
-"eslint.validate":[
-    {
-        "language":"vue",
-        "autoFix":true
-    },
-    {
-        "language":"html",
-        "autoFix":true
-    },
-    {
-        "language":"javascript",
-        "autoFix":true
-    },
-    {
-        "language":"typescript",
-        "autoFix":true
-    }
-]
+{
+    "deno.enable": true,
+    "deno.enablePaths": [
+        "."
+    ],
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "denoland.vscode-deno",
+    "[yaml]":  {
+		"editor.tabSize": 2,
+	},
+
+}

@@ -1,0 +1,15 @@
+{
+    "email": {
+        "user": "admin@runge.se",
+        "password": "zdwUeLDySQBDpx8239DQ",
+        "host": "smtp.gmail.com",
+        "port": 465,
+        "ssl": true
+    },
+    "mcs": {
+        "host": "localhost",
+        "port": 8181,
+        "key": "let-me-in"
+    },
+    "googleServerKey": "AIzaSyAKlYOmX1NblI-cQrsjl9pwf6j8R17o0-k"
+}
