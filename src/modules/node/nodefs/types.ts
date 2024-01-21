@@ -20,16 +20,6 @@ export type NodeChild = {
   name: string;
 };
 
-export type NodeFSFile = {
-  id: string;
-  area: string;
-  name: string;
-  mimetype: string;
-  size: number;
-  checksum: string;
-  meta?: Record<string, JSONValue>;
-};
-
 export type NodeProps = {
   btime: NodeUserTime; // birth
   ptime: NodeUserTime; // prop modified
@@ -40,7 +30,6 @@ export type NodeProps = {
   acl: NodeACL[];
   children: NodeChild[];
   count: number;
-  files?: NodeFSFile[];
   link?: NodePath;
   group?: string;
 };

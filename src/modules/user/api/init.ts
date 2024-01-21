@@ -15,6 +15,7 @@ import {
   USERS_GID,
   USERS_GROUPNAME,
 } from '~/src/shared/access/mod.ts';
+import { log } from '~/src/shared/log/mod.ts';
 import { collection, vault } from '../vault/mod.ts';
 import { makeGroup } from './make-group.ts';
 import { makeUser } from './make-user.ts';
@@ -46,7 +47,7 @@ export const init = api<I, O>(
 
     // Create admin group
     if (!(await nodeApi.exists(service, { access: ADMIN_ACCESS, path: `/groups/${ADMIN_GROUPNAME}` }))) {
-      await service.log.info('No admin group found, creating...');
+      log.info('No admin group found, creating...');
       await makeGroup(service, {
         access: ADMIN_ACCESS,
         name: ADMIN_GROUPNAME,
@@ -58,7 +59,7 @@ export const init = api<I, O>(
 
     // Create guest group
     if (!(await nodeApi.exists(service, { access: ADMIN_ACCESS, path: `/groups/${GUEST_GROUPNAME}` }))) {
-      await service.log.info('No guest group found, creating...');
+      log.info('No guest group found, creating...');
       await makeGroup(service, {
         access: ADMIN_ACCESS,
         name: GUEST_GROUPNAME,
@@ -70,7 +71,7 @@ export const init = api<I, O>(
 
     // Create users group
     if (!(await nodeApi.exists(service, { access: ADMIN_ACCESS, path: `/groups/${USERS_GROUPNAME}` }))) {
-      await service.log.info('No users group found, creating...');
+      log.info('No users group found, creating...');
       await makeGroup(service, {
         access: ADMIN_ACCESS,
         name: USERS_GROUPNAME,
@@ -82,7 +83,7 @@ export const init = api<I, O>(
 
     // Create custodian group
     if (!(await nodeApi.exists(service, { access: ADMIN_ACCESS, path: `/groups/${CUSTODIANS_GROUPNAME}` }))) {
-      await service.log.info('No custodians group found, creating...');
+      log.info('No custodians group found, creating...');
       await makeGroup(service, {
         access: ADMIN_ACCESS,
         name: CUSTODIANS_GROUPNAME,
@@ -94,7 +95,7 @@ export const init = api<I, O>(
 
     // Create admin user
     if (!(await nodeApi.exists(service, { access: ADMIN_ACCESS, path: `/users/${ADMIN_USERNAME}` }))) {
-      await service.log.info('No admin user found, creating...');
+      log.info('No admin user found, creating...');
 
       const col = collection(service);
       const passwordId = await vault.setPassword(col, ADMIN_USERNAME);
@@ -115,7 +116,7 @@ export const init = api<I, O>(
 
     // Create guest user
     if (!(await nodeApi.exists(service, { access: ADMIN_ACCESS, path: `/users/${GUEST_USERNAME}` }))) {
-      await service.log.info('No guest user found, creating...');
+      log.info('No guest user found, creating...');
       await makeUser(service, {
         access: ADMIN_ACCESS,
         name: GUEST_USERNAME,

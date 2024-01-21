@@ -1,18 +1,50 @@
+import { assert } from 'std/assert/mod.ts';
 import { FSConfig } from './types.ts';
+import { FSArea } from './area.ts';
 
 export class FS {
   private config: FSConfig;
+  private areas: Record<string, FSArea>;
 
-  private constructor(config: FSConfig) {
+  private constructor(config: FSConfig, areas: Record<string, FSArea>) {
     this.config = config;
+    this.areas = areas;
   }
 
   static async create(config: FSConfig) {
-    const fs = new FS(config);
+    const areas: Record<string, FSArea> = {};
 
-    return fs;
+    if (config.areas) {
+      assert(Array.isArray(config.areas), 'areas is not an array');
+
+      for (const areaConfig of config.areas) {
+        areas[areaConfig.name] = await FSArea.create(areaConfig, {
+          maxIdIterations: config.maxIdIterations,
+          uploadExpireMs: config.uploadExpireMs,
+          uploadCleanupMs: config.uploadCleanupMs,
+        });
+      }
+    }
+
+    // TODO: check exiftool
+    // TODO: check file
+
+    return new FS(config, areas);
+  }
+
+  getArea(name: string) {
+    assert(this.areas[name], `No FS area named ${name} defined`);
+
+    return this.areas[name];
+  }
+
+  getAreas() {
+    return Object.values(this.areas);
   }
 
   async destroy() {
+    for (const area of this.getAreas()) {
+      await area.destroy();
+    }
   }
 }

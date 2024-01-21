@@ -13,5 +13,4 @@ export * from './new-uid.ts';
 export * from './set-password.ts';
 export * from './toggle-admin.ts';
 export * from './toggle-star.ts';
-export * from './types.ts';
 export * from './whoami.ts';

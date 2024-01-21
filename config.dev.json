@@ -1,4 +1,5 @@
 {
+  "name": "core-dev",
   "db": {
     "db": "murrix-dev",
     "servers": [
@@ -8,5 +9,10 @@
       }
     ]
   },
-  "mq": {}
+  "mq": {},
+  "modules": [
+    "node",
+    "user",
+    "people"
+  ]
 }

@@ -1,28 +1,33 @@
-import { ServiceConfig } from '~/src/shared/service/mod.ts';
-import { DBConfig } from '~/src/external/db/mod.ts';
-import { MQConfig } from '~/src/external/mq/mod.ts';
-import { SMConfig } from '~/src/external/sm/mod.ts';
-import { GroupId, UserId } from '~/src/shared/mode/mod.ts';
-import { NodeAttrs } from '~/src/modules/node/mod.ts';
-import { PasswordId } from './vault/mod.ts';
+import { NamedNodeData, NodeAttrs } from '~/src/modules/node/mod.ts';
 
-export type ModuleUserConfig = ServiceConfig & {
-  db: DBConfig;
-  mq: MQConfig;
-  sm: SMConfig;
+export type PersonGender = 'm' | 'f' | 'o' | 'u';
+
+export type PersonContact = {
+  type: string;
+  data: string;
 };
 
-export type GroupAttrs = NodeAttrs & {
-  gid: GroupId;
-  title?: string | null;
-  description?: string | null;
+export type PersonParents = {
+  person: NamedNodeData<PersonAttrs>;
+  mother: PersonParents | null;
+  father: PersonParents | null;
 };
 
-export type UserAttrs = NodeAttrs & {
-  uid: UserId;
-  title?: string | null;
+export type PersonChildren = {
+  person: NamedNodeData<PersonAttrs>;
+  children: PersonChildren[];
+};
+
+export type PersonTree = PersonParents & PersonChildren;
+
+export type PersonAttrs = NodeAttrs & {
+  name: string;
+  fullname?: string | null;
+  birthname?: string | null;
   description?: string | null;
-  passwordId?: PasswordId | null;
-  inactive?: boolean;
-  lastLogin?: number;
+  allergies?: string | null;
+  gender?: PersonGender | null;
+  contact?: PersonContact[] | null;
+  idV0?: number | null;
+  idV1?: string | null;
 };

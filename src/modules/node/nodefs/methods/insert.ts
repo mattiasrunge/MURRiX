@@ -1,7 +1,6 @@
 import { Collection } from 'mongo';
 import { Access, DEFAULT_UMASK } from '~/src/shared/access/mod.ts';
-import { NodeAttrs, NodeData, NodeProps, PartialNodeProps, PersistOps } from '../types.ts';
-import { persist } from './persist.ts';
+import { NodeAttrs, NodeData, NodeProps, PartialNodeProps } from '../types.ts';
 
 export const insert = async (
   col: Collection<NodeData>,
@@ -32,19 +31,18 @@ export const insert = async (
     acl: props?.acl ?? [],
     children: props?.children ?? [],
     count: 0,
-    files: props?.files ?? [],
     link: props?.link || undefined,
     group: props?.group || undefined,
   };
 
-  const ops: PersistOps = {
-    $set: {
-      _id: id,
-      type,
-      props: fullProps,
-      attrs: attrs || {},
-    },
+  const doc = {
+    _id: id,
+    type,
+    props: fullProps,
+    attrs: attrs || {},
   };
 
-  return await persist(col, id, ops);
+  await col.insertOne(doc);
+
+  return doc;
 };

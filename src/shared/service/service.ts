@@ -1,37 +1,56 @@
+import { assert } from 'std/assert/mod.ts';
 import { Disposable, Disposables } from '~/src/shared/disposables/mod.ts';
-import { Log } from './log/mod.ts';
+import { log } from '~/src/shared/log/mod.ts';
 import { Glue } from './glue/mod.ts';
 import { WrappedFunction } from './api/mod.ts';
 import { ServiceConfig, ServiceIf } from './types.ts';
+import { Module } from './module.ts';
+import { HttpMethod, HttpRouteHandler } from '~/src/shared/http-server/mod.ts';
 
+type ModuleList = Record<string, any>;
 export class Service implements ServiceIf {
   public readonly name: string;
-  public readonly log: Log;
   public readonly instanceId: string;
   public readonly config: ServiceConfig;
   private disposables: Disposables;
   private glue: Glue;
 
-  private constructor(name: string, config: ServiceConfig, glue: Glue) {
-    this.name = name;
+  private constructor(config: ServiceConfig, glue: Glue) {
+    this.name = config.name;
     this.config = config;
-    this.instanceId = config.instanceId;
+    this.instanceId = config.name;
     this.glue = glue;
-    this.log = new Log(name);
     this.disposables = new Disposables();
 
     this.addDisposable(glue.destroy.bind(glue));
 
     Deno.addSignalListener('SIGINT', async () => {
-      this.log.info('=> SIGINT received, shutting down...');
+      log.info('=> SIGINT received, shutting down...');
       await this.destroy();
     });
   }
 
-  static async create(name: string, config: ServiceConfig) {
-    const glue = await Glue.create(config);
+  static async create(config: ServiceConfig, modules: ModuleList) {
+    log.setName(config.name);
+    log.info(`Starting ${config.name} service...`);
 
-    return new Service(name, config, glue);
+    const glue = await Glue.create(config);
+    const service = new Service(config, glue);
+    const loadedModules: Module[] = [];
+
+    for (const name of config.modules) {
+      assert(modules[name], `Unknown module name ${name}`);
+
+      const module = new modules[name](service) as Module;
+      loadedModules.push(module);
+    }
+
+    for (const module of loadedModules) {
+      service.addDisposable(module);
+      await module.setup();
+    }
+
+    return service;
   }
 
   public addDisposable(disposeFn: Disposable, ref?: any) {
@@ -42,7 +61,7 @@ export class Service implements ServiceIf {
     try {
       await this.disposables.destroy();
     } catch (error) {
-      this.log.error('Failed to cleanup service', error);
+      log.error('Failed to cleanup service', error);
     }
   }
 
@@ -51,9 +70,13 @@ export class Service implements ServiceIf {
   async registerApiFunctions(fns: WrappedFunction[]) {
     for (const fn of fns) {
       const disposeFn = await fn.load(this);
-      this.log.info(`Registered API function ${fn.fnName}`);
+      log.info(`Registered API function ${fn.fnName}`);
       this.addDisposable(disposeFn);
     }
+  }
+
+  async addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler) {
+    this.glue.hp().addRoute(methods, path, handler);
   }
 
   async eventEmit() {}
@@ -64,12 +87,13 @@ export class Service implements ServiceIf {
   async cacheGet() {}
   async cacheRemove() {}
 
-  async routeAdd() {}
-  async routeRemove() {}
-
   async getFS() {}
   async exposeFS() {}
   async importFS() {}
+
+  getFs() {
+    return this.glue.fs();
+  }
 
   getDb() {
     return this.glue.db();
@@ -81,5 +105,9 @@ export class Service implements ServiceIf {
 
   getSm() {
     return this.glue.sm();
+  }
+
+  getHp() {
+    return this.glue.hp();
   }
 }

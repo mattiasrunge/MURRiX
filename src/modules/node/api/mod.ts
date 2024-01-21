@@ -9,6 +9,7 @@ export * from './hardlink.ts';
 export * from './init.ts';
 export * from './make.ts';
 export * from './move.ts';
+export * from './remove-by-id.ts';
 export * from './remove.ts';
 export * from './resolve.ts';
 export * from './resolve-one.ts';
