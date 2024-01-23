@@ -28,11 +28,11 @@ export class SM {
       [id, '$'],
     );
 
-    if (reply) {
+    if (!reply) {
       return null;
     }
 
-    return reply;
+    return (reply as JSONValue[])[0] as string;
   }
 
   async has(id: string) {
@@ -99,6 +99,10 @@ export class SM {
       [id, path || '$'],
     );
 
-    return JSON.parse(reply as string);
+    if (!reply) {
+      return null;
+    }
+
+    return (JSON.parse(reply as string) as JSONValue[])[0];
   }
 }

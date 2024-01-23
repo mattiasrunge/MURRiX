@@ -24,6 +24,6 @@ export const readFileMetadata = api<I, O>(
 
     const area = service.getFs().getArea(node.attrs.area);
 
-    return await area.getMetadata(node.attrs.fileId);
+    return await area.getRawMetadata(node.attrs.fileId);
   },
 );

@@ -1,10 +1,12 @@
 import { decodeBase64 } from 'std/encoding/base64.ts';
 import { createServer, IncomingMessage, Server, ServerResponse } from 'node:http';
-import { Application, createHttpError, isHttpError, Middleware, Router, RouterContext } from 'oak';
+import { Application, isHttpError, Next, Router } from 'oak';
 import { oakCors } from 'oakCors';
 import { log } from '~/src/shared/log/mod.ts';
 import { getRequest, setResponse } from './request-transform.ts';
-import { HttpMethod, HttpRouteHandler } from './types.ts';
+import { HttpAccessResolver, HttpContext, HttpMethod, HttpRouteHandler } from './types.ts';
+
+const DEFAULT_COOKIE_NAME = 'murrix';
 
 type RequestExtras = {
   incomingMessage: IncomingMessage;
@@ -13,8 +15,12 @@ type RequestExtras = {
 
 type ExtendedRequest = Request & RequestExtras;
 
-export const getRequestExtras = (context: RouterContext<string>) => {
+export const getRequestExtras = (context: HttpContext) => {
   return ((context.request.originalRequest as any).request as RequestExtras);
+};
+
+export const getContextFromIncomingMessage = (req: IncomingMessage) => {
+  return (req as any).context as HttpContext;
 };
 
 export class HttpServer {
@@ -23,12 +29,11 @@ export class HttpServer {
   private server: Server;
   private app: Application;
   private router: Router;
-  private authorizedTokens: string[];
+  private accessResolver?: HttpAccessResolver;
 
-  constructor(baseUrl: string, port: number, authorizedTokens: string[]) {
+  constructor(baseUrl: string, port: number) {
     this.baseUrl = baseUrl;
     this.port = port;
-    this.authorizedTokens = authorizedTokens;
     this.server = createServer(this.requestListener.bind(this));
     this.app = new Application({ contextState: 'alias', logErrors: false });
     this.router = new Router();
@@ -54,40 +59,62 @@ export class HttpServer {
     }
   }
 
+  public setAccessResolver(resolver: HttpAccessResolver) {
+    this.accessResolver = resolver;
+  }
+
   public addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler) {
     log.debug(`Route registered for ${path} - ${methods.join(',')}`);
     this.router.add(methods, path, handler);
   }
 
-  private async authorize(headers: Headers) {
-    const auth = headers.get('Authorization');
+  private async addContextToRequest(context: HttpContext, next: Next) {
+    const { incomingMessage } = (context.request.originalRequest as any).request as RequestExtras;
 
-    if (!auth) {
-      throw createHttpError(403, 'Missing correct authorization header');
+    (incomingMessage as any).context = context;
+
+    await next();
+  }
+
+  private async authorize(context: HttpContext, next: Next) {
+    if (!this.accessResolver) {
+      context.throw(500, 'No access resolver set');
     }
 
-    const [type, data] = auth.split(' ');
-    let token = '';
+    const cookie = await context.cookies.get(DEFAULT_COOKIE_NAME);
+    const auth = context.request.headers.get('Authorization');
 
-    if (type.toLowerCase() === 'bearer') {
-      token = data;
-    } else if (type.toLowerCase() === 'basic') {
-      token = new TextDecoder().decode(decodeBase64(data)).split(':')[1];
+    if (auth) {
+      const [type, data] = auth.split(' ');
+
+      if (type.toLowerCase() === 'bearer') {
+        context.assert(data, 403, 'Invalid authorization header');
+
+        context.state.access = await this.accessResolver(data);
+        await context.cookies.set(DEFAULT_COOKIE_NAME, context.state.access.sid);
+      } else if (type.toLowerCase() === 'basic') {
+        const [, password] = new TextDecoder().decode(decodeBase64(data)).split(':');
+        context.assert(data, 403, 'Invalid authorization header');
+
+        context.state.access = await this.accessResolver(password);
+      }
     }
 
-    if (!token || !this.authorizedTokens.includes(token)) {
-      throw createHttpError(403, 'Permission denied');
+    if (!context.state.access) {
+      context.state.access = await this.accessResolver(cookie);
     }
+
+    if (cookie !== context.state.access.sid) {
+      await context.cookies.set(DEFAULT_COOKIE_NAME, context.state.access.sid);
+    }
+
+    await next();
   }
 
   public async listen() {
-    const authMiddleware: Middleware = async (context, next) => {
-      await this.authorize(context.request.headers);
-      await next();
-    };
-
     this.app.use(oakCors());
-    this.app.use(authMiddleware);
+    this.app.use(this.addContextToRequest.bind(this));
+    this.app.use(this.authorize.bind(this));
     this.app.use(this.router.routes());
     this.app.use(this.router.allowedMethods());
 

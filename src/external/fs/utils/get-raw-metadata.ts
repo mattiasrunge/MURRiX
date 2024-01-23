@@ -1,7 +1,7 @@
 import { run } from '~/src/shared/run/mod.ts';
 import { JSONValue } from '~/src/shared/types.ts';
 
-export const getMetadata = async (filename: string) => {
+export const getRawMetadata = async (filename: string) => {
   const args = [
     '-n',
     '-j',

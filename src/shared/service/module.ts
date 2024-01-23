@@ -8,6 +8,6 @@ export abstract class Module {
   }
 
   public abstract setup(): Promise<void>;
-
+  public async init() {}
   public async destroy() {}
 }

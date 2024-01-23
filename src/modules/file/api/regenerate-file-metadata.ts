@@ -9,7 +9,7 @@ type I = {
   nodePath: NodePath;
 };
 
-type O = Record<string, string>;
+type O = NamedNodeData<FileAttrs>;
 
 export const regenerateFileMetadata = api<I, O>(
   async (service: ServiceIf, { access, nodePath }) => {
@@ -22,7 +22,21 @@ export const regenerateFileMetadata = api<I, O>(
     assert(node.attrs.fileId, 'No file id associated with this node');
 
     const area = service.getFs().getArea(node.attrs.area);
+    const meta = await area.getMetadata(node.attrs.fileId);
 
-    return await area.getMetadata(node.attrs.fileId);
+    // TODO: Fill out when, where and connect device
+
+    await nodeApi.update(service, {
+      access,
+      path: nodePath,
+      attrs: {
+        meta,
+      },
+    });
+
+    return await nodeApi.resolveOne(service, {
+      access,
+      path: nodePath,
+    }) as NamedNodeData<FileAttrs>;
   },
 );

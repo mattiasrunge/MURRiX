@@ -1,11 +1,12 @@
 import { assert } from 'std/assert/mod.ts';
 import { Disposable, Disposables } from '~/src/shared/disposables/mod.ts';
 import { log } from '~/src/shared/log/mod.ts';
+import { HttpMethod, HttpRouteHandler } from '~/src/shared/http-server/mod.ts';
+import { Session } from '~/src/shared/session/mod.ts';
 import { Glue } from './glue/mod.ts';
 import { WrappedFunction } from './api/mod.ts';
 import { ServiceConfig, ServiceIf } from './types.ts';
 import { Module } from './module.ts';
-import { HttpMethod, HttpRouteHandler } from '~/src/shared/http-server/mod.ts';
 
 type ModuleList = Record<string, any>;
 export class Service implements ServiceIf {
@@ -28,6 +29,8 @@ export class Service implements ServiceIf {
       log.info('=> SIGINT received, shutting down...');
       await this.destroy();
     });
+
+    glue.hp().setAccessResolver(this.accessResolver.bind(this));
   }
 
   static async create(config: ServiceConfig, modules: ModuleList) {
@@ -35,6 +38,7 @@ export class Service implements ServiceIf {
     log.info(`Starting ${config.name} service...`);
 
     const glue = await Glue.create(config);
+
     const service = new Service(config, glue);
     const loadedModules: Module[] = [];
 
@@ -43,14 +47,24 @@ export class Service implements ServiceIf {
 
       const module = new modules[name](service) as Module;
       loadedModules.push(module);
+      service.addDisposable(module);
     }
 
     for (const module of loadedModules) {
-      service.addDisposable(module);
       await module.setup();
     }
 
+    for (const module of loadedModules) {
+      await module.init();
+    }
+
     return service;
+  }
+
+  private async accessResolver(sid?: string) {
+    const session = await Session.create(this.glue.sm(), sid);
+
+    return await session.access();
   }
 
   public addDisposable(disposeFn: Disposable, ref?: any) {

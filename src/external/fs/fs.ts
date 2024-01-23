@@ -1,4 +1,6 @@
 import { assert } from 'std/assert/mod.ts';
+import { log } from '~/src/shared/log/mod.ts';
+import { run } from '~/src/shared/run/mod.ts';
 import { FSConfig } from './types.ts';
 import { FSArea } from './area.ts';
 
@@ -26,8 +28,8 @@ export class FS {
       }
     }
 
-    // TODO: check exiftool
-    // TODO: check file
+    log.info(`Found version ${(await run('exiftool', ['-ver'])).match(/(.*?)\n/)![1]} of exiftool`);
+    log.info(`Found version ${(await run('file', ['-v'])).match(/file-(.*?)\n/)![1]} of file`);
 
     return new FS(config, areas);
   }

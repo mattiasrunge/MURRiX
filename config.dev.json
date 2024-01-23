@@ -9,10 +9,26 @@
       }
     ]
   },
+  "hp": {
+    "baseUrl": "http://localhost:9090",
+    "port": 9090
+  },
+  "fs": {
+    "areas": [
+      {
+        "name": "archive",
+        "path": "/home/mattias/murrix/archive",
+        "hasUpload": true,
+        "hasRemoved": true
+      }
+    ]
+  },
   "mq": {},
+  "sm": {},
   "modules": [
     "node",
     "user",
-    "people"
+    "people",
+    "file"
   ]
 }

@@ -1,3 +1,1 @@
-export * as filefs from './methods/mod.ts';
-export * from './utils/mod.ts';
-export * from './types.ts';
+export * from './make-file.ts';

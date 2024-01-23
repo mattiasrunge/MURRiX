@@ -1,4 +1,4 @@
-import { HttpMethod, HttpRouteHandler, HttpServer } from '~/src/shared/http-server/mod.ts';
+import { HttpAccessResolver, HttpMethod, HttpRouteHandler, HttpServer } from '~/src/shared/http-server/mod.ts';
 import { log } from '~/src/shared/log/mod.ts';
 import { HPConfig } from './types.ts';
 
@@ -8,7 +8,7 @@ export class HP {
 
   private constructor(config: HPConfig) {
     this.config = config;
-    this.server = new HttpServer(config.baseUrl, config.port, []);
+    this.server = new HttpServer(config.baseUrl, config.port);
   }
 
   static async create(config: HPConfig) {
@@ -24,6 +24,10 @@ export class HP {
   public addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler) {
     this.server.addRoute(methods, path, handler);
     // TODO: Add to proxy
+  }
+
+  public setAccessResolver(resolver: HttpAccessResolver) {
+    this.server.setAccessResolver(resolver);
   }
 
   async destroy() {

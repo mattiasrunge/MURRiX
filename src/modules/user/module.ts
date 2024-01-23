@@ -8,4 +8,8 @@ export class ModuleUser extends Module {
     // Register events
     // Register shared memory
   }
+
+  async init() {
+    await api.init(this.service, {});
+  }
 }

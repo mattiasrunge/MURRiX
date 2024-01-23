@@ -1,8 +1,8 @@
+import { FSFileMeta } from '~/src/external/fs/mod.ts';
 import { NodeAttrs } from '~/src/modules/node/mod.ts';
-import { FileMeta } from '~/src/modules/file/filefs/mod.ts';
 
 export type FileAttrs = NodeAttrs & {
-  title: string;
+  name: string;
   description?: string | null;
   when?: any; // TODO:
   where?: any; // TODO
@@ -12,5 +12,5 @@ export type FileAttrs = NodeAttrs & {
   mimetype: string;
   size: number;
   sha256: string;
-  meta?: FileMeta;
+  meta: FSFileMeta;
 };
