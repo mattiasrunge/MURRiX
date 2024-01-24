@@ -2,15 +2,16 @@ import { UserId } from '~/src/shared/mode/types.ts';
 import { Access } from '~/src/shared/access/mod.ts';
 import { JSONValue } from '~/src/shared/types.ts';
 
-export type FSAreaConfig = {
-  name: string;
+export type FSConfig = {
   path: string;
-  hasUpload?: boolean;
-  hasRemoved?: boolean;
+  maxIdIterations?: number;
+  uploadExpireMs?: number;
+  uploadCleanupMs?: number;
 };
 
-export type FSConfig = {
-  areas: FSAreaConfig[];
+export type FSAreaOptions = {
+  hasRemoved?: boolean;
+  hasUpload?: boolean;
   maxIdIterations?: number;
   uploadExpireMs?: number;
   uploadCleanupMs?: number;

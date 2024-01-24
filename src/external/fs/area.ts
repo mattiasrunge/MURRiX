@@ -7,7 +7,7 @@ import { log } from '~/src/shared/log/mod.ts';
 import { FSVerifyResult } from '~/src/external/fs/mod.ts';
 import { Access } from '~/src/shared/access/mod.ts';
 import { getContextFromIncomingMessage, HttpContext } from '~/src/shared/http-server/mod.ts';
-import { FSAreaConfig, FSFileInfo, FSOnCommit, FSUploadMeta } from './types.ts';
+import { FSAreaOptions, FSFileInfo, FSOnCommit, FSUploadMeta } from './types.ts';
 import { getFileMetadata, getMimetype, getRawMetadata, getSha256 } from './utils/mod.ts';
 
 const DEFAULT_MAX_ID_ITERATIONS = 10000;
@@ -15,27 +15,23 @@ const DEFAULT_UPLOAD_EXPIRE_MS = 1000 * 60 * 60 * 24; // 24 hours
 const DEFAULT_UPLOAD_CLEANUP_MS = 1000 * 60 * 60 * 12; // 12 hours
 type Section = 'upload' | 'storage' | 'removed';
 
-export type FSAreaOptions = {
-  maxIdIterations?: number;
-  uploadExpireMs?: number;
-  uploadCleanupMs?: number;
-};
-
 export class FSArea {
   public readonly name: string;
   public readonly uploadPath?: string;
   public readonly storagePath: string;
   public readonly removedPath?: string;
+  private readonly path: string;
   private opts?: FSAreaOptions;
   private uploadServer?: Server;
   private uploadCleanupId = 0;
   private onCommit?: FSOnCommit;
 
-  private constructor(config: FSAreaConfig, opts?: FSAreaOptions) {
-    this.name = config.name;
-    this.uploadPath = config.hasUpload ? join(config.path, 'upload') : undefined;
-    this.storagePath = join(config.path, 'storage');
-    this.removedPath = config.hasRemoved ? join(config.path, 'removed') : undefined;
+  private constructor(name: string, path: string, opts: FSAreaOptions) {
+    this.name = name;
+    this.path = path;
+    this.uploadPath = opts.hasUpload ? join(path, 'upload') : undefined;
+    this.storagePath = join(path, 'storage');
+    this.removedPath = opts.hasRemoved ? join(path, 'removed') : undefined;
     this.opts = opts;
 
     if (this.uploadPath) {
@@ -94,8 +90,8 @@ export class FSArea {
     }
   }
 
-  static async create(config: FSAreaConfig, opts?: FSAreaOptions) {
-    const area = new FSArea(config, opts);
+  static async create(name: string, path: string, opts: FSAreaOptions) {
+    const area = new FSArea(name, path, opts);
 
     area.uploadPath && await Deno.mkdir(area.uploadPath, { recursive: true });
     area.storagePath && await Deno.mkdir(area.storagePath, { recursive: true });

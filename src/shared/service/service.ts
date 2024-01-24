@@ -7,6 +7,7 @@ import { Glue } from './glue/mod.ts';
 import { WrappedFunction } from './api/mod.ts';
 import { ServiceConfig, ServiceIf } from './types.ts';
 import { Module } from './module.ts';
+import { FSAreaOptions } from '~/src/external/fs/mod.ts';
 
 type ModuleList = Record<string, any>;
 export class Service implements ServiceIf {
@@ -93,6 +94,14 @@ export class Service implements ServiceIf {
     this.glue.hp().addRoute(methods, path, handler);
   }
 
+  async ensureFSArea(name: string, opts: FSAreaOptions) {
+    return this.glue.fs().ensureArea(name, opts);
+  }
+
+  getFSArea(name: string) {
+    return this.glue.fs().getArea(name);
+  }
+
   async eventEmit() {}
   async eventSubscribe() {}
   async eventUnsubscribe() {}
@@ -101,13 +110,8 @@ export class Service implements ServiceIf {
   async cacheGet() {}
   async cacheRemove() {}
 
-  async getFS() {}
   async exposeFS() {}
   async importFS() {}
-
-  getFs() {
-    return this.glue.fs();
-  }
 
   getDb() {
     return this.glue.db();

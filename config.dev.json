@@ -14,14 +14,7 @@
     "port": 9090
   },
   "fs": {
-    "areas": [
-      {
-        "name": "archive",
-        "path": "/home/mattias/murrix/archive",
-        "hasUpload": true,
-        "hasRemoved": true
-      }
-    ]
+    "path": "/home/mattias/murrix"
   },
   "mq": {},
   "sm": {},
