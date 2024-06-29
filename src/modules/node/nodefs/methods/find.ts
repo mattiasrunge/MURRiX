@@ -1,4 +1,4 @@
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { JSONValue } from '~/src/shared/types.ts';
 import { Access } from '~/src/shared/access/mod.ts';
 import { NodeData } from '../types.ts';

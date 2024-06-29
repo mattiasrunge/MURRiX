@@ -1,4 +1,4 @@
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { NodeData, NodeId, PersistOps } from '../types.ts';
 
 /**

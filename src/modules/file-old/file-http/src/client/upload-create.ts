@@ -1,5 +1,5 @@
-import { encodeBase64 } from 'std/encoding/base64.ts';
-import { basename } from 'std/path/mod.ts';
+import { encodeBase64 } from '@std/encoding';
+import { basename } from '@std/path';
 
 export const uploadCreate = async (token: string, baseUrl: string, filename: string, size?: number) => {
   const stat = size ? { size } : await Deno.stat(filename);

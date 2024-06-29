@@ -1,7 +1,8 @@
-import { assert } from 'std/assert/mod.ts';
-import { basename, dirname, join } from 'std/path/mod.ts';
+import { assert } from '@std/assert';
+import { basename, dirname, join } from '@std/path';
 import { IncomingMessage, ServerResponse } from 'node:http';
-import { Server, Upload } from '@tus/server';
+import { Server } from '@tus/server';
+import { Upload } from '@tus/utils';
 import { FileStore } from '@tus/file-store';
 import { log } from '~/src/shared/log/mod.ts';
 import { FSVerifyResult } from '~/src/external/fs/mod.ts';
@@ -110,6 +111,8 @@ export class FSArea {
     if (context.request.method === 'HEAD') {
       context.response.status = 200;
       context.response.headers.set('Content-Length', `${info.size}`);
+    } else if (context.request.headers.get('If-None-Match') === info.sha256) {
+      context.response.status = 304;
     } else {
       const path = await this.getPath(filename);
       await context.send({
@@ -122,7 +125,7 @@ export class FSArea {
     context.response.headers.set('Last-Modified', new Date(info.createdAt).toUTCString());
     context.response.headers.set('Content-Type', info.mimetype);
     context.response.headers.set('Content-Disposition', `filename=${encodeURIComponent(info.filename)}`);
-    context.response.headers.set('Checksum', `sha256=${info.sha256}`);
+    context.response.headers.set('Etag', info.sha256);
   }
 
   setOnCommit(handler: FSOnCommit) {

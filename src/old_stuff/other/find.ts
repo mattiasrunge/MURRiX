@@ -1,4 +1,4 @@
-import { join } from 'std/path/mod.ts';
+import { join } from '@std/path';
 import { Access, NamedNodeData, NodePath } from '~/lib/nodefs/mod.ts';
 import { API, wrap } from '~/lib/api/mod.ts';
 

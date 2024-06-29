@@ -1,4 +1,4 @@
-import { basename } from 'std/path/mod.ts';
+import { basename } from '@std/path';
 import yargs from 'yargs/deno.ts';
 import { Arguments } from 'yargs/deno-types.ts';
 import { YargsInstance } from 'yargs/build/lib/yargs-factory.js';

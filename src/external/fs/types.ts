@@ -77,7 +77,7 @@ export type FSFileMetaLocation = {
   area?: string;
 };
 
-export type FSFileMetaDataTime = {
+export type FSFileMetaDatetime = {
   year?: string;
   month?: string;
   day?: string;
@@ -100,6 +100,6 @@ export type FSFileMeta = {
   file: FSFileMetaFile;
   isRaw: boolean;
   location: FSFileMetaLocation;
-  datetime: Record<string, FSFileMetaDataTime>;
+  datetime: Record<string, FSFileMetaDatetime>;
   layout: FSFileMetaLayout;
 };

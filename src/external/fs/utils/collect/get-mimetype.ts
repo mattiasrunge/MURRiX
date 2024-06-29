@@ -1,33 +1,15 @@
-import { run } from '~/src/shared/run/mod.ts';
 import { log } from '~/src/shared/log/mod.ts';
+import { getMimetypeFromExiftool } from './get-mimetype-from-exiftool.ts';
+import { getMimetypeFromFile } from './get-mimetype-from-file.ts';
 
 const DEFAULT_MIMETYPE = 'application/octet-stream';
 
-const getMimetypeFromExiftool = async (filename: string) => {
-  const args = [
-    '-s3',
-    '-MIMEType',
-    '-api',
-    'LargeFileSupport=1',
-    filename,
-  ];
-
-  const stdout = await run('exiftool', args);
-  return stdout.replace(/\n/g, '');
-};
-
-const getMimetypeFromFile = async (filename: string) => {
-  const args = [
-    '-b',
-    '-L',
-    '--mime-type',
-    filename,
-  ];
-
-  const stdout = await run('file', args);
-  return stdout.replace(/\n/g, '');
-};
-
+/**
+ * Retrieves the mimetype of a file.
+ *
+ * @param filename - The name of the file.
+ * @returns The mimetype of the file.
+ */
 export const getMimetype = async (filename: string) => {
   const types = [
     DEFAULT_MIMETYPE,

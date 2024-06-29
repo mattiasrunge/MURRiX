@@ -1,4 +1,4 @@
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { Access } from '~/src/shared/access/mod.ts';
 import { NodeData, NodeId } from '../types.ts';
 import { assertAccessRecursive } from './assert-access-recursive.ts';

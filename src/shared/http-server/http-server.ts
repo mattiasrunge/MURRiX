@@ -1,6 +1,6 @@
-import { decodeBase64 } from 'std/encoding/base64.ts';
+import { decodeBase64 } from '@std/encoding';
 import { createServer, IncomingMessage, Server, ServerResponse } from 'node:http';
-import { Application, isHttpError, Next, Router } from 'oak';
+import { Application, isHttpError, Next, Router } from '@oak/oak';
 import { oakCors } from 'oakCors';
 import { log } from '~/src/shared/log/mod.ts';
 import { getRequest, setResponse } from './request-transform.ts';

@@ -1,4 +1,4 @@
-import { assert } from 'std/assert/mod.ts';
+import { assert } from '@std/assert';
 import { connect, Redis } from 'redis';
 import { JSONValue } from '~/src/shared/types.ts';
 import { SMConfig } from './types.ts';

@@ -1,4 +1,4 @@
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { Access, AccessLevel } from '~/src/shared/access/mod.ts';
 import { NodeData, NodePath } from '../types.ts';
 import { verifyAccess } from '../utils/mod.ts';

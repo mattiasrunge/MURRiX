@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from 'std/testing/asserts.ts';
+import { assertEquals, assertRejects } from '@std/testing/asserts.ts';
 import { JSONValue } from '~/lib/types.ts';
 import { Service } from '~/lib/service/service.ts';
 import { MQ } from '../mq.ts';

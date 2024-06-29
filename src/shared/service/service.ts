@@ -1,4 +1,4 @@
-import { assert } from 'std/assert/mod.ts';
+import { assert } from '@std/assert';
 import { Disposable, Disposables } from '~/src/shared/disposables/mod.ts';
 import { log } from '~/src/shared/log/mod.ts';
 import { HttpMethod, HttpRouteHandler } from '~/src/shared/http-server/mod.ts';
@@ -91,7 +91,7 @@ export class Service implements ServiceIf {
   }
 
   async addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler) {
-    this.glue.hp().addRoute(methods, path, handler);
+    await this.glue.hp().addRoute(methods, path, handler);
   }
 
   async ensureFSArea(name: string, opts: FSAreaOptions) {

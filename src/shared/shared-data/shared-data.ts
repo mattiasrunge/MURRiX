@@ -1,4 +1,4 @@
-import { assert } from 'std/assert/mod.ts';
+import { assert } from '@std/assert';
 import { JSONValue } from '~/src/shared/types.ts';
 import { SM } from '~/src/external/sm/mod.ts';
 

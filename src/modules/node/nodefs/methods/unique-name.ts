@@ -1,5 +1,5 @@
-import { assert } from 'std/assert/mod.ts';
-import { Collection } from 'mongo';
+import { assert } from '@std/assert';
+import { Collection } from '@db/mongo';
 import { Access } from '~/src/shared/access/mod.ts';
 import { NodeData, NodePath } from '../types.ts';
 import { resolveOne } from './resolve-one.ts';

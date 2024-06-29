@@ -1,4 +1,4 @@
-import { Database, Document, MongoClient } from 'mongo';
+import { Database, Document, MongoClient } from '@db/mongo';
 import { DBConfig } from './types.ts';
 
 export class DB {

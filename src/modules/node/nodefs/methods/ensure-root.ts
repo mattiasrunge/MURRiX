@@ -1,4 +1,4 @@
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { NodeData } from '../types.ts';
 import { ADMIN_ACCESS } from '~/src/shared/access/mod.ts';
 import { resolveOne } from './resolve-one.ts';

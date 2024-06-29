@@ -1,6 +1,6 @@
+import { assert } from '@std/assert';
 import { JSONValue } from '~/src/shared/types.ts';
 import { ServiceIf } from '../types.ts';
-import { assert } from 'std/assert/mod.ts';
 
 type WrappableFunction<IN, OUT> = (service: ServiceIf, args: IN) => Promise<OUT>;
 type LoadFunction = (service: ServiceIf) => Promise<() => Promise<void>>;

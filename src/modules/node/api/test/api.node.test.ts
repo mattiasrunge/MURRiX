@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertRejects } from 'std/testing/asserts.ts';
+import { assert, assertEquals, assertRejects } from '@std/testing/asserts.ts';
 import { AccessLevel, ADMIN_ACCESS, ADMIN_UID, DEFAULT_UMASK, NamedNodeData, utils } from '~/blocks/nodefs/mod.ts';
 import { GroupId, UserId } from '~/lib/mode/mod.ts';
 import { API } from '~/blocks/api/mod.ts';

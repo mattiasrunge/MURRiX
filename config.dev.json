@@ -10,8 +10,9 @@
     ]
   },
   "hp": {
-    "baseUrl": "http://localhost:9090",
-    "port": 9090
+    "baseUrl": "http://localhost:9898",
+    "port": 9090,
+    "nginxHarnessUrl": "http://localhost:9898"
   },
   "fs": {
     "path": "/home/mattias/murrix"
@@ -22,6 +23,7 @@
     "node",
     "user",
     "people",
-    "file"
+    "file",
+    "ui"
   ]
 }

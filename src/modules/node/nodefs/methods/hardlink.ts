@@ -1,6 +1,6 @@
-import { basename, dirname } from 'std/path/mod.ts';
-import { assert } from 'std/assert/mod.ts';
-import { Collection } from 'mongo';
+import { basename, dirname } from '@std/path';
+import { assert } from '@std/assert';
+import { Collection } from '@db/mongo';
 import { Access } from '~/src/shared/access/mod.ts';
 import { NodeData, NodePath } from '../types.ts';
 import { assertName } from '../utils/mod.ts';

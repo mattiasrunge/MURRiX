@@ -1,4 +1,4 @@
-import { assert, assertArrayIncludes, assertEquals, assertNotEquals, assertRejects } from 'std/testing/asserts.ts';
+import { assert, assertArrayIncludes, assertEquals, assertNotEquals, assertRejects } from '@std/testing/asserts.ts';
 import { Service } from '~/lib/service/service.ts';
 import { AppNodeFS } from '~/app/nodefs/app-nodefs.ts';
 import { AppVault } from '~/app/vault/app-vault.ts';

@@ -1,4 +1,4 @@
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { Access, DEFAULT_UMASK } from '~/src/shared/access/mod.ts';
 import { NodeAttrs, NodeData, NodeProps, PartialNodeProps } from '../types.ts';
 

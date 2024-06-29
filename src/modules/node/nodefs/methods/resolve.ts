@@ -1,6 +1,6 @@
-import { assert } from 'std/assert/mod.ts';
-import { basename, dirname, join, normalize } from 'std/path/mod.ts';
-import { Collection } from 'mongo';
+import { assert } from '@std/assert';
+import { basename, dirname, join, normalize } from '@std/path';
+import { Collection } from '@db/mongo';
 import { Access } from '~/src/shared/access/mod.ts';
 import { NamedNodeData, NodeData, NodePath, NodeResolveOptions } from '../types.ts';
 import { resolveOne } from './resolve-one.ts';

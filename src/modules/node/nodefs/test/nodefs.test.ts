@@ -1,5 +1,5 @@
-import { assert, assertArrayIncludes, assertEquals, assertNotEquals, assertRejects } from 'std/assert/mod.ts';
-import { Collection } from 'mongo';
+import { assert, assertArrayIncludes, assertEquals, assertNotEquals, assertRejects } from '@std/assert';
+import { Collection } from '@db/mongo';
 import { DB, DBConfig } from '~/src/external/db/mod.ts';
 import { ADMIN_ACCESS, ADMIN_GID, ADMIN_UID, DEFAULT_UMASK } from '~/src/shared/access/constants.ts';
 import { NodeData } from '../mod.ts';

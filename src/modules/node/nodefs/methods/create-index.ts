@@ -1,4 +1,4 @@
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { NodeData } from '../types.ts';
 
 export const createIndex = async (col: Collection<NodeData>) => {

@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from 'std/assert/mod.ts';
+import { assertEquals, assertRejects } from '@std/assert';
 import { DB, DBConfig } from '~/src/external/db/mod.ts';
 import { Password } from '../types.ts';
 import { setPassword } from '../methods/set-password.ts';

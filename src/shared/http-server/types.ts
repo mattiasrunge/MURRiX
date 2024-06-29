@@ -1,4 +1,4 @@
-import { Context, HTTPMethods, RouterMiddleware } from 'oak';
+import { Context, HTTPMethods, RouterMiddleware } from '@oak/oak';
 import { Access } from '~/src/shared/access/mod.ts';
 
 export type HttpMethod = HTTPMethods;

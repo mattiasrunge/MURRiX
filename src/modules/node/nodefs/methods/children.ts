@@ -1,4 +1,4 @@
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { Access } from '~/src/shared/access/mod.ts';
 import { NamedNodeData, NodeData, NodeId, NodeResolveOptions } from '../types.ts';
 import { findOne } from './find-one.ts';

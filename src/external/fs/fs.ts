@@ -1,5 +1,5 @@
-import { join } from 'std/path/join.ts';
-import { assert } from 'std/assert/mod.ts';
+import { join } from '@std/path';
+import { assert } from '@std/assert';
 import { log } from '~/src/shared/log/mod.ts';
 import { run } from '~/src/shared/run/mod.ts';
 import { FSAreaOptions, FSConfig } from './types.ts';

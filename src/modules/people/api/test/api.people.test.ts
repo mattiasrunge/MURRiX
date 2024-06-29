@@ -1,4 +1,4 @@
-import { assert, assertArrayIncludes, assertEquals } from 'std/testing/asserts.ts';
+import { assert, assertArrayIncludes, assertEquals } from '@std/testing/asserts.ts';
 import { ADMIN_ACCESS, ADMIN_UID, CUSTODIANS_GID, getMode, MaskACL, USERS_GID, utils } from '~/blocks/nodefs/mod.ts';
 import { Service } from '~/lib/service/service.ts';
 import { AppNodeFS } from '~/app/nodefs/app-nodefs.ts';

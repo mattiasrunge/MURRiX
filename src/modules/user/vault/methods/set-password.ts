@@ -1,5 +1,5 @@
 import * as scrypt from 'scrypt';
-import { Collection } from 'mongo';
+import { Collection } from '@db/mongo';
 import { Password } from '../types.ts';
 
 /**

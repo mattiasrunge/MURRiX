@@ -21,9 +21,28 @@ export class HP {
     return hp;
   }
 
-  public addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler) {
+  public async addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler) {
     this.server.addRoute(methods, path, handler);
-    // TODO: Add to proxy
+
+    let basePath = path.split(':')[0];
+    if (basePath !== '/' && basePath.endsWith('/')) {
+      basePath = basePath.slice(0, -1);
+    }
+
+    const resp = await fetch(`${this.config.nginxHarnessUrl}/_route`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        path: basePath,
+        target: `http://localhost:${this.config.port}${basePath}`,
+      }),
+    });
+
+    if (!resp.ok) {
+      throw new Error(`Failed to add route: ${resp.statusText}`);
+    }
   }
 
   public setAccessResolver(resolver: HttpAccessResolver) {

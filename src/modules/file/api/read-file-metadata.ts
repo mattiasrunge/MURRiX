@@ -1,4 +1,4 @@
-import { assert } from 'std/assert/mod.ts';
+import { assert } from '@std/assert';
 import { api, ServiceIf } from '~/src/shared/service/mod.ts';
 import { NamedNodeData, nodeApi, NodePath } from '~/src/modules/node/mod.ts';
 import { Access } from '~/src/shared/access/mod.ts';
