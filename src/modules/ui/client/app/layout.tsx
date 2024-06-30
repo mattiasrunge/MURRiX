@@ -8,7 +8,11 @@ type Props = {
 export default function Layout({ children, path }: Props) {
   return (
     <div>
-      <span>Layout:{path}</span>
+      <span>
+        <strong>Layout:</strong>
+        <br />
+        {path}
+      </span>
       {children}
     </div>
   );

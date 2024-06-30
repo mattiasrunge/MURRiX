@@ -1,14 +1,16 @@
 import { resolve } from '@std/path';
-import { build, stop } from 'esbuild';
+import { build, context, stop } from 'esbuild';
 import { denoPlugins } from 'esbuild-deno-loader';
 import anyFilePlugin from 'esbuild-plugin-any-file';
 import gzipPlugin from 'esbuild-plugin-gzip';
-import { BundleOptions } from './types.ts';
+import { BuildOptions } from '../types.ts';
 
-export const bundle = async (opts: BundleOptions, appFile: string) => {
-  console.log('Building...');
+export const bundleApp = async (opts: BuildOptions, appFile: string) => {
+  if (opts.dev) {
+    console.log(`[watch] build started`);
+  }
 
-  await build({
+  const options = {
     logLevel: 'info',
     plugins: [
       ...denoPlugins({
@@ -41,7 +43,15 @@ export const bundle = async (opts: BundleOptions, appFile: string) => {
     sourcemap: !opts.dev,
     treeShaking: !opts.dev,
     jsx: 'automatic',
-  });
+  };
 
-  await stop();
+  if (opts.dev) {
+    const ctx = await context(options);
+
+    await ctx.watch();
+  } else {
+    await build(options);
+
+    await stop();
+  }
 };

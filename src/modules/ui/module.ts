@@ -24,7 +24,13 @@ export class ModuleUi extends Module {
         }
 
         if (!(await exists(absPath))) {
-          safePath = 'index.html';
+          const publicSafePath = join('public', safePath);
+
+          if (await exists(resolve(root, publicSafePath))) {
+            safePath = publicSafePath;
+          } else {
+            safePath = 'index.html';
+          }
         }
 
         await context.send({

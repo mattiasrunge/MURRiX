@@ -1,27 +1,33 @@
-import { BundleOptions } from './types.ts';
-import { copyAssets } from './copy-assets.ts';
-import { bundle } from './bundle.ts';
-import { createApp } from './create-app.ts';
+import { BuildOptions } from './types.ts';
+import { copyAssets } from './lib/copy-assets.ts';
+import { bundleApp } from './lib/bundle-app.ts';
+import { createApp } from './lib/create-app.ts';
 
-export const build = async (opts: BundleOptions) => {
+// TODO: Decide how to handle compression.
+// Right now only things that are passed through
+// esbuild will have compressed versions.
+// So we might do this as a step after esbuild.
+// But currently there are no brotli APIs availabe
+// in Deno that can be used and resorting to
+// command line tools will introduce more dependencies.
+
+/**
+ * Builds the client application.
+ *
+ * @param opts - The build options.
+ */
+export const build = async (opts: BuildOptions) => {
   await Deno.mkdir(opts.distDir, { recursive: true });
-  const tmpdir = await Deno.makeTempDir();
 
-  try {
-    const appFile = await createApp(opts, tmpdir);
+  const appFile = await createApp(opts);
 
-    console.log('');
+  // console.log('');
 
-    await copyAssets(opts);
+  await copyAssets(opts);
 
-    console.log('');
+  // console.log('');
 
-    await bundle(opts, appFile);
-  } catch (err) {
-    throw err;
-  } finally {
-    await Deno.remove(tmpdir, { recursive: true });
-  }
+  await bundleApp(opts, appFile);
 
-  console.log('\nAll done!');
+  // console.log('\nAll done!');
 };

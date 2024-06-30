@@ -2793,10 +2793,10 @@ var require_react_jsx_runtime_development = __commonJS({
             return jsxWithValidation(type, props, key, false);
           }
         }
-        var jsx8 = jsxWithValidationDynamic;
+        var jsx10 = jsxWithValidationDynamic;
         var jsxs6 = jsxWithValidationStatic;
         exports.Fragment = REACT_FRAGMENT_TYPE;
-        exports.jsx = jsx8;
+        exports.jsx = jsx10;
         exports.jsxs = jsxs6;
       })();
     }
@@ -24440,8 +24440,8 @@ var require_client = __commonJS({
   }
 });
 
-// ../../../../../../../tmp/61bba59528503299/app.tsx
-var import_jsx_runtime9 = __toESM(require_jsx_runtime());
+// ../../../../../../../tmp/5de53d22da5bec6e/app.tsx
+var import_jsx_runtime10 = __toESM(require_jsx_runtime());
 
 // ../../../../../.cache/deno/deno_esbuild/@remix-run/router@1.17.0/node_modules/@remix-run/router/dist/router.js
 function _extends() {
@@ -30618,7 +30618,8 @@ var import_jsx_runtime = __toESM(require_jsx_runtime());
 function Layout({ children, path }) {
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-      "Layout:",
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "Layout:" }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
       path
     ] }),
     children
@@ -31448,53 +31449,63 @@ function Page3({}) {
   ] });
 }
 
-// client/app/branch1/page.tsx
+// client/app/branch1/test/page.tsx
 var import_jsx_runtime8 = __toESM(require_jsx_runtime());
 function Page4({}) {
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { children: "Branch1 page" });
+  return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { children: "Test page ABC" });
 }
 
-// ../../../../../../../tmp/61bba59528503299/app.tsx
+// client/app/branch1/page.tsx
+var import_jsx_runtime9 = __toESM(require_jsx_runtime());
+function Page5({}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { children: "Branch1 page" });
+}
+
+// ../../../../../../../tmp/5de53d22da5bec6e/app.tsx
 var import_react4 = __toESM(require_react());
 var import_client = __toESM(require_client());
 var routes = [];
 routes = [
   {
     path: "/",
-    element: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Layout, { path: "/", children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Outlet, {}) }),
+    element: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Layout, { path: "/", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Outlet, {}) }),
     children: [
       {
         path: "branch1",
-        element: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Layout2, { path: "branch1", children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Outlet, {}) }),
+        element: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Layout2, { path: "branch1", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Outlet, {}) }),
         children: [
           {
             path: "world",
-            element: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Page2, {}),
+            element: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Page2, {}),
             loader: Loader
           },
           {
             path: "hello",
-            element: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Page3, {})
+            element: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Page3, {})
+          },
+          {
+            path: "test",
+            element: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Page4, {})
           },
           {
             index: true,
-            element: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Page4, {})
+            element: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Page5, {})
           }
         ]
       },
       {
         index: true,
-        element: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Page, {})
+        element: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Page, {})
       }
     ],
-    errorElement: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(ErrorBoundary, {})
+    errorElement: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(ErrorBoundary, {})
   }
 ];
 var router = createBrowserRouter(routes);
 addEventListener("DOMContentLoaded", () => {
   const app = document.getElementById("app");
   (0, import_client.createRoot)(app).render(
-    /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(import_react4.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(RouterProvider2, { router }) })
+    /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_react4.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(RouterProvider2, { router }) })
   );
 });
 /*! Bundled license information:

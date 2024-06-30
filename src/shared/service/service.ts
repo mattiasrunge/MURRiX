@@ -31,6 +31,11 @@ export class Service implements ServiceIf {
       await this.destroy();
     });
 
+    Deno.addSignalListener('SIGTERM', async () => {
+      log.info('=> SIGTERM received, shutting down...');
+      await this.destroy();
+    });
+
     glue.hp().setAccessResolver(this.accessResolver.bind(this));
   }
 
