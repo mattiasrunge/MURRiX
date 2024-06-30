@@ -26,6 +26,8 @@ const generateIndex = async (opts: BuildOptions) => {
 export const createApp = async (opts: BuildOptions) => {
   if (opts.dev) {
     console.log(`[watch] create app started`);
+  } else {
+    console.log('Create app started...');
   }
 
   await generateIndex(opts);
@@ -54,6 +56,10 @@ export const createApp = async (opts: BuildOptions) => {
   // await command.output();
 
   // await Deno.copyFile(appFile, '__app.tsx');
+
+  if (!opts.dev) {
+    console.log('Create app finished!');
+  }
 
   return appFile;
 };

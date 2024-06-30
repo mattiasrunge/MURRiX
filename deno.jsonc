@@ -83,6 +83,7 @@
   },
   "tasks": {
     "test": "rm -rf coverage && deno test --trace-ops -A --coverage=coverage && deno coverage --lcov coverage --output=coverage/coverage.lcov && genhtml -o coverage/html coverage/coverage.lcov",
-    "dev": "deno run -A src/main.ts ./config.dev.json"
+    "dev": "deno run -A src/main.ts ./config.dev.json",
+    "bundle-ui": "deno run -A src/modules/ui/bundle.ts"
   }
 }

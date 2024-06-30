@@ -41,6 +41,27 @@ export class ModuleUi extends Module {
       },
     );
 
+    if (this.service.isDev()) {
+      const command = new Deno.Command(Deno.execPath(), {
+        args: [
+          'run',
+          '--allow-env',
+          '--allow-read',
+          '--allow-write',
+          '--allow-run',
+          '--allow-ffi',
+          join(myDir, 'bundle.ts'),
+          '--dev',
+        ],
+      });
+
+      const p = command.spawn();
+
+      this.service.addDisposable(async () => {
+        p.kill();
+      });
+    }
+
     // Register routes
     // Register events
     // Register shared memory

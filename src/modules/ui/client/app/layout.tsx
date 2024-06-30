@@ -9,6 +9,7 @@ export default function Layout({ children, path }: Props) {
   return (
     <div>
       <span>
+        <strong>ABC:</strong>
         <strong>Layout:</strong>
         <br />
         {path}

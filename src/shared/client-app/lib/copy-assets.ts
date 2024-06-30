@@ -13,7 +13,6 @@ const copyDir = async (src: string, dest: string) => {
     if (entry.isDirectory) {
       await copyDir(srcPath, destPath);
     } else if (entry.isFile) {
-      // console.log(`  ${entry.name}`);
       await Deno.copyFile(srcPath, destPath);
     }
   }
@@ -26,6 +25,8 @@ export const copyAssets = async (opts: BuildOptions) => {
   if (await exists(srcDir)) {
     if (opts.dev) {
       console.log(`[watch] copy assets started`);
+    } else {
+      console.log('Copy assets started...');
     }
 
     await copyDir(srcDir, dstDir);
@@ -40,6 +41,10 @@ export const copyAssets = async (opts: BuildOptions) => {
         await copyDir(srcDir, dstDir);
         console.log('[watch] copy assets finished');
       });
+    }
+
+    if (!opts.dev) {
+      console.log('Copy assets finished!');
     }
   }
 };

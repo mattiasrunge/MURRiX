@@ -5,6 +5,7 @@ import { DB, DBConfig } from '~/src/external/db/mod.ts';
 import { FS, FSArea, FSAreaOptions, FSConfig } from '~/src/external/fs/mod.ts';
 import { WrappedFunction } from './api/mod.ts';
 import { HttpMethod, HttpRouteHandler } from '~/src/shared/http-server/mod.ts';
+import { Disposable } from '~/src/shared/disposables/mod.ts';
 
 export type GlueConfig = {
   sm?: SMConfig;
@@ -16,6 +17,7 @@ export type GlueConfig = {
 
 export type ServiceConfig = GlueConfig & {
   name: string;
+  dev?: boolean;
   modules: string[];
 };
 
@@ -23,6 +25,7 @@ export interface ServiceIf {
   readonly name: string;
   readonly instanceId: string;
 
+  addDisposable(disposeFn: Disposable, ref?: any): void;
   registerApiFunctions(fns: WrappedFunction[]): Promise<void>;
   addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler): Promise<void>;
   ensureFSArea(name: string, opts: FSAreaOptions): Promise<FSArea>;
@@ -31,4 +34,6 @@ export interface ServiceIf {
   getMq(): MQ;
   getSm(): SM;
   getHp(): HP;
+
+  isDev(): boolean;
 }

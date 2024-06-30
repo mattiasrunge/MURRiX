@@ -18,6 +18,12 @@ export default function Page({}: Props) {
       >
         goto hello
       </Button>
+      <Button
+        variant='secondary'
+        to='./branch1/test'
+      >
+        goto test
+      </Button>
     </div>
   );
 }

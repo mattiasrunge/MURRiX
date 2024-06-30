@@ -24,9 +24,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../../../../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/cjs/react.development.js
+// ../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/cjs/react.development.js"(exports, module) {
+  "../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/cjs/react.development.js"(exports, module) {
     "use strict";
     if (true) {
       (function() {
@@ -1898,9 +1898,9 @@ var require_react_development = __commonJS({
   }
 });
 
-// ../../../../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/index.js
+// ../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/index.js
 var require_react = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/index.js"(exports, module) {
+  "../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/index.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -1910,9 +1910,9 @@ var require_react = __commonJS({
   }
 });
 
-// ../../../../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/cjs/react-jsx-runtime.development.js
+// ../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/cjs/react-jsx-runtime.development.js
 var require_react_jsx_runtime_development = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/cjs/react-jsx-runtime.development.js"(exports) {
+  "../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/cjs/react-jsx-runtime.development.js"(exports) {
     "use strict";
     if (true) {
       (function() {
@@ -2803,9 +2803,9 @@ var require_react_jsx_runtime_development = __commonJS({
   }
 });
 
-// ../../../../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/jsx-runtime.js
+// ../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/jsx-runtime.js"(exports, module) {
+  "../../.cache/deno/deno_esbuild/react@18.3.1/node_modules/react/jsx-runtime.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -2815,9 +2815,9 @@ var require_jsx_runtime = __commonJS({
   }
 });
 
-// ../../../../../.cache/deno/deno_esbuild/scheduler@0.23.2/node_modules/scheduler/cjs/scheduler.development.js
+// ../../.cache/deno/deno_esbuild/scheduler@0.23.2/node_modules/scheduler/cjs/scheduler.development.js
 var require_scheduler_development = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/scheduler@0.23.2/node_modules/scheduler/cjs/scheduler.development.js"(exports) {
+  "../../.cache/deno/deno_esbuild/scheduler@0.23.2/node_modules/scheduler/cjs/scheduler.development.js"(exports) {
     "use strict";
     if (true) {
       (function() {
@@ -3265,9 +3265,9 @@ var require_scheduler_development = __commonJS({
   }
 });
 
-// ../../../../../.cache/deno/deno_esbuild/scheduler@0.23.2/node_modules/scheduler/index.js
+// ../../.cache/deno/deno_esbuild/scheduler@0.23.2/node_modules/scheduler/index.js
 var require_scheduler = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/scheduler@0.23.2/node_modules/scheduler/index.js"(exports, module) {
+  "../../.cache/deno/deno_esbuild/scheduler@0.23.2/node_modules/scheduler/index.js"(exports, module) {
     "use strict";
     if (false) {
       module.exports = null;
@@ -3277,9 +3277,9 @@ var require_scheduler = __commonJS({
   }
 });
 
-// ../../../../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js
+// ../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js
 var require_react_dom_development = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js"(exports) {
+  "../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js"(exports) {
     "use strict";
     if (true) {
       (function() {
@@ -24383,9 +24383,9 @@ var require_react_dom_development = __commonJS({
   }
 });
 
-// ../../../../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/index.js
+// ../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/index.js
 var require_react_dom = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/index.js"(exports, module) {
+  "../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/index.js"(exports, module) {
     "use strict";
     function checkDCE() {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
@@ -24409,9 +24409,9 @@ var require_react_dom = __commonJS({
   }
 });
 
-// ../../../../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/client.js
+// ../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/client.js
 var require_client = __commonJS({
-  "../../../../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/client.js"(exports) {
+  "../../.cache/deno/deno_esbuild/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/client.js"(exports) {
     "use strict";
     var m = require_react_dom();
     if (false) {
@@ -24440,10 +24440,10 @@ var require_client = __commonJS({
   }
 });
 
-// ../../../../../../../tmp/5de53d22da5bec6e/app.tsx
+// ../../../../tmp/e830631d0bf73d46/app.tsx
 var import_jsx_runtime10 = __toESM(require_jsx_runtime());
 
-// ../../../../../.cache/deno/deno_esbuild/@remix-run/router@1.17.0/node_modules/@remix-run/router/dist/router.js
+// ../../.cache/deno/deno_esbuild/@remix-run/router@1.17.0/node_modules/@remix-run/router/dist/router.js
 function _extends() {
   _extends = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -28407,7 +28407,7 @@ function persistAppliedTransitions(_window, transitions) {
   }
 }
 
-// ../../../../../.cache/deno/deno_esbuild/react-router@6.24.0_react@18.3.1/node_modules/react-router/dist/index.js
+// ../../.cache/deno/deno_esbuild/react-router@6.24.0_react@18.3.1/node_modules/react-router/dist/index.js
 var React = __toESM(require_react());
 function _extends2() {
   _extends2 = Object.assign ? Object.assign.bind() : function(target) {
@@ -29472,7 +29472,7 @@ function createMemoryRouter(routes2, opts) {
   }).initialize();
 }
 
-// ../../../../../.cache/deno/deno_esbuild/react-router-dom@6.24.0_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/index.js
+// ../../.cache/deno/deno_esbuild/react-router-dom@6.24.0_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/react-router-dom/dist/index.js
 var React2 = __toESM(require_react());
 var ReactDOM = __toESM(require_react_dom());
 function _extends3() {
@@ -30613,11 +30613,12 @@ function useViewTransitionState(to, opts) {
   return matchPath(path.pathname, nextPath) != null || matchPath(path.pathname, currentPath) != null;
 }
 
-// client/app/layout.tsx
+// src/modules/ui/client/app/layout.tsx
 var import_jsx_runtime = __toESM(require_jsx_runtime());
 function Layout({ children, path }) {
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
     /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "ABC:" }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "Layout:" }),
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
       path
@@ -30626,7 +30627,7 @@ function Layout({ children, path }) {
   ] });
 }
 
-// client/app/error.tsx
+// src/modules/ui/client/app/error.tsx
 var import_jsx_runtime2 = __toESM(require_jsx_runtime());
 function ErrorBoundary() {
   const error = useRouteError();
@@ -30634,13 +30635,13 @@ function ErrorBoundary() {
   return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { children: "Dang!!!" });
 }
 
-// client/app/page.tsx
+// src/modules/ui/client/app/page.tsx
 var import_jsx_runtime4 = __toESM(require_jsx_runtime());
 
-// client/components/Button/Button.tsx
+// src/modules/ui/client/components/Button/Button.tsx
 var import_jsx_runtime3 = __toESM(require_jsx_runtime());
 
-// ../../../../../.cache/deno/npm/registry.npmjs.org/tslib/2.6.3/tslib.es6.mjs
+// ../../.cache/deno/npm/registry.npmjs.org/tslib/2.6.3/tslib.es6.mjs
 var extendStatics = function(d, b) {
   extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
     d2.__proto__ = b2;
@@ -31104,7 +31105,7 @@ var tslib_es6_default = {
   __disposeResources
 };
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-styles@6.0.0-alpha.26/node_modules/@patternfly/react-styles/dist/esm/index.js
+// ../../.cache/deno/deno_esbuild/@patternfly/react-styles@6.0.0-alpha.26/node_modules/@patternfly/react-styles/dist/esm/index.js
 function css(...args) {
   const classes = [];
   const hasOwn = {}.hasOwnProperty;
@@ -31128,7 +31129,7 @@ function css(...args) {
   return classes.join(" ");
 }
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/@patternfly/react-core/dist/esm/helpers/OUIA/ouia.js
+// ../../.cache/deno/deno_esbuild/@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/@patternfly/react-core/dist/esm/helpers/OUIA/ouia.js
 var import_react2 = __toESM(require_react());
 var uid = 0;
 var ouiaPrefix = "OUIA-Generated-";
@@ -31166,7 +31167,7 @@ function getDefaultOUIAId(componentType, variant) {
   }
 }
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-styles@6.0.0-alpha.26/node_modules/@patternfly/react-styles/css/components/Button/button.mjs
+// ../../.cache/deno/deno_esbuild/@patternfly/react-styles@6.0.0-alpha.26/node_modules/@patternfly/react-styles/css/components/Button/button.mjs
 var button_default = {
   "badge": "pf-v6-c-badge",
   "button": "pf-v6-c-button",
@@ -31202,7 +31203,7 @@ var button_default = {
   "spinner": "pf-v6-c-spinner"
 };
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-styles@6.0.0-alpha.26/node_modules/@patternfly/react-styles/css/components/Spinner/spinner.mjs
+// ../../.cache/deno/deno_esbuild/@patternfly/react-styles@6.0.0-alpha.26/node_modules/@patternfly/react-styles/css/components/Spinner/spinner.mjs
 var spinner_default = {
   "modifiers": {
     "inline": "pf-m-inline",
@@ -31215,7 +31216,7 @@ var spinner_default = {
   "spinnerPath": "pf-v6-c-spinner__path"
 };
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-tokens@6.0.0-alpha.26/node_modules/@patternfly/react-tokens/dist/esm/c_spinner_diameter.js
+// ../../.cache/deno/deno_esbuild/@patternfly/react-tokens@6.0.0-alpha.26/node_modules/@patternfly/react-tokens/dist/esm/c_spinner_diameter.js
 var c_spinner_diameter = {
   "name": "--pf-v6-c-spinner--diameter",
   "value": "56px",
@@ -31223,7 +31224,7 @@ var c_spinner_diameter = {
 };
 var c_spinner_diameter_default = c_spinner_diameter;
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/@patternfly/react-core/dist/esm/components/Spinner/Spinner.js
+// ../../.cache/deno/deno_esbuild/@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/@patternfly/react-core/dist/esm/components/Spinner/Spinner.js
 var React3 = __toESM(require_react());
 var spinnerSize;
 (function(spinnerSize2) {
@@ -31251,7 +31252,7 @@ var Spinner = (_a) => {
 };
 Spinner.displayName = "Spinner";
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-styles@6.0.0-alpha.26/node_modules/@patternfly/react-styles/css/components/Badge/badge.mjs
+// ../../.cache/deno/deno_esbuild/@patternfly/react-styles@6.0.0-alpha.26/node_modules/@patternfly/react-styles/css/components/Badge/badge.mjs
 var badge_default = {
   "badge": "pf-v6-c-badge",
   "badgeToggleIcon": "pf-v6-c-badge__toggle-icon",
@@ -31262,7 +31263,7 @@ var badge_default = {
   }
 };
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/@patternfly/react-core/dist/esm/components/Badge/Badge.js
+// ../../.cache/deno/deno_esbuild/@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/@patternfly/react-core/dist/esm/components/Badge/Badge.js
 var React4 = __toESM(require_react());
 var Badge = (_a) => {
   var { isRead = false, isDisabled = false, className = "", children = "", screenReaderText } = _a, props = __rest(_a, ["isRead", "isDisabled", "className", "children", "screenReaderText"]);
@@ -31275,7 +31276,7 @@ var Badge = (_a) => {
 };
 Badge.displayName = "Badge";
 
-// ../../../../../.cache/deno/deno_esbuild/@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/@patternfly/react-core/dist/esm/components/Button/Button.js
+// ../../.cache/deno/deno_esbuild/@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1/node_modules/@patternfly/react-core/dist/esm/components/Button/Button.js
 var React5 = __toESM(require_react());
 var ButtonVariant;
 (function(ButtonVariant2) {
@@ -31347,7 +31348,7 @@ var ButtonBase = (_a) => {
 var Button = React5.forwardRef((props, ref) => React5.createElement(ButtonBase, Object.assign({ innerRef: ref }, props)));
 Button.displayName = "Button";
 
-// client/components/Button/Button.tsx
+// src/modules/ui/client/components/Button/Button.tsx
 function Button2(props) {
   return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
     Button,
@@ -31358,7 +31359,7 @@ function Button2(props) {
   );
 }
 
-// client/app/page.tsx
+// src/modules/ui/client/app/page.tsx
 function Page({}) {
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { children: [
     "App page",
@@ -31377,16 +31378,24 @@ function Page({}) {
         to: "./branch1/hello",
         children: "goto hello"
       }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      Button2,
+      {
+        variant: "secondary",
+        to: "./branch1/test",
+        children: "goto test"
+      }
     )
   ] });
 }
 
-// client/app/branch1/world/loader.tsx
+// src/modules/ui/client/app/branch1/world/loader.tsx
 function Loader({}) {
   return (/* @__PURE__ */ new Date()).toString();
 }
 
-// client/app/branch1/world/page.tsx
+// src/modules/ui/client/app/branch1/world/page.tsx
 var import_jsx_runtime5 = __toESM(require_jsx_runtime());
 function Page2({}) {
   const str = useLoaderData();
@@ -31413,7 +31422,7 @@ function Page2({}) {
   ] });
 }
 
-// client/app/branch1/layout.tsx
+// src/modules/ui/client/app/branch1/layout.tsx
 var import_jsx_runtime6 = __toESM(require_jsx_runtime());
 function Layout2({ children, path }) {
   return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { children: [
@@ -31425,7 +31434,7 @@ function Layout2({ children, path }) {
   ] });
 }
 
-// client/app/branch1/hello/page.tsx
+// src/modules/ui/client/app/branch1/hello/page.tsx
 var import_jsx_runtime7 = __toESM(require_jsx_runtime());
 function Page3({}) {
   return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { children: [
@@ -31449,19 +31458,19 @@ function Page3({}) {
   ] });
 }
 
-// client/app/branch1/test/page.tsx
+// src/modules/ui/client/app/branch1/test/page.tsx
 var import_jsx_runtime8 = __toESM(require_jsx_runtime());
 function Page4({}) {
   return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { children: "Test page ABC" });
 }
 
-// client/app/branch1/page.tsx
+// src/modules/ui/client/app/branch1/page.tsx
 var import_jsx_runtime9 = __toESM(require_jsx_runtime());
 function Page5({}) {
   return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", { children: "Branch1 page" });
 }
 
-// ../../../../../../../tmp/5de53d22da5bec6e/app.tsx
+// ../../../../tmp/e830631d0bf73d46/app.tsx
 var import_react4 = __toESM(require_react());
 var import_client = __toESM(require_client());
 var routes = [];

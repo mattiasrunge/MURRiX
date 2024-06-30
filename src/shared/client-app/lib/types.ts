@@ -8,4 +8,9 @@ export type Branch = {
   children: Branch[];
 };
 
+export type File = {
+  name: string;
+  size: number;
+};
+
 export type Watcher = (kind: string, path: string) => Promise<void>;

@@ -7,8 +7,6 @@ import 'file-selector';
 const workDir = await Deno.makeTempDir();
 const distDir = join(dirname(fromFileUrl(import.meta.url)), '.dist');
 
-await Deno.remove(distDir, { recursive: true });
-
 await build({
   srcDir: join(dirname(fromFileUrl(import.meta.url)), 'client'),
   distDir,
@@ -21,7 +19,7 @@ await build({
   imports: [
     '@patternfly/react-core/dist/styles/base.css',
   ],
-  dev: true,
+  dev: Deno.args.includes('--dev'),
 });
 
 Deno.addSignalListener('SIGINT', async () => {

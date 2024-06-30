@@ -73,10 +73,6 @@ export class Service implements ServiceIf {
     return await session.access();
   }
 
-  public addDisposable(disposeFn: Disposable, ref?: any) {
-    this.disposables.addDisposable(disposeFn, ref);
-  }
-
   async destroy() {
     try {
       await this.disposables.destroy();
@@ -86,6 +82,10 @@ export class Service implements ServiceIf {
   }
 
   // Service API
+
+  public addDisposable(disposeFn: Disposable, ref?: any) {
+    this.disposables.addDisposable(disposeFn, ref);
+  }
 
   async registerApiFunctions(fns: WrappedFunction[]) {
     for (const fn of fns) {
@@ -132,5 +132,9 @@ export class Service implements ServiceIf {
 
   getHp() {
     return this.glue.hp();
+  }
+
+  isDev() {
+    return !!this.config.dev;
   }
 }

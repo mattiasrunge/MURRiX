@@ -6,12 +6,8 @@ import gzipPlugin from 'esbuild-plugin-gzip';
 import { BuildOptions } from '../types.ts';
 
 export const bundleApp = async (opts: BuildOptions, appFile: string) => {
-  if (opts.dev) {
-    console.log(`[watch] build started`);
-  }
-
   const options = {
-    logLevel: 'info',
+    logLevel: opts.dev ? 'info' : undefined,
     plugins: [
       ...denoPlugins({
         configPath: resolve(opts.denoConfigPath),
@@ -46,12 +42,18 @@ export const bundleApp = async (opts: BuildOptions, appFile: string) => {
   };
 
   if (opts.dev) {
+    console.log(`[watch] build started`);
+
     const ctx = await context(options);
 
     await ctx.watch();
   } else {
+    console.log(`Build started...`);
+
     await build(options);
 
     await stop();
+
+    console.log(`Build finished!`);
   }
 };

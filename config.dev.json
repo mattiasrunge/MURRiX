@@ -1,5 +1,6 @@
 {
   "name": "core-dev",
+  "dev": true,
   "db": {
     "db": "murrix-dev",
     "servers": [
