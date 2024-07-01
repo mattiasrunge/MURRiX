@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Topbar } from '@ui/components';
 
 type Props = {
   children: ReactNode;
@@ -8,6 +9,7 @@ type Props = {
 export default function Layout({ children, path }: Props) {
   return (
     <div>
+      <Topbar />
       <span>
         <strong>ABC:</strong>
         <strong>Layout:</strong>

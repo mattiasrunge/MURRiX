@@ -3,11 +3,13 @@ import { build, context, stop } from 'esbuild';
 import { denoPlugins } from 'esbuild-deno-loader';
 import anyFilePlugin from 'esbuild-plugin-any-file';
 import gzipPlugin from 'esbuild-plugin-gzip';
-import { BuildOptions } from '../types.ts';
+import { InternalOptions } from '../types.ts';
+import { step } from '../lib/step.ts';
 
-export const bundleApp = async (opts: BuildOptions, appFile: string) => {
+export const stepBuild = async (opts: InternalOptions) => {
   const options = {
     logLevel: opts.dev ? 'info' : undefined,
+    color: false,
     plugins: [
       ...denoPlugins({
         configPath: resolve(opts.denoConfigPath),
@@ -19,7 +21,7 @@ export const bundleApp = async (opts: BuildOptions, appFile: string) => {
         brotli: !opts.dev,
       }),
     ],
-    entryPoints: [appFile],
+    entryPoints: [opts.appFile],
     outdir: opts.distDir,
     bundle: true,
     write: false,
@@ -33,27 +35,26 @@ export const bundleApp = async (opts: BuildOptions, appFile: string) => {
     },
     resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.css', '.woff2'],
     alias: opts.alias,
-    format: 'esm',
+    format: 'iife',
     target: 'chrome125',
     minify: !opts.dev,
     sourcemap: !opts.dev,
-    treeShaking: !opts.dev,
+    treeShaking: true,
     jsx: 'automatic',
   };
 
-  if (opts.dev) {
-    console.log(`[watch] build started`);
+  await step(opts, {
+    name: 'build',
+    fn: async () => {
+      if (opts.dev) {
+        const ctx = await context(options);
+        await ctx.watch();
+      } else {
+        await build(options);
+        await stop();
+      }
 
-    const ctx = await context(options);
-
-    await ctx.watch();
-  } else {
-    console.log(`Build started...`);
-
-    await build(options);
-
-    await stop();
-
-    console.log(`Build finished!`);
-  }
+      return [];
+    },
+  });
 };

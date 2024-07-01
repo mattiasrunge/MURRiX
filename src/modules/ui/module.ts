@@ -50,6 +50,7 @@ export class ModuleUi extends Module {
           '--allow-write',
           '--allow-run',
           '--allow-ffi',
+          '--allow-sys',
           join(myDir, 'bundle.ts'),
           '--dev',
         ],

@@ -1,6 +1,6 @@
 import { dirname, fromFileUrl, join } from '@std/path';
-import { BuildOptions } from '../types.ts';
-import { Branch } from './types.ts';
+import { Branch, InternalOptions } from '../types.ts';
+import { getBranch } from './get-branch.ts';
 
 const compileRoute = (branch: Branch): string => {
   let element = '<Outlet />';
@@ -41,8 +41,14 @@ const compileRoute = (branch: Branch): string => {
   }`;
 };
 
-export const compileAppTemplate = async (opts: BuildOptions, root: Branch, imports: Record<string, string>): Promise<string> => {
-  const template = await Deno.readTextFile(join(dirname(fromFileUrl(import.meta.url)), 'templates', 'app.tsx'));
+export const generateEntryPoint = async (opts: InternalOptions) => {
+  const templateFile = join(dirname(fromFileUrl(import.meta.url)), 'templates', 'app.tsx');
+  const appDir = join(opts.srcDir, 'app');
+  const watchFiles: string[] = [appDir];
+
+  const imports: Record<string, string> = {};
+  const root = await getBranch('/', appDir, appDir, imports);
+  const template = await Deno.readTextFile(templateFile);
 
   // Imports
   let importStr = '';
@@ -62,5 +68,9 @@ export const compileAppTemplate = async (opts: BuildOptions, root: Branch, impor
   ];
   `;
 
-  return template.replace('// IMPORTS', importStr).replace('// ROUTES', routesStr);
+  const content = template.replace('// IMPORTS', importStr).replace('// ROUTES', routesStr);
+
+  await Deno.writeTextFile(opts.appFile, content);
+
+  return watchFiles;
 };

@@ -1,0 +1,372 @@
+// deno-lint-ignore-file no-window no-window-prefix
+import React from 'react';
+import {
+  Avatar,
+  Button,
+  ButtonVariant,
+  Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  Masthead,
+  MastheadBrand,
+  MastheadContent,
+  MastheadMain,
+  Menu,
+  MenuContent,
+  MenuGroup,
+  MenuItem,
+  MenuList,
+  MenuSearchInput,
+  MenuToggle,
+  MenuToggleElement,
+  Popper,
+  SearchInput,
+  Toolbar,
+  ToolbarContent,
+  ToolbarGroup,
+  ToolbarItem,
+  Tooltip,
+} from '@patternfly/react-core';
+import { Link } from 'react-router-dom';
+import { BellIcon, CogIcon, HomeAltIcon, HomeIcon, QuestionCircleIcon, ThIcon } from '@patternfly/react-icons';
+import imgAvatar from '@patternfly/react-core/src/components/assets/avatarImg.svg';
+import pfIcon from '@patternfly/react-core/src/demos/assets/pf-logo-small.svg';
+import { DarkMode, NodeSearchInput } from '@ui/components';
+import { Search } from '~/src/modules/ui/client/components/Topbar/Search.tsx';
+
+export function Topbar() {
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [refFullOptions, setRefFullOptions] = React.useState<Element[]>();
+  const [favorites, setFavorites] = React.useState<string[]>([]);
+  const [filteredIds, setFilteredIds] = React.useState<string[]>(['*']);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  const toggleRef = React.useRef<HTMLButtonElement>(null);
+
+  const onDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const onDropdownSelect = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleMenuKeys = (event: KeyboardEvent) => {
+    if (!isOpen) {
+      return;
+    }
+    if (menuRef.current?.contains(event.target as Node) || toggleRef.current?.contains(event.target as Node)) {
+      if (event.key === 'Escape') {
+        setIsOpen(!isOpen);
+        toggleRef.current?.focus();
+      }
+    }
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (isOpen && !menuRef.current?.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  const onToggleClick = (ev: React.MouseEvent) => {
+    ev.stopPropagation(); // Stop handleClickOutside from handling
+    setTimeout(() => {
+      if (menuRef.current) {
+        const firstElement = menuRef.current.querySelector(
+          'li > button:not(:disabled), li > a:not(:disabled), input:not(:disabled)',
+        );
+        firstElement && (firstElement as HTMLElement).focus();
+        setRefFullOptions(Array.from(menuRef.current.querySelectorAll('li:not(li[role=separator])>*:first-child')));
+      }
+    }, 0);
+    setIsOpen(!isOpen);
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('keydown', handleMenuKeys);
+    window.addEventListener('click', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('keydown', handleMenuKeys);
+      window.removeEventListener('click', handleClickOutside);
+    };
+  }, [isOpen, menuRef]);
+
+  const toggle = (
+    <MenuToggle
+      aria-label='Toggle'
+      ref={toggleRef}
+      variant='plain'
+      onClick={onToggleClick}
+      isExpanded={isOpen}
+      style={{ width: 'auto' }}
+    >
+      <ThIcon />
+    </MenuToggle>
+  );
+
+  const menuItems = [
+    <MenuGroup key='group1' label='Group 1'>
+      <MenuList>
+        <MenuItem itemId='0' id='0' isFavorited={favorites.includes('0')}>
+          Application 1
+        </MenuItem>
+        <MenuItem
+          itemId='1'
+          id='1'
+          isFavorited={favorites.includes('1')}
+          to='#default-link2'
+          onClick={(ev: Event) => ev.preventDefault()}
+        >
+          Application 2
+        </MenuItem>
+      </MenuList>
+    </MenuGroup>,
+    <Divider key='group1-divider' />,
+    <MenuGroup key='group2' label='Group 2'>
+      <MenuList>
+        <MenuItem
+          itemId='2'
+          id='2'
+          isFavorited={favorites.includes('2')}
+          component={(props: any) => <Link {...props} to='#router-link' />}
+        >
+          @reach/router Link
+        </MenuItem>
+        <MenuItem
+          itemId='3'
+          id='3'
+          isFavorited={favorites.includes('3')}
+          isExternalLink
+          icon={<img src={pfIcon} />}
+          component={(props: any) => <Link {...props} to='#router-link2' />}
+        >
+          @reach/router Link with icon
+        </MenuItem>
+      </MenuList>
+    </MenuGroup>,
+    <Divider key='group2-divider' />,
+    <MenuList key='other-items'>
+      <MenuItem key='tooltip-app' isFavorited={favorites.includes('4')} itemId='4' id='4'>
+        <Tooltip content={<div>Launch Application 3</div>} position='right'>
+          <span>Application 3 with tooltip</span>
+        </Tooltip>
+      </MenuItem>
+      <MenuItem key='disabled-app' itemId='5' id='5' isDisabled>
+        Unavailable Application
+      </MenuItem>
+    </MenuList>,
+  ];
+
+  const createFavorites = (favIds: string[]) => {
+    const favorites: unknown[] = [];
+
+    menuItems.forEach((item) => {
+      if (item.type === MenuList) {
+        item.props.children.filter((child: any) => {
+          if (favIds.includes(child.props.itemId)) {
+            favorites.push(child);
+          }
+        });
+      } else if (item.type === MenuGroup) {
+        item.props.children.props.children.filter((child: any) => {
+          if (favIds.includes(child.props.itemId)) {
+            favorites.push(child);
+          }
+        });
+      } else {
+        if (favIds.includes(item.props.itemId)) {
+          favorites.push(item);
+        }
+      }
+    });
+
+    return favorites;
+  };
+
+  const filterItems = (items: any[], filteredIds: string[]) => {
+    if (filteredIds.length === 1 && filteredIds[0] === '*') {
+      return items;
+    }
+    let keepDivider = false;
+    const filteredCopy = items
+      .map((group) => {
+        if (group.type === MenuGroup) {
+          const filteredGroup = React.cloneElement(group, {
+            children: React.cloneElement(group.props.children, {
+              children: group.props.children.props.children.filter((child: any) => {
+                if (filteredIds.includes(child.props.itemId)) {
+                  return child;
+                }
+              }),
+            }),
+          });
+          const filteredList = filteredGroup.props.children;
+          if (filteredList.props.children.length > 0) {
+            keepDivider = true;
+            return filteredGroup;
+          } else {
+            keepDivider = false;
+          }
+        } else if (group.type === MenuList) {
+          const filteredGroup = React.cloneElement(group, {
+            children: group.props.children.filter((child: any) => {
+              if (filteredIds.includes(child.props.itemId)) {
+                return child;
+              }
+            }),
+          });
+          if (filteredGroup.props.children.length > 0) {
+            keepDivider = true;
+            return filteredGroup;
+          } else {
+            keepDivider = false;
+          }
+        } else {
+          if ((keepDivider && group.type === Divider) || filteredIds.includes(group.props.itemId)) {
+            return group;
+          }
+        }
+      })
+      .filter((newGroup) => newGroup);
+
+    if (filteredCopy.length > 0) {
+      const lastGroup = filteredCopy.pop();
+      if (lastGroup.type !== Divider) {
+        filteredCopy.push(lastGroup);
+      }
+    }
+
+    return filteredCopy;
+  };
+
+  const onTextChange = (textValue: string) => {
+    if (textValue === '') {
+      setFilteredIds(['*']);
+      return;
+    }
+
+    const filteredIds = refFullOptions
+      ?.filter((item: HTMLElement) => item.innerText.toLowerCase().includes(textValue.toString().toLowerCase()))
+      .map((item: HTMLElement) => item.id) || [];
+    setFilteredIds(filteredIds);
+  };
+
+  const onFavorite = (event: any, itemId: string, actionId: string) => {
+    event.stopPropagation();
+    if (actionId === 'fav') {
+      const isFavorite = favorites.includes(itemId);
+      if (isFavorite) {
+        setFavorites(favorites.filter((fav: any) => fav !== itemId));
+      } else {
+        setFavorites([...favorites, itemId]);
+      }
+    }
+  };
+
+  const filteredFavorites = filterItems(createFavorites(favorites), filteredIds);
+  const filteredItems = filterItems(menuItems, filteredIds);
+  if (filteredItems.length === 0) {
+    filteredItems.push(<MenuItem key='no-items'>No results found</MenuItem>);
+  }
+
+  const menu = (
+    // eslint-disable-next-line no-console
+    <Menu ref={menuRef} onActionClick={onFavorite} onSelect={(_ev: Event, itemId: string) => console.log('selected', itemId)}>
+      <MenuSearchInput>
+        <SearchInput aria-label='Filter menu items' onChange={(_event: Event, value: string) => onTextChange(value)} />
+      </MenuSearchInput>
+      <Divider />
+      <MenuContent>
+        {filteredFavorites.length > 0 && (
+          <React.Fragment>
+            <MenuGroup key='favorites-group' label='Favorites'>
+              <MenuList>{filteredFavorites}</MenuList>
+            </MenuGroup>
+            <Divider key='favorites-divider' />
+          </React.Fragment>
+        )}
+        {filteredItems}
+      </MenuContent>
+    </Menu>
+  );
+
+  const userDropdownItems = [
+    <>
+      <DropdownItem key='group 2 profile'>My profile</DropdownItem>
+      <DropdownItem key='group 2 user'>User management</DropdownItem>
+      <DropdownItem key='group 2 logout'>Logout</DropdownItem>
+    </>,
+  ];
+
+  const headerToolbar = (
+    <Toolbar id='toolbar' isStatic>
+      <ToolbarContent>
+        <ToolbarGroup
+          variant='icon-button-group'
+          align={{ default: 'alignStart' }}
+          gap={{ default: 'gapNone', md: 'gapMd' }}
+        >
+          <ToolbarItem>
+            <HomeIcon />
+          </ToolbarItem>
+        </ToolbarGroup>
+        <ToolbarGroup
+          variant='icon-button-group'
+          align={{ default: 'alignEnd' }}
+          gap={{ default: 'gapNone', md: 'gapMd' }}
+        >
+          <ToolbarItem>
+            <DarkMode />
+          </ToolbarItem>
+          <ToolbarItem>
+            <Button aria-label='Notifications' variant={ButtonVariant.plain} icon={<BellIcon />} />
+          </ToolbarItem>
+          <ToolbarGroup visibility={{ default: 'hidden', lg: 'visible' }}>
+            <ToolbarItem visibility={{ default: 'hidden', md: 'hidden', lg: 'visible' }}>
+              <Popper trigger={toggle} triggerRef={toggleRef} popper={menu} popperRef={menuRef} isVisible={isOpen} />
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button aria-label='Settings' variant={ButtonVariant.plain} icon={<CogIcon />} />
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button aria-label='Help' variant={ButtonVariant.plain} icon={<QuestionCircleIcon />} />
+            </ToolbarItem>
+            <ToolbarItem>
+              <Search />
+            </ToolbarItem>
+            <ToolbarItem visibility={{ default: 'hidden', md: 'visible' }}>
+              <Dropdown
+                isOpen={isDropdownOpen}
+                onSelect={onDropdownSelect}
+                onOpenChange={(isOpen: boolean) => setIsDropdownOpen(isOpen)}
+                popperProps={{ position: 'right' }}
+                toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                  <MenuToggle
+                    ref={toggleRef}
+                    onClick={onDropdownToggle}
+                    isExpanded={isDropdownOpen}
+                    // icon={<Avatar src={imgAvatar} size='sm' alt='' />}
+                  >
+                    Ned Username
+                  </MenuToggle>
+                )}
+              >
+                <DropdownList>{userDropdownItems}</DropdownList>
+              </Dropdown>
+            </ToolbarItem>
+          </ToolbarGroup>
+        </ToolbarGroup>
+      </ToolbarContent>
+    </Toolbar>
+  );
+
+  return (
+    <Masthead>
+      <MastheadContent>{headerToolbar}</MastheadContent>
+    </Masthead>
+  );
+}

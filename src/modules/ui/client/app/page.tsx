@@ -1,4 +1,4 @@
-import { Button } from '@ui/components';
+import { Button, NodeSearchInput } from '@ui/components';
 
 type Props = {};
 
@@ -6,6 +6,9 @@ export default function Page({}: Props) {
   return (
     <div>
       App page
+      <div>
+        <NodeSearchInput />
+      </div>
       <Button
         variant='primary'
         to='./branch1/world'

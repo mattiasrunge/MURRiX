@@ -47,8 +47,13 @@
       "npm:@chialab/esbuild-plugin-any-file@0.18.0": "npm:@chialab/esbuild-plugin-any-file@0.18.0",
       "npm:@luncheon/esbuild-plugin-gzip": "npm:@luncheon/esbuild-plugin-gzip@0.1.0_esbuild@0.20.2",
       "npm:@luncheon/esbuild-plugin-gzip@0.1.0": "npm:@luncheon/esbuild-plugin-gzip@0.1.0_esbuild@0.20.2",
+      "npm:@patternfly/react-core@6.0.0-alpha.73": "npm:@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1",
       "npm:@patternfly/react-core@alpha": "npm:@patternfly/react-core@6.0.0-alpha.73_react@18.3.1_react-dom@18.3.1__react@18.3.1",
+      "npm:@patternfly/react-icons@6.0.0-alpha.27": "npm:@patternfly/react-icons@6.0.0-alpha.27_react@18.3.1_react-dom@18.3.1__react@18.3.1",
+      "npm:@patternfly/react-icons@alpha": "npm:@patternfly/react-icons@6.0.0-alpha.27_react@18.3.1_react-dom@18.3.1__react@18.3.1",
       "npm:@patternfly/react-styles@alpha": "npm:@patternfly/react-styles@6.0.0-alpha.26",
+      "npm:@preact/signals-react@2.0.2": "npm:@preact/signals-react@2.0.2_react@18.3.1",
+      "npm:@preact/signals-react@^2.0.2": "npm:@preact/signals-react@2.0.2_react@18.3.1",
       "npm:@tus/file-store@1.2.0": "npm:@tus/file-store@1.2.0_@tus+server@1.6.0",
       "npm:@tus/server@1.6.0": "npm:@tus/server@1.6.0",
       "npm:@tus/utils@0.2.0": "npm:@tus/utils@0.2.0",
@@ -409,6 +414,18 @@
       "@patternfly/react-tokens@6.0.0-alpha.26": {
         "integrity": "sha512-GNTGyZg5FzjW/4G+idqKG5FOwJylngm0NASZG5F0deWGMNwQJ4A/5AIUsTZdYmE2rHmFeNP3kWxKW+wYkLE6og==",
         "dependencies": {}
+      },
+      "@preact/signals-core@1.6.1": {
+        "integrity": "sha512-KXEEmJoKDlo0Igju/cj9YvKIgyaWFDgnprShQjzimUd5VynAAdTWMshawEOjUVeKbsI0aR58V6WOQp+DNcKApw==",
+        "dependencies": {}
+      },
+      "@preact/signals-react@2.0.2_react@18.3.1": {
+        "integrity": "sha512-JcqkrRJtYmSlVy89DL65ruFEGv4rTreQWVE/fmGQ+FtN86TaYUcwIesE4lR6IkuX33ZpGjdoh8a+0auDePD5UA==",
+        "dependencies": {
+          "@preact/signals-core": "@preact/signals-core@1.6.1",
+          "react": "react@18.3.1",
+          "use-sync-external-store": "use-sync-external-store@1.2.2_react@18.3.1"
+        }
       },
       "@redis/client@1.5.16": {
         "integrity": "sha512-X1a3xQ5kEMvTib5fBrHKh6Y+pXbeKXqziYuxOUo1ojQNECg4M5Etd1qqyhMap+lFUOAh8S7UYevgJHOm4A+NOg==",
@@ -1322,6 +1339,12 @@
           "picocolors": "picocolors@1.0.1"
         }
       },
+      "use-sync-external-store@1.2.2_react@18.3.1": {
+        "integrity": "sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==",
+        "dependencies": {
+          "react": "react@18.3.1"
+        }
+      },
       "util-deprecate@1.0.2": {
         "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==",
         "dependencies": {}
@@ -1997,6 +2020,7 @@
       "npm:@patternfly/react-styles@alpha",
       "npm:@patternfly/react-table@alpha",
       "npm:@patternfly/react-tokens@alpha",
+      "npm:@preact/signals-react@^2.0.2",
       "npm:@tus/file-store@1.2.0",
       "npm:@tus/server@1.6.0",
       "npm:@tus/utils@0.2.0",

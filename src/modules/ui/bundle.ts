@@ -4,14 +4,15 @@ import { build } from '~/src/shared/client-app/mod.ts';
 import 'tslib';
 import 'file-selector';
 
+const myDir = dirname(fromFileUrl(import.meta.url));
 const workDir = await Deno.makeTempDir();
-const distDir = join(dirname(fromFileUrl(import.meta.url)), '.dist');
+const distDir = join(myDir, '.dist');
 
 await build({
-  srcDir: join(dirname(fromFileUrl(import.meta.url)), 'client'),
+  srcDir: join(myDir, 'client'),
   distDir,
   workDir,
-  denoConfigPath: join(dirname(fromFileUrl(import.meta.url)), '../../../deno.jsonc'),
+  denoConfigPath: join(myDir, '../../../deno.jsonc'),
   alias: {
     'tslib': new URL(import.meta.resolve('tslib')).pathname,
     'file-selector': new URL(import.meta.resolve('file-selector')).pathname,

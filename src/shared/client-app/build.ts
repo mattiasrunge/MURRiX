@@ -1,10 +1,11 @@
-import { exists } from '@std/fs';
+import { emptyDir } from '@std/fs';
+import { join } from '@std/path';
 import { BuildOptions } from './types.ts';
-import { copyAssets } from './lib/copy-assets.ts';
-import { bundleApp } from './lib/bundle-app.ts';
-import { createApp } from './lib/create-app.ts';
-import { listFiles } from './lib/list-files.ts';
-import { humanizeBytes } from './lib/humanize-bytes.ts';
+import { stepCopyPublicAssets } from './steps/step-copy-public-assets.ts';
+import { stepBuild } from './steps/step-build.ts';
+import { stepGenerateEntryPoint } from './steps/step-generate-entry-point.ts';
+import { stepGenerateIndex } from './steps/step-generate-index.ts';
+import { stepListFiles } from './steps/step-list-files.ts';
 
 // TODO: Decide how to handle compression.
 // Right now only things that are passed through
@@ -20,24 +21,20 @@ import { humanizeBytes } from './lib/humanize-bytes.ts';
  * @param opts - The build options.
  */
 export const build = async (opts: BuildOptions) => {
-  if (await exists(opts.distDir)) {
-    await Deno.remove(opts.distDir, { recursive: true });
-  }
+  await emptyDir(opts.distDir);
 
-  await Deno.mkdir(opts.distDir, { recursive: true });
+  const internalOpts = {
+    ...opts,
+    appFile: join(opts.workDir, 'app.tsx'),
+  };
 
-  await copyAssets(opts);
-  const appFile = await createApp(opts);
-  await bundleApp(opts, appFile);
+  await stepCopyPublicAssets(internalOpts);
+  await stepGenerateIndex(internalOpts);
+  await stepGenerateEntryPoint(internalOpts);
+  await stepBuild(internalOpts);
+  await stepListFiles(internalOpts);
 
   if (!opts.dev) {
-    const files = await listFiles(opts.distDir);
-
-    console.log('\nFiles:');
-    for (const file of files) {
-      console.log(`  ${file.name.padEnd(45)} ${humanizeBytes(file.size)}`);
-    }
-
     console.log('\nAll done!');
   }
 };

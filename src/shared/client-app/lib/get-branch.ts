@@ -1,4 +1,4 @@
-import { Branch } from './types.ts';
+import { Branch } from '../types.ts';
 
 export const getBranch = async (name: string, dir: string, rootDir: string, imports: Record<string, string>): Promise<Branch> => {
   const id = dir.replace(rootDir, '').replaceAll(/\//g, '__');
