@@ -3,6 +3,7 @@ import { SM } from '~/src/external/sm/mod.ts';
 import { HP } from '~/src/external/hp/mod.ts';
 import { DB } from '~/src/external/db/mod.ts';
 import { FS } from '~/src/external/fs/mod.ts';
+import { log } from '~/src/shared/log/mod.ts';
 import { GlueConfig } from './types.ts';
 
 type External = {
@@ -23,11 +24,22 @@ export class Glue {
   static async create(config: GlueConfig) {
     const external: External = {};
 
+    config.mq && log.info('Initializing MQ...');
     config.mq && (external.mq = await MQ.create(config.mq));
+
+    config.sm && log.info('Initializing SM...');
     config.sm && (external.sm = await SM.create(config.sm));
+
+    config.hp && log.info('Initializing HP...');
     config.hp && (external.hp = await HP.create(config.hp));
+
+    config.db && log.info('Initializing DB...');
     config.db && (external.db = await DB.create(config.db));
+
+    config.fs && log.info('Initializing FS...');
     config.fs && (external.fs = await FS.create(config.fs));
+
+    log.info('Glue initialized');
 
     return new Glue(external);
   }

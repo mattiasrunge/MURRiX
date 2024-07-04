@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-window no-window-prefix
 import React from 'react';
 import {
-  Avatar,
+  Brand,
   Button,
   ButtonVariant,
   Divider,
@@ -29,7 +29,7 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import { BellIcon, CogIcon, HomeAltIcon, HomeIcon, QuestionCircleIcon, ThIcon } from '@patternfly/react-icons';
+import { PlusIcon, RandomIcon, StarIcon } from '@patternfly/react-icons';
 import imgAvatar from '@patternfly/react-core/src/components/assets/avatarImg.svg';
 import pfIcon from '@patternfly/react-core/src/demos/assets/pf-logo-small.svg';
 import { DarkMode, NodeSearchInput } from '@ui/components';
@@ -104,7 +104,7 @@ export function Topbar() {
       isExpanded={isOpen}
       style={{ width: 'auto' }}
     >
-      <ThIcon />
+      <StarIcon />
     </MenuToggle>
   );
 
@@ -307,37 +307,40 @@ export function Topbar() {
       <ToolbarContent>
         <ToolbarGroup
           variant='icon-button-group'
-          align={{ default: 'alignStart' }}
-          gap={{ default: 'gapNone', md: 'gapMd' }}
-        >
-          <ToolbarItem>
-            <HomeIcon />
-          </ToolbarItem>
-        </ToolbarGroup>
-        <ToolbarGroup
-          variant='icon-button-group'
           align={{ default: 'alignEnd' }}
           gap={{ default: 'gapNone', md: 'gapMd' }}
         >
-          <ToolbarItem>
-            <DarkMode />
-          </ToolbarItem>
-          <ToolbarItem>
-            <Button aria-label='Notifications' variant={ButtonVariant.plain} icon={<BellIcon />} />
-          </ToolbarItem>
           <ToolbarGroup visibility={{ default: 'hidden', lg: 'visible' }}>
             <ToolbarItem visibility={{ default: 'hidden', md: 'hidden', lg: 'visible' }}>
-              <Popper trigger={toggle} triggerRef={toggleRef} popper={menu} popperRef={menuRef} isVisible={isOpen} />
+              <Popper
+                trigger={toggle}
+                triggerRef={toggleRef}
+                popper={menu}
+                popperRef={menuRef}
+                isVisible={isOpen}
+              />
             </ToolbarItem>
             <ToolbarItem>
-              <Button aria-label='Settings' variant={ButtonVariant.plain} icon={<CogIcon />} />
+              <Button
+                variant={ButtonVariant.plain}
+                icon={<RandomIcon />}
+              />
             </ToolbarItem>
             <ToolbarItem>
-              <Button aria-label='Help' variant={ButtonVariant.plain} icon={<QuestionCircleIcon />} />
+              <Button
+                variant={ButtonVariant.plain}
+                icon={<PlusIcon />}
+              />
             </ToolbarItem>
+
+            <ToolbarItem>
+              <DarkMode />
+            </ToolbarItem>
+
             <ToolbarItem>
               <Search />
             </ToolbarItem>
+
             <ToolbarItem visibility={{ default: 'hidden', md: 'visible' }}>
               <Dropdown
                 isOpen={isDropdownOpen}
@@ -366,7 +369,17 @@ export function Topbar() {
 
   return (
     <Masthead>
-      <MastheadContent>{headerToolbar}</MastheadContent>
+      <MastheadMain>
+        <MastheadBrand
+          component={(props: any) => <Link {...props} />}
+        >
+          <Brand src={'/logo.png'} alt='Home' heights={{ default: '36px' }} />
+          {/* <img src='/logo.png' /> */}
+        </MastheadBrand>
+      </MastheadMain>
+      <MastheadContent>
+        {headerToolbar}
+      </MastheadContent>
     </Masthead>
   );
 }

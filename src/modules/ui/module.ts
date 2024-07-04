@@ -9,6 +9,31 @@ export class ModuleUi extends Module {
     await this.service.addRoute(
       [
         'GET',
+      ],
+      '/ws',
+      async (context) => {
+        if (!context.isUpgradable) {
+          context.throw(501);
+        }
+
+        const ws = context.upgrade();
+
+        ws.onopen = () => {
+          console.log('Connected to client');
+          ws.send('Hello from server!');
+        };
+        ws.onmessage = (m) => {
+          console.log('Got message from client: ', m.data);
+          ws.send(m.data as string);
+          ws.close();
+        };
+        ws.onclose = () => console.log('Disconncted from client');
+      },
+    );
+
+    await this.service.addRoute(
+      [
+        'GET',
         'HEAD',
       ],
       `/:path*`,
@@ -18,8 +43,7 @@ export class ModuleUi extends Module {
         const absPath = resolve(root, safePath);
 
         if (!absPath.startsWith(root)) {
-          context.response.status = 403;
-          context.response.body = 'Access Denied';
+          context.throw(403);
           return;
         }
 

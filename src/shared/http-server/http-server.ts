@@ -30,6 +30,7 @@ export class HttpServer {
   private app: Application;
   private router: Router;
   private accessResolver?: HttpAccessResolver;
+  private connections = new Set();
 
   constructor(baseUrl: string, port: number) {
     this.baseUrl = baseUrl;
@@ -42,6 +43,14 @@ export class HttpServer {
       if (!isHttpError(evt.error)) {
         log.error(`[HTTP] Internal error:`, evt.error);
       }
+    });
+
+    this.server.on('connection', (s) => {
+      this.connections.add(s);
+
+      s.on('close', () => {
+        this.connections.delete(s);
+      });
     });
   }
 
@@ -113,30 +122,25 @@ export class HttpServer {
 
   public async listen() {
     this.app.use(oakCors());
-    this.app.use(this.addContextToRequest.bind(this));
+    // this.app.use(this.addContextToRequest.bind(this));
     this.app.use(this.authorize.bind(this));
     this.app.use(this.router.routes());
     this.app.use(this.router.allowedMethods());
 
-    await new Promise<void>((resolve, reject) => {
-      this.server.once('error', (error: Error) => {
-        this.server.close();
-        reject(error);
-      });
+    // await new Promise<void>((resolve, reject) => {
+    //   this.server.once('error', (error: Error) => {
+    //     this.server.close();
+    //     reject(error);
+    //   });
 
-      this.server.listen(this.port, resolve);
-    });
+    //   this.server.listen(this.port, resolve);
+    // });
+
+    this.app.listen(':' + this.port);
   }
 
   public async stop() {
-    await new Promise<void>((resolve, reject) => {
-      this.server.close((error?: Error) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve();
-        }
-      });
-    });
+    this.server.close();
+    this.server.closeAllConnections();
   }
 }

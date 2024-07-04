@@ -26,6 +26,20 @@ const compileRoute = (branch: Branch): string => {
     }
   }
 
+  let error = '';
+
+  if (branch.error) {
+    if (branch.layout) {
+      error = `(
+      <${branch.layout} path="${branch.name}">
+        <${branch.error} />
+      </${branch.layout}>
+    )`;
+    } else {
+      error = `<${branch.error} />`;
+    }
+  }
+
   return `{
     path: '${branch.name}',
     element: ${element},
@@ -37,7 +51,7 @@ const compileRoute = (branch: Branch): string => {
   }
   ${branch.loader ? `loader: ${branch.loader},` : ''}
   ${branch.action ? `action: ${branch.action},` : ''}
-  ${branch.error ? `errorElement: <${branch.error} />,` : ''}
+  ${error ? `errorElement: ${error},` : ''}
   }`;
 };
 

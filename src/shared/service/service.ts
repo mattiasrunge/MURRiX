@@ -29,11 +29,13 @@ export class Service implements ServiceIf {
     Deno.addSignalListener('SIGINT', async () => {
       log.info('=> SIGINT received, shutting down...');
       await this.destroy();
+      Deno.exit(0);
     });
 
     Deno.addSignalListener('SIGTERM', async () => {
       log.info('=> SIGTERM received, shutting down...');
       await this.destroy();
+      Deno.exit(0);
     });
 
     glue.hp().setAccessResolver(this.accessResolver.bind(this));
@@ -68,6 +70,7 @@ export class Service implements ServiceIf {
   }
 
   private async accessResolver(sid?: string) {
+    console.log('accessResolver', sid);
     const session = await Session.create(this.glue.sm(), sid);
 
     return await session.access();

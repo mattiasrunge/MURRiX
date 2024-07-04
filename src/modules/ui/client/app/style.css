@@ -1,4 +1,65 @@
+/* Root variables */
 
-.pf-v6-c-text-input-group__text-input {
+:root {
+  --topbar-height: 69px;
+}
+
+
+/* PatternFly overrides */
+
+.pf-v6-c-text-input-group__text-input,
+.pf-v6-c-form-control input {
   outline: none;
+}
+
+.pf-v6-c-background-image {
+  --pf-v6-c-background-image--BackgroundSize: contain;
+  --pf-v6-c-background-image--BackgroundPosition: bottom left;
+  --pf-v6-c-background-image--BackgroundColor: transparent;
+  --pf-v6-c-background-image--BackgroundImage: url(/bg-light.jpg);
+  opacity: 0.5;
+  height: calc(100% - var(--topbar-height));
+  margin-top: var(--topbar-height);
+}
+
+.pf-v6-theme-dark .pf-v6-c-background-image {
+ --pf-v6-c-background-image--BackgroundImage: url(/bg-dark.jpg);
+ opacity: 0.3;
+}
+
+.pf-v6-c-masthead {
+  /* --pf-v6-c-masthead--BackgroundColor: rgba(0, 0, 0, 0); */
+  --pf-v6-c-masthead--PaddingInlineStart: 0;
+}
+
+.pf-v6-c-login__main {
+  position: relative;
+  background-color: transparent;
+}
+
+.pf-v6-c-login__main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--pf-v6-c-login__main--BackgroundColor);
+  opacity: 0.85;
+  z-index: -1;
+  border-radius: var(--pf-v6-c-login__main--BorderRadius);
+}
+
+/* Own styles */
+
+.page-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-height);
+}
+
+.page-content {
+  margin-top: var(--topbar-height);
 }

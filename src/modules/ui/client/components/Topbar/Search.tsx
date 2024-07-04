@@ -10,18 +10,27 @@ export function Search() {
   };
 
   return (
-    <MenuToggle variant='typeahead' isFullWidth aria-label='Typeahead menu toggle'>
+    <MenuToggle
+      variant='typeahead'
+      isFullWidth
+      aria-label='Typeahead menu toggle'
+    >
       <TextInputGroup isPlain>
         <TextInputGroupMain
           value={inputValue}
           onChange={onTextInputChange}
           id='typeahead-select-input'
           autoComplete='off'
+          placeholder='Search...'
         />
 
         <TextInputGroupUtilities>
           {!!inputValue && (
-            <Button variant='plain' onClick={() => setInputValue('')} aria-label='Clear input value'>
+            <Button
+              variant='plain'
+              onClick={() => setInputValue('')}
+              aria-label='Clear input value'
+            >
               <TimesIcon aria-hidden />
             </Button>
           )}
