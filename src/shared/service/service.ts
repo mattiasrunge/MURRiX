@@ -5,9 +5,10 @@ import { HttpMethod, HttpRouteHandler } from '~/src/shared/http-server/mod.ts';
 import { Session } from '~/src/shared/session/mod.ts';
 import { Glue } from './glue/mod.ts';
 import { WrappedFunction } from './api/mod.ts';
-import { ServiceConfig, ServiceIf } from './types.ts';
+import { ApiFunction, ServiceConfig, ServiceIf } from './types.ts';
 import { Module } from './module.ts';
 import { FSAreaOptions } from '~/src/external/fs/mod.ts';
+import { JSONValue } from '~/src/shared/types.ts';
 
 type ModuleList = Record<string, any>;
 export class Service implements ServiceIf {
@@ -96,6 +97,14 @@ export class Service implements ServiceIf {
       log.info(`Registered API function ${fn.fnName}`);
       this.addDisposable(disposeFn);
     }
+  }
+
+  async apiCall(name: string, args: JSONValue) {
+    return this.glue.mq().request(name, args);
+  }
+
+  async apiCallHandler(name: string, handler: ApiFunction) {
+    this.glue.mq().requestHandler(name, (args) => handler(this, args));
   }
 
   async addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler) {

@@ -5,6 +5,11 @@ import { ServiceIf } from '../types.ts';
 type WrappableFunction<IN, OUT> = (service: ServiceIf, args: IN) => Promise<OUT>;
 type LoadFunction = (service: ServiceIf) => Promise<() => Promise<void>>;
 
+// TODO: access should be a an argument outside of IN args
+// TODO: Right now each api function is loaded in it's entirety,
+// but only the interface should be loaded. The implementation
+// should be loaded on demand.
+
 export interface WrappedFunction {
   (service: ServiceIf, args: any): Promise<unknown>;
   load: LoadFunction;
@@ -54,4 +59,24 @@ function api<IN extends JSONValue, OUT extends JSONValue>(fn: WrappableFunction<
   return outFn;
 }
 
-export { api };
+const createApi = <T extends object>(name: string) => {
+  const handler: ProxyHandler<T> = {
+    get(target, prop, receiver) {
+      // Check if the property is a function
+      if (typeof target[prop as keyof T] === 'function') {
+        const fnName = `${name}.${String(prop)}`;
+
+        return (service: ServiceIf, ...args: any[]) => {
+          return service.apiCall(fnName, args);
+        };
+      }
+
+      // Return the property if it is not a function
+      return Reflect.get(target, prop, receiver);
+    },
+  };
+
+  return new Proxy<T>({} as T, handler);
+};
+
+export { api, createApi };

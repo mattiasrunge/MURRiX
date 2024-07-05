@@ -1,41 +1,32 @@
 import { assert } from '@std/assert';
-import { api, ServiceIf } from '~/src/shared/service/mod.ts';
-import { nodeApi, NodePath } from '~/src/modules/node/mod.ts';
-import { Access, GUEST_UID } from '~/src/shared/access/mod.ts';
+import { nodeApi } from '~/src/modules/node/mod.ts';
+import { GUEST_UID } from '~/src/shared/access/mod.ts';
 import { whoami } from './whoami.ts';
+import { ApiIf } from '../api.ts';
 
-type I = {
-  access: Access;
-  path: NodePath;
-};
+export const toggleStar: ApiIf['toggleStar'] = async (service, { access, path }) => {
+  assert(access.uid !== GUEST_UID, 'permission denied');
 
-type O = boolean;
+  const user = await whoami(service, { access });
 
-export const toggleStar = api<I, O>(
-  async (service: ServiceIf, { access, path }: I) => {
-    assert(access.uid !== GUEST_UID, 'permission denied');
+  const links = await nodeApi.resolve(service, {
+    access,
+    path: `/users/${user.name}/stars/*`,
+    options: { readlink: true },
+  });
 
-    const user = await whoami(service, { access });
+  const link = links.find((node) => node.props.link === path);
 
-    const links = await nodeApi.resolve(service, {
+  if (link) {
+    await nodeApi.remove(service, { access, path: link.paths![0] });
+  } else {
+    await nodeApi.softlink(service, {
       access,
-      path: `/users/${user.name}/stars/*`,
-      options: { readlink: true },
+      path: `/users/${user.name}/stars`,
+      targetPath: path,
+      type: 's',
     });
+  }
 
-    const link = links.find((node) => node.props.link === path);
-
-    if (link) {
-      await nodeApi.remove(service, { access, path: link.paths![0] });
-    } else {
-      await nodeApi.softlink(service, {
-        access,
-        path: `/users/${user.name}/stars`,
-        targetPath: path,
-        type: 's',
-      });
-    }
-
-    return true;
-  },
-);
+  return true;
+};
