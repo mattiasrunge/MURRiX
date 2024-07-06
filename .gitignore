@@ -28,4 +28,4 @@ public/backend.txt
 .yarn
 .next
 coverage
-.dist
+**/.dist

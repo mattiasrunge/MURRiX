@@ -1,6 +1,7 @@
-import { GroupId, UserId } from '~/src/shared/mode/mod.ts';
-import { NodeAttrs } from '~/src/modules/node/mod.ts';
-import { PasswordId } from './vault/mod.ts';
+import { GroupId, UserId } from '~/src/shared/mode/types.ts';
+import { NodeAttrs } from '~/src/modules/node/types.ts';
+import { PasswordId } from './vault/types.ts';
+export * from './vault/types.ts';
 
 export type GroupAttrs = NodeAttrs & {
   gid: GroupId;

@@ -1,4 +1,2 @@
-// Public interface toward other modules
-
-export * as userApi from './api/mod.ts';
+export * from './api/api.ts';
 export * from './types.ts';

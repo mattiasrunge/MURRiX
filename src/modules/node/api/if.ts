@@ -1,0 +1,30 @@
+import { JSONValue } from '~/src/shared/types.ts';
+import { AccessLevel } from '~/src/shared/access/types.ts';
+import { GroupId, Mode, UserId } from '~/src/shared/mode/types.ts';
+import { ApiContext } from '~/src/shared/api/types.ts';
+import { NamedNodeData, NodeAttrs, NodeData, NodeId, NodePath, NodeResolveOptions, PartialNodeProps } from '../types.ts';
+
+export type ApiIf = {
+  access(ctx: ApiContext, args: { path: NodePath; level: AccessLevel }): Promise<boolean>;
+  copy(ctx: ApiContext, args: { srcPath: NodePath; dstPath: NodePath; inheritRights?: boolean }): Promise<NodeData>;
+  ensure(ctx: ApiContext, args: { path: NodePath; type: string; attrs?: NodeAttrs; props?: PartialNodeProps }): Promise<NamedNodeData>;
+  exists(ctx: ApiContext, args: { path: NodePath }): Promise<boolean>;
+  findOne(ctx: ApiContext, args: { query: Record<string, JSONValue> }): Promise<NodeData>;
+  getPaths(ctx: ApiContext, args: { id: NodeId }): Promise<NodePath[]>;
+  grant(ctx: ApiContext, args: { path: NodePath; mode: Mode; uid?: UserId; gid?: GroupId; recursive?: boolean }): Promise<NodeData>;
+  group(ctx: ApiContext, args: { path: NodePath; group: string | null }): Promise<NodeData>;
+  hardlink(ctx: ApiContext, args: { path: NodePath; targetPath: NodePath }): Promise<NodeData>;
+  make(ctx: ApiContext, args: { path: NodePath; type: string; attrs?: NodeAttrs; props?: PartialNodeProps }): Promise<NamedNodeData>;
+  move(ctx: ApiContext, args: { srcPath: NodePath; dstPath: NodePath; inheritRights?: boolean }): Promise<NodeData>;
+  removeById(ctx: ApiContext, args: { id: NodeId }): Promise<boolean>;
+  remove(ctx: ApiContext, args: { path: NodePath }): Promise<boolean>;
+  resolveOne(ctx: ApiContext, args: { path: NodePath; options?: NodeResolveOptions }): Promise<NamedNodeData>;
+  resolvePaths(ctx: ApiContext, args: { id: NodeId }): Promise<NodePath[]>;
+  resolve(ctx: ApiContext, args: { path: NodePath; options?: NodeResolveOptions }): Promise<NamedNodeData[]>;
+  revoke(ctx: ApiContext, args: { path: NodePath; mode: Mode; uid?: UserId; gid?: GroupId; recursive?: boolean }): Promise<NodeData>;
+  setMode(ctx: ApiContext, args: { path: NodePath; mode: Mode; recursive?: boolean }): Promise<NodeData>;
+  setOwner(ctx: ApiContext, args: { path: NodePath; uid?: UserId; gid?: GroupId; recursive?: boolean }): Promise<NodeData>;
+  softlink(ctx: ApiContext, args: { path: NodePath; targetPath: NodePath; type: string; attrs?: NodeAttrs; props?: PartialNodeProps }): Promise<NodeData>;
+  uniqueName(ctx: ApiContext, args: { path: NodePath; name: string }): Promise<string>;
+  update(ctx: ApiContext, args: { path: NodePath; attrs: NodeAttrs }): Promise<NodeData>;
+};

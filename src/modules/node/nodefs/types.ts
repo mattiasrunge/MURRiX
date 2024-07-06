@@ -1,5 +1,5 @@
 import { JSONValue, NullPartial } from '~/src/shared/types.ts';
-import { GroupId, Mode, UserId } from '~/src/shared/mode/mod.ts';
+import { GroupId, Mode, UserId } from '~/src/shared/mode/types.ts';
 
 export type NodeId = string;
 export type NodePath = string;

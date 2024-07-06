@@ -1,15 +1,13 @@
 import { join } from '@std/path';
-import { ServiceIf } from '~/src/shared/service/mod.ts';
-import { NamedNodeData, nodeApi } from '~/src/modules/node/mod.ts';
-import { Access } from '~/src/shared/access/mod.ts';
 import { FSFileInfoEx } from '~/src/external/fs/mod.ts';
+import { apiNode, NamedNodeData } from '~/src/modules/node/mod.ts';
 import { FileAttrs } from '../types.ts';
+import { ApiContext } from '~/src/shared/api/types.ts';
 
-export const makeFile = async (service: ServiceIf, access: Access, infoEx: FSFileInfoEx) => {
+export const makeFile = async (ctx: ApiContext, infoEx: FSFileInfoEx) => {
   // TODO: Fill out when, where and connect device
 
-  return await nodeApi.make(service, {
-    access,
+  return await apiNode.make(ctx, {
     path: join(infoEx.uploadMeta.path, infoEx.filename),
     type: 'f',
     attrs: {

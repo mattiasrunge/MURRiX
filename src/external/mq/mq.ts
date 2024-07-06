@@ -1,6 +1,6 @@
 import { AmqpChannel, AmqpConnection, BasicConsumeOk, BasicDeliver, BasicProperties, connect } from 'amqp';
 import { Deferred, deferred } from '~/src/shared/deferred/mod.ts';
-import { JSONValue } from '~/src/shared/types.ts';
+import { JSONObject, JSONValue } from '~/src/shared/types.ts';
 import { MQConfig, MQPublishOptions } from './types.ts';
 
 export class MQ {
@@ -117,7 +117,7 @@ export class MQ {
     }
   }
 
-  async requestHandler<REQ extends JSONValue, RES extends JSONValue>(name: string, handler: (data: REQ) => Promise<RES>) {
+  async requestHandler<REQ extends JSONObject, RES extends JSONValue>(name: string, handler: (data: REQ) => Promise<RES>) {
     const requestQueue = await this.channel.declareQueue({
       queue: name,
       durable: true,

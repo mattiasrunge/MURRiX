@@ -1,11 +1,11 @@
-import { Service, ServiceConfig } from '~/src/shared/service/mod.ts';
+import { ModuleList, Service, ServiceConfig } from '~/src/shared/service/mod.ts';
 import { ModuleNode } from './modules/node/module.ts';
 import { ModuleUser } from './modules/user/module.ts';
 import { ModulePeople } from './modules/people/module.ts';
 import { ModuleFile } from './modules/file/module.ts';
 import { ModuleUi } from './modules/ui/module.ts';
 
-const modules: Record<string, any> = {
+const modules: ModuleList = {
   'node': ModuleNode,
   'user': ModuleUser,
   'people': ModulePeople,

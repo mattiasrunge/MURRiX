@@ -1,4 +1,4 @@
-import { NamedNodeData, NodeAttrs } from '~/src/modules/node/mod.ts';
+import { NamedNodeData, NodeAttrs } from '~/src/modules/node/types.ts';
 
 export type PersonGender = 'm' | 'f' | 'o' | 'u';
 

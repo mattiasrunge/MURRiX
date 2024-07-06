@@ -1,13 +1,16 @@
 import { Module } from '~/src/shared/service/mod.ts';
+import { ApiContext, ApiFunction } from '~/src/shared/api/types.ts';
 import { getRequestExtras } from '~/src/shared/http-server/mod.ts';
-import * as api from './api/mod.ts';
+import * as api from './api/fns.ts';
 import { makeFile } from './filefs/mod.ts';
 
 const AREA_NAME = 'archive';
 
 export class ModuleFile extends Module {
   async setup() {
-    await this.service.registerApiFunctions(Object.values(api));
+    for (const [name, handler] of Object.entries(api)) {
+      await this.service.callHandler(`user.${name}`, handler as ApiFunction);
+    }
 
     const area = await this.service.ensureFSArea(AREA_NAME, {
       hasRemoved: true,
@@ -15,7 +18,12 @@ export class ModuleFile extends Module {
     });
 
     area.setOnCommit(async (access, infoEx) => {
-      const node = await makeFile(this.service, access, infoEx);
+      const ctx: ApiContext = {
+        connection: this.service,
+        service: this.service,
+        access,
+      };
+      const node = await makeFile(ctx, infoEx);
 
       return {
         'node-id': node._id,
@@ -48,9 +56,5 @@ export class ModuleFile extends Module {
         await area.handleGet(context, context.params.id);
       },
     );
-
-    // Register routes
-    // Register events
-    // Register shared memory
   }
 }

@@ -3,20 +3,21 @@ import { Disposable, Disposables } from '~/src/shared/disposables/mod.ts';
 import { log } from '~/src/shared/log/mod.ts';
 import { HttpMethod, HttpRouteHandler } from '~/src/shared/http-server/mod.ts';
 import { Session } from '~/src/shared/session/mod.ts';
-import { Glue } from './glue/mod.ts';
-import { WrappedFunction } from './api/mod.ts';
-import { ApiFunction, ServiceConfig, ServiceIf } from './types.ts';
-import { Module } from './module.ts';
+import { JSONObject, JSONValue } from '~/src/shared/types.ts';
 import { FSAreaOptions } from '~/src/external/fs/mod.ts';
-import { JSONValue } from '~/src/shared/types.ts';
+import { ApiContext, ApiFunction } from '~/src/shared/api/types.ts';
+import { Access } from '~/src/shared/access/types.ts';
+import { Glue } from './glue/mod.ts';
+import { ModuleList, ServiceConfig, ServiceIf } from './types.ts';
+import { Module } from './module.ts';
 
-type ModuleList = Record<string, any>;
 export class Service implements ServiceIf {
   public readonly name: string;
   public readonly instanceId: string;
   public readonly config: ServiceConfig;
   private disposables: Disposables;
   private glue: Glue;
+  private apiHandlers: Record<string, ApiFunction> = {};
 
   private constructor(config: ServiceConfig, glue: Glue) {
     this.name = config.name;
@@ -91,20 +92,34 @@ export class Service implements ServiceIf {
     this.disposables.addDisposable(disposeFn, ref);
   }
 
-  async registerApiFunctions(fns: WrappedFunction[]) {
-    for (const fn of fns) {
-      const disposeFn = await fn.load(this);
-      log.info(`Registered API function ${fn.fnName}`);
-      this.addDisposable(disposeFn);
+  async call(name: string, access: Access, args: JSONObject): Promise<JSONValue> {
+    const handler = this.apiHandlers[name];
+    if (handler) {
+      const ctx: ApiContext = { connection: this, access, service: this };
+      return handler(ctx, args);
     }
+
+    const requestArgs = {
+      access,
+      args,
+    };
+
+    return this.glue.mq().request(name, requestArgs);
   }
 
-  async apiCall(name: string, args: JSONValue) {
-    return this.glue.mq().request(name, args);
-  }
+  async callHandler(name: string, handler: ApiFunction) {
+    this.apiHandlers[name] = handler;
+    const disposeFn = await this.glue.mq().requestHandler(name, (requestArgs) => {
+      const ctx: ApiContext = {
+        connection: this,
+        access: requestArgs.access as Access,
+        service: this,
+      };
+      return handler(ctx, requestArgs.args as JSONObject);
+    });
 
-  async apiCallHandler(name: string, handler: ApiFunction) {
-    this.glue.mq().requestHandler(name, (args) => handler(this, args));
+    log.info(`Registered API function ${name}`);
+    this.addDisposable(disposeFn);
   }
 
   async addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler) {

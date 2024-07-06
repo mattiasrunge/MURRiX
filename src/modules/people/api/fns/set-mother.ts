@@ -1,0 +1,38 @@
+import { ServiceIf } from '~/src/shared/service/mod.ts';
+import { ApiContext } from '~/src/shared/api/types.ts';
+import { apiNode } from '~/src/modules/node/mod.ts';
+import { ApiIf } from '../if.ts';
+
+export const setMother: ApiIf['setMother'] = async (ctx: ApiContext<ServiceIf>, { childPath, motherPath }) => {
+  try {
+    // This is a softlink which is grouped so
+    // only one needs to be removed.
+    await apiNode.remove(ctx, {
+      path: `${childPath}/parents/mother`,
+    });
+  } catch {
+    // Do nothing
+  }
+
+  const group = crypto.randomUUID();
+
+  await apiNode.softlink(ctx, {
+    path: `${childPath}/parents/mother`,
+    targetPath: motherPath,
+    type: 's',
+    props: {
+      group,
+    },
+  });
+
+  await apiNode.softlink(ctx, {
+    path: `${motherPath}/children`,
+    targetPath: childPath,
+    type: 's',
+    props: {
+      group,
+    },
+  });
+
+  return true;
+};
