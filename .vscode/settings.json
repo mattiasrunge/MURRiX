@@ -5,8 +5,7 @@
     ],
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "denoland.vscode-deno",
-    "[yaml]":  {
-		"editor.tabSize": 2,
-	},
-
+    "[yaml]": {
+        "editor.tabSize": 2
+    }
 }

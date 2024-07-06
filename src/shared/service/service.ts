@@ -73,7 +73,7 @@ export class Service implements ServiceIf {
 
   private async accessResolver(sid?: string) {
     console.log('accessResolver', sid);
-    const session = await Session.create(this.glue.sm(), sid);
+    const session = await Session.create(this, sid);
 
     return await session.access();
   }
@@ -132,6 +132,14 @@ export class Service implements ServiceIf {
 
   getFSArea(name: string) {
     return this.glue.fs().getArea(name);
+  }
+
+  async subscribeToChannel(name: string, handler: (data: JSONValue) => Promise<void>) {
+    return await this.glue.mq().subscribeTo(name, handler);
+  }
+
+  async publishToChannel(name: string, data: JSONValue) {
+    await this.glue.mq().publishTo(name, data);
   }
 
   async eventEmit() {}

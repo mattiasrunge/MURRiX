@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 import { Topbar } from '@ui/components';
+import { ctx, socket } from '@ui/lib';
+import { apiUser } from '~/src/modules/user/mod.ts';
 
 type Props = {
   children: ReactNode;
@@ -20,12 +22,6 @@ export default function Layout({ children }: Props) {
   );
 }
 
-addEventListener('DOMContentLoaded', () => {
-  const ws = new WebSocket('/ws');
-  ws.onopen = () => console.log('Connected to server');
-  ws.onmessage = (m) => {
-    console.log('Got message from server: ', m.data);
-    ws.send(`Some message ${crypto.randomUUID()}`);
-  };
-  ws.onclose = () => console.log('Disconnected from server');
+addEventListener('DOMContentLoaded', async () => {
+  await socket.connect();
 });

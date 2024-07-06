@@ -5,9 +5,6 @@ import {
   Button,
   ButtonVariant,
   Divider,
-  Dropdown,
-  DropdownItem,
-  DropdownList,
   Masthead,
   MastheadBrand,
   MastheadContent,
@@ -19,7 +16,6 @@ import {
   MenuList,
   MenuSearchInput,
   MenuToggle,
-  MenuToggleElement,
   Popper,
   SearchInput,
   Toolbar,
@@ -30,28 +26,17 @@ import {
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { PlusIcon, RandomIcon, StarIcon } from '@patternfly/react-icons';
-import imgAvatar from '@patternfly/react-core/src/components/assets/avatarImg.svg';
 import pfIcon from '@patternfly/react-core/src/demos/assets/pf-logo-small.svg';
-import { DarkMode, NodeSearchInput } from '@ui/components';
+import { DarkMode, NodeSearchInput, UserMenu } from '@ui/components';
 import { Search } from '~/src/modules/ui/client/components/Topbar/Search.tsx';
 
 export function Topbar() {
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [refFullOptions, setRefFullOptions] = React.useState<Element[]>();
   const [favorites, setFavorites] = React.useState<string[]>([]);
   const [filteredIds, setFilteredIds] = React.useState<string[]>(['*']);
   const menuRef = React.useRef<HTMLDivElement>(null);
   const toggleRef = React.useRef<HTMLButtonElement>(null);
-
-  const onDropdownToggle = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const onDropdownSelect = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
 
   const handleMenuKeys = (event: KeyboardEvent) => {
     if (!isOpen) {
@@ -294,14 +279,6 @@ export function Topbar() {
     </Menu>
   );
 
-  const userDropdownItems = [
-    <>
-      <DropdownItem key='group 2 profile'>My profile</DropdownItem>
-      <DropdownItem key='group 2 user'>User management</DropdownItem>
-      <DropdownItem key='group 2 logout'>Logout</DropdownItem>
-    </>,
-  ];
-
   const headerToolbar = (
     <Toolbar id='toolbar' isStatic>
       <ToolbarContent>
@@ -342,24 +319,7 @@ export function Topbar() {
             </ToolbarItem>
 
             <ToolbarItem visibility={{ default: 'hidden', md: 'visible' }}>
-              <Dropdown
-                isOpen={isDropdownOpen}
-                onSelect={onDropdownSelect}
-                onOpenChange={(isOpen: boolean) => setIsDropdownOpen(isOpen)}
-                popperProps={{ position: 'right' }}
-                toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                  <MenuToggle
-                    ref={toggleRef}
-                    onClick={onDropdownToggle}
-                    isExpanded={isDropdownOpen}
-                    // icon={<Avatar src={imgAvatar} size='sm' alt='' />}
-                  >
-                    Ned Username
-                  </MenuToggle>
-                )}
-              >
-                <DropdownList>{userDropdownItems}</DropdownList>
-              </Dropdown>
+              <UserMenu />
             </ToolbarItem>
           </ToolbarGroup>
         </ToolbarGroup>

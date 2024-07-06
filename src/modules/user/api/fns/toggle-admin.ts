@@ -11,7 +11,7 @@ import { ApiIf } from '../if.ts';
 export const toggleAdmin: ApiIf['toggleAdmin'] = async (ctx: ApiContext<ServiceIf>, { password }) => {
   assert(ctx.access.sid, 'session required');
 
-  const session = await Session.create(ctx.service.getSm(), ctx.access.sid);
+  const session = await Session.create(ctx.service, ctx.access.sid);
   const currentAccess = await session.access();
 
   if (currentAccess.admin) {

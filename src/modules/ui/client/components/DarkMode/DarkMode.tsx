@@ -1,22 +1,25 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core';
 import { MoonIcon, SunIcon } from '@patternfly/react-icons';
-import { darkModeSignal, toggleDarkMode } from '@ui/signals';
+import { darkMode, toggleDarkMode } from '@ui/signals';
+import { useSignals } from '@preact/signals-react/runtime';
 
 export function DarkMode() {
+  useSignals();
+
   return (
     <ToggleGroup>
       <ToggleGroupItem
         icon={<SunIcon />}
         aria-label='light'
         buttonId='light'
-        isSelected={!darkModeSignal.value}
+        isSelected={!darkMode.value}
         onChange={toggleDarkMode}
       />
       <ToggleGroupItem
         icon={<MoonIcon />}
         aria-label='dark'
         buttonId='dark'
-        isSelected={darkModeSignal.value}
+        isSelected={darkMode.value}
         onChange={toggleDarkMode}
       />
     </ToggleGroup>

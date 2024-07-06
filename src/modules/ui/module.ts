@@ -1,10 +1,14 @@
 import { dirname, fromFileUrl, join, normalize, resolve } from '@std/path';
 import { exists } from '@std/fs';
 import { Module } from '~/src/shared/service/mod.ts';
+import { Client } from './client.ts';
+import { log } from '~/src/shared/log/log.ts';
+import { Access } from '~/src/shared/access/types.ts';
 
 export class ModuleUi extends Module {
   async setup() {
     const myDir = dirname(fromFileUrl(import.meta.url));
+    const clients: Client[] = [];
 
     await this.service.addRoute(
       [
@@ -18,16 +22,27 @@ export class ModuleUi extends Module {
 
         const ws = context.upgrade();
 
+        const client = new Client(this.service, ws, context.state.access);
+        clients.push(client);
+
+        const ips = [context.request.ip, ...context.request.ips];
+
         ws.onopen = () => {
-          console.log('Connected to client');
-          ws.send('Hello from server!');
+          log.info(`Client connected from: ${ips.join(', ')}`);
+
+          client.open();
         };
-        ws.onmessage = (m) => {
-          console.log('Got message from client: ', m.data);
-          ws.send(m.data as string);
-          ws.close();
+
+        ws.onclose = () => {
+          log.info(`Client disconnected from: ${ips.join(', ')}`);
+
+          client.destroy();
+
+          const index = clients.indexOf(client);
+          if (index !== -1) {
+            clients.splice(index, 1);
+          }
         };
-        ws.onclose = () => console.log('Disconncted from client');
       },
     );
 
@@ -64,6 +79,17 @@ export class ModuleUi extends Module {
         });
       },
     );
+
+    const unsubscribe = await this.service.subscribeToChannel('session', async (data) => {
+      const access = data as Access;
+      for (const client of clients) {
+        if (client.sid === access.sid) {
+          await client.sessionUpdated(access);
+        }
+      }
+    });
+
+    this.service.addDisposable(unsubscribe);
 
     if (this.service.isDev()) {
       const command = new Deno.Command(Deno.execPath(), {

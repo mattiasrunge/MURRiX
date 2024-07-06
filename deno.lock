@@ -52,8 +52,11 @@
       "npm:@patternfly/react-icons@6.0.0-alpha.27": "npm:@patternfly/react-icons@6.0.0-alpha.27_react@18.3.1_react-dom@18.3.1__react@18.3.1",
       "npm:@patternfly/react-icons@alpha": "npm:@patternfly/react-icons@6.0.0-alpha.27_react@18.3.1_react-dom@18.3.1__react@18.3.1",
       "npm:@patternfly/react-styles@alpha": "npm:@patternfly/react-styles@6.0.0-alpha.26",
+      "npm:@preact/signals-core": "npm:@preact/signals-core@1.7.0",
+      "npm:@preact/signals-core@^1.7.0": "npm:@preact/signals-core@1.7.0",
       "npm:@preact/signals-react@2.0.2": "npm:@preact/signals-react@2.0.2_react@18.3.1",
-      "npm:@preact/signals-react@^2.0.2": "npm:@preact/signals-react@2.0.2_react@18.3.1",
+      "npm:@preact/signals-react@2.1.0": "npm:@preact/signals-react@2.1.0_react@18.3.1",
+      "npm:@preact/signals-react@^2.0.2": "npm:@preact/signals-react@2.1.0_react@18.3.1",
       "npm:@tus/file-store@1.2.0": "npm:@tus/file-store@1.2.0_@tus+server@1.6.0",
       "npm:@tus/server@1.6.0": "npm:@tus/server@1.6.0",
       "npm:@tus/utils@0.2.0": "npm:@tus/utils@0.2.0",
@@ -415,14 +418,22 @@
         "integrity": "sha512-GNTGyZg5FzjW/4G+idqKG5FOwJylngm0NASZG5F0deWGMNwQJ4A/5AIUsTZdYmE2rHmFeNP3kWxKW+wYkLE6og==",
         "dependencies": {}
       },
-      "@preact/signals-core@1.6.1": {
-        "integrity": "sha512-KXEEmJoKDlo0Igju/cj9YvKIgyaWFDgnprShQjzimUd5VynAAdTWMshawEOjUVeKbsI0aR58V6WOQp+DNcKApw==",
+      "@preact/signals-core@1.7.0": {
+        "integrity": "sha512-bEZLgmJGSBVP5PUPDowhPW3bVdMmp9Tr5OEl+SQK+8Tv9T7UsIfyN905cfkmmeqw8z4xp8T6zrl4M1uj9+HAfg==",
         "dependencies": {}
       },
       "@preact/signals-react@2.0.2_react@18.3.1": {
         "integrity": "sha512-JcqkrRJtYmSlVy89DL65ruFEGv4rTreQWVE/fmGQ+FtN86TaYUcwIesE4lR6IkuX33ZpGjdoh8a+0auDePD5UA==",
         "dependencies": {
-          "@preact/signals-core": "@preact/signals-core@1.6.1",
+          "@preact/signals-core": "@preact/signals-core@1.7.0",
+          "react": "react@18.3.1",
+          "use-sync-external-store": "use-sync-external-store@1.2.2_react@18.3.1"
+        }
+      },
+      "@preact/signals-react@2.1.0_react@18.3.1": {
+        "integrity": "sha512-jWq2ldDWXdbKpg+aMGuOZfj9tS5JkVlGJ5hGNzNe1Zfe7RLFfvldBEfNe6ZT7KZddecAxKhyoxSsEypgbfx/Gw==",
+        "dependencies": {
+          "@preact/signals-core": "@preact/signals-core@1.7.0",
           "react": "react@18.3.1",
           "use-sync-external-store": "use-sync-external-store@1.2.2_react@18.3.1"
         }

@@ -88,6 +88,42 @@ export class MQ {
     return messageId;
   }
 
+  async publishTo(name: string, data: JSONValue) {
+    await this.channel.declareExchange({ exchange: name, type: 'fanout' });
+
+    return this.publish(data, {
+      exchange: name,
+      type: 'event',
+    });
+  }
+
+  async subscribeTo(name: string, handler: (data: JSONValue) => Promise<void>) {
+    await this.channel.declareExchange({ exchange: name, type: 'fanout' });
+
+    const queue = await this.channel.declareQueue({
+      exclusive: true,
+      autoDelete: true,
+    });
+
+    await this.channel.bindQueue({
+      exchange: name,
+      queue: queue.queue,
+    });
+
+    const consumeId = await this.channel.consume({
+      queue: queue.queue,
+    }, async (args: BasicDeliver, _props: BasicProperties, encodedData: Uint8Array) => {
+      const data = JSON.parse(new TextDecoder().decode(encodedData));
+      await handler(data);
+      await this.channel.ack(args);
+    });
+
+    return async () => {
+      await this.channel.cancel(consumeId);
+      await this.channel.deleteQueue({ queue: queue.queue });
+    };
+  }
+
   async request<REQ extends JSONValue, RES extends JSONValue>(name: string, data: REQ, timeout?: number): Promise<RES> {
     // const t = Date.now();
     const options: MQPublishOptions = {

@@ -7,7 +7,7 @@ import { ApiIf } from '../if.ts';
 export const logout: ApiIf['logout'] = async (ctx: ApiContext<ServiceIf>) => {
   assert(ctx.access.sid, 'session required');
 
-  const session = await Session.create(ctx.service.getSm(), ctx.access.sid);
+  const session = await Session.create(ctx.service, ctx.access.sid);
 
   await session.logout();
 

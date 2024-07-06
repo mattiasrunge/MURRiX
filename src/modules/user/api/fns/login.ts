@@ -27,7 +27,7 @@ export const login: ApiIf['login'] = async (ctx: ApiContext<ServiceIf>, { userna
   const groups = await getGroups({ ...ctx, access: ADMIN_ACCESS }, { username });
   const gids = groups.map((group) => group.attrs.gid);
 
-  const session = await Session.create(ctx.service.getSm(), ctx.access.sid);
+  const session = await Session.create(ctx.service, ctx.access.sid);
   await session.login(user.attrs.uid, gids);
   await apiNode.update({ ...ctx, access: ADMIN_ACCESS }, {
     path: `/users/${username}`,

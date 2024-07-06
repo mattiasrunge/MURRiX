@@ -6,6 +6,7 @@ import { FS, FSArea, FSAreaOptions, FSConfig } from '~/src/external/fs/mod.ts';
 import { HttpMethod, HttpRouteHandler } from '~/src/shared/http-server/mod.ts';
 import { Disposable } from '~/src/shared/disposables/mod.ts';
 import { ApiConnection, ApiFunction } from '~/src/shared/api/types.ts';
+import { JSONValue } from '~/src/shared/types.ts';
 
 export type GlueConfig = {
   sm?: SMConfig;
@@ -32,8 +33,13 @@ export interface ServiceIf extends ApiConnection {
   callHandler(name: string, handler: ApiFunction): Promise<void>;
 
   addRoute(methods: HttpMethod[], path: string, handler: HttpRouteHandler): Promise<void>;
+
   ensureFSArea(name: string, opts: FSAreaOptions): Promise<FSArea>;
   getFSArea(name: string): FSArea;
+
+  subscribeToChannel(name: string, handler: (data: JSONValue) => Promise<void>): Promise<Disposable>;
+  publishToChannel(name: string, data: JSONValue): Promise<void>;
+
   getDb(): DB;
   getMq(): MQ;
   getSm(): SM;
