@@ -57,7 +57,7 @@
     "typeson": "^6.1.0",
     "typeson-registry": "^1.0.0-alpha.37",
     "uuid": "^8.1.0",
-    "ws": "^7.3.0",
+    "ws": "^7.4.6",
     "yargs": "^17.0.1",
     "yargs-parser": "^20.2.7"
   },
